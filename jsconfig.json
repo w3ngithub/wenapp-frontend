@@ -9,7 +9,8 @@
 			"pages/*": ["pages/*"],
 			"assets/*": ["assets/*"],
 			"helpers/*": ["helpers/*"],
-			"services/*": ["services/*"]
+			"services/*": ["services/*"],
+			"types/*": ["types/*"]
 		},
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"skipLibCheck": true,
@@ -23,6 +24,6 @@
 		"isolatedModules": true,
 		"jsx": "preserve"
 	},
-	"include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.jsx"],
+	"include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
 	"exclude": ["node_modules"]
 }

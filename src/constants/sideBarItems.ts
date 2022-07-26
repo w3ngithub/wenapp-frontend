@@ -1,14 +1,6 @@
-export const SIDEBAR_ITEMS: {
-	name: string;
-	url: string;
-	isExpandable: boolean;
-	id: any;
-	subItems?: {
-		name: string;
-		url: string;
-		id: any;
-	}[];
-}[] = [
+import sidebarItemsInterface from "../types/sideBar";
+
+export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 	{
 		name: "sidebar.dashboard",
 		url: "/main/dashboard/listing",
