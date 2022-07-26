@@ -1,19 +1,20 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 // Add this import:
 import {AppContainer} from 'react-hot-loader';
 
+const root = createRoot(document.getElementById('root'))
+
 // Wrap the rendering in a function:
 const render = Component => {
-  ReactDOM.render(
+  root.render(
     // Wrap App inside AppContainer
     <AppContainer>
       <App/>
     </AppContainer>,
-    document.getElementById('root')
   );
 };
 
