@@ -70,6 +70,110 @@ class SidebarContent extends Component {
 										<IntlMessages id="sidebar.dashboard" />
 									</Link>
 								</Menu.Item>
+								<Menu.Item key="main/dashboard/a">
+									<Link to="/main/dashboard/crypto">
+										<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.coworkers" />
+									</Link>
+								</Menu.Item>
+								<Menu.Item key="main/dashboard/b">
+									<Link to="/main/dashboard/crypto">
+										<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.projects" />
+									</Link>
+								</Menu.Item>
+								<Menu.Item key="main/dashboard/c">
+									<Link to="/main/dashboard/crypto">
+										<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.attendance" />
+									</Link>
+								</Menu.Item>
+								<Menu.Item key="main/dashboard/d">
+									<Link to="/main/dashboard/crypto">
+										<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.logtime" />
+									</Link>
+								</Menu.Item>
+								<Menu.Item key="main/dashboard/e">
+									<Link to="/main/dashboard/crypto">
+										<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.leavemanagement" />
+									</Link>
+								</Menu.Item>
+								<Menu.Item key="main/dashboard/f">
+									<Link to="/main/dashboard/crypto">
+										<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.noticeboard" />
+									</Link>
+								</Menu.Item>
+								<Menu.Item key="main/dashboard/g">
+									<Link to="/main/dashboard/crypto">
+										<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.blog" />
+									</Link>
+								</Menu.Item>
+								<SubMenu
+									key="general"
+									className={this.getNavStyleSubMenuClass(navStyle)}
+									title={
+										<span>
+											<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.reports" />
+										</span>
+									}
+								>
+									<Menu.Item key="components/general/button">
+										<Link to="/components/general/button">
+											<IntlMessages id="sidebar.reports.weeklyreport" />
+										</Link>
+									</Menu.Item>
+									<Menu.Item key="components/general/icon">
+										<Link to="/components/general/icon">
+											<IntlMessages id="sidebar.reports.worklogreport" />
+										</Link>
+									</Menu.Item>
+									<Menu.Item key="main/dashboard/h">
+									<Link to="/main/dashboard/crypto">
+										<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.reports.leavereport" />
+									</Link>
+								</Menu.Item>
+								</SubMenu>
+								<SubMenu
+									key="general"
+									className={this.getNavStyleSubMenuClass(navStyle)}
+									title={
+										<span>
+											<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.resources" />
+										</span>
+									}
+								>
+									<Menu.Item key="components/general/button">
+										<Link to="/components/general/button">
+											<IntlMessages id="sidebar.resources.faq" />
+										</Link>
+									</Menu.Item>
+									<Menu.Item key="components/general/icon">
+										<Link to="/components/general/icon">
+											<IntlMessages id="sidebar.resources.policy" />
+										</Link>
+									</Menu.Item>
+									<Menu.Item key="main/dashboard/crypto">
+									<Link to="/main/dashboard/crypto">
+										<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.resources.calendar" />
+									</Link>
+								</Menu.Item>
+								</SubMenu>
+
+								<Menu.Item key="main/dashboard/i">
+									<Link to="/main/dashboard/crypto">
+										<i className="icon icon-dasbhoard" />
+										<IntlMessages id="sidebar.settings" />
+									</Link>
+								</Menu.Item>
+								
 
 								<Menu.Item key="main/widgets">
 									<Link to="/main/widgets">
