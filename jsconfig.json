@@ -23,6 +23,6 @@
 		"isolatedModules": true,
 		"jsx": "preserve"
 	},
-	"include": ["**/*.js", "**/*.jsx"],
+	"include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.jsx"],
 	"exclude": ["node_modules"]
 }
