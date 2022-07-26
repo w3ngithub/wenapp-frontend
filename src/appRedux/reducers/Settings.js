@@ -68,12 +68,6 @@ const settings = (state = initialSettings, action) => {
         layoutType: action.layoutType
       };
 
-    case SWITCH_LANGUAGE:
-      return {
-        ...state,
-        locale: action.payload,
-
-      };
     default:
       return state;
   }

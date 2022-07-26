@@ -9,7 +9,6 @@ import Portfolio from "components/dashboard/Crypto/Portfolio";
 import BalanceHistory from "components/dashboard/Crypto/BalanceHistory";
 import SendMoney from "components/dashboard/Crypto/SendMoney";
 import RewardCard from "components/dashboard/Crypto/RewardCard";
-import CurrencyCalculator from "components/dashboard/Crypto/CurrencyCalculator";
 import CryptoNews from "components/dashboard/Crypto/CryptoNews";
 import DownloadMobileApps from "components/dashboard/Crypto/DownloadMobileApps";
 import OrderHistory from "components/dashboard/Crypto/OrderHistory";
@@ -98,9 +97,7 @@ const Crypto = () => {
         <Col xl={6} lg={12} md={12} sm={24} xs={24}>
           <RewardCard/>
         </Col>
-        <Col xl={9} lg={12} md={12} sm={24} xs={24}>
-          <CurrencyCalculator/>
-        </Col>
+        
 
         <Col xl={15} lg={24} md={24} sm={24} xs={24}>
           <CryptoNews/>

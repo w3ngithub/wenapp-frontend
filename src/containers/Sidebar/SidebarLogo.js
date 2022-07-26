@@ -10,7 +10,7 @@ import {
   NAV_STYLE_NO_HEADER_MINI_SIDEBAR,
   TAB_SIZE,
   THEME_TYPE_LITE
-} from "../../constants/ThemeSetting";
+} from "constants/ThemeSetting";
 
 
 class SidebarLogo extends Component {

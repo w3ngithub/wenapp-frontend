@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import {Col, Row} from "antd";
 
 import ContactCell from "./ContactCell/index";
-import contacts from "routes/inBuiltApps/Contact/data/contactList";
 import {arrayMove, SortableContainer} from "react-sortable-hoc";
 
 import ContainerHeader from "components/ContainerHeader/index";
@@ -32,7 +31,7 @@ class DragNDrop extends Component {
   constructor() {
     super();
     this.state = {
-      contacts: contacts,
+      contacts: [],
     }
   }
 

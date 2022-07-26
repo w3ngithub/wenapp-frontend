@@ -6,11 +6,7 @@ import {Link} from "react-router-dom";
 import {
   hideMessage,
   showAuthLoader,
-  userFacebookSignIn,
-  userGithubSignIn,
-  userGoogleSignIn,
-  userSignIn,
-  userTwitterSignIn
+   userSignIn,
 } from "appRedux/actions/Auth";
 import IntlMessages from "util/IntlMessages";
 import CircularProgress from "components/CircularProgress/index";
@@ -99,35 +95,7 @@ class SignIn extends React.Component {
                   <span><IntlMessages id="app.userAuth.or"/></span> <Link to="/signup"><IntlMessages
                   id="app.userAuth.signUp"/></Link>
                 </FormItem>
-                <div className="gx-flex-row gx-justify-content-between">
-                  <span>or connect with</span>
-                  <ul className="gx-social-link">
-                    <li>
-                      <Icon type="google" onClick={() => {
-                        this.props.showAuthLoader();
-                        this.props.userGoogleSignIn();
-                      }}/>
-                    </li>
-                    <li>
-                      <Icon type="facebook" onClick={() => {
-                        this.props.showAuthLoader();
-                        this.props.userFacebookSignIn();
-                      }}/>
-                    </li>
-                    <li>
-                      <Icon type="github" onClick={() => {
-                        this.props.showAuthLoader();
-                        this.props.userGithubSignIn();
-                      }}/>
-                    </li>
-                    <li>
-                      <Icon type="twitter" onClick={() => {
-                        this.props.showAuthLoader();
-                        this.props.userTwitterSignIn();
-                      }}/>
-                    </li>
-                  </ul>
-                </div>
+                
                 <span
                   className="gx-text-light gx-fs-sm"> demo user email: 'demo@example.com' and password: 'demo#123'</span>
               </Form>
@@ -157,8 +125,4 @@ export default connect(mapStateToProps, {
   userSignIn,
   hideMessage,
   showAuthLoader,
-  userFacebookSignIn,
-  userGoogleSignIn,
-  userGithubSignIn,
-  userTwitterSignIn
-})(WrappedNormalLoginForm);
+ })(WrappedNormalLoginForm);

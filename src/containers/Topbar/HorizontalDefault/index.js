@@ -1,9 +1,7 @@
 import React, {Component} from "react";
 import {Button, Dropdown, Icon, Layout, Menu, message, Popover, Select} from 'antd';
 import {connect} from "react-redux";
-import CustomScrollbars from "util/CustomScrollbars";
 
-import languageData from "../languageData";
 import SearchBox from "components/SearchBox";
 import UserInfo from "components/UserInfo";
 import AppNotification from "components/AppNotification";
@@ -11,8 +9,8 @@ import MailNotification from "components/MailNotification";
 
 import HorizontalNav from "../HorizontalNav";
 import {Link} from "react-router-dom";
-import {switchLanguage, toggleCollapsedSideNav} from "../../../appRedux/actions/Setting";
-import IntlMessages from "../../../util/IntlMessages";
+import {toggleCollapsedSideNav} from "appRedux/actions/Setting";
+import IntlMessages from "util/IntlMessages";
 
 const {Header} = Layout;
 const Option = Select.Option;
@@ -38,19 +36,6 @@ class HorizontalDefault extends Component {
     searchText: '',
   };
 
-  languageMenu = () => (
-    <CustomScrollbars className="gx-popover-lang-scroll">
-      <ul className="gx-sub-popover">
-        {languageData.map(language =>
-          <li className="gx-media gx-pointer" key={JSON.stringify(language)} onClick={(e) =>
-            this.props.switchLanguage(language)
-          }>
-            <i className={`flag flag-24 gx-mr-2 flag-${language.icon}`}/>
-            <span className="gx-language-text">{language.name}</span>
-          </li>
-        )}
-      </ul>
-    </CustomScrollbars>);
 
   updateSearchChatUser = (evt) => {
     this.setState({
@@ -143,14 +128,7 @@ class HorizontalDefault extends Component {
                 </span>
                   </Popover>
                 </li>
-                <li className="gx-language">
-                  <Popover overlayClassName="gx-popover-horizantal" placement="bottomRight"
-                           content={this.languageMenu()} trigger="click">
-              <span className="gx-pointer gx-flex-row gx-align-items-center"><i
-                className={`flag flag-24 flag-${locale.icon}`}/>
-              </span>
-                  </Popover>
-                </li>
+               
                 <li className="gx-user-nav"><UserInfo/></li>
               </ul>
             </div>
@@ -177,4 +155,4 @@ const mapStateToProps = ({settings}) => {
   const {locale, navCollapsed} = settings;
   return {locale, navCollapsed}
 };
-export default connect(mapStateToProps, {toggleCollapsedSideNav, switchLanguage})(HorizontalDefault);
+export default connect(mapStateToProps, {toggleCollapsedSideNav})(HorizontalDefault);
