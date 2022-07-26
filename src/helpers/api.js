@@ -97,3 +97,5 @@ instance.interceptors.response.use(
 );
 
 export default instance;
+
+export const BASE_API_PATH = "/api/v1/";
