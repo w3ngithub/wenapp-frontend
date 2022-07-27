@@ -10,7 +10,6 @@ import HorizontalNav from "../HorizontalNav";
 import { Link } from "react-router-dom";
 import { toggleCollapsedSideNav } from "appRedux/actions/Setting";
 import IntlMessages from "util/IntlMessages";
-import AttendanceDetail from "../../../components/AttendanceDetail";
 
 const { Header } = Layout;
 
