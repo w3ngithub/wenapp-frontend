@@ -1,5 +1,5 @@
 import React from "react";
-import Widget from "components/Widget";
+import Widget from "components/Elements/Widget";
 import { contactList } from "../../../../routes/socialApps/Profile/data";
 
 const Contact = () => {

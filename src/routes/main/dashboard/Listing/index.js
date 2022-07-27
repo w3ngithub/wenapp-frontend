@@ -13,7 +13,7 @@ import {
 import UserImages from "components/Modules/dashboard/Listing/UserImages";
 import RecentActivity from "components/Modules/dashboard/CRM/RecentActivity";
 import { recentActivity } from "../../../socialApps/Wall/data";
-import Widget from "components/Widget/index";
+import Widget from "components/Elements/Widget/index";
 import CurrentPlan from "components/Modules/dashboard/Listing/CurrentPlan";
 import DealsClosedCard from "components/Modules/dashboard/Listing/DealsClosedCard";
 import PropertiesCard from "components/Modules/dashboard/Listing/PropertiesCard";

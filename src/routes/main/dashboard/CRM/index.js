@@ -12,7 +12,7 @@ import Auxiliary from "util/Auxiliary";
 import TotalRevenueCard from "components/Modules/dashboard/CRM/TotalRevenueCard";
 import NewCustomers from "components/Modules/dashboard/CRM/NewCustomers";
 import GrowthCard from "components/Modules/dashboard/CRM/GrowthCard";
-import Widget from "components/Widget/index";
+import Widget from "components/Elements/Widget/index";
 import IconWithTextCard from "components/Modules/dashboard/CRM/IconWithTextCard";
 import { recentActivity, taskList, trafficData } from "./data";
 

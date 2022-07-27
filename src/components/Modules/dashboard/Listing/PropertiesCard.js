@@ -1,7 +1,7 @@
 import React from "react";
 import { Radio } from "antd";
 
-import Widget from "components/Widget/index";
+import Widget from "components/Elements/Widget/index";
 import {
 	albama,
 	colorado,
