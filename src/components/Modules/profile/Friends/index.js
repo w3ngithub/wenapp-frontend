@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge } from "antd";
-import Widget from "../../../Widget/index";
+import Widget from "components/Elements/Widget/index";
 
 function Status(props) {
 	const isType = props.isType;
