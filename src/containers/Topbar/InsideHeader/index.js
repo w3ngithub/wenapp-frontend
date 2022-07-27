@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import SearchBox from "components/SearchBox";
 import UserInfo from "components/UserInfo";
-import AppNotification from "components/AppNotification";
+import AppNotification from "components/Elements/AppNotification";
 import MailNotification from "components/MailNotification";
 import HorizontalNav from "../HorizontalNav";
 import { Link } from "react-router-dom";
