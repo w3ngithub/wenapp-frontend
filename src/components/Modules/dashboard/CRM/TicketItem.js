@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar } from "antd";
 
 import Aux from "util/Auxiliary";
-import { taskStatus } from "src/routes/main/dashboard/CRM/data";
+import { taskStatus } from "../../../../routes/main/dashboard/CRM/data";
 
 const getStatus = status => {
 	const statusData = taskStatus.filter(

@@ -6,7 +6,7 @@ import {
 	ResponsiveContainer,
 	Tooltip
 } from "recharts";
-import { siteVisit } from "src/routes/main/dashboard/CRM/data";
+import { siteVisit } from "../../../../routes/main/dashboard/CRM/data";
 
 const SiteVisit = () => (
 	<div className="gx-site-dash gx-pr-xl-5 gx-pt-3 gx-pt-xl-0 gx-pt-xl-2">

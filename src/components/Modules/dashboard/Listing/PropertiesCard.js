@@ -7,7 +7,7 @@ import {
 	colorado,
 	newJersy,
 	popularList
-} from "src/routes/main/dashboard/Listing/data";
+} from "../../../../routes/main/dashboard/Listing/data";
 import CircularProgress from "components/Elements/CircularProgress";
 import PropertiesItemCard from "./PropertiesItemCard";
 

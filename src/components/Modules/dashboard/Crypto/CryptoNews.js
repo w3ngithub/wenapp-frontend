@@ -7,7 +7,7 @@ import {
 	bitCoinNews,
 	lightCoinNews,
 	rippleNews
-} from "src/routes/main/dashboard/Crypto/data";
+} from "../../../../routes/main/dashboard/Crypto/data";
 import CircularProgress from "components/Elements/CircularProgress";
 import CryptoNewsItem from "./CryptoNewsItem";
 

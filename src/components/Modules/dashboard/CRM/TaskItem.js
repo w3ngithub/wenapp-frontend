@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar, Checkbox, Tag, Tooltip } from "antd";
 
 import Aux from "util/Auxiliary";
-import { taskTags } from "src/routes/main/dashboard/CRM/data";
+import { taskTags } from "../../../../routes/main/dashboard/CRM/data";
 
 const getTags = tags => {
 	return taskTags.map((tag, index) => {
