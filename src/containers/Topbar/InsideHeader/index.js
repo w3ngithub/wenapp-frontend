@@ -10,7 +10,6 @@ import HorizontalNav from "../HorizontalNav";
 import { Link } from "react-router-dom";
 import { toggleCollapsedSideNav } from "appRedux/actions/Setting";
 import IntlMessages from "util/IntlMessages";
-import AttendanceDetail from "../../../components/AttendanceDetail";
 
 const { Header } = Layout;
 
@@ -86,7 +85,6 @@ class InsideHeader extends Component {
 							<div className="gx-header-horizontal-nav gx-header-horizontal-nav-curve gx-d-none gx-d-lg-block">
 								<HorizontalNav />
 							</div>
-							<AttendanceDetail theme="light" />
 
 							<ul className="gx-header-notifications gx-ml-auto">
 								<li className="gx-notify gx-notify-search">

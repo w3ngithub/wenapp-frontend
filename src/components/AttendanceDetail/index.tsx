@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 
-function AttendanceDetail({ theme = "" }: { theme: string }) {
+function AttendanceDetail() {
 	return (
-		<div
-			className="gx-attendance"
-			
-		>
+		<div className="gx-attendance">
 			<div>
 				<p>CHECK IN</p>
 				<p>20:30:30</p>
