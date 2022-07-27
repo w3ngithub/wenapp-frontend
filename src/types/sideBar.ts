@@ -1,4 +1,5 @@
 export default interface sidebarItemsInterface {
+	icon: string;
 	name: string;
 	url: string;
 	isExpandable: boolean;

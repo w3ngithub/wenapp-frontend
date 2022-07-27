@@ -59,7 +59,7 @@ class SidebarContent extends Component {
 										className={this.getNavStyleSubMenuClass(navStyle)}
 										title={
 											<span>
-												<i className="icon icon-dasbhoard" />
+												<i className={`icon ${item.icon}`} />
 												<IntlMessages id={item.name} />
 											</span>
 										}
@@ -67,7 +67,7 @@ class SidebarContent extends Component {
 										{item.subItems.map(subItem => (
 											<Menu.Item key={subItem.url + item.id + subItem.id}>
 												<Link to={subItem.url}>
-													<i className="icon icon-dasbhoard" />
+													{/* <i className={`icon ${item.icon}`} /> */}
 													<IntlMessages id={subItem.name} />
 												</Link>
 											</Menu.Item>
@@ -76,7 +76,7 @@ class SidebarContent extends Component {
 								) : (
 									<Menu.Item key={item.url + item.id}>
 										<Link to={item.url}>
-											<i className="icon icon-dasbhoard" />
+											<i className={`icon ${item.icon}`} />
 											<IntlMessages id={item.name} />
 										</Link>
 									</Menu.Item>
