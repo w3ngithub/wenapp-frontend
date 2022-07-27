@@ -12,7 +12,7 @@ import ComposeMail from "components/mail/Compose/index";
 import AppModuleHeader from "components/Elements/AppModuleHeader/index";
 import MailDetail from "components/mail/MailDetail/index";
 import IntlMessages from "util/IntlMessages";
-import CircularProgress from "../../../components/CircularProgress/index";
+import CircularProgress from "components/Elements/CircularProgress/index";
 import Auxiliary from "../../../util/Auxiliary";
 
 class Mail extends PureComponent {

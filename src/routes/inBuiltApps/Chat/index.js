@@ -10,7 +10,7 @@ import users from "./data/chatUsers";
 import ContactList from "components/Modules/chat/ContactList/index";
 import IntlMessages from "util/IntlMessages";
 import SearchBox from "components/SearchBox";
-import CircularProgress from "components/CircularProgress/index";
+import CircularProgress from "components/Elements/CircularProgress/index";
 
 const TabPane = Tabs.TabPane;
 

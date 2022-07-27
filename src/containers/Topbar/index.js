@@ -16,7 +16,7 @@ import {
 	TAB_SIZE
 } from "constants/ThemeSetting";
 import { connect } from "react-redux";
-import AttendanceDetail from "../../components/AttendanceDetail";
+import AttendanceDetail from "../../components/Elements/AttendanceDetail";
 
 const { Header } = Layout;
 
