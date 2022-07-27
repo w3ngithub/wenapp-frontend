@@ -45,14 +45,6 @@ class SidebarContent extends Component {
 			<Auxiliary>
 				<SidebarLogo />
 				<div className="gx-sidebar-content">
-					<div
-						className={`gx-sidebar-notifications ${this.getNoHeaderClass(
-							navStyle
-						)}`}
-					>
-						<UserProfile />
-						<AppsNavigation />
-					</div>
 					<CustomScrollbars className="gx-layout-sider-scrollbar">
 						<Menu
 							defaultOpenKeys={[defaultOpenKeys]}

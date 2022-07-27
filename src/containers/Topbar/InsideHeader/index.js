@@ -86,7 +86,6 @@ class InsideHeader extends Component {
 							<div className="gx-header-horizontal-nav gx-header-horizontal-nav-curve gx-d-none gx-d-lg-block">
 								<HorizontalNav />
 							</div>
-							<AttendanceDetail theme="light" />
 
 							<ul className="gx-header-notifications gx-ml-auto">
 								<li className="gx-notify gx-notify-search">
