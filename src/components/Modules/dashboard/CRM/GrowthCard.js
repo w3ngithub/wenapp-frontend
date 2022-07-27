@@ -2,7 +2,7 @@ import React from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Col, Row } from "antd";
 
-import Metrics from "components/Metrics";
+import Metrics from "components/Modules/Metrics";
 
 const GrowthCard = ({ trafficData }) => {
 	return (

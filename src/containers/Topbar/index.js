@@ -5,7 +5,7 @@ import { toggleCollapsedSideNav } from "appRedux/actions/Setting";
 import SearchBox from "components/SearchBox";
 import UserInfo from "components/UserInfo";
 import AppNotification from "components/Elements/AppNotification";
-import MailNotification from "components/MailNotification";
+import MailNotification from "components/Modules/MailNotification";
 import Auxiliary from "util/Auxiliary";
 import { Layout, Menu, Popover, message } from "antd";
 

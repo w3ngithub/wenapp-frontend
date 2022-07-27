@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 import SearchBox from "components/SearchBox";
 import UserInfo from "components/UserInfo";
 import AppNotification from "components/Elements/AppNotification";
-import MailNotification from "components/MailNotification";
+import MailNotification from "components/Modules/MailNotification";
 import { toggleCollapsedSideNav } from "appRedux/actions/Setting";
 
 import { TAB_SIZE } from "constants/ThemeSetting";

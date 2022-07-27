@@ -1,6 +1,6 @@
 import React from "react";
 
-import Metrics from "components/Metrics";
+import Metrics from "components/Modules/Metrics";
 import { Avatar } from "antd";
 
 const userImageList = [
