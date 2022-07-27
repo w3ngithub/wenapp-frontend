@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Row } from "antd";
 
 import timeLineData from "../timeLineData";
-import WithIconTimeLineItem from "components/timeline/WithIconTimeLineItem";
+import WithIconTimeLineItem from "components/Modules/timeline/WithIconTimeLineItem";
 
 import ContainerHeader from "components/Elements/ContainerHeader/index";
 import IntlMessages from "util/IntlMessages";

@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Row } from "antd";
 
 import timeLineData from "../timeLineData";
-import DefaultTimeLineItem from "components/timeline/DefaultTimeLineItem";
+import DefaultTimeLineItem from "components/Modules/timeline/DefaultTimeLineItem";
 import ContainerHeader from "components/Elements/ContainerHeader/index";
 import IntlMessages from "util/IntlMessages";
 
