@@ -1,26 +1,24 @@
 import React from "react";
-import BigCalendar from "react-big-calendar";
+import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import events from "../events";
+import { events } from "../events";
 
-let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k]);
+const localizer = momentLocalizer(moment);
 
-BigCalendar.setLocalizer(
-  BigCalendar.momentLocalizer(moment)
-);
-const Basic = (props) => {
-  return (
-    <div className="gx-main-content">
-      <div className="gx-rbc-calendar">
-        <BigCalendar
-          {...props}
-          events={events}
-          views={allViews}
-          step={60}
-          defaultDate={new Date(2015, 3, 1)}/>
-      </div>
-    </div>
-  )
+const Basic = props => {
+	return (
+		<div className="gx-main-content">
+			<div className="gx-rbc-calendar">
+				<Calendar
+					{...props}
+					localizer={localizer}
+					events={events}
+					startAccessor="start"
+					endAccessor="end"
+				/>
+			</div>
+		</div>
+	);
 };
 
 export default Basic;
