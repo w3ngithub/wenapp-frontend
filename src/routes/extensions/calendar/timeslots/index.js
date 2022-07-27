@@ -1,27 +1,26 @@
-// import React from "react";
-// import BigCalendar from "react-big-calendar";
-// import moment from "moment";
+import React from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import { events } from "../events";
 
-// import events from "../events";
+const localizer = momentLocalizer(moment);
 
-// BigCalendar.setLocalizer(
-//   BigCalendar.momentLocalizer(moment)
-// );
-// const Timeslots = (props) => {
-//   return (
-//     <div className="gx-main-content">
-//       <div className="gx-rbc-calendar">
-//         <BigCalendar
-//           {...props}
-//           events={events}
-//           step={15}
-//           timeslots={8}
-//           defaultView='week'
-//           defaultDate={new Date(2015, 3, 12)}
-//         />
-//       </div>
-//     </div>
-//   )
-// };
+const Timeslots = props => {
+	return (
+		<div className="gx-main-content">
+			<div className="gx-rbc-calendar">
+				<Calendar
+					{...props}
+					events={events}
+					step={15}
+					timeslots={8}
+					defaultView="week"
+					defaultDate={new Date(2022, 6, 29)}
+					localizer={localizer}
+				/>
+			</div>
+		</div>
+	);
+};
 
-// export default Timeslots;
+export default Timeslots;

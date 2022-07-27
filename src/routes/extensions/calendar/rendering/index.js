@@ -1,49 +1,49 @@
-// import React from "react";
-// import BigCalendar from "react-big-calendar";
-// import moment from "moment";
+import React from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar";
 
-// import events from "../events";
+import moment from "moment";
 
-// BigCalendar.setLocalizer(
-//   BigCalendar.momentLocalizer(moment)
-// );
+import { events } from "../events";
 
-// function Event({event}) {
-//   return (
-//     <span>
-//       <strong>
-//       {event.title}
-//       </strong>
-//       {event.desc && (':  ' + event.desc)}
-//     </span>
-//   )
-// }
+const localizer = momentLocalizer(moment);
 
-// function EventAgenda({event}) {
-//   return <span>
-//     <em style={{color: 'magenta'}}>{event.title}</em>
-//     <p>{event.desc}</p>
-//   </span>
-// }
+function Event({ event }) {
+	return (
+		<span>
+			<strong>{event.title}</strong>
+			{event.desc && ":  " + event.desc}
+		</span>
+	);
+}
 
-// const Rendering = () => {
-//   return (
-//     <div className="gx-main-content">
-//       <div className="gx-rbc-calendar">
-//         <BigCalendar
-//           events={events}
-//           defaultDate={new Date(2015, 3, 1)}
-//           defaultView='agenda'
-//           components={{
-//             event: Event,
-//             agenda: {
-//               event: EventAgenda
-//             }
-//           }}
-//         />
-//       </div>
-//     </div>
-//   )
-// };
+function EventAgenda({ event }) {
+	return (
+		<span>
+			<em style={{ color: "magenta" }}>{event.title}</em>
+			<p>{event.desc}</p>
+		</span>
+	);
+}
 
-// export default Rendering;
+const Rendering = () => {
+	return (
+		<div className="gx-main-content">
+			<div className="gx-rbc-calendar">
+				<Calendar
+					localizer={localizer}
+					events={events}
+					defaultDate={new Date(2022, 6, 29)}
+					defaultView="agenda"
+					components={{
+						event: Event,
+						agenda: {
+							event: EventAgenda
+						}
+					}}
+				/>
+			</div>
+		</div>
+	);
+};
+
+export default Rendering;
