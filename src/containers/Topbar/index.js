@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { toggleCollapsedSideNav } from "appRedux/actions/Setting";
 import SearchBox from "components/Elements/SearchBox";
-import UserInfo from "components/UserInfo";
+import UserInfo from "components/Elements/UserInfo";
 import AppNotification from "components/Elements/AppNotification";
 import MailNotification from "components/Modules/MailNotification";
 import Auxiliary from "util/Auxiliary";

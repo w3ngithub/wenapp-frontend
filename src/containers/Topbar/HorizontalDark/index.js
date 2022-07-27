@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { connect } from "react-redux";
 import SearchBox from "components/Elements/SearchBox";
-import UserInfo from "components/UserInfo";
+import UserInfo from "components/Elements/UserInfo";
 import AppNotification from "components/Elements/AppNotification";
 import MailNotification from "components/Modules/MailNotification";
 import { Link } from "react-router-dom";
