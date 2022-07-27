@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Col, Row } from "antd";
 
-import Profile from "components/wall/Profile/index";
-import PostList from "components/wall/PostList/index";
-import Interests from "components/wall/Interests/index";
-import Photos from "components/wall/Photos/index";
-import Friends from "components/wall/Friends/index";
+import Profile from "components/Modules/wall/Profile/index";
+import PostList from "components/Modules/wall/PostList/index";
+import Interests from "components/Modules/wall/Interests/index";
+import Photos from "components/Modules/wall/Photos/index";
+import Friends from "components/Modules/wall/Friends/index";
 import CustomScrollbars from "util/CustomScrollbars";
 import RecentActivity from "components/Modules/dashboard/CRM/RecentActivity";
 import {
@@ -18,7 +18,7 @@ import {
 	user,
 	userInfo
 } from "./data";
-import Communities from "../../../components/wall/Communities/index";
+import Communities from "../../../components/Modules/wall/Communities/index";
 
 class Wall extends Component {
 	render() {
