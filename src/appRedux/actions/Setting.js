@@ -26,9 +26,4 @@ export function onLayoutTypeChange(layoutType) {
   return {type: LAYOUT_TYPE, layoutType};
 }
 
-export function switchLanguage(locale) {
-  return {
-    type: SWITCH_LANGUAGE,
-    payload: locale
-  };
-}
+

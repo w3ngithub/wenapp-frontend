@@ -2,13 +2,13 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import {Menu} from "antd";
 import {Link} from "react-router-dom";
-import IntlMessages from "../../util/IntlMessages";
+import IntlMessages from "util/IntlMessages";
 import {
   NAV_STYLE_ABOVE_HEADER,
   NAV_STYLE_BELOW_HEADER,
   NAV_STYLE_DEFAULT_HORIZONTAL,
   NAV_STYLE_INSIDE_HEADER_HORIZONTAL
-} from "../../constants/ThemeSetting";
+} from "constants/ThemeSetting";
 
 
 const SubMenu = Menu.SubMenu;

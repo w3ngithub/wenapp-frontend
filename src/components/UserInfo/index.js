@@ -8,8 +8,8 @@ class UserInfo extends Component {
   render() {
     const userMenuOptions = (
       <ul className="gx-user-popover">
-        <li>My Account</li>
-        <li>Connections</li>
+        <li>Profile</li>
+        <li>Change Password</li>
         <li onClick={() => this.props.userSignOut()}>Logout
         </li>
       </ul>

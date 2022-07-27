@@ -5,11 +5,7 @@ import {Button, Card, Checkbox, Form, Icon, Input, message} from "antd";
 import {
   hideMessage,
   showAuthLoader,
-  userFacebookSignIn,
-  userGithubSignIn,
-  userGoogleSignIn,
   userSignIn,
-  userTwitterSignIn
 } from "appRedux/actions/Auth";
 import "./horizontalLoginForm.less";
 import CircularProgress from "components/CircularProgress/index";
@@ -98,8 +94,4 @@ export default connect(mapStateToProps, {
   userSignIn,
   hideMessage,
   showAuthLoader,
-  userFacebookSignIn,
-  userGoogleSignIn,
-  userGithubSignIn,
-  userTwitterSignIn
-})(WrappedNormalLoginForm);
+  })(WrappedNormalLoginForm);

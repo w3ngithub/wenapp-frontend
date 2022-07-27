@@ -1,18 +1,12 @@
 import React from "react";
-import {Button, Checkbox, Form, Icon, Input} from "antd";
+import {Button, Checkbox, Form,  Input} from "antd";
 import {Link} from "react-router-dom";
-
 import {connect} from "react-redux";
 import {
   hideMessage,
   showAuthLoader,
-  userFacebookSignIn,
-  userGithubSignIn,
-  userGoogleSignIn,
   userSignUp,
-  userTwitterSignIn
 } from "appRedux/actions/Auth";
-
 import IntlMessages from "util/IntlMessages";
 import {message} from "antd/lib/index";
 import CircularProgress from "components/CircularProgress/index";
@@ -114,35 +108,7 @@ class SignUp extends React.Component {
                   <span><IntlMessages id="app.userAuth.or"/></span> <Link to="/signin"><IntlMessages
                   id="app.userAuth.signIn"/></Link>
                 </FormItem>
-                <div className="gx-flex-row gx-justify-content-between">
-                  <span>or connect with</span>
-                  <ul className="gx-social-link">
-                    <li>
-                      <Icon type="google" onClick={() => {
-                        this.props.showAuthLoader();
-                        this.props.userGoogleSignIn();
-                      }}/>
-                    </li>
-                    <li>
-                      <Icon type="facebook" onClick={() => {
-                        this.props.showAuthLoader();
-                        this.props.userFacebookSignIn();
-                      }}/>
-                    </li>
-                    <li>
-                      <Icon type="github" onClick={() => {
-                        this.props.showAuthLoader();
-                        this.props.userGithubSignIn();
-                      }}/>
-                    </li>
-                    <li>
-                      <Icon type="twitter" onClick={() => {
-                        this.props.showAuthLoader();
-                        this.props.userTwitterSignIn();
-                      }}/>
-                    </li>
-                  </ul>
-                </div>
+               
               </Form>
             </div>
             {loader &&
@@ -172,8 +138,4 @@ export default connect(mapStateToProps, {
   userSignUp,
   hideMessage,
   showAuthLoader,
-  userFacebookSignIn,
-  userGoogleSignIn,
-  userGithubSignIn,
-  userTwitterSignIn
-})(WrappedSignUpForm);
+ })(WrappedSignUpForm);

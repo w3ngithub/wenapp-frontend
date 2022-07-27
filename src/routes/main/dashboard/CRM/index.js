@@ -1,6 +1,5 @@
 import React from "react";
 import {Col, Row} from "antd";
-
 import TaskList from "components/dashboard/CRM/TaskList";
 import SiteVisit from "components/dashboard/CRM/SiteVisit";
 import RecentActivity from "components/dashboard/CRM/RecentActivity";
@@ -14,7 +13,6 @@ import TotalRevenueCard from "components/dashboard/CRM/TotalRevenueCard";
 import NewCustomers from "components/dashboard/CRM/NewCustomers";
 import GrowthCard from "components/dashboard/CRM/GrowthCard";
 import Widget from "components/Widget/index";
-import CurrencyCalculator from "components/dashboard/Crypto/CurrencyCalculator";
 import IconWithTextCard from "components/dashboard/CRM/IconWithTextCard";
 import {recentActivity, taskList, trafficData} from "./data";
 
@@ -55,7 +53,6 @@ const CRM = () => {
           <Widget>
             <RecentActivity recentList={recentActivity} shape="circle"/>
           </Widget>
-          <CurrencyCalculator/>
         </Col>
 
         <Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-sm-1">
