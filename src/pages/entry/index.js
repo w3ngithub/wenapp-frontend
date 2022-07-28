@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import URLSearchParams from "url-search-params";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { LocaleProvider } from "antd";
 import { IntlProvider } from "react-intl";
 
@@ -26,24 +26,24 @@ import {
 	NAV_STYLE_DEFAULT_HORIZONTAL,
 	NAV_STYLE_INSIDE_HEADER_HORIZONTAL
 } from "../../constants/ThemeSetting";
+import Listing from "../../routes/main/dashboard/Listing/index";
 
-const RestrictedRoute = ({ component: Component, authUser, ...rest }) => (
-	<Route
-		{...rest}
-		render={props =>
-			true ? (
-				<Component {...props} />
-			) : (
-				<Redirect
-					to={{
-						pathname: "/signin",
-						state: { from: props.location }
-					}}
-				/>
-			)
-		}
-	/>
-);
+const RestrictedRoute = ({
+	component: Component,
+	authUser = true,
+	children,
+	...rest
+}) => {
+	let location = useLocation();
+	console.log("protected");
+	if (!authUser) {
+		return <Navigate to="/signin" state={{ from: location }} replace />;
+	}
+
+	if (authUser) return <Navigate to="/dashboard" />;
+
+	return children;
+};
 
 class App extends Component {
 	setLayoutType = layoutType => {
@@ -80,19 +80,23 @@ class App extends Component {
 
 	componentWillMount() {
 		if (this.props.initURL === "") {
-			this.props.setInitUrl(this.props.history.location.pathname);
+			// this.props.setInitUrl(this.props.history.location.pathname);
+			this.props.setInitUrl("/");
 		}
-		const params = new URLSearchParams(this.props.location.search);
+		// const params = new URLSearchParams(this.props.location.search);
 
-		if (params.has("theme")) {
-			this.props.setThemeType(params.get("theme"));
-		}
-		if (params.has("nav-style")) {
-			this.props.onNavStyleChange(params.get("nav-style"));
-		}
-		if (params.has("layout-type")) {
-			this.props.onLayoutTypeChange(params.get("layout-type"));
-		}
+		this.props.setThemeType("");
+		this.props.onNavStyleChange("");
+		this.props.onLayoutTypeChange("");
+		// if (params.has("theme")) {
+		// 	// this.props.setThemeType(params.get("theme"));
+		// }
+		// if (params.has("nav-style")) {
+		// 	// this.props.onNavStyleChange(params.get("nav-style"));
+		// }
+		// if (params.has("layout-type")) {
+		// 	// this.props.onLayoutTypeChange(params.get("layout-type"));
+		// }
 	}
 
 	render() {
@@ -105,38 +109,48 @@ class App extends Component {
 			authUser,
 			initURL
 		} = this.props;
+		// if (location.pathname === "/") {
+		// 	// if (authUser === null) {
+		// 	// 	return <Redirect to={"/signin"} />;
+		// 	// } else if (initURL === "" || initURL === "/" || initURL === "/signin") {
+		// 	// 	return <Redirect to={"/main/dashboard/listing"} />;
+		// 	// } else {
+		// 	// 	return <Redirect to={initURL} />;
+		// 	// }
 
-		if (location.pathname === "/") {
-			// if (authUser === null) {
-			// 	return <Redirect to={"/signin"} />;
-			// } else if (initURL === "" || initURL === "/" || initURL === "/signin") {
-			// 	return <Redirect to={"/main/dashboard/listing"} />;
-			// } else {
-			// 	return <Redirect to={initURL} />;
-			// }
-
-			return <Redirect to={"/main/dashboard/listing"} />;
-		}
+		// 	return <Navigate to={"/main/dashboard/listing"} />;
+		// }
 		this.setLayoutType(layoutType);
 
 		this.setNavStyle(navStyle);
 
 		const currentAppLocale = AppLocale[locale.locale];
+
 		return (
 			<LocaleProvider locale={currentAppLocale.antd}>
 				<IntlProvider
 					locale={currentAppLocale.locale}
 					messages={currentAppLocale.messages}
 				>
-					<Switch>
-						<Route exact path="/signin" component={SignIn} />
-						<Route exact path="/signup" component={SignUp} />
-						<RestrictedRoute
-							path={`${match.url}`}
+					<Routes>
+						<Route path="/signin" element={<SignIn />} />
+						<Route path="/signup" element={<SignUp />} />
+						<Route
+							path="/"
+							element={
+								// <RestrictedRoute>
+								<MainApp />
+								// </RestrictedRoute>
+							}
+						>
+							<Route path="dashboard" element={<Listing />} />
+						</Route>
+						{/* <RestrictedRoute
+							path="/"
 							authUser={authUser}
-							component={MainApp}
-						/>
-					</Switch>
+							component={<MainApp />}
+						/> */}
+					</Routes>
 				</IntlProvider>
 			</LocaleProvider>
 		);
