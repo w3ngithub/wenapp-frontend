@@ -1,10 +1,21 @@
+import {
+	ATTENDANCE,
+	BLOG,
+	COWORKERS,
+	DASHBOARD,
+	LEAVE,
+	LOGTIME,
+	NOTICEBOARD,
+	PROJECTS,
+	SETTINGS
+} from "../helpers/routePath";
 import sidebarItemsInterface from "../types/sideBar";
 
 export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 	{
 		icon: "icon-dasbhoard",
 		name: "sidebar.dashboard",
-		url: "/main/dashboard/listing",
+		url: DASHBOARD,
 		isExpandable: false,
 		id: 1
 	},
@@ -12,7 +23,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		icon: "icon-contacts",
 
 		name: "sidebar.coworkers",
-		url: "/main/dashboard/crypto",
+		url: COWORKERS,
 		isExpandable: false,
 		id: 2
 	},
@@ -20,7 +31,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		icon: "icon-folder-o",
 
 		name: "sidebar.projects",
-		url: "/main/dashboard/crypto",
+		url: PROJECTS,
 		isExpandable: false,
 		id: 3
 	},
@@ -28,28 +39,28 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		icon: "icon-select",
 
 		name: "sidebar.attendance",
-		url: "/main/dashboard/crypto",
+		url: ATTENDANCE,
 		isExpandable: false,
 		id: 4
 	},
 	{
 		icon: "icon-ckeditor",
 		name: "sidebar.logtime",
-		url: "/main/dashboard/crypto",
+		url: LOGTIME,
 		isExpandable: false,
 		id: 5
 	},
 	{
 		icon: "icon-hotel-booking",
 		name: "sidebar.leavemanagement",
-		url: "/main/dashboard/crypto",
+		url: LEAVE,
 		isExpandable: false,
 		id: 6
 	},
 	{
 		icon: "icon-calendar-new",
 		name: "sidebar.noticeboard",
-		url: "/main/dashboard/crypto",
+		url: NOTICEBOARD,
 		isExpandable: false,
 		id: 7
 	},
@@ -57,7 +68,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		icon: "icon-chat-new",
 
 		name: "sidebar.blog",
-		url: "/main/dashboard/crypto",
+		url: BLOG,
 		isExpandable: false,
 		id: 8
 	},
@@ -114,7 +125,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 	{
 		icon: "icon-setting",
 		name: "sidebar.settings",
-		url: "/main/dashboard/crypto",
+		url: SETTINGS,
 		isExpandable: false,
 		id: 11
 	}

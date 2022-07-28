@@ -74,8 +74,8 @@ class SidebarContent extends Component {
 										))}
 									</SubMenu>
 								) : (
-									<Menu.Item key={item.url + item.id}>
-										<Link to={item.url}>
+									<Menu.Item key={item.url}>
+										<Link to={`/${item.url}`}>
 											<i className={`icon ${item.icon}`} />
 											<IntlMessages id={item.name} />
 										</Link>
