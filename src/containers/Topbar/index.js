@@ -16,7 +16,8 @@ import {
 	TAB_SIZE
 } from "constants/ThemeSetting";
 import { connect } from "react-redux";
-import AttendanceDetail from "../../components/Elements/AttendanceDetail";
+import AttendanceDetail from "components/Elements/AttendanceDetail";
+import PunchInOut from "components/Elements/PunchInOut";
 
 const { Header } = Layout;
 
@@ -52,6 +53,10 @@ class Topbar extends Component {
 					<Link to="/" className="gx-d-block gx-d-lg-none gx-pointer">
 						<img alt="" src={require("assets/images/logo.png")} />
 					</Link>
+
+					<div className="gx-header-notifications gx-mt-auto">
+						<PunchInOut />
+					</div>
 
 					<ul className="gx-header-notifications gx-ml-auto">
 						<li className="gx-notify">
