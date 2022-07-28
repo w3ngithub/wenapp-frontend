@@ -5,7 +5,7 @@ import LiveTime from "./../LiveTime/index";
 function index() {
 	const [punch, setPunch] = useState<string>("Punch In  ");
 
-	const handlePunch = () => {
+	const handlePunch = (): void => {
 		setPunch(prev =>
 			prev === "Punch In  " ? "Punch Out " : "Office Hour 9Hr"
 		);
