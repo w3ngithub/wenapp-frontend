@@ -50,7 +50,7 @@ class Topbar extends Component {
 						</div>
 					) : null}
 					<Link to="/" className="gx-d-block gx-d-lg-none gx-pointer">
-						<img alt="" src={require("assets/images/w-logo.png")} />
+						<img alt="" src={require("assets/images/logo.png")} />
 					</Link>
 
 					<ul className="gx-header-notifications gx-ml-auto">
