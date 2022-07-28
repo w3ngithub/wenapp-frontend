@@ -6,9 +6,8 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 import "assets/vendors/style";
 import "styles/wieldy.less";
-import configureStore, { history } from "./appRedux/store";
-import Main from "./pages/entry";
-import Trial from "./pages/Trial";
+import configureStore from "./appRedux/store";
+import Main from "./pages/Main";
 
 export const store = configureStore();
 const queryClient = new QueryClient();
@@ -17,13 +16,11 @@ const App = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Provider store={store}>
-				<ConnectedRouter history={history}>
-					<BrowserRouter>
-						<Routes>
-							<Route path="/*" element={<Main />} />
-						</Routes>
-					</BrowserRouter>
-				</ConnectedRouter>
+				<BrowserRouter>
+					<Routes>
+						<Route path="/*" element={<Main />} />
+					</Routes>
+				</BrowserRouter>
 			</Provider>
 		</QueryClientProvider>
 	);

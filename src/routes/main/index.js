@@ -12,8 +12,8 @@ const Main = ({ match }) => (
 			path="dashboard"
 			element={asyncComponent(() => import("./dashboard/Listing/index"))}
 		/>
-		{/* <Route path={`${match.url}/widgets`} element={<Widgets />} />
-		<Route path={`${match.url}/metrics`} element={<Metrics />} />
+		{/* <Route path={`${match.url}/widgets`} element={<Widgets />} /> */}
+		{/* <Route path={`${match.url}/metrics`} element={<Metrics />} />
 		<Route path={`${match.url}/layouts`} element={<Layouts />} /> */}
 		{/* <Route
 			path={`${match.url}/algolia`}

@@ -10,7 +10,6 @@ import BelowHeader from "containers/Topbar/BelowHeader/index";
 
 import Topbar from "containers/Topbar/index";
 import { footerText } from "util/config";
-import App from "routes/index";
 import Customizer from "containers/Customizer";
 import { connect } from "react-redux";
 import {
@@ -96,8 +95,7 @@ export class MainApp extends Component {
 	};
 
 	render() {
-		const { match, width, navStyle } = this.props;
-		console.log("mainapp");
+		const { width, navStyle } = this.props;
 		return (
 			<Layout className="gx-app-layout">
 				{this.getSidebar(navStyle, width)}
@@ -106,8 +104,9 @@ export class MainApp extends Component {
 					<Content
 						className={`gx-layout-content ${this.getContainerClass(navStyle)} `}
 					>
-						{/* <App match={match} /> */}
-						<Outlet />
+						<div className="gx-main-content-wrapper">
+							<Outlet />
+						</div>
 						<Footer>
 							<div className="gx-layout-footer-content">{footerText}</div>
 						</Footer>
