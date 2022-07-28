@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 
 function LiveTime() {
-	const [time, setTime] = useState<string | null>(null);
+	const [time, setTime] = useState<string>(moment().format("h:mm:ss A"));
 
 	useEffect(() => {
 		const realTIme = setInterval(() => {
