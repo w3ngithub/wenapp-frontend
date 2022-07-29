@@ -38,7 +38,7 @@ import Settings from "pages/Settings";
 import Attendace from "pages/Attendance";
 import Dashboard from "pages/Dashboard";
 
-function App(props: any) {
+function App(props: any): any {
 	// const {
 	// 	match,
 	// 	location,
@@ -64,7 +64,6 @@ function App(props: any) {
 
 		return <Navigate to={DASHBOARD} />;
 	}
-
 	return (
 		<LocaleProvider locale={currentAppLocale.antd}>
 			<IntlProvider
