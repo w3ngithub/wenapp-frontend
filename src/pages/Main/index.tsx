@@ -59,7 +59,7 @@ function App(props: any) {
 					<Route path={SIGNIN} element={<SignIn />} />
 					<Route path={SIGNUP} element={<SignUp />} />
 
-					<Route element={<ProtectedRoute />}>
+					<Route element={<ProtectedRoute auth={"4u45hhj"} />}>
 						<Route element={<MainApp />}>
 							<Route path={DASHBOARD} element={<Listing />} />
 							<Route path={COWORKERS} element={<Coworkers />} />

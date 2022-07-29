@@ -7,7 +7,9 @@ import {
 	userSignOutSuccess,
 	userSignUpSuccess
 } from "../../appRedux/actions/Auth";
-import { loginInUser } from "services/users/userDetails";
+import API from "helpers/api";
+import { Apis } from "services/api";
+// import users from "services/users/userDetails";
 
 // const createUserWithEmailPasswordRequest = async (email, password) =>
 //   await  auth.createUserWithEmailAndPassword(email, password)
@@ -15,7 +17,7 @@ import { loginInUser } from "services/users/userDetails";
 //     .catch(error => error);
 
 const signInUserWithEmailPasswordRequest = async (email, password) =>
-	await loginInUser(email, password)
+	await API.post(`${Apis.Users}/login`, { email, password })
 		.then(authUser => authUser)
 		.catch(error => error);
 
@@ -41,7 +43,6 @@ const signInUserWithEmailPasswordRequest = async (email, password) =>
 
 function* signInUserWithEmailPassword({ payload }) {
 	const { email, password } = payload;
-	console.log("payload", payload);
 	try {
 		const signInUser = yield call(
 			signInUserWithEmailPasswordRequest,
@@ -51,8 +52,8 @@ function* signInUserWithEmailPassword({ payload }) {
 		if (signInUser.message) {
 			yield put(showAuthMessage(signInUser.message));
 		} else {
-			localStorage.setItem("user_id", signInUser.user.uid);
-			yield put(userSignInSuccess(signInUser.user.uid));
+			localStorage.setItem("user_id", signInUser.user);
+			yield put(userSignInSuccess(signInUser.user));
 		}
 	} catch (error) {
 		yield put(showAuthMessage(error));

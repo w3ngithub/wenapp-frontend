@@ -1,4 +1,4 @@
-export const getAPIResponse = response => {
+const getAPIResponse = response => {
 	const status = response?.status === 200 || response?.status === 201;
 
 	return {
@@ -7,3 +7,5 @@ export const getAPIResponse = response => {
 		data: response?.data
 	};
 };
+
+export { export };

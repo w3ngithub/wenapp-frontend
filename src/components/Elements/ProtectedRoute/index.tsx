@@ -4,16 +4,18 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 interface protectedRouteInterface {
 	component?: React.ReactNode;
 	rest?: any;
+	auth: any;
 	children?: React.ReactNode;
 }
 
 export const ProtectedRoute = ({
 	component: Component,
 	children,
+	auth,
 	...rest
 }: protectedRouteInterface) => {
 	let location = useLocation();
-	const authUser = true;
+	const authUser = auth;
 	if (!authUser) {
 		return <Navigate to="/signin" state={{ from: location }} replace />;
 	}

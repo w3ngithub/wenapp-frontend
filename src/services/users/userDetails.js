@@ -3,7 +3,7 @@ import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
 // login user api
-const loginInUser = async loginDetail => {
+const loginInUsers = async loginDetail => {
 	try {
 		let response = await API.post(`${Apis.Users}/login`, loginDetail);
 		return getAPIResponse(response);
@@ -12,4 +12,4 @@ const loginInUser = async loginDetail => {
 	}
 };
 
-export { loginInUser };
+export default { loginInUsers };
