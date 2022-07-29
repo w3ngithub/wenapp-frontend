@@ -41,7 +41,10 @@ class SignIn extends React.Component {
 					<div className="gx-app-login-main-content">
 						<div className="gx-app-logo-content">
 							<div className="gx-app-logo-content-bg">
-								<img src="https://via.placeholder.com/272x395" alt="Neature" />
+								<img
+									src="https://images.unsplash.com/photo-1658989236602-8f6a443a904d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80"
+									alt="Neature"
+								/>
 							</div>
 							<div className="gx-app-logo-wid">
 								<h1>
@@ -55,7 +58,7 @@ class SignIn extends React.Component {
 								</p>
 							</div>
 							<div className="gx-app-logo">
-								<img alt="example" src={require("assets/images/logo.png")} />
+								<img alt="example" src={require("assets/images/wenlogo.png")} />
 							</div>
 						</div>
 						<div className="gx-app-login-content">
