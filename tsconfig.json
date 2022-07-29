@@ -1,17 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "es6",
-		"baseUrl": "src",
-		"paths": {
-			"components/*": ["components/*"],
-			"styles/*": ["styles/*"],
-			"scss/*": ["styles/scss/*"],
-			"pages/*": ["pages/*"],
-			"assets/*": ["assets/*"],
-			"helpers/*": ["helpers/*"],
-			"services/*": ["services/*"],
-			"types/*": ["types/*"]
-		},
+		"target": "es2022",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
 		"skipLibCheck": true,
@@ -26,5 +15,6 @@
 		"noEmit": true,
 		"jsx": "preserve"
 	},
-	"include": ["src"]
+	"include": ["src"],
+	"extends": "./jsconfig.json"
 }
