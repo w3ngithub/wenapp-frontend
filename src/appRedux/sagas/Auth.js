@@ -9,7 +9,7 @@ import {
 } from "../../appRedux/actions/Auth";
 import API from "helpers/api";
 import { Apis } from "services/api";
-// import users from "services/users/userDetails";
+import { loginInUsers } from "services/users/userDetails";
 
 // const createUserWithEmailPasswordRequest = async (email, password) =>
 //   await  auth.createUserWithEmailAndPassword(email, password)
@@ -17,7 +17,7 @@ import { Apis } from "services/api";
 //     .catch(error => error);
 
 const signInUserWithEmailPasswordRequest = async (email, password) =>
-	await API.post(`${Apis.Users}/login`, { email, password })
+	await loginInUsers({ email, password })
 		.then(authUser => authUser)
 		.catch(error => error);
 
@@ -49,8 +49,9 @@ function* signInUserWithEmailPassword({ payload }) {
 			email,
 			password
 		);
-		if (signInUser.message) {
-			yield put(showAuthMessage(signInUser.message));
+
+		if (!signInUser.status) {
+			yield put(showAuthMessage(signInUser.data.message));
 		} else {
 			localStorage.setItem("user_id", signInUser.user);
 			yield put(userSignInSuccess(signInUser.user));

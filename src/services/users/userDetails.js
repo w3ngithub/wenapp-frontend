@@ -8,8 +8,17 @@ const loginInUsers = async loginDetail => {
 		let response = await API.post(`${Apis.Users}/login`, loginDetail);
 		return getAPIResponse(response);
 	} catch (err) {
-		return getAPIResponse(err?.response);
+		return getAPIResponse(err.response);
 	}
 };
 
-export default { loginInUsers };
+const getAllUsers = async () => {
+	try {
+		let response = await API.get(`${Apis.Users}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export { loginInUsers, getAllUsers };

@@ -16,7 +16,7 @@ export const ProtectedRoute = ({
 }: protectedRouteInterface) => {
 	let location = useLocation();
 	const authUser = auth;
-	if (!authUser) {
+	if (!authUser || authUser === null || authUser === undefined) {
 		return <Navigate to="/signin" state={{ from: location }} replace />;
 	}
 
