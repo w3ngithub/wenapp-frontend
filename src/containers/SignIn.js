@@ -66,9 +66,8 @@ class SignIn extends React.Component {
 								onSubmit={this.handleSubmit}
 								className="gx-signin-form gx-form-row0"
 							>
-								<FormItem>
+								<FormItem label="Email">
 									{getFieldDecorator("email", {
-										initialValue: "demo@example.com",
 										rules: [
 											{
 												required: true,
@@ -78,9 +77,8 @@ class SignIn extends React.Component {
 										]
 									})(<Input placeholder="Email" />)}
 								</FormItem>
-								<FormItem>
+								<FormItem label="Password">
 									{getFieldDecorator("password", {
-										initialValue: "demo#123",
 										rules: [
 											{ required: true, message: "Please input your Password!" }
 										]
@@ -89,31 +87,22 @@ class SignIn extends React.Component {
 								<FormItem>
 									{getFieldDecorator("remember", {
 										valuePropName: "checked",
-										initialValue: true
+										initialValue: false
 									})(
 										<Checkbox>
 											<IntlMessages id="appModule.iAccept" />
 										</Checkbox>
 									)}
-									<span className="gx-signup-form-forgot gx-link">
-										<IntlMessages id="appModule.termAndCondition" />
-									</span>
 								</FormItem>
 								<FormItem>
 									<Button type="primary" className="gx-mb-0" htmlType="submit">
 										<IntlMessages id="app.userAuth.signIn" />
 									</Button>
-									<span>
-										<IntlMessages id="app.userAuth.or" />
-									</span>{" "}
-									<Link to="/signup">
-										<IntlMessages id="app.userAuth.signUp" />
-									</Link>
 								</FormItem>
 
 								<span className="gx-text-light gx-fs-sm">
 									{" "}
-									demo user email: 'demo@example.com' and password: 'demo#123'
+									@webexpertsnepal
 								</span>
 							</Form>
 						</div>
