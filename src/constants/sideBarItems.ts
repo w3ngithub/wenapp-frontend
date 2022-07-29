@@ -93,7 +93,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 			},
 			{
 				name: "sidebar.reports.leavereport",
-				url: "leave",
+				url: "leavereport",
 				id: 3
 			}
 		]

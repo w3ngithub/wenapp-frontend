@@ -10,7 +10,6 @@ import MainApp from "./MainApp";
 import SignIn from "containers/SignIn";
 import SignUp from "containers/SignUp";
 
-import Listing from "routes/main/dashboard/Listing/index";
 import {
 	ATTENDANCE,
 	BLOG,
@@ -37,6 +36,7 @@ import Reports from "pages/Reports";
 import Resources from "pages/Resources";
 import Settings from "pages/Settings";
 import Attendace from "pages/Attendance";
+import Dashboard from "pages/Dashboard";
 
 function App(props: any) {
 	// const {
@@ -77,7 +77,7 @@ function App(props: any) {
 
 					<Route element={<ProtectedRoute />}>
 						<Route element={<MainApp />}>
-							<Route path={DASHBOARD} element={<Listing />} />
+							<Route path={DASHBOARD} element={<Dashboard />} />
 							<Route path={COWORKERS} element={<Coworkers />} />
 							<Route path={PROJECTS} element={<Projects />} />
 							<Route path={ATTENDANCE} element={<Attendace />} />
