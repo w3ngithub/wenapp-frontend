@@ -1,19 +1,25 @@
 import React from "react";
-import {Route, Switch} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Widgets from "./Widgets";
 import Metrics from "./Metrics";
 import Dashboard from "./dashboard";
 import Layouts from "./Layouts";
 import asyncComponent from "../../util/asyncComponent";
 
-const Main = ({match}) => (
-  <Switch>
-    <Route path={`${match.url}/dashboard`} component={Dashboard}/>
-    <Route path={`${match.url}/widgets`} component={Widgets}/>
-    <Route path={`${match.url}/metrics`} component={Metrics}/>
-    <Route path={`${match.url}/layouts`} component={Layouts}/>
-    <Route path={`${match.url}/algolia`} component={asyncComponent(() => import('../algolia'))}/>
-  </Switch>
+const Main = ({ match }) => (
+	<Routes>
+		<Route
+			path="dashboard"
+			element={asyncComponent(() => import("./dashboard/Listing/index"))}
+		/>
+		{/* <Route path={`${match.url}/widgets`} element={<Widgets />} /> */}
+		{/* <Route path={`${match.url}/metrics`} element={<Metrics />} />
+		<Route path={`${match.url}/layouts`} element={<Layouts />} /> */}
+		{/* <Route
+			path={`${match.url}/algolia`}
+			element={asyncComponent(() => import("../algolia"))}
+		/> */}
+	</Routes>
 );
 
 export default Main;
