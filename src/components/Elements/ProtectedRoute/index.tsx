@@ -1,6 +1,5 @@
 import React from "react";
-import { Navigate, NavigateProps, Outlet, useLocation } from "react-router-dom";
-import { DASHBOARD } from "../../../helpers/routePath";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 interface protectedRouteInterface {
 	component?: React.ReactNode;
