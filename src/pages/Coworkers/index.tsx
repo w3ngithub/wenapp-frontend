@@ -1,4 +1,3 @@
-import UserForm from "components/Modules/UserAdminForm";
 import UserDetailForm from "components/Modules/UserDetailModal";
 import React from "react";
 
