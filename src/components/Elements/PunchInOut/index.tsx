@@ -7,12 +7,16 @@ function index() {
 
 	const handlePunch = (): void => {
 		setPunch(prev =>
-			prev === "Punch In  " ? "Punch Out " : "Office Hour 9Hr"
+			prev === "Punch In     " ? "Punch Out    " : "Office Hour 9Hr"
 		);
 	};
 	return (
 		<>
-			<Button onClick={handlePunch} className="gx-btn-cyan" icon="schedule">
+			<Button
+				onClick={handlePunch}
+				className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+				icon="schedule"
+			>
 				{punch} {punch !== "Office Hour 9Hr" && <LiveTime />}
 			</Button>
 		</>
