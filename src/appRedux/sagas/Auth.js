@@ -53,8 +53,9 @@ function* signInUserWithEmailPassword({ payload }) {
 		if (!signInUser.status) {
 			yield put(showAuthMessage(signInUser.data.message));
 		} else {
-			localStorage.setItem("user_id", signInUser.user);
-			yield put(userSignInSuccess(signInUser.user));
+			localStorage.setItem("token", signInUser.data.token);
+			localStorage.setItem("user_id", JSON.stringify(signInUser.data.data));
+			yield put(userSignInSuccess(signInUser.data.data));
 		}
 	} catch (error) {
 		yield put(showAuthMessage(error));

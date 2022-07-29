@@ -13,8 +13,9 @@ const instance = axios.create({
 
 // Setting auth (if JWT present)
 const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+console.log("token", token);
 if (token !== null || token !== undefined) {
-	instance.defaults.headers.common["Authorization"] = `bearer ${token}`;
+	instance.defaults.headers["Authorization"] = `Bearer ${token}`;
 }
 
 // instance.interceptors.response.use(

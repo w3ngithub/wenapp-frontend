@@ -25,15 +25,15 @@ function SignIn(props) {
 	};
 
 	useEffect(() => {
-		if (props.showMessage) {
-			setTimeout(() => {
-				props.hideMessage();
-			}, 100);
-		}
+		// if (props.showMessage) {
+		// 	setTimeout(() => {
+		// 		props.hideMessage();
+		// 	}, 100);
+		// }
 		if (props.authUser !== null) {
-			navigate("/");
+			navigate("/dashboard");
 		}
-	}, [props.showMessage, props.authUser]);
+	}, [props.authUser]);
 
 	const { getFieldDecorator } = props.form;
 	const { showMessage, loader, alertMessage } = props;
