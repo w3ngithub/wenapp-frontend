@@ -40,4 +40,4 @@ const getUserRoles = async () => {
 	}
 };
 
-export { loginInUsers, getAllUsers, getUserRoles };
+export { loginInUsers, getAllUsers, logoutUser, getUserRoles };
