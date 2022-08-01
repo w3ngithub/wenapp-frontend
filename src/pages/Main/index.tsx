@@ -38,32 +38,11 @@ import Settings from "pages/Settings";
 import Attendace from "pages/Attendance";
 import Dashboard from "pages/Dashboard";
 
-function App(props: any): any {
-	// const {
-	// 	match,
-	// 	location,
-	// 	layoutType,
-	// 	navStyle,
-	// 	locale,
-	// 	authUser,
-	// 	initURL
-	// } = props;
+function App(props: any) {
 	const { locale, authUser } = props;
-	const location = useLocation();
 
 	const currentAppLocale = AppLocale[locale.locale];
 
-	if (location.pathname === "/") {
-		// if (authUser === null) {
-		// 	return <Navigate to={SIGNIN} />;
-		// } else if (initURL === "" || initURL === "/" || initURL === SIGNIN) {
-		// 	return <Navigate to={DASHBOARD} />;
-		// } else {
-		// 	return <Navigate to={initURL} />;
-		// }
-
-		return <Navigate to={DASHBOARD} />;
-	}
 	return (
 		<LocaleProvider locale={currentAppLocale.antd}>
 			<IntlProvider
@@ -71,10 +50,11 @@ function App(props: any): any {
 				messages={currentAppLocale.messages}
 			>
 				<Routes>
+					<Route path="/" element={<Navigate to={DASHBOARD} />} />
 					<Route path={SIGNIN} element={<SignIn />} />
 					<Route path={SIGNUP} element={<SignUp />} />
 
-					<Route element={<ProtectedRoute />}>
+					<Route element={<ProtectedRoute auth={authUser} />}>
 						<Route element={<MainApp />}>
 							<Route path={DASHBOARD} element={<Dashboard />} />
 							<Route path={COWORKERS} element={<Coworkers />} />

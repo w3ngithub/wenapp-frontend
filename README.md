@@ -1,10 +1,10 @@
-# [Wen app](https://wenapp.netlify.app/ "Wenapp")
+# [Wen App](https://wenapp.netlify.app/ "Wen App")
 
-Wen app is a react redux based system.
+Wen App is a react redux based system.
 
 # Installation
 
-**Note: Wenapp is using [yarn](https://yarnpkg.com/en/docs/install) instead npm**
+**Note: Wen App is using [yarn](https://yarnpkg.com/en/docs/install) instead npm**
 
 Installing all the dependencies of project, run following command:
 
