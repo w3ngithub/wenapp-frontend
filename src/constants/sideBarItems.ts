@@ -7,6 +7,7 @@ import {
 	LOGTIME,
 	NOTICEBOARD,
 	PROJECTS,
+	REPORTS,
 	SETTINGS
 } from "../helpers/routePath";
 import sidebarItemsInterface from "../types/sideBar";
@@ -76,23 +77,23 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		icon: "icon-chart-line",
 
 		name: "sidebar.reports",
-		url: "",
+		url: REPORTS,
 		isExpandable: true,
 		id: 9,
 		subItems: [
 			{
 				name: "sidebar.reports.weeklyreport",
-				url: "/components/general/button",
+				url: REPORTS,
 				id: 1
 			},
 			{
 				name: "sidebar.reports.worklogreport",
-				url: "/components/general/icon",
+				url: "worklog",
 				id: 2
 			},
 			{
 				name: "sidebar.reports.leavereport",
-				url: "/main/dashboard/crypto",
+				url: "leavereport",
 				id: 3
 			}
 		]

@@ -10,17 +10,33 @@ import MainApp from "./MainApp";
 import SignIn from "containers/SignIn";
 import SignUp from "containers/SignUp";
 
-import Listing from "routes/main/dashboard/Listing/index";
 import {
+	ATTENDANCE,
+	BLOG,
 	COWORKERS,
 	DASHBOARD,
+	LEAVE,
+	LOGTIME,
+	NOTICEBOARD,
 	PROJECTS,
+	REPORTS,
+	RESOURCES,
+	SETTINGS,
 	SIGNIN,
 	SIGNUP
 } from "helpers/routePath";
 import Coworkers from "pages/Coworkers";
 import Projects from "pages/Projects";
 import { ProtectedRoute } from "components/Elements/ProtectedRoute";
+import LogTime from "pages/LogTime";
+import Leave from "pages/Leave";
+import Noticeboard from "pages/Noticeboard";
+import Blog from "pages/Blog";
+import Reports from "pages/Reports";
+import Resources from "pages/Resources";
+import Settings from "pages/Settings";
+import Attendace from "pages/Attendance";
+import Dashboard from "pages/Dashboard";
 
 function App(props: any) {
 	const { locale, authUser } = props;
@@ -34,15 +50,23 @@ function App(props: any) {
 				messages={currentAppLocale.messages}
 			>
 				<Routes>
-					<Route path="/" element={<Navigate to="/dashboard" />} />
+					<Route path="/" element={<Navigate to={DASHBOARD} />} />
 					<Route path={SIGNIN} element={<SignIn />} />
 					<Route path={SIGNUP} element={<SignUp />} />
 
 					<Route element={<ProtectedRoute auth={authUser} />}>
 						<Route element={<MainApp />}>
-							<Route path={DASHBOARD} element={<Listing />} />
+							<Route path={DASHBOARD} element={<Dashboard />} />
 							<Route path={COWORKERS} element={<Coworkers />} />
 							<Route path={PROJECTS} element={<Projects />} />
+							<Route path={ATTENDANCE} element={<Attendace />} />
+							<Route path={LOGTIME} element={<LogTime />} />
+							<Route path={LEAVE} element={<Leave />} />
+							<Route path={NOTICEBOARD} element={<Noticeboard />} />
+							<Route path={BLOG} element={<Blog />} />
+							<Route path={REPORTS} element={<Reports />} />
+							<Route path={RESOURCES} element={<Resources />} />
+							<Route path={SETTINGS} element={<Settings />} />
 						</Route>
 					</Route>
 				</Routes>
