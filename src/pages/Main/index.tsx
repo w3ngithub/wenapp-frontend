@@ -23,22 +23,9 @@ import Projects from "pages/Projects";
 import { ProtectedRoute } from "components/Elements/ProtectedRoute";
 
 function App(props: any) {
-	const { match, layoutType, navStyle, locale, authUser, initURL } = props;
-	const location = useLocation();
+	const { locale, authUser } = props;
 
 	const currentAppLocale = AppLocale[locale.locale];
-
-	if (location.pathname === "/") {
-		if (authUser === null || authUser === undefined) {
-			return <Navigate to={SIGNIN} />;
-		} else if (initURL === "" || initURL === "/" || initURL === SIGNIN) {
-			return <Navigate to={DASHBOARD} />;
-		} else {
-			return <Navigate to={initURL} />;
-		}
-
-		return <Navigate to={DASHBOARD} />;
-	}
 
 	return (
 		<LocaleProvider locale={currentAppLocale.antd}>
@@ -47,6 +34,7 @@ function App(props: any) {
 				messages={currentAppLocale.messages}
 			>
 				<Routes>
+					<Route path="/" element={<Navigate to="/dashboard" />} />
 					<Route path={SIGNIN} element={<SignIn />} />
 					<Route path={SIGNUP} element={<SignUp />} />
 
