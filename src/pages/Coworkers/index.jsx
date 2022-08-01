@@ -1,10 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Card, Table, Form, Switch, Radio } from "antd";
 import { getAllUsers } from "services/users/userDetails";
 import UserDetailForm from "components/Modules/UserDetailModal";
-import { Card, Table } from "antd";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import CircularProgress from "components/Elements/CircularProgress";
+
+const FormItem = Form.Item;
 
 const formattedUsers = (users, isAdmin) => {
 	return users.map(user => ({
@@ -35,6 +37,7 @@ function CoworkersPage() {
 	const [sort, setSort] = useState({});
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
+	const [activeUser, setActiveUser] = useState(true);
 
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id"));
@@ -58,14 +61,15 @@ function CoworkersPage() {
 	};
 
 	const handlePageChange = pageNumber => {
-		console.log(pageNumber);
 		setPage(prev => ({ ...prev, page: pageNumber }));
 	};
 
-	console.log(page);
-
 	const onShowSizeChange = (_, pageSize) => {
 		setPage(prev => ({ ...page, limit: pageSize }));
+	};
+
+	const setActiveInActiveUsers = e => {
+		setActiveUser(e.target.value === "active" ? true : false);
 	};
 
 	if (isLoading) {
@@ -80,7 +84,19 @@ function CoworkersPage() {
 				onSubmit={handleUserDetailSubmit}
 			/>
 			<Card title="Co-workers">
-				<div className="components-table-demo-control-bar"></div>
+				<div className="components-table-demo-control-bar">
+					<Form layout="inline">
+						<FormItem label="">
+							<Radio.Group
+								buttonStyle="solid"
+								onChange={setActiveInActiveUsers}
+							>
+								<Radio.Button value="active">Active</Radio.Button>
+								<Radio.Button value="inactive">Inactive</Radio.Button>
+							</Radio.Group>
+						</FormItem>
+					</Form>
+				</div>
 				<Table
 					className="gx-table-responsive"
 					columns={CO_WORKERCOLUMNS(sort, handleToggleModal)}
