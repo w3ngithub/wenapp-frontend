@@ -10,7 +10,7 @@ function LiveTime() {
 		}, 1000);
 		return () => clearInterval(realTIme);
 	}, []);
-	return <span>{time}</span>;
+	return <span>&nbsp;{time}</span>;
 }
 
 export default LiveTime;
