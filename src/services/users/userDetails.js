@@ -12,6 +12,16 @@ const loginInUsers = async loginDetail => {
 	}
 };
 
+// logout user api
+const logoutUser = async () => {
+	try {
+		let response = await API.get(`${Apis.Users}/logout`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 const getAllUsers = async () => {
 	try {
 		let response = await API.get(`${Apis.Users}`);
@@ -21,4 +31,4 @@ const getAllUsers = async () => {
 	}
 };
 
-export { loginInUsers, getAllUsers };
+export { loginInUsers, logoutUser, getAllUsers };
