@@ -31,11 +31,19 @@ function changeDate(d) {
 }
 
 function CoworkersPage() {
+	// init hooks
+	const [sort, setSort] = useState({});
+	const [page, setPage] = useState({ page: 1, limit: 10 });
+	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
+
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id"));
 
-	const { data, isLoading, isError } = useQuery(["users"], getAllUsers);
-	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
+	const { data, isLoading, isError } = useQuery(
+		["users", page],
+		() => getAllUsers(page),
+		{ keepPreviousData: true }
+	);
 
 	const handleToggleModal = () => {
 		setOpenUserDetailModal(prev => !prev);
@@ -43,6 +51,21 @@ function CoworkersPage() {
 
 	const handleUserDetailSubmit = user => {
 		console.log(user);
+	};
+
+	const handleTableChange = (pagination, filters, sorter) => {
+		setSort(sorter);
+	};
+
+	const handlePageChange = pageNumber => {
+		console.log(pageNumber);
+		setPage(prev => ({ ...prev, page: pageNumber }));
+	};
+
+	console.log(page);
+
+	const onShowSizeChange = (_, pageSize) => {
+		setPage(prev => ({ ...page, limit: pageSize }));
 	};
 
 	if (isLoading) {
@@ -60,12 +83,23 @@ function CoworkersPage() {
 				<div className="components-table-demo-control-bar"></div>
 				<Table
 					className="gx-table-responsive"
-					columns={CO_WORKERCOLUMNS}
+					columns={CO_WORKERCOLUMNS(sort, handleToggleModal)}
 					dataSource={formattedUsers(
 						data.data.data.data,
 						user.role.key === "admin"
 					)}
+					onChange={handleTableChange}
 					rowSelection={{}}
+					pagination={{
+						current: page.page,
+						pageSize: page.limit,
+						pageSizeOptions: ["5", "10", "20", "50"],
+						showSizeChanger: true,
+						total: 20,
+						onShowSizeChange,
+						hideOnSinglePage: true,
+						onChange: handlePageChange
+					}}
 					loading={isLoading}
 				/>
 			</Card>

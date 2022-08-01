@@ -22,9 +22,16 @@ const logoutUser = async () => {
 	}
 };
 
-const getAllUsers = async () => {
+const getAllUsers = async ({
+	page = "",
+	sort = "",
+	limit = "",
+	fields = ""
+}) => {
 	try {
-		let response = await API.get(`${Apis.Users}`);
+		let response = await API.get(
+			`${Apis.Users}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+		);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err.response);

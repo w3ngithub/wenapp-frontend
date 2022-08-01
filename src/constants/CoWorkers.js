@@ -1,18 +1,24 @@
 import React from "react";
 import { Divider } from "antd";
 
-const CO_WORKERCOLUMNS = [
+const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup) => [
 	{
 		title: "Name",
 		dataIndex: "name",
 		key: "name",
-		width: 150
+		width: 150,
+		sorter: (a, b) => {
+			return a.name.toString().localeCompare(b.name.toString());
+		},
+		sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order
 	},
 	{
 		title: "Email",
 		dataIndex: "email",
 		key: "email",
-		width: 150
+		width: 150,
+		sorter: (a, b) => a.email.toString().localeCompare(b.email.toString()),
+		sortOrder: sortedInfo.columnKey === "email" && sortedInfo.order
 	},
 	{
 		title: "Primary Phone",
@@ -24,13 +30,17 @@ const CO_WORKERCOLUMNS = [
 		title: "DOB",
 		dataIndex: "dob",
 		width: 150,
-		key: "dob"
+		key: "dob",
+		sorter: (a, b) => new Date(a.dob) - new Date(b.dob),
+		sortOrder: sortedInfo.columnKey === "dob" && sortedInfo.order
 	},
 	{
 		title: "Join Date",
 		dataIndex: "joinDate",
 		width: 150,
-		key: "joinDate"
+		key: "joinDate",
+		sorter: (a, b) => new Date(a.joinDate) - new Date(b.joinDate),
+		sortOrder: sortedInfo.columnKey === "joinDate" && sortedInfo.order
 	},
 	{
 		title: "Action",
@@ -46,7 +56,9 @@ const CO_WORKERCOLUMNS = [
 						<>
 							{" "}
 							<Divider type="vertical" />
-							<span className="gx-link">Edit</span>
+							<span className="gx-link" onClick={openEditPopup}>
+								Edit
+							</span>
 						</>
 					)}
 				</span>

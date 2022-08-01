@@ -44,6 +44,7 @@ function UserDetailForm({ toggle, onToggleModal, onSubmit, ...rest }) {
 	useEffect(() => {
 		if (toggle) refetch();
 	}, [toggle]);
+
 	return (
 		<Modal
 			title="Update User"
