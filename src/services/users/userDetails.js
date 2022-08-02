@@ -47,4 +47,13 @@ const getUserRoles = async () => {
 	}
 };
 
-export { loginInUsers, getAllUsers, logoutUser, getUserRoles };
+const getUserPosition = async () => {
+	try {
+		let response = await API.get(`${Apis.Positions}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export { loginInUsers, getAllUsers, logoutUser, getUserRoles, getUserPosition };

@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, Table, Form, Switch, Radio } from "antd";
-import { getAllUsers } from "services/users/userDetails";
+import { Card, Table, Form, Switch, Radio, Select } from "antd";
+import {
+	getAllUsers,
+	getUserPosition,
+	getUserRoles
+} from "services/users/userDetails";
 import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import CircularProgress from "components/Elements/CircularProgress";
 
+const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formattedUsers = (users, isAdmin) => {
@@ -47,6 +52,8 @@ function CoworkersPage() {
 		() => getAllUsers(page),
 		{ keepPreviousData: true }
 	);
+	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
+	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
 
 	const handleToggleModal = () => {
 		setOpenUserDetailModal(prev => !prev);
@@ -86,7 +93,7 @@ function CoworkersPage() {
 			<Card title="Co-workers">
 				<div className="components-table-demo-control-bar">
 					<Form layout="inline">
-						<FormItem label="">
+						<FormItem label="Filter Users By">
 							<Radio.Group
 								buttonStyle="solid"
 								onChange={setActiveInActiveUsers}
@@ -94,6 +101,26 @@ function CoworkersPage() {
 								<Radio.Button value="active">Active</Radio.Button>
 								<Radio.Button value="inactive">Inactive</Radio.Button>
 							</Radio.Group>
+						</FormItem>
+						<FormItem>
+							<Select placeholder="Select Role" style={{ width: 200 }}>
+								{roleData &&
+									roleData.data.data.data.map(role => (
+										<Option value={role.value} key={role._id}>
+											{role.value}
+										</Option>
+									))}
+							</Select>
+						</FormItem>
+						<FormItem>
+							<Select placeholder="Select Position" style={{ width: 200 }}>
+								{positionData &&
+									positionData.data.data.data.map(role => (
+										<Option value={role.name} key={role._id}>
+											{role.name}
+										</Option>
+									))}
+							</Select>
 						</FormItem>
 					</Form>
 				</div>
