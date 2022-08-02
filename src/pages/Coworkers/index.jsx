@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Form, Radio, Select, Input, Button } from "antd";
 import {
 	getAllUsers,
 	getUserPosition,
-	getUserRoles
+	getUserRoles,
+	updateUser
 } from "services/users/userDetails";
 import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
@@ -47,6 +48,7 @@ function CoworkersPage() {
 	const [position, setPosition] = useState(undefined);
 	const [role, setRole] = useState(undefined);
 	const [name, setName] = useState("");
+	const queryClient = useQueryClient();
 
 	const activeUserRef = useRef("");
 	const nameRef = useRef("");
@@ -59,8 +61,23 @@ function CoworkersPage() {
 		() => getAllUsers({ ...page, active: activeUser, role, position, name }),
 		{ keepPreviousData: true }
 	);
+
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
 	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
+
+	const mutation = useMutation(
+		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
+		{
+			onSuccess: () => {
+				queryClient.invalidateQueries(["users"]);
+			}
+		}
+	);
+
+	// // api call to make active/inactive user
+	// const makeUserActiveInactive = () => {
+
+	// };
 
 	const handleToggleModal = () => {
 		setOpenUserDetailModal(prev => !prev);
@@ -176,7 +193,7 @@ function CoworkersPage() {
 				</div>
 				<Table
 					className="gx-table-responsive"
-					columns={CO_WORKERCOLUMNS(sort, handleToggleModal)}
+					columns={CO_WORKERCOLUMNS(sort, handleToggleModal, mutation)}
 					dataSource={formattedUsers(
 						data.data.data.data,
 						user.role.key === "admin"
@@ -193,7 +210,7 @@ function CoworkersPage() {
 						hideOnSinglePage: true,
 						onChange: handlePageChange
 					}}
-					loading={isLoading}
+					loading={mutation.isLoading}
 				/>
 			</Card>
 		</div>

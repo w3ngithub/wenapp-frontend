@@ -1,7 +1,7 @@
 import React from "react";
 import { Divider } from "antd";
 
-const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup) => [
+const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 	{
 		title: "Name",
 		dataIndex: "name",
@@ -51,7 +51,17 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup) => [
 				<span>
 					<span className="gx-link">View Details</span>
 					<Divider type="vertical" />
-					<span className="gx-link">Make User Inactive</span>
+					<span
+						className="gx-link"
+						onClick={() => {
+							mutation.mutate({
+								userId: record._id,
+								updatedData: { active: !record.active }
+							});
+						}}
+					>
+						Make User {record.active ? "Inactive" : "Active"}
+					</span>
 					{record.isAdmin && (
 						<>
 							{" "}

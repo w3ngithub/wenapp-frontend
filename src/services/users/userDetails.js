@@ -60,4 +60,20 @@ const getUserPosition = async () => {
 	}
 };
 
-export { loginInUsers, getAllUsers, logoutUser, getUserRoles, getUserPosition };
+const updateUser = async (userId, payload) => {
+	try {
+		let response = await API.patch(`${Apis.Users}/${userId}`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export {
+	loginInUsers,
+	getAllUsers,
+	logoutUser,
+	getUserRoles,
+	getUserPosition,
+	updateUser
+};
