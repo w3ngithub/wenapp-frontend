@@ -1,5 +1,3 @@
-import { changeDate } from "./date";
-
 export const handleSort = (
 	currentState,
 	stateSetter,

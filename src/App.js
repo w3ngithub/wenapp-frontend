@@ -10,7 +10,13 @@ import configureStore from "./appRedux/store";
 import Main from "./pages/Main";
 
 export const store = configureStore();
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			refetchOnWindowFocus: false
+		}
+	}
+});
 
 const App = () => {
 	return (

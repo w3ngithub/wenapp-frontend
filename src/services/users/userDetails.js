@@ -12,9 +12,26 @@ const loginInUsers = async loginDetail => {
 	}
 };
 
-const getAllUsers = async () => {
+// logout user api
+const logoutUser = async () => {
 	try {
-		let response = await API.get(`${Apis.Users}`);
+		let response = await API.get(`${Apis.Users}/logout`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const getAllUsers = async ({
+	page = "",
+	sort = "",
+	limit = "",
+	fields = ""
+}) => {
+	try {
+		let response = await API.get(
+			`${Apis.Users}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+		);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err.response);
@@ -30,4 +47,13 @@ const getUserRoles = async () => {
 	}
 };
 
-export { loginInUsers, getAllUsers, getUserRoles };
+const getUserPosition = async () => {
+	try {
+		let response = await API.get(`${Apis.Positions}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export { loginInUsers, getAllUsers, logoutUser, getUserRoles, getUserPosition };
