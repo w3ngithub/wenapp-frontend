@@ -5,7 +5,7 @@ import { userSignOut } from "appRedux/actions/Auth";
 import { Navigate, useNavigate } from "react-router-dom";
 import { PROFILE } from "helpers/routePath";
 
-function UserInfo() {
+function UserInfo(props) {
 	const navigate = useNavigate();
 	const [visible, setVisible] = useState(false);
 
@@ -24,7 +24,7 @@ function UserInfo() {
 				Profile
 			</li>
 			<li>Change Password</li>
-			<li onClick={() => this.props.userSignOut()}>Logout</li>
+			<li onClick={() => props.userSignOut()}>Logout</li>
 		</ul>
 	);
 

@@ -1,5 +1,7 @@
 import axios from "axios";
 
+export const BASE_API_PATH = "/api/v1/";
+
 // Setting base URL for backend requests
 const instance = axios.create({
 	baseURL:
@@ -12,7 +14,7 @@ const instance = axios.create({
 });
 
 // Setting auth (if JWT present)
-const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+const token = localStorage.getItem("token");
 if (token) {
 	instance.defaults.headers["Authorization"] = `Bearer ${token}`;
 }
@@ -95,5 +97,3 @@ if (token) {
 // );
 
 export default instance;
-
-export const BASE_API_PATH = "/api/v1/";
