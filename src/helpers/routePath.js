@@ -15,3 +15,6 @@ export const BLOG = "blog";
 export const SETTINGS = "settings";
 export const REPORTS = "reports";
 export const RESOURCES = "resources";
+
+// User
+export const PROFILE = "profile";

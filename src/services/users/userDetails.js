@@ -21,4 +21,13 @@ const getAllUsers = async () => {
 	}
 };
 
-export { loginInUsers, getAllUsers };
+const getUserRoles = async () => {
+	try {
+		let response = await API.get(`${Apis.Roles}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export { loginInUsers, getAllUsers, getUserRoles };

@@ -18,6 +18,7 @@ import {
 	LEAVE,
 	LOGTIME,
 	NOTICEBOARD,
+	PROFILE,
 	PROJECTS,
 	REPORTS,
 	RESOURCES,
@@ -37,6 +38,7 @@ import Resources from "pages/Resources";
 import Settings from "pages/Settings";
 import Attendace from "pages/Attendance";
 import Dashboard from "pages/Dashboard";
+import Profile from "pages/Profile";
 
 function App(props: any) {
 	const { locale, authUser } = props;
@@ -67,6 +69,7 @@ function App(props: any) {
 							<Route path={REPORTS} element={<Reports />} />
 							<Route path={RESOURCES} element={<Resources />} />
 							<Route path={SETTINGS} element={<Settings />} />
+							<Route path={PROFILE} element={<Profile />} />
 						</Route>
 					</Route>
 				</Routes>
