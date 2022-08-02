@@ -48,6 +48,7 @@ function CoworkersPage() {
 	const [position, setPosition] = useState(undefined);
 	const [role, setRole] = useState(undefined);
 	const [name, setName] = useState("");
+	const [userRecord, setUserRecord] = useState({});
 	const queryClient = useQueryClient();
 
 	const activeUserRef = useRef("");
@@ -56,14 +57,13 @@ function CoworkersPage() {
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id"));
 
+	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
+	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
 	const { data, isLoading, isError } = useQuery(
 		["users", page, activeUser, role, position, name],
 		() => getAllUsers({ ...page, active: activeUser, role, position, name }),
 		{ keepPreviousData: true }
 	);
-
-	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
-	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
 
 	const mutation = useMutation(
 		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
@@ -74,17 +74,14 @@ function CoworkersPage() {
 		}
 	);
 
-	// // api call to make active/inactive user
-	// const makeUserActiveInactive = () => {
-
-	// };
-
-	const handleToggleModal = () => {
+	const handleToggleModal = userRecordToUpdate => {
 		setOpenUserDetailModal(prev => !prev);
+		setUserRecord(userRecordToUpdate);
 	};
 
 	const handleUserDetailSubmit = user => {
 		console.log(user);
+		// mutation.mutate({userId,updatedData})
 	};
 
 	const handleTableChange = (pagination, filters, sorter) => {
@@ -130,6 +127,9 @@ function CoworkersPage() {
 				toggle={openUserDetailModal}
 				onToggleModal={handleToggleModal}
 				onSubmit={handleUserDetailSubmit}
+				roles={roleData}
+				position={positionData}
+				intialValues={userRecord}
 			/>
 			<Card title="Co-workers">
 				<div className="components-table-demo-control-bar">

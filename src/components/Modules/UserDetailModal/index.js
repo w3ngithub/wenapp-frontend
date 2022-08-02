@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Button, DatePicker, Form, Input, Modal, Select } from "antd";
 import { getUserRoles } from "services/users/userDetails";
 import { useQuery } from "@tanstack/react-query";
+import Position from "./../../../routes/components/feedback/Modal/Position";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -17,17 +18,20 @@ const formItemLayout = {
 	}
 };
 
-function UserDetailForm({ toggle, onToggleModal, onSubmit, ...rest }) {
-	const { data, refetch } = useQuery(["userRoles"], getUserRoles, {
-		enabled: false
-	});
-
+function UserDetailForm({
+	toggle,
+	onToggleModal,
+	roles,
+	position,
+	onSubmit,
+	intialValues,
+	...rest
+}) {
 	const { getFieldDecorator } = rest.form;
 
 	const handleCancel = () => {
 		rest.form.resetFields();
-
-		onToggleModal();
+		onToggleModal({});
 	};
 
 	const handleSubmit = () => {
@@ -41,9 +45,7 @@ function UserDetailForm({ toggle, onToggleModal, onSubmit, ...rest }) {
 		});
 	};
 
-	useEffect(() => {
-		if (toggle) refetch();
-	}, [toggle]);
+	console.log("inital", intialValues);
 
 	return (
 		<Modal
@@ -61,19 +63,25 @@ function UserDetailForm({ toggle, onToggleModal, onSubmit, ...rest }) {
 			]}
 		>
 			<Form>
-				<FormItem {...formItemLayout} label="Name">
+				<FormItem {...formItemLayout} label="Name" name="name">
 					{getFieldDecorator("name", {
+						initialValue: intialValues.name ? intialValues.name : "",
 						rules: [{ required: true, message: "required!" }]
 					})(<Input placeholder="Enter Name" />)}
 				</FormItem>
 				<FormItem {...formItemLayout} label="Role">
 					{getFieldDecorator("role", {
+						initialValue:
+							intialValues.role && intialValues.role._id
+								? intialValues.role._id
+								: undefined,
+
 						rules: [{ required: true, message: "required!" }]
 					})(
 						<Select placeholder="Select Role">
-							{data &&
-								data.data.data.data.map(role => (
-									<Option value={role.value} key={role._id}>
+							{roles &&
+								roles.data.data.data.map(role => (
+									<Option value={role._id} key={role._id}>
 										{role.value}
 									</Option>
 								))}
@@ -82,14 +90,26 @@ function UserDetailForm({ toggle, onToggleModal, onSubmit, ...rest }) {
 				</FormItem>
 				<FormItem {...formItemLayout} label="Position">
 					{getFieldDecorator("position", {
+						initialValue:
+							intialValues.position && intialValues.position._id
+								? intialValues.position._id
+								: undefined,
 						rules: [
 							{
 								required: true,
-								message: "required!",
-								whitespace: true
+								message: "required!"
 							}
 						]
-					})(<Input placeholder="Enter Position" />)}
+					})(
+						<Select placeholder="Select Position">
+							{position &&
+								position.data.data.data.map(position => (
+									<Option value={position._id} key={position._id}>
+										{position.name}
+									</Option>
+								))}
+						</Select>
+					)}
 				</FormItem>
 				<FormItem {...formItemLayout} label="Last Review Date">
 					{getFieldDecorator("lastReviewDate", {

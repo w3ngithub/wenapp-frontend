@@ -66,7 +66,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 						<>
 							{" "}
 							<Divider type="vertical" />
-							<span className="gx-link" onClick={openEditPopup}>
+							<span className="gx-link" onClick={() => openEditPopup(record)}>
 								Edit
 							</span>
 						</>
