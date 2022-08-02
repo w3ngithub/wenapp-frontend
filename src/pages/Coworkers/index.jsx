@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, Table, Form, Switch, Radio, Select } from "antd";
+import { Card, Table, Form, Radio, Select, Input, Button } from "antd";
 import {
 	getAllUsers,
 	getUserPosition,
@@ -10,6 +10,7 @@ import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import CircularProgress from "components/Elements/CircularProgress";
 
+const Search = Input.Search;
 const Option = Select.Option;
 const FormItem = Form.Item;
 
@@ -42,14 +43,20 @@ function CoworkersPage() {
 	const [sort, setSort] = useState({});
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
-	const [activeUser, setActiveUser] = useState(true);
+	const [activeUser, setActiveUser] = useState("");
+	const [position, setPosition] = useState(undefined);
+	const [role, setRole] = useState(undefined);
+	const [name, setName] = useState("");
+
+	const activeUserRef = useRef("");
+	const nameRef = useRef("");
 
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id"));
 
 	const { data, isLoading, isError } = useQuery(
-		["users", page],
-		() => getAllUsers(page),
+		["users", page, activeUser, role, position, name],
+		() => getAllUsers({ ...page, active: activeUser, role, position, name }),
 		{ keepPreviousData: true }
 	);
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
@@ -79,6 +86,23 @@ function CoworkersPage() {
 		setActiveUser(e.target.value === "active" ? true : false);
 	};
 
+	const handleRoleChange = roleId => {
+		setRole(roleId);
+	};
+
+	const handlePositionChange = positionId => {
+		setPosition(positionId);
+	};
+
+	const handleResetFilter = () => {
+		setName("");
+		setRole(undefined);
+		setPosition(undefined);
+		setActiveUser("");
+		nameRef.current.input.state.value = "";
+		activeUserRef.current.state.value = undefined;
+	};
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}
@@ -92,35 +116,61 @@ function CoworkersPage() {
 			/>
 			<Card title="Co-workers">
 				<div className="components-table-demo-control-bar">
+					<Search
+						placeholder="Search Users"
+						onSearch={value => setName(value)}
+						style={{ width: 200 }}
+						enterButton
+						ref={nameRef}
+					/>
 					<Form layout="inline">
-						<FormItem label="Filter Users By">
-							<Radio.Group
-								buttonStyle="solid"
-								onChange={setActiveInActiveUsers}
-							>
-								<Radio.Button value="active">Active</Radio.Button>
-								<Radio.Button value="inactive">Inactive</Radio.Button>
-							</Radio.Group>
-						</FormItem>
 						<FormItem>
-							<Select placeholder="Select Role" style={{ width: 200 }}>
+							<Select
+								placeholder="Select Role"
+								style={{ width: 200 }}
+								onChange={handleRoleChange}
+								value={role}
+							>
 								{roleData &&
 									roleData.data.data.data.map(role => (
-										<Option value={role.value} key={role._id}>
+										<Option value={role._id} key={role._id}>
 											{role.value}
 										</Option>
 									))}
 							</Select>
 						</FormItem>
 						<FormItem>
-							<Select placeholder="Select Position" style={{ width: 200 }}>
+							<Select
+								placeholder="Select Position"
+								style={{ width: 200 }}
+								onChange={handlePositionChange}
+								value={position}
+							>
 								{positionData &&
-									positionData.data.data.data.map(role => (
-										<Option value={role.name} key={role._id}>
-											{role.name}
+									positionData.data.data.data.map(position => (
+										<Option value={position._id} key={position._id}>
+											{position.name}
 										</Option>
 									))}
 							</Select>
+						</FormItem>
+						<FormItem>
+							<Radio.Group
+								buttonStyle="solid"
+								onChange={setActiveInActiveUsers}
+								ref={activeUserRef}
+							>
+								<Radio.Button value="active">Active</Radio.Button>
+								<Radio.Button value="inactive">Inactive</Radio.Button>
+							</Radio.Group>
+						</FormItem>
+						<FormItem>
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								onClick={handleResetFilter}
+							>
+								Reset
+							</Button>
 						</FormItem>
 					</Form>
 				</div>
@@ -138,7 +188,7 @@ function CoworkersPage() {
 						pageSize: page.limit,
 						pageSizeOptions: ["5", "10", "20", "50"],
 						showSizeChanger: true,
-						total: 20,
+						total: 25,
 						onShowSizeChange,
 						hideOnSinglePage: true,
 						onChange: handlePageChange

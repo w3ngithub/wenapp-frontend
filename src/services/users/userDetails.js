@@ -26,11 +26,15 @@ const getAllUsers = async ({
 	page = "",
 	sort = "",
 	limit = "",
-	fields = ""
+	fields = "",
+	name = "",
+	role = "",
+	position = "",
+	active = ""
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.Users}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+			`${Apis.Users}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&name=${name}&role=${role}&position=${position}&active=${active}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
