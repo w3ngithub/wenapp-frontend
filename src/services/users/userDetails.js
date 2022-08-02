@@ -12,13 +12,68 @@ const loginInUsers = async loginDetail => {
 	}
 };
 
-const getAllUsers = async () => {
+// logout user api
+const logoutUser = async () => {
 	try {
-		let response = await API.get(`${Apis.Users}`);
+		let response = await API.get(`${Apis.Users}/logout`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err.response);
 	}
 };
 
-export { loginInUsers, getAllUsers };
+const getAllUsers = async ({
+	page = "",
+	sort = "",
+	limit = "",
+	fields = "",
+	name = "",
+	role = "",
+	position = "",
+	active = ""
+}) => {
+	try {
+		let response = await API.get(
+			`${Apis.Users}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&name=${name}&role=${role}&position=${position}&active=${active}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const getUserRoles = async () => {
+	try {
+		let response = await API.get(`${Apis.Roles}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const getUserPosition = async () => {
+	try {
+		let response = await API.get(`${Apis.Positions}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const updateUser = async (userId, payload) => {
+	try {
+		let response = await API.patch(`${Apis.Users}/${userId}`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export {
+	loginInUsers,
+	getAllUsers,
+	logoutUser,
+	getUserRoles,
+	getUserPosition,
+	updateUser
+};
