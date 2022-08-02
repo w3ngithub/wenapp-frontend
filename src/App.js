@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { ConnectedRouter } from "react-router-redux";
+import { Provider } from "react-redux";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import "assets/vendors/style";
+import "styles/wieldy.less";
+import configureStore from "./appRedux/store";
+import Main from "./pages/Main";
+
+export const store = configureStore();
+const queryClient = new QueryClient();
+
+const App = () => {
+	const test={name:"Hello"}
+	const test1=test?.name
+	console.log(test1)
+	return (
+		<QueryClientProvider client={queryClient}>
+			<Provider store={store}>
+				<BrowserRouter>
+					<Routes>
+						<Route path="/*" element={<Main />} />
+					</Routes>
+				</BrowserRouter>
+			</Provider>
+		</QueryClientProvider>
+	);
+};
 
 export default App;
