@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Button, DatePicker, Form, Input, Modal, Select } from "antd";
+import moment from "moment";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -29,7 +30,7 @@ function UserProfileModal({ user, toggle, onToggle, onSubmit, ...rest }) {
 			if (err) {
 				return;
 			}
-
+			console.log(fieldsValue);
 			rest.form.resetFields();
 			onSubmit(fieldsValue);
 		});
@@ -42,13 +43,10 @@ function UserProfileModal({ user, toggle, onToggle, onSubmit, ...rest }) {
 				dob: user.dob.split("T")[0],
 				gender: user.gender,
 				primaryPhone: user.primaryPhone,
-				// joinDate: `${new Date(user.joinDate).getMonth()}/${new Date(
-				// 	user.joinDate
-				// ).getDate()}/${new Date(user.joinDate).getFullYear()}`,
+				joinDate: moment(user.joinDate),
 				maritalStatus: user.maritalStatus
 			});
 	}, [toggle]);
-	console.log(new Date(user.joinDate));
 	return (
 		<Modal
 			title="Details"
@@ -121,7 +119,9 @@ function UserProfileModal({ user, toggle, onToggle, onSubmit, ...rest }) {
 					{getFieldDecorator("joinDate", {
 						rules: [
 							{
-								message: "It must be a number!",
+								type: "object",
+
+								message: "It must be a date!",
 								whitespace: true
 							}
 						]
