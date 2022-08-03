@@ -18,3 +18,4 @@ export const RESOURCES = "resources";
 
 // User
 export const PROFILE = "profile";
+export const INVITE = "invite";
