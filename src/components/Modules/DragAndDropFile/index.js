@@ -44,13 +44,14 @@ function DragAndDropFile({
 	const handleChange = info => {
 		let fileList = [...info.fileList];
 		if (allowMultiple) setFiles(fileList);
-		else setFiles([fileList[fileList.length - 1]]);
+		else {
+			const list = fileList[fileList.length - 1]
+				? [fileList[fileList.length - 1]]
+				: [];
+			setFiles(list);
+		}
 	};
 
-	const handleRemove = info => {
-		const filteredFiles = files.filter(file => file.uid !== info.uid);
-		setFiles(filteredFiles);
-	};
 	const handleCancel = () => setPreviewVisible(false);
 	return (
 		<>
@@ -63,7 +64,6 @@ function DragAndDropFile({
 				}
 				fileList={files}
 				onChange={handleChange}
-				onRemove={handleRemove}
 			>
 				<p className="ant-upload-drag-icon">
 					<Icon type="inbox" />
