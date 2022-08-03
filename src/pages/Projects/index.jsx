@@ -1,14 +1,15 @@
 import React, { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card, Table, Form, Radio, Select, Input, Button } from "antd";
-import {
-	getUserPosition,
-	getUserRoles,
-	updateUser
-} from "services/users/userDetails";
+import { Card, Table, Form, Select, Input, Button } from "antd";
+import { updateUser } from "services/users/userDetails";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
-import { getAllProjects } from "services/projects";
+import {
+	getAllProjects,
+	getProjectClients,
+	getProjectStatus,
+	getProjectTypes
+} from "services/projects";
 import { PROJECT_COLUMNS } from "constants/Projects";
 
 const Search = Input.Search;
@@ -30,24 +31,40 @@ const formattedProjects = (projects, isAdmin) => {
 function CoworkersPage() {
 	// init hooks
 	const [sort, setSort] = useState({});
+	const [project, setProject] = useState("");
 	const [page, setPage] = useState({ page: 1, limit: 10 });
-	const [activeUser, setActiveUser] = useState("");
-	const [position, setPosition] = useState(undefined);
-	const [role, setRole] = useState(undefined);
-	const [name, setName] = useState("");
+	const [projectStatus, setProjectStatus] = useState(undefined);
+	const [projectType, setProjectType] = useState(undefined);
+	const [projectClient, setprojectClient] = useState(undefined);
 	const queryClient = useQueryClient();
 
-	const activeUserRef = useRef("");
-	const nameRef = useRef("");
+	const projectRef = useRef("");
 
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
 
-	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
-	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
+	const { data: projectTypesData } = useQuery(
+		["projectTypes"],
+		getProjectTypes
+	);
+	const { data: projectStatusData } = useQuery(
+		["projectStatus"],
+		getProjectStatus
+	);
+	const { data: projectClientsData } = useQuery(
+		["projectClients"],
+		getProjectClients
+	);
 	const { data, isLoading, isError, isFetching } = useQuery(
-		["projects", page, activeUser, role, position, name],
-		() => getAllProjects({ ...page, active: activeUser, role, position, name }),
+		["projects", page, projectType, projectStatus, projectClient, project],
+		() =>
+			getAllProjects({
+				...page,
+				projectType,
+				projectStatus,
+				projectClient,
+				project
+			}),
 		{ keepPreviousData: true }
 	);
 
@@ -55,7 +72,7 @@ function CoworkersPage() {
 		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
 		{
 			onSuccess: () => {
-				queryClient.invalidateQueries(["users"]);
+				queryClient.invalidateQueries(["projects"]);
 			}
 		}
 	);
@@ -72,25 +89,24 @@ function CoworkersPage() {
 		setPage(prev => ({ ...page, limit: pageSize }));
 	};
 
-	const setActiveInActiveUsers = e => {
-		setActiveUser(e.target.value === "active" ? true : false);
+	const handleProjectTypeChange = typeId => {
+		setProjectType(typeId);
 	};
 
-	const handleRoleChange = roleId => {
-		setRole(roleId);
+	const handleProjectStatusChange = statusId => {
+		setProjectStatus(statusId);
 	};
 
-	const handlePositionChange = positionId => {
-		setPosition(positionId);
+	const handleClientChange = clientId => {
+		setprojectClient(clientId);
 	};
 
 	const handleResetFilter = () => {
-		setName("");
-		setRole(undefined);
-		setPosition(undefined);
-		setActiveUser("");
-		nameRef.current.input.state.value = "";
-		activeUserRef.current.state.value = undefined;
+		setProject("");
+		setProjectType(undefined);
+		setProjectStatus(undefined);
+		setprojectClient(undefined);
+		projectRef.current.input.state.value = "";
 	};
 
 	if (isLoading) {
@@ -103,52 +119,57 @@ function CoworkersPage() {
 				<div className="components-table-demo-control-bar">
 					<Search
 						placeholder="Search Projects"
-						onSearch={value => setName(value)}
+						onSearch={value => setProject(value)}
 						style={{ width: 200 }}
 						enterButton
-						ref={nameRef}
+						ref={projectRef}
 					/>
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline">
 							<FormItem>
 								<Select
-									placeholder="Select Role"
+									placeholder="Select Project Type"
 									style={{ width: 200 }}
-									onChange={handleRoleChange}
-									value={role}
+									onChange={handleProjectTypeChange}
+									value={projectType}
 								>
-									{roleData &&
-										roleData.data.data.data.map(role => (
-											<Option value={role._id} key={role._id}>
-												{role.value}
+									{projectTypesData &&
+										projectTypesData.data.data.data.map(type => (
+											<Option value={type._id} key={type._id}>
+												{type.name}
 											</Option>
 										))}
 								</Select>
 							</FormItem>
 							<FormItem>
 								<Select
-									placeholder="Select Position"
+									placeholder="Select Project Status"
 									style={{ width: 200 }}
-									onChange={handlePositionChange}
-									value={position}
+									onChange={handleProjectStatusChange}
+									value={projectStatus}
 								>
-									{positionData &&
-										positionData.data.data.data.map(position => (
-											<Option value={position._id} key={position._id}>
-												{position.name}
+									{projectStatusData &&
+										projectStatusData.data.data.data.map(status => (
+											<Option value={status._id} key={status._id}>
+												{status.name}
 											</Option>
 										))}
 								</Select>
 							</FormItem>
 							<FormItem>
-								<Radio.Group
-									buttonStyle="solid"
-									onChange={setActiveInActiveUsers}
-									ref={activeUserRef}
+								<Select
+									placeholder="Select Client"
+									style={{ width: 200 }}
+									onChange={handleClientChange}
+									value={projectClient}
 								>
-									<Radio.Button value="active">Active</Radio.Button>
-									<Radio.Button value="inactive">Inactive</Radio.Button>
-								</Radio.Group>
+									{projectClientsData &&
+										projectClientsData.data.data.data.map(client => (
+											<Option value={client._id} key={client._id}>
+												{client.name}
+											</Option>
+										))}
+								</Select>
 							</FormItem>
 							<FormItem>
 								<Button

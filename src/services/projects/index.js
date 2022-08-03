@@ -7,14 +7,14 @@ const getAllProjects = async ({
 	sort = "",
 	limit = "",
 	fields = "",
-	name = "",
-	role = "",
-	position = "",
-	active = ""
+	projectStatus = "",
+	projectType = "",
+	projectClient = "",
+	project = ""
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.Projects}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&name=${name}&role=${role}&position=${position}&active=${active}`
+			`${Apis.Projects}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&projectStatus=${projectStatus}&projectTypes=${projectType}&client=${projectClient}&name=${project}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -22,4 +22,31 @@ const getAllProjects = async ({
 	}
 };
 
-export { getAllProjects };
+const getProjectTypes = async () => {
+	try {
+		let response = await API.get(`${Apis.Projects}/types`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const getProjectStatus = async () => {
+	try {
+		let response = await API.get(`${Apis.Projects}/status`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const getProjectClients = async () => {
+	try {
+		let response = await API.get(`${Apis.Projects}/clients`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export { getAllProjects, getProjectTypes, getProjectStatus, getProjectClients };
