@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, DatePicker, Form, Input, Modal, Select } from "antd";
+import { Button, DatePicker, Form, Input, Modal, Select, Spin } from "antd";
 import moment from "moment";
 
 const FormItem = Form.Item;
@@ -24,6 +24,7 @@ function UserDetailForm({
 	onSubmit,
 	intialValues,
 	readOnly = false,
+	loading = false,
 	...rest
 }) {
 	const { getFieldDecorator } = rest.form;
@@ -89,117 +90,119 @@ function UserDetailForm({
 					  ]
 			}
 		>
-			<Form>
-				<FormItem {...formItemLayout} label="Name" name="name">
-					{getFieldDecorator("name", {
-						rules: [{ required: true, message: "required!" }]
-					})(<Input placeholder="Enter Name" disabled={readOnly} />)}
-				</FormItem>
-				<FormItem {...formItemLayout} label="Role">
-					{getFieldDecorator("role", {
-						rules: [{ required: true, message: "required!" }]
-					})(
-						<Select placeholder="Select Role" disabled={readOnly}>
-							{roles &&
-								roles.data.data.data.map(role => (
-									<Option value={role._id} key={role._id}>
-										{role.value}
-									</Option>
-								))}
-						</Select>
-					)}
-				</FormItem>
-				<FormItem {...formItemLayout} label="Position">
-					{getFieldDecorator("position", {
-						rules: [
-							{
-								required: true,
-								message: "required!"
-							}
-						]
-					})(
-						<Select placeholder="Select Position" disabled={readOnly}>
-							{position &&
-								position.data.data.data.map(position => (
-									<Option value={position._id} key={position._id}>
-										{position.name}
-									</Option>
-								))}
-						</Select>
-					)}
-				</FormItem>
-				<FormItem {...formItemLayout} label="Last Review Date">
-					{getFieldDecorator("lastReviewDate", {
-						rules: [
-							{
-								type: "object",
-								message: "required!",
-								whitespace: true
-							}
-						]
-					})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
-				</FormItem>
-				<FormItem {...formItemLayout} label="Exit Date">
-					{getFieldDecorator("exitDate", {
-						rules: [
-							{
-								type: "object",
-								message: "required!",
-								whitespace: true
-							}
-						]
-					})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
-				</FormItem>
-				<FormItem {...formItemLayout} label="Pan Number">
-					{getFieldDecorator("panNumber", {
-						rules: [
-							{
-								pattern: new RegExp(/^[0-9]+$/),
-								message: "Pan must be a number!"
-							}
-						]
-					})(
-						<Input
-							placeholder="Enter Pan Number"
-							type="number"
-							disabled={readOnly}
-						/>
-					)}
-				</FormItem>
-				<FormItem {...formItemLayout} label="CIT Number">
-					{getFieldDecorator("citNumber", {
-						rules: [
-							{
-								pattern: new RegExp(/^[0-9]+$/),
-								message: "CIT must be a number!"
-							}
-						]
-					})(
-						<Input
-							placeholder="Enter Cit Number"
-							type="number"
-							disabled={readOnly}
-						/>
-					)}
-				</FormItem>
-				<FormItem {...formItemLayout} label="Bank Name">
-					{getFieldDecorator(
-						"bankName",
-						{}
-					)(<Input placeholder="Enter Bank Name" disabled={readOnly} />)}
-				</FormItem>
-				<FormItem {...formItemLayout} label="Bank Account Number">
-					{getFieldDecorator(
-						"bankAccNumber",
-						{}
-					)(
-						<Input
-							placeholder="Enter Bank Account Number"
-							disabled={readOnly}
-						/>
-					)}
-				</FormItem>
-			</Form>
+			<Spin spinning={loading}>
+				<Form>
+					<FormItem {...formItemLayout} label="Name" name="name">
+						{getFieldDecorator("name", {
+							rules: [{ required: true, message: "required!" }]
+						})(<Input placeholder="Enter Name" disabled={readOnly} />)}
+					</FormItem>
+					<FormItem {...formItemLayout} label="Role">
+						{getFieldDecorator("role", {
+							rules: [{ required: true, message: "required!" }]
+						})(
+							<Select placeholder="Select Role" disabled={readOnly}>
+								{roles &&
+									roles.data.data.data.map(role => (
+										<Option value={role._id} key={role._id}>
+											{role.value}
+										</Option>
+									))}
+							</Select>
+						)}
+					</FormItem>
+					<FormItem {...formItemLayout} label="Position">
+						{getFieldDecorator("position", {
+							rules: [
+								{
+									required: true,
+									message: "required!"
+								}
+							]
+						})(
+							<Select placeholder="Select Position" disabled={readOnly}>
+								{position &&
+									position.data.data.data.map(position => (
+										<Option value={position._id} key={position._id}>
+											{position.name}
+										</Option>
+									))}
+							</Select>
+						)}
+					</FormItem>
+					<FormItem {...formItemLayout} label="Last Review Date">
+						{getFieldDecorator("lastReviewDate", {
+							rules: [
+								{
+									type: "object",
+									message: "required!",
+									whitespace: true
+								}
+							]
+						})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+					</FormItem>
+					<FormItem {...formItemLayout} label="Exit Date">
+						{getFieldDecorator("exitDate", {
+							rules: [
+								{
+									type: "object",
+									message: "required!",
+									whitespace: true
+								}
+							]
+						})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+					</FormItem>
+					<FormItem {...formItemLayout} label="Pan Number">
+						{getFieldDecorator("panNumber", {
+							rules: [
+								{
+									pattern: new RegExp(/^[0-9]+$/),
+									message: "Pan must be a number!"
+								}
+							]
+						})(
+							<Input
+								placeholder="Enter Pan Number"
+								type="number"
+								disabled={readOnly}
+							/>
+						)}
+					</FormItem>
+					<FormItem {...formItemLayout} label="CIT Number">
+						{getFieldDecorator("citNumber", {
+							rules: [
+								{
+									pattern: new RegExp(/^[0-9]+$/),
+									message: "CIT must be a number!"
+								}
+							]
+						})(
+							<Input
+								placeholder="Enter Cit Number"
+								type="number"
+								disabled={readOnly}
+							/>
+						)}
+					</FormItem>
+					<FormItem {...formItemLayout} label="Bank Name">
+						{getFieldDecorator(
+							"bankName",
+							{}
+						)(<Input placeholder="Enter Bank Name" disabled={readOnly} />)}
+					</FormItem>
+					<FormItem {...formItemLayout} label="Bank Account Number">
+						{getFieldDecorator(
+							"bankAccNumber",
+							{}
+						)(
+							<Input
+								placeholder="Enter Bank Account Number"
+								disabled={readOnly}
+							/>
+						)}
+					</FormItem>
+				</Form>
+			</Spin>
 		</Modal>
 	);
 }

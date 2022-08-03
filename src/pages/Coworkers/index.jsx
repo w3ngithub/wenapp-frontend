@@ -50,7 +50,7 @@ function CoworkersPage() {
 
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
 	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
-	const { data, isLoading, isError } = useQuery(
+	const { data, isLoading, isError, isFetching } = useQuery(
 		["users", page, activeUser, role, position, name],
 		() => getAllUsers({ ...page, active: activeUser, role, position, name }),
 		{ keepPreviousData: true }
@@ -61,6 +61,8 @@ function CoworkersPage() {
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["users"]);
+				setOpenUserDetailModal(prev => false);
+				setReadOnly(false);
 			}
 		}
 	);
@@ -86,8 +88,6 @@ function CoworkersPage() {
 			}
 		});
 		reset.form.resetFields();
-		handleToggleModal({});
-		setReadOnly(false);
 	};
 
 	const handleTableChange = (pagination, filters, sorter) => {
@@ -138,6 +138,7 @@ function CoworkersPage() {
 				toggle={openUserDetailModal}
 				onToggleModal={handleToggleModal}
 				onSubmit={handleUserDetailSubmit}
+				loading={mutation.isLoading}
 				roles={roleData}
 				position={positionData}
 				intialValues={userRecord}
@@ -249,7 +250,7 @@ function CoworkersPage() {
 						hideOnSinglePage: true,
 						onChange: handlePageChange
 					}}
-					loading={mutation.isLoading}
+					loading={mutation.isLoading || isFetching}
 				/>
 			</Card>
 		</div>
