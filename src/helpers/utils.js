@@ -146,8 +146,8 @@ export const csvFileToArray = string => {
 
 	const array = csvRows?.map(i => {
 		const values = i?.split(",");
-		const obj = csvHeader.reduce((object, header, index) => {
-			object[header] = values[index];
+		const obj = csvHeader?.reduce((object, header, index) => {
+			object[header.replaceAll('"', "")] = values[index].replaceAll('"', "");
 			return object;
 		}, {});
 		return obj;

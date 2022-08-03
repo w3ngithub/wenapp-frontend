@@ -13,7 +13,7 @@ import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
-import ImportUsers from "./importUsers";
+import ImportUsers from "./ImportUsers";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -39,11 +39,11 @@ function CoworkersPage() {
 	const [role, setRole] = useState(undefined);
 	const [name, setName] = useState("");
 	const [userRecord, setUserRecord] = useState({});
-	const queryClient = useQueryClient();
 	const [readOnly, setReadOnly] = useState(false);
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [openImport, setOpenImport] = useState(false);
 	const [files, setFiles] = useState([]);
+	const queryClient = useQueryClient();
 
 	const activeUserRef = useRef("");
 	const nameRef = useRef("");
