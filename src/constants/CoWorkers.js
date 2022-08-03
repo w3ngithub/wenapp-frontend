@@ -10,7 +10,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 		sorter: (a, b) => {
 			return a.name.toString().localeCompare(b.name.toString());
 		},
-		sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order,
+		sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order
 	},
 	{
 		title: "Email",
@@ -18,13 +18,13 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 		key: "email",
 		width: 150,
 		sorter: (a, b) => a.email.toString().localeCompare(b.email.toString()),
-		sortOrder: sortedInfo.columnKey === "email" && sortedInfo.order,
+		sortOrder: sortedInfo.columnKey === "email" && sortedInfo.order
 	},
 	{
 		title: "Primary Phone",
 		dataIndex: "primaryPhone",
 		width: 150,
-		key: "primaryPhone",
+		key: "primaryPhone"
 	},
 	{
 		title: "DOB",
@@ -32,7 +32,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 		width: 150,
 		key: "dob",
 		sorter: (a, b) => new Date(a.dob) - new Date(b.dob),
-		sortOrder: sortedInfo.columnKey === "dob" && sortedInfo.order,
+		sortOrder: sortedInfo.columnKey === "dob" && sortedInfo.order
 	},
 	{
 		title: "Join Date",
@@ -40,7 +40,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 		width: 150,
 		key: "joinDate",
 		sorter: (a, b) => new Date(a.joinDate) - new Date(b.joinDate),
-		sortOrder: sortedInfo.columnKey === "joinDate" && sortedInfo.order,
+		sortOrder: sortedInfo.columnKey === "joinDate" && sortedInfo.order
 	},
 	{
 		title: "Action",
@@ -58,7 +58,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 						onClick={() => {
 							mutation.mutate({
 								userId: record._id,
-								updatedData: { active: !record.active },
+								updatedData: { active: !record.active }
 							});
 						}}
 					>
@@ -78,8 +78,8 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 					)}
 				</span>
 			);
-		},
-	},
+		}
+	}
 ];
 
 export { CO_WORKERCOLUMNS };
