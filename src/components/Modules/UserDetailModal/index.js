@@ -99,7 +99,7 @@ function UserDetailForm({
 						hasFeedback={readOnly ? false : true}
 					>
 						{getFieldDecorator("name", {
-							rules: [{ required: true, message: "required!" }]
+							rules: [{ required: true, message: "Required!" }]
 						})(<Input placeholder="Enter Name" disabled={readOnly} />)}
 					</FormItem>
 					<FormItem
@@ -108,7 +108,7 @@ function UserDetailForm({
 						hasFeedback={readOnly ? false : true}
 					>
 						{getFieldDecorator("role", {
-							rules: [{ required: true, message: "required!" }]
+							rules: [{ required: true, message: "Required!" }]
 						})(
 							<Select placeholder="Select Role" disabled={readOnly}>
 								{roles &&
@@ -129,7 +129,7 @@ function UserDetailForm({
 							rules: [
 								{
 									required: true,
-									message: "required!"
+									message: "Required!"
 								}
 							]
 						})(
@@ -156,7 +156,7 @@ function UserDetailForm({
 							rules: [
 								{
 									type: "object",
-									message: "required!",
+									message: "Required!",
 									whitespace: true
 								}
 							]
@@ -171,7 +171,7 @@ function UserDetailForm({
 							rules: [
 								{
 									type: "object",
-									message: "required!",
+									message: "Required!",
 									whitespace: true
 								}
 							]
