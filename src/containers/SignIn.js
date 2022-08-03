@@ -85,7 +85,7 @@ function SignIn(props) {
 									rules: [
 										{ required: true, message: "Please input your Password!" }
 									]
-								})(<Input type="password" placeholder="Password" />)}
+								})(<Input.Password type="password" placeholder="Password" />)}
 							</FormItem>
 							<FormItem>
 								{getFieldDecorator("remember", {

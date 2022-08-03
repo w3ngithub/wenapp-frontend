@@ -1,82 +1,133 @@
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Card, Table, Form, Switch, Radio, Select } from "antd";
+import React, { useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Card, Table, Form, Radio, Select, Input, Button } from "antd";
+import moment from "moment";
+import { CSVLink } from "react-csv";
 import {
 	getAllUsers,
 	getUserPosition,
-	getUserRoles
+	getUserRoles,
+	updateUser,
 } from "services/users/userDetails";
 import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import CircularProgress from "components/Elements/CircularProgress";
+import { changeDate } from "helpers/utils";
 
+const Search = Input.Search;
 const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formattedUsers = (users, isAdmin) => {
-	return users.map(user => ({
+	return users.map((user) => ({
 		...user,
 		key: user._id,
 		dob: changeDate(user.dob),
 		joinDate: changeDate(user.joinDate),
-		isAdmin
+		isAdmin,
 	}));
 };
-
-function changeDate(d) {
-	const date = new Date(d);
-	let dd = date.getDate();
-	let mm = date.getMonth() + 1;
-	const yyyy = date.getFullYear();
-	if (dd < 10) {
-		dd = `0${dd}`;
-	}
-	if (mm < 10) {
-		mm = `0${mm}`;
-	}
-	return `${dd}/${mm}/${yyyy}`;
-}
 
 function CoworkersPage() {
 	// init hooks
 	const [sort, setSort] = useState({});
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
-	const [activeUser, setActiveUser] = useState(true);
+	const [activeUser, setActiveUser] = useState("");
+	const [position, setPosition] = useState(undefined);
+	const [role, setRole] = useState(undefined);
+	const [name, setName] = useState("");
+	const [userRecord, setUserRecord] = useState({});
+	const queryClient = useQueryClient();
+	const [readOnly, setReadOnly] = useState(false);
+	const [selectedRows, setSelectedRows] = useState([]);
+
+	const activeUserRef = useRef("");
+	const nameRef = useRef("");
 
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id"));
 
-	const { data, isLoading, isError } = useQuery(
-		["users", page],
-		() => getAllUsers(page),
-		{ keepPreviousData: true }
-	);
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
 	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
+	const { data, isLoading, isError } = useQuery(
+		["users", page, activeUser, role, position, name],
+		() => getAllUsers({ ...page, active: activeUser, role, position, name }),
+		{ keepPreviousData: true }
+	);
 
-	const handleToggleModal = () => {
-		setOpenUserDetailModal(prev => !prev);
+	const mutation = useMutation(
+		(updatedUser) => updateUser(updatedUser.userId, updatedUser.updatedData),
+		{
+			onSuccess: () => {
+				queryClient.invalidateQueries(["users"]);
+			},
+		}
+	);
+
+	const handleToggleModal = (userRecordToUpdate, mode) => {
+		setOpenUserDetailModal((prev) => !prev);
+		setUserRecord(userRecordToUpdate);
+		setReadOnly(mode);
 	};
 
-	const handleUserDetailSubmit = user => {
-		console.log(user);
+	const handleUserDetailSubmit = (user, reset) => {
+		const userTofind = data.data.data.data.find((x) => x._id === user._id);
+		mutation.mutate({
+			userId: user._id,
+			updatedData: {
+				...user,
+				dob: user.dob ? userTofind.dob : undefined,
+				joinDate: user.joinDate ? userTofind.joinDate : undefined,
+				lastReviewDate: user.lastReviewDate
+					? moment.utc(user.lastReviewDate).format()
+					: undefined,
+				exitDate: user.exitDate
+					? moment.utc(user.exitDate).format()
+					: undefined,
+			},
+		});
+		reset.form.resetFields();
+		handleToggleModal({});
+		setReadOnly(false);
 	};
 
 	const handleTableChange = (pagination, filters, sorter) => {
 		setSort(sorter);
 	};
 
-	const handlePageChange = pageNumber => {
-		setPage(prev => ({ ...prev, page: pageNumber }));
+	const handlePageChange = (pageNumber) => {
+		setPage((prev) => ({ ...prev, page: pageNumber }));
 	};
 
 	const onShowSizeChange = (_, pageSize) => {
-		setPage(prev => ({ ...page, limit: pageSize }));
+		setPage((prev) => ({ ...page, limit: pageSize }));
 	};
 
-	const setActiveInActiveUsers = e => {
+	const setActiveInActiveUsers = (e) => {
 		setActiveUser(e.target.value === "active" ? true : false);
+	};
+
+	const handleRoleChange = (roleId) => {
+		setRole(roleId);
+	};
+
+	const handlePositionChange = (positionId) => {
+		setPosition(positionId);
+	};
+
+	const handleResetFilter = () => {
+		setName("");
+		setRole(undefined);
+		setPosition(undefined);
+		setActiveUser("");
+		setSelectedRows([]);
+		nameRef.current.input.state.value = "";
+		activeUserRef.current.state.value = undefined;
+	};
+
+	const handleRowSelect = (rows) => {
+		setSelectedRows(rows);
 	};
 
 	if (isLoading) {
@@ -89,61 +140,118 @@ function CoworkersPage() {
 				toggle={openUserDetailModal}
 				onToggleModal={handleToggleModal}
 				onSubmit={handleUserDetailSubmit}
+				roles={roleData}
+				position={positionData}
+				intialValues={userRecord}
+				readOnly={readOnly}
 			/>
 			<Card title="Co-workers">
 				<div className="components-table-demo-control-bar">
-					<Form layout="inline">
-						<FormItem label="Filter Users By">
-							<Radio.Group
-								buttonStyle="solid"
-								onChange={setActiveInActiveUsers}
+					<Search
+						placeholder="Search Users"
+						onSearch={(value) => setName(value)}
+						style={{ width: 200 }}
+						enterButton
+						ref={nameRef}
+					/>
+					<div className="gx-d-flex gx-justify-content-between">
+						<Form layout="inline">
+							<FormItem>
+								<Select
+									placeholder="Select Role"
+									style={{ width: 200 }}
+									onChange={handleRoleChange}
+									value={role}
+								>
+									{roleData &&
+										roleData.data.data.data.map((role) => (
+											<Option value={role._id} key={role._id}>
+												{role.value}
+											</Option>
+										))}
+								</Select>
+							</FormItem>
+							<FormItem>
+								<Select
+									placeholder="Select Position"
+									style={{ width: 200 }}
+									onChange={handlePositionChange}
+									value={position}
+								>
+									{positionData &&
+										positionData.data.data.data.map((position) => (
+											<Option value={position._id} key={position._id}>
+												{position.name}
+											</Option>
+										))}
+								</Select>
+							</FormItem>
+							<FormItem>
+								<Radio.Group
+									buttonStyle="solid"
+									onChange={setActiveInActiveUsers}
+									ref={activeUserRef}
+								>
+									<Radio.Button value="active">Active</Radio.Button>
+									<Radio.Button value="inactive">Inactive</Radio.Button>
+								</Radio.Group>
+							</FormItem>
+							<FormItem>
+								<Button
+									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+									onClick={handleResetFilter}
+								>
+									Reset
+								</Button>
+							</FormItem>
+						</Form>
+						<CSVLink
+							filename={"co-workers"}
+							data={[
+								["Name", "Role", "Position", "DOB", "Email"],
+								...data?.data?.data?.data
+									?.filter((x) => selectedRows.includes(x._id))
+									.map((d) => [
+										d?.name,
+										d?.role.value,
+										d?.position.name,
+										d?.dob,
+										d?.email,
+									]),
+							]}
+						>
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								disabled={selectedRows.length === 0}
 							>
-								<Radio.Button value="active">Active</Radio.Button>
-								<Radio.Button value="inactive">Inactive</Radio.Button>
-							</Radio.Group>
-						</FormItem>
-						<FormItem>
-							<Select placeholder="Select Role" style={{ width: 200 }}>
-								{roleData &&
-									roleData.data.data.data.map(role => (
-										<Option value={role.value} key={role._id}>
-											{role.value}
-										</Option>
-									))}
-							</Select>
-						</FormItem>
-						<FormItem>
-							<Select placeholder="Select Position" style={{ width: 200 }}>
-								{positionData &&
-									positionData.data.data.data.map(role => (
-										<Option value={role.name} key={role._id}>
-											{role.name}
-										</Option>
-									))}
-							</Select>
-						</FormItem>
-					</Form>
+								Export
+							</Button>
+						</CSVLink>
+					</div>
 				</div>
 				<Table
 					className="gx-table-responsive"
-					columns={CO_WORKERCOLUMNS(sort, handleToggleModal)}
+					columns={CO_WORKERCOLUMNS(sort, handleToggleModal, mutation)}
 					dataSource={formattedUsers(
 						data.data.data.data,
 						user.role.key === "admin"
 					)}
 					onChange={handleTableChange}
-					rowSelection={{}}
+					rowSelection={{
+						onChange: handleRowSelect,
+						selectedRowKeys: selectedRows,
+					}}
 					pagination={{
 						current: page.page,
 						pageSize: page.limit,
 						pageSizeOptions: ["5", "10", "20", "50"],
 						showSizeChanger: true,
-						total: 20,
+						total: 25,
 						onShowSizeChange,
 						hideOnSinglePage: true,
-						onChange: handlePageChange
+						onChange: handlePageChange,
 					}}
-					loading={isLoading}
+					loading={mutation.isLoading}
 				/>
 			</Card>
 		</div>

@@ -3,7 +3,7 @@ import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
 // login user api
-const loginInUsers = async loginDetail => {
+const loginInUsers = async (loginDetail) => {
 	try {
 		let response = await API.post(`${Apis.Users}/login`, loginDetail);
 		return getAPIResponse(response);
@@ -26,11 +26,15 @@ const getAllUsers = async ({
 	page = "",
 	sort = "",
 	limit = "",
-	fields = ""
+	fields = "",
+	name = "",
+	role = "",
+	position = "",
+	active = "",
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.Users}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+			`${Apis.Users}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&name=${name}&role=${role}&position=${position}&active=${active}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -56,7 +60,7 @@ const getUserPosition = async () => {
 	}
 };
 
-const updateProfile = async payload => {
+const updateProfile = async (payload) => {
 	try {
 		let response = await API.patch(`${Apis.Profile}`, payload);
 		return getAPIResponse(response);
@@ -71,5 +75,6 @@ export {
 	logoutUser,
 	getUserRoles,
 	getUserPosition,
-	updateProfile
+	updateProfile,
+	updateUser,
 };

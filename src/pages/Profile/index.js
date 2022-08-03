@@ -21,26 +21,26 @@ export const aboutList = [
 		id: 1,
 		title: "Email",
 		icon: "email",
-		name: "email"
+		name: "email",
 	},
 	{
 		id: 2,
 		title: "Gender",
 		icon: "user-o",
-		name: "gender"
+		name: "gender",
 	},
 	{
 		id: 3,
 		title: "Phone",
 		icon: "phone",
-		name: "primaryPhone"
+		name: "primaryPhone",
 	},
 	{
 		id: 4,
 		title: "Marital Status",
 		icon: "home",
-		name: "maritalStatus"
-	}
+		name: "maritalStatus",
+	},
 ];
 
 function Profile() {
@@ -52,7 +52,7 @@ function Profile() {
 	);
 	const [openModal, setOpenModal] = useState(false);
 	const mutation = useMutation(updateProfile, {
-		onError: error => {
+		onError: (error) => {
 			console.log(error);
 		},
 		onSuccess: (data, variables, context) => {
@@ -62,22 +62,22 @@ function Profile() {
 				JSON.stringify({ user: data.data.data.user })
 			);
 			setOpenModal(false);
-		}
+		},
 	});
 
-	const aboutData = aboutList.map(about => ({
+	const aboutData = aboutList.map((about) => ({
 		...about,
-		desc: user.user[about.name]
+		desc: user.user[about.name],
 	}));
 
-	const handleProfileUpdate = user => {
+	const handleProfileUpdate = (user) => {
 		console.log(user);
 		const updatedUser = {
 			...user,
 			dob: moment.utc(user.dob._d).format(),
 			joinDate: moment.utc(user.joinDate._d).format(),
 			primaryPhone: +user.primaryPhone,
-			secondaryPhone: +user.secondaryPhone || undefined
+			secondaryPhone: +user.secondaryPhone || undefined,
 		};
 
 		mutation.mutate(updatedUser);

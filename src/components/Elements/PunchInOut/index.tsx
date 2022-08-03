@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "antd";
 import LiveTime from "./../LiveTime/index";
 
-function index() {
+function PunchInOut() {
 	const [punch, setPunch] = useState<string>("Punch In  ");
 
 	const handlePunch = (): void => {
@@ -23,4 +23,4 @@ function index() {
 	);
 }
 
-export default index;
+export default PunchInOut;

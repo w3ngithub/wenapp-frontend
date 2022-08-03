@@ -1,7 +1,7 @@
 import React from "react";
 import { Divider } from "antd";
 
-const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup) => [
+const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 	{
 		title: "Name",
 		dataIndex: "name",
@@ -10,7 +10,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup) => [
 		sorter: (a, b) => {
 			return a.name.toString().localeCompare(b.name.toString());
 		},
-		sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order
+		sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order,
 	},
 	{
 		title: "Email",
@@ -18,13 +18,13 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup) => [
 		key: "email",
 		width: 150,
 		sorter: (a, b) => a.email.toString().localeCompare(b.email.toString()),
-		sortOrder: sortedInfo.columnKey === "email" && sortedInfo.order
+		sortOrder: sortedInfo.columnKey === "email" && sortedInfo.order,
 	},
 	{
 		title: "Primary Phone",
 		dataIndex: "primaryPhone",
 		width: 150,
-		key: "primaryPhone"
+		key: "primaryPhone",
 	},
 	{
 		title: "DOB",
@@ -32,7 +32,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup) => [
 		width: 150,
 		key: "dob",
 		sorter: (a, b) => new Date(a.dob) - new Date(b.dob),
-		sortOrder: sortedInfo.columnKey === "dob" && sortedInfo.order
+		sortOrder: sortedInfo.columnKey === "dob" && sortedInfo.order,
 	},
 	{
 		title: "Join Date",
@@ -40,7 +40,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup) => [
 		width: 150,
 		key: "joinDate",
 		sorter: (a, b) => new Date(a.joinDate) - new Date(b.joinDate),
-		sortOrder: sortedInfo.columnKey === "joinDate" && sortedInfo.order
+		sortOrder: sortedInfo.columnKey === "joinDate" && sortedInfo.order,
 	},
 	{
 		title: "Action",
@@ -49,22 +49,37 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup) => [
 		render: (text, record) => {
 			return (
 				<span>
-					<span className="gx-link">View Details</span>
+					<span className="gx-link" onClick={() => openEditPopup(record, true)}>
+						View Details
+					</span>
 					<Divider type="vertical" />
-					<span className="gx-link">Make User Inactive</span>
+					<span
+						className="gx-link"
+						onClick={() => {
+							mutation.mutate({
+								userId: record._id,
+								updatedData: { active: !record.active },
+							});
+						}}
+					>
+						Make User {record.active ? "Inactive" : "Active"}
+					</span>
 					{record.isAdmin && (
 						<>
 							{" "}
 							<Divider type="vertical" />
-							<span className="gx-link" onClick={openEditPopup}>
+							<span
+								className="gx-link"
+								onClick={() => openEditPopup(record, false)}
+							>
 								Edit
 							</span>
 						</>
 					)}
 				</span>
 			);
-		}
-	}
+		},
+	},
 ];
 
 export { CO_WORKERCOLUMNS };

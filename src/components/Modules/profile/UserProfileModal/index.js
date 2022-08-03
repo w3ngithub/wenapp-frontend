@@ -9,12 +9,12 @@ const Option = Select.Option;
 const formItemLayout = {
 	labelCol: {
 		xs: { span: 0 },
-		sm: { span: 8 }
+		sm: { span: 8 },
 	},
 	wrapperCol: {
 		xs: { span: 0 },
-		sm: { span: 16 }
-	}
+		sm: { span: 16 },
+	},
 };
 
 function UserProfileModal({
@@ -52,7 +52,7 @@ function UserProfileModal({
 				primaryPhone: String(user.primaryPhone),
 				secondaryPhone: String(user.secondaryPhone || ""),
 				joinDate: moment(user.joinDate),
-				maritalStatus: user.maritalStatus
+				maritalStatus: user.maritalStatus,
 			});
 	}, [toggle]);
 	return (
@@ -67,14 +67,14 @@ function UserProfileModal({
 				</Button>,
 				<Button key="submit" type="primary" onClick={handleSubmit}>
 					Submit
-				</Button>
+				</Button>,
 			]}
 		>
 			<Spin spinning={isLoading}>
 				<Form>
 					<FormItem {...formItemLayout} label="Name">
 						{getFieldDecorator("name", {
-							rules: [{ required: true, message: "required!" }]
+							rules: [{ required: true, message: "required!" }],
 						})(<Input placeholder="Enter Name" />)}
 					</FormItem>
 					<FormItem {...formItemLayout} label="Profile Photo">
@@ -93,9 +93,9 @@ function UserProfileModal({
 									type: "object",
 									required: true,
 									message: "required!",
-									whitespace: true
-								}
-							]
+									whitespace: true,
+								},
+							],
 						})(<DatePicker className=" gx-w-100" />)}
 					</FormItem>
 
@@ -105,9 +105,9 @@ function UserProfileModal({
 								{
 									required: true,
 									message: "required!",
-									whitespace: true
-								}
-							]
+									whitespace: true,
+								},
+							],
 						})(
 							<Select placeholder="Select Gender">
 								<Option value="Male">Male</Option>
@@ -121,9 +121,9 @@ function UserProfileModal({
 								{
 									required: true,
 									message: "required!",
-									whitespace: true
-								}
-							]
+									whitespace: true,
+								},
+							],
 						})(<Input placeholder="Enter Primary Phone" />)}
 					</FormItem>
 					<FormItem {...formItemLayout} label="Secondary Phone">
@@ -131,9 +131,9 @@ function UserProfileModal({
 							rules: [
 								{
 									message: "field must be a number!",
-									whitespace: true
-								}
-							]
+									whitespace: true,
+								},
+							],
 						})(<Input placeholder="Enter Secondary Phone" />)}
 					</FormItem>
 
@@ -144,9 +144,9 @@ function UserProfileModal({
 									type: "object",
 									required: true,
 									message: "required!",
-									whitespace: true
-								}
-							]
+									whitespace: true,
+								},
+							],
 						})(<DatePicker className=" gx-w-100" />)}
 					</FormItem>
 					<FormItem {...formItemLayout} label="Marital Status">
@@ -155,9 +155,9 @@ function UserProfileModal({
 								{
 									required: true,
 									message: "required!",
-									whitespace: true
-								}
-							]
+									whitespace: true,
+								},
+							],
 						})(
 							<Select placeholder="Select Marital Status">
 								<Option value="Married">Married</Option>
