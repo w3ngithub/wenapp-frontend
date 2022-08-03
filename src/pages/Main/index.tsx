@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-// import URLSearchParams from "url-search-params";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { LocaleProvider } from "antd";
 import { IntlProvider } from "react-intl";
 
