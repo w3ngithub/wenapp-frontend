@@ -9,8 +9,8 @@ const instance = axios.create({
 			? process.env.REACT_APP_API_ENDPOINT
 			: "https://localhost:44310",
 	headers: {
-		common: { "x-team-access": process.env.REACT_APP_API_TEAM_ACCESS_KEY }
-	}
+		common: { "x-team-access": process.env.REACT_APP_API_TEAM_ACCESS_KEY },
+	},
 });
 
 // Setting auth (if JWT present)

@@ -6,6 +6,9 @@ import Auxiliary from "util/Auxiliary";
 import ProfileHeader from "components/Modules/profile/ProfileHeader";
 import User from "types/user";
 import UserProfileModal from "components/Modules/profile/UserProfileModal";
+import { useMutation } from "@tanstack/react-query";
+import { updateProfile } from "services/users/userDetails";
+import moment from "moment";
 
 // {
 // 	id: number,
@@ -18,39 +21,67 @@ export const aboutList = [
 		id: 1,
 		title: "Email",
 		icon: "email",
-		name: "email"
+		name: "email",
 	},
 	{
 		id: 2,
 		title: "Gender",
 		icon: "user-o",
-		name: "gender"
+		name: "gender",
 	},
 	{
 		id: 3,
 		title: "Phone",
 		icon: "phone",
-		name: "primaryPhone"
+		name: "primaryPhone",
 	},
 	{
 		id: 4,
 		title: "Marital Status",
 		icon: "home",
-		name: "maritalStatus"
-	}
+		name: "maritalStatus",
+	},
 ];
 
 function Profile() {
 	// const user: { user: User } = JSON.parse(
 	// 	localStorage.getItem("user_id") || ""
 	// );
-	const user = JSON.parse(localStorage.getItem("user_id") || "");
+	const [user, setUser] = useState(
+		JSON.parse(localStorage.getItem("user_id") || "")
+	);
 	const [openModal, setOpenModal] = useState(false);
+	const mutation = useMutation(updateProfile, {
+		onError: (error) => {
+			console.log(error);
+		},
+		onSuccess: (data, variables, context) => {
+			setUser(data.data.data);
+			localStorage.setItem(
+				"user_id",
+				JSON.stringify({ user: data.data.data.user })
+			);
+			setOpenModal(false);
+		},
+	});
 
-	const aboutData = aboutList.map(about => ({
+	const aboutData = aboutList.map((about) => ({
 		...about,
-		desc: user.user[about.name]
+		desc: user.user[about.name],
 	}));
+
+	const handleProfileUpdate = (user) => {
+		console.log(user);
+		const updatedUser = {
+			...user,
+			dob: moment.utc(user.dob._d).format(),
+			joinDate: moment.utc(user.joinDate._d).format(),
+			primaryPhone: +user.primaryPhone,
+			secondaryPhone: +user.secondaryPhone || undefined,
+		};
+
+		mutation.mutate(updatedUser);
+	};
 
 	return (
 		<>
@@ -58,6 +89,8 @@ function Profile() {
 				toggle={openModal}
 				onToggle={setOpenModal}
 				user={user.user}
+				onSubmit={handleProfileUpdate}
+				isLoading={mutation.isLoading}
 			/>
 
 			<Auxiliary>
@@ -71,10 +104,6 @@ function Profile() {
 							<About data={aboutData} />
 							<Biography />
 						</Col>
-
-						{/* <Col xl={8} lg={10} md={10} sm={24} xs={24}>
-						<Contact />
-					</Col> */}
 					</Row>
 				</div>
 			</Auxiliary>
