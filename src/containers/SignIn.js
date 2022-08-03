@@ -69,7 +69,7 @@ function SignIn(props) {
 							onSubmit={handleSubmit}
 							className="gx-signin-form gx-form-row0"
 						>
-							<FormItem label="Email">
+							<FormItem label="Email" hasFeedback>
 								{getFieldDecorator("email", {
 									rules: [
 										{
@@ -80,7 +80,7 @@ function SignIn(props) {
 									]
 								})(<Input placeholder="Email" />)}
 							</FormItem>
-							<FormItem label="Password">
+							<FormItem label="Password" hasFeedback>
 								{getFieldDecorator("password", {
 									rules: [
 										{ required: true, message: "Please input your Password!" }

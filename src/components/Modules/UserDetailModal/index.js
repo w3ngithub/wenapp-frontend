@@ -92,12 +92,21 @@ function UserDetailForm({
 		>
 			<Spin spinning={loading}>
 				<Form>
-					<FormItem {...formItemLayout} label="Name" name="name">
+					<FormItem
+						{...formItemLayout}
+						label="Name"
+						name="name"
+						hasFeedback={readOnly ? false : true}
+					>
 						{getFieldDecorator("name", {
 							rules: [{ required: true, message: "required!" }]
 						})(<Input placeholder="Enter Name" disabled={readOnly} />)}
 					</FormItem>
-					<FormItem {...formItemLayout} label="Role">
+					<FormItem
+						{...formItemLayout}
+						label="Role"
+						hasFeedback={readOnly ? false : true}
+					>
 						{getFieldDecorator("role", {
 							rules: [{ required: true, message: "required!" }]
 						})(
@@ -111,7 +120,11 @@ function UserDetailForm({
 							</Select>
 						)}
 					</FormItem>
-					<FormItem {...formItemLayout} label="Position">
+					<FormItem
+						{...formItemLayout}
+						label="Position"
+						hasFeedback={readOnly ? false : true}
+					>
 						{getFieldDecorator("position", {
 							rules: [
 								{
@@ -120,7 +133,11 @@ function UserDetailForm({
 								}
 							]
 						})(
-							<Select placeholder="Select Position" disabled={readOnly}>
+							<Select
+								placeholder="Select Position"
+								disabled={readOnly}
+								hasFeedback={readOnly ? false : true}
+							>
 								{position &&
 									position.data.data.data.map(position => (
 										<Option value={position._id} key={position._id}>
@@ -130,7 +147,11 @@ function UserDetailForm({
 							</Select>
 						)}
 					</FormItem>
-					<FormItem {...formItemLayout} label="Last Review Date">
+					<FormItem
+						{...formItemLayout}
+						label="Last Review Date"
+						hasFeedback={readOnly ? false : true}
+					>
 						{getFieldDecorator("lastReviewDate", {
 							rules: [
 								{
@@ -141,7 +162,11 @@ function UserDetailForm({
 							]
 						})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
 					</FormItem>
-					<FormItem {...formItemLayout} label="Exit Date">
+					<FormItem
+						{...formItemLayout}
+						label="Exit Date"
+						hasFeedback={readOnly ? false : true}
+					>
 						{getFieldDecorator("exitDate", {
 							rules: [
 								{
@@ -152,7 +177,11 @@ function UserDetailForm({
 							]
 						})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
 					</FormItem>
-					<FormItem {...formItemLayout} label="Pan Number">
+					<FormItem
+						{...formItemLayout}
+						label="Pan Number"
+						hasFeedback={readOnly ? false : true}
+					>
 						{getFieldDecorator("panNumber", {
 							rules: [
 								{
@@ -168,7 +197,11 @@ function UserDetailForm({
 							/>
 						)}
 					</FormItem>
-					<FormItem {...formItemLayout} label="CIT Number">
+					<FormItem
+						{...formItemLayout}
+						label="CIT Number"
+						hasFeedback={readOnly ? false : true}
+					>
 						{getFieldDecorator("citNumber", {
 							rules: [
 								{
@@ -184,13 +217,21 @@ function UserDetailForm({
 							/>
 						)}
 					</FormItem>
-					<FormItem {...formItemLayout} label="Bank Name">
+					<FormItem
+						{...formItemLayout}
+						label="Bank Name"
+						hasFeedback={readOnly ? false : true}
+					>
 						{getFieldDecorator(
 							"bankName",
 							{}
 						)(<Input placeholder="Enter Bank Name" disabled={readOnly} />)}
 					</FormItem>
-					<FormItem {...formItemLayout} label="Bank Account Number">
+					<FormItem
+						{...formItemLayout}
+						label="Bank Account Number"
+						hasFeedback={readOnly ? false : true}
+					>
 						{getFieldDecorator(
 							"bankAccNumber",
 							{}
