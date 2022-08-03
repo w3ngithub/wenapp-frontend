@@ -24,7 +24,14 @@ function UserInfo(props) {
 				Profile
 			</li>
 			<li>Change Password</li>
-			<li onClick={() => props.userSignOut()}>Logout</li>
+			<li
+				onClick={() => {
+					handleVisibleChange(false);
+					props.userSignOut();
+				}}
+			>
+				Logout
+			</li>
 		</ul>
 	);
 

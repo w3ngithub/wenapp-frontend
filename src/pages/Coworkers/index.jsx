@@ -13,6 +13,7 @@ import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
+import ImportUser from "./ImportUsers";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -41,6 +42,8 @@ function CoworkersPage() {
 	const queryClient = useQueryClient();
 	const [readOnly, setReadOnly] = useState(false);
 	const [selectedRows, setSelectedRows] = useState([]);
+	const [openImport, setOpenImport] = useState(false);
+	const [files, setFiles] = useState([]);
 
 	const activeUserRef = useRef("");
 	const nameRef = useRef("");
@@ -128,12 +131,21 @@ function CoworkersPage() {
 		setSelectedRows(rows);
 	};
 
+	const handleImportUser = () => {};
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}
 
 	return (
 		<div>
+			<ImportUser
+				toggle={openImport}
+				onSubmit={handleImportUser}
+				onClose={() => setOpenImport(false)}
+				files={files}
+				setFiles={setFiles}
+			/>
 			<UserDetailForm
 				toggle={openUserDetailModal}
 				onToggleModal={handleToggleModal}
@@ -153,7 +165,7 @@ function CoworkersPage() {
 						enterButton
 						ref={nameRef}
 					/>
-					<div className="gx-d-flex gx-justify-content-between">
+					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline">
 							<FormItem>
 								<Select
@@ -204,28 +216,36 @@ function CoworkersPage() {
 								</Button>
 							</FormItem>
 						</Form>
-						<CSVLink
-							filename={"co-workers"}
-							data={[
-								["Name", "Role", "Position", "DOB", "Email"],
-								...data?.data?.data?.data
-									?.filter(x => selectedRows.includes(x._id))
-									.map(d => [
-										d?.name,
-										d?.role.value,
-										d?.position.name,
-										d?.dob,
-										d?.email
-									])
-							]}
-						>
+						<div>
 							<Button
 								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-								disabled={selectedRows.length === 0}
+								onClick={() => setOpenImport(true)}
 							>
-								Export
+								Import
 							</Button>
-						</CSVLink>
+							<CSVLink
+								filename={"co-workers"}
+								data={[
+									["Name", "Role", "Position", "DOB", "Email"],
+									...data?.data?.data?.data
+										?.filter(x => selectedRows.includes(x._id))
+										.map(d => [
+											d?.name,
+											d?.role.value,
+											d?.position.name,
+											d?.dob,
+											d?.email
+										])
+								]}
+							>
+								<Button
+									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+									disabled={selectedRows.length === 0}
+								>
+									Export
+								</Button>
+							</CSVLink>
+						</div>
 					</div>
 				</div>
 				<Table
