@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
-import { Button, DatePicker, Form, Input, Modal, Select } from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, DatePicker, Input, Modal, Select } from "antd";
 import { getUserRoles } from "services/users/userDetails";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
@@ -69,7 +71,7 @@ function UserDetailForm({
 	}, [toggle]);
 
 	return (
-		<Modal
+        <Modal
 			title={readOnly ? "Details" : "Update User"}
 			visible={toggle}
 			onOk={handleSubmit}
@@ -203,7 +205,7 @@ function UserDetailForm({
 				</FormItem>
 			</Form>
 		</Modal>
-	);
+    );
 }
 
 const UserForm = Form.create()(UserDetailForm);

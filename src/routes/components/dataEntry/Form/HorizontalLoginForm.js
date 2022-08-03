@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Button, Card, Checkbox, Form, Icon, Input, message } from "antd";
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Card, Checkbox, Input, message } from "antd";
 
 import { hideMessage, showAuthLoader, userSignIn } from "appRedux/actions/Auth";
 import "./horizontalLoginForm.less";
@@ -33,7 +36,7 @@ class HorizontalLoginForm extends Component {
 		const { showMessage, loader, alertMessage } = this.props;
 
 		return (
-			<Card className="gx-card" title="Horizontal Login Form">
+            <Card className="gx-card" title="Horizontal Login Form">
 				<Form
 					onSubmit={this.handleSubmit}
 					className="gx-login-form gx-form-row0"
@@ -44,7 +47,7 @@ class HorizontalLoginForm extends Component {
 						})(
 							<Input
 								prefix={
-									<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
+									<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />
 								}
 								placeholder="Email"
 							/>
@@ -58,7 +61,7 @@ class HorizontalLoginForm extends Component {
 						})(
 							<Input
 								prefix={
-									<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
+									<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />
 								}
 								type="password"
 								placeholder="Password"
@@ -89,7 +92,7 @@ class HorizontalLoginForm extends Component {
 				)}
 				{showMessage && message.error(alertMessage)}
 			</Card>
-		);
+        );
 	}
 }
 

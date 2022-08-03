@@ -1,5 +1,7 @@
 import React, {Component} from "react";
-import {Button, Card, Col, Form, Icon, Input, Row} from "antd";
+import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Card, Col, Input, Row } from "antd";
 
 
 const FormItem = Form.Item;
@@ -63,7 +65,7 @@ class AdvancedSearch extends Component {
                 Clear
               </Button>
               <span className="gx-link gx-btn-link gx-ml-2" onClick={this.toggle}>
-                Collapse <Icon type={this.state.expand ? 'up' : 'down'}/>
+                Collapse <LegacyIcon type={this.state.expand ? 'up' : 'down'}/>
               </span>
             </Col>
           </Row>

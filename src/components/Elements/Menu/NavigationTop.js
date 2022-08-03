@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import {Card, Icon, Menu} from "antd";
+import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
+import { Card, Menu } from "antd";
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -25,12 +26,12 @@ class NavigationTop extends Component {
           mode="horizontal"
         >
           <Menu.Item key="mail">
-            <Icon type="mail"/>Navigation One
+            <MailOutlined />Navigation One
           </Menu.Item>
           <Menu.Item key="app" disabled>
-            <Icon type="appstore"/>Navigation Two
+            <AppstoreOutlined />Navigation Two
           </Menu.Item>
-          <SubMenu title={<span><Icon type="setting"/>Navigation Three - Submenu</span>}>
+          <SubMenu title={<span><SettingOutlined />Navigation Three - Submenu</span>}>
             <MenuItemGroup title="Item 1">
               <Menu.Item key="setting:1">Option 1</Menu.Item>
               <Menu.Item key="setting:2">Option 2</Menu.Item>

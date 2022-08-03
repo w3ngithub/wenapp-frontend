@@ -1,5 +1,8 @@
 import React from "react";
-import {Card, Divider, Form, Icon, Radio, Switch, Table} from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Card, Divider, Radio, Switch, Table } from "antd";
 
 const FormItem = Form.Item;
 
@@ -29,7 +32,7 @@ const columns = [{
       <span className="gx-link">Delete</span>
       <Divider type="vertical"/>
       <span className="gx-link ant-dropdown-link">
-        More actions <Icon type="down"/>
+        More actions <DownOutlined />
       </span>
     </span>
   ),

@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Icon, Modal, Upload} from "antd";
+import { PlusOutlined } from '@ant-design/icons';
+import { Card, Modal, Upload } from "antd";
 
 class UploadPicture extends React.Component {
   state = {
@@ -28,7 +29,7 @@ class UploadPicture extends React.Component {
     const {previewVisible, previewImage, fileList} = this.state;
     const uploadButton = (
       <div>
-        <Icon type="plus"/>
+        <PlusOutlined />
         <div className="ant-upload-text">Upload</div>
       </div>
     );

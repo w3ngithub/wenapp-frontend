@@ -2,11 +2,13 @@
 .ant-btn {
 
   line-height: @btn-height-base - 2px;
+  padding: 0 15px;
+  border-radius: 4px !important;
 
   &-sm {
     line-height: @btn-height-sm;
 
-    .ant-btn-group > & {
+    .ant-btn-group>& {
       line-height: @btn-height-sm;
     }
   }
@@ -14,7 +16,7 @@
   &-lg {
     line-height: @btn-height-lg;
 
-    .ant-btn-group > & {
+    .ant-btn-group>& {
       line-height: @btn-height-lg;
     }
   }
@@ -80,6 +82,7 @@
       top: 2px;
     }
   }
+
   .ant-modal-footer &,
   .ant-modal-confirm-btns & {
     margin-bottom: 0;
@@ -113,14 +116,14 @@
 
 .ant-btn-background-ghost {
   &.ant-btn-primary {
-    border-color: @primary-color !important;
-    color: @primary-color !important;
+    border-color: @primary-color  !important;
+    color: @primary-color  !important;
 
     &:hover,
     &:focus {
-      background-color: @primary-color !important;
-      border-color: @primary-color !important;
-      color: @white-color !important;
+      background-color: @primary-color  !important;
+      border-color: @primary-color  !important;
+      color: @white-color  !important;
     }
   }
 }
@@ -145,11 +148,11 @@ button {
   outline: none;
 }
 
-.ant-confirm .ant-confirm-btns button + button {
+.ant-confirm .ant-confirm-btns button+button {
   margin-bottom: 8px;
 }
 
-.ant-modal.ant-confirm .ant-confirm-btns button + button,
+.ant-modal.ant-confirm .ant-confirm-btns button+button,
 .ant-modal.ant-confirm .ant-btn {
   margin-bottom: 0;
 }
@@ -163,7 +166,7 @@ button {
   white-space: nowrap;
   vertical-align: middle;
   border: @border-style-base @border-width-base @btn-default-border;
-  padding: @btn-padding-base;
+  // padding: @btn-padding-base;
   height: @btn-height-base;
   font-size: @font-size-base;
   line-height: @btn-height-base - 2px;
@@ -266,8 +269,8 @@ fieldset[disabled] a.@{class-prefix}-btn {
 }
 
 .@{class-prefix}-btn-lg,
-.@{class-prefix}-btn-group-lg > .@{class-prefix}-btn {
-  padding: @btn-padding-lg;
+.@{class-prefix}-btn-group-lg>.@{class-prefix}-btn {
+  // padding: @btn-padding-lg;
   font-size: @btn-font-size-lg;
   line-height: @btn-height-lg;
   .border-radius(6px);
@@ -275,8 +278,8 @@ fieldset[disabled] a.@{class-prefix}-btn {
 }
 
 .@{class-prefix}-btn-sm,
-.@{class-prefix}-btn-group-sm > .@{class-prefix}-btn {
-  padding: @btn-padding-sm;
+.@{class-prefix}-btn-group-sm>.@{class-prefix}-btn {
+  // padding: @btn-padding-sm;
   font-size: @btn-font-size-sm;
   line-height: @btn-height-sm;
   .border-radius(2px);
@@ -294,7 +297,7 @@ fieldset[disabled] a.@{class-prefix}-btn {
   display: block;
   width: 100%;
 
-  & + & {
+  &+& {
     margin-top: 0.5rem;
   }
 }
@@ -393,4 +396,3 @@ fieldset[disabled] a.@{class-prefix}-btn {
     }
   }
 }
-
