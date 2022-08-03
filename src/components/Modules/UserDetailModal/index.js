@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, DatePicker, Form, Input, Modal, Select } from "antd";
+import { getUserRoles } from "services/users/userDetails";
+import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
 const FormItem = Form.Item;
@@ -8,12 +10,12 @@ const Option = Select.Option;
 const formItemLayout = {
 	labelCol: {
 		xs: { span: 0 },
-		sm: { span: 8 }
+		sm: { span: 8 },
 	},
 	wrapperCol: {
 		xs: { span: 0 },
-		sm: { span: 16 }
-	}
+		sm: { span: 16 },
+	},
 };
 
 function UserDetailForm({
@@ -61,7 +63,7 @@ function UserDetailForm({
 				bankName: intialValues.bankName && intialValues.bankName,
 				lastReviewDate:
 					intialValues.lastReviewDate && moment(intialValues.lastReview),
-				exitDate: intialValues.exitDate && moment(intialValues.exitDate)
+				exitDate: intialValues.exitDate && moment(intialValues.exitDate),
 			});
 		}
 	}, [toggle]);
@@ -77,7 +79,7 @@ function UserDetailForm({
 					? [
 							<Button key="back" onClick={handleCancel}>
 								Cancel
-							</Button>
+							</Button>,
 					  ]
 					: [
 							<Button key="back" onClick={handleCancel}>
@@ -85,23 +87,23 @@ function UserDetailForm({
 							</Button>,
 							<Button key="submit" type="primary" onClick={handleSubmit}>
 								Submit
-							</Button>
+							</Button>,
 					  ]
 			}
 		>
 			<Form>
 				<FormItem {...formItemLayout} label="Name" name="name">
 					{getFieldDecorator("name", {
-						rules: [{ required: true, message: "required!" }]
+						rules: [{ required: true, message: "required!" }],
 					})(<Input placeholder="Enter Name" disabled={readOnly} />)}
 				</FormItem>
 				<FormItem {...formItemLayout} label="Role">
 					{getFieldDecorator("role", {
-						rules: [{ required: true, message: "required!" }]
+						rules: [{ required: true, message: "required!" }],
 					})(
 						<Select placeholder="Select Role" disabled={readOnly}>
 							{roles &&
-								roles.data.data.data.map(role => (
+								roles.data.data.data.map((role) => (
 									<Option value={role._id} key={role._id}>
 										{role.value}
 									</Option>
@@ -114,13 +116,13 @@ function UserDetailForm({
 						rules: [
 							{
 								required: true,
-								message: "required!"
-							}
-						]
+								message: "required!",
+							},
+						],
 					})(
 						<Select placeholder="Select Position" disabled={readOnly}>
 							{position &&
-								position.data.data.data.map(position => (
+								position.data.data.data.map((position) => (
 									<Option value={position._id} key={position._id}>
 										{position.name}
 									</Option>
@@ -134,9 +136,9 @@ function UserDetailForm({
 							{
 								type: "object",
 								message: "required!",
-								whitespace: true
-							}
-						]
+								whitespace: true,
+							},
+						],
 					})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
 				</FormItem>
 				<FormItem {...formItemLayout} label="Exit Date">
@@ -145,9 +147,9 @@ function UserDetailForm({
 							{
 								type: "object",
 								message: "required!",
-								whitespace: true
-							}
-						]
+								whitespace: true,
+							},
+						],
 					})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
 				</FormItem>
 				<FormItem {...formItemLayout} label="Pan Number">
@@ -155,9 +157,9 @@ function UserDetailForm({
 						rules: [
 							{
 								pattern: new RegExp(/^[0-9]+$/),
-								message: "Pan must be a number!"
-							}
-						]
+								message: "Pan must be a number!",
+							},
+						],
 					})(
 						<Input
 							placeholder="Enter Pan Number"
@@ -171,9 +173,9 @@ function UserDetailForm({
 						rules: [
 							{
 								pattern: new RegExp(/^[0-9]+$/),
-								message: "CIT must be a number!"
-							}
-						]
+								message: "CIT must be a number!",
+							},
+						],
 					})(
 						<Input
 							placeholder="Enter Cit Number"

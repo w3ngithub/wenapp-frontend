@@ -7,7 +7,7 @@ import {
 	getAllUsers,
 	getUserPosition,
 	getUserRoles,
-	updateUser
+	updateUser,
 } from "services/users/userDetails";
 import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
@@ -19,12 +19,12 @@ const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formattedUsers = (users, isAdmin) => {
-	return users.map(user => ({
+	return users.map((user) => ({
 		...user,
 		key: user._id,
 		dob: changeDate(user.dob),
 		joinDate: changeDate(user.joinDate),
-		isAdmin
+		isAdmin,
 	}));
 };
 
@@ -57,22 +57,22 @@ function CoworkersPage() {
 	);
 
 	const mutation = useMutation(
-		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
+		(updatedUser) => updateUser(updatedUser.userId, updatedUser.updatedData),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["users"]);
-			}
+			},
 		}
 	);
 
 	const handleToggleModal = (userRecordToUpdate, mode) => {
-		setOpenUserDetailModal(prev => !prev);
+		setOpenUserDetailModal((prev) => !prev);
 		setUserRecord(userRecordToUpdate);
 		setReadOnly(mode);
 	};
 
 	const handleUserDetailSubmit = (user, reset) => {
-		const userTofind = data.data.data.data.find(x => x._id === user._id);
+		const userTofind = data.data.data.data.find((x) => x._id === user._id);
 		mutation.mutate({
 			userId: user._id,
 			updatedData: {
@@ -82,8 +82,10 @@ function CoworkersPage() {
 				lastReviewDate: user.lastReviewDate
 					? moment.utc(user.lastReviewDate).format()
 					: undefined,
-				exitDate: user.exitDate ? moment.utc(user.exitDate).format() : undefined
-			}
+				exitDate: user.exitDate
+					? moment.utc(user.exitDate).format()
+					: undefined,
+			},
 		});
 		reset.form.resetFields();
 		handleToggleModal({});
@@ -94,23 +96,23 @@ function CoworkersPage() {
 		setSort(sorter);
 	};
 
-	const handlePageChange = pageNumber => {
-		setPage(prev => ({ ...prev, page: pageNumber }));
+	const handlePageChange = (pageNumber) => {
+		setPage((prev) => ({ ...prev, page: pageNumber }));
 	};
 
 	const onShowSizeChange = (_, pageSize) => {
-		setPage(prev => ({ ...page, limit: pageSize }));
+		setPage((prev) => ({ ...page, limit: pageSize }));
 	};
 
-	const setActiveInActiveUsers = e => {
+	const setActiveInActiveUsers = (e) => {
 		setActiveUser(e.target.value === "active" ? true : false);
 	};
 
-	const handleRoleChange = roleId => {
+	const handleRoleChange = (roleId) => {
 		setRole(roleId);
 	};
 
-	const handlePositionChange = positionId => {
+	const handlePositionChange = (positionId) => {
 		setPosition(positionId);
 	};
 
@@ -124,7 +126,7 @@ function CoworkersPage() {
 		activeUserRef.current.state.value = undefined;
 	};
 
-	const handleRowSelect = rows => {
+	const handleRowSelect = (rows) => {
 		setSelectedRows(rows);
 	};
 
@@ -147,7 +149,7 @@ function CoworkersPage() {
 				<div className="components-table-demo-control-bar">
 					<Search
 						placeholder="Search Users"
-						onSearch={value => setName(value)}
+						onSearch={(value) => setName(value)}
 						style={{ width: 200 }}
 						enterButton
 						ref={nameRef}
@@ -162,7 +164,7 @@ function CoworkersPage() {
 									value={role}
 								>
 									{roleData &&
-										roleData.data.data.data.map(role => (
+										roleData.data.data.data.map((role) => (
 											<Option value={role._id} key={role._id}>
 												{role.value}
 											</Option>
@@ -177,7 +179,7 @@ function CoworkersPage() {
 									value={position}
 								>
 									{positionData &&
-										positionData.data.data.data.map(position => (
+										positionData.data.data.data.map((position) => (
 											<Option value={position._id} key={position._id}>
 												{position.name}
 											</Option>
@@ -208,14 +210,14 @@ function CoworkersPage() {
 							data={[
 								["Name", "Role", "Position", "DOB", "Email"],
 								...data?.data?.data?.data
-									?.filter(x => selectedRows.includes(x._id))
-									.map(d => [
+									?.filter((x) => selectedRows.includes(x._id))
+									.map((d) => [
 										d?.name,
 										d?.role.value,
 										d?.position.name,
 										d?.dob,
-										d?.email
-									])
+										d?.email,
+									]),
 							]}
 						>
 							<Button
@@ -237,7 +239,7 @@ function CoworkersPage() {
 					onChange={handleTableChange}
 					rowSelection={{
 						onChange: handleRowSelect,
-						selectedRowKeys: selectedRows
+						selectedRowKeys: selectedRows,
 					}}
 					pagination={{
 						current: page.page,
@@ -247,7 +249,7 @@ function CoworkersPage() {
 						total: 25,
 						onShowSizeChange,
 						hideOnSinglePage: true,
-						onChange: handlePageChange
+						onChange: handlePageChange,
 					}}
 					loading={mutation.isLoading}
 				/>
