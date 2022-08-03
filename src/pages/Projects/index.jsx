@@ -16,15 +16,14 @@ const Search = Input.Search;
 const Option = Select.Option;
 const FormItem = Form.Item;
 
-const formattedProjects = (projects, isAdmin) => {
+const formattedProjects = projects => {
 	return projects.map(project => ({
 		...project,
 		key: project._id,
 		projectStatus: project.projectStatus.name,
 		projectTypes: project.projectTypes[0].name,
 		startDate: changeDate(project.startDate),
-		endDate: project?.endDate ? changeDate(project?.endDate) : "",
-		isAdmin
+		endDate: project?.endDate ? changeDate(project?.endDate) : ""
 	}));
 };
 
@@ -39,9 +38,6 @@ function CoworkersPage() {
 	const queryClient = useQueryClient();
 
 	const projectRef = useRef("");
-
-	// get user detail from storage
-	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
 
 	const { data: projectTypesData } = useQuery(
 		["projectTypes"],
@@ -185,10 +181,7 @@ function CoworkersPage() {
 				<Table
 					className="gx-table-responsive"
 					columns={PROJECT_COLUMNS(sort, null, mutation)}
-					dataSource={formattedProjects(
-						data.data.data.data,
-						user.role.key === "admin"
-					)}
+					dataSource={formattedProjects(data.data.data.data)}
 					onChange={handleTableChange}
 					pagination={{
 						current: page.page,
