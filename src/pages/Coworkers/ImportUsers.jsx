@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Modal, Spin } from "antd";
 import DragAndDropFile from "components/Modules/DragAndDropFile";
 
-function ImportUser({
+function ImportUsers({
 	toggle,
 	onSubmit,
 	onClose,
@@ -41,4 +41,4 @@ function ImportUser({
 		</Modal>
 	);
 }
-export default ImportUser;
+export default ImportUsers;

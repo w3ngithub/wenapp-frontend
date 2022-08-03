@@ -13,7 +13,7 @@ import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
-import ImportUser from "./ImportUsers";
+import ImportUsers from "./importUsers";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -139,7 +139,7 @@ function CoworkersPage() {
 
 	return (
 		<div>
-			<ImportUser
+			<ImportUsers
 				toggle={openImport}
 				onSubmit={handleImportUser}
 				onClose={() => setOpenImport(false)}
@@ -226,15 +226,27 @@ function CoworkersPage() {
 							<CSVLink
 								filename={"co-workers"}
 								data={[
-									["Name", "Role", "Position", "DOB", "Email"],
+									[
+										"Name",
+										"Email",
+										"Role",
+										"RoleId",
+										"Position",
+										"PositionId",
+										"DOB",
+										"Join Date"
+									],
 									...data?.data?.data?.data
 										?.filter(x => selectedRows.includes(x._id))
 										.map(d => [
 											d?.name,
+											d?.email,
 											d?.role.value,
+											d?.role._id,
 											d?.position.name,
-											d?.dob,
-											d?.email
+											d?.position._id,
+											changeDate(d?.dob),
+											changeDate(d?.joinDate)
 										])
 								]}
 							>
