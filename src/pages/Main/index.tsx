@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
+// import URLSearchParams from "url-search-params";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { LocaleProvider } from "antd";
+import { ConfigProvider } from 'antd';
 import { IntlProvider } from "react-intl";
 
 import AppLocale from "lngProvider";
@@ -47,7 +48,7 @@ function App(props: any) {
 	const currentAppLocale = AppLocale[locale.locale];
 
 	return (
-		<LocaleProvider locale={currentAppLocale.antd}>
+        <ConfigProvider locale={currentAppLocale.antd}>
 			<IntlProvider
 				locale={currentAppLocale.locale}
 				messages={currentAppLocale.messages}
@@ -76,8 +77,8 @@ function App(props: any) {
 					</Route>
 				</Routes>
 			</IntlProvider>
-		</LocaleProvider>
-	);
+		</ConfigProvider>
+    );
 }
 
 const mapStateToProps = ({ settings, auth }: { settings: any; auth: any }) => {

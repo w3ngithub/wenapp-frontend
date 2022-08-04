@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
-import { Button, Checkbox, Form, Icon, Input, message } from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Checkbox, Input, message } from "antd";
 import { connect } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 

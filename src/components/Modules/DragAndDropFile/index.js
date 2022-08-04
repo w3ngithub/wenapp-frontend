@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Icon, Upload, Modal } from "antd";
+import { InboxOutlined } from "@ant-design/icons";
+import { Upload, Modal, Icon } from "antd";
 
 const Dragger = Upload.Dragger;
 

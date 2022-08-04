@@ -1,5 +1,8 @@
 import React, {Component} from "react";
-import {Button, Card, Form, Icon, InputNumber, Radio, Rate, Select, Slider, Switch, Upload} from "antd";
+import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Card, InputNumber, Radio, Rate, Select, Slider, Switch, Upload } from "antd";
 
 import "./otherFormControls.less";
 
@@ -150,7 +153,7 @@ class OtherFormControls extends Component {
             })(
               <Upload name="logo" action="/upload.do" listType="picture">
                 <Button>
-                  <Icon type="upload"/> Click to upload
+                  <UploadOutlined /> Click to upload
                 </Button>
               </Upload>
             )}
@@ -167,7 +170,7 @@ class OtherFormControls extends Component {
               })(
                 <Upload.Dragger name="files" action="/upload.do">
                   <p className="ant-upload-drag-icon">
-                    <Icon type="inbox"/>
+                    <InboxOutlined />
                   </p>
                   <p className="ant-upload-text">Click or drag file to this area to upload</p>
                   <p className="ant-upload-hint">Support for a single or bulk upload.</p>

@@ -1,5 +1,7 @@
 import React from "react";
-import {Card, Mention} from "antd";
+import { Mention } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Card } from "antd";
 
 const {toString, toContentState} = Mention;
 

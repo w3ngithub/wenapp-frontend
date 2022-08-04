@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { Button, Drawer, Form, message, Radio } from "antd";
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
+import { Button, Drawer, message, Radio } from "antd";
 import { connect } from "react-redux";
 
 import ColorPicker from "./ColorPicker";
@@ -426,12 +428,12 @@ class Customizer extends Component {
 			);
 		} finally {
 			this.state = { vars, initialValue, isCustomizerOpened: false };
-			window.less
-				.modifyVars(vars)
-				.then(() => {})
-				.catch(error => {
-					message.error(`Failed to update theme`);
-				});
+			// window.less
+			// 	.modifyVars(vars)
+			// 	.then(() => {})
+			// 	.catch(error => {
+			// 		message.error(`Failed to update theme`);
+			// 	});
 		}
 	}
 

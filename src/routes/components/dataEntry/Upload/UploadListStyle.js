@@ -1,5 +1,6 @@
 import React from "react";
-import {Button, Card, Icon, Upload} from "antd";
+import { UploadOutlined } from '@ant-design/icons';
+import { Button, Card, Upload } from "antd";
 
 const fileList = [{
   uid: -1,
@@ -33,14 +34,14 @@ const UploadListStyle = () => {
     <Card className="gx-card" title="Upload ListS tyle">
       <Upload {...props}>
         <Button>
-          <Icon type="upload"/> upload
+          <UploadOutlined /> upload
         </Button>
       </Upload>
       <br/>
       <br/>
       <Upload {...props2}>
         <Button>
-          <Icon type="upload"/> upload
+          <UploadOutlined /> upload
         </Button>
       </Upload>
     </Card>

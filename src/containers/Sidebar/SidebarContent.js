@@ -49,38 +49,8 @@ function SidebarContent(props) {
 						selectedKeys={[defaultOpenKeys]}
 						theme={themeType === THEME_TYPE_LITE ? "lite" : "dark"}
 						mode="inline"
-					>
-						{SIDEBAR_ITEMS.map(item =>
-							item.isExpandable ? (
-								<SubMenu
-									key={item.id}
-									className={getNavStyleSubMenuClass(navStyle)}
-									title={
-										<span>
-											<i className={`icon ${item.icon}`} />
-											<IntlMessages id={item.name} />
-										</span>
-									}
-								>
-									{item.subItems.map(subItem => (
-										<Menu.Item key={subItem.url}>
-											<Link to={subItem.url}>
-												{/* <i className={`icon ${item.icon}`} /> */}
-												<IntlMessages id={subItem.name} />
-											</Link>
-										</Menu.Item>
-									))}
-								</SubMenu>
-							) : (
-								<Menu.Item key={item.url}>
-									<Link to={`/${item.url}`}>
-										<i className={`icon ${item.icon}`} />
-										<IntlMessages id={item.name} />
-									</Link>
-								</Menu.Item>
-							)
-						)}
-					</Menu>
+						items={SIDEBAR_ITEMS}
+					/>
 				</CustomScrollbars>
 			</div>
 		</Auxiliary>
