@@ -5,6 +5,7 @@ import { updateUser } from "services/users/userDetails";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
 import {
+	deleteProject,
 	getAllProjects,
 	getProjectClients,
 	getProjectStatus,
@@ -73,6 +74,15 @@ function CoworkersPage() {
 		}
 	);
 
+	const deleteProjectMutation = useMutation(
+		projectId => deleteProject(projectId),
+		{
+			onSuccess: () => {
+				queryClient.invalidateQueries(["projects"]);
+			}
+		}
+	);
+
 	const handleTableChange = (pagination, filters, sorter) => {
 		setSort(sorter);
 	};
@@ -103,6 +113,10 @@ function CoworkersPage() {
 		setProjectStatus(undefined);
 		setprojectClient(undefined);
 		projectRef.current.input.state.value = "";
+	};
+
+	const confirmDeleteProject = project => {
+		deleteProjectMutation.mutate(project._id);
 	};
 
 	if (isLoading) {
@@ -180,7 +194,7 @@ function CoworkersPage() {
 				</div>
 				<Table
 					className="gx-table-responsive"
-					columns={PROJECT_COLUMNS(sort, null, mutation)}
+					columns={PROJECT_COLUMNS(sort, confirmDeleteProject)}
 					dataSource={formattedProjects(data?.data?.data?.data)}
 					onChange={handleTableChange}
 					pagination={{
@@ -193,7 +207,9 @@ function CoworkersPage() {
 						hideOnSinglePage: true,
 						onChange: handlePageChange
 					}}
-					loading={mutation.isLoading || isFetching}
+					loading={
+						mutation.isLoading || isFetching || deleteProjectMutation.isLoading
+					}
 				/>
 			</Card>
 		</div>
