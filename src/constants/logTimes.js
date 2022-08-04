@@ -25,7 +25,7 @@ const LOGTIMES_COLUMNS = (sortedInfo, confirmDelete) => [
 	{
 		title: "Type",
 		dataIndex: "logType",
-		width: 100,
+		// width: 100,
 		key: "logType",
 		sorter: (a, b) =>
 			a.logType?.toString().localeCompare(b.logType?.toString()),
