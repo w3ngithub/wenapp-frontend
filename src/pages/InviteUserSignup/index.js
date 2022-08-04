@@ -47,7 +47,7 @@ function InviteUserSignup(props) {
 			<div className="gx-app-login-container">
 				<Card className="gx-card" title="Sign Up">
 					<Form onSubmit={handleFormSubmit}>
-						<FormItem {...formItemLayout} label="Name">
+						<FormItem {...formItemLayout} label="Name" hasFeedback>
 							{getFieldDecorator("name", {
 								rules: [{ required: true, message: "Required!" }]
 							})(<Input placeholder="Enter Name" />)}
@@ -61,7 +61,7 @@ function InviteUserSignup(props) {
 							/>
 						</FormItem>
 
-						<FormItem {...formItemLayout} label="DOB">
+						<FormItem {...formItemLayout} label="DOB" hasFeedback>
 							{getFieldDecorator("dob", {
 								rules: [
 									{
@@ -74,7 +74,7 @@ function InviteUserSignup(props) {
 							})(<DatePicker className=" gx-w-100" />)}
 						</FormItem>
 
-						<FormItem {...formItemLayout} label="Gender">
+						<FormItem {...formItemLayout} label="Gender" hasFeedback>
 							{getFieldDecorator("gender", {
 								rules: [
 									{
@@ -90,7 +90,7 @@ function InviteUserSignup(props) {
 								</Select>
 							)}
 						</FormItem>
-						<FormItem {...formItemLayout} label="Primary Phone">
+						<FormItem {...formItemLayout} label="Primary Phone" hasFeedback>
 							{getFieldDecorator("primaryPhone", {
 								rules: [
 									{
@@ -112,7 +112,7 @@ function InviteUserSignup(props) {
 							})(<Input placeholder="Enter Secondary Phone" type="number" />)}
 						</FormItem>
 
-						<FormItem {...formItemLayout} label="Join Date">
+						<FormItem {...formItemLayout} label="Join Date" hasFeedback>
 							{getFieldDecorator("joinDate", {
 								rules: [
 									{
@@ -124,7 +124,7 @@ function InviteUserSignup(props) {
 								]
 							})(<DatePicker className=" gx-w-100" />)}
 						</FormItem>
-						<FormItem {...formItemLayout} label="Marital Status">
+						<FormItem {...formItemLayout} label="Marital Status" hasFeedback>
 							{getFieldDecorator("maritalStatus", {
 								rules: [
 									{
