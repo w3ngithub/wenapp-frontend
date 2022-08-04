@@ -5,7 +5,7 @@ import DragAndDropFile from "components/Modules/DragAndDropFile";
 import { importUsers } from "services/users/userDetails";
 import { csvFileToArray } from "helpers/utils";
 
-function ImportUsers({ toggle, onSubmit, onClose, files, setFiles }) {
+function ImportUsers({ toggle, onClose, files, setFiles }) {
 	const fileReader = new FileReader();
 
 	const [loading, setLoading] = useState(false);
