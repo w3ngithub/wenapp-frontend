@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-// import URLSearchParams from "url-search-params";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { LocaleProvider } from "antd";
 import { IntlProvider } from "react-intl";
 
@@ -15,6 +14,7 @@ import {
 	BLOG,
 	COWORKERS,
 	DASHBOARD,
+	INVITE,
 	LEAVE,
 	LOGTIME,
 	NOTICEBOARD,
@@ -39,6 +39,7 @@ import Settings from "pages/Settings";
 import Attendace from "pages/Attendance";
 import Dashboard from "pages/Dashboard";
 import Profile from "pages/Profile";
+import InviteUserSignup from "pages/InviteUserSignup";
 
 function App(props: any) {
 	const { locale, authUser } = props;
@@ -55,6 +56,7 @@ function App(props: any) {
 					<Route path="/" element={<Navigate to={DASHBOARD} />} />
 					<Route path={SIGNIN} element={<SignIn />} />
 					<Route path={SIGNUP} element={<SignUp />} />
+					<Route path={INVITE} element={<InviteUserSignup />} />
 
 					<Route element={<ProtectedRoute auth={authUser} />}>
 						<Route element={<MainApp />}>

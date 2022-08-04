@@ -9,12 +9,12 @@ const Option = Select.Option;
 const formItemLayout = {
 	labelCol: {
 		xs: { span: 0 },
-		sm: { span: 8 },
+		sm: { span: 8 }
 	},
 	wrapperCol: {
 		xs: { span: 0 },
-		sm: { span: 16 },
-	},
+		sm: { span: 16 }
+	}
 };
 
 function UserProfileModal({
@@ -52,7 +52,7 @@ function UserProfileModal({
 				primaryPhone: String(user.primaryPhone),
 				secondaryPhone: String(user.secondaryPhone || ""),
 				joinDate: moment(user.joinDate),
-				maritalStatus: user.maritalStatus,
+				maritalStatus: user.maritalStatus
 			});
 	}, [toggle]);
 	return (
@@ -67,14 +67,14 @@ function UserProfileModal({
 				</Button>,
 				<Button key="submit" type="primary" onClick={handleSubmit}>
 					Submit
-				</Button>,
+				</Button>
 			]}
 		>
 			<Spin spinning={isLoading}>
 				<Form>
-					<FormItem {...formItemLayout} label="Name">
+					<FormItem {...formItemLayout} label="Name" hasFeedback>
 						{getFieldDecorator("name", {
-							rules: [{ required: true, message: "required!" }],
+							rules: [{ required: true, message: "Required!" }]
 						})(<Input placeholder="Enter Name" />)}
 					</FormItem>
 					<FormItem {...formItemLayout} label="Profile Photo">
@@ -86,28 +86,28 @@ function UserProfileModal({
 						/>
 					</FormItem>
 
-					<FormItem {...formItemLayout} label="DOB">
+					<FormItem {...formItemLayout} label="DOB" hasFeedback>
 						{getFieldDecorator("dob", {
 							rules: [
 								{
 									type: "object",
 									required: true,
 									message: "required!",
-									whitespace: true,
-								},
-							],
+									whitespace: true
+								}
+							]
 						})(<DatePicker className=" gx-w-100" />)}
 					</FormItem>
 
-					<FormItem {...formItemLayout} label="Gender">
+					<FormItem {...formItemLayout} label="Gender" hasFeedback>
 						{getFieldDecorator("gender", {
 							rules: [
 								{
 									required: true,
-									message: "required!",
-									whitespace: true,
-								},
-							],
+									message: "Required!",
+									whitespace: true
+								}
+							]
 						})(
 							<Select placeholder="Select Gender">
 								<Option value="Male">Male</Option>
@@ -115,15 +115,15 @@ function UserProfileModal({
 							</Select>
 						)}
 					</FormItem>
-					<FormItem {...formItemLayout} label="Primary Phone">
+					<FormItem {...formItemLayout} label="Primary Phone" hasFeedback>
 						{getFieldDecorator("primaryPhone", {
 							rules: [
 								{
 									required: true,
-									message: "required!",
-									whitespace: true,
-								},
-							],
+									message: "Required!",
+									whitespace: true
+								}
+							]
 						})(<Input placeholder="Enter Primary Phone" />)}
 					</FormItem>
 					<FormItem {...formItemLayout} label="Secondary Phone">
@@ -131,33 +131,33 @@ function UserProfileModal({
 							rules: [
 								{
 									message: "field must be a number!",
-									whitespace: true,
-								},
-							],
+									whitespace: true
+								}
+							]
 						})(<Input placeholder="Enter Secondary Phone" />)}
 					</FormItem>
 
-					<FormItem {...formItemLayout} label="Join Date">
+					<FormItem {...formItemLayout} label="Join Date" hasFeedback>
 						{getFieldDecorator("joinDate", {
 							rules: [
 								{
 									type: "object",
 									required: true,
-									message: "required!",
-									whitespace: true,
-								},
-							],
+									message: "Required!",
+									whitespace: true
+								}
+							]
 						})(<DatePicker className=" gx-w-100" />)}
 					</FormItem>
-					<FormItem {...formItemLayout} label="Marital Status">
+					<FormItem {...formItemLayout} label="Marital Status" hasFeedback>
 						{getFieldDecorator("maritalStatus", {
 							rules: [
 								{
 									required: true,
-									message: "required!",
-									whitespace: true,
-								},
-							],
+									message: "Required!",
+									whitespace: true
+								}
+							]
 						})(
 							<Select placeholder="Select Marital Status">
 								<Option value="Married">Married</Option>
