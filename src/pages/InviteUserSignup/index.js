@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { DatePicker, Form, Input, Select, Card, Button } from "antd";
+import { DatePicker, Input, Select, Card, Button } from "antd";
 import DragAndDropFile from "components/Modules/DragAndDropFile";
+import { Form } from "@ant-design/compatible";
+
 import moment from "moment";
 
 const FormItem = Form.Item;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
-import { Upload, Modal, Icon } from "antd";
+import { Upload, Modal } from "antd";
 
 const Dragger = Upload.Dragger;
 
@@ -67,7 +67,7 @@ function DragAndDropFile({
 				onChange={handleChange}
 			>
 				<p className="ant-upload-drag-icon">
-					<Icon type="inbox" />
+					<InboxOutlined type="inbox" />
 				</p>
 				<p className="ant-upload-text">
 					Click or drag file to this area to upload

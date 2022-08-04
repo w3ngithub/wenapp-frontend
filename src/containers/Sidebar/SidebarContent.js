@@ -13,7 +13,7 @@ import {
 } from "constants/ThemeSetting";
 import IntlMessages from "util/IntlMessages";
 import { connect } from "react-redux";
-import { SIDEBAR_ITEMS } from "constants/sideBarItems";
+import { SIDEBAR_ICONS, SIDEBAR_ITEMS } from "constants/sideBarItems";
 
 const SubMenu = Menu.SubMenu;
 
@@ -42,17 +42,25 @@ function SidebarContent(props) {
 	return (
 		<Auxiliary>
 			<SidebarLogo />
-			<div className="gx-sidebar-content">
-				<CustomScrollbars className="gx-layout-sider-scrollbar">
+			<CustomScrollbars className="gx-layout-sider-scrollbar">
+				<div className="gx-sidebar-content">
 					<Menu
 						defaultOpenKeys={["reports"]}
 						selectedKeys={[defaultOpenKeys]}
 						theme={themeType === THEME_TYPE_LITE ? "lite" : "dark"}
 						mode="inline"
-						items={SIDEBAR_ITEMS}
+						items={SIDEBAR_ITEMS.map(item => ({
+							...item,
+							icon: (
+								<i
+									className={`icon icon-${item.iconName} gx-fs-xlxl `}
+									style={{ marginRight: "10px" }}
+								/>
+							)
+						}))}
 					/>
-				</CustomScrollbars>
-			</div>
+				</div>
+			</CustomScrollbars>
 		</Auxiliary>
 	);
 }
