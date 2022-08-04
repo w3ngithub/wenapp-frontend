@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { getProject } from "services/projects";
 import { deleteTimeLog, getAllTimeLogs, getLogTypes } from "services/timeLogs";
 import LogsBreadCumb from "./LogsBreadCumb";
+import TimeSummary from "./TimeSummary";
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -94,8 +95,15 @@ function ProjectLogs() {
 		deleteLogMutation.mutate(log._id);
 	};
 
-	const { designers, devOps, developers, qa } =
-		projectDetail?.data?.data?.data?.[0] || {};
+	const {
+		designers,
+		devOps,
+		developers,
+		qa,
+		weeklyTimeSpent,
+		estimatedHours,
+		totalTimeSpent
+	} = projectDetail?.data?.data?.data?.[0] || {};
 	const LogAuthors = [
 		...(designers ?? []),
 		...(devOps ?? []),
@@ -111,7 +119,14 @@ function ProjectLogs() {
 		<div>
 			<LogsBreadCumb slug={projectSlug} />
 			<div style={{ marginTop: 20 }}></div>
-			<Card title={projectSlug}>
+			<Card title={projectSlug + " Time Summary"}>
+				<TimeSummary
+					est={estimatedHours}
+					ts={totalTimeSpent}
+					tsw={weeklyTimeSpent}
+				/>
+			</Card>
+			<Card title={projectSlug + " Logs"}>
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline">
@@ -155,6 +170,12 @@ function ProjectLogs() {
 								</Button>
 							</FormItem>
 						</Form>
+						<Button
+							className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+							onClick={() => {}}
+						>
+							Add New TimeLog
+						</Button>
 					</div>
 				</div>
 				<Table
@@ -167,7 +188,7 @@ function ProjectLogs() {
 						pageSize: page.limit,
 						pageSizeOptions: ["5", "10", "20", "50"],
 						showSizeChanger: true,
-						total: 25,
+						total: 11,
 						onShowSizeChange,
 						hideOnSinglePage: true,
 						onChange: handlePageChange
