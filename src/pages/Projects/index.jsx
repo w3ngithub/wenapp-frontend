@@ -5,6 +5,7 @@ import { updateUser } from "services/users/userDetails";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
 import {
+	deleteProject,
 	getAllProjects,
 	getProjectClients,
 	getProjectStatus,
@@ -17,7 +18,7 @@ const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formattedProjects = projects => {
-	return projects.map(project => ({
+	return projects?.map(project => ({
 		...project,
 		key: project._id,
 		projectStatus: project.projectStatus.name,
@@ -73,6 +74,15 @@ function CoworkersPage() {
 		}
 	);
 
+	const deleteProjectMutation = useMutation(
+		projectId => deleteProject(projectId),
+		{
+			onSuccess: () => {
+				queryClient.invalidateQueries(["projects"]);
+			}
+		}
+	);
+
 	const handleTableChange = (pagination, filters, sorter) => {
 		setSort(sorter);
 	};
@@ -105,6 +115,10 @@ function CoworkersPage() {
 		projectRef.current.input.state.value = "";
 	};
 
+	const confirmDeleteProject = project => {
+		deleteProjectMutation.mutate(project._id);
+	};
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}
@@ -130,7 +144,7 @@ function CoworkersPage() {
 									value={projectType}
 								>
 									{projectTypesData &&
-										projectTypesData.data.data.data.map(type => (
+										projectTypesData.data?.data?.data?.map(type => (
 											<Option value={type._id} key={type._id}>
 												{type.name}
 											</Option>
@@ -145,7 +159,7 @@ function CoworkersPage() {
 									value={projectStatus}
 								>
 									{projectStatusData &&
-										projectStatusData.data.data.data.map(status => (
+										projectStatusData.data.data?.data?.map(status => (
 											<Option value={status._id} key={status._id}>
 												{status.name}
 											</Option>
@@ -160,7 +174,7 @@ function CoworkersPage() {
 									value={projectClient}
 								>
 									{projectClientsData &&
-										projectClientsData.data.data.data.map(client => (
+										projectClientsData.data?.data?.data?.map(client => (
 											<Option value={client._id} key={client._id}>
 												{client.name}
 											</Option>
@@ -180,8 +194,8 @@ function CoworkersPage() {
 				</div>
 				<Table
 					className="gx-table-responsive"
-					columns={PROJECT_COLUMNS(sort, null, mutation)}
-					dataSource={formattedProjects(data.data.data.data)}
+					columns={PROJECT_COLUMNS(sort, confirmDeleteProject)}
+					dataSource={formattedProjects(data?.data?.data?.data)}
 					onChange={handleTableChange}
 					pagination={{
 						current: page.page,
@@ -193,7 +207,9 @@ function CoworkersPage() {
 						hideOnSinglePage: true,
 						onChange: handlePageChange
 					}}
-					loading={mutation.isLoading || isFetching}
+					loading={
+						mutation.isLoading || isFetching || deleteProjectMutation.isLoading
+					}
 				/>
 			</Card>
 		</div>

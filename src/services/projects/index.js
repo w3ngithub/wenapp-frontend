@@ -49,4 +49,19 @@ const getProjectClients = async () => {
 	}
 };
 
-export { getAllProjects, getProjectTypes, getProjectStatus, getProjectClients };
+const deleteProject = async projectId => {
+	try {
+		let response = await API.delete(`${Apis.Projects}/${projectId}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export {
+	getAllProjects,
+	getProjectTypes,
+	getProjectStatus,
+	getProjectClients,
+	deleteProject
+};
