@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import { DatePicker, Form, Input, Select, Card, Button } from "antd";
 import DragAndDropFile from "components/Modules/DragAndDropFile";
 import moment from "moment";
+import "./style.css";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 const formItemLayout = {
 	labelCol: {
-		xs: { span: 0 },
+		xs: { span: 8 },
 		sm: { span: 8 }
 	},
 	wrapperCol: {
-		xs: { span: 0 },
+		xs: { span: 16 },
 		sm: { span: 16 }
 	}
 };
@@ -43,7 +44,7 @@ function InviteUserSignup(props) {
 	};
 
 	return (
-		<div className="gx-app-login-wrap">
+		<div className="signup-wrapper">
 			<div className="gx-app-login-container">
 				<Card className="gx-card" title="Sign Up">
 					<Form onSubmit={handleFormSubmit}>
