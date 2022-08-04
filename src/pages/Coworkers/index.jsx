@@ -7,24 +7,25 @@ import {
 	getAllUsers,
 	getUserPosition,
 	getUserRoles,
-	updateUser,
+	updateUser
 } from "services/users/userDetails";
 import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
+import ImportUsers from "./ImportUsers";
 
 const Search = Input.Search;
 const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formattedUsers = (users, isAdmin) => {
-	return users.map((user) => ({
+	return users.map(user => ({
 		...user,
 		key: user._id,
 		dob: changeDate(user.dob),
 		joinDate: changeDate(user.joinDate),
-		isAdmin,
+		isAdmin
 	}));
 };
 
@@ -38,9 +39,11 @@ function CoworkersPage() {
 	const [role, setRole] = useState(undefined);
 	const [name, setName] = useState("");
 	const [userRecord, setUserRecord] = useState({});
-	const queryClient = useQueryClient();
 	const [readOnly, setReadOnly] = useState(false);
 	const [selectedRows, setSelectedRows] = useState([]);
+	const [openImport, setOpenImport] = useState(false);
+	const [files, setFiles] = useState([]);
+	const queryClient = useQueryClient();
 
 	const activeUserRef = useRef("");
 	const nameRef = useRef("");
@@ -50,29 +53,31 @@ function CoworkersPage() {
 
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
 	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
-	const { data, isLoading, isError } = useQuery(
+	const { data, isLoading, isError, isFetching } = useQuery(
 		["users", page, activeUser, role, position, name],
 		() => getAllUsers({ ...page, active: activeUser, role, position, name }),
 		{ keepPreviousData: true }
 	);
 
 	const mutation = useMutation(
-		(updatedUser) => updateUser(updatedUser.userId, updatedUser.updatedData),
+		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["users"]);
-			},
+				setOpenUserDetailModal(prev => false);
+				setReadOnly(false);
+			}
 		}
 	);
 
 	const handleToggleModal = (userRecordToUpdate, mode) => {
-		setOpenUserDetailModal((prev) => !prev);
+		setOpenUserDetailModal(prev => !prev);
 		setUserRecord(userRecordToUpdate);
 		setReadOnly(mode);
 	};
 
 	const handleUserDetailSubmit = (user, reset) => {
-		const userTofind = data.data.data.data.find((x) => x._id === user._id);
+		const userTofind = data.data.data.data.find(x => x._id === user._id);
 		mutation.mutate({
 			userId: user._id,
 			updatedData: {
@@ -82,37 +87,33 @@ function CoworkersPage() {
 				lastReviewDate: user.lastReviewDate
 					? moment.utc(user.lastReviewDate).format()
 					: undefined,
-				exitDate: user.exitDate
-					? moment.utc(user.exitDate).format()
-					: undefined,
-			},
+				exitDate: user.exitDate ? moment.utc(user.exitDate).format() : undefined
+			}
 		});
 		reset.form.resetFields();
-		handleToggleModal({});
-		setReadOnly(false);
 	};
 
 	const handleTableChange = (pagination, filters, sorter) => {
 		setSort(sorter);
 	};
 
-	const handlePageChange = (pageNumber) => {
-		setPage((prev) => ({ ...prev, page: pageNumber }));
+	const handlePageChange = pageNumber => {
+		setPage(prev => ({ ...prev, page: pageNumber }));
 	};
 
 	const onShowSizeChange = (_, pageSize) => {
-		setPage((prev) => ({ ...page, limit: pageSize }));
+		setPage(prev => ({ ...page, limit: pageSize }));
 	};
 
-	const setActiveInActiveUsers = (e) => {
+	const setActiveInActiveUsers = e => {
 		setActiveUser(e.target.value === "active" ? true : false);
 	};
 
-	const handleRoleChange = (roleId) => {
+	const handleRoleChange = roleId => {
 		setRole(roleId);
 	};
 
-	const handlePositionChange = (positionId) => {
+	const handlePositionChange = positionId => {
 		setPosition(positionId);
 	};
 
@@ -126,9 +127,11 @@ function CoworkersPage() {
 		activeUserRef.current.state.value = undefined;
 	};
 
-	const handleRowSelect = (rows) => {
+	const handleRowSelect = rows => {
 		setSelectedRows(rows);
 	};
+
+	const handleImportUser = () => {};
 
 	if (isLoading) {
 		return <CircularProgress />;
@@ -136,10 +139,18 @@ function CoworkersPage() {
 
 	return (
 		<div>
+			<ImportUsers
+				toggle={openImport}
+				onSubmit={handleImportUser}
+				onClose={() => setOpenImport(false)}
+				files={files}
+				setFiles={setFiles}
+			/>
 			<UserDetailForm
 				toggle={openUserDetailModal}
 				onToggleModal={handleToggleModal}
 				onSubmit={handleUserDetailSubmit}
+				loading={mutation.isLoading}
 				roles={roleData}
 				position={positionData}
 				intialValues={userRecord}
@@ -149,12 +160,12 @@ function CoworkersPage() {
 				<div className="components-table-demo-control-bar">
 					<Search
 						placeholder="Search Users"
-						onSearch={(value) => setName(value)}
+						onSearch={value => setName(value)}
 						style={{ width: 200 }}
 						enterButton
 						ref={nameRef}
 					/>
-					<div className="gx-d-flex gx-justify-content-between">
+					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline">
 							<FormItem>
 								<Select
@@ -164,7 +175,7 @@ function CoworkersPage() {
 									value={role}
 								>
 									{roleData &&
-										roleData.data.data.data.map((role) => (
+										roleData.data.data.data.map(role => (
 											<Option value={role._id} key={role._id}>
 												{role.value}
 											</Option>
@@ -179,7 +190,7 @@ function CoworkersPage() {
 									value={position}
 								>
 									{positionData &&
-										positionData.data.data.data.map((position) => (
+										positionData.data.data.data.map(position => (
 											<Option value={position._id} key={position._id}>
 												{position.name}
 											</Option>
@@ -205,28 +216,48 @@ function CoworkersPage() {
 								</Button>
 							</FormItem>
 						</Form>
-						<CSVLink
-							filename={"co-workers"}
-							data={[
-								["Name", "Role", "Position", "DOB", "Email"],
-								...data?.data?.data?.data
-									?.filter((x) => selectedRows.includes(x._id))
-									.map((d) => [
-										d?.name,
-										d?.role.value,
-										d?.position.name,
-										d?.dob,
-										d?.email,
-									]),
-							]}
-						>
+						<div>
 							<Button
 								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-								disabled={selectedRows.length === 0}
+								onClick={() => setOpenImport(true)}
 							>
-								Export
+								Import
 							</Button>
-						</CSVLink>
+							<CSVLink
+								filename={"co-workers"}
+								data={[
+									[
+										"Name",
+										"Email",
+										"Role",
+										"RoleId",
+										"Position",
+										"PositionId",
+										"DOB",
+										"Join Date"
+									],
+									...data?.data?.data?.data
+										?.filter(x => selectedRows.includes(x._id))
+										.map(d => [
+											d?.name,
+											d?.email,
+											d?.role.value,
+											d?.role._id,
+											d?.position.name,
+											d?.position._id,
+											changeDate(d?.dob),
+											changeDate(d?.joinDate)
+										])
+								]}
+							>
+								<Button
+									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+									disabled={selectedRows.length === 0}
+								>
+									Export
+								</Button>
+							</CSVLink>
+						</div>
 					</div>
 				</div>
 				<Table
@@ -239,7 +270,7 @@ function CoworkersPage() {
 					onChange={handleTableChange}
 					rowSelection={{
 						onChange: handleRowSelect,
-						selectedRowKeys: selectedRows,
+						selectedRowKeys: selectedRows
 					}}
 					pagination={{
 						current: page.page,
@@ -249,9 +280,9 @@ function CoworkersPage() {
 						total: 25,
 						onShowSizeChange,
 						hideOnSinglePage: true,
-						onChange: handlePageChange,
+						onChange: handlePageChange
 					}}
-					loading={mutation.isLoading}
+					loading={mutation.isLoading || isFetching}
 				/>
 			</Card>
 		</div>

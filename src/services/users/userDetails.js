@@ -78,6 +78,15 @@ const updateUser = async (userId, payload) => {
 	}
 };
 
+const importUsers = async payload => {
+	try {
+		let response = await API.post(`${Apis.Users}/import`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 export {
 	loginInUsers,
 	getAllUsers,
@@ -85,5 +94,6 @@ export {
 	getUserRoles,
 	getUserPosition,
 	updateProfile,
-	updateUser
+	updateUser,
+	importUsers
 };
