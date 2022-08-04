@@ -12,6 +12,7 @@ import {
 	getProjectTypes
 } from "services/projects";
 import { PROJECT_COLUMNS } from "constants/Projects";
+import { useNavigate } from "react-router-dom";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -37,6 +38,7 @@ function CoworkersPage() {
 	const [projectType, setProjectType] = useState(undefined);
 	const [projectClient, setprojectClient] = useState(undefined);
 	const queryClient = useQueryClient();
+	const navigate = useNavigate();
 
 	const projectRef = useRef("");
 
@@ -119,6 +121,10 @@ function CoworkersPage() {
 		deleteProjectMutation.mutate(project._id);
 	};
 
+	const navigateToProjectLogs = projectSlug => {
+		navigate(`${projectSlug}`);
+	};
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}
@@ -194,7 +200,11 @@ function CoworkersPage() {
 				</div>
 				<Table
 					className="gx-table-responsive"
-					columns={PROJECT_COLUMNS(sort, confirmDeleteProject)}
+					columns={PROJECT_COLUMNS(
+						sort,
+						confirmDeleteProject,
+						navigateToProjectLogs
+					)}
 					dataSource={formattedProjects(data?.data?.data?.data)}
 					onChange={handleTableChange}
 					pagination={{

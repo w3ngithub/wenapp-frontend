@@ -1,7 +1,7 @@
 import React from "react";
 import { Divider, Popconfirm } from "antd";
 
-const PROJECT_COLUMNS = (sortedInfo, confirmDelete) => [
+const PROJECT_COLUMNS = (sortedInfo, confirmDelete, navigateToProjectLogs) => [
 	{
 		title: "Name",
 		dataIndex: "name",
@@ -61,7 +61,14 @@ const PROJECT_COLUMNS = (sortedInfo, confirmDelete) => [
 		render: (text, record) => {
 			return (
 				<span>
-					<span className="gx-link">Log Time</span>
+					<span
+						className="gx-link"
+						onClick={() =>
+							navigateToProjectLogs(`${record.slug}-${record._id}`)
+						}
+					>
+						Log Time
+					</span>
 					<Divider type="vertical" />
 					<span className="gx-link">Detail</span>
 					<Divider type="vertical" />
