@@ -6,7 +6,7 @@ const LOGTIMES_COLUMNS = (sortedInfo, confirmDelete) => [
 		title: "Date",
 		dataIndex: "logDate",
 		key: "logDate",
-		width: 120,
+		// width: 120,
 		sorter: (a, b) => {
 			return a.logDate.toString().localeCompare(b.logDate.toString());
 		},
@@ -16,7 +16,7 @@ const LOGTIMES_COLUMNS = (sortedInfo, confirmDelete) => [
 		title: "Hours",
 		dataIndex: "totalHours",
 		key: "totalHours",
-		width: 70,
+		// width: 70,
 		sorter: (a, b) =>
 			a.totalHours?.toString().localeCompare(b.totalHours?.toString()),
 		sortOrder: sortedInfo.columnKey === "totalHours" && sortedInfo.order
@@ -34,7 +34,7 @@ const LOGTIMES_COLUMNS = (sortedInfo, confirmDelete) => [
 	{
 		title: "Remarks",
 		dataIndex: "remarks",
-		width: 250,
+		// width: 400,
 		key: "remarks",
 		sorter: (a, b) =>
 			a.remarks?.toString().localeCompare(b.remarks?.toString()),
@@ -43,7 +43,7 @@ const LOGTIMES_COLUMNS = (sortedInfo, confirmDelete) => [
 	{
 		title: "Author By",
 		dataIndex: "user",
-		width: 150,
+		// width: 150,
 		key: "user",
 		sorter: (a, b) => a.user?.toString().localeCompare(b.user?.toString()),
 		sortOrder: sortedInfo.columnKey === "user" && sortedInfo.order
@@ -52,7 +52,7 @@ const LOGTIMES_COLUMNS = (sortedInfo, confirmDelete) => [
 	{
 		title: "Action",
 		key: "action",
-		width: 360,
+		// width: 360,
 		render: (text, record) => {
 			return (
 				<span>
