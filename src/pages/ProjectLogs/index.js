@@ -172,7 +172,7 @@ function ProjectLogs() {
 							</FormItem>
 						</Form>
 						<Button
-							className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+							className="gx-btn gx-btn-primary gx-text-white "
 							onClick={() => {}}
 						>
 							Add New TimeLog
