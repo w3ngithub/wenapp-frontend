@@ -17,7 +17,7 @@ function TimeSummary({ tsw, tst }) {
 				</Col>
 				<Col xl={12} lg={12} md={12} sm={12} xs={24}>
 					<IconWithTextCard
-						cardColor="orange"
+						cardColor={tst ? "orange" : "danger"}
 						icon="tasks"
 						title={tst}
 						subTitle="Time Spent Today"
