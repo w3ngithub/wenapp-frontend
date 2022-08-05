@@ -16,6 +16,9 @@ export const SETTINGS = "settings";
 export const REPORTS = "reports";
 export const RESOURCES = "resources";
 
+// Project Log page
+export const PROJECT_LOG = `${PROJECTS}/:slug`;
+
 // User
 export const PROFILE = "profile";
 export const INVITE = "invite";

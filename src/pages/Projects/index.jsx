@@ -5,19 +5,21 @@ import { updateUser } from "services/users/userDetails";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
 import {
+	deleteProject,
 	getAllProjects,
 	getProjectClients,
 	getProjectStatus,
 	getProjectTypes
 } from "services/projects";
 import { PROJECT_COLUMNS } from "constants/Projects";
+import { useNavigate } from "react-router-dom";
 
 const Search = Input.Search;
 const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formattedProjects = projects => {
-	return projects.map(project => ({
+	return projects?.map(project => ({
 		...project,
 		key: project._id,
 		projectStatus: project.projectStatus.name,
@@ -36,6 +38,7 @@ function CoworkersPage() {
 	const [projectType, setProjectType] = useState(undefined);
 	const [projectClient, setprojectClient] = useState(undefined);
 	const queryClient = useQueryClient();
+	const navigate = useNavigate();
 
 	const projectRef = useRef("");
 
@@ -66,6 +69,15 @@ function CoworkersPage() {
 
 	const mutation = useMutation(
 		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
+		{
+			onSuccess: () => {
+				queryClient.invalidateQueries(["projects"]);
+			}
+		}
+	);
+
+	const deleteProjectMutation = useMutation(
+		projectId => deleteProject(projectId),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["projects"]);
@@ -105,6 +117,14 @@ function CoworkersPage() {
 		projectRef.current.input.state.value = "";
 	};
 
+	const confirmDeleteProject = project => {
+		deleteProjectMutation.mutate(project._id);
+	};
+
+	const navigateToProjectLogs = projectSlug => {
+		navigate(`${projectSlug}`);
+	};
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}
@@ -130,7 +150,7 @@ function CoworkersPage() {
 									value={projectType}
 								>
 									{projectTypesData &&
-										projectTypesData.data.data.data.map(type => (
+										projectTypesData.data?.data?.data?.map(type => (
 											<Option value={type._id} key={type._id}>
 												{type.name}
 											</Option>
@@ -145,7 +165,7 @@ function CoworkersPage() {
 									value={projectStatus}
 								>
 									{projectStatusData &&
-										projectStatusData.data.data.data.map(status => (
+										projectStatusData.data.data?.data?.map(status => (
 											<Option value={status._id} key={status._id}>
 												{status.name}
 											</Option>
@@ -160,7 +180,7 @@ function CoworkersPage() {
 									value={projectClient}
 								>
 									{projectClientsData &&
-										projectClientsData.data.data.data.map(client => (
+										projectClientsData.data?.data?.data?.map(client => (
 											<Option value={client._id} key={client._id}>
 												{client.name}
 											</Option>
@@ -180,20 +200,26 @@ function CoworkersPage() {
 				</div>
 				<Table
 					className="gx-table-responsive"
-					columns={PROJECT_COLUMNS(sort, null, mutation)}
-					dataSource={formattedProjects(data.data.data.data)}
+					columns={PROJECT_COLUMNS(
+						sort,
+						confirmDeleteProject,
+						navigateToProjectLogs
+					)}
+					dataSource={formattedProjects(data?.data?.data?.data)}
 					onChange={handleTableChange}
 					pagination={{
 						current: page.page,
 						pageSize: page.limit,
 						pageSizeOptions: ["5", "10", "20", "50"],
 						showSizeChanger: true,
-						total: 25,
+						total: 15,
 						onShowSizeChange,
 						hideOnSinglePage: true,
 						onChange: handlePageChange
 					}}
-					loading={mutation.isLoading || isFetching}
+					loading={
+						mutation.isLoading || isFetching || deleteProjectMutation.isLoading
+					}
 				/>
 			</Card>
 		</div>

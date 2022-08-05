@@ -1,7 +1,7 @@
 import React from "react";
-import { Divider } from "antd";
+import { Divider, Popconfirm } from "antd";
 
-const PROJECT_COLUMNS = sortedInfo => [
+const PROJECT_COLUMNS = (sortedInfo, confirmDelete, navigateToProjectLogs) => [
 	{
 		title: "Name",
 		dataIndex: "name",
@@ -61,13 +61,27 @@ const PROJECT_COLUMNS = sortedInfo => [
 		render: (text, record) => {
 			return (
 				<span>
-					<span className="gx-link">Log Time</span>
+					<span
+						className="gx-link"
+						onClick={() =>
+							navigateToProjectLogs(`${record._id}-${record.slug}`)
+						}
+					>
+						Log Time
+					</span>
 					<Divider type="vertical" />
 					<span className="gx-link">Detail</span>
 					<Divider type="vertical" />
 					<span className="gx-link">Edit</span>
 					<Divider type="vertical" />
-					<span className="gx-link gx-text-danger">Delete</span>
+					<Popconfirm
+						title="Are you sure to delete this project?"
+						onConfirm={() => confirmDelete(record)}
+						okText="Yes"
+						cancelText="No"
+					>
+						<span className="gx-link gx-text-danger">Delete</span>
+					</Popconfirm>
 				</span>
 			);
 		}
