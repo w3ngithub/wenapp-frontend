@@ -72,7 +72,9 @@ const PROJECT_COLUMNS = (sortedInfo, confirmDelete, navigateToProjectLogs) => [
 					<Divider type="vertical" />
 					<span className="gx-link">Detail</span>
 					<Divider type="vertical" />
-					<span className="gx-link">Edit</span>
+					<span className="gx-link" onClick={() => openModal(record, false)}>
+						Edit
+					</span>
 					<Divider type="vertical" />
 					<Popconfirm
 						title="Are you sure to delete this project?"
