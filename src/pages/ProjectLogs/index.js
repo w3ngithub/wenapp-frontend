@@ -49,7 +49,7 @@ function ProjectLogs() {
 		isLoading: timelogLoading,
 		isFetching: timeLogFetching
 	} = useQuery(
-		["projects", page, projectId, logType, author],
+		["timeLogs", page, projectId, logType, author],
 		() =>
 			getAllTimeLogs({
 				...page,
