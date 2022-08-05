@@ -43,7 +43,6 @@ function ImportUsers({ toggle, onClose, files, setFiles }) {
 			}
 		} catch (error) {
 			setLoading(false);
-			console.log(error, "eeeeeeeeeeeeee");
 		}
 	};
 
