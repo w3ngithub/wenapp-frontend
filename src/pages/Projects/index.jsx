@@ -12,6 +12,8 @@ import {
 	getProjectTypes
 } from "services/projects";
 import { PROJECT_COLUMNS } from "constants/Projects";
+import ProjectModal from "components/Modules/ProjectModal";
+import moment from "moment";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -28,7 +30,7 @@ const formattedProjects = projects => {
 	}));
 };
 
-function CoworkersPage() {
+function ProjectsPage() {
 	// init hooks
 	const [sort, setSort] = useState({});
 	const [project, setProject] = useState("");
@@ -36,6 +38,9 @@ function CoworkersPage() {
 	const [projectStatus, setProjectStatus] = useState(undefined);
 	const [projectType, setProjectType] = useState(undefined);
 	const [projectClient, setprojectClient] = useState(undefined);
+	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
+	const [userRecord, setUserRecord] = useState({});
+	const [readOnly, setReadOnly] = useState(false);
 	const queryClient = useQueryClient();
 
 	const projectRef = useRef("");
@@ -83,6 +88,31 @@ function CoworkersPage() {
 		}
 	);
 
+	const handleUserDetailSubmit = (user, reset) => {
+		console.log(user);
+		// const userTofind = data.data.data.data.find(x => x._id === user._id);
+		// mutation.mutate({
+		// 	userId: user._id,
+		// 	updatedData: {
+		// 		...user,
+		// 		dob: user.dob ? userTofind.dob : undefined,
+		// 		joinDate: user.joinDate ? userTofind.joinDate : undefined,
+		// 		lastReviewDate: user.lastReviewDate
+		// 			? moment.utc(user.lastReviewDate).format()
+		// 			: undefined,
+		// 		exitDate: user.exitDate ? moment.utc(user.exitDate).format() : undefined
+		// 	}
+		// });
+		reset.form.resetFields();
+	};
+
+	const handleToggleModal = (userRecordToUpdate, mode) => {
+		console.log(userRecordToUpdate);
+		setOpenUserDetailModal(prev => !prev);
+		setUserRecord(userRecordToUpdate);
+		setReadOnly(mode);
+	};
+
 	const handleTableChange = (pagination, filters, sorter) => {
 		setSort(sorter);
 	};
@@ -125,6 +155,19 @@ function CoworkersPage() {
 
 	return (
 		<div>
+			<ProjectModal
+				toggle={openUserDetailModal}
+				onToggleModal={handleToggleModal}
+				onSubmit={handleUserDetailSubmit}
+				loading={mutation.isLoading}
+				types={projectType}
+				statuses={projectStatus}
+				// developer={developer}
+				// designer={designer}
+				// qa={qa}
+				initialValues={userRecord}
+				readOnly={readOnly}
+			/>
 			<Card title="Projects">
 				<div className="components-table-demo-control-bar">
 					<Search
@@ -194,7 +237,11 @@ function CoworkersPage() {
 				</div>
 				<Table
 					className="gx-table-responsive"
-					columns={PROJECT_COLUMNS(sort, confirmDeleteProject)}
+					columns={PROJECT_COLUMNS(
+						sort,
+						handleToggleModal,
+						confirmDeleteProject
+					)}
 					dataSource={formattedProjects(data?.data?.data?.data)}
 					onChange={handleTableChange}
 					pagination={{
@@ -216,4 +263,4 @@ function CoworkersPage() {
 	);
 }
 
-export default CoworkersPage;
+export default ProjectsPage;

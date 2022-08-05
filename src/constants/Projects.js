@@ -1,7 +1,7 @@
 import React from "react";
 import { Divider, Popconfirm } from "antd";
 
-const PROJECT_COLUMNS = (sortedInfo, confirmDelete) => [
+const PROJECT_COLUMNS = (sortedInfo, openModal, confirmDelete) => [
 	{
 		title: "Name",
 		dataIndex: "name",
@@ -65,7 +65,9 @@ const PROJECT_COLUMNS = (sortedInfo, confirmDelete) => [
 					<Divider type="vertical" />
 					<span className="gx-link">Detail</span>
 					<Divider type="vertical" />
-					<span className="gx-link">Edit</span>
+					<span className="gx-link" onClick={() => openModal(record, false)}>
+						Edit
+					</span>
 					<Divider type="vertical" />
 					<Popconfirm
 						title="Are you sure to delete this project?"
