@@ -14,6 +14,7 @@ import {
 import { PROJECT_COLUMNS } from "constants/Projects";
 import ProjectModal from "components/Modules/ProjectModal";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -42,6 +43,7 @@ function ProjectsPage() {
 	const [userRecord, setUserRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
 	const queryClient = useQueryClient();
+	const navigate = useNavigate();
 
 	const projectRef = useRef("");
 
@@ -149,6 +151,10 @@ function ProjectsPage() {
 		deleteProjectMutation.mutate(project._id);
 	};
 
+	const navigateToProjectLogs = projectSlug => {
+		navigate(`${projectSlug}`);
+	};
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}
@@ -241,6 +247,7 @@ function ProjectsPage() {
 						sort,
 						handleToggleModal,
 						confirmDeleteProject
+						navigateToProjectLogs
 					)}
 					dataSource={formattedProjects(data?.data?.data?.data)}
 					onChange={handleTableChange}
@@ -249,7 +256,7 @@ function ProjectsPage() {
 						pageSize: page.limit,
 						pageSizeOptions: ["5", "10", "20", "50"],
 						showSizeChanger: true,
-						total: 25,
+						total: 15,
 						onShowSizeChange,
 						hideOnSinglePage: true,
 						onChange: handlePageChange

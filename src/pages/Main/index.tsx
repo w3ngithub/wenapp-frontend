@@ -20,6 +20,7 @@ import {
 	NOTICEBOARD,
 	PROFILE,
 	PROJECTS,
+	PROJECT_LOG,
 	REPORTS,
 	RESOURCES,
 	SETTINGS,
@@ -40,6 +41,7 @@ import Attendace from "pages/Attendance";
 import Dashboard from "pages/Dashboard";
 import Profile from "pages/Profile";
 import InviteUserSignup from "pages/InviteUserSignup";
+import ProjectLogs from "pages/ProjectLogs";
 
 function App(props: any) {
 	const { locale, authUser } = props;
@@ -62,7 +64,7 @@ function App(props: any) {
 						<Route element={<MainApp />}>
 							<Route path={DASHBOARD} element={<Dashboard />} />
 							<Route path={COWORKERS} element={<Coworkers />} />
-							<Route path={PROJECTS} element={<Projects />} />
+							<Route path={PROJECTS} element={<Projects />}></Route>
 							<Route path={ATTENDANCE} element={<Attendace />} />
 							<Route path={LOGTIME} element={<LogTime />} />
 							<Route path={LEAVE} element={<Leave />} />
@@ -72,6 +74,7 @@ function App(props: any) {
 							<Route path={RESOURCES} element={<Resources />} />
 							<Route path={SETTINGS} element={<Settings />} />
 							<Route path={PROFILE} element={<Profile />} />
+							<Route path={PROJECT_LOG} element={<ProjectLogs />} />
 						</Route>
 					</Route>
 				</Routes>
