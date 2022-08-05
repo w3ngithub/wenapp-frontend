@@ -1,7 +1,12 @@
 import React from "react";
 import { Divider, Popconfirm } from "antd";
 
-const PROJECT_COLUMNS = (sortedInfo, confirmDelete, navigateToProjectLogs) => [
+const PROJECT_COLUMNS = (
+	sortedInfo,
+	openModal,
+	confirmDelete,
+	navigateToProjectLogs
+) => [
 	{
 		title: "Name",
 		dataIndex: "name",

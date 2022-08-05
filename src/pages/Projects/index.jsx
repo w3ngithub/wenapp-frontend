@@ -246,7 +246,7 @@ function ProjectsPage() {
 					columns={PROJECT_COLUMNS(
 						sort,
 						handleToggleModal,
-						confirmDeleteProject
+						confirmDeleteProject,
 						navigateToProjectLogs
 					)}
 					dataSource={formattedProjects(data?.data?.data?.data)}
