@@ -64,7 +64,7 @@ const PROJECT_COLUMNS = (sortedInfo, confirmDelete, navigateToProjectLogs) => [
 					<span
 						className="gx-link"
 						onClick={() =>
-							navigateToProjectLogs(`${record.slug}-${record._id}`)
+							navigateToProjectLogs(`${record._id}-${record.slug}`)
 						}
 					>
 						Log Time

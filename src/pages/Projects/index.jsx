@@ -212,7 +212,7 @@ function CoworkersPage() {
 						pageSize: page.limit,
 						pageSizeOptions: ["5", "10", "20", "50"],
 						showSizeChanger: true,
-						total: 25,
+						total: 15,
 						onShowSizeChange,
 						hideOnSinglePage: true,
 						onChange: handlePageChange

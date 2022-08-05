@@ -34,7 +34,7 @@ function ProjectLogs() {
 	const [author, setAuthor] = useState(undefined);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 
-	const [projectSlug, projectId] = slug.split("-");
+	const [projectId] = slug.split("-");
 
 	const { data: projectDetail } = useQuery(["singleProject", projectId], () =>
 		getProject(projectId)
@@ -102,7 +102,8 @@ function ProjectLogs() {
 		qa,
 		weeklyTimeSpent,
 		estimatedHours,
-		totalTimeSpent
+		totalTimeSpent,
+		name: projectSlug
 	} = projectDetail?.data?.data?.data?.[0] || {};
 	const LogAuthors = [
 		...(designers ?? []),
