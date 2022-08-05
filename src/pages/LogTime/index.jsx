@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { LOGTIMES_COLUMNS } from "constants/logTimes";
-import { changeDate, myDetail } from "helpers/utils";
+import { changeDate } from "helpers/utils";
 import React, { useState } from "react";
 import {
 	deleteTimeLog,
@@ -33,7 +33,7 @@ function LogTime() {
 
 	const {
 		user: { _id }
-	} = myDetail;
+	} = JSON.parse(localStorage.getItem("user_id") || "{}");
 
 	const {
 		data: logTimeDetails,

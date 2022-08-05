@@ -1,3 +1,5 @@
+import { triggerAsyncId } from "async_hooks";
+
 export const handleSort = (
 	currentState,
 	stateSetter,
@@ -272,5 +274,3 @@ export function changeDate(d) {
 	}
 	return `${dd}/${mm}/${yyyy}`;
 }
-
-export const myDetail = JSON.parse(localStorage.getItem("user_id")) || {};
