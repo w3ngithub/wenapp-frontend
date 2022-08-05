@@ -61,11 +61,9 @@ function LogTime() {
 
 	const deleteLogMutation = useMutation(logId => deleteTimeLog(logId), {
 		onSuccess: () => {
-			queryClient.invalidateQueries([
-				"UsertimeLogs",
-				"userweeklyTimeSpent",
-				"userTodayTimeSpent"
-			]);
+			queryClient.invalidateQueries(["UsertimeLogs"]);
+			queryClient.invalidateQueries(["userweeklyTimeSpent"]);
+			queryClient.invalidateQueries(["userTodayTimeSpent"]);
 		}
 	});
 
