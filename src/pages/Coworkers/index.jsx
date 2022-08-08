@@ -66,7 +66,7 @@ function CoworkersPage() {
 		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
 		{
 			onSuccess: response => {
-				if (response.status) {
+				if (response?.status) {
 					notification({ message: "User Updated", type: "success" });
 					queryClient.invalidateQueries(["users"]);
 					setOpenUserDetailModal(prev => false);
@@ -97,20 +97,26 @@ function CoworkersPage() {
 	};
 
 	const handleUserDetailSubmit = (user, reset) => {
-		const userTofind = data.data.data.data.find(x => x._id === user._id);
-		mutation.mutate({
-			userId: user._id,
-			updatedData: {
-				...user,
-				dob: user.dob ? userTofind.dob : undefined,
-				joinDate: user.joinDate ? userTofind.joinDate : undefined,
-				lastReviewDate: user.lastReviewDate
-					? moment.utc(user.lastReviewDate).format()
-					: undefined,
-				exitDate: user.exitDate ? moment.utc(user.exitDate).format() : undefined
-			}
-		});
-		reset.form.resetFields();
+		try {
+			const userTofind = data.data.data.data.find(x => x._id === user._id);
+			mutation.mutate({
+				userId: user._id,
+				updatedData: {
+					...user,
+					dob: user.dob ? userTofind.dob : undefined,
+					joinDate: user.joinDate ? userTofind.joinDate : undefined,
+					lastReviewDate: user.lastReviewDate
+						? moment.utc(user.lastReviewDate).format()
+						: undefined,
+					exitDate: user.exitDate
+						? moment.utc(user.exitDate).format()
+						: undefined
+				}
+			});
+			reset.form.resetFields();
+		} catch (error) {
+			notification({ message: "Could not update User!", type: "error" });
+		}
 	};
 
 	const handleTableChange = (pagination, filters, sorter) => {
