@@ -120,7 +120,7 @@ function ProjectModal({
 	return (
 		<Modal
 			width={900}
-			title={readOnly ? "Details" : "Update Project"}
+			title={readOnly ? "Add Project" : "Update Project"}
 			visible={toggle}
 			onOk={handleSubmit}
 			onCancel={handleCancel}

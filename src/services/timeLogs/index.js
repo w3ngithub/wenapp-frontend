@@ -30,6 +30,18 @@ const getLogTypes = async () => {
 	}
 };
 
+const addLogTime = async payload => {
+	try {
+		let response = await API.post(
+			`${Apis.Projects}/${payload.id}/timelogs`,
+			payload.details
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 const deleteTimeLog = async logId => {
 	try {
 		let response = await API.delete(`${Apis.TimeLogs}/${logId}`);
@@ -39,4 +51,4 @@ const deleteTimeLog = async logId => {
 	}
 };
 
-export { getAllTimeLogs, getLogTypes, deleteTimeLog };
+export { getAllTimeLogs, getLogTypes, deleteTimeLog, addLogTime };

@@ -100,7 +100,6 @@ function ProjectsPage() {
 	);
 
 	const handleUserDetailSubmit = (project, reset) => {
-		console.log(project);
 		const updatedProject = {
 			...project,
 			estimatedHours: project.estimatedHours
