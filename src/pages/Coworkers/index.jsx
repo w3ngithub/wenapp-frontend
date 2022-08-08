@@ -56,7 +56,9 @@ function CoworkersPage() {
 	const { data, isLoading, isFetching } = useQuery(
 		["users", page, activeUser, role, position, name],
 		() => getAllUsers({ ...page, active: activeUser, role, position, name }),
-		{ keepPreviousData: true }
+		{
+			keepPreviousData: true
+		}
 	);
 
 	const mutation = useMutation(
@@ -172,7 +174,7 @@ function CoworkersPage() {
 									value={role}
 								>
 									{roleData &&
-										roleData.data.data.data.map(role => (
+										roleData?.data?.data?.data?.map(role => (
 											<Option value={role._id} key={role._id}>
 												{role.value}
 											</Option>
@@ -187,7 +189,7 @@ function CoworkersPage() {
 									value={position}
 								>
 									{positionData &&
-										positionData.data.data.data.map(position => (
+										positionData?.data?.data?.data?.map(position => (
 											<Option value={position._id} key={position._id}>
 												{position.name}
 											</Option>
