@@ -300,7 +300,7 @@ function ProjectsPage() {
 						pageSize: page.limit,
 						pageSizeOptions: ["5", "10", "20", "50"],
 						showSizeChanger: true,
-						total: 15,
+						total: data?.data?.data?.count || 1,
 						onShowSizeChange,
 						hideOnSinglePage: true,
 						onChange: handlePageChange
