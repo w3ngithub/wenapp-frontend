@@ -30,6 +30,18 @@ const getLogTypes = async () => {
 	}
 };
 
+const addLogTime = async payload => {
+	try {
+		let response = await API.post(
+			`${Apis.Projects}/${payload.id}/timelogs`,
+			payload.details
+		);
+    return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+  };
+  
 const getWeeklyTimeLogSummary = async () => {
 	try {
 		let response = await API.get(`${Apis.TimeLogs}/users/weeklytime`);
@@ -62,5 +74,6 @@ export {
 	getLogTypes,
 	deleteTimeLog,
 	getWeeklyTimeLogSummary,
-	getTodayTimeLogSummary
+	getTodayTimeLogSummary,
+  addLogTime
 };

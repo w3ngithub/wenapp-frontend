@@ -49,9 +49,36 @@ const getProjectStatus = async () => {
 	}
 };
 
+const getProjectTags = async () => {
+	try {
+		let response = await API.get(`${Apis.ProjectTags}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 const getProjectClients = async () => {
 	try {
 		let response = await API.get(`${Apis.Projects}/clients`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const addProject = async project => {
+	try {
+		let response = await API.post(`${Apis.Projects}`, project);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const updateProject = async (id, project) => {
+	try {
+		let response = await API.patch(`${Apis.Projects}/${id}`, project);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err.response);
@@ -71,7 +98,10 @@ export {
 	getAllProjects,
 	getProjectTypes,
 	getProjectStatus,
+	getProjectTags,
 	getProjectClients,
 	getProject,
-	deleteProject
+	deleteProject,
+	addProject,
+	updateProject
 };

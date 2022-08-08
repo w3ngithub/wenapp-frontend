@@ -1,20 +1,21 @@
 import React, { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Form, Select, Input, Button } from "antd";
-import { updateUser } from "services/users/userDetails";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
 import {
+	addProject,
 	deleteProject,
 	getAllProjects,
 	getProjectClients,
 	getProjectStatus,
-	getProjectTypes
+	getProjectTypes,
+	updateProject
 } from "services/projects";
 import { PROJECT_COLUMNS } from "constants/Projects";
 import ProjectModal from "components/Modules/ProjectModal";
-import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -42,6 +43,7 @@ function ProjectsPage() {
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
 	const [userRecord, setUserRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
+	const [isEditMode, setIsEditMode] = useState(false);
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 
@@ -72,11 +74,18 @@ function ProjectsPage() {
 		{ keepPreviousData: true }
 	);
 
-	const mutation = useMutation(
-		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
+	const addProjectMutation = useMutation(project => addProject(project), {
+		onSuccess: () => {
+			queryClient.invalidateQueries(["projects"]);
+			handleCloseModal();
+		}
+	});
+	const updateProjectMutation = useMutation(
+		project => updateProject(project.id, project.details),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["projects"]);
+				handleCloseModal();
 			}
 		}
 	);
@@ -90,29 +99,55 @@ function ProjectsPage() {
 		}
 	);
 
-	const handleUserDetailSubmit = (user, reset) => {
-		console.log(user);
-		// const userTofind = data.data.data.data.find(x => x._id === user._id);
-		// mutation.mutate({
-		// 	userId: user._id,
-		// 	updatedData: {
-		// 		...user,
-		// 		dob: user.dob ? userTofind.dob : undefined,
-		// 		joinDate: user.joinDate ? userTofind.joinDate : undefined,
-		// 		lastReviewDate: user.lastReviewDate
-		// 			? moment.utc(user.lastReviewDate).format()
-		// 			: undefined,
-		// 		exitDate: user.exitDate ? moment.utc(user.exitDate).format() : undefined
-		// 	}
-		// });
+	const handleUserDetailSubmit = (project, reset) => {
+		const updatedProject = {
+			...project,
+			estimatedHours: project.estimatedHours
+				? +project.estimatedHours
+				: undefined,
+			startDate: project.startDate
+				? moment.utc(project.startDate).format()
+				: undefined,
+			endDate: project.endDate
+				? moment.utc(project.endDate).format()
+				: undefined
+		};
+		if (isEditMode)
+			updateProjectMutation.mutate({
+				id: userRecord.id,
+				details: updatedProject
+			});
+		else addProjectMutation.mutate(updatedProject);
 		reset.form.resetFields();
 	};
 
-	const handleToggleModal = (userRecordToUpdate, mode) => {
-		console.log(userRecordToUpdate);
+	const handleOpenEditModal = (projectToUpdate, mode) => {
+		const originalProject = data?.data?.data?.data.find(
+			project => project.id === projectToUpdate.id
+		);
 		setOpenUserDetailModal(prev => !prev);
-		setUserRecord(userRecordToUpdate);
+		setUserRecord({
+			id: projectToUpdate.id,
+			project: {
+				...projectToUpdate,
+				projectStatus: originalProject.projectStatus,
+				projectTypes: originalProject.projectTypes,
+				startDate: originalProject.startDate ?? null,
+				endDate: originalProject.endDate ?? null
+			}
+		});
 		setReadOnly(mode);
+		setIsEditMode(true);
+	};
+
+	const handleOpenAddModal = () => {
+		setOpenUserDetailModal(prev => !prev);
+	};
+
+	const handleCloseModal = () => {
+		setOpenUserDetailModal(prev => !prev);
+		setUserRecord({});
+		setIsEditMode(false);
 	};
 
 	const handleTableChange = (pagination, filters, sorter) => {
@@ -163,16 +198,19 @@ function ProjectsPage() {
 		<div>
 			<ProjectModal
 				toggle={openUserDetailModal}
-				onToggleModal={handleToggleModal}
+				onClose={handleCloseModal}
 				onSubmit={handleUserDetailSubmit}
-				loading={mutation.isLoading}
-				types={projectType}
-				statuses={projectStatus}
+				loading={
+					addProjectMutation.isLoading || updateProjectMutation.isLoading
+				}
+				types={projectTypesData}
+				statuses={projectStatusData}
 				// developer={developer}
 				// designer={designer}
 				// qa={qa}
-				initialValues={userRecord}
+				initialValues={userRecord.project}
 				readOnly={readOnly}
+				isEditMode={isEditMode}
 			/>
 			<Card title="Projects">
 				<div className="components-table-demo-control-bar">
@@ -239,13 +277,19 @@ function ProjectsPage() {
 								</Button>
 							</FormItem>
 						</Form>
+						<Button
+							className="gx-btn gx-btn-primary gx-text-white "
+							onClick={handleOpenAddModal}
+						>
+							Add New Project
+						</Button>
 					</div>
 				</div>
 				<Table
 					className="gx-table-responsive"
 					columns={PROJECT_COLUMNS(
 						sort,
-						handleToggleModal,
+						handleOpenEditModal,
 						confirmDeleteProject,
 						navigateToProjectLogs
 					)}
@@ -261,9 +305,7 @@ function ProjectsPage() {
 						hideOnSinglePage: true,
 						onChange: handlePageChange
 					}}
-					loading={
-						mutation.isLoading || isFetching || deleteProjectMutation.isLoading
-					}
+					loading={isLoading || isFetching || deleteProjectMutation.isLoading}
 				/>
 			</Card>
 		</div>

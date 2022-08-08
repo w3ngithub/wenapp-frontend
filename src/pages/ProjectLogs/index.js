@@ -1,12 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Form, Select, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
+import LogTimeModal from "components/Modules/LogtimeModal";
 import { LOGTIMES_COLUMNS } from "constants/logTimes";
 import { changeDate } from "helpers/utils";
+import moment from "moment";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProject } from "services/projects";
-import { deleteTimeLog, getAllTimeLogs, getLogTypes } from "services/timeLogs";
+import {
+	addLogTime,
+	deleteTimeLog,
+	getAllTimeLogs,
+	getLogTypes
+} from "services/timeLogs";
 import LogsBreadCumb from "./LogsBreadCumb";
 import TimeSummary from "./TimeSummary";
 
@@ -32,6 +39,7 @@ function ProjectLogs() {
 	const [sort, setSort] = useState({});
 	const [logType, setLogType] = useState(undefined);
 	const [author, setAuthor] = useState(undefined);
+	const [openModal, setOpenModal] = useState(false);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 
 	const [projectId] = slug.split("-");
@@ -60,9 +68,18 @@ function ProjectLogs() {
 		{ keepPreviousData: true }
 	);
 
+	const addLogTimeMutation = useMutation(details => addLogTime(details), {
+		onSuccess: () => {
+			queryClient.invalidateQueries(["timeLogs"]);
+			queryClient.invalidateQueries(["singleProject"]);
+			handleCloseTimelogModal();
+		}
+	});
+
 	const deleteLogMutation = useMutation(logId => deleteTimeLog(logId), {
 		onSuccess: () => {
 			queryClient.invalidateQueries(["timeLogs"]);
+			queryClient.invalidateQueries(["singleProject"]);
 		}
 	});
 
@@ -91,10 +108,28 @@ function ProjectLogs() {
 		setAuthor(undefined);
 	};
 
+	const handleOpenTimelogModal = () => {
+		setOpenModal(true);
+	};
+
+	const handleCloseTimelogModal = () => {
+		setOpenModal(false);
+	};
+
 	const confirmDelete = log => {
 		deleteLogMutation.mutate(log._id);
 	};
 
+	const handleLogTypeSubmit = (newLogtime, reset) => {
+		const formattedNewLogtime = {
+			...newLogtime,
+			hours: +newLogtime.hours,
+			logDate: moment.utc(newLogtime.logDate).format(),
+			minutes: +newLogtime.minutes
+		};
+		addLogTimeMutation.mutate({ id: projectId, details: formattedNewLogtime });
+		reset.form.resetFields();
+	};
 	const {
 		designers,
 		devOps,
@@ -118,6 +153,14 @@ function ProjectLogs() {
 
 	return (
 		<div>
+			<LogTimeModal
+				toggle={openModal}
+				onToggleModal={setOpenModal}
+				onSubmit={handleLogTypeSubmit}
+				loading={addLogTimeMutation.isLoading}
+				logTypes={logTypes}
+				// intialValues={userRecord}
+			/>
 			<LogsBreadCumb slug={projectSlug} />
 			<div style={{ marginTop: 20 }}></div>
 			<Card title={projectSlug + " Time Summary"}>
@@ -172,8 +215,8 @@ function ProjectLogs() {
 							</FormItem>
 						</Form>
 						<Button
-							className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-							onClick={() => {}}
+							className="gx-btn gx-btn-primary gx-text-white "
+							onClick={handleOpenTimelogModal}
 						>
 							Add New TimeLog
 						</Button>

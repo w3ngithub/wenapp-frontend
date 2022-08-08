@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Button,
 	DatePicker,
@@ -11,6 +11,9 @@ import {
 } from "antd";
 import moment from "moment";
 import "./style.css";
+import { useQuery } from "@tanstack/react-query";
+import { getProjectTags } from "services/projects";
+import { getAllUsers } from "services/users/userDetails";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -19,7 +22,7 @@ const { TextArea } = Input;
 const formItemLayout = {
 	labelCol: {
 		xs: { span: 0 },
-		sm: { span: 12 }
+		sm: { span: 10 }
 	},
 	wrapperCol: {
 		xs: { span: 0 },
@@ -29,21 +32,28 @@ const formItemLayout = {
 
 function ProjectModal({
 	toggle,
-	onToggleModal,
+	onClose,
 	types,
 	statuses,
 	onSubmit,
 	initialValues,
 	readOnly = false,
 	loading = false,
+	isEditMode = false,
 	...rest
 }) {
 	const { getFieldDecorator } = rest.form;
-	const [priority, setPriority] = useState("");
-
+	const [projectTypes, setProjectTypes] = useState([]);
+	const [projectStatuses, setProjectStatuses] = useState([]);
+	const { data, refetch } = useQuery(["tags"], getProjectTags, {
+		enabled: false
+	});
+	const usersQuery = useQuery(["users"], getAllUsers, {
+		enabled: false
+	});
 	const handleCancel = () => {
 		rest.form.resetFields();
-		onToggleModal({});
+		onClose();
 	};
 
 	const handleSubmit = () => {
@@ -51,39 +61,66 @@ function ProjectModal({
 			if (err) {
 				return;
 			}
-
-			onSubmit({ ...initialValues, ...fieldsValue }, rest);
+			onSubmit(fieldsValue, rest);
 		});
-	};
-
-	const setProjectPriority = e => {
-		setPriority(e.target.value === "yes" ? true : false);
 	};
 
 	useEffect(() => {
 		if (toggle) {
-			console.log(initialValues);
-
-			rest.form.setFieldsValue({
-				name: initialValues.name ?? "",
-				priority: initialValues.priority,
-				estimatedHours: initialValues.estimatedHours,
-				startDate: moment(initialValues.startDate),
-				endDate: moment(initialValues.endDate),
-				type: initialValues.projectTypes,
-				status: initialValues.projectStatus,
-				stagingUrls: initialValues.stagingUrls,
-				liveUrl: initialValues.liveUrl,
-				notes: initialValues.notes,
-				maintenance: initialValues.maintenance
-			});
+			setProjectStatuses(statuses.data.data.data);
+			setProjectTypes(types.data.data.data);
+			refetch();
+			usersQuery.refetch();
+			if (isEditMode) {
+				rest.form.setFieldsValue({
+					name: initialValues.name ?? "",
+					priority: initialValues.priority,
+					path: initialValues.path,
+					estimatedHours: initialValues.estimatedHours,
+					startDate: initialValues.startDate
+						? moment(initialValues.startDate)
+						: null,
+					endDate: initialValues.endDate ? moment(initialValues.endDate) : null,
+					projectTypes: initialValues.projectTypes?.map(type => type._id),
+					projectStatus: initialValues.projectStatus?._id,
+					projectTags:
+						initialValues.projectTags?.length > 0
+							? initialValues.projectTags?.map(tags => tags._id)
+							: undefined,
+					developers:
+						initialValues.developers?.length > 0
+							? initialValues.developers?.map(developer => developer._id)
+							: undefined,
+					designers:
+						initialValues.designers?.length > 0
+							? initialValues.designers?.map(designer => designer._id)
+							: undefined,
+					devOps:
+						initialValues.devOps?.length > 0
+							? initialValues.devOps?.map(devop => devop._id)
+							: undefined,
+					qa:
+						initialValues.qa?.length > 0
+							? initialValues.qa?.map(q => q._id)
+							: undefined,
+					stagingUrls:
+						initialValues.stagingUrls?.length > 0
+							? initialValues.stagingUrls
+							: undefined,
+					liveUrl: initialValues.liveUrl,
+					notes: initialValues.notes,
+					maintenance:
+						initialValues.maintenance?.length > 0
+							? initialValues.maintenance
+							: undefined
+				});
+			}
 		}
 	}, [toggle]);
 	return (
 		<Modal
-			width={700}
-			style={{ width: "700px" }}
-			title={readOnly ? "Details" : "Update Project"}
+			width={900}
+			title={readOnly ? "Add Project" : "Update Project"}
 			visible={toggle}
 			onOk={handleSubmit}
 			onCancel={handleCancel}
@@ -110,7 +147,6 @@ function ProjectModal({
 						<FormItem
 							{...formItemLayout}
 							label="Name"
-							name="name"
 							hasFeedback={readOnly ? false : true}
 						>
 							{getFieldDecorator("name", {
@@ -118,14 +154,25 @@ function ProjectModal({
 							})(<Input placeholder="Enter Name" disabled={readOnly} />)}
 						</FormItem>
 						<FormItem {...formItemLayout} label="Priority">
-							{getFieldDecorator("priority", {
-								rules: [{ required: true, message: "Required!" }]
-							})(
+							{getFieldDecorator(
+								"priority",
+								{}
+							)(
 								<Radio.Group buttonStyle="solid" disabled={readOnly}>
 									<Radio.Button value={true}>Yes</Radio.Button>
 									<Radio.Button value={false}>No</Radio.Button>
 								</Radio.Group>
 							)}
+						</FormItem>
+						<FormItem
+							{...formItemLayout}
+							label="Path"
+							hasFeedback={readOnly ? false : true}
+						>
+							{getFieldDecorator(
+								"path",
+								{}
+							)(<Input placeholder="Enter Path" disabled={readOnly} />)}
 						</FormItem>
 						<FormItem
 							{...formItemLayout}
@@ -152,52 +199,36 @@ function ProjectModal({
 							label="Start Date"
 							hasFeedback={readOnly ? false : true}
 						>
-							{getFieldDecorator("startDate", {
-								rules: [
-									{
-										type: "object",
-										message: "Required!",
-										whitespace: true
-									}
-								]
-							})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+							{getFieldDecorator(
+								"startDate",
+								{}
+							)(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
 						</FormItem>
 						<FormItem
 							{...formItemLayout}
 							label="End Date"
 							hasFeedback={readOnly ? false : true}
 						>
-							{getFieldDecorator("endDate", {
-								rules: [
-									{
-										type: "object",
-										message: "Required!",
-										whitespace: true
-									}
-								]
-							})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+							{getFieldDecorator(
+								"endDate",
+								{}
+							)(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
 						</FormItem>
 						<FormItem
 							{...formItemLayout}
 							label="Type"
 							hasFeedback={readOnly ? false : true}
 						>
-							{getFieldDecorator("type", {
-								rules: [
-									{
-										type: "object",
-										message: "Required!",
-										whitespace: true
-									}
-								]
-							})(
+							{getFieldDecorator(
+								"projectTypes",
+								{}
+							)(
 								<Select placeholder="Select Type" disabled={readOnly}>
-									{types &&
-										types.data.data.data.map(type => (
-											<Option value={type._id} key={type._id}>
-												{type.name}
-											</Option>
-										))}
+									{projectTypes.map(type => (
+										<Option value={type._id} key={type._id}>
+											{type.name}
+										</Option>
+									))}
 								</Select>
 							)}
 						</FormItem>
@@ -206,20 +237,130 @@ function ProjectModal({
 							label="Status"
 							hasFeedback={readOnly ? false : true}
 						>
-							{getFieldDecorator("status", {
+							{getFieldDecorator("projectStatus", {
 								rules: [
 									{
-										type: "object",
-										message: "Required!",
-										whitespace: true
+										required: true,
+										message: "Required!"
 									}
 								]
 							})(
-								<Select placeholder="Select Type" disabled={readOnly}>
-									{statuses &&
-										statuses.data.data.data.map(status => (
-											<Option value={status._id} key={status._id}>
-												{status.name}
+								<Select placeholder="Select Status" disabled={readOnly}>
+									{projectStatuses.map(status => (
+										<Option value={status._id} key={status._id}>
+											{status.name}
+										</Option>
+									))}
+								</Select>
+							)}
+						</FormItem>
+						<FormItem
+							{...formItemLayout}
+							label="Tags"
+							hasFeedback={readOnly ? false : true}
+						>
+							{getFieldDecorator(
+								"projectTags",
+								{}
+							)(
+								<Select
+									placeholder="Select Tags"
+									disabled={readOnly}
+									mode="tags"
+									size="large"
+								>
+									{data &&
+										data.data.data.data.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
+								</Select>
+							)}
+						</FormItem>
+						<FormItem
+							{...formItemLayout}
+							label="Developers"
+							hasFeedback={readOnly ? false : true}
+						>
+							{getFieldDecorator(
+								"developers",
+								{}
+							)(
+								<Select
+									placeholder="Select Developers"
+									disabled={readOnly}
+									mode="tags"
+								>
+									{usersQuery.data &&
+										usersQuery.data.data.data.data.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
+								</Select>
+							)}
+						</FormItem>
+						<FormItem
+							{...formItemLayout}
+							label="Designers"
+							hasFeedback={readOnly ? false : true}
+						>
+							{getFieldDecorator(
+								"designers",
+								{}
+							)(
+								<Select
+									placeholder="Select Designers"
+									disabled={readOnly}
+									mode="tags"
+								>
+									{usersQuery.data &&
+										usersQuery.data.data.data.data.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
+								</Select>
+							)}
+						</FormItem>
+						<FormItem
+							{...formItemLayout}
+							label="QA"
+							hasFeedback={readOnly ? false : true}
+						>
+							{getFieldDecorator(
+								"qa",
+								{}
+							)(
+								<Select placeholder="Select QA" disabled={readOnly} mode="tags">
+									{usersQuery.data &&
+										usersQuery.data.data.data.data.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
+								</Select>
+							)}
+						</FormItem>
+						<FormItem
+							{...formItemLayout}
+							label="DevOps"
+							hasFeedback={readOnly ? false : true}
+						>
+							{getFieldDecorator(
+								"devOps",
+								{}
+							)(
+								<Select
+									placeholder="Select DevOps"
+									disabled={readOnly}
+									mode="tags"
+								>
+									{usersQuery.data &&
+										usersQuery.data.data.data.data.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
 											</Option>
 										))}
 								</Select>
@@ -231,9 +372,19 @@ function ProjectModal({
 							hasFeedback={readOnly ? false : true}
 						>
 							{getFieldDecorator(
-								"stagingUrl",
+								"stagingUrls",
 								{}
-							)(<Input placeholder="Enter Staging URL" disabled={readOnly} />)}
+							)(
+								<Select
+									placeholder="Select Staging Urls"
+									disabled={readOnly}
+									mode="tags"
+								>
+									{[].map(item => (
+										<Option key={item} value={item} />
+									))}
+								</Select>
+							)}
 						</FormItem>
 						<FormItem
 							{...formItemLayout}
@@ -245,11 +396,7 @@ function ProjectModal({
 								{}
 							)(<Input placeholder="Enter Live URL" disabled={readOnly} />)}
 						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Notes"
-							hasFeedback={readOnly ? false : true}
-						>
+						<FormItem {...formItemLayout} label="Notes">
 							{getFieldDecorator(
 								"notes",
 								{}
