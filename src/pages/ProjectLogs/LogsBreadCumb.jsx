@@ -11,7 +11,7 @@ const LogsBreadCumb = ({ slug }) => {
 			<Breadcrumb.Item onClick={() => navigate(`/${PROJECTS}`)}>
 				<span className="gx-link">
 					<Icon type="folder" />
-					<span>Projects</span>
+					<span className="gx-ml-1">Projects</span>
 				</span>
 			</Breadcrumb.Item>
 			<Breadcrumb.Item>{slug}</Breadcrumb.Item>

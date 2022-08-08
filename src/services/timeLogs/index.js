@@ -30,6 +30,24 @@ const getLogTypes = async () => {
 	}
 };
 
+const getWeeklyTimeLogSummary = async () => {
+	try {
+		let response = await API.get(`${Apis.TimeLogs}/users/weeklytime`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const getTodayTimeLogSummary = async () => {
+	try {
+		let response = await API.get(`${Apis.TimeLogs}/users/todaytime`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 const deleteTimeLog = async logId => {
 	try {
 		let response = await API.delete(`${Apis.TimeLogs}/${logId}`);
@@ -39,4 +57,10 @@ const deleteTimeLog = async logId => {
 	}
 };
 
-export { getAllTimeLogs, getLogTypes, deleteTimeLog };
+export {
+	getAllTimeLogs,
+	getLogTypes,
+	deleteTimeLog,
+	getWeeklyTimeLogSummary,
+	getTodayTimeLogSummary
+};

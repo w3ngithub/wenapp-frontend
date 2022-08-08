@@ -62,7 +62,7 @@ function ProjectLogs() {
 
 	const deleteLogMutation = useMutation(logId => deleteTimeLog(logId), {
 		onSuccess: () => {
-			queryClient.invalidateQueries(["logTypes"]);
+			queryClient.invalidateQueries(["timeLogs"]);
 		}
 	});
 
