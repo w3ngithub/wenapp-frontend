@@ -22,7 +22,7 @@ const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formattedUsers = (users, isAdmin) => {
-	return users.map(user => ({
+	return users?.map(user => ({
 		...user,
 		key: user._id,
 		dob: changeDate(user.dob),
@@ -55,7 +55,7 @@ function CoworkersPage() {
 
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
 	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
-	const { data, isLoading, isError, isFetching } = useQuery(
+	const { data, isLoading, isFetching } = useQuery(
 		["users", page, activeUser, role, position, name],
 		() => getAllUsers({ ...page, active: activeUser, role, position, name }),
 		{ keepPreviousData: true }
@@ -133,8 +133,6 @@ function CoworkersPage() {
 		setSelectedRows(rows);
 	};
 
-	const handleImportUser = () => {};
-
 	if (isLoading) {
 		return <CircularProgress />;
 	}
@@ -143,7 +141,6 @@ function CoworkersPage() {
 		<div>
 			<ImportUsers
 				toggle={openImport}
-				onSubmit={handleImportUser}
 				onClose={() => setOpenImport(false)}
 				files={files}
 				setFiles={setFiles}
@@ -225,40 +222,42 @@ function CoworkersPage() {
 							>
 								Import
 							</Button>
-							<CSVLink
-								filename={"co-workers"}
-								data={[
-									[
-										"Name",
-										"Email",
-										"Role",
-										"RoleId",
-										"Position",
-										"PositionId",
-										"DOB",
-										"Join Date"
-									],
-									...data?.data?.data?.data
-										?.filter(x => selectedRows.includes(x._id))
-										.map(d => [
-											d?.name,
-											d?.email,
-											d?.role.value,
-											d?.role._id,
-											d?.position.name,
-											d?.position._id,
-											changeDate(d?.dob),
-											changeDate(d?.joinDate)
-										])
-								]}
-							>
-								<Button
-									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-									disabled={selectedRows.length === 0}
+							{data?.status && (
+								<CSVLink
+									filename={"co-workers"}
+									data={[
+										[
+											"Name",
+											"Email",
+											"Role",
+											"RoleId",
+											"Position",
+											"PositionId",
+											"DOB",
+											"Join Date"
+										],
+										...data?.data?.data?.data
+											?.filter(x => selectedRows.includes(x?._id))
+											?.map(d => [
+												d?.name,
+												d?.email,
+												d?.role.value,
+												d?.role._id,
+												d?.position.name,
+												d?.position._id,
+												changeDate(d?.dob),
+												changeDate(d?.joinDate)
+											])
+									]}
 								>
-									Export
-								</Button>
-							</CSVLink>
+									<Button
+										className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+										disabled={selectedRows.length === 0}
+									>
+										Export
+									</Button>
+								</CSVLink>
+							)}
 						</div>
 					</div>
 				</div>
@@ -266,8 +265,8 @@ function CoworkersPage() {
 					className="gx-table-responsive"
 					columns={CO_WORKERCOLUMNS(sort, handleToggleModal, mutation)}
 					dataSource={formattedUsers(
-						data.data.data.data,
-						user.role.key === "admin"
+						data?.data?.data?.data,
+						user?.role?.key === "admin"
 					)}
 					onChange={handleTableChange}
 					rowSelection={{

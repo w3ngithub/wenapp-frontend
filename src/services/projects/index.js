@@ -22,6 +22,15 @@ const getAllProjects = async ({
 	}
 };
 
+const getProject = async projectId => {
+	try {
+		let response = await API.get(`${Apis.Projects}/${projectId}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 const getProjectTypes = async () => {
 	try {
 		let response = await API.get(`${Apis.Projects}/types`);
@@ -40,6 +49,15 @@ const getProjectStatus = async () => {
 	}
 };
 
+const getProjectTags = async () => {
+	try {
+		let response = await API.get(`${Apis.ProjectTags}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 const getProjectClients = async () => {
 	try {
 		let response = await API.get(`${Apis.Projects}/clients`);
@@ -49,4 +67,41 @@ const getProjectClients = async () => {
 	}
 };
 
-export { getAllProjects, getProjectTypes, getProjectStatus, getProjectClients };
+const addProject = async project => {
+	try {
+		let response = await API.post(`${Apis.Projects}`, project);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const updateProject = async (id, project) => {
+	try {
+		let response = await API.patch(`${Apis.Projects}/${id}`, project);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const deleteProject = async projectId => {
+	try {
+		let response = await API.delete(`${Apis.Projects}/${projectId}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export {
+	getAllProjects,
+	getProjectTypes,
+	getProjectStatus,
+	getProjectTags,
+	getProjectClients,
+	getProject,
+	deleteProject,
+	addProject,
+	updateProject
+};

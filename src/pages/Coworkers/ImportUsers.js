@@ -1,23 +1,25 @@
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button, Modal, Spin } from "antd";
+import { Alert, Button, Modal, Spin } from "antd";
 import DragAndDropFile from "components/Modules/DragAndDropFile";
 import { importUsers } from "services/users/userDetails";
 import { csvFileToArray } from "helpers/utils";
 
-function ImportUsers({ toggle, onSubmit, onClose, files, setFiles }) {
+function ImportUsers({ toggle, onClose, files, setFiles }) {
 	const fileReader = new FileReader();
 
 	const [loading, setLoading] = useState(false);
 	const queryClient = useQueryClient();
 
 	const mutation = useMutation(usersToImport => importUsers(usersToImport), {
-		onSuccess: () => {
-			queryClient.invalidateQueries(["users"]);
-			setLoading(false);
-			handleCancel();
+		onSuccess: response => {
+			if (response.status) {
+				queryClient.invalidateQueries(["users"]);
+				handleCancel();
+			}
 		},
-		onError: () => {
+		onError: () => {},
+		onSettled: () => {
 			setLoading(false);
 		}
 	});
@@ -27,6 +29,7 @@ function ImportUsers({ toggle, onSubmit, onClose, files, setFiles }) {
 	};
 
 	const handleSubmit = () => {
+		if (files.length === 0) return;
 		try {
 			setLoading(true);
 			const file = files[0]?.originFileObj;
@@ -39,9 +42,12 @@ function ImportUsers({ toggle, onSubmit, onClose, files, setFiles }) {
 				fileReader.readAsText(file);
 			}
 		} catch (error) {
-			console.log(error);
+			setLoading(false);
 		}
 	};
+
+	const isFileVlaid =
+		files.length !== 0 && files[0]?.originFileObj.type !== "text/csv";
 
 	return (
 		<Modal
@@ -53,7 +59,12 @@ function ImportUsers({ toggle, onSubmit, onClose, files, setFiles }) {
 				<Button key="back" onClick={handleCancel}>
 					Cancel
 				</Button>,
-				<Button key="submit" type="primary" onClick={handleSubmit}>
+				<Button
+					key="submit"
+					type="primary"
+					onClick={handleSubmit}
+					disabled={loading || isFileVlaid}
+				>
 					Import
 				</Button>
 			]}
@@ -65,6 +76,15 @@ function ImportUsers({ toggle, onSubmit, onClose, files, setFiles }) {
 					setFiles={setFiles}
 				/>
 			</Spin>
+
+			{isFileVlaid && (
+				<Alert
+					style={{ marginTop: "20px" }}
+					message="Invalid File! Please provide valid CSV file"
+					type="error"
+					showIcon
+				/>
+			)}
 		</Modal>
 	);
 }
