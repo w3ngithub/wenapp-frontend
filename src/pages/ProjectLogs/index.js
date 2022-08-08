@@ -12,7 +12,8 @@ import {
 	addLogTime,
 	deleteTimeLog,
 	getAllTimeLogs,
-	getLogTypes
+	getLogTypes,
+	updateTimeLog
 } from "services/timeLogs";
 import LogsBreadCumb from "./LogsBreadCumb";
 import TimeSummary from "./TimeSummary";
@@ -41,6 +42,8 @@ function ProjectLogs() {
 	const [author, setAuthor] = useState(undefined);
 	const [openModal, setOpenModal] = useState(false);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
+	const [timeLogToUpdate, setTimelogToUpdate] = useState({});
+	const [isEditMode, setIsEditMode] = useState(false);
 
 	const [projectId] = slug.split("-");
 
@@ -69,6 +72,14 @@ function ProjectLogs() {
 	);
 
 	const addLogTimeMutation = useMutation(details => addLogTime(details), {
+		onSuccess: () => {
+			queryClient.invalidateQueries(["timeLogs"]);
+			queryClient.invalidateQueries(["singleProject"]);
+			handleCloseTimelogModal();
+		}
+	});
+
+	const UpdateLogTimeMutation = useMutation(details => updateTimeLog(details), {
 		onSuccess: () => {
 			queryClient.invalidateQueries(["timeLogs"]);
 			queryClient.invalidateQueries(["singleProject"]);
@@ -108,12 +119,28 @@ function ProjectLogs() {
 		setAuthor(undefined);
 	};
 
-	const handleOpenTimelogModal = () => {
+	const handleOpenAddModal = () => {
 		setOpenModal(true);
+	};
+
+	const handleOpenEditModal = log => {
+		const originalTimelog = logTimeDetails?.data?.data?.data.find(
+			project => project.id === log.id
+		);
+		setTimelogToUpdate({
+			...log,
+			logDate: originalTimelog?.logDate,
+			logType: originalTimelog?.logType,
+			user: originalTimelog?.user
+		});
+		setOpenModal(true);
+		setIsEditMode(true);
 	};
 
 	const handleCloseTimelogModal = () => {
 		setOpenModal(false);
+		setTimelogToUpdate({});
+		setIsEditMode(false);
 	};
 
 	const confirmDelete = log => {
@@ -127,7 +154,22 @@ function ProjectLogs() {
 			logDate: moment.utc(newLogtime.logDate).format(),
 			minutes: +newLogtime.minutes
 		};
-		addLogTimeMutation.mutate({ id: projectId, details: formattedNewLogtime });
+
+		if (isEditMode)
+			UpdateLogTimeMutation.mutate({
+				id: formattedNewLogtime.id,
+				details: {
+					...formattedNewLogtime,
+
+					user: newLogtime.user._id
+				}
+			});
+		else
+			addLogTimeMutation.mutate({
+				id: projectId,
+				details: formattedNewLogtime
+			});
+
 		reset.form.resetFields();
 	};
 	const {
@@ -155,11 +197,14 @@ function ProjectLogs() {
 		<div>
 			<LogTimeModal
 				toggle={openModal}
-				onToggleModal={setOpenModal}
+				onClose={handleCloseTimelogModal}
 				onSubmit={handleLogTypeSubmit}
-				loading={addLogTimeMutation.isLoading}
+				loading={
+					addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
+				}
 				logTypes={logTypes}
-				// intialValues={userRecord}
+				initialValues={timeLogToUpdate}
+				isEditMode={isEditMode}
 			/>
 			<LogsBreadCumb slug={projectSlug} />
 			<div style={{ marginTop: 20 }}></div>
@@ -216,7 +261,7 @@ function ProjectLogs() {
 						</Form>
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white "
-							onClick={handleOpenTimelogModal}
+							onClick={handleOpenAddModal}
 						>
 							Add New TimeLog
 						</Button>
@@ -224,7 +269,7 @@ function ProjectLogs() {
 				</div>
 				<Table
 					className="gx-table-responsive"
-					columns={LOGTIMES_COLUMNS(sort, confirmDelete)}
+					columns={LOGTIMES_COLUMNS(sort, handleOpenEditModal, confirmDelete)}
 					dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
 					onChange={handleTableChange}
 					pagination={{

@@ -36,12 +36,12 @@ const addLogTime = async payload => {
 			`${Apis.Projects}/${payload.id}/timelogs`,
 			payload.details
 		);
-    return getAPIResponse(response);
+		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err.response);
 	}
-  };
-  
+};
+
 const getWeeklyTimeLogSummary = async () => {
 	try {
 		let response = await API.get(`${Apis.TimeLogs}/users/weeklytime`);
@@ -69,11 +69,24 @@ const deleteTimeLog = async logId => {
 	}
 };
 
+const updateTimeLog = async payload => {
+	try {
+		let response = await API.patch(
+			`${Apis.TimeLogs}/${payload.id}`,
+			payload.details
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 export {
 	getAllTimeLogs,
 	getLogTypes,
 	deleteTimeLog,
 	getWeeklyTimeLogSummary,
 	getTodayTimeLogSummary,
-  addLogTime
+	addLogTime,
+	updateTimeLog
 };

@@ -1,7 +1,12 @@
 import React from "react";
 import { Divider, Popconfirm } from "antd";
 
-const LOGTIMES_COLUMNS = (sortedInfo, confirmDelete, hideAdminFeature) =>
+const LOGTIMES_COLUMNS = (
+	sortedInfo,
+	onOpenEditModal,
+	confirmDelete,
+	hideAdminFeature
+) =>
 	hideAdminFeature
 		? [
 				{
@@ -131,7 +136,12 @@ const LOGTIMES_COLUMNS = (sortedInfo, confirmDelete, hideAdminFeature) =>
 					render: (text, record) => {
 						return (
 							<span>
-								<span className="gx-link">Edit</span>
+								<span
+									className="gx-link"
+									onClick={() => onOpenEditModal(record)}
+								>
+									Edit
+								</span>
 								<Divider type="vertical" />
 								<Popconfirm
 									title="Are you sure to delete this Log?"

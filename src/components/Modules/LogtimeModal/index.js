@@ -19,7 +19,7 @@ const formItemLayout = {
 
 function LogtimeModal({
 	toggle,
-	onToggleModal,
+	onClose,
 	logTypes,
 	onSubmit,
 	initialValues,
@@ -32,7 +32,7 @@ function LogtimeModal({
 
 	const handleCancel = () => {
 		rest.form.resetFields();
-		onToggleModal(false);
+		onClose();
 	};
 
 	const handleSubmit = () => {
@@ -40,35 +40,26 @@ function LogtimeModal({
 			if (err) {
 				return;
 			}
-			onSubmit(fieldsValue, rest);
+			onSubmit({ ...initialValues, ...fieldsValue }, rest);
 		});
 	};
 
 	useEffect(() => {
 		if (toggle) {
 			setTypes(logTypes.data?.data?.data);
-			// rest.form.setFieldsValue({
-			// 	name: initialValues.name ? initialValues.name : "",
-			// 	role:
-			// 		initialValues.role && initialValues.role._id
-			// 			? initialValues.role._id
-			// 			: undefined,
-			// 	position:
-			// 		initialValues.position && initialValues.position._id
-			// 			? initialValues.position._id
-			// 			: undefined,
-			// 	panNumber: initialValues.panNumber && initialValues.panNumber,
-			// 	citNumber: initialValues.citNumber && initialValues.citNumber,
-			// 	bankAccNumber:
-			// 		initialValues.bankAccNumber && initialValues.bankAccNumber,
-			// 	bankName: initialValues.bankName && initialValues.bankName,
-			// 	lastReviewDate:
-			// 		initialValues.lastReviewDate && moment(initialValues.lastReview),
-			// 	exitDate: initialValues.exitDate && moment(initialValues.exitDate)
-			// });
+			if (isEditMode) {
+				rest.form.setFieldsValue({
+					...initialValues,
+					logDate: moment(initialValues?.logDate),
+					hours: initialValues?.hours,
+					minutes: initialValues?.minutes,
+					logType: initialValues?.logType._id,
+					remarks: initialValues?.remarks,
+					user: initialValues?.user._id
+				});
+			}
 		}
-	}, [toggle, initialValues, rest, logTypes]);
-
+	}, [toggle]);
 	return (
 		<Modal
 			title={isEditMode ? "Update Log Time" : "Add Log Time"}
@@ -94,7 +85,20 @@ function LogtimeModal({
 									required: true
 								}
 							]
-						})(<DatePicker className=" gx-w-100" placeholder="Select Date" />)}
+						})(
+							<DatePicker
+								className=" gx-w-100"
+								placeholder="Select Date"
+								disabledDate={current =>
+									(current &&
+										current <
+											moment()
+												.subtract(1, "days")
+												.startOf("day")) ||
+									current > moment().endOf("day")
+								}
+							/>
+						)}
 					</FormItem>
 					<FormItem {...formItemLayout} label="Hours" hasFeedback>
 						{getFieldDecorator("hours", {
@@ -135,7 +139,13 @@ function LogtimeModal({
 							rules: [
 								{
 									required: true,
-									message: "Required!"
+									validator: (rule, value, callback) => {
+										const trimmedValue = value.replace(/ /g, "");
+										if (trimmedValue.length < 10)
+											callback("Remarks should be at least 10 letters");
+
+										callback();
+									}
 								}
 							]
 						})(<TextArea placeholder="Enter Remarks" rows={1} />)}
