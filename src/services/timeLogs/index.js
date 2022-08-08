@@ -81,6 +81,15 @@ const updateTimeLog = async payload => {
 	}
 };
 
+const addUserTimeLog = async payload => {
+	try {
+		let response = await API.post(`${Apis.TimeLogs}`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 export {
 	getAllTimeLogs,
 	getLogTypes,
@@ -88,5 +97,6 @@ export {
 	getWeeklyTimeLogSummary,
 	getTodayTimeLogSummary,
 	addLogTime,
-	updateTimeLog
+	updateTimeLog,
+	addUserTimeLog
 };

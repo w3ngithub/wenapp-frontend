@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, DatePicker, Form, Input, Modal, Select, Spin } from "antd";
 import moment from "moment";
+import { useQuery } from "@tanstack/react-query";
+import { getAllProjects } from "services/projects";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -22,13 +24,17 @@ function LogtimeModal({
 	onClose,
 	logTypes,
 	onSubmit,
-	initialValues,
+	initialValues = {},
 	loading = false,
 	isEditMode,
+	isUserLogtime = false,
 	...rest
 }) {
 	const { getFieldDecorator } = rest.form;
 	const [types, setTypes] = useState([]);
+	const projectsQuery = useQuery(["projects"], getAllProjects, {
+		enabled: false
+	});
 
 	const handleCancel = () => {
 		rest.form.resetFields();
@@ -47,6 +53,7 @@ function LogtimeModal({
 	useEffect(() => {
 		if (toggle) {
 			setTypes(logTypes.data?.data?.data);
+			projectsQuery.refetch();
 			if (isEditMode) {
 				rest.form.setFieldsValue({
 					...initialValues,
@@ -133,6 +140,22 @@ function LogtimeModal({
 							</Select>
 						)}
 					</FormItem>
+					{isUserLogtime && (
+						<FormItem {...formItemLayout} label="Project Name" hasFeedback>
+							{getFieldDecorator(
+								"project",
+								{}
+							)(
+								<Select placeholder="Select Project">
+									{projectsQuery?.data?.data?.data?.data.map(project => (
+										<Option value={project._id} key={project._id}>
+											{project.name}
+										</Option>
+									))}
+								</Select>
+							)}
+						</FormItem>
+					)}
 
 					<FormItem {...formItemLayout} label="Remarks" hasFeedback>
 						{getFieldDecorator("remarks", {
