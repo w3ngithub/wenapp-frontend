@@ -9,6 +9,7 @@ import { notification } from "helpers/notification";
 import { getLogTypes, getWeeklyReport } from "services/timeLogs";
 import Select from "components/Elements/Select";
 import { WEEKLY_REPORT_COLUMNS } from "constants/weeklyReport";
+import { roundedToFixed } from "helpers/utils";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -28,7 +29,7 @@ const formattedProjects = (reports, clients) => {
 		key: report?.project?.[0]?._id,
 		name: report?.project?.[0]?.name,
 		client: clients[report?.project?.[0]?.client] || "",
-		timeSpent: report?.timeSpent
+		timeSpent: roundedToFixed(report?.timeSpent || 0, 2)
 	}));
 };
 
