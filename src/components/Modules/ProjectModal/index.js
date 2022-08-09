@@ -120,7 +120,7 @@ function ProjectModal({
 	return (
 		<Modal
 			width={900}
-			title={readOnly ? "Add Project" : "Update Project"}
+			title={isEditMode ? "Update Project" : "Add Project"}
 			visible={toggle}
 			onOk={handleSubmit}
 			onCancel={handleCancel}
@@ -199,10 +199,9 @@ function ProjectModal({
 							label="Start Date"
 							hasFeedback={readOnly ? false : true}
 						>
-							{getFieldDecorator(
-								"startDate",
-								{}
-							)(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+							{getFieldDecorator("startDate", {
+								rules: [{ required: true, message: "Required!" }]
+							})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
 						</FormItem>
 						<FormItem
 							{...formItemLayout}

@@ -262,6 +262,7 @@ function ProjectsPage() {
 				readOnly={readOnly}
 				isEditMode={isEditMode}
 			/>
+
 			<Card title="Projects">
 				<div className="components-table-demo-control-bar">
 					<Search
