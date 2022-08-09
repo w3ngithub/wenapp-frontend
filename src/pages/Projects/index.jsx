@@ -266,7 +266,10 @@ function ProjectsPage() {
 				<div className="components-table-demo-control-bar">
 					<Search
 						placeholder="Search Projects"
-						onSearch={value => setProject(value)}
+						onSearch={value => {
+							setPage(prev => ({ ...prev, page: 1 }));
+							setProject(value);
+						}}
 						style={{ width: 200 }}
 						enterButton
 						ref={projectRef}

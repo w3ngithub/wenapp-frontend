@@ -183,7 +183,10 @@ function CoworkersPage() {
 				<div className="components-table-demo-control-bar">
 					<Search
 						placeholder="Search Users"
-						onSearch={value => setName(value)}
+						onSearch={value => {
+							setPage(prev => ({ ...prev, page: 1 }));
+							setName(value);
+						}}
 						style={{ width: 200 }}
 						enterButton
 						ref={nameRef}
