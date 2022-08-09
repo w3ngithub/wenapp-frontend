@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, DatePicker, Form, Input, Modal, Select, Spin } from "antd";
 import moment from "moment";
+import { useQuery } from "@tanstack/react-query";
+import { getAllProjects } from "services/projects";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -19,56 +21,53 @@ const formItemLayout = {
 
 function LogtimeModal({
 	toggle,
-	onToggleModal,
+	onClose,
 	logTypes,
 	onSubmit,
-	initialValues,
+	initialValues = {},
 	loading = false,
 	isEditMode,
+	isUserLogtime = false,
 	...rest
 }) {
 	const { getFieldDecorator } = rest.form;
 	const [types, setTypes] = useState([]);
+	const projectsQuery = useQuery(["projects"], getAllProjects, {
+		enabled: false
+	});
 
 	const handleCancel = () => {
 		rest.form.resetFields();
-		onToggleModal(false);
+		onClose();
 	};
 
 	const handleSubmit = () => {
 		rest.form.validateFields((err, fieldsValue) => {
+			console.log(err);
 			if (err) {
 				return;
 			}
-			onSubmit(fieldsValue, rest);
+			onSubmit({ ...initialValues, ...fieldsValue }, rest);
 		});
 	};
 
 	useEffect(() => {
 		if (toggle) {
 			setTypes(logTypes.data?.data?.data);
-			// rest.form.setFieldsValue({
-			// 	name: initialValues.name ? initialValues.name : "",
-			// 	role:
-			// 		initialValues.role && initialValues.role._id
-			// 			? initialValues.role._id
-			// 			: undefined,
-			// 	position:
-			// 		initialValues.position && initialValues.position._id
-			// 			? initialValues.position._id
-			// 			: undefined,
-			// 	panNumber: initialValues.panNumber && initialValues.panNumber,
-			// 	citNumber: initialValues.citNumber && initialValues.citNumber,
-			// 	bankAccNumber:
-			// 		initialValues.bankAccNumber && initialValues.bankAccNumber,
-			// 	bankName: initialValues.bankName && initialValues.bankName,
-			// 	lastReviewDate:
-			// 		initialValues.lastReviewDate && moment(initialValues.lastReview),
-			// 	exitDate: initialValues.exitDate && moment(initialValues.exitDate)
-			// });
+			projectsQuery.refetch();
+			if (isEditMode) {
+				rest.form.setFieldsValue({
+					...initialValues,
+					logDate: moment(initialValues?.logDate),
+					hours: initialValues?.hours,
+					minutes: initialValues?.minutes,
+					logType: initialValues?.logType._id,
+					remarks: initialValues?.remarks,
+					user: initialValues?.user._id
+				});
+			}
 		}
-	}, [toggle, initialValues, rest, logTypes]);
-
+	}, [toggle]);
 	return (
 		<Modal
 			title={isEditMode ? "Update Log Time" : "Add Log Time"}
@@ -94,7 +93,20 @@ function LogtimeModal({
 									required: true
 								}
 							]
-						})(<DatePicker className=" gx-w-100" placeholder="Select Date" />)}
+						})(
+							<DatePicker
+								className=" gx-w-100"
+								placeholder="Select Date"
+								disabledDate={current =>
+									(current &&
+										current <
+											moment()
+												.subtract(1, "days")
+												.startOf("day")) ||
+									current > moment().endOf("day")
+								}
+							/>
+						)}
 					</FormItem>
 					<FormItem {...formItemLayout} label="Hours" hasFeedback>
 						{getFieldDecorator("hours", {
@@ -129,13 +141,39 @@ function LogtimeModal({
 							</Select>
 						)}
 					</FormItem>
+					{isUserLogtime && (
+						<FormItem {...formItemLayout} label="Project Name" hasFeedback>
+							{getFieldDecorator(
+								"project",
+								{}
+							)(
+								<Select placeholder="Select Project">
+									{projectsQuery?.data?.data?.data?.data.map(project => (
+										<Option value={project._id} key={project._id}>
+											{project.name}
+										</Option>
+									))}
+								</Select>
+							)}
+						</FormItem>
+					)}
 
 					<FormItem {...formItemLayout} label="Remarks" hasFeedback>
 						{getFieldDecorator("remarks", {
 							rules: [
+								{ required: true, message: "Required!" },
 								{
-									required: true,
-									message: "Required!"
+									min: 10,
+									message: "Remarks should be at least 10 letters"
+									// validator: (rule, value, callback) => {
+									// 	console.log(rule);
+									// 	const trimmedValue = value.replace(/ /g, "");
+									// 	return trimmedValue.length < 10;
+									// 	// if (trimmedValue.length < 10) {
+									// 	// 	callback("Remarks should be at least 10 letters");
+									// 	// 	return false;
+									// 	// }
+									// }
 								}
 							]
 						})(<TextArea placeholder="Enter Remarks" rows={1} />)}

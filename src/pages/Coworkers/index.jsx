@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Form, Radio, Select, Input, Button } from "antd";
 import moment from "moment";
@@ -14,6 +14,7 @@ import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
 import ImportUsers from "./ImportUsers";
+import { notification } from "helpers/notification";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -53,22 +54,41 @@ function CoworkersPage() {
 
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
 	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
-	const { data, isLoading, isFetching } = useQuery(
+	const { data, isLoading, isFetching, isError } = useQuery(
 		["users", page, activeUser, role, position, name],
 		() => getAllUsers({ ...page, active: activeUser, role, position, name }),
-		{ keepPreviousData: true }
+		{
+			keepPreviousData: true
+		}
 	);
 
 	const mutation = useMutation(
 		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
 		{
-			onSuccess: () => {
-				queryClient.invalidateQueries(["users"]);
-				setOpenUserDetailModal(prev => false);
-				setReadOnly(false);
+			onSuccess: response => {
+				if (response?.status) {
+					notification({ message: "User Updated", type: "success" });
+					queryClient.invalidateQueries(["users"]);
+					setOpenUserDetailModal(prev => false);
+					setReadOnly(false);
+				} else {
+					notification({
+						message: response?.data?.message || "Could not update User!",
+						type: "error"
+					});
+				}
+			},
+			onError: error => {
+				notification({ message: "Could not update User!", type: "error" });
 			}
 		}
 	);
+
+	useEffect(() => {
+		if (isError) {
+			notification({ message: "Could not load Users!", type: "error" });
+		}
+	}, [isError]);
 
 	const handleToggleModal = (userRecordToUpdate, mode) => {
 		setOpenUserDetailModal(prev => !prev);
@@ -77,20 +97,26 @@ function CoworkersPage() {
 	};
 
 	const handleUserDetailSubmit = (user, reset) => {
-		const userTofind = data.data.data.data.find(x => x._id === user._id);
-		mutation.mutate({
-			userId: user._id,
-			updatedData: {
-				...user,
-				dob: user.dob ? userTofind.dob : undefined,
-				joinDate: user.joinDate ? userTofind.joinDate : undefined,
-				lastReviewDate: user.lastReviewDate
-					? moment.utc(user.lastReviewDate).format()
-					: undefined,
-				exitDate: user.exitDate ? moment.utc(user.exitDate).format() : undefined
-			}
-		});
-		reset.form.resetFields();
+		try {
+			const userTofind = data.data.data.data.find(x => x._id === user._id);
+			mutation.mutate({
+				userId: user._id,
+				updatedData: {
+					...user,
+					dob: user.dob ? userTofind.dob : undefined,
+					joinDate: user.joinDate ? userTofind.joinDate : undefined,
+					lastReviewDate: user.lastReviewDate
+						? moment.utc(user.lastReviewDate).format()
+						: undefined,
+					exitDate: user.exitDate
+						? moment.utc(user.exitDate).format()
+						: undefined
+				}
+			});
+			reset.form.resetFields();
+		} catch (error) {
+			notification({ message: "Could not update User!", type: "error" });
+		}
 	};
 
 	const handleTableChange = (pagination, filters, sorter) => {
@@ -172,7 +198,7 @@ function CoworkersPage() {
 									value={role}
 								>
 									{roleData &&
-										roleData.data.data.data.map(role => (
+										roleData?.data?.data?.data?.map(role => (
 											<Option value={role._id} key={role._id}>
 												{role.value}
 											</Option>
@@ -187,7 +213,7 @@ function CoworkersPage() {
 									value={position}
 								>
 									{positionData &&
-										positionData.data.data.data.map(position => (
+										positionData?.data?.data?.data?.map(position => (
 											<Option value={position._id} key={position._id}>
 												{position.name}
 											</Option>
@@ -276,7 +302,7 @@ function CoworkersPage() {
 						pageSize: page.limit,
 						pageSizeOptions: ["5", "10", "20", "50"],
 						showSizeChanger: true,
-						total: 25,
+						total: data?.data?.data?.count || 1,
 						onShowSizeChange,
 						hideOnSinglePage: true,
 						onChange: handlePageChange

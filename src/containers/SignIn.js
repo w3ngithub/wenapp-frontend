@@ -25,15 +25,16 @@ function SignIn(props) {
 	};
 
 	useEffect(() => {
-		// if (props.showMessage) {
-		// 	setTimeout(() => {
-		// 		props.hideMessage();
-		// 	}, 100);
-		// }
+		if (props.showMessage) {
+			setTimeout(() => {
+				props.hideMessage();
+			}, 100);
+		}
 		if (props.authUser !== null) {
 			navigate("/dashboard");
 		}
-	}, [props.authUser]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [props.authUser, props.showMessage, navigate]);
 
 	const { getFieldDecorator } = props.form;
 	const { showMessage, loader, alertMessage } = props;

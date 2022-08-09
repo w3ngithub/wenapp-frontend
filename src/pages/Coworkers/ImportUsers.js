@@ -4,6 +4,7 @@ import { Alert, Button, Modal, Spin } from "antd";
 import DragAndDropFile from "components/Modules/DragAndDropFile";
 import { importUsers } from "services/users/userDetails";
 import { csvFileToArray } from "helpers/utils";
+import { notification } from "helpers/notification";
 
 function ImportUsers({ toggle, onClose, files, setFiles }) {
 	const fileReader = new FileReader();
@@ -14,11 +15,20 @@ function ImportUsers({ toggle, onClose, files, setFiles }) {
 	const mutation = useMutation(usersToImport => importUsers(usersToImport), {
 		onSuccess: response => {
 			if (response.status) {
+				notification({
+					message: "Users Imported Successfully",
+					type: "success"
+				});
+
 				queryClient.invalidateQueries(["users"]);
 				handleCancel();
+			} else {
+				notification({ message: "Import Failed", type: "error" });
 			}
 		},
-		onError: () => {},
+		onError: () => {
+			notification({ message: "Import Failed", type: "error" });
+		},
 		onSettled: () => {
 			setLoading(false);
 		}
@@ -42,6 +52,8 @@ function ImportUsers({ toggle, onClose, files, setFiles }) {
 				fileReader.readAsText(file);
 			}
 		} catch (error) {
+			notification({ message: "Import Failed", type: "error" });
+
 			setLoading(false);
 		}
 	};
