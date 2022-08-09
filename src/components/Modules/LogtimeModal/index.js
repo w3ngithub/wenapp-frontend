@@ -43,11 +43,15 @@ function LogtimeModal({
 
 	const handleSubmit = () => {
 		rest.form.validateFields((err, fieldsValue) => {
-			console.log(err);
 			if (err) {
 				return;
 			}
-			onSubmit({ ...initialValues, ...fieldsValue }, rest);
+			onSubmit(
+				isEditMode
+					? { ...initialValues, ...fieldsValue, user: initialValues?.user._id }
+					: { ...fieldsValue },
+				rest
+			);
 		});
 	};
 
@@ -56,15 +60,24 @@ function LogtimeModal({
 			setTypes(logTypes.data?.data?.data);
 			projectsQuery.refetch();
 			if (isEditMode) {
-				rest.form.setFieldsValue({
-					...initialValues,
-					logDate: moment(initialValues?.logDate),
-					hours: initialValues?.hours,
-					minutes: initialValues?.minutes,
-					logType: initialValues?.logType._id,
-					remarks: initialValues?.remarks,
-					user: initialValues?.user._id
-				});
+				rest.form.setFieldsValue(
+					isUserLogtime
+						? {
+								logDate: moment(initialValues?.logDate),
+								hours: initialValues?.hours,
+								minutes: initialValues?.minutes,
+								logType: initialValues?.logType._id,
+								remarks: initialValues?.remarks,
+								project: initialValues?.project._id
+						  }
+						: {
+								logDate: moment(initialValues?.logDate),
+								hours: initialValues?.hours,
+								minutes: initialValues?.minutes,
+								logType: initialValues?.logType._id,
+								remarks: initialValues?.remarks
+						  }
+				);
 			}
 		}
 	}, [toggle]);

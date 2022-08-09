@@ -12,7 +12,8 @@ import {
 	getAllTimeLogs,
 	getLogTypes,
 	getTodayTimeLogSummary,
-	getWeeklyTimeLogSummary
+	getWeeklyTimeLogSummary,
+	updateTimeLog
 } from "services/timeLogs";
 import TimeSummary from "./TimeSummary";
 
@@ -73,6 +74,14 @@ function LogTime() {
 			handleCloseTimelogModal();
 		}
 	});
+	const UpdateLogTimeMutation = useMutation(details => updateTimeLog(details), {
+		onSuccess: () => {
+			queryClient.invalidateQueries(["UsertimeLogs"]);
+			queryClient.invalidateQueries(["userTodayTimeSpent"]);
+			queryClient.invalidateQueries(["userweeklyTimeSpent"]);
+			handleCloseTimelogModal();
+		}
+	});
 
 	const { data: logTypes } = useQuery(["logTypes"], () => getLogTypes());
 
@@ -112,7 +121,8 @@ function LogTime() {
 			...log,
 			logDate: originalTimelog?.logDate,
 			logType: originalTimelog?.logType,
-			user: originalTimelog?.user
+			user: originalTimelog?.user,
+			project: originalTimelog?.project
 		});
 		setOpenModal(true);
 		setIsEditMode(true);
@@ -132,20 +142,16 @@ function LogTime() {
 			minutes: +newLogtime.minutes,
 			user: getLocalStorageData("user_id").user._id
 		};
-		console.log(formattedNewLogtime);
-		addLogTimeMutation.mutate(formattedNewLogtime);
 
-		// if (isEditMode)
-		// 	UpdateLogTimeMutation.mutate({
-		// 		id: formattedNewLogtime.id,
-		// 		details: {
-		// 			...formattedNewLogtime,
-
-		// 			user: newLogtime.user._id
-		// 		}
-		// 	});
-		// else
-		// addLogTimeMutation.mutate(formattedNewLogtime);
+		if (isEditMode)
+			UpdateLogTimeMutation.mutate({
+				id: formattedNewLogtime.id,
+				details: {
+					...formattedNewLogtime,
+					user: newLogtime.user
+				}
+			});
+		else addLogTimeMutation.mutate(formattedNewLogtime);
 
 		reset.form.resetFields();
 	};
@@ -160,9 +166,9 @@ function LogTime() {
 				toggle={openModal}
 				onClose={handleCloseTimelogModal}
 				onSubmit={handleLogTypeSubmit}
-				// loading={
-				// 	addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
-				// }
+				loading={
+					addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
+				}
 				logTypes={logTypes}
 				initialValues={timeLogToUpdate}
 				isEditMode={isEditMode}

@@ -154,14 +154,13 @@ function ProjectLogs() {
 			logDate: moment.utc(newLogtime.logDate).format(),
 			minutes: +newLogtime.minutes
 		};
-
 		if (isEditMode)
 			UpdateLogTimeMutation.mutate({
 				id: formattedNewLogtime.id,
 				details: {
 					...formattedNewLogtime,
-
-					user: newLogtime.user._id
+					project: newLogtime.project._id,
+					user: newLogtime.user
 				}
 			});
 		else
