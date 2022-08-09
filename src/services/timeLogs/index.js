@@ -91,8 +91,8 @@ const addUserTimeLog = async payload => {
 };
 
 const getWeeklyReport = async ({
-	fromDate = "2022-06-27",
-	toDate = "2022-08-09",
+	fromDate = "",
+	toDate = "",
 	logType = "",
 	projectStatus = "",
 	client = ""

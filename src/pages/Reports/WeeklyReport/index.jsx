@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, Table, Form, Button } from "antd";
+import moment from "moment";
+import { Card, Table, Form, Button, DatePicker } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { getProjectClients, getProjectStatus } from "services/projects";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +10,18 @@ import { getLogTypes, getWeeklyReport } from "services/timeLogs";
 import Select from "components/Elements/Select";
 import { WEEKLY_REPORT_COLUMNS } from "constants/weeklyReport";
 
+const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
+
+const intialDate = [
+	moment().startOf("isoWeek"),
+
+	moment().day() === 0 || moment().day() === 6
+		? moment()
+				.startOf("isoWeek")
+				.add(4, "days")
+		: moment()
+];
 
 const formattedProjects = (reports, clients) => {
 	return reports?.map(report => ({
@@ -27,6 +39,7 @@ function ProjectsPage() {
 	const [projectStatus, setProjectStatus] = useState(undefined);
 	const [logType, setLogType] = useState(undefined);
 	const [projectClient, setprojectClient] = useState(undefined);
+	const [date, setDate] = useState(intialDate);
 
 	const navigate = useNavigate();
 
@@ -40,22 +53,24 @@ function ProjectsPage() {
 		getProjectClients
 	);
 	const { data, isLoading, isError, isFetching } = useQuery(
-		["projects", page, logType, projectStatus, projectClient],
+		["projects", page, logType, projectStatus, projectClient, date],
 		() =>
 			getWeeklyReport({
 				...page,
 				logType,
 				projectStatus,
-				client: projectClient
+				client: projectClient,
+				fromDate: moment.utc(date[0]).format(),
+				toDate: moment.utc(date[1]).format()
 			}),
 		{ keepPreviousData: true }
 	);
 
 	useEffect(() => {
-		if (isError) {
+		if (isError || !data.status) {
 			notification({ message: "Could not load Weekly Report!", type: "error" });
 		}
-	}, [isError]);
+	}, [isError, data]);
 
 	const handleTableChange = (pagination, filters, sorter) => {
 		setSort(sorter);
@@ -82,6 +97,7 @@ function ProjectsPage() {
 	};
 
 	const handleResetFilter = () => {
+		setDate(intialDate);
 		setLogType(undefined);
 		setProjectStatus(undefined);
 		setprojectClient(undefined);
@@ -89,6 +105,10 @@ function ProjectsPage() {
 
 	const navigateToProjectLogs = projectSlug => {
 		navigate(`${projectSlug}`);
+	};
+
+	const handleChangeDate = date => {
+		setDate(date);
 	};
 
 	const clients = useMemo(() => {
@@ -108,6 +128,9 @@ function ProjectsPage() {
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline">
+							<FormItem>
+								<RangePicker onChange={handleChangeDate} value={date} />
+							</FormItem>
 							<FormItem>
 								<Select
 									placeholder="Select Project Status"
