@@ -193,7 +193,12 @@ function LogTime() {
 				</div>
 				<Table
 					className="gx-table-responsive"
-					columns={LOGTIMES_COLUMNS(sort, confirmDelete, true)}
+					columns={LOGTIMES_COLUMNS(
+						sort,
+						handleOpenEditModal,
+						confirmDelete,
+						true
+					)}
 					dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
 					onChange={handleTableChange}
 					pagination={{

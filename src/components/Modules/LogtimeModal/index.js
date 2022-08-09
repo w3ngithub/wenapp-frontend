@@ -43,6 +43,7 @@ function LogtimeModal({
 
 	const handleSubmit = () => {
 		rest.form.validateFields((err, fieldsValue) => {
+			console.log(err);
 			if (err) {
 				return;
 			}
@@ -160,15 +161,19 @@ function LogtimeModal({
 					<FormItem {...formItemLayout} label="Remarks" hasFeedback>
 						{getFieldDecorator("remarks", {
 							rules: [
+								{ required: true, message: "Required!" },
 								{
-									required: true,
-									validator: (rule, value, callback) => {
-										const trimmedValue = value.replace(/ /g, "");
-										if (trimmedValue.length < 10)
-											callback("Remarks should be at least 10 letters");
-
-										callback();
-									}
+									min: 10,
+									message: "Remarks should be at least 10 letters"
+									// validator: (rule, value, callback) => {
+									// 	console.log(rule);
+									// 	const trimmedValue = value.replace(/ /g, "");
+									// 	return trimmedValue.length < 10;
+									// 	// if (trimmedValue.length < 10) {
+									// 	// 	callback("Remarks should be at least 10 letters");
+									// 	// 	return false;
+									// 	// }
+									// }
 								}
 							]
 						})(<TextArea placeholder="Enter Remarks" rows={1} />)}
