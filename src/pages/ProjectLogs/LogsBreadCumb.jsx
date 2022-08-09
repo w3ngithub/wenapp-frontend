@@ -1,5 +1,6 @@
 import React from "react";
-import { Breadcrumb, Icon } from "antd";
+import { Breadcrumb } from "antd";
+import { InboxOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import { PROJECTS } from "helpers/routePath";
 
@@ -10,7 +11,7 @@ const LogsBreadCumb = ({ slug }) => {
 		<Breadcrumb>
 			<Breadcrumb.Item onClick={() => navigate(`/${PROJECTS}`)}>
 				<span className="gx-link">
-					<Icon type="folder" />
+					<InboxOutlined type="folder" />
 					<span className="gx-ml-1">Projects</span>
 				</span>
 			</Breadcrumb.Item>

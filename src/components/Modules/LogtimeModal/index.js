@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, Form, Input, Modal, Select, Spin } from "antd";
+import { Button, DatePicker, Input, Modal, Select, Spin } from "antd";
+import { Form } from "@ant-design/compatible";
 import moment from "moment";
 
 const FormItem = Form.Item;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Menu } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import CustomScrollbars from "util/CustomScrollbars";
 import SidebarLogo from "./SidebarLogo";
@@ -19,6 +19,7 @@ const SubMenu = Menu.SubMenu;
 
 function SidebarContent(props) {
 	const { themeType, navStyle } = props;
+	const navigate = useNavigate();
 	const location = useLocation();
 	const defaultOpenKeys = location.pathname.split("/")[1];
 
@@ -49,6 +50,10 @@ function SidebarContent(props) {
 						selectedKeys={[defaultOpenKeys]}
 						theme={themeType === THEME_TYPE_LITE ? "lite" : "dark"}
 						mode="inline"
+						onClick={props => {
+							console.log(props);
+							navigate(props.key);
+						}}
 						items={SIDEBAR_ITEMS.map(item => ({
 							...item,
 							icon: (
