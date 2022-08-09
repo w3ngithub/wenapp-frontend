@@ -90,6 +90,23 @@ const addUserTimeLog = async payload => {
 	}
 };
 
+const getWeeklyReport = async ({
+	fromDate = "2022-06-27",
+	toDate = "2022-08-09",
+	logType = "",
+	projectStatus = "",
+	client = ""
+}) => {
+	try {
+		let response = await API.post(
+			`${Apis.TimeLogs}/weeklyreport/?fromDate=${fromDate}&toDate=${toDate}&logType=${logType}&projectStatus=${projectStatus}&client=${client}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 export {
 	getAllTimeLogs,
 	getLogTypes,
@@ -98,5 +115,6 @@ export {
 	getTodayTimeLogSummary,
 	addLogTime,
 	updateTimeLog,
-	addUserTimeLog
+	addUserTimeLog,
+	getWeeklyReport
 };

@@ -4,11 +4,14 @@ import {
 	COWORKERS,
 	DASHBOARD,
 	LEAVE,
+	LEAVE_REPORT,
 	LOGTIME,
 	NOTICEBOARD,
 	PROJECTS,
 	REPORTS,
-	SETTINGS
+	SETTINGS,
+	WEEKLY_REPORT,
+	WORK_LOG_REPORT
 } from "../helpers/routePath";
 import sidebarItemsInterface from "../types/sideBar";
 
@@ -83,17 +86,17 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		subItems: [
 			{
 				name: "sidebar.reports.weeklyreport",
-				url: REPORTS,
+				url: REPORTS + "/" + WEEKLY_REPORT,
 				id: 1
 			},
 			{
 				name: "sidebar.reports.worklogreport",
-				url: "worklog",
+				url: REPORTS + "/" + WORK_LOG_REPORT,
 				id: 2
 			},
 			{
 				name: "sidebar.reports.leavereport",
-				url: "leavereport",
+				url: REPORTS + "/" + LEAVE_REPORT,
 				id: 3
 			}
 		]
