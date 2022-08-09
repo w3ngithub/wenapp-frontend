@@ -3,7 +3,8 @@ import { Card, Table, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import LogModal from "components/Modules/LogtimeModal";
 import { LOGTIMES_COLUMNS } from "constants/logTimes";
-import { changeDate, getLocalStorageData } from "helpers/utils";
+import { notification } from "helpers/notification";
+import { changeDate, getLocalStorageData, handleResponse } from "helpers/utils";
 import moment from "moment";
 import React, { useState } from "react";
 import {
@@ -67,29 +68,56 @@ function LogTime() {
 		getWeeklyTimeLogSummary
 	);
 	const addLogTimeMutation = useMutation(details => addUserTimeLog(details), {
-		onSuccess: () => {
-			queryClient.invalidateQueries(["UsertimeLogs"]);
-			queryClient.invalidateQueries(["userTodayTimeSpent"]);
-			queryClient.invalidateQueries(["userweeklyTimeSpent"]);
-			handleCloseTimelogModal();
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Added time log successfully",
+				"Could not add time log",
+				[
+					() => queryClient.invalidateQueries(["UsertimeLogs"]),
+					() => queryClient.invalidateQueries(["userTodayTimeSpent"]),
+					() => queryClient.invalidateQueries(["userweeklyTimeSpent"]),
+					() => handleCloseTimelogModal()
+				]
+			),
+		onError: error => {
+			notification({ message: "Could not add time log!", type: "error" });
 		}
 	});
 	const UpdateLogTimeMutation = useMutation(details => updateTimeLog(details), {
-		onSuccess: () => {
-			queryClient.invalidateQueries(["UsertimeLogs"]);
-			queryClient.invalidateQueries(["userTodayTimeSpent"]);
-			queryClient.invalidateQueries(["userweeklyTimeSpent"]);
-			handleCloseTimelogModal();
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Updated time log successfully",
+				"Could not update time log",
+				[
+					() => queryClient.invalidateQueries(["UsertimeLogs"]),
+					() => queryClient.invalidateQueries(["userTodayTimeSpent"]),
+					() => queryClient.invalidateQueries(["userweeklyTimeSpent"]),
+					() => handleCloseTimelogModal()
+				]
+			),
+		onError: error => {
+			notification({ message: "Could not update time log!", type: "error" });
 		}
 	});
 
 	const { data: logTypes } = useQuery(["logTypes"], () => getLogTypes());
 
 	const deleteLogMutation = useMutation(logId => deleteTimeLog(logId), {
-		onSuccess: () => {
-			queryClient.invalidateQueries(["UsertimeLogs"]);
-			queryClient.invalidateQueries(["userweeklyTimeSpent"]);
-			queryClient.invalidateQueries(["userTodayTimeSpent"]);
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Deleted time log successfully",
+				"Could not delete time log",
+				[
+					() => queryClient.invalidateQueries(["UsertimeLogs"]),
+					() => queryClient.invalidateQueries(["userTodayTimeSpent"]),
+					() => queryClient.invalidateQueries(["userweeklyTimeSpent"])
+				]
+			),
+		onError: error => {
+			notification({ message: "Could not delete time log!", type: "error" });
 		}
 	});
 

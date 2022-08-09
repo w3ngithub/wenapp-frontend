@@ -2,14 +2,18 @@
 .ant-input-search {
   margin-bottom: 16px;
 
-  & > .ant-input-suffix > .ant-input-search-button {
+  &>.ant-input-suffix>.ant-input-search-button {
     margin-right: 0;
   }
 }
 
+.ant-col-xs-0 {
+  display: block;
+}
+
 .ant-input-group {
 
-  & > [class*="col-"] {
+  &>[class*="col-"] {
     padding-left: 0;
     float: left !important;
   }
@@ -67,7 +71,7 @@
     }
   }
 
-  & .ant-input-lg + .@{class-prefix}-search-icon {
+  & .ant-input-lg+.@{class-prefix}-search-icon {
     height: 40px;
     line-height: 45px;
   }
@@ -234,8 +238,9 @@
 }
 
 .@{class-prefix}-form-inline-label-up {
-  & .ant-form-item > .ant-form-item-control-wrapper,
-  & .ant-form-item > .ant-form-item-label {
+
+  & .ant-form-item>.ant-form-item-control-wrapper,
+  & .ant-form-item>.ant-form-item-label {
     display: block;
   }
 
@@ -264,7 +269,7 @@
 
 @media screen and (max-width: (@screen-xs-max - 100px)) {
   .ant-input-group.ant-input-group-compact {
-    & > * {
+    &>* {
       .border-radius(4px) !important;
       width: 100% !important;
       border-right-width: 1px;
@@ -275,21 +280,18 @@
     }
 
     // reset border for Select, DatePicker, AutoComplete, Cascader, Mention, TimePicker
-    & > .@{ant-prefix}-select > .@{ant-prefix}-select-selection,
-    & > .@{ant-prefix}-calendar-picker .@{ant-prefix}-input,
-    & > .@{ant-prefix}-select-auto-complete .@{ant-prefix}-input,
-    & > .@{ant-prefix}-cascader-picker .@{ant-prefix}-input,
-    & > .@{ant-prefix}-mention-wrapper .@{ant-prefix}-mention-editor,
-    & > .@{ant-prefix}-time-picker .@{ant-prefix}-time-picker-input {
+    &>.@{ant-prefix}-select>.@{ant-prefix}-select-selection,
+    &>.@{ant-prefix}-calendar-picker .@{ant-prefix}-input,
+    &>.@{ant-prefix}-select-auto-complete .@{ant-prefix}-input,
+    &>.@{ant-prefix}-cascader-picker .@{ant-prefix}-input,
+    &>.@{ant-prefix}-mention-wrapper .@{ant-prefix}-mention-editor,
+    &>.@{ant-prefix}-time-picker .@{ant-prefix}-time-picker-input {
       border-radius: 4px;
       border-right-width: 1px;
     }
 
     & .@{class-prefix}-border-lt-xs {
-      border-left: @border-width-base @border-style-base @input-border-color !important;
+      border-left: @border-width-base @border-style-base @input-border-color  !important;
     }
   }
 }
-
-
-
