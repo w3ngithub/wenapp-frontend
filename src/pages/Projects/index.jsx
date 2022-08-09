@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Form, Select, Input, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
@@ -16,6 +16,7 @@ import { PROJECT_COLUMNS } from "constants/Projects";
 import ProjectModal from "components/Modules/ProjectModal";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { notification } from "helpers/notification";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -25,9 +26,9 @@ const formattedProjects = projects => {
 	return projects?.map(project => ({
 		...project,
 		key: project._id,
-		projectStatus: project.projectStatus.name,
-		projectTypes: project.projectTypes[0].name,
-		startDate: changeDate(project.startDate),
+		projectStatus: project.projectStatus?.name,
+		projectTypes: project.projectTypes?.[0]?.name,
+		startDate: changeDate(project?.startDate),
 		endDate: project?.endDate ? changeDate(project?.endDate) : ""
 	}));
 };
@@ -75,17 +76,45 @@ function ProjectsPage() {
 	);
 
 	const addProjectMutation = useMutation(project => addProject(project), {
-		onSuccess: () => {
-			queryClient.invalidateQueries(["projects"]);
-			handleCloseModal();
+		onSuccess: response => {
+			if (response.status) {
+				notification({
+					message: "Project Added Successfully",
+					type: "success"
+				});
+				queryClient.invalidateQueries(["projects"]);
+				handleCloseModal();
+			} else {
+				notification({
+					message: response?.data?.message || "Project addition failed!",
+					type: "error"
+				});
+			}
+		},
+		onError: () => {
+			notification({ message: "Project addition failed!", type: "error" });
 		}
 	});
 	const updateProjectMutation = useMutation(
 		project => updateProject(project.id, project.details),
 		{
-			onSuccess: () => {
-				queryClient.invalidateQueries(["projects"]);
-				handleCloseModal();
+			onSuccess: response => {
+				if (response.status) {
+					notification({
+						message: "Project Updated Successfully",
+						type: "success"
+					});
+					queryClient.invalidateQueries(["projects"]);
+					handleCloseModal();
+				} else {
+					notification({
+						message: response?.data?.message || "Project update failed!",
+						type: "error"
+					});
+				}
+			},
+			onError: () => {
+				notification({ message: "Project update failed!", type: "error" });
 			}
 		}
 	);
@@ -93,36 +122,57 @@ function ProjectsPage() {
 	const deleteProjectMutation = useMutation(
 		projectId => deleteProject(projectId),
 		{
-			onSuccess: () => {
-				queryClient.invalidateQueries(["projects"]);
+			onSuccess: response => {
+				if (response.status) {
+					notification({
+						message: "Project removed Successfully",
+						type: "success"
+					});
+					queryClient.invalidateQueries(["projects"]);
+				} else {
+					notification({
+						message: response?.data?.message || "Project deletion failed!",
+						type: "error"
+					});
+				}
 			}
 		}
 	);
 
+	useEffect(() => {
+		if (isError) {
+			notification({ message: "Could not load Projects!", type: "error" });
+		}
+	}, [isError]);
+
 	const handleUserDetailSubmit = (project, reset) => {
-		const updatedProject = {
-			...project,
-			estimatedHours: project.estimatedHours
-				? +project.estimatedHours
-				: undefined,
-			startDate: project.startDate
-				? moment.utc(project.startDate).format()
-				: undefined,
-			endDate: project.endDate
-				? moment.utc(project.endDate).format()
-				: undefined
-		};
-		if (isEditMode)
-			updateProjectMutation.mutate({
-				id: userRecord.id,
-				details: updatedProject
-			});
-		else addProjectMutation.mutate(updatedProject);
-		reset.form.resetFields();
+		try {
+			const updatedProject = {
+				...project,
+				estimatedHours: project.estimatedHours
+					? +project.estimatedHours
+					: undefined,
+				startDate: project.startDate
+					? moment.utc(project.startDate).format()
+					: undefined,
+				endDate: project.endDate
+					? moment.utc(project.endDate).format()
+					: undefined
+			};
+			if (isEditMode)
+				updateProjectMutation.mutate({
+					id: userRecord.id,
+					details: updatedProject
+				});
+			else addProjectMutation.mutate(updatedProject);
+			reset.form.resetFields();
+		} catch (error) {
+			notification({ message: "Project Addition Failed", type: "error" });
+		}
 	};
 
 	const handleOpenEditModal = (projectToUpdate, mode) => {
-		const originalProject = data?.data?.data?.data.find(
+		const originalProject = data?.data?.data?.data?.find(
 			project => project.id === projectToUpdate.id
 		);
 		setOpenUserDetailModal(prev => !prev);
@@ -130,8 +180,8 @@ function ProjectsPage() {
 			id: projectToUpdate.id,
 			project: {
 				...projectToUpdate,
-				projectStatus: originalProject.projectStatus,
-				projectTypes: originalProject.projectTypes,
+				projectStatus: originalProject?.projectStatus,
+				projectTypes: originalProject?.projectTypes,
 				startDate: originalProject.startDate ?? null,
 				endDate: originalProject.endDate ?? null
 			}
@@ -231,9 +281,9 @@ function ProjectsPage() {
 									value={projectType}
 								>
 									{projectTypesData &&
-										projectTypesData.data?.data?.data?.map(type => (
+										projectTypesData?.data?.data?.data?.map(type => (
 											<Option value={type._id} key={type._id}>
-												{type.name}
+												{type?.name}
 											</Option>
 										))}
 								</Select>
@@ -246,9 +296,9 @@ function ProjectsPage() {
 									value={projectStatus}
 								>
 									{projectStatusData &&
-										projectStatusData.data.data?.data?.map(status => (
+										projectStatusData?.data?.data?.data?.map(status => (
 											<Option value={status._id} key={status._id}>
-												{status.name}
+												{status?.name}
 											</Option>
 										))}
 								</Select>
@@ -261,9 +311,9 @@ function ProjectsPage() {
 									value={projectClient}
 								>
 									{projectClientsData &&
-										projectClientsData.data?.data?.data?.map(client => (
+										projectClientsData?.data?.data?.data?.map(client => (
 											<Option value={client._id} key={client._id}>
-												{client.name}
+												{client?.name}
 											</Option>
 										))}
 								</Select>
@@ -300,7 +350,7 @@ function ProjectsPage() {
 						pageSize: page.limit,
 						pageSizeOptions: ["5", "10", "20", "50"],
 						showSizeChanger: true,
-						total: 15,
+						total: data?.data?.data?.count || 1,
 						onShowSizeChange,
 						hideOnSinglePage: true,
 						onChange: handlePageChange
