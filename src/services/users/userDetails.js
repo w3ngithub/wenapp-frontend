@@ -38,7 +38,7 @@ const getAllUsers = async ({
 		);
 		return getAPIResponse(response);
 	} catch (err) {
-		return getAPIResponse(err.response);
+		return getAPIResponse(err?.response);
 	}
 };
 
@@ -47,7 +47,7 @@ const getUserRoles = async () => {
 		let response = await API.get(`${Apis.Roles}`);
 		return getAPIResponse(response);
 	} catch (err) {
-		return getAPIResponse(err.response);
+		return getAPIResponse(err?.response);
 	}
 };
 
@@ -56,7 +56,7 @@ const getUserPosition = async () => {
 		let response = await API.get(`${Apis.Positions}`);
 		return getAPIResponse(response);
 	} catch (err) {
-		return getAPIResponse(err.response);
+		return getAPIResponse(err?.response);
 	}
 };
 
@@ -65,7 +65,7 @@ const updateProfile = async payload => {
 		let response = await API.patch(`${Apis.Profile}`, payload);
 		return getAPIResponse(response);
 	} catch (err) {
-		return getAPIResponse(err.response);
+		return getAPIResponse(err?.response);
 	}
 };
 
@@ -74,7 +74,7 @@ const updateUser = async (userId, payload) => {
 		let response = await API.patch(`${Apis.Users}/${userId}`, payload);
 		return getAPIResponse(response);
 	} catch (err) {
-		return getAPIResponse(err.response);
+		return getAPIResponse(err?.response);
 	}
 };
 
@@ -83,7 +83,7 @@ const importUsers = async payload => {
 		let response = await API.post(`${Apis.Users}/import`, payload);
 		return getAPIResponse(response);
 	} catch (err) {
-		return getAPIResponse(err.response);
+		return getAPIResponse(err?.response);
 	}
 };
 

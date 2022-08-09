@@ -116,7 +116,7 @@ function UserDetailForm({
 						})(
 							<Select placeholder="Select Role" disabled={readOnly}>
 								{roles &&
-									roles.data.data.data.map(role => (
+									roles?.data?.data?.data?.map(role => (
 										<Option value={role._id} key={role._id}>
 											{role.value}
 										</Option>
@@ -143,7 +143,7 @@ function UserDetailForm({
 								hasFeedback={readOnly ? false : true}
 							>
 								{position &&
-									position.data.data.data.map(position => (
+									position?.data?.data?.data?.map(position => (
 										<Option value={position._id} key={position._id}>
 											{position.name}
 										</Option>
