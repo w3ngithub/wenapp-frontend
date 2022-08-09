@@ -3,7 +3,7 @@ import { Card, Table, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import LogModal from "components/Modules/LogtimeModal";
 import { LOGTIMES_COLUMNS } from "constants/logTimes";
-import { changeDate, getLocalStorageData } from "helpers/utils";
+import { changeDate, getLocalStorageData, roundedToFixed } from "helpers/utils";
 import moment from "moment";
 import React, { useState } from "react";
 import {
@@ -171,13 +171,16 @@ function LogTime() {
 			<div style={{ marginTop: 20 }}></div>
 			<Card title={" Time Summary"}>
 				<TimeSummary
-					tst={
-						todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday || 0
-					}
-					tsw={
+					tst={roundedToFixed(
+						todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday ||
+							0,
+						2
+					)}
+					tsw={roundedToFixed(
 						weeklyTimeSpent?.data?.data?.weeklySummary?.[0]
-							?.timeSpentThisWeek || 0
-					}
+							?.timeSpentThisWeek || 0,
+						2
+					)}
 				/>
 			</Card>
 			<Card title={"Time Logs"}>

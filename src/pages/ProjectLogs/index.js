@@ -3,7 +3,7 @@ import { Card, Table, Form, Select, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import LogTimeModal from "components/Modules/LogtimeModal";
 import { LOGTIMES_COLUMNS } from "constants/logTimes";
-import { changeDate } from "helpers/utils";
+import { changeDate, roundedToFixed } from "helpers/utils";
 import moment from "moment";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -210,9 +210,9 @@ function ProjectLogs() {
 			<div style={{ marginTop: 20 }}></div>
 			<Card title={projectSlug + " Time Summary"}>
 				<TimeSummary
-					est={estimatedHours}
-					ts={totalTimeSpent}
-					tsw={weeklyTimeSpent}
+					est={roundedToFixed(estimatedHours || 0, 2)}
+					ts={roundedToFixed(totalTimeSpent || 0, 2)}
+					tsw={roundedToFixed(totalTimeSpent || 0, 2)}
 				/>
 			</Card>
 			<Card title={projectSlug + " Logs"}>
