@@ -212,7 +212,7 @@ function ProjectLogs() {
 				<TimeSummary
 					est={roundedToFixed(estimatedHours || 0, 2)}
 					ts={roundedToFixed(totalTimeSpent || 0, 2)}
-					tsw={roundedToFixed(totalTimeSpent || 0, 2)}
+					tsw={roundedToFixed(weeklyTimeSpent || 0, 2)}
 				/>
 			</Card>
 			<Card title={projectSlug + " Logs"}>
