@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Form, Select, Input, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
-import { changeDate } from "helpers/utils";
+import { changeDate, filterOptions } from "helpers/utils";
 import {
 	addProject,
 	deleteProject,
@@ -279,6 +279,8 @@ function ProjectsPage() {
 									style={{ width: 200 }}
 									onChange={handleProjectTypeChange}
 									value={projectType}
+									showSearch
+									filterOption={filterOptions}
 								>
 									{projectTypesData &&
 										projectTypesData?.data?.data?.data?.map(type => (
@@ -294,6 +296,8 @@ function ProjectsPage() {
 									style={{ width: 200 }}
 									onChange={handleProjectStatusChange}
 									value={projectStatus}
+									showSearch
+									filterOption={filterOptions}
 								>
 									{projectStatusData &&
 										projectStatusData?.data?.data?.data?.map(status => (
@@ -309,6 +313,8 @@ function ProjectsPage() {
 									style={{ width: 200 }}
 									onChange={handleClientChange}
 									value={projectClient}
+									showSearch
+									filterOption={filterOptions}
 								>
 									{projectClientsData &&
 										projectClientsData?.data?.data?.data?.map(client => (

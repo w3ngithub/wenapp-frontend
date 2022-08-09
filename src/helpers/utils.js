@@ -272,3 +272,6 @@ export function changeDate(d) {
 	}
 	return `${dd}/${mm}/${yyyy}`;
 }
+
+export const filterOptions = (input, option) =>
+	option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;

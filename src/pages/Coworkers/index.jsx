@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card, Table, Form, Radio, Select, Input, Button } from "antd";
+import { Card, Table, Form, Radio, Input, Button } from "antd";
 import moment from "moment";
 import { CSVLink } from "react-csv";
 import {
@@ -15,9 +15,9 @@ import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate } from "helpers/utils";
 import ImportUsers from "./ImportUsers";
 import { notification } from "helpers/notification";
+import Select from "components/Elements/Select";
 
 const Search = Input.Search;
-const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formattedUsers = (users, isAdmin) => {
@@ -193,32 +193,24 @@ function CoworkersPage() {
 							<FormItem>
 								<Select
 									placeholder="Select Role"
-									style={{ width: 200 }}
 									onChange={handleRoleChange}
 									value={role}
-								>
-									{roleData &&
-										roleData?.data?.data?.data?.map(role => (
-											<Option value={role._id} key={role._id}>
-												{role.value}
-											</Option>
-										))}
-								</Select>
+									options={roleData?.data?.data?.data?.map(x => ({
+										...x,
+										id: x._id
+									}))}
+								/>
 							</FormItem>
 							<FormItem>
 								<Select
 									placeholder="Select Position"
-									style={{ width: 200 }}
 									onChange={handlePositionChange}
 									value={position}
-								>
-									{positionData &&
-										positionData?.data?.data?.data?.map(position => (
-											<Option value={position._id} key={position._id}>
-												{position.name}
-											</Option>
-										))}
-								</Select>
+									options={positionData?.data?.data?.data?.map(x => ({
+										id: x._id,
+										value: x.name
+									}))}
+								/>
 							</FormItem>
 							<FormItem>
 								<Radio.Group

@@ -3,7 +3,7 @@ import { Card, Table, Form, Select, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import LogTimeModal from "components/Modules/LogtimeModal";
 import { LOGTIMES_COLUMNS } from "constants/logTimes";
-import { changeDate, roundedToFixed } from "helpers/utils";
+import { changeDate, filterOptions, roundedToFixed } from "helpers/utils";
 import moment from "moment";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -221,6 +221,8 @@ function ProjectLogs() {
 						<Form layout="inline">
 							<FormItem>
 								<Select
+									showSearch
+									filterOption={filterOptions}
 									placeholder="Select Log Type"
 									style={{ width: 200 }}
 									onChange={handlelogTypeChange}
@@ -236,6 +238,8 @@ function ProjectLogs() {
 							</FormItem>
 							<FormItem>
 								<Select
+									showSearch
+									filterOption={filterOptions}
 									placeholder="Select Log Author"
 									style={{ width: 200 }}
 									onChange={handleAuthorChange}

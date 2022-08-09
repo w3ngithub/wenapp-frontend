@@ -14,6 +14,7 @@ import "./style.css";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectTags } from "services/projects";
 import { getAllUsers } from "services/users/userDetails";
+import { filterOptions } from "helpers/utils";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -223,7 +224,12 @@ function ProjectModal({
 								"projectTypes",
 								{}
 							)(
-								<Select placeholder="Select Type" disabled={readOnly}>
+								<Select
+									showSearch
+									filterOption={filterOptions}
+									placeholder="Select Type"
+									disabled={readOnly}
+								>
 									{projectTypes.map(type => (
 										<Option value={type._id} key={type._id}>
 											{type.name}
@@ -245,7 +251,12 @@ function ProjectModal({
 									}
 								]
 							})(
-								<Select placeholder="Select Status" disabled={readOnly}>
+								<Select
+									showSearch
+									filterOption={filterOptions}
+									placeholder="Select Status"
+									disabled={readOnly}
+								>
 									{projectStatuses.map(status => (
 										<Option value={status._id} key={status._id}>
 											{status.name}
@@ -264,6 +275,8 @@ function ProjectModal({
 								{}
 							)(
 								<Select
+									showSearch
+									filterOption={filterOptions}
 									placeholder="Select Tags"
 									disabled={readOnly}
 									mode="tags"
@@ -288,6 +301,8 @@ function ProjectModal({
 								{}
 							)(
 								<Select
+									showSearch
+									filterOption={filterOptions}
 									placeholder="Select Developers"
 									disabled={readOnly}
 									mode="tags"
@@ -311,6 +326,8 @@ function ProjectModal({
 								{}
 							)(
 								<Select
+									showSearch
+									filterOption={filterOptions}
 									placeholder="Select Designers"
 									disabled={readOnly}
 									mode="tags"
@@ -333,7 +350,13 @@ function ProjectModal({
 								"qa",
 								{}
 							)(
-								<Select placeholder="Select QA" disabled={readOnly} mode="tags">
+								<Select
+									showSearch
+									filterOption={filterOptions}
+									placeholder="Select QA"
+									disabled={readOnly}
+									mode="tags"
+								>
 									{usersQuery.data &&
 										usersQuery.data.data.data.data.map(tag => (
 											<Option value={tag._id} key={tag._id}>
@@ -353,6 +376,8 @@ function ProjectModal({
 								{}
 							)(
 								<Select
+									showSearch
+									filterOption={filterOptions}
 									placeholder="Select DevOps"
 									disabled={readOnly}
 									mode="tags"
@@ -376,6 +401,8 @@ function ProjectModal({
 								{}
 							)(
 								<Select
+									showSearch
+									filterOption={filterOptions}
 									placeholder="Select Staging Urls"
 									disabled={readOnly}
 									mode="tags"
