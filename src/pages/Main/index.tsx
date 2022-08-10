@@ -16,6 +16,7 @@ import {
 	DASHBOARD,
 	INVITE,
 	LEAVE,
+	LEAVE_REPORT,
 	LOGTIME,
 	NOTICEBOARD,
 	PROFILE,
@@ -25,7 +26,9 @@ import {
 	RESOURCES,
 	SETTINGS,
 	SIGNIN,
-	SIGNUP
+	SIGNUP,
+	WEEKLY_REPORT,
+	WORK_LOG_REPORT
 } from "helpers/routePath";
 import Coworkers from "pages/Coworkers";
 import Projects from "pages/Projects";
@@ -42,6 +45,9 @@ import Dashboard from "pages/Dashboard";
 import Profile from "pages/Profile";
 import InviteUserSignup from "pages/InviteUserSignup";
 import ProjectLogs from "pages/ProjectLogs";
+import WeeklyReport from "pages/Reports/WeeklyReport";
+import WorkLogReport from "pages/Reports/WorkLogReport";
+import LeaveReport from "pages/Reports/LeaveReport";
 
 function App(props: any) {
 	const { locale, authUser } = props;
@@ -70,7 +76,11 @@ function App(props: any) {
 							<Route path={LEAVE} element={<Leave />} />
 							<Route path={NOTICEBOARD} element={<Noticeboard />} />
 							<Route path={BLOG} element={<Blog />} />
-							<Route path={REPORTS} element={<Reports />} />
+							<Route path={REPORTS} element={<Reports />}>
+								<Route path={WEEKLY_REPORT} element={<WeeklyReport />} />
+								<Route path={WORK_LOG_REPORT} element={<WorkLogReport />} />
+								<Route path={LEAVE_REPORT} element={<LeaveReport />} />
+							</Route>
 							<Route path={RESOURCES} element={<Resources />} />
 							<Route path={SETTINGS} element={<Settings />} />
 							<Route path={PROFILE} element={<Profile />} />

@@ -3,6 +3,7 @@ import { Button, DatePicker, Form, Input, Modal, Select, Spin } from "antd";
 import moment from "moment";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "services/projects";
+import { filterOptions } from "helpers/utils";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -145,7 +146,11 @@ function LogtimeModal({
 						{getFieldDecorator("logType", {
 							rules: [{ required: true, message: "Required!" }]
 						})(
-							<Select placeholder="Select Log Type">
+							<Select
+								showSearch
+								filterOption={filterOptions}
+								placeholder="Select Log Type"
+							>
 								{types.map(logType => (
 									<Option value={logType._id} key={logType._id}>
 										{logType.name}
@@ -160,7 +165,11 @@ function LogtimeModal({
 								"project",
 								{}
 							)(
-								<Select placeholder="Select Project">
+								<Select
+									showSearch
+									filterOption={filterOptions}
+									placeholder="Select Project"
+								>
 									{projectsQuery?.data?.data?.data?.data.map(project => (
 										<Option value={project._id} key={project._id}>
 											{project.name}

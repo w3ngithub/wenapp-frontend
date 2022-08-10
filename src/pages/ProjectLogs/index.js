@@ -3,8 +3,13 @@ import { Card, Table, Form, Select, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import LogTimeModal from "components/Modules/LogtimeModal";
 import { LOGTIMES_COLUMNS } from "constants/logTimes";
+import {
+	changeDate,
+	filterOptions,
+	roundedToFixed,
+	handleResponse
+} from "helpers/utils";
 import { notification } from "helpers/notification";
-import { changeDate, handleResponse } from "helpers/utils";
 import moment from "moment";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -246,9 +251,9 @@ function ProjectLogs() {
 			<div style={{ marginTop: 20 }}></div>
 			<Card title={projectSlug + " Time Summary"}>
 				<TimeSummary
-					est={estimatedHours}
-					ts={totalTimeSpent}
-					tsw={weeklyTimeSpent}
+					est={roundedToFixed(estimatedHours || 0, 2)}
+					ts={roundedToFixed(totalTimeSpent || 0, 2)}
+					tsw={roundedToFixed(weeklyTimeSpent || 0, 2)}
 				/>
 			</Card>
 			<Card title={projectSlug + " Logs"}>
@@ -257,6 +262,8 @@ function ProjectLogs() {
 						<Form layout="inline">
 							<FormItem>
 								<Select
+									showSearch
+									filterOption={filterOptions}
 									placeholder="Select Log Type"
 									style={{ width: 200 }}
 									onChange={handlelogTypeChange}
@@ -272,6 +279,8 @@ function ProjectLogs() {
 							</FormItem>
 							<FormItem>
 								<Select
+									showSearch
+									filterOption={filterOptions}
 									placeholder="Select Log Author"
 									style={{ width: 200 }}
 									onChange={handleAuthorChange}
