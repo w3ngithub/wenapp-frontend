@@ -28,7 +28,7 @@ function LeaveReport() {
 
 	useEffect(() => {
 		if (isError) {
-			notification({ message: "Could not load Weekly Report!", type: "error" });
+			notification({ message: "Could not load Leave Report!", type: "error" });
 		}
 	}, [isError, data]);
 

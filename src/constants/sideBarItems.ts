@@ -86,17 +86,17 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		subItems: [
 			{
 				name: "sidebar.reports.weeklyreport",
-				url: REPORTS + "/" + WEEKLY_REPORT,
+				url: WEEKLY_REPORT,
 				id: 1
 			},
 			{
 				name: "sidebar.reports.worklogreport",
-				url: REPORTS + "/" + WORK_LOG_REPORT,
+				url: WORK_LOG_REPORT,
 				id: 2
 			},
 			{
 				name: "sidebar.reports.leavereport",
-				url: REPORTS + "/" + LEAVE_REPORT,
+				url: LEAVE_REPORT,
 				id: 3
 			}
 		]
