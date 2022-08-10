@@ -1,5 +1,6 @@
 import React from "react";
 import { Divider, Popconfirm } from "antd";
+import { roundedToFixed } from "helpers/utils";
 
 const LOGTIMES_COLUMNS = (
 	sortedInfo,
@@ -36,7 +37,8 @@ const LOGTIMES_COLUMNS = (
 					// width: 70,
 					sorter: (a, b) =>
 						a.totalHours?.toString().localeCompare(b.totalHours?.toString()),
-					sortOrder: sortedInfo.columnKey === "totalHours" && sortedInfo.order
+					sortOrder: sortedInfo.columnKey === "totalHours" && sortedInfo.order,
+					render: value => roundedToFixed(value || 0, 2)
 				},
 
 				{
@@ -103,7 +105,8 @@ const LOGTIMES_COLUMNS = (
 					// width: 70,
 					sorter: (a, b) =>
 						a.totalHours?.toString().localeCompare(b.totalHours?.toString()),
-					sortOrder: sortedInfo.columnKey === "totalHours" && sortedInfo.order
+					sortOrder: sortedInfo.columnKey === "totalHours" && sortedInfo.order,
+					render: value => roundedToFixed(value || 0, 2)
 				},
 
 				{

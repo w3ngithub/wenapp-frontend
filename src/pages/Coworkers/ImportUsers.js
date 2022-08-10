@@ -23,7 +23,10 @@ function ImportUsers({ toggle, onClose, files, setFiles }) {
 				queryClient.invalidateQueries(["users"]);
 				handleCancel();
 			} else {
-				notification({ message: "Import Failed", type: "error" });
+				notification({
+					message: response?.data?.message || "Import Failed",
+					type: "error"
+				});
 			}
 		},
 		onError: () => {
