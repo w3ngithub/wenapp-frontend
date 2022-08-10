@@ -1,3 +1,5 @@
+import { notification } from "./notification";
+
 export const handleSort = (
 	currentState,
 	stateSetter,
@@ -275,3 +277,27 @@ export function changeDate(d) {
 
 export const filterOptions = (input, option) =>
 	option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+
+export const handleResponse = (
+	response,
+	successMessage,
+	errorMessage,
+	queries
+) => {
+	if (response.status) {
+		console.log("running");
+		queries.forEach(query => {
+			query();
+		});
+
+		notification({
+			message: `${successMessage}!`,
+			type: "success"
+		});
+	} else {
+		notification({
+			message: response?.data?.message || `${errorMessage}!`,
+			type: "error"
+		});
+	}
+};

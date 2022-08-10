@@ -3,7 +3,13 @@ import { Card, Table, Form, Select, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import LogTimeModal from "components/Modules/LogtimeModal";
 import { LOGTIMES_COLUMNS } from "constants/logTimes";
-import { changeDate, filterOptions, roundedToFixed } from "helpers/utils";
+import {
+	changeDate,
+	filterOptions,
+	roundedToFixed,
+	handleResponse
+} from "helpers/utils";
+import { notification } from "helpers/notification";
 import moment from "moment";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -72,26 +78,62 @@ function ProjectLogs() {
 	);
 
 	const addLogTimeMutation = useMutation(details => addLogTime(details), {
-		onSuccess: () => {
-			queryClient.invalidateQueries(["timeLogs"]);
-			queryClient.invalidateQueries(["singleProject"]);
-			handleCloseTimelogModal();
-		}
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Added time log successfully",
+				"Could not add time log",
+				[
+					() => queryClient.invalidateQueries(["timeLogs"]),
+					() => queryClient.invalidateQueries(["singleProject"]),
+					() => handleCloseTimelogModal()
+				]
+			),
+
+		onError: () =>
+			notification({
+				message: "Could not add time log!",
+				type: "error"
+			})
 	});
 
 	const UpdateLogTimeMutation = useMutation(details => updateTimeLog(details), {
-		onSuccess: () => {
-			queryClient.invalidateQueries(["timeLogs"]);
-			queryClient.invalidateQueries(["singleProject"]);
-			handleCloseTimelogModal();
-		}
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Updated time log successfully",
+				"Could not update time log",
+				[
+					() => queryClient.invalidateQueries(["timeLogs"]),
+					() => queryClient.invalidateQueries(["singleProject"]),
+					() => handleCloseTimelogModal()
+				]
+			),
+
+		onError: () =>
+			notification({
+				message: "Could not update time log!",
+				type: "error"
+			})
 	});
 
 	const deleteLogMutation = useMutation(logId => deleteTimeLog(logId), {
-		onSuccess: () => {
-			queryClient.invalidateQueries(["timeLogs"]);
-			queryClient.invalidateQueries(["singleProject"]);
-		}
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Deleted successfully",
+				"Could not delete time log",
+				[
+					() => queryClient.invalidateQueries(["timeLogs"]),
+					() => queryClient.invalidateQueries(["singleProject"])
+				]
+			),
+
+		onError: () =>
+			notification({
+				message: "Could not delete time log!",
+				type: "error"
+			})
 	});
 
 	const handleTableChange = (pagination, filters, sorter) => {
@@ -154,14 +196,13 @@ function ProjectLogs() {
 			logDate: moment.utc(newLogtime.logDate).format(),
 			minutes: +newLogtime.minutes
 		};
-
 		if (isEditMode)
 			UpdateLogTimeMutation.mutate({
 				id: formattedNewLogtime.id,
 				details: {
 					...formattedNewLogtime,
-
-					user: newLogtime.user._id
+					project: newLogtime.project._id,
+					user: newLogtime.user
 				}
 			});
 		else

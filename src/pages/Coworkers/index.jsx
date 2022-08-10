@@ -12,7 +12,7 @@ import {
 import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import CircularProgress from "components/Elements/CircularProgress";
-import { changeDate } from "helpers/utils";
+import { changeDate, handleResponse } from "helpers/utils";
 import ImportUsers from "./ImportUsers";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
@@ -65,21 +65,15 @@ function CoworkersPage() {
 	const mutation = useMutation(
 		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
 		{
-			onSuccess: response => {
-				if (response?.status) {
-					notification({ message: "User Updated", type: "success" });
-					queryClient.invalidateQueries(["users"]);
-					setOpenUserDetailModal(prev => false);
-					setReadOnly(false);
-				} else {
-					notification({
-						message: response?.data?.message || "Could not update User!",
-						type: "error"
-					});
-				}
-			},
+			onSuccess: response =>
+				handleResponse(
+					response,
+					"User Updated Successfully",
+					"Could not update User",
+					[() => queryClient.invalidateQueries(["users"])]
+				),
 			onError: error => {
-				notification({ message: "Could not update User!", type: "error" });
+				notification({ message: "Could not update User", type: "error" });
 			}
 		}
 	);
