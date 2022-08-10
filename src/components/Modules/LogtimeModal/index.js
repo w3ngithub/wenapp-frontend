@@ -49,8 +49,7 @@ function LogtimeModal({
 			onSubmit(
 				isEditMode
 					? { ...initialValues, ...fieldsValue, user: initialValues?.user._id }
-					: { ...fieldsValue },
-				rest
+					: { ...fieldsValue }
 			);
 		});
 	};
@@ -80,6 +79,8 @@ function LogtimeModal({
 				);
 			}
 		}
+
+		if (!toggle) rest.form.resetFields();
 	}, [toggle]);
 	return (
 		<Modal
@@ -176,17 +177,12 @@ function LogtimeModal({
 							rules: [
 								{ required: true, message: "Required!" },
 								{
-									min: 10,
-									message: "Remarks should be at least 10 letters"
-									// validator: (rule, value, callback) => {
-									// 	console.log(rule);
-									// 	const trimmedValue = value.replace(/ /g, "");
-									// 	return trimmedValue.length < 10;
-									// 	// if (trimmedValue.length < 10) {
-									// 	// 	callback("Remarks should be at least 10 letters");
-									// 	// 	return false;
-									// 	// }
-									// }
+									validator: (rule, value, callback) => {
+										const trimmedValue = value.trim();
+										if (trimmedValue.length < 10) {
+											callback("Remarks should be at least 10 letters");
+										}
+									}
 								}
 							]
 						})(<TextArea placeholder="Enter Remarks" rows={1} />)}

@@ -162,7 +162,7 @@ function LogTime() {
 		setIsEditMode(false);
 	};
 
-	const handleLogTypeSubmit = (newLogtime, reset) => {
+	const handleLogTypeSubmit = newLogtime => {
 		const formattedNewLogtime = {
 			...newLogtime,
 			hours: +newLogtime.hours,
@@ -180,8 +180,6 @@ function LogTime() {
 				}
 			});
 		else addLogTimeMutation.mutate(formattedNewLogtime);
-
-		reset.form.resetFields();
 	};
 
 	if (timelogLoading) {
