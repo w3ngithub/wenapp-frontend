@@ -4,12 +4,11 @@ import moment from "moment";
 import { Card, Table, Form, Button, DatePicker } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { getProjectClients, getProjectStatus } from "services/projects";
-import { useNavigate } from "react-router-dom";
 import { notification } from "helpers/notification";
 import { getLogTypes, getWeeklyReport } from "services/timeLogs";
 import Select from "components/Elements/Select";
-import { WEEKLY_REPORT_COLUMNS } from "constants/weeklyReport";
 import { roundedToFixed } from "helpers/utils";
+import { LEAVE_REPORT_COLUMNS } from "constants/LeaveReport";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -24,7 +23,7 @@ const intialDate = [
 		: moment()
 ];
 
-const formattedWeeklyReports = (reports, clients) => {
+const formattedLeaveReports = (reports, clients) => {
 	return reports?.map(report => ({
 		key: report?.project?.[0]?._id,
 		name: report?.project?.[0]?.name,
@@ -33,7 +32,7 @@ const formattedWeeklyReports = (reports, clients) => {
 	}));
 };
 
-function WeeklyReport() {
+function LeaveReport() {
 	// init states
 	const [sort, setSort] = useState({});
 	const [page, setPage] = useState({ page: 1, limit: 10 });
@@ -41,8 +40,6 @@ function WeeklyReport() {
 	const [logType, setLogType] = useState(undefined);
 	const [projectClient, setprojectClient] = useState(undefined);
 	const [date, setDate] = useState(intialDate);
-
-	const navigate = useNavigate();
 
 	const { data: logTypesData } = useQuery(["logTypes"], getLogTypes);
 	const { data: projectStatusData } = useQuery(
@@ -102,10 +99,6 @@ function WeeklyReport() {
 		setLogType(undefined);
 		setProjectStatus(undefined);
 		setprojectClient(undefined);
-	};
-
-	const navigateToProjectLogs = projectSlug => {
-		navigate(`${projectSlug}`);
 	};
 
 	const handleChangeDate = date => {
@@ -181,12 +174,8 @@ function WeeklyReport() {
 				</div>
 				<Table
 					className="gx-table-responsive"
-					columns={WEEKLY_REPORT_COLUMNS(
-						sort,
-
-						navigateToProjectLogs
-					)}
-					dataSource={formattedWeeklyReports(data?.data?.data?.report, clients)}
+					columns={LEAVE_REPORT_COLUMNS(sort)}
+					dataSource={formattedLeaveReports(data?.data?.data?.report, clients)}
 					onChange={handleTableChange}
 					pagination={{
 						current: page.page,
@@ -205,4 +194,4 @@ function WeeklyReport() {
 	);
 }
 
-export default WeeklyReport;
+export default LeaveReport;
