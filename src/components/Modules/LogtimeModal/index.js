@@ -31,7 +31,7 @@ function LogtimeModal({
 	isUserLogtime = false,
 	...rest
 }) {
-	const { getFieldDecorator } = rest.form;
+	const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
 	const [types, setTypes] = useState([]);
 	const projectsQuery = useQuery(["projects"], getAllProjects, {
 		enabled: false
@@ -43,7 +43,8 @@ function LogtimeModal({
 	};
 
 	const handleSubmit = () => {
-		rest.form.validateFields((err, fieldsValue) => {
+		validateFieldsAndScroll((err, fieldsValue) => {
+			console.log(err);
 			if (err) {
 				return;
 			}
@@ -184,13 +185,23 @@ function LogtimeModal({
 					<FormItem {...formItemLayout} label="Remarks" hasFeedback>
 						{getFieldDecorator("remarks", {
 							rules: [
-								{ required: true, message: "Required!" },
 								{
 									validator: (rule, value, callback) => {
-										const trimmedValue = value.trim();
-										if (trimmedValue.length < 10) {
-											callback("Remarks should be at least 10 letters");
+										try {
+											if (!value) throw new Error("Required!");
+
+											const trimmedValue = value && value.trim();
+											if (trimmedValue?.length < 10) {
+												throw new Error(
+													"Remarks should be at least 10 letters!"
+												);
+											}
+										} catch (err) {
+											callback(err.message);
+											return;
 										}
+
+										callback();
 									}
 								}
 							]
