@@ -68,7 +68,7 @@ function ProjectsPage() {
 	);
 
 	useEffect(() => {
-		if (isError || !data.status) {
+		if (isError) {
 			notification({ message: "Could not load Weekly Report!", type: "error" });
 		}
 	}, [isError, data]);
