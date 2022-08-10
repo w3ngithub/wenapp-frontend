@@ -7,7 +7,7 @@ const getLeaveDaysOfAllUsers = async () => {
 		let response = await API.get(`${Apis.Leaves}/users/leavedays`);
 		return getAPIResponse(response);
 	} catch (err) {
-		return getAPIResponse(err.response);
+		return getAPIResponse(err?.response);
 	}
 };
 
