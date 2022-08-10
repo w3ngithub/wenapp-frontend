@@ -24,7 +24,7 @@ const intialDate = [
 		: moment()
 ];
 
-const formattedProjects = (reports, clients) => {
+const formattedWeeklyReports = (reports, clients) => {
 	return reports?.map(report => ({
 		key: report?.project?.[0]?._id,
 		name: report?.project?.[0]?.name,
@@ -33,8 +33,8 @@ const formattedProjects = (reports, clients) => {
 	}));
 };
 
-function ProjectsPage() {
-	// init hooks
+function WeeklyReport() {
+	// init states
 	const [sort, setSort] = useState({});
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [projectStatus, setProjectStatus] = useState(undefined);
@@ -186,7 +186,7 @@ function ProjectsPage() {
 
 						navigateToProjectLogs
 					)}
-					dataSource={formattedProjects(data?.data?.data?.report, clients)}
+					dataSource={formattedWeeklyReports(data?.data?.data?.report, clients)}
 					onChange={handleTableChange}
 					pagination={{
 						current: page.page,
@@ -205,4 +205,4 @@ function ProjectsPage() {
 	);
 }
 
-export default ProjectsPage;
+export default WeeklyReport;
