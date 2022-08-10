@@ -14,7 +14,7 @@ import {
 import IntlMessages from "util/IntlMessages";
 import { connect } from "react-redux";
 import { SIDEBAR_ITEMS } from "constants/sideBarItems";
-import { REPORTS } from "helpers/routePath";
+import { REPORTS, RESOURCES } from "helpers/routePath";
 
 const SubMenu = Menu.SubMenu;
 
@@ -22,7 +22,8 @@ function SidebarContent(props) {
 	const { themeType, navStyle } = props;
 	const location = useLocation();
 	const paths = location.pathname.split("/");
-	const selectedOpenKeys = paths[1] === REPORTS ? paths[2] : paths[1];
+	const selectedOpenKeys =
+		paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1];
 
 	const getNoHeaderClass = navStyle => {
 		if (

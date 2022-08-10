@@ -1,14 +1,18 @@
 import {
 	ATTENDANCE,
 	BLOG,
+	CALENDAR,
 	COWORKERS,
 	DASHBOARD,
+	FAQS,
 	LEAVE,
 	LEAVE_REPORT,
 	LOGTIME,
 	NOTICEBOARD,
+	POLICY,
 	PROJECTS,
 	REPORTS,
+	RESOURCES,
 	SETTINGS,
 	WEEKLY_REPORT,
 	WORK_LOG_REPORT
@@ -105,23 +109,23 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		icon: "icon-editor",
 
 		name: "sidebar.resources",
-		url: "",
+		url: RESOURCES,
 		isExpandable: true,
 		id: 10,
 		subItems: [
 			{
 				name: "sidebar.resources.faq",
-				url: "/components/general/button",
+				url: FAQS,
 				id: 1
 			},
 			{
 				name: "sidebar.resources.policy",
-				url: "/components/general/icon",
+				url: POLICY,
 				id: 2
 			},
 			{
 				name: "sidebar.resources.calendar",
-				url: "/main/dashboard/crypto",
+				url: CALENDAR,
 				id: 3
 			}
 		]
