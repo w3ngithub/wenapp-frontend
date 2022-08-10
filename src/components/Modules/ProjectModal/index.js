@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
 	Button,
+	Col,
 	DatePicker,
 	Form,
 	Input,
 	Modal,
 	Radio,
+	Row,
 	Select,
 	Spin
 } from "antd";
@@ -120,7 +122,7 @@ function ProjectModal({
 	return (
 		<Modal
 			width={900}
-			title={readOnly ? "Add Project" : "Update Project"}
+			title={isEditMode ? "Update Project" : "Add Project"}
 			visible={toggle}
 			onOk={handleSubmit}
 			onCancel={handleCancel}
@@ -144,280 +146,300 @@ function ProjectModal({
 			<Spin spinning={loading}>
 				<Form layout="vertical">
 					<div className="form-wrapper">
-						<FormItem
-							{...formItemLayout}
-							label="Name"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator("name", {
-								rules: [{ required: true, message: "Required!" }]
-							})(<Input placeholder="Enter Name" disabled={readOnly} />)}
-						</FormItem>
-						<FormItem {...formItemLayout} label="Priority">
-							{getFieldDecorator(
-								"priority",
-								{}
-							)(
-								<Radio.Group buttonStyle="solid" disabled={readOnly}>
-									<Radio.Button value={true}>Yes</Radio.Button>
-									<Radio.Button value={false}>No</Radio.Button>
-								</Radio.Group>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Path"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"path",
-								{}
-							)(<Input placeholder="Enter Path" disabled={readOnly} />)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Estimated Hours"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator("estimatedHours", {
-								rules: [
-									{
-										required: true,
-										message: "Required!"
-									}
-								]
-							})(
-								<Input
-									placeholder="Enter Estimated Hours"
-									type="number"
-									disabled={readOnly}
-								/>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Start Date"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"startDate",
-								{}
-							)(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="End Date"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"endDate",
-								{}
-							)(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Type"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"projectTypes",
-								{}
-							)(
-								<Select placeholder="Select Type" disabled={readOnly}>
-									{projectTypes.map(type => (
-										<Option value={type._id} key={type._id}>
-											{type.name}
-										</Option>
-									))}
-								</Select>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Status"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator("projectStatus", {
-								rules: [
-									{
-										required: true,
-										message: "Required!"
-									}
-								]
-							})(
-								<Select placeholder="Select Status" disabled={readOnly}>
-									{projectStatuses.map(status => (
-										<Option value={status._id} key={status._id}>
-											{status.name}
-										</Option>
-									))}
-								</Select>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Tags"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"projectTags",
-								{}
-							)(
-								<Select
-									placeholder="Select Tags"
-									disabled={readOnly}
-									mode="tags"
-									size="large"
+						<Row type="flex">
+							<Col span={24} sm={12}>
+								<FormItem label="Name" hasFeedback={readOnly ? false : true}>
+									{getFieldDecorator("name", {
+										rules: [{ required: true, message: "Required!" }]
+									})(<Input placeholder="Enter Name" disabled={readOnly} />)}
+								</FormItem>
+							</Col>
+							<Col span={24} sm={12}>
+								<FormItem label="Priority">
+									{getFieldDecorator(
+										"priority",
+										{}
+									)(
+										<Radio.Group buttonStyle="solid" disabled={readOnly}>
+											<Radio.Button value={true}>Yes</Radio.Button>
+											<Radio.Button value={false}>No</Radio.Button>
+										</Radio.Group>
+									)}
+								</FormItem>
+							</Col>
+						</Row>
+						<Row type="flex">
+							<Col span={24} sm={12}>
+								<FormItem label="Path" hasFeedback={readOnly ? false : true}>
+									{getFieldDecorator(
+										"path",
+										{}
+									)(<Input placeholder="Enter Path" disabled={readOnly} />)}
+								</FormItem>
+							</Col>
+							<Col span={24} sm={12}>
+								<FormItem
+									label="Estimated Hours"
+									hasFeedback={readOnly ? false : true}
 								>
-									{data &&
-										data.data.data.data.map(tag => (
-											<Option value={tag._id} key={tag._id}>
-												{tag.name}
-											</Option>
-										))}
-								</Select>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Developers"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"developers",
-								{}
-							)(
-								<Select
-									placeholder="Select Developers"
-									disabled={readOnly}
-									mode="tags"
+									{getFieldDecorator("estimatedHours", {
+										rules: [
+											{
+												required: true,
+												message: "Required!"
+											}
+										]
+									})(
+										<Input
+											placeholder="Enter Estimated Hours"
+											type="number"
+											disabled={readOnly}
+										/>
+									)}
+								</FormItem>
+							</Col>
+						</Row>
+						<Row type="flex">
+							<Col span={24} sm={12}>
+								<FormItem
+									label="Start Date"
+									hasFeedback={readOnly ? false : true}
 								>
-									{usersQuery.data &&
-										usersQuery.data.data.data.data.map(tag => (
-											<Option value={tag._id} key={tag._id}>
-												{tag.name}
-											</Option>
-										))}
-								</Select>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Designers"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"designers",
-								{}
-							)(
-								<Select
-									placeholder="Select Designers"
-									disabled={readOnly}
-									mode="tags"
+									{getFieldDecorator("startDate", {
+										rules: [{ required: true, message: "Required!" }]
+									})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+								</FormItem>
+							</Col>
+							<Col span={24} sm={12}>
+								<FormItem
+									label="End Date"
+									hasFeedback={readOnly ? false : true}
 								>
-									{usersQuery.data &&
-										usersQuery.data.data.data.data.map(tag => (
-											<Option value={tag._id} key={tag._id}>
-												{tag.name}
-											</Option>
-										))}
-								</Select>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="QA"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"qa",
-								{}
-							)(
-								<Select placeholder="Select QA" disabled={readOnly} mode="tags">
-									{usersQuery.data &&
-										usersQuery.data.data.data.data.map(tag => (
-											<Option value={tag._id} key={tag._id}>
-												{tag.name}
-											</Option>
-										))}
-								</Select>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="DevOps"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"devOps",
-								{}
-							)(
-								<Select
-									placeholder="Select DevOps"
-									disabled={readOnly}
-									mode="tags"
+									{getFieldDecorator(
+										"endDate",
+										{}
+									)(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+								</FormItem>
+							</Col>
+						</Row>
+
+						<Row type="flex">
+							<Col span={24} sm={12}>
+								<FormItem label="Type" hasFeedback={readOnly ? false : true}>
+									{getFieldDecorator(
+										"projectTypes",
+										{}
+									)(
+										<Select placeholder="Select Type" disabled={readOnly}>
+											{projectTypes.map(type => (
+												<Option value={type._id} key={type._id}>
+													{type.name}
+												</Option>
+											))}
+										</Select>
+									)}
+								</FormItem>
+							</Col>
+							<Col span={24} sm={12}>
+								<FormItem label="Status" hasFeedback={readOnly ? false : true}>
+									{getFieldDecorator("projectStatus", {
+										rules: [
+											{
+												required: true,
+												message: "Required!"
+											}
+										]
+									})(
+										<Select placeholder="Select Status" disabled={readOnly}>
+											{projectStatuses.map(status => (
+												<Option value={status._id} key={status._id}>
+													{status.name}
+												</Option>
+											))}
+										</Select>
+									)}
+								</FormItem>
+							</Col>
+						</Row>
+						<Row type="flex">
+							<Col span={24} sm={12}>
+								<FormItem label="Tags" hasFeedback={readOnly ? false : true}>
+									{getFieldDecorator(
+										"projectTags",
+										{}
+									)(
+										<Select
+											placeholder="Select Tags"
+											disabled={readOnly}
+											mode="tags"
+											size="large"
+										>
+											{data &&
+												data.data.data.data.map(tag => (
+													<Option value={tag._id} key={tag._id}>
+														{tag.name}
+													</Option>
+												))}
+										</Select>
+									)}
+								</FormItem>
+							</Col>
+							<Col span={24} sm={12}>
+								<FormItem
+									label="Developers"
+									hasFeedback={readOnly ? false : true}
 								>
-									{usersQuery.data &&
-										usersQuery.data.data.data.data.map(tag => (
-											<Option value={tag._id} key={tag._id}>
-												{tag.name}
-											</Option>
-										))}
-								</Select>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Staging URL"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"stagingUrls",
-								{}
-							)(
-								<Select
-									placeholder="Select Staging Urls"
-									disabled={readOnly}
-									mode="tags"
+									{getFieldDecorator(
+										"developers",
+										{}
+									)(
+										<Select
+											placeholder="Select Developers"
+											disabled={readOnly}
+											mode="tags"
+										>
+											{usersQuery.data &&
+												usersQuery.data.data.data.data.map(tag => (
+													<Option value={tag._id} key={tag._id}>
+														{tag.name}
+													</Option>
+												))}
+										</Select>
+									)}
+								</FormItem>
+							</Col>
+						</Row>
+						<Row type="flex">
+							<Col span={24} sm={12}>
+								<FormItem
+									label="Designers"
+									hasFeedback={readOnly ? false : true}
 								>
-									{[].map(item => (
-										<Option key={item} value={item} />
-									))}
-								</Select>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Live URL"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"liveUrl",
-								{}
-							)(<Input placeholder="Enter Live URL" disabled={readOnly} />)}
-						</FormItem>
-						<FormItem {...formItemLayout} label="Notes">
-							{getFieldDecorator(
-								"notes",
-								{}
-							)(
-								<TextArea
-									placeholder="Enter Notes"
-									rows={1}
-									disabled={readOnly}
-								/>
-							)}
-						</FormItem>
-						<FormItem
-							{...formItemLayout}
-							label="Maintenance"
-							hasFeedback={readOnly ? false : true}
-						>
-							{getFieldDecorator(
-								"maintenance",
-								{}
-							)(<Input placeholder="Enter Maintenance" disabled={readOnly} />)}
-						</FormItem>
+									{getFieldDecorator(
+										"designers",
+										{}
+									)(
+										<Select
+											placeholder="Select Designers"
+											disabled={readOnly}
+											mode="tags"
+										>
+											{usersQuery.data &&
+												usersQuery.data.data.data.data.map(tag => (
+													<Option value={tag._id} key={tag._id}>
+														{tag.name}
+													</Option>
+												))}
+										</Select>
+									)}
+								</FormItem>
+							</Col>
+							<Col span={24} sm={12}>
+								<FormItem label="QA" hasFeedback={readOnly ? false : true}>
+									{getFieldDecorator(
+										"qa",
+										{}
+									)(
+										<Select
+											placeholder="Select QA"
+											disabled={readOnly}
+											mode="tags"
+										>
+											{usersQuery.data &&
+												usersQuery.data.data.data.data.map(tag => (
+													<Option value={tag._id} key={tag._id}>
+														{tag.name}
+													</Option>
+												))}
+										</Select>
+									)}
+								</FormItem>
+							</Col>
+						</Row>
+						<Row type="flex">
+							<Col span={24} sm={12}>
+								<FormItem label="DevOps" hasFeedback={readOnly ? false : true}>
+									{getFieldDecorator(
+										"devOps",
+										{}
+									)(
+										<Select
+											placeholder="Select DevOps"
+											disabled={readOnly}
+											mode="tags"
+										>
+											{usersQuery.data &&
+												usersQuery.data.data.data.data.map(tag => (
+													<Option value={tag._id} key={tag._id}>
+														{tag.name}
+													</Option>
+												))}
+										</Select>
+									)}
+								</FormItem>
+							</Col>
+							<Col span={24} sm={12}>
+								<FormItem
+									label="Staging URL"
+									hasFeedback={readOnly ? false : true}
+								>
+									{getFieldDecorator(
+										"stagingUrls",
+										{}
+									)(
+										<Select
+											placeholder="Select Staging Urls"
+											disabled={readOnly}
+											mode="tags"
+										>
+											{[].map(item => (
+												<Option key={item} value={item} />
+											))}
+										</Select>
+									)}
+								</FormItem>
+							</Col>
+						</Row>
+						<Row type="flex">
+							<Col span={24} sm={12}>
+								<FormItem
+									label="Live URL"
+									hasFeedback={readOnly ? false : true}
+								>
+									{getFieldDecorator(
+										"liveUrl",
+										{}
+									)(<Input placeholder="Enter Live URL" disabled={readOnly} />)}
+								</FormItem>
+							</Col>
+							<Col span={24} sm={12}>
+								<FormItem label="Notes">
+									{getFieldDecorator(
+										"notes",
+										{}
+									)(
+										<TextArea
+											placeholder="Enter Notes"
+											rows={1}
+											disabled={readOnly}
+										/>
+									)}
+								</FormItem>
+							</Col>
+						</Row>
+						<Col span={24} sm={12}>
+							<FormItem
+								label="Maintenance"
+								hasFeedback={readOnly ? false : true}
+							>
+								{getFieldDecorator(
+									"maintenance",
+									{}
+								)(
+									<Input placeholder="Enter Maintenance" disabled={readOnly} />
+								)}
+							</FormItem>
+						</Col>
 					</div>
 				</Form>
 			</Spin>

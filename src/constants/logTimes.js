@@ -74,7 +74,12 @@ const LOGTIMES_COLUMNS = (
 					render: (text, record) => {
 						return (
 							<span>
-								<span className="gx-link">Edit</span>
+								<span
+									className="gx-link"
+									onClick={() => onOpenEditModal(record)}
+								>
+									Edit
+								</span>
 							</span>
 						);
 					}

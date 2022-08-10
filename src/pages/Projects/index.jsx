@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Form, Select, Input, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
-import { changeDate } from "helpers/utils";
+import { changeDate, handleResponse } from "helpers/utils";
 import {
 	addProject,
 	deleteProject,
@@ -76,45 +76,35 @@ function ProjectsPage() {
 	);
 
 	const addProjectMutation = useMutation(project => addProject(project), {
-		onSuccess: response => {
-			if (response.status) {
-				notification({
-					message: "Project Added Successfully",
-					type: "success"
-				});
-				queryClient.invalidateQueries(["projects"]);
-				handleCloseModal();
-			} else {
-				notification({
-					message: response?.data?.message || "Project addition failed!",
-					type: "error"
-				});
-			}
-		},
-		onError: () => {
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Project Added Successfully",
+				"Project addition failed",
+				[
+					() => queryClient.invalidateQueries(["projects"]),
+					() => handleCloseModal()
+				]
+			),
+		onError: error => {
 			notification({ message: "Project addition failed!", type: "error" });
 		}
 	});
 	const updateProjectMutation = useMutation(
 		project => updateProject(project.id, project.details),
 		{
-			onSuccess: response => {
-				if (response.status) {
-					notification({
-						message: "Project Updated Successfully",
-						type: "success"
-					});
-					queryClient.invalidateQueries(["projects"]);
-					handleCloseModal();
-				} else {
-					notification({
-						message: response?.data?.message || "Project update failed!",
-						type: "error"
-					});
-				}
-			},
-			onError: () => {
-				notification({ message: "Project update failed!", type: "error" });
+			onSuccess: response =>
+				handleResponse(
+					response,
+					"Project Updated Successfully",
+					"Project update failed",
+					[
+						() => queryClient.invalidateQueries(["projects"]),
+						() => handleCloseModal()
+					]
+				),
+			onError: error => {
+				notification({ message: "Project update failed", type: "error" });
 			}
 		}
 	);
@@ -122,19 +112,15 @@ function ProjectsPage() {
 	const deleteProjectMutation = useMutation(
 		projectId => deleteProject(projectId),
 		{
-			onSuccess: response => {
-				if (response.status) {
-					notification({
-						message: "Project removed Successfully",
-						type: "success"
-					});
-					queryClient.invalidateQueries(["projects"]);
-				} else {
-					notification({
-						message: response?.data?.message || "Project deletion failed!",
-						type: "error"
-					});
-				}
+			onSuccess: response =>
+				handleResponse(
+					response,
+					"Project removed Successfully",
+					"Project deletion failed",
+					[() => queryClient.invalidateQueries(["projects"])]
+				),
+			onError: error => {
+				notification({ message: "Project deletion failed", type: "error" });
 			}
 		}
 	);
@@ -262,6 +248,7 @@ function ProjectsPage() {
 				readOnly={readOnly}
 				isEditMode={isEditMode}
 			/>
+
 			<Card title="Projects">
 				<div className="components-table-demo-control-bar">
 					<Search
