@@ -13,6 +13,9 @@ const BASE_API_PATH_TIMELOGS = `${BASE_API_PATH}timelogs`;
 const BASE_API_PATH_PROJECTS = `${BASE_API_PATH}projects`;
 const BASE_API_PATH_PROJECTS_TAGS = `${BASE_API_PATH_PROJECTS}/tags`;
 
+// Leaves
+const BASE_API_PATH_LEAVES = `${BASE_API_PATH}leaves`;
+
 export const Apis = {
 	// Users
 	Users: `${BASE_API_PATH_USERS}`,
@@ -25,5 +28,8 @@ export const Apis = {
 
 	// Projects
 	Projects: `${BASE_API_PATH_PROJECTS}`,
-	ProjectTags: `${BASE_API_PATH_PROJECTS_TAGS}`
+	ProjectTags: `${BASE_API_PATH_PROJECTS_TAGS}`,
+
+	// Leaves
+	Leaves: `${BASE_API_PATH_LEAVES}`
 };

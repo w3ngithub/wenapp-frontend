@@ -31,7 +31,7 @@ function LogtimeModal({
 	isUserLogtime = false,
 	...rest
 }) {
-	const { getFieldDecorator } = rest.form;
+	const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
 	const [types, setTypes] = useState([]);
 	const projectsQuery = useQuery(["projects"], getAllProjects, {
 		enabled: false
@@ -43,15 +43,15 @@ function LogtimeModal({
 	};
 
 	const handleSubmit = () => {
-		rest.form.validateFields((err, fieldsValue) => {
+		validateFieldsAndScroll((err, fieldsValue) => {
+			console.log(err);
 			if (err) {
 				return;
 			}
 			onSubmit(
 				isEditMode
 					? { ...initialValues, ...fieldsValue, user: initialValues?.user._id }
-					: { ...fieldsValue },
-				rest
+					: { ...fieldsValue }
 			);
 		});
 	};
@@ -81,6 +81,8 @@ function LogtimeModal({
 				);
 			}
 		}
+
+		if (!toggle) rest.form.resetFields();
 	}, [toggle]);
 	return (
 		<Modal
@@ -183,19 +185,24 @@ function LogtimeModal({
 					<FormItem {...formItemLayout} label="Remarks" hasFeedback>
 						{getFieldDecorator("remarks", {
 							rules: [
-								{ required: true, message: "Required!" },
 								{
-									min: 10,
-									message: "Remarks should be at least 10 letters"
-									// validator: (rule, value, callback) => {
-									// 	console.log(rule);
-									// 	const trimmedValue = value.replace(/ /g, "");
-									// 	return trimmedValue.length < 10;
-									// 	// if (trimmedValue.length < 10) {
-									// 	// 	callback("Remarks should be at least 10 letters");
-									// 	// 	return false;
-									// 	// }
-									// }
+									validator: (rule, value, callback) => {
+										try {
+											if (!value) throw new Error("Required!");
+
+											const trimmedValue = value && value.trim();
+											if (trimmedValue?.length < 10) {
+												throw new Error(
+													"Remarks should be at least 10 letters!"
+												);
+											}
+										} catch (err) {
+											callback(err.message);
+											return;
+										}
+
+										callback();
+									}
 								}
 							]
 						})(<TextArea placeholder="Enter Remarks" rows={1} />)}

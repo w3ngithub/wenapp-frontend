@@ -210,8 +210,6 @@ function ProjectLogs() {
 				id: projectId,
 				details: formattedNewLogtime
 			});
-
-		reset.form.resetFields();
 	};
 	const {
 		designers,
