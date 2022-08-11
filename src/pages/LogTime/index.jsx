@@ -3,7 +3,13 @@ import { Card, Table, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import LogModal from "components/Modules/LogtimeModal";
 import { LOGTIMES_COLUMNS } from "constants/logTimes";
-import { changeDate, getLocalStorageData } from "helpers/utils";
+import {
+	changeDate,
+	getLocalStorageData,
+	roundedToFixed,
+	handleResponse
+} from "helpers/utils";
+import { notification } from "helpers/notification";
 import moment from "moment";
 import React, { useState } from "react";
 import {
@@ -12,7 +18,8 @@ import {
 	getAllTimeLogs,
 	getLogTypes,
 	getTodayTimeLogSummary,
-	getWeeklyTimeLogSummary
+	getWeeklyTimeLogSummary,
+	updateTimeLog
 } from "services/timeLogs";
 import TimeSummary from "./TimeSummary";
 
@@ -66,21 +73,56 @@ function LogTime() {
 		getWeeklyTimeLogSummary
 	);
 	const addLogTimeMutation = useMutation(details => addUserTimeLog(details), {
-		onSuccess: () => {
-			queryClient.invalidateQueries(["UsertimeLogs"]);
-			queryClient.invalidateQueries(["userTodayTimeSpent"]);
-			queryClient.invalidateQueries(["userweeklyTimeSpent"]);
-			handleCloseTimelogModal();
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Added time log successfully",
+				"Could not add time log",
+				[
+					() => queryClient.invalidateQueries(["UsertimeLogs"]),
+					() => queryClient.invalidateQueries(["userTodayTimeSpent"]),
+					() => queryClient.invalidateQueries(["userweeklyTimeSpent"]),
+					() => handleCloseTimelogModal()
+				]
+			),
+		onError: error => {
+			notification({ message: "Could not add time log!", type: "error" });
+		}
+	});
+	const UpdateLogTimeMutation = useMutation(details => updateTimeLog(details), {
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Updated time log successfully",
+				"Could not update time log",
+				[
+					() => queryClient.invalidateQueries(["UsertimeLogs"]),
+					() => queryClient.invalidateQueries(["userTodayTimeSpent"]),
+					() => queryClient.invalidateQueries(["userweeklyTimeSpent"]),
+					() => handleCloseTimelogModal()
+				]
+			),
+		onError: error => {
+			notification({ message: "Could not update time log!", type: "error" });
 		}
 	});
 
 	const { data: logTypes } = useQuery(["logTypes"], () => getLogTypes());
 
 	const deleteLogMutation = useMutation(logId => deleteTimeLog(logId), {
-		onSuccess: () => {
-			queryClient.invalidateQueries(["UsertimeLogs"]);
-			queryClient.invalidateQueries(["userweeklyTimeSpent"]);
-			queryClient.invalidateQueries(["userTodayTimeSpent"]);
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Deleted time log successfully",
+				"Could not delete time log",
+				[
+					() => queryClient.invalidateQueries(["UsertimeLogs"]),
+					() => queryClient.invalidateQueries(["userTodayTimeSpent"]),
+					() => queryClient.invalidateQueries(["userweeklyTimeSpent"])
+				]
+			),
+		onError: error => {
+			notification({ message: "Could not delete time log!", type: "error" });
 		}
 	});
 
@@ -112,7 +154,8 @@ function LogTime() {
 			...log,
 			logDate: originalTimelog?.logDate,
 			logType: originalTimelog?.logType,
-			user: originalTimelog?.user
+			user: originalTimelog?.user,
+			project: originalTimelog?.project
 		});
 		setOpenModal(true);
 		setIsEditMode(true);
@@ -124,7 +167,7 @@ function LogTime() {
 		setIsEditMode(false);
 	};
 
-	const handleLogTypeSubmit = (newLogtime, reset) => {
+	const handleLogTypeSubmit = newLogtime => {
 		const formattedNewLogtime = {
 			...newLogtime,
 			hours: +newLogtime.hours,
@@ -132,22 +175,16 @@ function LogTime() {
 			minutes: +newLogtime.minutes,
 			user: getLocalStorageData("user_id").user._id
 		};
-		console.log(formattedNewLogtime);
-		addLogTimeMutation.mutate(formattedNewLogtime);
 
-		// if (isEditMode)
-		// 	UpdateLogTimeMutation.mutate({
-		// 		id: formattedNewLogtime.id,
-		// 		details: {
-		// 			...formattedNewLogtime,
-
-		// 			user: newLogtime.user._id
-		// 		}
-		// 	});
-		// else
-		// addLogTimeMutation.mutate(formattedNewLogtime);
-
-		reset.form.resetFields();
+		if (isEditMode)
+			UpdateLogTimeMutation.mutate({
+				id: formattedNewLogtime.id,
+				details: {
+					...formattedNewLogtime,
+					user: newLogtime.user
+				}
+			});
+		else addLogTimeMutation.mutate(formattedNewLogtime);
 	};
 
 	if (timelogLoading) {
@@ -160,9 +197,9 @@ function LogTime() {
 				toggle={openModal}
 				onClose={handleCloseTimelogModal}
 				onSubmit={handleLogTypeSubmit}
-				// loading={
-				// 	addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
-				// }
+				loading={
+					addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
+				}
 				logTypes={logTypes}
 				initialValues={timeLogToUpdate}
 				isEditMode={isEditMode}
@@ -171,13 +208,16 @@ function LogTime() {
 			<div style={{ marginTop: 20 }}></div>
 			<Card title={" Time Summary"}>
 				<TimeSummary
-					tst={
-						todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday || 0
-					}
-					tsw={
+					tst={roundedToFixed(
+						todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday ||
+							0,
+						2
+					)}
+					tsw={roundedToFixed(
 						weeklyTimeSpent?.data?.data?.weeklySummary?.[0]
-							?.timeSpentThisWeek || 0
-					}
+							?.timeSpentThisWeek || 0,
+						2
+					)}
 				/>
 			</Card>
 			<Card title={"Time Logs"}>

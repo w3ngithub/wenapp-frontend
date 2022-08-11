@@ -3,6 +3,7 @@ import { Form } from '@ant-design/compatible';
 import '@ant-design/compatible/assets/index.css';
 import { Button, DatePicker, Input, Modal, Select, Spin } from "antd";
 import moment from "moment";
+import { filterOptions } from "helpers/utils";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -112,7 +113,12 @@ function UserDetailForm({
 						{getFieldDecorator("role", {
 							rules: [{ required: true, message: "Required!" }]
 						})(
-							<Select placeholder="Select Role" disabled={readOnly}>
+							<Select
+								showSearch
+								placeholder="Select Role"
+								disabled={readOnly}
+								filterOption={filterOptions}
+							>
 								{roles &&
 									roles?.data?.data?.data?.map(role => (
 										<Option value={role._id} key={role._id}>
@@ -136,9 +142,11 @@ function UserDetailForm({
 							]
 						})(
 							<Select
+								showSearch
 								placeholder="Select Position"
 								disabled={readOnly}
 								hasFeedback={readOnly ? false : true}
+								filterOption={filterOptions}
 							>
 								{position &&
 									position?.data?.data?.data?.map(position => (

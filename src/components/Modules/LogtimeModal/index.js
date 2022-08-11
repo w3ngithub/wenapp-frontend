@@ -5,6 +5,7 @@ import { Button, DatePicker, Input, Modal, Select, Spin } from "antd";
 import moment from "moment";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "services/projects";
+import { filterOptions } from "helpers/utils";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -32,7 +33,7 @@ function LogtimeModal({
 	isUserLogtime = false,
 	...rest
 }) {
-	const { getFieldDecorator } = rest.form;
+	const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
 	const [types, setTypes] = useState([]);
 	const projectsQuery = useQuery(["projects"], getAllProjects, {
 		enabled: false
@@ -44,12 +45,16 @@ function LogtimeModal({
 	};
 
 	const handleSubmit = () => {
-		rest.form.validateFields((err, fieldsValue) => {
+		validateFieldsAndScroll((err, fieldsValue) => {
 			console.log(err);
 			if (err) {
 				return;
 			}
-			onSubmit({ ...initialValues, ...fieldsValue }, rest);
+			onSubmit(
+				isEditMode
+					? { ...initialValues, ...fieldsValue, user: initialValues?.user._id }
+					: { ...fieldsValue }
+			);
 		});
 	};
 
@@ -58,17 +63,28 @@ function LogtimeModal({
 			setTypes(logTypes.data?.data?.data);
 			projectsQuery.refetch();
 			if (isEditMode) {
-				rest.form.setFieldsValue({
-					...initialValues,
-					logDate: moment(initialValues?.logDate),
-					hours: initialValues?.hours,
-					minutes: initialValues?.minutes,
-					logType: initialValues?.logType._id,
-					remarks: initialValues?.remarks,
-					user: initialValues?.user._id
-				});
+				rest.form.setFieldsValue(
+					isUserLogtime
+						? {
+								logDate: moment(initialValues?.logDate),
+								hours: initialValues?.hours,
+								minutes: initialValues?.minutes,
+								logType: initialValues?.logType._id,
+								remarks: initialValues?.remarks,
+								project: initialValues?.project._id
+						  }
+						: {
+								logDate: moment(initialValues?.logDate),
+								hours: initialValues?.hours,
+								minutes: initialValues?.minutes,
+								logType: initialValues?.logType._id,
+								remarks: initialValues?.remarks
+						  }
+				);
 			}
 		}
+
+		if (!toggle) rest.form.resetFields();
 	}, [toggle]);
 	return (
 		<Modal
@@ -134,7 +150,11 @@ function LogtimeModal({
 						{getFieldDecorator("logType", {
 							rules: [{ required: true, message: "Required!" }]
 						})(
-							<Select placeholder="Select Log Type">
+							<Select
+								showSearch
+								filterOption={filterOptions}
+								placeholder="Select Log Type"
+							>
 								{types.map(logType => (
 									<Option value={logType._id} key={logType._id}>
 										{logType.name}
@@ -149,7 +169,11 @@ function LogtimeModal({
 								"project",
 								{}
 							)(
-								<Select placeholder="Select Project">
+								<Select
+									showSearch
+									filterOption={filterOptions}
+									placeholder="Select Project"
+								>
 									{projectsQuery?.data?.data?.data?.data.map(project => (
 										<Option value={project._id} key={project._id}>
 											{project.name}
@@ -163,19 +187,24 @@ function LogtimeModal({
 					<FormItem {...formItemLayout} label="Remarks" hasFeedback>
 						{getFieldDecorator("remarks", {
 							rules: [
-								{ required: true, message: "Required!" },
 								{
-									min: 10,
-									message: "Remarks should be at least 10 letters"
-									// validator: (rule, value, callback) => {
-									// 	console.log(rule);
-									// 	const trimmedValue = value.replace(/ /g, "");
-									// 	return trimmedValue.length < 10;
-									// 	// if (trimmedValue.length < 10) {
-									// 	// 	callback("Remarks should be at least 10 letters");
-									// 	// 	return false;
-									// 	// }
-									// }
+									validator: (rule, value, callback) => {
+										try {
+											if (!value) throw new Error("Required!");
+
+											const trimmedValue = value && value.trim();
+											if (trimmedValue?.length < 10) {
+												throw new Error(
+													"Remarks should be at least 10 letters!"
+												);
+											}
+										} catch (err) {
+											callback(err.message);
+											return;
+										}
+
+										callback();
+									}
 								}
 							]
 						})(<TextArea placeholder="Enter Remarks" rows={1} />)}

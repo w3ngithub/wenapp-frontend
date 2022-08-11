@@ -1,9 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Card, Table, Radio, Select, Input, Button } from "antd";
+import { Button, Card, Input, Radio, Select, Table } from "antd";
+import CircularProgress from "components/Elements/CircularProgress";
+import UserDetailForm from "components/Modules/UserDetailModal";
+import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
+import { notification } from "helpers/notification";
+import { changeDate, handleResponse } from "helpers/utils";
 import moment from "moment";
+import { useEffect, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 import {
 	getAllUsers,
@@ -11,15 +16,9 @@ import {
 	getUserRoles,
 	updateUser
 } from "services/users/userDetails";
-import UserDetailForm from "components/Modules/UserDetailModal";
-import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
-import CircularProgress from "components/Elements/CircularProgress";
-import { changeDate } from "helpers/utils";
 import ImportUsers from "./ImportUsers";
-import { notification } from "helpers/notification";
 
 const Search = Input.Search;
-const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formattedUsers = (users, isAdmin) => {
@@ -67,21 +66,15 @@ function CoworkersPage() {
 	const mutation = useMutation(
 		updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
 		{
-			onSuccess: response => {
-				if (response?.status) {
-					notification({ message: "User Updated", type: "success" });
-					queryClient.invalidateQueries(["users"]);
-					setOpenUserDetailModal(prev => false);
-					setReadOnly(false);
-				} else {
-					notification({
-						message: response?.data?.message || "Could not update User!",
-						type: "error"
-					});
-				}
-			},
+			onSuccess: response =>
+				handleResponse(
+					response,
+					"User Updated Successfully",
+					"Could not update User",
+					[() => queryClient.invalidateQueries(["users"])]
+				),
 			onError: error => {
-				notification({ message: "Could not update User!", type: "error" });
+				notification({ message: "Could not update User", type: "error" });
 			}
 		}
 	);
@@ -185,7 +178,10 @@ function CoworkersPage() {
 				<div className="components-table-demo-control-bar">
 					<Search
 						placeholder="Search Users"
-						onSearch={value => setName(value)}
+						onSearch={value => {
+							setPage(prev => ({ ...prev, page: 1 }));
+							setName(value);
+						}}
 						style={{ width: 200 }}
 						enterButton
 						ref={nameRef}
@@ -195,32 +191,24 @@ function CoworkersPage() {
 							<FormItem>
 								<Select
 									placeholder="Select Role"
-									style={{ width: 200 }}
 									onChange={handleRoleChange}
 									value={role}
-								>
-									{roleData &&
-										roleData?.data?.data?.data?.map(role => (
-											<Option value={role._id} key={role._id}>
-												{role.value}
-											</Option>
-										))}
-								</Select>
+									options={roleData?.data?.data?.data?.map(x => ({
+										...x,
+										id: x._id
+									}))}
+								/>
 							</FormItem>
 							<FormItem>
 								<Select
 									placeholder="Select Position"
-									style={{ width: 200 }}
 									onChange={handlePositionChange}
 									value={position}
-								>
-									{positionData &&
-										positionData?.data?.data?.data?.map(position => (
-											<Option value={position._id} key={position._id}>
-												{position.name}
-											</Option>
-										))}
-								</Select>
+									options={positionData?.data?.data?.data?.map(x => ({
+										id: x._id,
+										value: x.name
+									}))}
+								/>
 							</FormItem>
 							<FormItem>
 								<Radio.Group
