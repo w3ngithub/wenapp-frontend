@@ -1,5 +1,6 @@
 import React from "react";
-import {AutoComplete, Card, Icon, Input} from "antd";
+import { SearchOutlined } from '@ant-design/icons';
+import { AutoComplete, Card, Input } from "antd";
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
@@ -84,7 +85,7 @@ const LookupPatterns = () => {
             placeholder="input here"
             optionLabelProp="value"
           >
-            <Input suffix={<Icon type="search" className="certain-category-icon"/>}/>
+            <Input suffix={<SearchOutlined className="certain-category-icon" />}/>
           </AutoComplete>
         </div>
       </Card>

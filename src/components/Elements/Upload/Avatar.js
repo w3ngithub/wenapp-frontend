@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Icon, message, Upload} from "antd";
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { Card, message, Upload } from "antd";
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -40,7 +41,7 @@ class Avatar extends React.Component {
   render() {
     const uploadButton = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'}/>
+        <LegacyIcon type={this.state.loading ? 'loading' : 'plus'}/>
         <div className="ant-upload-text">Upload</div>
       </div>
     );

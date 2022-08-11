@@ -1,5 +1,5 @@
 import React from "react";
-import {Icon} from "antd";
+import { BellOutlined, MailOutlined, MessageOutlined, ProfileOutlined } from '@ant-design/icons';
 
 const WelComeCard = () => {
 
@@ -9,24 +9,23 @@ const WelComeCard = () => {
       <p className="gx-fs-sm gx-text-uppercase">You Have</p>
       <ul className="gx-list-group">
         <li>
-          <Icon type="message"/>
+          <MessageOutlined />
           <span>5 Unread messages</span>
         </li>
         <li>
-          <Icon type="mail"/>
+          <MailOutlined />
           <span>2 Pending invitations</span>
         </li>
         <li>
-          <Icon type="profile"/>
+          <ProfileOutlined />
           <span>7 Due tasks</span>
         </li>
         <li>
-          <Icon type="bell"/>
+          <BellOutlined />
           <span>3 Other notifications</span>
         </li>
       </ul>
     </div>
-
   );
 };
 

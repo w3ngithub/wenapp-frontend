@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-	Button,
-	DatePicker,
-	Form,
-	Input,
-	Modal,
-	Radio,
-	Select,
-	Spin
-} from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, DatePicker, Input, Modal, Radio, Select, Spin } from "antd";
 import moment from "moment";
 import "./style.css";
 import { useQuery } from "@tanstack/react-query";

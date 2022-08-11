@@ -1,5 +1,8 @@
 import React, {Component} from "react";
-import {Button, Checkbox, Form, Icon, Input} from "antd";
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Checkbox, Input } from "antd";
 import {Link} from "react-router-dom";
 
 const FormItem = Form.Item;
@@ -29,7 +32,7 @@ class SignIn extends Component {
               {getFieldDecorator('email', {
                 rules: [{required: true, message: 'Please input your email!'}],
               })(
-                <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                <Input prefix={<UserOutlined style={{color: 'rgba(0,0,0,.25)'}} />}
                        placeholder="Email"/>
               )}
             </FormItem>
@@ -37,7 +40,7 @@ class SignIn extends Component {
               {getFieldDecorator('password', {
                 rules: [{required: true, message: 'Please input your Password!'}],
               })(
-                <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                <Input prefix={<LockOutlined style={{color: 'rgba(0,0,0,.25)'}} />}
                        type="password"
                        placeholder="Password"/>
               )}

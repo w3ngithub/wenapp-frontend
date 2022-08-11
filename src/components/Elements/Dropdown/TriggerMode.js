@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Dropdown, Icon, Menu} from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Card, Dropdown, Menu } from "antd";
 
 const menu = (
   <Menu>
@@ -19,7 +20,7 @@ const TriggerMode = () => {
     <Card className="gx-card" title="Trigger Mode">
       <Dropdown overlay={menu} trigger={['click']}>
         <span className="gx-link ant-dropdown-link">
-          Click me <Icon type="down"/>
+          Click me <DownOutlined />
         </span>
       </Dropdown>
     </Card>

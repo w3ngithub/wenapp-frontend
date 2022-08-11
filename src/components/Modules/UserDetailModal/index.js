@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
-import { Button, DatePicker, Form, Input, Modal, Select, Spin } from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, DatePicker, Input, Modal, Select, Spin } from "antd";
 import moment from "moment";
 
 const FormItem = Form.Item;
@@ -68,7 +70,7 @@ function UserDetailForm({
 	}, [toggle]);
 
 	return (
-		<Modal
+        <Modal
 			title={readOnly ? "Details" : "Update User"}
 			visible={toggle}
 			onOk={handleSubmit}
@@ -245,7 +247,7 @@ function UserDetailForm({
 				</Form>
 			</Spin>
 		</Modal>
-	);
+    );
 }
 
 const UserForm = Form.create()(UserDetailForm);

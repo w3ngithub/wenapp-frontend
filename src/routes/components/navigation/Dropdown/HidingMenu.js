@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import {Card, Dropdown, Icon, Menu} from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Card, Dropdown, Menu } from "antd";
 
 class HidingMenu extends Component {
   state = {
@@ -29,7 +30,7 @@ class HidingMenu extends Component {
                   visible={this.state.visible}
         >
           <span className="gx-link ant-dropdown-link">
-            Hover me <Icon type="down"/>
+            Hover me <DownOutlined />
           </span>
         </Dropdown>
       </Card>

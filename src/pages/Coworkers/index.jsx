@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card, Table, Form, Radio, Select, Input, Button } from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Card, Table, Radio, Select, Input, Button } from "antd";
 import moment from "moment";
 import { CSVLink } from "react-csv";
 import {

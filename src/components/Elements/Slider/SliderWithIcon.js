@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Icon, Slider} from "antd";
+import { FrownOutlined, SmileOutlined } from '@ant-design/icons';
+import { Card, Slider } from "antd";
 
 class SliderWithIcon extends React.Component {
   state = {
@@ -17,9 +18,9 @@ class SliderWithIcon extends React.Component {
     const nextColor = value >= mid ? 'rgba(0, 0, 0, .45)' : '';
     return (
       <Card className="gx-card" title="Slider With Icon">
-        <Icon style={{color: preColor}} type="frown-o"/>
+        <FrownOutlined style={{color: preColor}} />
         <Slider {...this.props} onChange={this.handleChange} value={value}/>
-        <Icon style={{color: nextColor}} type="smile-o"/>
+        <SmileOutlined style={{color: nextColor}} />
       </Card>
     );
   }

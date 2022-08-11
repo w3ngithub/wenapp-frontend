@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Dropdown, Icon, Menu} from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Card, Dropdown, Menu } from "antd";
 
 const menu = (
   <Menu>
@@ -19,7 +20,7 @@ const OtherElements = () => {
     <Card className="gx-card" title="Other Elements">
       <Dropdown overlay={menu}>
         <span className="gx-link ant-dropdown-link">
-          Hover me <Icon type="down"/>
+          Hover me <DownOutlined />
         </span>
       </Dropdown>
     </Card>

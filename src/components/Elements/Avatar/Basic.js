@@ -1,18 +1,19 @@
 import React from "react";
+import { UserOutlined } from '@ant-design/icons';
 import {Avatar, Card} from "antd";
 
 const Basic = () => {
   return (
     <Card className="gx-card" title="Basic">
       <div className="gx-mb-3">
-        <Avatar className="gx-mr-2" size="large" icon="user"/>
-        <Avatar className="gx-mr-2" icon="user"/>
-        <Avatar className="gx-mr-2" size="small" icon="user"/>
+        <Avatar className="gx-mr-2" size="large" icon={<UserOutlined />}/>
+        <Avatar className="gx-mr-2" icon={<UserOutlined />}/>
+        <Avatar className="gx-mr-2" size="small" icon={<UserOutlined />}/>
       </div>
       <div className="gx-mb-0">
-        <Avatar className="gx-mr-2" shape="square" size="large" icon="user"/>
-        <Avatar className="gx-mr-2" shape="square" icon="user"/>
-        <Avatar className="gx-mr-2" shape="square" size="small" icon="user"/>
+        <Avatar className="gx-mr-2" shape="square" size="large" icon={<UserOutlined />}/>
+        <Avatar className="gx-mr-2" shape="square" icon={<UserOutlined />}/>
+        <Avatar className="gx-mr-2" shape="square" size="small" icon={<UserOutlined />}/>
       </div>
     </Card>
   );

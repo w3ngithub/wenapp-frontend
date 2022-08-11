@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Icon, Input, Tag, Tooltip} from "antd";
+import { PlusOutlined } from '@ant-design/icons';
+import { Card, Input, Tag, Tooltip } from "antd";
 
 class Dynamic extends React.Component {
   state = {
@@ -69,7 +70,7 @@ class Dynamic extends React.Component {
             onClick={this.showInput}
             style={{background: '#fff', borderStyle: 'dashed'}}
           >
-            <Icon type="plus"/> New Tag
+            <PlusOutlined /> New Tag
           </Tag>
         )}
       </Card>
