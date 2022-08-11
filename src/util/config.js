@@ -1,3 +1,3 @@
 module.exports = {
-  footerText: 'Copyright Company Name © 2019',
+	footerText: "© - 2022 Built with Pride by WebExperts."
 };

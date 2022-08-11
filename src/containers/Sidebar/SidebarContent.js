@@ -14,13 +14,16 @@ import {
 import IntlMessages from "util/IntlMessages";
 import { connect } from "react-redux";
 import { SIDEBAR_ITEMS } from "constants/sideBarItems";
+import { REPORTS, RESOURCES } from "helpers/routePath";
 
 const SubMenu = Menu.SubMenu;
 
 function SidebarContent(props) {
 	const { themeType, navStyle } = props;
 	const location = useLocation();
-	const defaultOpenKeys = location.pathname.split("/")[1];
+	const paths = location.pathname.split("/");
+	const selectedOpenKeys =
+		paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1];
 
 	const getNoHeaderClass = navStyle => {
 		if (
@@ -45,15 +48,14 @@ function SidebarContent(props) {
 			<div className="gx-sidebar-content">
 				<CustomScrollbars className="gx-layout-sider-scrollbar">
 					<Menu
-						defaultOpenKeys={["reports"]}
-						selectedKeys={[defaultOpenKeys]}
+						selectedKeys={[selectedOpenKeys]}
 						theme={themeType === THEME_TYPE_LITE ? "lite" : "dark"}
 						mode="inline"
 					>
 						{SIDEBAR_ITEMS.map(item =>
 							item.isExpandable ? (
 								<SubMenu
-									key={item.id}
+									key={item.url}
 									className={getNavStyleSubMenuClass(navStyle)}
 									title={
 										<span>
@@ -64,7 +66,7 @@ function SidebarContent(props) {
 								>
 									{item.subItems.map(subItem => (
 										<Menu.Item key={subItem.url}>
-											<Link to={subItem.url}>
+											<Link to={`${item.url}/${subItem.url}`}>
 												{/* <i className={`icon ${item.icon}`} /> */}
 												<IntlMessages id={subItem.name} />
 											</Link>

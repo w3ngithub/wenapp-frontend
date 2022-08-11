@@ -27,3 +27,8 @@ export const INVITE = "invite";
 export const WEEKLY_REPORT = `weekly-report`;
 export const WORK_LOG_REPORT = `work-log-report`;
 export const LEAVE_REPORT = `leave-report`;
+
+// Resources
+export const FAQS = `faq`;
+export const POLICY = "policy";
+export const CALENDAR = "calendar";

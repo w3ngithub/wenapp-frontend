@@ -12,6 +12,7 @@
 		"axios": "^0.18.0",
 		"customize-cra-less-loader": "^2.0.0",
 		"draftjs-to-html": "^0.8.4",
+		"html-react-parser": "^3.0.1",
 		"install": "^0.12.2",
 		"instantsearch.css": "^7.1.0",
 		"less": "^2.7.3",

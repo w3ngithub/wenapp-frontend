@@ -16,6 +16,9 @@ const BASE_API_PATH_PROJECTS_TAGS = `${BASE_API_PATH_PROJECTS}/tags`;
 // Leaves
 const BASE_API_PATH_LEAVES = `${BASE_API_PATH}leaves`;
 
+// Resources
+const BASE_API_PATH_RESOURCES = `${BASE_API_PATH}resources`;
+
 export const Apis = {
 	// Users
 	Users: `${BASE_API_PATH_USERS}`,
@@ -31,5 +34,8 @@ export const Apis = {
 	ProjectTags: `${BASE_API_PATH_PROJECTS_TAGS}`,
 
 	// Leaves
-	Leaves: `${BASE_API_PATH_LEAVES}`
+	Leaves: `${BASE_API_PATH_LEAVES}`,
+
+	// Resources
+	Resources: `${BASE_API_PATH_RESOURCES}`
 };
