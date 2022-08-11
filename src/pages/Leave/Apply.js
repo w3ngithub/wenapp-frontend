@@ -26,7 +26,7 @@ function Apply({ ...rest }) {
 
 	return (
 		<div>
-			<Form layout="vertical" style={{ padding: "10px 40px" }}>
+			<Form layout="vertical" style={{ padding: "15px 0" }}>
 				<Row type="flex">
 					<Col span={6} xs={24} sm={6}>
 						<FormItem label="Select Leave Dates">
