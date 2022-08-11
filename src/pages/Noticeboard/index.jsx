@@ -3,12 +3,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Form, Input, Button, DatePicker } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { handleResponse } from "helpers/utils";
-import { addProject, deleteProject, updateProject } from "services/projects";
-import ProjectModal from "components/Modules/ProjectModal";
 import moment from "moment";
 import { notification } from "helpers/notification";
-import { getAllNotices } from "services/noticeboard";
+import {
+	addNotice,
+	deleteNotice,
+	getAllNotices,
+	updateNotice
+} from "services/noticeboard";
 import { NOTICE_COLUMNS } from "constants/Notice";
+import NoticeBoardModal from "components/Modules/noticeboardModal";
 
 const { RangePicker } = DatePicker;
 const Search = Input.Search;
@@ -29,7 +33,7 @@ function NoticeBoardPage() {
 	const [date, setDate] = useState(undefined);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
-	const [userRecord, setUserRecord] = useState({});
+	const [noticeRecord, setNoticeRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 
@@ -47,7 +51,7 @@ function NoticeBoardPage() {
 		{ keepPreviousData: true }
 	);
 
-	const addNoticeMutation = useMutation(notice => addProject(notice), {
+	const addNoticeMutation = useMutation(notice => addNotice(notice), {
 		onSuccess: response =>
 			handleResponse(
 				response,
@@ -63,7 +67,7 @@ function NoticeBoardPage() {
 		}
 	});
 	const updateNoticeMutation = useMutation(
-		notice => updateProject(notice.id, notice.details),
+		notice => updateNotice(notice.id, notice.details),
 		{
 			onSuccess: response =>
 				handleResponse(
@@ -81,21 +85,18 @@ function NoticeBoardPage() {
 		}
 	);
 
-	const deleteNoticeMutation = useMutation(
-		noticeId => deleteProject(noticeId),
-		{
-			onSuccess: response =>
-				handleResponse(
-					response,
-					"Notice removed Successfully",
-					"Notice deletion failed",
-					[() => queryClient.invalidateQueries(["notices"])]
-				),
-			onError: error => {
-				notification({ message: "Notice deletion failed", type: "error" });
-			}
+	const deleteNoticeMutation = useMutation(noticeId => deleteNotice(noticeId), {
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Notice removed Successfully",
+				"Notice deletion failed",
+				[() => queryClient.invalidateQueries(["notices"])]
+			),
+		onError: error => {
+			notification({ message: "Notice deletion failed", type: "error" });
 		}
-	);
+	});
 
 	useEffect(() => {
 		if (isError) {
@@ -107,9 +108,6 @@ function NoticeBoardPage() {
 		try {
 			const updatedProject = {
 				...project,
-				estimatedHours: project.estimatedHours
-					? +project.estimatedHours
-					: undefined,
 				startDate: project.startDate
 					? moment.utc(project.startDate).format()
 					: undefined,
@@ -117,31 +115,30 @@ function NoticeBoardPage() {
 					? moment.utc(project.endDate).format()
 					: undefined
 			};
-			if (isEditMode)
+			if (isEditMode) {
 				updateNoticeMutation.mutate({
-					id: userRecord.id,
+					id: noticeRecord.id,
 					details: updatedProject
 				});
-			else addNoticeMutation.mutate(updatedProject);
+			} else addNoticeMutation.mutate(updatedProject);
 			reset.form.resetFields();
 		} catch (error) {
-			notification({ message: "Project Addition Failed", type: "error" });
+			notification({ message: "Notice Addition Failed", type: "error" });
 		}
 	};
 
-	const handleOpenEditModal = (projectToUpdate, mode) => {
+	const handleOpenEditModal = (notice, mode) => {
 		const originalProject = data?.data?.data?.data?.find(
-			project => project.id === projectToUpdate.id
+			ntc => ntc._id === notice._id
 		);
+
 		setOpenUserDetailModal(prev => !prev);
-		setUserRecord({
-			id: projectToUpdate.id,
+		setNoticeRecord({
+			id: notice._id,
 			project: {
-				...projectToUpdate,
-				projectStatus: originalProject?.projectStatus,
-				projectTypes: originalProject?.projectTypes,
-				startDate: originalProject.startDate ?? null,
-				endDate: originalProject.endDate ?? null
+				...notice,
+				startDate: originalProject?.startDate ?? null,
+				endDate: originalProject?.endDate ?? null
 			}
 		});
 		setReadOnly(mode);
@@ -154,7 +151,7 @@ function NoticeBoardPage() {
 
 	const handleCloseModal = () => {
 		setOpenUserDetailModal(prev => !prev);
-		setUserRecord({});
+		setNoticeRecord({});
 		setIsEditMode(false);
 	};
 
@@ -189,12 +186,12 @@ function NoticeBoardPage() {
 
 	return (
 		<div>
-			<ProjectModal
+			<NoticeBoardModal
 				toggle={openUserDetailModal}
 				onClose={handleCloseModal}
 				onSubmit={handleUserDetailSubmit}
 				loading={addNoticeMutation.isLoading || updateNoticeMutation.isLoading}
-				initialValues={userRecord.project}
+				initialValues={noticeRecord.project}
 				readOnly={readOnly}
 				isEditMode={isEditMode}
 			/>

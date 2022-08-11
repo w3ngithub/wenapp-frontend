@@ -55,4 +55,20 @@ const deleteNotice = async noticeId => {
 	}
 };
 
-export { getAllNotices, getNotice, deleteNotice, addNotice, updateNotice };
+const getNoticeTypes = async () => {
+	try {
+		let response = await API.get(`${Apis.NoticeBoard}/types`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export {
+	getAllNotices,
+	getNotice,
+	deleteNotice,
+	addNotice,
+	updateNotice,
+	getNoticeTypes
+};
