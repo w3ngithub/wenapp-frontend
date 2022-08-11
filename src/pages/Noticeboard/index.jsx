@@ -66,6 +66,7 @@ function NoticeBoardPage() {
 			notification({ message: "Notice addition failed!", type: "error" });
 		}
 	});
+
 	const updateNoticeMutation = useMutation(
 		notice => updateNotice(notice.id, notice.details),
 		{
@@ -127,38 +128,6 @@ function NoticeBoardPage() {
 		}
 	};
 
-	const handleOpenEditModal = (notice, mode) => {
-		const originalProject = data?.data?.data?.data?.find(
-			ntc => ntc._id === notice._id
-		);
-
-		setOpenUserDetailModal(prev => !prev);
-		setNoticeRecord({
-			id: notice._id,
-			project: {
-				...notice,
-				startDate: originalProject?.startDate ?? null,
-				endDate: originalProject?.endDate ?? null
-			}
-		});
-		setReadOnly(mode);
-		setIsEditMode(true);
-	};
-
-	const handleOpenAddModal = () => {
-		setOpenUserDetailModal(prev => !prev);
-	};
-
-	const handleCloseModal = () => {
-		setOpenUserDetailModal(prev => !prev);
-		setNoticeRecord({});
-		setIsEditMode(false);
-	};
-
-	const handleChangeDate = date => {
-		setDate(date);
-	};
-
 	const handleTableChange = (pagination, filters, sorter) => {
 		setSort(sorter);
 	};
@@ -178,6 +147,38 @@ function NoticeBoardPage() {
 
 	const confirmDeleteProject = notice => {
 		deleteNoticeMutation.mutate(notice._id);
+	};
+
+	const handleOpenEditModal = (notice, mode) => {
+		const originalProject = data?.data?.data?.data?.find(
+			ntc => ntc._id === notice._id
+		);
+
+		setOpenUserDetailModal(prev => !prev);
+		setNoticeRecord({
+			id: notice._id,
+			project: {
+				...notice,
+				startDate: originalProject?.startDate ?? null,
+				endDate: originalProject?.endDate ?? null
+			}
+		});
+		setReadOnly(mode);
+		setIsEditMode(true);
+	};
+
+	const handleCloseModal = () => {
+		setOpenUserDetailModal(prev => !prev);
+		setNoticeRecord({});
+		setIsEditMode(false);
+	};
+
+	const handleOpenAddModal = () => {
+		setOpenUserDetailModal(prev => !prev);
+	};
+
+	const handleChangeDate = date => {
+		setDate(date);
 	};
 
 	if (isLoading) {
