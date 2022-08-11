@@ -130,7 +130,11 @@ function WeeklyReport() {
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline">
 							<FormItem>
-								<RangePicker onChange={handleChangeDate} value={date} />
+								<RangePicker
+									onChange={handleChangeDate}
+									value={date}
+									style={{ width: "240px" }}
+								/>
 							</FormItem>
 							<FormItem>
 								<Select
