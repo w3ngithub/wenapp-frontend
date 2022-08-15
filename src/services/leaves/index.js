@@ -40,6 +40,15 @@ const getLeavesOfUser = async id => {
 	}
 };
 
+const getLeaveTypes = async id => {
+	try {
+		let response = await API.get(`${Apis.Leaves}/types`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 const changeLeaveStatus = async (id, statusType) => {
 	try {
 		let response = await API.patch(`${Apis.Leaves}/${id}/status/${statusType}`);
@@ -52,7 +61,8 @@ const changeLeaveStatus = async (id, statusType) => {
 export {
 	getLeaveDaysOfAllUsers,
 	getLeavesOfUser,
-	changeLeaveStatus,
 	getLeavesOfAllUsers,
-	getTakenAndRemainingLeaveDaysOfUser
+	getTakenAndRemainingLeaveDaysOfUser,
+	getLeaveTypes,
+	changeLeaveStatus
 };
