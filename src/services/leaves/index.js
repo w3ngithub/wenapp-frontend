@@ -11,9 +11,20 @@ const getLeaveDaysOfAllUsers = async () => {
 	}
 };
 
-const getLeavesOfAllUsers = async () => {
+const getTakenAndRemainingLeaveDaysOfUser = async id => {
 	try {
-		let response = await API.get(`${Apis.Leaves}`);
+		let response = await API.get(`${Apis.Leaves}/${id}/leavedays`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const getLeavesOfAllUsers = async (status = "", user = "") => {
+	try {
+		let response = await API.get(
+			`${Apis.Leaves}?leaveStatus=${status}&user=${user}`
+		);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -42,5 +53,6 @@ export {
 	getLeaveDaysOfAllUsers,
 	getLeavesOfUser,
 	changeLeaveStatus,
-	getLeavesOfAllUsers
+	getLeavesOfAllUsers,
+	getTakenAndRemainingLeaveDaysOfUser
 };

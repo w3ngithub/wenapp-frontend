@@ -1,7 +1,10 @@
-import { Button } from "antd";
+import { Popconfirm } from "antd";
 import React from "react";
 
-const LEAVES_COLUMN = (mutation: any, isAdmin: boolean = false) => [
+const LEAVES_COLUMN = (
+	onCancelClick: (param: any) => void,
+	isAdmin: boolean = false
+) => [
 	{
 		title: "Dates",
 		dataIndex: "dates",
@@ -34,21 +37,29 @@ const LEAVES_COLUMN = (mutation: any, isAdmin: boolean = false) => [
 		render: (text: any, record: any) => {
 			if (isAdmin) return <i className="icon icon-edit gx-link" />;
 			return record.status === "pending" ? (
-				<Button
-					type="link"
-					onClick={() => mutation.mutate({ id: record._id, type: "cancel" })}
+				<Popconfirm
+					title="Are you sure you want to cancel?"
+					onConfirm={() => onCancelClick(record)}
+					okText="Yes"
+					cancelText="No"
 				>
-					Cancel
-				</Button>
+					<span className="gx-link gx-text-danger">Cancel</span>
+				</Popconfirm>
 			) : null;
 		}
 	}
 ];
 
 const STATUS_TYPES = [
-	{ id: 1, value: "Approved" },
-	{ id: 2, value: "Pending" },
-	{ id: 3, value: "Cancelled" }
+	{ id: "approved", value: "Approved" },
+	{ id: "pending", value: "Pending" },
+	{ id: "cancelled", value: "Cancelled" }
 ];
 
-export { LEAVES_COLUMN, STATUS_TYPES };
+const LEAVE_TYPES = [
+	{ id: "casual", value: "Casual" },
+	{ id: "half-day", value: "Half Day" },
+	{ id: "sick", value: "Sick" }
+];
+
+export { LEAVES_COLUMN, STATUS_TYPES, LEAVE_TYPES };
