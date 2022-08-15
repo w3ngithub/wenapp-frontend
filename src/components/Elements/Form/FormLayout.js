@@ -1,5 +1,7 @@
 import React, {Component} from "react";
-import {Button, Card, Form, Input, Radio} from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Card, Input, Radio } from "antd";
 
 const FormItem = Form.Item;
 

@@ -1,5 +1,6 @@
 import React from "react";
-import {Breadcrumb, Card, Icon} from "antd";
+import { HomeOutlined, UserOutlined } from '@ant-design/icons';
+import { Breadcrumb, Card } from "antd";
 
 const WithIcon = () => {
   return (
@@ -7,12 +8,12 @@ const WithIcon = () => {
       <Breadcrumb>
         <Breadcrumb.Item>
           <span className="gx-link">
-          <Icon type="home"/>
+          <HomeOutlined />
           </span>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <span className="gx-link">
-          <Icon type="user"/>
+          <UserOutlined />
           <span>Application List</span>
           </span>
         </Breadcrumb.Item>

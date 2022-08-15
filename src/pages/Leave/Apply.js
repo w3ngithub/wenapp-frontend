@@ -1,7 +1,8 @@
-import { Button, Checkbox, Col, Form, Input, Row, Select } from "antd";
+import { Button, Checkbox, Col, Input, Row, Select } from "antd";
 import { LEAVE_TYPES } from "constants/Leaves";
 import React, { useState } from "react";
 import { Calendar } from "react-multi-date-picker";
+import { Form } from "@ant-design/compatible";
 
 const FormItem = Form.Item;
 const { TextArea } = Input;

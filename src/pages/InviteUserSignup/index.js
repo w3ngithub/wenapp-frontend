@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { DatePicker, Form, Input, Select, Card, Button } from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { DatePicker, Input, Select, Card, Button } from "antd";
 import DragAndDropFile from "components/Modules/DragAndDropFile";
 import moment from "moment";
 import "./style.css";

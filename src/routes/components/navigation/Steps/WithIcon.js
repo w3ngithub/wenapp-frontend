@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Icon, Steps} from "antd";
+import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons';
+import { Card, Steps } from "antd";
 
 const Step = Steps.Step;
 
@@ -7,10 +8,10 @@ const WithIcon = () => {
   return (
     <Card className="gx-card" title="With Icon">
       <Steps>
-        <Step status="finish" title="Login" icon={<Icon type="user"/>}/>
-        <Step status="finish" title="Verification" icon={<Icon type="solution"/>}/>
-        <Step status="process" title="Pay" icon={<Icon type="loading"/>}/>
-        <Step status="wait" title="Done" icon={<Icon type="smile-o"/>}/>
+        <Step status="finish" title="Login" icon={<UserOutlined />}/>
+        <Step status="finish" title="Verification" icon={<SolutionOutlined />}/>
+        <Step status="process" title="Pay" icon={<LoadingOutlined />}/>
+        <Step status="wait" title="Done" icon={<SmileOutlined />}/>
       </Steps>
     </Card>
   );

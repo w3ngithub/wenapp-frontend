@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Divider, Icon, Table} from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Card, Divider, Table } from "antd";
 
 const columns = [
   {
@@ -28,7 +29,7 @@ const columns = [
       <span className="gx-link">Delete</span>
       <Divider type="vertical"/>
       <span className="gx-link ant-dropdown-link">
-        More actions <Icon type="down"/>
+        More actions <DownOutlined />
       </span>
     </span>
     ),

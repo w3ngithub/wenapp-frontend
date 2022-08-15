@@ -1,5 +1,6 @@
 import React from "react";
-import {Avatar, Card, Icon, List} from "antd";
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { Avatar, Card, List } from "antd";
 
 const listData = [];
 for (let i = 0; i < 5; i++) {
@@ -24,7 +25,7 @@ const pagination = {
 
 const IconText = ({type, text}) => (
   <span>
-    <Icon type={type} style={{marginRight: 8}}/>
+    <LegacyIcon type={type} style={{marginRight: 8}}/>
     {text}
   </span>
 );

@@ -1,4 +1,5 @@
 import React from "react";
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import {Button, Card, Progress} from "antd";
 
 const ButtonGroup = Button.Group;
@@ -27,8 +28,8 @@ class DynamicBar extends React.Component {
       <Card title="Dynamic Bar" className="gx-card">
         <Progress percent={this.state.percent}/>
         <ButtonGroup>
-          <Button onClick={this.decline} icon="minus"/>
-          <Button onClick={this.increase} icon="plus"/>
+          <Button onClick={this.decline} icon={<MinusOutlined />}/>
+          <Button onClick={this.increase} icon={<PlusOutlined />}/>
         </ButtonGroup>
       </Card>
     );
