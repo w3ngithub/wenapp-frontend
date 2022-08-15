@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { ConfigProvider } from 'antd';
+import { ConfigProvider } from "antd";
 import { IntlProvider } from "react-intl";
 
 import AppLocale from "lngProvider";
@@ -12,6 +12,8 @@ import SignUp from "containers/SignUp";
 import {
 	ATTENDANCE,
 	BLOG,
+	BLOGDETAIL,
+	BLOGS,
 	CALENDAR,
 	COWORKERS,
 	DASHBOARD,
@@ -54,6 +56,8 @@ import LeaveReport from "pages/Reports/LeaveReport";
 import Faqs from "pages/Resources/Faqs";
 import Policy from "pages/Resources/Policy";
 import Calendar from "pages/Resources/Calendar";
+import Blogs from "pages/Blog/Blogs";
+import BlogDetail from "pages/Blog/BlogDetail";
 
 function App(props: any) {
 	const { locale, authUser } = props;
@@ -61,7 +65,7 @@ function App(props: any) {
 	const currentAppLocale = AppLocale[locale.locale];
 
 	return (
-        <ConfigProvider locale={currentAppLocale.antd}>
+		<ConfigProvider locale={currentAppLocale.antd}>
 			<IntlProvider
 				locale={currentAppLocale.locale}
 				messages={currentAppLocale.messages}
@@ -81,7 +85,10 @@ function App(props: any) {
 							<Route path={LOGTIME} element={<LogTime />} />
 							<Route path={LEAVE} element={<Leave />} />
 							<Route path={NOTICEBOARD} element={<Noticeboard />} />
-							<Route path={BLOG} element={<Blog />} />
+							<Route path={BLOG} element={<Blog />}>
+								<Route path={BLOGS} element={<Blogs />} />
+								<Route path={BLOGDETAIL} element={<BlogDetail />} />
+							</Route>
 							<Route path={REPORTS} element={<Reports />}>
 								<Route path={WEEKLY_REPORT} element={<WeeklyReport />} />
 								<Route path={WORK_LOG_REPORT} element={<WorkLogReport />} />
@@ -100,7 +107,7 @@ function App(props: any) {
 				</Routes>
 			</IntlProvider>
 		</ConfigProvider>
-    );
+	);
 }
 
 const mapStateToProps = ({ settings, auth }: { settings: any; auth: any }) => {
