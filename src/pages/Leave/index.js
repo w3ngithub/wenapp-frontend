@@ -6,6 +6,7 @@ import {
 	changeLeaveStatus,
 	getLeavesOfAllUsers,
 	getLeavesOfUser,
+	getLeaveTypes,
 	getTakenAndRemainingLeaveDaysOfUser
 } from "services/leaves";
 import { getAllUsers } from "services/users/userDetails";
@@ -49,6 +50,7 @@ function Leave() {
 	const leavesQuery = useQuery(["leaves", leaveStatus, user], () =>
 		getLeavesOfAllUsers(leaveStatus, user)
 	);
+
 	const leaveMutation = useMutation(
 		payload => changeLeaveStatus(payload.id, payload.type),
 		{

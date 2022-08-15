@@ -71,7 +71,10 @@ function CoworkersPage() {
 					response,
 					"User Updated Successfully",
 					"Could not update User",
-					[() => queryClient.invalidateQueries(["users"])]
+					[
+						() => queryClient.invalidateQueries(["users"]),
+						() => setOpenUserDetailModal(false)
+					]
 				),
 			onError: error => {
 				notification({ message: "Could not update User", type: "error" });
