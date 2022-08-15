@@ -19,6 +19,9 @@ const BASE_API_PATH_LEAVES = `${BASE_API_PATH}leaves`;
 // Resources
 const BASE_API_PATH_RESOURCES = `${BASE_API_PATH}resources`;
 
+// NoticeBoard
+const BASE_API_PATH_NOTICEBOARD = `${BASE_API_PATH}notices`;
+
 export const Apis = {
 	// Users
 	Users: `${BASE_API_PATH_USERS}`,
@@ -37,5 +40,8 @@ export const Apis = {
 	Leaves: `${BASE_API_PATH_LEAVES}`,
 
 	// Resources
-	Resources: `${BASE_API_PATH_RESOURCES}`
+	Resources: `${BASE_API_PATH_RESOURCES}`,
+
+	// Noticeboard
+	NoticeBoard: `${BASE_API_PATH_NOTICEBOARD}`
 };

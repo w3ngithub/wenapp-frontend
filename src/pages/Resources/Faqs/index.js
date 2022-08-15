@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, Descriptions, Divider } from "antd";
-import parse from "html-react-parser";
+import { Card } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { getAllFaqs } from "services/resources";
 import { notification } from "helpers/notification";
+import Collapse from "components/Elements/Collapse";
 
 function Faqs() {
 	const { data, isLoading, isError } = useQuery(["faqs"], getAllFaqs);
@@ -21,14 +21,7 @@ function Faqs() {
 
 	return (
 		<Card title="FAQS">
-			{data?.data?.data?.data?.map((faq, index, faqs) => (
-				<>
-					<Descriptions title={faq?.title}>
-						<Descriptions.Item>{parse(faq?.content)}</Descriptions.Item>
-					</Descriptions>
-					{faqs?.length - 1 !== index && <Divider />}
-				</>
-			))}
+			<Collapse data={data?.data?.data?.data} />
 		</Card>
 	);
 }
