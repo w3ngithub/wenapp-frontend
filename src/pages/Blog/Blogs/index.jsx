@@ -7,6 +7,8 @@ import { getAllBlogs } from "services/blog";
 import BlogItem from "components/Elements/BlogCard";
 import { getAllUsers } from "services/users/userDetails";
 import Select from "components/Elements/Select";
+import { useNavigate } from "react-router-dom";
+import { ADDBLOG } from "helpers/routePath";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -16,6 +18,9 @@ function Blogs() {
 	const [title, setTitle] = useState("");
 	const [user, setUser] = useState(undefined);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
+
+	// init hooks
+	const navigate = useNavigate();
 
 	const blogRef = useRef("");
 
@@ -107,7 +112,9 @@ function Blogs() {
 						</Form>
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white "
-							onClick={() => {}}
+							onClick={() => {
+								navigate(`${ADDBLOG}`);
+							}}
 						>
 							Add New Blog
 						</Button>

@@ -10,6 +10,7 @@ import SignIn from "containers/SignIn";
 import SignUp from "containers/SignUp";
 
 import {
+	ADDBLOG,
 	ATTENDANCE,
 	BLOG,
 	BLOGDETAIL,
@@ -58,6 +59,7 @@ import Policy from "pages/Resources/Policy";
 import Calendar from "pages/Resources/Calendar";
 import Blogs from "pages/Blog/Blogs";
 import BlogDetail from "pages/Blog/BlogDetail";
+import AddBlog from "pages/Blog/AddBlog";
 
 function App(props: any) {
 	const { locale, authUser } = props;
@@ -87,6 +89,7 @@ function App(props: any) {
 							<Route path={NOTICEBOARD} element={<Noticeboard />} />
 							<Route path={BLOG} element={<Blog />}>
 								<Route path={BLOGS} element={<Blogs />} />
+								<Route path={ADDBLOG} element={<AddBlog />} />
 								<Route path={BLOGDETAIL} element={<BlogDetail />} />
 							</Route>
 							<Route path={REPORTS} element={<Reports />}>
