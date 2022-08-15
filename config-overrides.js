@@ -35,6 +35,8 @@ const overrideProcessEnv = value => config => {
 
 module.exports = override(
 	addLessLoader({
+		lessLoaderOptions: {
+			lessOptions: {
 				javascriptEnabled: true,
 				modifyVars: {
 					"@primary-color": "#038fde",
@@ -49,6 +51,8 @@ module.exports = override(
 					"@hor-nav-text-color": "#fffffd",
 					"@nav-header-selected-text-color": "#fdbe33"
 				}
+			}
+		}
 	}),
 	overrideProcessEnv({
 		VERSION: JSON.stringify(require("./package.json").version)

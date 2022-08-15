@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import {Avatar, Button, Card, Divider, Icon, Input, Modal, Upload} from "antd";
+import { PlusOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Divider, Input, Modal, Upload } from "antd";
 
 const {TextArea} = Input;
 
@@ -54,7 +55,7 @@ class WriteBox extends Component {
     const isEnabled = this.state.fileList.length === 0 && this.state.commentText === "";
     const uploadButton = (
       <div>
-        <Icon type="plus"/>
+        <PlusOutlined />
         <div className="ant-upload-text">Upload</div>
       </div>
     );

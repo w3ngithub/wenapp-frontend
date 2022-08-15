@@ -1,4 +1,5 @@
 import React from "react";
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import {Button, Card, Progress} from "antd";
 
 const ButtonGroup = Button.Group;
@@ -27,8 +28,8 @@ class DynamicCircularBar extends React.Component {
       <Card title="Dynamic CircularBar" className="gx-card">
         <Progress type="circle" percent={this.state.percent}/>
         <ButtonGroup>
-          <Button onClick={this.decline} icon="minus"/>
-          <Button onClick={this.increase} icon="plus"/>
+          <Button onClick={this.decline} icon={<MinusOutlined />}/>
+          <Button onClick={this.increase} icon={<PlusOutlined />}/>
         </ButtonGroup>
       </Card>
     );

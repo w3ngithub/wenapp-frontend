@@ -1,5 +1,6 @@
 import React from "react";
-import {Button, Card, Icon} from "antd";
+import { CloudDownloadOutlined, CloudOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Button, Card } from "antd";
 
 const ButtonGroup = Button.Group;
 
@@ -25,15 +26,15 @@ const ButtonGroups = () => {
       <h4>With Icon</h4>
       <ButtonGroup>
         <Button type="primary">
-          <Icon type="left"/>Go back
+          <LeftOutlined />Go back
         </Button>
         <Button type="primary">
-          Go forward<Icon type="right"/>
+          Go forward<RightOutlined />
         </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button type="primary" icon="cloud"/>
-        <Button type="primary" icon="cloud-download"/>
+        <Button type="primary" icon={<CloudOutlined />}/>
+        <Button type="primary" icon={<CloudDownloadOutlined />}/>
       </ButtonGroup>
     </Card>
   );

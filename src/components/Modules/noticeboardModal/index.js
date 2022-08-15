@@ -1,20 +1,10 @@
-import React, { useEffect } from "react";
-import {
-	Button,
-	Col,
-	DatePicker,
-	Form,
-	Input,
-	Modal,
-	Row,
-	Select,
-	Spin
-} from "antd";
-import moment from "moment";
 import { useQuery } from "@tanstack/react-query";
-
-import { getNoticeTypes } from "services/noticeboard";
+import { Button, Col, DatePicker, Input, Modal, Row, Select, Spin } from "antd";
+import moment from "moment";
+import { useEffect } from "react";
+import { Form } from "@ant-design/compatible";
 import { filterOptions } from "helpers/utils";
+import { getNoticeTypes } from "services/noticeboard";
 
 const FormItem = Form.Item;
 const { TextArea } = Input;

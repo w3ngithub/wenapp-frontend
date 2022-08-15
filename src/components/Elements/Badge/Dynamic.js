@@ -1,5 +1,6 @@
 import React from "react";
-import {Badge, Button, Card, Icon, Switch} from "antd";
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Badge, Button, Card, Switch } from "antd";
 
 const ButtonGroup = Button.Group;
 
@@ -35,10 +36,10 @@ class Dynamic extends React.Component {
           </Badge>
           <ButtonGroup>
             <Button onClick={this.decline}>
-              <Icon type="minus"/>
+              <MinusOutlined />
             </Button>
             <Button onClick={this.increase}>
-              <Icon type="plus"/>
+              <PlusOutlined />
             </Button>
           </ButtonGroup>
         </div>

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { useQuery } from "@tanstack/react-query";
 import {
 	Button,
 	Col,
 	DatePicker,
-	Form,
 	Input,
 	Modal,
 	Radio,
@@ -11,12 +12,12 @@ import {
 	Select,
 	Spin
 } from "antd";
+import { filterOptions } from "helpers/utils";
 import moment from "moment";
-import "./style.css";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { getProjectTags } from "services/projects";
 import { getAllUsers } from "services/users/userDetails";
-import { filterOptions } from "helpers/utils";
+import "./style.css";
 
 const FormItem = Form.Item;
 const Option = Select.Option;

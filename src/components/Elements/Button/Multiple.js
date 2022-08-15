@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import {Button, Card, Dropdown, Icon, Menu} from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Button, Card, Dropdown, Menu } from "antd";
 
 function handleMenuClick(e) {
   console.log('click', e);
@@ -22,7 +23,7 @@ class Multiple extends Component {
         <Button>secondary</Button>
         <Dropdown overlay={menu}>
           <Button>
-            Actions <Icon type="down"/>
+            Actions <DownOutlined />
           </Button>
         </Dropdown>
       </Card>

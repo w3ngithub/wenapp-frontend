@@ -1,5 +1,6 @@
 import React from "react";
-import {Button, Card, Icon, Upload} from "antd";
+import { UploadOutlined } from '@ant-design/icons';
+import { Button, Card, Upload } from "antd";
 
 class CompleteControl extends React.Component {
   state = {
@@ -47,7 +48,7 @@ class CompleteControl extends React.Component {
       <Card className="gx-card" title="Complete Control">
         <Upload {...props} fileList={this.state.fileList}>
           <Button>
-            <Icon type="upload"/> upload
+            <UploadOutlined /> upload
           </Button>
         </Upload>
       </Card>

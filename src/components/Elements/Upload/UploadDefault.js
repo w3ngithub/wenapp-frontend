@@ -1,5 +1,6 @@
 import React from "react";
-import {Button, Card, Icon, Upload} from "antd";
+import { UploadOutlined } from '@ant-design/icons';
+import { Button, Card, Upload } from "antd";
 
 const props = {
   action: '//jsonplaceholder.typicode.com/posts/',
@@ -33,7 +34,7 @@ const UploadDefault = () => {
       <Card className="gx-card" title="Upload Default">
         <Upload {...props}>
           <Button>
-            <Icon type="upload"/> Upload
+            <UploadOutlined /> Upload
           </Button>
         </Upload>
       </Card>

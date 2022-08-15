@@ -5,6 +5,7 @@ import { filterOptions } from "helpers/utils";
 import React, { useState } from "react";
 import { Calendar } from "react-multi-date-picker";
 import { getLeaveTypes } from "services/leaves";
+import { Form } from "@ant-design/compatible";
 
 const FormItem = Form.Item;
 const { TextArea } = Input;

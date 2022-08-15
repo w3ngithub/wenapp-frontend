@@ -39,8 +39,8 @@
 }
 
 .@{class-prefix}-layout-sider-dark {
-  background-color: @nav-dark-bg;
-  color: @nav-dark-text-color;
+  background-color: @nav-dark-bg!important;
+  color: @nav-dark-text-color!important;
 }
 
 .@{class-prefix}-layout-sider-header {
@@ -136,7 +136,9 @@
 .@{class-prefix}-layout-sider-scrollbar {
 
 
-  height: calc(100vh~"-"@layout-header-height + 33) !important;
+  //height: calc(100vh~"-"@layout-header-height + 33) !important;
+  height: calc(100vh~"-"@layout-header-height + 33px) !important;
+  // height: 90%;
 
   .framed-layout & {
     height: calc(100vh~"-"@layout-header-height + 2 * @framed-layout-base + 145px) !important;

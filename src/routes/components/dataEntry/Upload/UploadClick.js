@@ -1,5 +1,6 @@
 import React from "react";
-import {Button, Card, Icon, message, Upload} from "antd";
+import { UploadOutlined } from '@ant-design/icons';
+import { Button, Card, message, Upload } from "antd";
 
 const props = {
   name: 'file',
@@ -24,7 +25,7 @@ const UploadClick = () => {
       <Card className="gx-card" title="Upload Click">
         <Upload {...props}>
           <Button>
-            <Icon type="upload"/> Click to Upload
+            <UploadOutlined /> Click to Upload
           </Button>
         </Upload>
       </Card>

@@ -1,14 +1,6 @@
 import React, { Component } from "react";
-import {
-	Button,
-	Dropdown,
-	Icon,
-	Layout,
-	Menu,
-	message,
-	Popover,
-	Select
-} from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Layout, Menu, message, Popover, Select } from "antd";
 import { connect } from "react-redux";
 import SearchBox from "components/Elements/SearchBox";
 import UserInfo from "components/Elements/UserInfo";
@@ -53,7 +45,7 @@ class HorizontalDark extends Component {
 		const { locale, navCollapsed } = this.props;
 
 		return (
-			<div className="gx-header-horizontal gx-header-horizontal-dark">
+            <div className="gx-header-horizontal gx-header-horizontal-dark">
 				<div className="gx-header-horizontal-top">
 					<div className="gx-container">
 						<div className="gx-header-horizontal-top-flex">
@@ -122,7 +114,7 @@ class HorizontalDark extends Component {
 											<div className="gx-d-flex">
 												<Dropdown overlay={menu}>
 													<Button>
-														Category <Icon type="down" />
+														Category <DownOutlined />
 													</Button>
 												</Dropdown>
 												<SearchBox
@@ -200,7 +192,7 @@ class HorizontalDark extends Component {
 					</div>
 				</div>
 			</div>
-		);
+        );
 	}
 }
 
