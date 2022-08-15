@@ -212,13 +212,13 @@ function NoticeBoardPage() {
 									enterButton
 									ref={noticeRef}
 								/>
-								<FormItem>
-									<RangePicker
-										onChange={handleChangeDate}
-										value={date}
-										style={{ width: "240px" }}
-									/>
-								</FormItem>
+							</FormItem>
+							<FormItem>
+								<RangePicker
+									onChange={handleChangeDate}
+									value={date}
+									style={{ width: "240px" }}
+								/>
 							</FormItem>
 							<FormItem>
 								<Button
