@@ -8,6 +8,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { addBlog, getBlogCatogories } from "services/blog";
 import { filterOptions, handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
+import { useNavigate } from "react-router-dom";
+import { BLOG } from "helpers/routePath";
 
 function AddBlog() {
 	// init state
@@ -15,20 +17,32 @@ function AddBlog() {
 	const [submitting, setSubmitting] = useState(false);
 
 	// init hooks
-
+	const navigate = useNavigate();
 	const { data: catogories } = useQuery(["blogCatogories"], () =>
 		getBlogCatogories()
 	);
 
 	const addBlogMutation = useMutation(details => addBlog(details), {
 		onSuccess: response =>
-			handleResponse(response, "Added Blog successfully", "Could not add Blog"),
+			handleResponse(
+				response,
+				"Added Blog successfully",
+				"Could not add Blog",
+				[
+					() => {
+						navigate(`/${BLOG}`);
+					}
+				]
+			),
 
 		onError: () =>
 			notification({
 				message: "Could not add Bog!",
 				type: "error"
-			})
+			}),
+		onSettled: () => {
+			setSubmitting(false);
+		}
 	});
 
 	const onEditorStateChange = editorStates => {
@@ -36,10 +50,7 @@ function AddBlog() {
 	};
 
 	const submitBlog = formData => {
-		console.log(
-			formData,
-			draftToHtml(convertToRaw(editorState.getCurrentContent()))
-		);
+		setSubmitting(true);
 		addBlogMutation.mutate({
 			...formData,
 			content: draftToHtml(convertToRaw(editorState.getCurrentContent()))
