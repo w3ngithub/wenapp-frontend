@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Checkbox, Col, Input, Row, Select } from "antd";
 import { filterOptions, handleResponse } from "helpers/utils";
 import React, { useState } from "react";
-import { Calendar } from "react-multi-date-picker";
+import { Calendar, DateObject } from "react-multi-date-picker";
 import { createLeave, getLeaveTypes } from "services/leaves";
 import { Form } from "@ant-design/compatible";
 import { getTeamLeads } from "services/users/userDetails";
@@ -47,7 +47,8 @@ function Apply({ ...rest }) {
 	});
 
 	const handleTypesChange = value => {
-		setLeaveType(value);
+		console.log(leaveTypeQuery?.data?.find(type => type.id === value));
+		setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value);
 	};
 
 	const handleFormReset = () => rest.form.resetFields();
@@ -79,14 +80,17 @@ function Apply({ ...rest }) {
 								disableMonthPicker
 								disableYearPicker
 								multiple
+								minDate={
+									leaveType === "Sick"
+										? new DateObject().subtract(2, "months")
+										: new Date()
+								}
 								mapDays={({ date, today }) => {
-									console.log(date.month.index, today.month.index);
 									let isWeekend = [0, 6].includes(date.weekDay.index);
-									let isOldDate = date.day < today.day && leaveType !== "sick";
+									let isOldDate = date.day < today.day && leaveType !== "Sick";
 									let isOldMonth =
 										date.month.index < today.month.index &&
-										leaveType !== "sick";
-
+										leaveType !== "Sick";
 									if (isWeekend || isOldDate || isOldMonth)
 										return {
 											disabled: true,
