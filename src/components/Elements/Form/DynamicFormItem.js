@@ -1,5 +1,8 @@
 import React, {Component} from "react";
-import {Button, Card, Form, Icon, Input} from "antd";
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Card, Input } from "antd";
 
 import "./dynamicFormItem.less";
 
@@ -88,12 +91,10 @@ class DynamicFormItem extends Component {
             <Input placeholder="passenger name" style={{width: '60%', marginRight: 8}}/>
           )}
           {keys.length > 1 ? (
-            <Icon
+            <MinusCircleOutlined
               className="dynamic-delete-button"
-              type="minus-circle-o"
               disabled={keys.length === 1}
-              onClick={() => this.remove(k)}
-            />
+              onClick={() => this.remove(k)} />
           ) : null}
         </FormItem>
       );
@@ -106,7 +107,7 @@ class DynamicFormItem extends Component {
           {formItems}
           <FormItem {...formItemLayoutWithOutLabel}>
             <Button type="dashed" onClick={this.add} style={{width: '60%'}}>
-              <Icon type="plus"/> Add field
+              <PlusOutlined /> Add field
             </Button>
           </FormItem>
           <FormItem {...formItemLayoutWithOutLabel}>

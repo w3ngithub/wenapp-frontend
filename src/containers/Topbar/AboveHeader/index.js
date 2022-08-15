@@ -1,14 +1,6 @@
 import React, { Component } from "react";
-import {
-	Button,
-	Dropdown,
-	Icon,
-	Layout,
-	Menu,
-	message,
-	Popover,
-	Select
-} from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Layout, Menu, message, Popover, Select } from "antd";
 import { connect } from "react-redux";
 
 import SearchBox from "components/Elements/SearchBox";
@@ -55,7 +47,7 @@ class AboveHeader extends Component {
 	render() {
 		const { width, locale, navCollapsed } = this.props;
 		return (
-			<div className="gx-header-horizontal gx-header-horizontal-dark gx-above-header-horizontal">
+            <div className="gx-header-horizontal gx-header-horizontal-dark gx-above-header-horizontal">
 				<div className="gx-header-horizontal-nav gx-header-horizontal-nav-curve gx-d-none gx-d-lg-block">
 					<div className="gx-container">
 						<div className="gx-header-horizontal-nav-flex">
@@ -155,7 +147,7 @@ class AboveHeader extends Component {
 											<div className="gx-d-flex">
 												<Dropdown overlay={menu}>
 													<Button>
-														Category <Icon type="down" />
+														Category <DownOutlined />
 													</Button>
 												</Dropdown>
 												<SearchBox
@@ -209,7 +201,7 @@ class AboveHeader extends Component {
 					</div>
 				</Header>
 			</div>
-		);
+        );
 	}
 }
 

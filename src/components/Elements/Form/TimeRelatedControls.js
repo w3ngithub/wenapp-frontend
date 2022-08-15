@@ -1,5 +1,7 @@
 import React, {Component} from "react";
-import {Button, Card, DatePicker, Form, TimePicker} from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Card, DatePicker, TimePicker } from "antd";
 
 const FormItem = Form.Item;
 const MonthPicker = DatePicker.MonthPicker;

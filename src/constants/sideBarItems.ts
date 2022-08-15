@@ -21,14 +21,14 @@ import sidebarItemsInterface from "../types/sideBar";
 
 export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 	{
-		icon: "icon-dasbhoard",
+		icon: "dasbhoard",
 		name: "sidebar.dashboard",
 		url: DASHBOARD,
 		isExpandable: false,
 		id: 1
 	},
 	{
-		icon: "icon-contacts",
+		icon: "contacts",
 
 		name: "sidebar.coworkers",
 		url: COWORKERS,
@@ -36,7 +36,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		id: 2
 	},
 	{
-		icon: "icon-folder-o",
+		icon: "folder-o",
 
 		name: "sidebar.projects",
 		url: PROJECTS,
@@ -44,7 +44,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		id: 3
 	},
 	{
-		icon: "icon-select",
+		icon: "select",
 
 		name: "sidebar.attendance",
 		url: ATTENDANCE,
@@ -52,28 +52,28 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		id: 4
 	},
 	{
-		icon: "icon-ckeditor",
+		icon: "ckeditor",
 		name: "sidebar.logtime",
 		url: LOGTIME,
 		isExpandable: false,
 		id: 5
 	},
 	{
-		icon: "icon-hotel-booking",
+		icon: "hotel-booking",
 		name: "sidebar.leavemanagement",
 		url: LEAVE,
 		isExpandable: false,
 		id: 6
 	},
 	{
-		icon: "icon-calendar-new",
+		icon: "calendar-new",
 		name: "sidebar.noticeboard",
 		url: NOTICEBOARD,
 		isExpandable: false,
 		id: 7
 	},
 	{
-		icon: "icon-chat-new",
+		icon: "chat-new",
 
 		name: "sidebar.blog",
 		url: BLOG,
@@ -81,7 +81,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		id: 8
 	},
 	{
-		icon: "icon-chart-line",
+		icon: "chart-line",
 
 		name: "sidebar.reports",
 		url: REPORTS,
@@ -106,7 +106,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		]
 	},
 	{
-		icon: "icon-editor",
+		icon: "editor",
 
 		name: "sidebar.resources",
 		url: RESOURCES,
@@ -131,7 +131,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		]
 	},
 	{
-		icon: "icon-setting",
+		icon: "setting",
 		name: "sidebar.settings",
 		url: SETTINGS,
 		isExpandable: false,

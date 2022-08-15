@@ -1,7 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card, Table, Form, Radio, Input, Button } from "antd";
+import { Button, Card, Input, Radio, Select, Table } from "antd";
+import CircularProgress from "components/Elements/CircularProgress";
+import UserDetailForm from "components/Modules/UserDetailModal";
+import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
+import { notification } from "helpers/notification";
+import { changeDate, handleResponse } from "helpers/utils";
 import moment from "moment";
+import { useEffect, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 import {
 	getAllUsers,
@@ -9,13 +16,7 @@ import {
 	getUserRoles,
 	updateUser
 } from "services/users/userDetails";
-import UserDetailForm from "components/Modules/UserDetailModal";
-import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
-import CircularProgress from "components/Elements/CircularProgress";
-import { changeDate, handleResponse } from "helpers/utils";
 import ImportUsers from "./ImportUsers";
-import { notification } from "helpers/notification";
-import Select from "components/Elements/Select";
 
 const Search = Input.Search;
 const FormItem = Form.Item;

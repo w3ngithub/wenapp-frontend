@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Dropdown, Icon, Menu, message} from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Card, Dropdown, Menu, message } from "antd";
 
 const onClick = function ({key}) {
   message.info(`Click on item ${key}`);
@@ -16,7 +17,7 @@ const ClickEvent = () => {
     <Card className="gx-card" title="Click Event">
       <Dropdown overlay={menu}>
         <span className="gx-link ant-dropdown-link">
-          Hover me, Click menu item <Icon type="down"/>
+          Hover me, Click menu item <DownOutlined />
         </span>
       </Dropdown>
     </Card>

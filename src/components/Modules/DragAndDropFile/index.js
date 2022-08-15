@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Icon, Upload, Modal } from "antd";
+import { InboxOutlined } from '@ant-design/icons';
+import { Upload, Modal } from "antd";
 
 const Dragger = Upload.Dragger;
 
@@ -53,35 +54,33 @@ function DragAndDropFile({
 	};
 
 	const handleCancel = () => setPreviewVisible(false);
-	return (
-		<>
-			<Dragger
-				beforeUpload={file => false}
-				listType={displayType}
-				onPreview={
-					(displayType === "picture-card" || displayType === "picture") &&
-					handlePreview
-				}
-				fileList={files}
-				onChange={handleChange}
-			>
-				<p className="ant-upload-drag-icon">
-					<Icon type="inbox" />
-				</p>
-				<p className="ant-upload-text">
-					Click or drag file to this area to upload
-				</p>
-			</Dragger>
-			<Modal
-				visible={previewVisible}
-				title={previewTitle}
-				footer={null}
-				onCancel={handleCancel}
-			>
-				<img alt="example" style={{ width: "100%" }} src={previewImage} />
-			</Modal>
-		</>
-	);
+	return <>
+        <Dragger
+            beforeUpload={file => false}
+            listType={displayType}
+            onPreview={
+                (displayType === "picture-card" || displayType === "picture") &&
+                handlePreview
+            }
+            fileList={files}
+            onChange={handleChange}
+        >
+            <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+                Click or drag file to this area to upload
+            </p>
+        </Dragger>
+        <Modal
+            visible={previewVisible}
+            title={previewTitle}
+            footer={null}
+            onCancel={handleCancel}
+        >
+            <img alt="example" style={{ width: "100%" }} src={previewImage} />
+        </Modal>
+    </>;
 }
 
 export default DragAndDropFile;

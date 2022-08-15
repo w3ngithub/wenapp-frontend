@@ -1,14 +1,15 @@
 import React from "react";
-import {Badge, Card, Icon} from "antd";
+import { NotificationOutlined } from '@ant-design/icons';
+import { Badge, Card } from "antd";
 
 const RedBadge = () => {
   return (
     <Card className="gx-card" title="Red Badge">
       <Badge dot>
-        <Icon type="notification"/>
+        <NotificationOutlined />
       </Badge>
       <Badge count={0} dot>
-        <Icon type="notification"/>
+        <NotificationOutlined />
       </Badge>
       <Badge dot>
         <a href="/">Link something</a>

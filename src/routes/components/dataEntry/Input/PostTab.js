@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Icon, Input, Select} from "antd";
+import { SettingOutlined } from '@ant-design/icons';
+import { Card, Input, Select } from "antd";
 
 const Option = Select.Option;
 
@@ -28,7 +29,7 @@ const PostTab = () => {
         <Input addonBefore={selectBefore} addonAfter={selectAfter} defaultValue="mysite"/>
       </div>
       <div className="gx-mb-3">
-        <Input addonAfter={<Icon type="setting"/>} defaultValue="mysite"/>
+        <Input addonAfter={<SettingOutlined />} defaultValue="mysite"/>
       </div>
     </Card>
   );

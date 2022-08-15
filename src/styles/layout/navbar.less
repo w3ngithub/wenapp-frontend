@@ -299,7 +299,7 @@
       }
 
       .ant-layout-sider-collapsed & {
-        padding: 0 (@menu-collapsed-width - 16px) / 2 !important;
+        padding: 0 ((@menu-collapsed-width - 16)/2) !important;
       }
     }
 
@@ -330,7 +330,7 @@
     > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item,
     > .ant-menu-submenu > .ant-menu-submenu-title {
       left: 0;
-      padding: 0 (@menu-collapsed-width - 16px) / 2 !important;
+      padding: 0 (@menu-collapsed-width - 16) / 2 !important;
       .@{menu-prefix-cls}-submenu-arrow {
         display: none;
       }
@@ -410,12 +410,12 @@
 
   &-dark,
   &-dark &-sub {
-    color: @menu-dark-color;
-    background: @menu-dark-bg;
+    color: @menu-dark-color!important;
+    background: @menu-dark-bg!important;
     .ant-menu-submenu-title .ant-menu-submenu-arrow {
       &:after,
       &:before {
-        background: @menu-dark-arrow-color;
+        background: @menu-dark-arrow-color!important;
       }
     }
   }

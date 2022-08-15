@@ -1,5 +1,6 @@
 import React from "react";
-import {Card, Dropdown, Icon, Menu} from "antd";
+import { DownOutlined } from '@ant-design/icons';
+import { Card, Dropdown, Menu } from "antd";
 
 const SubMenu = Menu.SubMenu;
 
@@ -23,7 +24,7 @@ const CascadingMenu = () => {
     <Card className="gx-card" title="Cascading Menu">
       <Dropdown overlay={menu}>
         <span className="gx-link ant-dropdown-link">
-          Cascading menu <Icon type="down"/>
+          Cascading menu <DownOutlined />
         </span>
       </Dropdown>
     </Card>
