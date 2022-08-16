@@ -14,6 +14,7 @@
 		"customize-cra-less-loader": "^2.0.0",
 		"draftjs-to-html": "^0.8.4",
 		"html-react-parser": "^3.0.1",
+		"html-to-draftjs": "^1.5.0",
 		"install": "^0.12.2",
 		"instantsearch.css": "^7.1.0",
 		"lodash": "^4.17.11",

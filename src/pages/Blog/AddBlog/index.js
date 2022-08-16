@@ -6,6 +6,7 @@ import {
 	ContentState,
 	convertFromHTML
 } from "draft-js";
+import htmlToDraft from "html-to-draftjs";
 import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import { CameraOutlined, RollbackOutlined } from "@ant-design/icons";
@@ -99,10 +100,9 @@ function AddBlog() {
 	}, [bid, refetch]);
 
 	useEffect(() => {
+		// fill editor with inital state in edit mode
 		if (bid && data && blogRef.current) {
-			const blocksFromHTML = convertFromHTML(
-				data?.data?.data?.data?.[0]?.content
-			);
+			const blocksFromHTML = htmlToDraft(data?.data?.data?.data?.[0]?.content);
 			const state = ContentState.createFromBlockArray(
 				blocksFromHTML.contentBlocks,
 				blocksFromHTML.entityMap
@@ -128,7 +128,7 @@ function AddBlog() {
 			});
 			return;
 		}
-		setSubmitting(true);
+		// setSubmitting(true);
 		if (bid) {
 			updateBlogMutation.mutate({
 				...formData,
@@ -147,8 +147,20 @@ function AddBlog() {
 	};
 
 	const handleInsertMedia = files => {
-		console.log(files);
-		seteditorState(prev => prev.concat("hello"));
+		const html = `${draftToHtml(
+			convertToRaw(editorState.getCurrentContent())
+		)}<p></p>
+		<img src="https://s3.amazonaws.com/exceedbot-webchat/monday.gif" alt="undefined" style="float:left;height: auto;width: auto"/>
+		  <p></p>`;
+		const blocksFromHTML = htmlToDraft(html);
+		const state = ContentState.createFromBlockArray(
+			blocksFromHTML.contentBlocks,
+			blocksFromHTML.entityMap
+		);
+
+		const initialState = EditorState.createWithContent(state);
+
+		seteditorState(initialState);
 		handleCanelMedia();
 	};
 
