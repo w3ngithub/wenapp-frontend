@@ -51,6 +51,17 @@ const getUserRoles = async () => {
 	}
 };
 
+const getTeamLeads = async () => {
+	try {
+		let response = await API.get(
+			`${Apis.Users}?role=62b1a1ac9220ea1d59ab385b&role=62b1907b31f49d10e7717078`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 const getUserPosition = async () => {
 	try {
 		let response = await API.get(`${Apis.Positions}`);
@@ -90,6 +101,7 @@ const importUsers = async payload => {
 export {
 	loginInUsers,
 	getAllUsers,
+	getTeamLeads,
 	logoutUser,
 	getUserRoles,
 	getUserPosition,

@@ -56,10 +56,4 @@ const STATUS_TYPES = [
 	{ id: "cancelled", value: "Cancelled" }
 ];
 
-const LEAVE_TYPES = [
-	{ id: "casual", value: "Casual" },
-	{ id: "half-day", value: "Half Day" },
-	{ id: "sick", value: "Sick" }
-];
-
-export { LEAVES_COLUMN, STATUS_TYPES, LEAVE_TYPES };
+export { LEAVES_COLUMN, STATUS_TYPES };
