@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, Form, Input, Button, Pagination } from "antd";
+import { Card, Form, Input, Button, Pagination, Spin } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { notification } from "helpers/notification";
 import { getAllBlogs } from "services/blog";
@@ -24,7 +24,7 @@ function Blogs() {
 
 	const blogRef = useRef("");
 
-	const { data, isLoading, isError } = useQuery(
+	const { data, isLoading, isError, isFetching } = useQuery(
 		["blogs", page, title, user],
 		() =>
 			getAllBlogs({
@@ -120,20 +120,22 @@ function Blogs() {
 						</Button>
 					</div>
 				</div>
-				{data?.data?.data?.data?.map(blog => (
-					<BlogItem key={blog._id} blog={blog} />
-				))}
+				<Spin spinning={isFetching}>
+					{data?.data?.data?.data?.map(blog => (
+						<BlogItem key={blog._id} blog={blog} />
+					))}
 
-				<Pagination
-					total={data?.data?.data?.count || 1}
-					current={page.page}
-					pageSize={page.limit}
-					pageSizeOptions={["5", "10", "20", "50"]}
-					showSizeChanger={true}
-					onShowSizeChange={onShowSizeChange}
-					hideOnSinglePage={true}
-					onChange={handlePageChange}
-				/>
+					<Pagination
+						total={data?.data?.data?.count || 1}
+						current={page.page}
+						pageSize={page.limit}
+						pageSizeOptions={["5", "10", "20", "50"]}
+						showSizeChanger={true}
+						onShowSizeChange={onShowSizeChange}
+						hideOnSinglePage={true}
+						onChange={handlePageChange}
+					/>
+				</Spin>
 			</Card>
 		</div>
 	);
