@@ -37,3 +37,4 @@ export const CALENDAR = "calendar";
 export const BLOGS = "";
 export const BLOGDETAIL = ":blog";
 export const ADDBLOG = "add-blog";
+export const EDITBLOG = "edit-blog/:blogId";
