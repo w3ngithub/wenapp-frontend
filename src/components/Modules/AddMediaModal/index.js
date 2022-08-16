@@ -1,8 +1,8 @@
-import { Button, Modal } from "antd";
+import { Button, Modal, Spin } from "antd";
 import React, { useState } from "react";
 import UploadFiles from "./UploadFiles";
 
-function AddMediaModel({ toogle, handleSubmit, handleCancel }) {
+function AddMediaModel({ toogle, handleSubmit, handleCancel, loading }) {
 	const [files, setFiles] = useState([]);
 
 	const handleInsert = () => {
@@ -19,16 +19,23 @@ function AddMediaModel({ toogle, handleSubmit, handleCancel }) {
 				<Button key="back" onClick={handleCancel}>
 					Cancel
 				</Button>,
-				<Button key="submit" type="primary" onClick={handleInsert}>
+				<Button
+					key="submit"
+					type="primary"
+					onClick={handleInsert}
+					disabled={loading}
+				>
 					Insert
 				</Button>
 			]}
 		>
-			<UploadFiles
-				handleSubmit={handleSubmit}
-				files={files}
-				setFiles={setFiles}
-			/>
+			<Spin spinning={loading}>
+				<UploadFiles
+					handleSubmit={handleSubmit}
+					files={files}
+					setFiles={setFiles}
+				/>
+			</Spin>
 		</Modal>
 	);
 }

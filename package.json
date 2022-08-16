@@ -13,6 +13,7 @@
 		"axios": "^0.18.0",
 		"customize-cra-less-loader": "^2.0.0",
 		"draftjs-to-html": "^0.8.4",
+		"firebase": "^9.9.2",
 		"html-react-parser": "^3.0.1",
 		"html-to-draftjs": "^1.5.0",
 		"install": "^0.12.2",

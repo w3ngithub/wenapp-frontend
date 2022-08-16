@@ -1,11 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, Form, Input, Select, Spin } from "antd";
-import {
-	convertToRaw,
-	EditorState,
-	ContentState,
-	convertFromHTML
-} from "draft-js";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { convertToRaw, EditorState, ContentState } from "draft-js";
 import htmlToDraft from "html-to-draftjs";
 import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
@@ -19,6 +15,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { BLOG } from "helpers/routePath";
 import AddMediaModel from "components/Modules/AddMediaModal";
 import CircularProgress from "components/Elements/CircularProgress/index";
+import { storage } from "firebase";
 
 function AddBlog() {
 	// init state
@@ -26,6 +23,7 @@ function AddBlog() {
 	const [editorState, seteditorState] = useState(EditorState.createEmpty());
 	const [submitting, setSubmitting] = useState(false);
 	const [openMedia, setopenMedia] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	// init hooks
 	const navigate = useNavigate();
@@ -128,7 +126,7 @@ function AddBlog() {
 			});
 			return;
 		}
-		// setSubmitting(true);
+		setSubmitting(true);
 		if (bid) {
 			updateBlogMutation.mutate({
 				...formData,
@@ -147,21 +145,50 @@ function AddBlog() {
 	};
 
 	const handleInsertMedia = files => {
-		const html = `${draftToHtml(
-			convertToRaw(editorState.getCurrentContent())
-		)}<p></p>
-		<img src="https://s3.amazonaws.com/exceedbot-webchat/monday.gif" alt="undefined" style="float:left;height: auto;width: auto"/>
-		  <p></p>`;
-		const blocksFromHTML = htmlToDraft(html);
-		const state = ContentState.createFromBlockArray(
-			blocksFromHTML.contentBlocks,
-			blocksFromHTML.entityMap
+		setLoading(true);
+
+		const storageRef = ref(storage, `blogs/${files[0].originFileObj.name}`);
+
+		const uploadTask = uploadBytesResumable(storageRef, files[0].originFileObj);
+
+		// Register three observers:
+		// 1. 'state_changed' observer, called any time the state changes
+		// 2. Error observer, called on failure
+		// 3. Completion observer, called on successful completion
+		uploadTask.on(
+			"state_changed",
+			snapshot => {
+				// Observe state change events such as progress, pause, and resume
+				// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+			},
+			error => {
+				// Handle unsuccessful uploads
+				setLoading(false);
+			},
+			() => {
+				// Handle successful uploads on complete
+				// For instance, get the download URL: https://firebasestorage.googleapis.com/...
+				getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
+					setLoading(false);
+
+					const html = `${draftToHtml(
+						convertToRaw(editorState.getCurrentContent())
+					)}<p></p>
+					<img src=${downloadURL} alt="undefined" style="float:left;height: auto;width: auto"/>
+					  <p></p>`;
+					const blocksFromHTML = htmlToDraft(html);
+					const state = ContentState.createFromBlockArray(
+						blocksFromHTML.contentBlocks,
+						blocksFromHTML.entityMap
+					);
+
+					const initialState = EditorState.createWithContent(state);
+
+					seteditorState(initialState);
+					handleCanelMedia();
+				});
+			}
 		);
-
-		const initialState = EditorState.createWithContent(state);
-
-		seteditorState(initialState);
-		handleCanelMedia();
 	};
 
 	if (isLoading && bid) {
@@ -251,6 +278,7 @@ function AddBlog() {
 			</Card>
 
 			<AddMediaModel
+				loading={loading}
 				toogle={openMedia}
 				handleCancel={handleCanelMedia}
 				handleSubmit={handleInsertMedia}
