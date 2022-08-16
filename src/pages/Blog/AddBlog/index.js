@@ -145,6 +145,7 @@ function AddBlog() {
 	};
 
 	const handleInsertMedia = files => {
+		if (!files.length) return;
 		setLoading(true);
 
 		const storageRef = ref(storage, `blogs/${files[0].originFileObj.name}`);
