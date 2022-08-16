@@ -22,6 +22,9 @@ const BASE_API_PATH_RESOURCES = `${BASE_API_PATH}resources`;
 // NoticeBoard
 const BASE_API_PATH_NOTICEBOARD = `${BASE_API_PATH}notices`;
 
+// Blog
+const BASE_API_PATH_BLOG = `${BASE_API_PATH}blogs`;
+
 export const Apis = {
 	// Users
 	Users: `${BASE_API_PATH_USERS}`,
@@ -43,5 +46,8 @@ export const Apis = {
 	Resources: `${BASE_API_PATH_RESOURCES}`,
 
 	// Noticeboard
-	NoticeBoard: `${BASE_API_PATH_NOTICEBOARD}`
+	NoticeBoard: `${BASE_API_PATH_NOTICEBOARD}`,
+
+	// Blog
+	Blog: `${BASE_API_PATH_BLOG}`
 };

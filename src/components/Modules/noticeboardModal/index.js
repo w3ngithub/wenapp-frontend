@@ -140,7 +140,13 @@ function NoticeModal({
 						<Col span={24} sm={24}>
 							<FormItem label="Details" hasFeedback={readOnly ? false : true}>
 								{getFieldDecorator("details", {
-									rules: [{ required: true, message: "Required!" }]
+									rules: [
+										{ required: true, message: "Required!" },
+										{
+											min: 10,
+											message: "Must be equal to or greater than 10 characters"
+										}
+									]
 								})(
 									<TextArea
 										placeholder="Enter Details"
