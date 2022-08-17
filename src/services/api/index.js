@@ -25,6 +25,9 @@ const BASE_API_PATH_NOTICEBOARD = `${BASE_API_PATH}notices`;
 // Blog
 const BASE_API_PATH_BLOG = `${BASE_API_PATH}blogs`;
 
+// Attendances
+const BASE_API_PATH_ATTENDENTS = `${BASE_API_PATH}attendances`;
+
 export const Apis = {
 	// Users
 	Users: `${BASE_API_PATH_USERS}`,
@@ -49,5 +52,8 @@ export const Apis = {
 	NoticeBoard: `${BASE_API_PATH_NOTICEBOARD}`,
 
 	// Blog
-	Blog: `${BASE_API_PATH_BLOG}`
+	Blog: `${BASE_API_PATH_BLOG}`,
+
+	// Attendances
+	Attendances: `${BASE_API_PATH_ATTENDENTS}`
 };

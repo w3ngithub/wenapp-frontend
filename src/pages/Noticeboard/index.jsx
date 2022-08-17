@@ -181,6 +181,7 @@ function NoticeBoardPage() {
 		setOpenUserDetailModal(prev => !prev);
 		setNoticeRecord({});
 		setIsEditMode(false);
+		setReadOnly(false);
 	};
 
 	const handleOpenAddModal = () => {
