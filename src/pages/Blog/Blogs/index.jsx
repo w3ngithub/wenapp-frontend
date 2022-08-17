@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Card, Form, Input, Button, Pagination, Spin } from "antd";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Card, Form, Input, Button, Pagination, Spin, Col, Row } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { notification } from "helpers/notification";
-import { getAllBlogs } from "services/blog";
+import { deleteBlog, getAllBlogs } from "services/blog";
 import BlogItem from "components/Elements/BlogCard";
 import { getAllUsers } from "services/users/userDetails";
 import Select from "components/Elements/Select";
 import { useNavigate } from "react-router-dom";
 import { ADDBLOG } from "helpers/routePath";
+import { handleResponse } from "helpers/utils";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -21,6 +22,7 @@ function Blogs() {
 
 	// init hooks
 	const navigate = useNavigate();
+	const queryClient = useQueryClient();
 
 	const blogRef = useRef("");
 
@@ -42,6 +44,19 @@ function Blogs() {
 			keepPreviousData: true
 		}
 	);
+
+	const deleteBlogMutation = useMutation(blog => deleteBlog(blog), {
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Blog removed Successfully",
+				"Blog deletion failed",
+				[() => queryClient.invalidateQueries(["blogs"])]
+			),
+		onError: error => {
+			notification({ message: "Project deletion failed", type: "error" });
+		}
+	});
 
 	useEffect(() => {
 		if (isError) {
@@ -67,6 +82,10 @@ function Blogs() {
 		setUser(user);
 	};
 
+	const removeBlog = blog => {
+		deleteBlogMutation.mutate(blog);
+	};
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}
@@ -84,7 +103,7 @@ function Blogs() {
 										setPage(prev => ({ ...prev, page: 1 }));
 										setTitle(value);
 									}}
-									style={{ width: 600 }}
+									style={{ width: 300 }}
 									enterButton
 									ref={blogRef}
 								/>
@@ -121,9 +140,13 @@ function Blogs() {
 					</div>
 				</div>
 				<Spin spinning={isFetching}>
-					{data?.data?.data?.data?.map(blog => (
-						<BlogItem key={blog._id} blog={blog} />
-					))}
+					<Row align="top">
+						{data?.data?.data?.data?.map(blog => (
+							<Col xl={12} lg={12} md={12} sm={24} xs={24} key={blog._id}>
+								<BlogItem key={blog._id} blog={blog} removeBlog={removeBlog} />
+							</Col>
+						))}
+					</Row>
 
 					<Pagination
 						total={data?.data?.data?.count || 1}
@@ -132,7 +155,6 @@ function Blogs() {
 						pageSizeOptions={["5", "10", "20", "50"]}
 						showSizeChanger={true}
 						onShowSizeChange={onShowSizeChange}
-						hideOnSinglePage={true}
 						onChange={handlePageChange}
 					/>
 				</Spin>

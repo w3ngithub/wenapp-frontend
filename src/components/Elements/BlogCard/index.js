@@ -1,11 +1,11 @@
 import React from "react";
-import { Button, Tag } from "antd";
+import { Button, Popconfirm, Tag } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import moment from "moment";
 import parse from "html-react-parser";
 import { useNavigate } from "react-router-dom";
 
-const BlogItem = ({ blog, grid }) => {
+const BlogItem = ({ blog, grid, removeBlog }) => {
 	const navigate = useNavigate();
 
 	const {
@@ -57,7 +57,7 @@ const BlogItem = ({ blog, grid }) => {
 				<p>{parse(content?.substring(0, 200))}...</p>
 			</div>
 
-			<div className="gx-product-footer">
+			<div className="gx-product-footer" style={{ paddingRight: "15px" }}>
 				<Button
 					type="primary"
 					onClick={() => {
@@ -66,6 +66,15 @@ const BlogItem = ({ blog, grid }) => {
 				>
 					Read More
 				</Button>
+
+				<Popconfirm
+					title="Are you sure to delete this Blog?"
+					onConfirm={() => removeBlog(_id)}
+					okText="Yes"
+					cancelText="No"
+				>
+					<Button type="danger">Delete Blog</Button>
+				</Popconfirm>
 			</div>
 		</div>
 	);
