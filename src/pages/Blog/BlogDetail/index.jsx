@@ -1,10 +1,13 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getBlog } from "services/blog";
 import { useQuery } from "@tanstack/react-query";
+import { Button, Card } from "antd";
+import HTMLReactParser from "html-react-parser";
+import { EditOutlined } from "@ant-design/icons";
+import { getBlog } from "services/blog";
 import BlogsBreadCumb from "./BlogsBreadCumb";
 import CircularProgress from "components/Elements/CircularProgress";
-import { Button, Card } from "antd";
+import moment from "moment";
 
 function Detail() {
 	// init hooks
@@ -31,10 +34,30 @@ function Detail() {
 		<div>
 			<BlogsBreadCumb slug={BLOG?.title} />
 			<div style={{ marginTop: 20 }}></div>
-			<Card title="Details">
-				<Button type="primary" onClick={handleEdit}>
-					Edit
-				</Button>
+			<Card
+				title={
+					<>
+						<div className="gx-d-flex gx-justify-content-between gx-flex-row">
+							<div>
+								<div>
+									<h2>{BLOG?.title}</h2>
+								</div>
+								<small className="gx-text-grey gx-mr-3">
+									<EditOutlined />
+									{" " + BLOG?.createdBy?.name} -{" "}
+									{moment(BLOG?.createdAt).format("LL")}
+								</small>
+							</div>
+							<Button type="primary" onClick={handleEdit}>
+								Edit
+							</Button>
+						</div>
+					</>
+				}
+			>
+				<div>
+					<div>{HTMLReactParser(BLOG?.content || "")}</div>
+				</div>
 			</Card>
 		</div>
 	);
