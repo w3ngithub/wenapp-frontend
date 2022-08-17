@@ -5,7 +5,7 @@ function UploadFiles({ files, setFiles }) {
 	return (
 		<div>
 			<DragAndDropFile
-				allowMultiple={true}
+				allowMultiple={false}
 				files={files}
 				setFiles={setFiles}
 				displayType="picture"

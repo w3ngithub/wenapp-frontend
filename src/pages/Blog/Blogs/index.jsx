@@ -26,6 +26,8 @@ function Blogs() {
 
 	const blogRef = useRef("");
 
+	const userData = JSON.parse(localStorage.getItem("user_id") || {});
+
 	const { data, isLoading, isError, isFetching } = useQuery(
 		["blogs", page, title, user],
 		() =>
@@ -143,7 +145,12 @@ function Blogs() {
 					<Row align="top">
 						{data?.data?.data?.data?.map(blog => (
 							<Col xl={12} lg={12} md={12} sm={24} xs={24} key={blog._id}>
-								<BlogItem key={blog._id} blog={blog} removeBlog={removeBlog} />
+								<BlogItem
+									key={blog._id}
+									blog={blog}
+									removeBlog={removeBlog}
+									access={userData?.user?._id === blog.createdBy._id}
+								/>
 							</Col>
 						))}
 					</Row>
