@@ -3,13 +3,11 @@ import { Form } from "@ant-design/compatible";
 import "@ant-design/compatible/assets/index.css";
 import { Button, Checkbox, Input, message } from "antd";
 import { connect } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { hideMessage, showAuthLoader, userSignIn } from "appRedux/actions/Auth";
 import IntlMessages from "util/IntlMessages";
 import CircularProgress from "components/Elements/CircularProgress/index";
-import API from "helpers/api";
-import { Apis } from "services/api";
 
 const FormItem = Form.Item;
 
