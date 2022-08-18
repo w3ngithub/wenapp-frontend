@@ -2,20 +2,22 @@ import React, { useState } from "react";
 import { ScheduleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Button } from "antd";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import LiveTime from "./../LiveTime/index";
 import { handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
 import { addAttendance } from "services/attendances";
 
 function PunchInOut() {
-	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
-
 	const [punch, setPunch] = useState<string>("Punch In  ");
+
+	const queryClient = useQueryClient();
 
 	const addAttendances: any = useMutation(payload => addAttendance(payload), {
 		onSuccess: response =>
-			handleResponse(response, "Punched Successfully", "Punch  failed", []),
+			handleResponse(response, "Punched Successfully", "Punch  failed", [
+				() => queryClient.invalidateQueries(["userAttendance"])
+			]),
 		onError: error => {
 			notification({ message: "Notice update failed", type: "error" });
 		}

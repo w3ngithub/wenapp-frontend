@@ -6,11 +6,14 @@ const getAllAttendances = async ({
 	page = "",
 	sort = "",
 	limit = "",
-	fields = ""
+	fields = "",
+	userId,
+	fromDate,
+	toDate
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.Attendances}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+			`${Apis.Attendances}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&user=${userId}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {

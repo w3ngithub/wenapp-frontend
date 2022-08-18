@@ -5,11 +5,13 @@ import styles from "./styles.module.css";
 function ViewDetailModel({
 	toogle,
 	handleCancel,
-	attendanceToview
+	attendanceToview,
+	title
 }: {
 	toogle: boolean;
 	handleCancel: any;
 	attendanceToview: any;
+	title: string;
 }) {
 	const {
 		attendanceDate,
@@ -23,7 +25,7 @@ function ViewDetailModel({
 	return (
 		<Modal
 			width={900}
-			title={"Attendance Details"}
+			title={title}
 			visible={toogle}
 			onCancel={handleCancel}
 			footer={[

@@ -3,11 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Button, Table, Form, DatePicker } from "antd";
 import moment from "moment";
 import { attendanceFilter, ATTENDANCE_COLUMNS } from "constants/Attendance";
-import { searchAttendacentOfUser } from "services/attendances";
+import { getAllAttendances } from "services/attendances";
 import { dateDifference } from "helpers/utils";
 import ViewDetailModel from "../ViewDetailModel";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
+import { getAllUsers } from "services/users/userDetails";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -16,6 +17,7 @@ const formattedAttendances = attendances => {
 	return attendances?.map(att => ({
 		...att,
 		key: att._id,
+		user: att?.user?.name,
 		attendanceDate: moment(att?.attendanceDate).format("LL"),
 		attendanceDay: moment(att?.attendanceDate).format("dddd"),
 		punchInTime: moment(att?.punchInTime).format("LTS"),
@@ -31,24 +33,27 @@ const intialDate = [moment().startOf("day"), moment().endOf("day")];
 const weeklyState = [moment().startOf("week"), moment().endOf("day")];
 const monthlyState = [moment().startOf("month"), moment().endOf("day")];
 
-function UserAttendance() {
+function AdminAttendance() {
 	//init hooks
 	const [sort, setSort] = useState({});
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openView, setOpenView] = useState(false);
 	const [attToView, setAttToView] = useState({});
 	const [date, setDate] = useState(intialDate);
+	const [user, setUser] = useState(undefined);
 	const [attFilter, setAttFilter] = useState({ id: "1", value: "Daily" });
 
-	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
+	const { data: users } = useQuery(["userForAttendances"], () =>
+		getAllUsers({ fields: "name" })
+	);
 
 	const { data, isLoading, isFetching } = useQuery(
-		["userAttendance", user, date, page],
+		["adminAttendance", user, date, page, user],
 		() =>
-			searchAttendacentOfUser({
+			getAllAttendances({
 				page: page.page + "",
 				limit: page.limit + "",
-				userId: user._id,
+				userId: user || "",
 				fromDate: date?.[0] ? moment.utc(date[0]).format() : "",
 				toDate: date?.[1] ? moment.utc(date[1]).format() : ""
 			})
@@ -95,6 +100,9 @@ function UserAttendance() {
 				break;
 		}
 	};
+	const handleUserChnageChange = id => {
+		setUser(id);
+	};
 
 	useEffect(() => {
 		if (isLoading === false && !data?.status) {
@@ -105,8 +113,8 @@ function UserAttendance() {
 	return (
 		<div>
 			<ViewDetailModel
-				title="Attendance Details"
 				toogle={openView}
+				title={attToView.user ? attToView.user : "Attendance Details"}
 				handleCancel={() => setOpenView(false)}
 				attendanceToview={attToView}
 			/>
@@ -128,6 +136,26 @@ function UserAttendance() {
 								options={attendanceFilter}
 							/>
 						</FormItem>
+						<FormItem>
+							<Select
+								placeholder="Select User"
+								onChange={handleUserChnageChange}
+								value={user}
+								options={users?.data?.data?.data?.map(x => ({
+									id: x._id,
+									value: x.name
+								}))}
+							/>
+						</FormItem>
+
+						<FormItem>
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white "
+								onClick={() => setUser(undefined)}
+							>
+								Reset
+							</Button>
+						</FormItem>
 					</Form>
 					<Button
 						className="gx-btn gx-btn-primary gx-text-white "
@@ -139,8 +167,8 @@ function UserAttendance() {
 			</div>
 			<Table
 				className="gx-table-responsive"
-				columns={ATTENDANCE_COLUMNS(sort, handleView)}
-				dataSource={formattedAttendances(data?.data?.data?.attendances)}
+				columns={ATTENDANCE_COLUMNS(sort, handleView, true)}
+				dataSource={formattedAttendances(data?.data?.data?.data)}
 				onChange={handleTableChange}
 				pagination={{
 					current: page.page,
@@ -157,4 +185,4 @@ function UserAttendance() {
 	);
 }
 
-export default UserAttendance;
+export default AdminAttendance;
