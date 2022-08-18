@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button, Table, Form, DatePicker } from "antd";
 import moment from "moment";
 import { attendanceFilter, ATTENDANCE_COLUMNS } from "constants/Attendance";
-import { getAllAttendances } from "services/attendances";
+import { searchAttendacentOfUser } from "services/attendances";
 import { dateDifference } from "helpers/utils";
 import ViewDetailModel from "../ViewDetailModel";
 import { notification } from "helpers/notification";
@@ -50,7 +50,7 @@ function AdminAttendance() {
 	const { data, isLoading, isFetching } = useQuery(
 		["adminAttendance", user, date, page, user],
 		() =>
-			getAllAttendances({
+			searchAttendacentOfUser({
 				page: page.page + "",
 				limit: page.limit + "",
 				userId: user || "",
@@ -104,6 +104,12 @@ function AdminAttendance() {
 		setUser(id);
 	};
 
+	const handleReset = () => {
+		setUser(undefined);
+		setAttFilter(1);
+		setDate(intialDate);
+	};
+
 	useEffect(() => {
 		if (isLoading === false && !data?.status) {
 			notification({ message: "Failed To load Attendances", type: "error" });
@@ -151,7 +157,7 @@ function AdminAttendance() {
 						<FormItem>
 							<Button
 								className="gx-btn gx-btn-primary gx-text-white "
-								onClick={() => setUser(undefined)}
+								onClick={() => handleReset()}
 							>
 								Reset
 							</Button>
@@ -168,7 +174,7 @@ function AdminAttendance() {
 			<Table
 				className="gx-table-responsive"
 				columns={ATTENDANCE_COLUMNS(sort, handleView, true)}
-				dataSource={formattedAttendances(data?.data?.data?.data)}
+				dataSource={formattedAttendances(data?.data?.data?.attendances)}
 				onChange={handleTableChange}
 				pagination={{
 					current: page.page,
