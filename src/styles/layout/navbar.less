@@ -425,7 +425,7 @@
 	&-dark,
 	&-dark &-sub {
 		color: @menu-dark-color;
-		background: @menu-dark-bg;
+		background: @menu-dark-bg!important;
 		.ant-menu-submenu-title .ant-menu-submenu-arrow {
 			&:after,
 			&:before {
@@ -536,9 +536,6 @@
 
 	&&-dark &-item-selected,
 	&-submenu-popup&-dark &-item-selected {
-		background-color: transparent;
-	}
-	&&-dark &-item-selected {
 		background-color: transparent!important;
 	}
 
