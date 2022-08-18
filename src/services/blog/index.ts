@@ -2,18 +2,17 @@ import API from "helpers/api";
 import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
-const getAllNotices = async ({
+const getAllBlogs = async ({
 	page = "",
 	sort = "",
 	limit = "",
 	fields = "",
 	title = "",
-	endDate = "",
-	startDate = ""
+	createdBy = ""
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.NoticeBoard}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&title=${title}&startDate=${startDate}&endDate=${endDate}`
+			`${Apis.Blog}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&title=${title}&createdBy=${createdBy}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -21,45 +20,45 @@ const getAllNotices = async ({
 	}
 };
 
-const getNotice = async noticeId => {
+const getBlog = async (BlogId: number | string) => {
 	try {
-		let response = await API.get(`${Apis.NoticeBoard}/${noticeId}`);
+		let response = await API.get(`${Apis.Blog}/${BlogId}`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
 	}
 };
 
-const addNotice = async notice => {
+const addBlog = async (Blog: any) => {
 	try {
-		let response = await API.post(`${Apis.NoticeBoard}`, notice);
+		let response = await API.post(`${Apis.Blog}`, Blog);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
 	}
 };
 
-const updateNotice = async (id, notice) => {
+const updateBlog = async (id: number | string, Blog: any) => {
 	try {
-		let response = await API.patch(`${Apis.NoticeBoard}/${id}`, notice);
+		let response = await API.patch(`${Apis.Blog}/${id}`, Blog);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
 	}
 };
 
-const deleteNotice = async noticeId => {
+const deleteBlog = async (BlogId: number | string) => {
 	try {
-		let response = await API.delete(`${Apis.NoticeBoard}/${noticeId}`);
+		let response = await API.delete(`${Apis.Blog}/${BlogId}`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
 	}
 };
 
-const getNoticeTypes = async () => {
+const getBlogCatogories = async () => {
 	try {
-		let response = await API.get(`${Apis.NoticeBoard}/types`);
+		let response = await API.get(`${Apis.Blog}/categories`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -67,10 +66,10 @@ const getNoticeTypes = async () => {
 };
 
 export {
-	getAllNotices,
-	getNotice,
-	deleteNotice,
-	addNotice,
-	updateNotice,
-	getNoticeTypes
+	getAllBlogs,
+	getBlog,
+	deleteBlog,
+	addBlog,
+	updateBlog,
+	getBlogCatogories
 };

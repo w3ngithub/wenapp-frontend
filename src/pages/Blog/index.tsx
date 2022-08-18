@@ -1,7 +1,8 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 
 function Blog() {
-	return <div>Blog</div>;
+	return <Outlet />;
 }
 
 export default Blog;

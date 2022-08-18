@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Form, Table } from "antd";
 import Select from "components/Elements/Select";
-import { STATUS_TYPES } from "constants/Leaves";
+import { LEAVES_COLUMN, STATUS_TYPES } from "constants/Leaves";
 import { CSVLink } from "react-csv";
+import LeaveModal from "components/Modules/LeaveModal";
 
 const FormItem = Form.Item;
 
 function Leaves({
-	columns,
 	data,
 	user,
 	users,
@@ -16,14 +16,35 @@ function Leaves({
 	handleStatusChange,
 	handleUserChange,
 	handleResetFilter,
+	handleCancelLeave,
 	pagination,
 	rowSelection,
 	isLoading,
 	isExportDisabled
 }) {
-	console.log(data, selectedRows);
+	const [openModal, setOpenModal] = useState(false);
+	const [dataToEdit, setDataToEdit] = useState({});
+	const [isEditMode, setIsEditMode] = useState(false);
+
+	const handleCloseModal = () => {
+		setOpenModal(false);
+		setIsEditMode(false);
+	};
+	const handleOpenModal = () => setOpenModal(true);
+
+	const handleOpenEditModal = data => {
+		setIsEditMode(true);
+		setDataToEdit(data);
+		handleOpenModal();
+	};
 	return (
 		<div>
+			<LeaveModal
+				leaveData={dataToEdit}
+				isEditMode={isEditMode}
+				open={openModal}
+				onClose={handleCloseModal}
+			/>
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 					<Form layout="inline">
@@ -54,7 +75,10 @@ function Leaves({
 						</FormItem>
 					</Form>
 					<div>
-						<Button className="gx-btn gx-btn-primary gx-text-white gx-mt-auto">
+						<Button
+							className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+							onClick={handleOpenModal}
+						>
 							Add Leave
 						</Button>
 						<CSVLink
@@ -88,7 +112,7 @@ function Leaves({
 			</div>
 			<Table
 				className="gx-table-responsive"
-				columns={columns}
+				columns={LEAVES_COLUMN(handleOpenEditModal, handleCancelLeave, true)}
 				dataSource={data}
 				// onChange={handleTableChange}
 				rowSelection={rowSelection}

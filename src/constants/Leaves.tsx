@@ -2,6 +2,7 @@ import { Popconfirm } from "antd";
 import React from "react";
 
 const LEAVES_COLUMN = (
+	onEditClick: (param: any) => void,
 	onCancelClick: (param: any) => void,
 	isAdmin: boolean = false
 ) => [
@@ -35,7 +36,24 @@ const LEAVES_COLUMN = (
 		key: "action",
 		width: 10,
 		render: (text: any, record: any) => {
-			if (isAdmin) return <i className="icon icon-edit gx-link" />;
+			if (isAdmin)
+				return (
+					<div style={{ display: "flex", justifyContent: "space-between" }}>
+						<span className="gx-link gx-text-primary">View Details</span>
+						<Popconfirm
+							title="Are you sure you want to approve?"
+							onConfirm={() => onCancelClick(record)}
+							okText="Yes"
+							cancelText="No"
+						>
+							<span className="gx-link gx-text-green">Approve</span>
+						</Popconfirm>
+						<i
+							className="icon icon-edit gx-link"
+							onClick={() => onEditClick(record)}
+						/>
+					</div>
+				);
 			return record.status === "pending" ? (
 				<Popconfirm
 					title="Are you sure you want to cancel?"
@@ -56,10 +74,4 @@ const STATUS_TYPES = [
 	{ id: "cancelled", value: "Cancelled" }
 ];
 
-const LEAVE_TYPES = [
-	{ id: "casual", value: "Casual" },
-	{ id: "half-day", value: "Half Day" },
-	{ id: "sick", value: "Sick" }
-];
-
-export { LEAVES_COLUMN, STATUS_TYPES, LEAVE_TYPES };
+export { LEAVES_COLUMN, STATUS_TYPES };

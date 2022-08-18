@@ -55,7 +55,7 @@ const NOTICE_COLUMNS = (
 		render: (text, record) => {
 			return (
 				<span>
-					<span className="gx-link" onClick={() => {}}>
+					<span className="gx-link" onClick={() => openModal(record, true)}>
 						View
 					</span>
 

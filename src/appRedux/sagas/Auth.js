@@ -10,6 +10,7 @@ import {
 import API from "helpers/api";
 import { Apis } from "services/api";
 import { loginInUsers, logoutUser } from "services/users/userDetails";
+import instance from "helpers/api";
 
 // const createUserWithEmailPasswordRequest = async (email, password) =>
 //   await  auth.createUserWithEmailAndPassword(email, password)
@@ -55,6 +56,9 @@ function* signInUserWithEmailPassword({ payload }) {
 		} else {
 			localStorage.setItem("token", signInUser.data.token);
 			localStorage.setItem("user_id", JSON.stringify(signInUser.data.data));
+			instance.defaults.headers[
+				"Authorization"
+			] = `Bearer ${signInUser.data.token}`;
 			yield put(userSignInSuccess(signInUser.data.data));
 		}
 	} catch (error) {
