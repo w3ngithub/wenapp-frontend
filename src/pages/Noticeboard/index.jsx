@@ -44,11 +44,13 @@ function NoticeBoardPage() {
 	const noticeRef = useRef("");
 
 	const { data, isLoading, isError, isFetching } = useQuery(
-		["notices", page, title],
+		["notices", page, title, date],
 		() =>
 			getAllNotices({
 				...page,
-				title
+				title,
+				startDate: date?.[0] ? moment.utc(date[0]).format() : "",
+				endDate: date?.[1] ? moment.utc(date[1]).format() : ""
 			}),
 		{ keepPreviousData: true }
 	);
@@ -150,6 +152,7 @@ function NoticeBoardPage() {
 
 	const handleResetFilter = () => {
 		setTitle("");
+		setDate(undefined);
 		noticeRef.current.input.state.value = "";
 	};
 
