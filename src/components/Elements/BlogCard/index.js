@@ -16,6 +16,8 @@ const BlogItem = ({ blog, grid, removeBlog, access }) => {
 		_id,
 		slug
 	} = blog;
+	const imgSrc = content?.split("src=")[1]?.split(" ")[0];
+	const src = "https://firebasestorage.googleapis.com/v0/b/shop-and-mall.appspot.com/o/blogs%2FReebok3.jpg?alt=media&token=07093ef2-c6d5-484f-9d43-e2df3a1f06da"
 
 	return (
 		<div
@@ -23,14 +25,23 @@ const BlogItem = ({ blog, grid, removeBlog, access }) => {
 				grid ? "gx-product-vertical" : "gx-product-horizontal"
 			}`}
 		>
-			<div style={{ padding: "24px" }}>
+		
+			{imgSrc && (
+				<div className="gx-product-image">
+					<div className="gx-grid-thumb-equal">
+						<span className="gx-link gx-grid-thumb-cover">
+							<img alt="Bob" src={src} />
+						</span>
+					</div>
+				</div>
+			)}
+			<div className="gx-product-body">
 				<h3 className="gx-product-title">{title}</h3>
 				<div className="ant-row-flex">
 					<small className="gx-text-grey">
 						<EditOutlined />
 						{" " + createdBy.name} - {moment(createdAt).format("LL")}
 					</small>
-
 					<h6 className="gx-text-success gx-mb-1 gx-mt-1">
 						{blogCategories?.map(x => (
 							<Tag color="cyan" key={x._id}>
@@ -39,7 +50,6 @@ const BlogItem = ({ blog, grid, removeBlog, access }) => {
 						))}
 					</h6>
 				</div>
-
 				<p>
 					{parse(content?.substring(0, 400))}...
 					<Link to={`${_id}-${slug}`}> read more</Link>{" "}
@@ -55,6 +65,7 @@ const BlogItem = ({ blog, grid, removeBlog, access }) => {
 					)}
 				</p>
 			</div>
+			<div className="gx-footer"></div>
 		</div>
 	);
 };

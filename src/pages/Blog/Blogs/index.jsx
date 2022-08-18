@@ -147,6 +147,7 @@ function Blogs() {
 							<Col xl={12} lg={12} md={12} sm={24} xs={24} key={blog._id}>
 								<BlogItem
 									key={blog._id}
+									grid={true}
 									blog={blog}
 									removeBlog={removeBlog}
 									access={userData?.user?._id === blog.createdBy._id}
