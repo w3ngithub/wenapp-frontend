@@ -17,6 +17,7 @@ function Leaves({
 	handleUserChange,
 	handleResetFilter,
 	handleCancelLeave,
+	handleApproveLeave,
 	pagination,
 	rowSelection,
 	isLoading,
@@ -112,7 +113,12 @@ function Leaves({
 			</div>
 			<Table
 				className="gx-table-responsive"
-				columns={LEAVES_COLUMN(handleOpenEditModal, handleCancelLeave, true)}
+				columns={LEAVES_COLUMN(
+					handleCancelLeave,
+					handleApproveLeave,
+					handleOpenEditModal,
+					true
+				)}
 				dataSource={data}
 				// onChange={handleTableChange}
 				rowSelection={rowSelection}

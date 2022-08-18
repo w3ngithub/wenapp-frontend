@@ -16,6 +16,7 @@ import RemainingAndAppliedLeaveCards from "./RemainingAndAppliedLeaveCards";
 import LeavesApply from "./Apply";
 import Leaves from "./Leaves";
 import CircularProgress from "components/Elements/CircularProgress";
+import CheckRole from "containers/CheckRole";
 
 const TabPane = Tabs.TabPane;
 
@@ -51,7 +52,7 @@ function Leave() {
 		getLeavesOfAllUsers(leaveStatus, user)
 	);
 
-	const leaveMutation = useMutation(
+	const leaveCancelMutation = useMutation(
 		payload => changeLeaveStatus(payload.id, payload.type),
 		{
 			onSuccess: response =>
@@ -59,10 +60,31 @@ function Leave() {
 					response,
 					"Leave cancelled successfully",
 					"Could not cancel leave",
-					[() => queryClient.invalidateQueries(["userLeaves"])]
+					[
+						() => queryClient.invalidateQueries(["userLeaves"]),
+						() => queryClient.invalidateQueries(["leaves"])
+					]
 				),
 			onError: error => {
 				notification({ message: "Could not cancel leave", type: "error" });
+			}
+		}
+	);
+	const leaveApproveMutation = useMutation(
+		payload => changeLeaveStatus(payload.id, payload.type),
+		{
+			onSuccess: response =>
+				handleResponse(
+					response,
+					"Leave approved successfully",
+					"Could not approve leave",
+					[
+						() => queryClient.invalidateQueries(["userLeaves"]),
+						() => queryClient.invalidateQueries(["leaves"])
+					]
+				),
+			onError: error => {
+				notification({ message: "Could not approve leave", type: "error" });
 			}
 		}
 	);
@@ -74,8 +96,11 @@ function Leave() {
 		setUser(user);
 	};
 
-	const handleCancelLeave = project => {
-		leaveMutation.mutate({ id: project._id, type: "cancel" });
+	const handleCancelLeave = leave => {
+		leaveCancelMutation.mutate({ id: leave._id, type: "cancel" });
+	};
+	const handleApproveLeave = leave => {
+		leaveApproveMutation.mutate({ id: leave._id, type: "approve" });
 	};
 
 	const onShowSizeChange = (_, pageSize) => {
@@ -127,41 +152,48 @@ function Leave() {
 							hideOnSinglePage: true,
 							onChange: handlePageChange
 						}}
-						loading={userLeavesQuery.isFetching || leaveMutation.isLoading}
+						loading={
+							userLeavesQuery.isFetching || leaveCancelMutation.isLoading
+						}
 					/>
 				</TabPane>
-				<TabPane tab="Leaves" key="3">
-					<Leaves
-						data={formattedUsers(leavesQuery?.data?.data?.data?.data)}
-						status={leaveStatus}
-						user={user}
-						users={usersQuery?.data?.data?.data?.data?.map(user => ({
-							id: user._id,
-							value: user.name
-						}))}
-						selectedRows={selectedRows}
-						handleStatusChange={handleStatusChange}
-						handleUserChange={handleUserChange}
-						handleResetFilter={handleResetFilter}
-						handleCancelLeave={handleCancelLeave}
-						pagination={{
-							current: page.page,
-							pageSize: page.limit,
-							pageSizeOptions: ["5", "10", "20", "50"],
-							showSizeChanger: true,
-							total: leavesQuery?.data?.data?.data?.count || 1,
-							onShowSizeChange,
-							hideOnSinglePage: true,
-							onChange: handlePageChange
-						}}
-						rowSelection={{
-							onChange: handleRowSelect,
-							selectedRowKeys: selectedRows
-						}}
-						isLoading={leavesQuery.isFetching || leaveMutation.isLoading}
-						isExportDisabled={selectedRows.length === 0}
-					/>
-				</TabPane>
+				<CheckRole>
+					<TabPane tab="Leaves" key="3">
+						<Leaves
+							data={formattedUsers(leavesQuery?.data?.data?.data?.data)}
+							status={leaveStatus}
+							user={user}
+							users={usersQuery?.data?.data?.data?.data?.map(user => ({
+								id: user._id,
+								value: user.name
+							}))}
+							selectedRows={selectedRows}
+							handleStatusChange={handleStatusChange}
+							handleUserChange={handleUserChange}
+							handleResetFilter={handleResetFilter}
+							handleCancelLeave={handleCancelLeave}
+							handleApproveLeave={handleApproveLeave}
+							pagination={{
+								current: page.page,
+								pageSize: page.limit,
+								pageSizeOptions: ["5", "10", "20", "50"],
+								showSizeChanger: true,
+								total: leavesQuery?.data?.data?.data?.count || 1,
+								onShowSizeChange,
+								hideOnSinglePage: true,
+								onChange: handlePageChange
+							}}
+							rowSelection={{
+								onChange: handleRowSelect,
+								selectedRowKeys: selectedRows
+							}}
+							isLoading={
+								leavesQuery.isFetching || leaveApproveMutation.isLoading
+							}
+							isExportDisabled={selectedRows.length === 0}
+						/>
+					</TabPane>
+				</CheckRole>
 			</Tabs>
 		</Card>
 	);
