@@ -141,15 +141,28 @@ function CoworkersPage() {
 	const handlePositionChange = positionId => {
 		setPosition(positionId);
 	};
-
+	if(nameRef?.current?.input?.value === ''){
+		console.log('nameRef is empty')
+	}
+	if(nameRef?.current?.input?.value !== ''){
+		console.log('nameRef is not empty', nameRef?.current?.input?.value);
+	}
+	useEffect(()=>{
+		console.log('name1', name, nameRef.current.input);
+		if(name === '' && nameRef.current.input){
+			nameRef.current.input.value = ''
+			console.log('empty name');
+		}
+		console.log('name2', name, nameRef.current.input)
+	}, [name])
 	const handleResetFilter = () => {
 		setName("");
 		setRole(undefined);
 		setPosition(undefined);
 		setActiveUser("");
 		setSelectedRows([]);
-		nameRef.current.input.state.value = "";
-		activeUserRef.current.state.value = undefined;
+		// nameRef.current.input.value = "";
+		// activeUserRef.current.state.value = undefined;
 	};
 
 	const handleRowSelect = rows => {
