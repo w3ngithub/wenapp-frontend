@@ -43,7 +43,8 @@ function Apply({ ...rest }) {
 				[
 					() => rest.form.resetFields(),
 					() => queryClient.invalidateQueries(["userLeaves"]),
-					() => queryClient.invalidateQueries(["leaves"])
+					() => queryClient.invalidateQueries(["leaves"]),
+					() => queryClient.invalidateQueries(["takenAndRemainingLeaveDays"])
 				]
 			),
 		onError: error => {

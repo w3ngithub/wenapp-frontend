@@ -4,28 +4,79 @@ import Select from "components/Elements/Select";
 import { LEAVES_COLUMN, STATUS_TYPES } from "constants/Leaves";
 import { CSVLink } from "react-csv";
 import LeaveModal from "components/Modules/LeaveModal";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { changeLeaveStatus, getLeavesOfAllUsers } from "services/leaves";
+import { changeDate, handleResponse } from "helpers/utils";
+import Notification from "components/Elements/Notification";
+import { getAllUsers } from "services/users/userDetails";
 
 const FormItem = Form.Item;
 
+const formattedLeaves = leaves => {
+	return leaves?.map(leave => ({
+		...leave,
+		key: leave._id,
+		dates: leave?.leaveDates.map(date => changeDate(date)).join(" , "),
+		type: leave?.leaveType.name,
+		status: leave?.leaveStatus
+	}));
+};
+
 function Leaves({
-	data,
-	user,
-	users,
-	status,
 	selectedRows,
-	handleStatusChange,
-	handleUserChange,
-	handleResetFilter,
 	handleCancelLeave,
-	handleApproveLeave,
-	pagination,
 	rowSelection,
-	isLoading,
 	isExportDisabled
 }) {
+	const queryClient = useQueryClient();
+
 	const [openModal, setOpenModal] = useState(false);
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [isEditMode, setIsEditMode] = useState(false);
+	const [leaveStatus, setLeaveStatus] = useState(undefined);
+	const [page, setPage] = useState({ page: 1, limit: 10 });
+
+	const [user, setUser] = useState(undefined);
+
+	const leavesQuery = useQuery(["leaves", leaveStatus, user], () =>
+		getLeavesOfAllUsers(leaveStatus, user)
+	);
+	const usersQuery = useQuery(["users"], getAllUsers);
+
+	const leaveApproveMutation = useMutation(
+		payload => changeLeaveStatus(payload.id, payload.type),
+		{
+			onSuccess: response =>
+				handleResponse(
+					response,
+					"Leave approved successfully",
+					"Could not approve leave",
+					[
+						() => queryClient.invalidateQueries(["userLeaves"]),
+						() => queryClient.invalidateQueries(["leaves"])
+					]
+				),
+			onError: error => {
+				Notification({ message: "Could not approve leave", type: "error" });
+			}
+		}
+	);
+
+	const handleApproveLeave = leave => {
+		leaveApproveMutation.mutate({ id: leave._id, type: "approve" });
+	};
+
+	const handleStatusChange = statusId => {
+		setLeaveStatus(statusId);
+	};
+	const handleUserChange = user => {
+		setUser(user);
+	};
+
+	const handleResetFilter = () => {
+		setLeaveStatus(undefined);
+		setUser(undefined);
+	};
 
 	const handleCloseModal = () => {
 		setOpenModal(false);
@@ -38,6 +89,19 @@ function Leaves({
 		setDataToEdit(data);
 		handleOpenModal();
 	};
+
+	const onShowSizeChange = (_, pageSize) => {
+		setPage(prev => ({ ...page, limit: pageSize }));
+	};
+
+	const handlePageChange = pageNumber => {
+		setPage(prev => ({ ...prev, page: pageNumber }));
+	};
+	const data = formattedLeaves(leavesQuery?.data?.data?.data?.data);
+	const allUsers = usersQuery?.data?.data?.data?.data?.map(user => ({
+		id: user._id,
+		value: user.name
+	}));
 	return (
 		<div>
 			<LeaveModal
@@ -45,6 +109,7 @@ function Leaves({
 				isEditMode={isEditMode}
 				open={openModal}
 				onClose={handleCloseModal}
+				users={usersQuery?.data?.data?.data?.data}
 			/>
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
@@ -53,7 +118,7 @@ function Leaves({
 							<Select
 								placeholder="Select Status"
 								onChange={handleStatusChange}
-								value={status}
+								value={leaveStatus}
 								options={STATUS_TYPES}
 							/>
 						</FormItem>
@@ -61,7 +126,7 @@ function Leaves({
 							<Select
 								placeholder="Select User"
 								value={user}
-								options={users}
+								options={allUsers}
 								onChange={handleUserChange}
 							/>
 						</FormItem>
@@ -122,8 +187,17 @@ function Leaves({
 				dataSource={data}
 				// onChange={handleTableChange}
 				rowSelection={rowSelection}
-				pagination={pagination}
-				loading={isLoading}
+				pagination={{
+					current: page.page,
+					pageSize: page.limit,
+					pageSizeOptions: ["5", "10", "20", "50"],
+					showSizeChanger: true,
+					total: leavesQuery?.data?.data?.data?.count || 1,
+					onShowSizeChange,
+					hideOnSinglePage: true,
+					onChange: handlePageChange
+				}}
+				loading={leavesQuery.isFetching || leaveApproveMutation.isLoading}
 			/>
 		</div>
 	);

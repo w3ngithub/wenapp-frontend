@@ -4,29 +4,25 @@ import { LEAVES_COLUMN } from "constants/Leaves";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	changeLeaveStatus,
-	getLeavesOfAllUsers,
 	getLeavesOfUser,
-	getLeaveTypes,
 	getTakenAndRemainingLeaveDaysOfUser
 } from "services/leaves";
-import { getAllUsers } from "services/users/userDetails";
 import { changeDate, getLocalStorageData, handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
 import RemainingAndAppliedLeaveCards from "./RemainingAndAppliedLeaveCards";
 import LeavesApply from "./Apply";
 import Leaves from "./Leaves";
 import CircularProgress from "components/Elements/CircularProgress";
-import CheckRole from "containers/CheckRole";
 
 const TabPane = Tabs.TabPane;
 
-const formattedUsers = users => {
-	return users?.map(user => ({
-		...user,
-		key: user._id,
-		dates: user?.leaveDates.map(date => changeDate(date)).join(" , "),
-		type: user?.leaveType.name,
-		status: user?.leaveStatus
+const formattedLeaves = leaves => {
+	return leaves?.map(leave => ({
+		...leave,
+		key: leave._id,
+		dates: leave?.leaveDates.map(date => changeDate(date)).join(" , "),
+		type: leave?.leaveType.name,
+		status: leave?.leaveStatus
 	}));
 };
 
@@ -35,21 +31,15 @@ function Leave() {
 
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [selectedRows, setSelectedRows] = useState([]);
-	const [leaveStatus, setLeaveStatus] = useState(undefined);
-	const [user, setUser] = useState(undefined);
 
-	const usersQuery = useQuery(["users"], getAllUsers);
+	const loggedInUser = getLocalStorageData("user_id");
 
 	const userLeavesQuery = useQuery(["userLeaves"], () =>
-		getLeavesOfUser(getLocalStorageData("user_id").user._id)
+		getLeavesOfUser(loggedInUser._id)
 	);
 
 	const leaveDaysQuery = useQuery(["takenAndRemainingLeaveDays"], () =>
-		getTakenAndRemainingLeaveDaysOfUser(getLocalStorageData("user_id").user._id)
-	);
-
-	const leavesQuery = useQuery(["leaves", leaveStatus, user], () =>
-		getLeavesOfAllUsers(leaveStatus, user)
+		getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
 	);
 
 	const leaveCancelMutation = useMutation(
@@ -70,37 +60,9 @@ function Leave() {
 			}
 		}
 	);
-	const leaveApproveMutation = useMutation(
-		payload => changeLeaveStatus(payload.id, payload.type),
-		{
-			onSuccess: response =>
-				handleResponse(
-					response,
-					"Leave approved successfully",
-					"Could not approve leave",
-					[
-						() => queryClient.invalidateQueries(["userLeaves"]),
-						() => queryClient.invalidateQueries(["leaves"])
-					]
-				),
-			onError: error => {
-				notification({ message: "Could not approve leave", type: "error" });
-			}
-		}
-	);
-
-	const handleStatusChange = statusId => {
-		setLeaveStatus(statusId);
-	};
-	const handleUserChange = user => {
-		setUser(user);
-	};
 
 	const handleCancelLeave = leave => {
 		leaveCancelMutation.mutate({ id: leave._id, type: "cancel" });
-	};
-	const handleApproveLeave = leave => {
-		leaveApproveMutation.mutate({ id: leave._id, type: "approve" });
 	};
 
 	const onShowSizeChange = (_, pageSize) => {
@@ -113,10 +75,6 @@ function Leave() {
 
 	const handleRowSelect = rows => {
 		setSelectedRows(rows);
-	};
-	const handleResetFilter = () => {
-		setLeaveStatus(undefined);
-		setUser(undefined);
 	};
 
 	function handleTabChange(key) {
@@ -141,7 +99,9 @@ function Leave() {
 					<Table
 						className="gx-table-responsive"
 						columns={LEAVES_COLUMN(handleCancelLeave)}
-						dataSource={formattedUsers(userLeavesQuery?.data?.data?.data?.data)}
+						dataSource={formattedLeaves(
+							userLeavesQuery?.data?.data?.data?.data
+						)}
 						pagination={{
 							current: page.page,
 							pageSize: page.limit,
@@ -157,43 +117,19 @@ function Leave() {
 						}
 					/>
 				</TabPane>
-				<CheckRole>
+				{loggedInUser?.role?.value === "Admin" && (
 					<TabPane tab="Leaves" key="3">
 						<Leaves
-							data={formattedUsers(leavesQuery?.data?.data?.data?.data)}
-							status={leaveStatus}
-							user={user}
-							users={usersQuery?.data?.data?.data?.data?.map(user => ({
-								id: user._id,
-								value: user.name
-							}))}
 							selectedRows={selectedRows}
-							handleStatusChange={handleStatusChange}
-							handleUserChange={handleUserChange}
-							handleResetFilter={handleResetFilter}
 							handleCancelLeave={handleCancelLeave}
-							handleApproveLeave={handleApproveLeave}
-							pagination={{
-								current: page.page,
-								pageSize: page.limit,
-								pageSizeOptions: ["5", "10", "20", "50"],
-								showSizeChanger: true,
-								total: leavesQuery?.data?.data?.data?.count || 1,
-								onShowSizeChange,
-								hideOnSinglePage: true,
-								onChange: handlePageChange
-							}}
 							rowSelection={{
 								onChange: handleRowSelect,
 								selectedRowKeys: selectedRows
 							}}
-							isLoading={
-								leavesQuery.isFetching || leaveApproveMutation.isLoading
-							}
 							isExportDisabled={selectedRows.length === 0}
 						/>
 					</TabPane>
-				</CheckRole>
+				)}
 			</Tabs>
 		</Card>
 	);

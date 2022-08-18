@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createLeaveOfUser, getLeaveTypes, updateLeave } from "services/leaves";
 import { filterOptions, handleResponse } from "helpers/utils";
 import leaveTypeInterface from "types/Leave";
-import { getAllUsers } from "services/users/userDetails";
 import { notification } from "helpers/notification";
 
 const { Option } = Select;
@@ -30,12 +29,14 @@ function LeaveModal({
 	leaveData,
 	isEditMode,
 	open,
-	onClose
+	onClose,
+	users
 }: {
 	leaveData: any;
 	isEditMode: boolean;
 	open: boolean;
 	onClose: () => void;
+	users: any;
 }) {
 	const queryClient = useQueryClient();
 
@@ -52,15 +53,6 @@ function LeaveModal({
 			}))
 		]
 	});
-
-	const { data, isLoading, isFetching, refetch } = useQuery(
-		["users"],
-		() => getAllUsers({ page: "" }),
-		{
-			onError: err => console.log(err),
-			enabled: false
-		}
-	);
 
 	const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
 		onSuccess: response =>
@@ -114,7 +106,6 @@ function LeaveModal({
 
 	useEffect(() => {
 		if (open) {
-			refetch();
 			if (isEditMode) {
 				form.setFieldsValue({
 					leaveType: leaveData.leaveType._id,
@@ -187,7 +178,7 @@ function LeaveModal({
 											onChange={handleUserChange}
 											allowClear
 										>
-											{data?.data?.data?.data?.map((user: any) => (
+											{users?.map((user: any) => (
 												<Option value={user._id} key={user._id}>
 													{user?.name}
 												</Option>
