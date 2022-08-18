@@ -67,6 +67,18 @@ const createLeave = async payload => {
 	}
 };
 
+const createLeaveOfUser = async payload => {
+	try {
+		let response = await API.post(
+			`${Apis.Users}/${payload.id}/leaves`,
+			payload.data
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	getLeaveDaysOfAllUsers,
 	getLeavesOfUser,
@@ -74,5 +86,6 @@ export {
 	getTakenAndRemainingLeaveDaysOfUser,
 	getLeaveTypes,
 	changeLeaveStatus,
-	createLeave
+	createLeave,
+	createLeaveOfUser
 };

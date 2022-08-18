@@ -133,7 +133,6 @@ function Leave() {
 				<TabPane tab="Leaves" key="3">
 					<Leaves
 						data={formattedUsers(leavesQuery?.data?.data?.data?.data)}
-						columns={LEAVES_COLUMN(handleCancelLeave, true)}
 						status={leaveStatus}
 						user={user}
 						users={usersQuery?.data?.data?.data?.data?.map(user => ({
@@ -144,6 +143,7 @@ function Leave() {
 						handleStatusChange={handleStatusChange}
 						handleUserChange={handleUserChange}
 						handleResetFilter={handleResetFilter}
+						handleCancelLeave={handleCancelLeave}
 						pagination={{
 							current: page.page,
 							pageSize: page.limit,
