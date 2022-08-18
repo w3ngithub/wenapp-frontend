@@ -16,11 +16,14 @@ function Detail() {
 
 	const [blogId] = blog.split("-");
 
+	const userData = JSON.parse(localStorage.getItem("user_id") || {});
+
 	const { data, isLoading } = useQuery(["singleBlog", blogId], () =>
 		getBlog(blogId)
 	);
 
 	const BLOG = data?.data?.data?.data?.[0];
+	const access = userData?.user?._id === BLOG?.createdBy._id;
 
 	const handleEdit = () => {
 		navigate(`/blog/edit-blog/${blog}`);
@@ -48,9 +51,11 @@ function Detail() {
 									{moment(BLOG?.createdAt).format("LL")}
 								</small>
 							</div>
-							<Button type="primary" onClick={handleEdit}>
-								Edit
-							</Button>
+							{access && (
+								<Button type="primary" onClick={handleEdit}>
+									Edit
+								</Button>
+							)}
 						</div>
 					</>
 				}

@@ -1,5 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { Button, Col, DatePicker, Input, Modal, Row, Select, Spin } from "antd";
+import {
+	Button,
+	Col,
+	DatePicker,
+	Input,
+	Modal,
+	Row,
+	Select,
+	Spin,
+	TimePicker
+} from "antd";
 import moment from "moment";
 import { useEffect } from "react";
 import { Form } from "@ant-design/compatible";
@@ -54,6 +64,12 @@ function NoticeModal({
 						: null,
 					endDate: initialValues?.endDate
 						? moment(initialValues?.endDate)
+						: null,
+					startTime: initialValues?.startTime
+						? moment(initialValues?.startTime)
+						: null,
+					endTime: initialValues?.endTime
+						? moment(initialValues?.endTime)
 						: null
 				});
 			}
@@ -63,7 +79,7 @@ function NoticeModal({
 	return (
 		<Modal
 			width={900}
-			title={isEditMode ? "Update Notice" : "Add Notice"}
+			title={readOnly ? "Notice" : isEditMode ? "Update Notice" : "Add Notice"}
 			visible={toggle}
 			onOk={handleSubmit}
 			onCancel={handleCancel}
@@ -123,16 +139,39 @@ function NoticeModal({
 								label="Start Date"
 								hasFeedback={readOnly ? false : true}
 							>
-								{getFieldDecorator("startDate", {
-									rules: [{ required: true, message: "Required!" }]
-								})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+								{getFieldDecorator(
+									"startDate",
+									{}
+								)(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
 							</FormItem>
 						</Col>
 						<Col span={24} sm={12}>
 							<FormItem label="End Date" hasFeedback={readOnly ? false : true}>
-								{getFieldDecorator("endDate", {
-									rules: [{ required: true, message: "Required!" }]
-								})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+								{getFieldDecorator(
+									"endDate",
+									{}
+								)(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+							</FormItem>
+						</Col>
+					</Row>
+					<Row type="flex">
+						<Col span={24} sm={12}>
+							<FormItem
+								label="Start Time"
+								hasFeedback={readOnly ? false : true}
+							>
+								{getFieldDecorator(
+									"startTime",
+									{}
+								)(<TimePicker className=" gx-w-100" disabled={readOnly} />)}
+							</FormItem>
+						</Col>
+						<Col span={24} sm={12}>
+							<FormItem label="End Time" hasFeedback={readOnly ? false : true}>
+								{getFieldDecorator(
+									"endTime",
+									{}
+								)(<TimePicker className=" gx-w-100" disabled={readOnly} />)}
 							</FormItem>
 						</Col>
 					</Row>

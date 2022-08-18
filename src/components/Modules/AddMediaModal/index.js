@@ -2,7 +2,13 @@ import { Button, Modal, Spin } from "antd";
 import React, { useState } from "react";
 import UploadFiles from "./UploadFiles";
 
-function AddMediaModel({ toogle, handleSubmit, handleCancel, loading }) {
+function AddMediaModel({
+	toogle,
+	handleSubmit,
+	handleCancel,
+	loading,
+	progress
+}) {
 	const [files, setFiles] = useState([]);
 
 	const handleInsert = () => {
@@ -29,7 +35,7 @@ function AddMediaModel({ toogle, handleSubmit, handleCancel, loading }) {
 				</Button>
 			]}
 		>
-			<Spin spinning={loading}>
+			<Spin spinning={loading} tip={`${progress?.toFixed()}% completed`}>
 				<UploadFiles
 					handleSubmit={handleSubmit}
 					files={files}

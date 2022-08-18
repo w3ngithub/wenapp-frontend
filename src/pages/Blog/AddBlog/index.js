@@ -24,6 +24,7 @@ function AddBlog() {
 	const [submitting, setSubmitting] = useState(false);
 	const [openMedia, setopenMedia] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [progress, setProgress] = useState(null);
 
 	// init hooks
 	const navigate = useNavigate();
@@ -159,8 +160,8 @@ function AddBlog() {
 		uploadTask.on(
 			"state_changed",
 			snapshot => {
-				// Observe state change events such as progress, pause, and resume
-				// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+				const pg = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+				setProgress(() => pg);
 			},
 			error => {
 				// Handle unsuccessful uploads
@@ -280,6 +281,7 @@ function AddBlog() {
 
 			<AddMediaModel
 				loading={loading}
+				progress={progress}
 				toogle={openMedia}
 				handleCancel={handleCanelMedia}
 				handleSubmit={handleInsertMedia}
