@@ -434,7 +434,7 @@ body.dark-theme {
 		.ant-layout-sider
 		.ant-menu:not(.ant-menu-horizontal)
 		.ant-menu-item-selected {
-		background-color: fade(@white-color, 12%);
+		background-color: fade(@white-color, 12%)!important;
 	}
 
 	&
@@ -896,6 +896,9 @@ body.dark-theme {
 		&-bar {
 			border-bottom-color: @dark-theme-border-color;
 		}
+		&-nav {
+			border-bottom-color: @dark-theme-border-color;
+		}
 
 		&-tab-prev,
 		&-tab-next {
@@ -925,6 +928,27 @@ body.dark-theme {
 		}
 
 		&.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab .anticon-close {
+			color: @dark-theme-text-color;
+
+			&:hover {
+				color: @white-color;
+			}
+		}
+
+		&.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
+			border-color: lighten(@dark-theme-component-background, 8%);
+			border-bottom-color: @dark-theme-component-background;
+			background: lighten(@dark-theme-component-background, 2%);
+		}
+
+		&.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+			background: @dark-theme-component-background;
+			border-color: lighten(@dark-theme-component-background, 8%);
+			border-bottom-color: @dark-theme-component-background;
+			color: @white-color;
+		}
+
+		&.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab .anticon-close {
 			color: @dark-theme-text-color;
 
 			&:hover {
