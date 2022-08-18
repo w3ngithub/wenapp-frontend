@@ -1,7 +1,7 @@
 import { Form } from "@ant-design/compatible";
 import "@ant-design/compatible/assets/index.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Card, Input, Radio, Select, Table } from "antd";
+import { Button, Card, Input, Radio, Table } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
@@ -17,6 +17,7 @@ import {
 	updateUser
 } from "services/users/userDetails";
 import ImportUsers from "./ImportUsers";
+import Select from "components/Elements/Select";
 
 const Search = Input.Search;
 const FormItem = Form.Item;

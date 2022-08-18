@@ -1,13 +1,12 @@
 import React from "react";
-import { Button, Tag } from "antd";
-import { EditOutlined } from "@ant-design/icons";
+import { Button, Popconfirm, Tag } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment from "moment";
 import parse from "html-react-parser";
-import { useNavigate } from "react-router-dom";
 
-const BlogItem = ({ blog, grid }) => {
-	const navigate = useNavigate();
+import { Link } from "react-router-dom";
 
+const BlogItem = ({ blog, grid, removeBlog, access }) => {
 	const {
 		title,
 		content,
@@ -24,20 +23,7 @@ const BlogItem = ({ blog, grid }) => {
 				grid ? "gx-product-vertical" : "gx-product-horizontal"
 			}`}
 		>
-			<div className="gx-product-image">
-				<div className="gx-grid-thumb-equal">
-					<span className="gx-link gx-grid-thumb-cover">
-						<img
-							alt="Remy Sharp"
-							src={
-								"https://images.unsplash.com/photo-1660505155761-fb440082f784?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80"
-							}
-						/>
-					</span>
-				</div>
-			</div>
-
-			<div className="gx-product-body">
+			<div style={{ padding: "24px" }}>
 				<h3 className="gx-product-title">{title}</h3>
 				<div className="ant-row-flex">
 					<small className="gx-text-grey">
@@ -54,18 +40,20 @@ const BlogItem = ({ blog, grid }) => {
 					</h6>
 				</div>
 
-				<p>{parse(content?.substring(0, 200))}...</p>
-			</div>
-
-			<div className="gx-product-footer">
-				<Button
-					type="primary"
-					onClick={() => {
-						navigate(`${_id}-${slug}`);
-					}}
-				>
-					Read More
-				</Button>
+				<p>
+					{parse(content?.substring(0, 400))}...
+					<Link to={`${_id}-${slug}`}> read more</Link>{" "}
+					{access && (
+						<Popconfirm
+							title="Are you sure to delete this Blog?"
+							onConfirm={() => removeBlog(_id)}
+							okText="Yes"
+							cancelText="No"
+						>
+							<DeleteOutlined style={{ color: "red" }} />
+						</Popconfirm>
+					)}
+				</p>
 			</div>
 		</div>
 	);

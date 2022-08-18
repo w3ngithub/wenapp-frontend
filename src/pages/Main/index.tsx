@@ -18,6 +18,7 @@ import {
 	CALENDAR,
 	COWORKERS,
 	DASHBOARD,
+	EDITBLOG,
 	FAQS,
 	INVITE,
 	LEAVE,
@@ -90,6 +91,7 @@ function App(props: any) {
 							<Route path={BLOG} element={<Blog />}>
 								<Route path={BLOGS} element={<Blogs />} />
 								<Route path={ADDBLOG} element={<AddBlog />} />
+								<Route path={EDITBLOG} element={<AddBlog />} />
 								<Route path={BLOGDETAIL} element={<BlogDetail />} />
 							</Route>
 							<Route path={REPORTS} element={<Reports />}>

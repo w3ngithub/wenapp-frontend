@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Form, Input, Button, DatePicker } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
-import { handleResponse } from "helpers/utils";
+import { changeDate, handleResponse } from "helpers/utils";
 import moment from "moment";
 import { notification } from "helpers/notification";
 import {
@@ -22,7 +22,9 @@ const formattedNotices = notices => {
 	return notices?.map(notice => ({
 		...notice,
 		key: notice._id,
-		category: notice.noticeType.name
+		category: notice.noticeType.name,
+		startDate: notice.startDate ? changeDate(notice.startDate) : "",
+		endDate: notice.endDate ? changeDate(notice.endDate) : ""
 	}));
 };
 
@@ -42,11 +44,13 @@ function NoticeBoardPage() {
 	const noticeRef = useRef("");
 
 	const { data, isLoading, isError, isFetching } = useQuery(
-		["notices", page, title],
+		["notices", page, title, date],
 		() =>
 			getAllNotices({
 				...page,
-				title
+				title,
+				startDate: date?.[0] ? moment.utc(date[0]).format() : "",
+				endDate: date?.[1] ? moment.utc(date[1]).format() : ""
 			}),
 		{ keepPreviousData: true }
 	);
@@ -114,6 +118,12 @@ function NoticeBoardPage() {
 					: undefined,
 				endDate: project.endDate
 					? moment.utc(project.endDate).format()
+					: undefined,
+				startTime: project.startTime
+					? moment.utc(project.startTime).format()
+					: undefined,
+				endTime: project.endTime
+					? moment.utc(project.endTime).format()
 					: undefined
 			};
 			if (isEditMode) {
@@ -142,6 +152,7 @@ function NoticeBoardPage() {
 
 	const handleResetFilter = () => {
 		setTitle("");
+		setDate(undefined);
 		noticeRef.current.input.state.value = "";
 	};
 
@@ -160,7 +171,9 @@ function NoticeBoardPage() {
 			project: {
 				...notice,
 				startDate: originalProject?.startDate ?? null,
-				endDate: originalProject?.endDate ?? null
+				endDate: originalProject?.endDate ?? null,
+				startTime: originalProject?.startTime ?? null,
+				endTime: originalProject?.endTime ?? null
 			}
 		});
 		setReadOnly(mode);
@@ -171,6 +184,7 @@ function NoticeBoardPage() {
 		setOpenUserDetailModal(prev => !prev);
 		setNoticeRecord({});
 		setIsEditMode(false);
+		setReadOnly(false);
 	};
 
 	const handleOpenAddModal = () => {
