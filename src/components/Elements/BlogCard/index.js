@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Popconfirm, Tag } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment from "moment";
@@ -16,8 +16,47 @@ const BlogItem = ({ blog, grid, removeBlog, access }) => {
 		_id,
 		slug
 	} = blog;
-	const imgSrc = content?.split("src=")[1]?.split(" ")[0];
-	const src = "https://firebasestorage.googleapis.com/v0/b/shop-and-mall.appspot.com/o/blogs%2FReebok3.jpg?alt=media&token=07093ef2-c6d5-484f-9d43-e2df3a1f06da"
+	const imgSrc = content
+		?.split("src=")[1]
+		?.split(" ")[0]
+		?.replace(`"`, "");
+	const [parsedContent, setParsedContent] = useState(
+		parse(content.substring(0, 400))
+	);
+	const [filteredContent, setFilteredContent] = useState("");
+	const [parserResetter, setParserResetter] = useState(true);
+	const parser = () => {
+		if (parsedContent?.length && typeof parsedContent === "object") {
+			const contents = parsedContent
+				.filter(item => item?.type !== "img")
+				.filter(item => item !== "\n")
+				.filter(item => item?.props?.children !== null)
+			
+			const contents1 = contents.filter((item)=>{
+				if(typeof item?.props?.children === 'string'){
+					if(item.props.children.trim() !==''){
+						return item
+					}else{
+						return null;
+					}
+				}else{
+
+					return item;
+				}
+			})
+
+			setFilteredContent(contents1);
+			if (contents1.length === 0 && parserResetter) {
+				setParserResetter(false)
+				setParsedContent((parse(content.substring(400,content.length))).slice(1,3));
+			}
+		} else {
+			setFilteredContent(parsedContent);
+		}
+	};
+	useEffect(() => {
+		parser();
+	}, [parsedContent]);
 
 	return (
 		<div
@@ -25,12 +64,11 @@ const BlogItem = ({ blog, grid, removeBlog, access }) => {
 				grid ? "gx-product-vertical" : "gx-product-horizontal"
 			}`}
 		>
-		
 			{imgSrc && (
 				<div className="gx-product-image">
 					<div className="gx-grid-thumb-equal">
 						<span className="gx-link gx-grid-thumb-cover">
-							<img alt="Bob" src={src} />
+							<img alt="Bob" src={imgSrc} width={300} height={200} />
 						</span>
 					</div>
 				</div>
@@ -51,21 +89,23 @@ const BlogItem = ({ blog, grid, removeBlog, access }) => {
 					</h6>
 				</div>
 				<p>
-					{parse(content?.substring(0, 400))}...
-					<Link to={`${_id}-${slug}`}> read more</Link>{" "}
-					{access && (
-						<Popconfirm
-							title="Are you sure to delete this Blog?"
-							onConfirm={() => removeBlog(_id)}
-							okText="Yes"
-							cancelText="No"
-						>
-							<DeleteOutlined style={{ color: "red" }} />
-						</Popconfirm>
-					)}
+					{filteredContent}...<Link to={`${_id}-${slug}`}> Read More</Link>
 				</p>
 			</div>
-			<div className="gx-footer"></div>
+			<div className="gx-footer">
+				{access && (
+					<Popconfirm
+						title="Are you sure to delete this Blog?"
+						onConfirm={() => removeBlog(_id)}
+						okText="Yes"
+						cancelText="No"
+					>
+						<button type="button" className="ant-btn ant-btn-danger">
+							<DeleteOutlined />
+						</button>
+					</Popconfirm>
+				)}
+			</div>
 		</div>
 	);
 };

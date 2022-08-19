@@ -93,7 +93,7 @@ function Blogs() {
 	}
 
 	return (
-		<div>
+		<div className="ant-row" style={{rowGap:0}}>
 			<Card title="Blogs">
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
@@ -144,7 +144,7 @@ function Blogs() {
 				<Spin spinning={isFetching}>
 					<Row align="top">
 						{data?.data?.data?.data?.map(blog => (
-							<Col xl={12} lg={12} md={12} sm={24} xs={24} key={blog._id}>
+							<Col xl={6} md={8} sm={12} xs={24}>
 								<BlogItem
 									key={blog._id}
 									grid={true}
