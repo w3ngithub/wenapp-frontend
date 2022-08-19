@@ -40,9 +40,10 @@ const BlogItem = ({ blog, grid, removeBlog, access }) => {
 					</h6>
 				</div>
 
-				<p>
+				<div>
 					{parse(content?.substring(0, 400))}...
 					<Link to={`${_id}-${slug}`}> read more</Link>{" "}
+					<span className="gx-p-2"></span>
 					{access && (
 						<Popconfirm
 							title="Are you sure to delete this Blog?"
@@ -53,7 +54,7 @@ const BlogItem = ({ blog, grid, removeBlog, access }) => {
 							<DeleteOutlined style={{ color: "red" }} />
 						</Popconfirm>
 					)}
-				</p>
+				</div>
 			</div>
 		</div>
 	);
