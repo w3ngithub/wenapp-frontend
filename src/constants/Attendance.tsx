@@ -75,22 +75,6 @@ const ATTENDANCE_COLUMNS = (
 					sorter: (a, b) =>
 						a.officeHour?.toString().localeCompare(b.officeHour?.toString()),
 					sortOrder: sortedInfo.columnKey === "officeHour" && sortedInfo.order
-				},
-				{
-					title: "Action",
-					key: "action",
-					render: (text, record) => {
-						return (
-							<span>
-								<span
-									className="gx-link"
-									onClick={() => openModal(record, true)}
-								>
-									<EyeOutlined style={{ fontSize: "18px" }} />
-								</span>
-							</span>
-						);
-					}
 				}
 		  ]
 		: [
@@ -142,22 +126,6 @@ const ATTENDANCE_COLUMNS = (
 					sorter: (a, b) =>
 						a.officeHour?.toString().localeCompare(b.officeHour?.toString()),
 					sortOrder: sortedInfo.columnKey === "officeHour" && sortedInfo.order
-				},
-				{
-					title: "Action",
-					key: "action",
-					render: (text, record) => {
-						return (
-							<span>
-								<span
-									className="gx-link"
-									onClick={() => openModal(record, true)}
-								>
-									<EyeOutlined style={{ fontSize: "18px" }} />
-								</span>
-							</span>
-						);
-					}
 				}
 		  ];
 

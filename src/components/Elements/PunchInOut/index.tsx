@@ -25,7 +25,6 @@ function PunchInOut() {
 
 	const handlePunch = (): void => {
 		addAttendances.mutate({
-			attendanceDate: moment.utc().format(),
 			punchInTime: moment.utc().format()
 		});
 		setPunch(prev =>

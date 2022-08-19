@@ -7,10 +7,10 @@ function Attendace() {
 	return (
 		<Card title="Attendance">
 			<Tabs type="card">
-				<Tabs.TabPane key="1" tab="User Attendance">
+				<Tabs.TabPane key="1" tab="My Attendance">
 					<UserAttendance />
 				</Tabs.TabPane>
-				<Tabs.TabPane key="2" tab="Admin Attendance">
+				<Tabs.TabPane key="2" tab="Users Attendance">
 					<AdminAttendance />
 				</Tabs.TabPane>
 			</Tabs>
