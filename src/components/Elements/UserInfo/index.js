@@ -4,12 +4,10 @@ import { Avatar, Popover } from "antd";
 import { userSignOut } from "appRedux/actions/Auth";
 import { useNavigate } from "react-router-dom";
 import { PROFILE } from "helpers/routePath";
-import { getLocalStorageData } from "helpers/utils";
 
 function UserInfo(props) {
 	const navigate = useNavigate();
 	const [visible, setVisible] = useState(false);
-	const user = getLocalStorageData("user_id");
 
 	const handleVisibleChange = newVisible => {
 		setVisible(newVisible);
@@ -36,7 +34,6 @@ function UserInfo(props) {
 			</li>
 		</ul>
 	);
-
 	return (
 		<Popover
 			overlayClassName="gx-popover-horizantal"
@@ -46,9 +43,18 @@ function UserInfo(props) {
 			visible={visible}
 			onVisibleChange={handleVisibleChange}
 		>
-			<Avatar src={user?.photoURL} className="gx-avatar gx-pointer" alt="" />
+			<Avatar
+				src={props.authUser?.user?.photoURL}
+				className="gx-avatar gx-pointer"
+				alt=""
+			/>
 		</Popover>
 	);
 }
 
-export default connect(null, { userSignOut })(UserInfo);
+const mapStateToProps = ({ auth }) => {
+	const { authUser } = auth;
+	return { authUser };
+};
+
+export default connect(mapStateToProps, { userSignOut })(UserInfo);

@@ -61,7 +61,7 @@ function UserProfileModal({
 			});
 			setFiles(
 				user?.photoURL
-					? [{ uid: "1", url: user?.photoURL, name: "profile photo" }]
+					? [{ uid: "1", url: user?.photoURL, name: "Profile Photo" }]
 					: []
 			);
 		}

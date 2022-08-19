@@ -11,6 +11,8 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "firebase";
 import moment from "moment";
 import { handleResponse } from "helpers/utils";
+import { useDispatch } from "react-redux";
+import { setProfilePhoto } from "appRedux/actions";
 
 export const aboutList = [
 	{
@@ -43,10 +45,11 @@ function Profile() {
 	const [user, setUser] = useState(
 		JSON.parse(localStorage.getItem("user_id") || "")
 	);
+	const dispatch = useDispatch();
 	const [openModal, setOpenModal] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const mutation = useMutation(updateProfile, {
-		onSuccess: response =>
+		onSuccess: response => {
 			handleResponse(
 				response,
 				"Update profile successfully",
@@ -58,10 +61,12 @@ function Profile() {
 							"user_id",
 							JSON.stringify({ user: response.data.data.user })
 						),
+					() => dispatch(setProfilePhoto(response.data.data.user.photoURL)),
 					() => setOpenModal(false),
 					() => setIsLoading(false)
 				]
-			),
+			);
+		},
 
 		onError: () =>
 			notification({
@@ -84,7 +89,6 @@ function Profile() {
 			primaryPhone: +user.primaryPhone,
 			secondaryPhone: +user.secondaryPhone || undefined
 		};
-
 		if (user.photoURL) {
 			const storageRef = ref(storage, `profile/${user?.photoURL?.name}`);
 
@@ -96,7 +100,7 @@ function Profile() {
 			uploadTask.on(
 				"state_changed",
 				snapshot => {
-					const pg = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+					// const pg = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 					// setProgress(() => pg);
 				},
 				error => {
