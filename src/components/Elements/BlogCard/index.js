@@ -88,6 +88,7 @@ const BlogItem = ({ blog, grid, removeBlog, access }) => {
 						))}
 					</h6>
 				</div>
+
 				<p>
 					{filteredContent}...<Link to={`${_id}-${slug}`}> Read More</Link>
 				</p>

@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, Form, Input, Select, Row, Col, Spin } from "antd";
 import { Calendar, DateObject } from "react-multi-date-picker";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createLeaveOfUser, getLeaveTypes } from "services/leaves";
+import { createLeaveOfUser, getLeaveTypes, updateLeave } from "services/leaves";
 import { filterOptions, handleResponse } from "helpers/utils";
 import leaveTypeInterface from "types/Leave";
-import { getAllUsers } from "services/users/userDetails";
 import { notification } from "helpers/notification";
 
 const { Option } = Select;
@@ -30,17 +29,21 @@ function LeaveModal({
 	leaveData,
 	isEditMode,
 	open,
-	onClose
+	onClose,
+	users
 }: {
 	leaveData: any;
 	isEditMode: boolean;
 	open: boolean;
 	onClose: () => void;
+	users: any;
 }) {
 	const queryClient = useQueryClient();
 
 	const [form] = Form.useForm();
 	const [leaveType, setLeaveType] = useState("");
+	const [user, setUser] = useState("");
+	const [leaveId, setLeaveId] = useState(null);
 
 	const leaveTypeQuery = useQuery(["leaveType"], getLeaveTypes, {
 		select: res => [
@@ -50,15 +53,6 @@ function LeaveModal({
 			}))
 		]
 	});
-
-	const { data, isLoading, isFetching, refetch } = useQuery(
-		["users"],
-		() => getAllUsers({ page: "" }),
-		{
-			onError: err => console.log(err),
-			enabled: false
-		}
-	);
 
 	const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
 		onSuccess: response =>
@@ -72,34 +66,56 @@ function LeaveModal({
 			notification({ message: "Leave creation failed!", type: "error" });
 		}
 	});
+
+	const leaveUpdateMutation = useMutation((leave: any) => updateLeave(leave), {
+		onSuccess: response =>
+			handleResponse(
+				response,
+				"Leave updated successfully",
+				"Leave update failed",
+				[() => queryClient.invalidateQueries(["leaves"]), () => onClose()]
+			),
+		onError: error => {
+			notification({ message: "Leave update failed!", type: "error" });
+		}
+	});
+
 	const onFinish = (values: any) => {
 		form.submit();
 		const data = form.getFieldsValue();
-		leaveMutation.mutate({
-			id: data.user,
-			data: {
-				leaveDates: data.leaveDates.join(",").split(","),
-				reason: data.reason,
-				leaveType: data.leaveType
-			}
-		});
+		const newLeave = {
+			leaveDates: data.leaveDates.join(",").split(","),
+			reason: data.reason,
+			leaveType: data.leaveType
+		};
+		if (isEditMode) leaveUpdateMutation.mutate({ id: leaveId, data: newLeave });
+		else
+			leaveMutation.mutate({
+				id: data.user,
+				data: newLeave
+			});
 	};
 
 	const handleLeaveTypeChange = (value: string) => {
-		console.log(value);
 		setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value);
+	};
+
+	const handleUserChange = (user: string) => {
+		setUser(user);
 	};
 
 	useEffect(() => {
 		if (open) {
-			refetch();
-			if (isEditMode)
+			if (isEditMode) {
 				form.setFieldsValue({
 					leaveType: leaveData.leaveType._id,
 					leaveDates: leaveData.leaveDates,
 					reason: leaveData.reason,
 					user: leaveData.user._id
 				});
+				setUser(leaveData.user._id);
+				setLeaveId(leaveData._id);
+			}
 		}
 
 		if (!open) form.resetFields();
@@ -121,7 +137,7 @@ function LeaveModal({
 				</Button>
 			]}
 		>
-			<Spin spinning={leaveMutation.isLoading}>
+			<Spin spinning={leaveMutation.isLoading || leaveUpdateMutation.isLoading}>
 				<Form {...layout} form={form} name="control-hooks" layout="vertical">
 					<Row>
 						<Col span={6} xs={24} sm={16} style={{ paddingLeft: 0 }}>
@@ -159,9 +175,10 @@ function LeaveModal({
 											showSearch
 											filterOption={filterOptions}
 											placeholder="Select User"
+											onChange={handleUserChange}
 											allowClear
 										>
-											{data?.data?.data?.data?.map((user: any) => (
+											{users?.map((user: any) => (
 												<Option value={user._id} key={user._id}>
 													{user?.name}
 												</Option>
@@ -183,7 +200,7 @@ function LeaveModal({
 								</Col>
 							</Row>
 						</Col>
-						{form.getFieldValue("user") && (
+						{user && (
 							<Col span={6} xs={24} sm={8}>
 								<Form.Item
 									{...formItemLayout}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { InboxOutlined } from '@ant-design/icons';
+import { InboxOutlined } from "@ant-design/icons";
 import { Upload, Modal } from "antd";
 
 const Dragger = Upload.Dragger;
@@ -24,7 +24,8 @@ function DragAndDropFile({
 	files,
 	setFiles,
 	displayType = "text",
-	allowMultiple = true
+	allowMultiple = true,
+	accept = ""
 }) {
 	const [previewVisible, setPreviewVisible] = useState(false);
 	const [previewImage, setPreviewImage] = useState("");
@@ -52,35 +53,37 @@ function DragAndDropFile({
 			setFiles(list);
 		}
 	};
-
 	const handleCancel = () => setPreviewVisible(false);
-	return <>
-        <Dragger
-            beforeUpload={file => false}
-            listType={displayType}
-            onPreview={
-                (displayType === "picture-card" || displayType === "picture") &&
-                handlePreview
-            }
-            fileList={files}
-            onChange={handleChange}
-        >
-            <p className="ant-upload-drag-icon">
-                <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-                Click or drag file to this area to upload
-            </p>
-        </Dragger>
-        <Modal
-            visible={previewVisible}
-            title={previewTitle}
-            footer={null}
-            onCancel={handleCancel}
-        >
-            <img alt="example" style={{ width: "100%" }} src={previewImage} />
-        </Modal>
-    </>;
+	return (
+		<>
+			<Dragger
+				beforeUpload={file => false}
+				listType={displayType}
+				onPreview={
+					(displayType === "picture-card" || displayType === "picture") &&
+					handlePreview
+				}
+				fileList={files}
+				onChange={handleChange}
+				accept={accept}
+			>
+				<p className="ant-upload-drag-icon">
+					<InboxOutlined />
+				</p>
+				<p className="ant-upload-text">
+					Click or drag file to this area to upload
+				</p>
+			</Dragger>
+			<Modal
+				visible={previewVisible}
+				title={previewTitle}
+				footer={null}
+				onCancel={handleCancel}
+			>
+				<img alt="example" style={{ width: "100%" }} src={previewImage} />
+			</Modal>
+		</>
+	);
 }
 
 export default DragAndDropFile;

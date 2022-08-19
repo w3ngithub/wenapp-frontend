@@ -2,12 +2,11 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import { toggleCollapsedSideNav } from "appRedux/actions/Setting";
-import SearchBox from "components/Elements/SearchBox";
 import UserInfo from "components/Elements/UserInfo";
 import AppNotification from "components/Elements/AppNotification";
 import MailNotification from "components/Modules/MailNotification";
 import Auxiliary from "util/Auxiliary";
-import { Layout, Menu, Popover, message } from "antd";
+import { Layout, Popover } from "antd";
 
 import {
 	NAV_STYLE_DRAWER,
@@ -16,8 +15,8 @@ import {
 	TAB_SIZE
 } from "constants/ThemeSetting";
 import { connect } from "react-redux";
-import AttendanceDetail from "components/Elements/AttendanceDetail";
 import PunchInOut from "components/Elements/PunchInOut";
+import { getLocalStorageData } from "helpers/utils";
 
 const { Header } = Layout;
 

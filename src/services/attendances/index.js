@@ -6,11 +6,14 @@ const getAllAttendances = async ({
 	page = "",
 	sort = "",
 	limit = "",
-	fields = ""
+	fields = "",
+	userId,
+	fromDate,
+	toDate
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.Attendances}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+			`${Apis.Attendances}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&user=${userId}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -83,6 +86,25 @@ const getAttendacentOfUser = async userId => {
 	}
 };
 
+const searchAttendacentOfUser = async ({
+	userId,
+	fromDate,
+	toDate,
+	page = "",
+	sort = "",
+	limit = "",
+	fields = ""
+}) => {
+	try {
+		let response = await API.get(
+			`${Apis.Attendances}/search?user=${userId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 const updatePunchReqestCount = async userId => {
 	try {
 		let response = await API.patch(
@@ -103,5 +125,6 @@ export {
 	addUserAttendance,
 	updatePunchout,
 	getAttendacentOfUser,
+	searchAttendacentOfUser,
 	updatePunchReqestCount
 };
