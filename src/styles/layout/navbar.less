@@ -475,8 +475,11 @@
 		color: @white-color;
 	}
 
-	&-dark &-submenu-selected &-submenu-selected &-item-selected > a {
+ &-submenu-selected &-submenu-selected &-item-selected > a {
 		color: @menu-dark-highlight-color;
+	}
+	&-dark &-item-selected > span > a {
+		color: @menu-dark-highlight-color!important;
 	}
 
 	&-dark &-item:hover,
