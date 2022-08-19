@@ -434,7 +434,7 @@ body.dark-theme {
 		.ant-layout-sider
 		.ant-menu:not(.ant-menu-horizontal)
 		.ant-menu-item-selected {
-		background-color: fade(@white-color, 12%)!important;
+		background-color: fade(@white-color, 12%) !important;
 	}
 
 	&
@@ -1632,12 +1632,14 @@ body.dark-theme {
 	}
 
 	& .ant-calendar,
-	& .ant-picker {
+	& .ant-picker,
+	& .ant-picker-panel-container {
 		background-color: lighten(@dark-theme-component-background, 5%);
 		border-color: lighten(@dark-theme-component-background, 5%);
 		color: @dark-theme-text-color;
 
-		&-today .ant-calendar-date {
+		&-today .ant-calendar-date,
+		&-cell-today {
 			border-color: lighten(@dark-theme-component-background, 25%);
 			color: lighten(@dark-theme-component-background, 25%);
 			background-color: lighten(@dark-theme-component-background, 15%);
@@ -1646,9 +1648,28 @@ body.dark-theme {
 		&-selected-date .ant-calendar-date,
 		&-selected-start-date .ant-calendar-date,
 		&-selected-end-date .ant-calendar-date,
-		&-selected-day .ant-calendar-date {
+		&-selected-day .ant-calendar-date,
+		&-cell-today &-cell-inner,
+		&-cell-selected {
 			background: lighten(@dark-theme-component-background, 25%);
 			color: @dark-theme-text-color;
+			.ant-picker-cell-inner {
+				background: transparent !important;
+			}
+		}
+		&-cell-range-end{
+			.ant-picker-cell-inner {
+				background: transparent !important;
+			}
+		}
+		&-cell-in-range {
+			&:before {
+				background: @dark-theme-in-range-bg!important;
+			}
+		}
+		&-cell-range-start:before,
+		&-cell-range-end:before {
+			background: transparent !important;
 		}
 
 		&-month-panel-selected-cell .ant-calendar-month-panel-month:hover,
@@ -1665,17 +1686,22 @@ body.dark-theme {
 		&-year-panel-year:hover,
 		&-decade-panel-decade:hover {
 			background: lighten(@dark-theme-component-background, 15%);
+			color: @dark-theme-text-color;
 		}
 
 		&-input {
 			color: @dark-theme-text-color;
 			background-color: lighten(@dark-theme-component-background, 5%);
+			input {
+				color: @dark-theme-text-color;
+			}
 		}
 
 		&-month-panel,
 		&-year-panel,
 		&-decade-panel {
 			background-color: lighten(@dark-theme-component-background, 5%);
+			color: @dark-theme-text-color;
 		}
 
 		&-header,
@@ -1684,13 +1710,31 @@ body.dark-theme {
 		&-year-panel-header,
 		&-decade-panel-header {
 			border-bottom-color: lighten(@dark-theme-component-background, 8%);
+			color: @dark-theme-text-color;
+		}
+		&-header {
+			button {
+				color: @dark-theme-text-color;
+			}
 		}
 
+		&-body {
+			color: @dark-theme-text-color;
+			.ant-picker-content {
+				th {
+					color: @dark-theme-text-color;
+				}
+			}
+		}
+		&-panel {
+			border: 1px solid transparent;
+		}
 		&-footer,
 		&-range .ant-calendar-body,
 		&-range .ant-calendar-month-panel-body,
 		&-range .ant-calendar-year-panel-body {
 			border-top-color: lighten(@dark-theme-component-background, 8%);
+			color: @dark-theme-text-color;
 		}
 
 		&-picker-icon,
@@ -1719,7 +1763,11 @@ body.dark-theme {
 		&-header .ant-calendar-century-select,
 		&-header .ant-calendar-decade-select,
 		&-header .ant-calendar-year-select,
-		&-header .ant-calendar-month-select {
+		&-header .ant-calendar-month-select,
+		&-header &-super-prev-btn,
+		&-header &-super-next-btn,
+		&-header &-prev-btn,
+		&-header &-next-btn {
 			color: @dark-theme-text-color;
 		}
 
@@ -1764,7 +1812,8 @@ body.dark-theme {
 			color: @dark-theme-text-color;
 		}
 
-		&-date {
+		&-date,
+		&-cell-inner {
 			color: @dark-theme-text-color;
 
 			&:hover {
@@ -1806,6 +1855,9 @@ body.dark-theme {
 		}
 
 		&-range .ant-calendar-in-range-cell:before {
+			background-color: lighten(@dark-theme-component-background, 7%);
+		}
+		&-range-arrow:before {
 			background-color: lighten(@dark-theme-component-background, 7%);
 		}
 
