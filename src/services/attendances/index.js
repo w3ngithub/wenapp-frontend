@@ -57,9 +57,12 @@ const deleteAttendance = async id => {
 	}
 };
 
-const updatePunchout = async userId => {
+const updatePunchout = async (userId, payload) => {
 	try {
-		let response = await API.patch(`${Apis.Attendances}/${userId}/punchout`);
+		let response = await API.patch(
+			`${Apis.Attendances}/${userId}/punchout`,
+			payload
+		);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

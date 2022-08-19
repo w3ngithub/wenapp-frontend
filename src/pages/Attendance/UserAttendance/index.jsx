@@ -9,6 +9,7 @@ import ViewDetailModel from "../ViewDetailModel";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
 import { EyeOutlined } from "@ant-design/icons";
+import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -49,8 +50,10 @@ function UserAttendance() {
 	const [attToView, setAttToView] = useState({});
 	const [date, setDate] = useState(intialDate);
 	const [attFilter, setAttFilter] = useState({ id: "1", value: "Daily" });
+	const [toogle, setToogle] = useState(false);
 
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
+	const punch = JSON.parse(localStorage.getItem("punch") || "{}");
 
 	const { data, isLoading, isFetching } = useQuery(
 		["userAttendance", user, date, page],
@@ -167,6 +170,12 @@ function UserAttendance() {
 
 	return (
 		<div>
+			<TmsMyAttendanceForm
+				punch={punch}
+				title="Time Attendance"
+				toogle={toogle}
+				handleCancel={() => setToogle(false)}
+			/>
 			<ViewDetailModel
 				title="Attendance Details"
 				toogle={openView}
@@ -194,7 +203,9 @@ function UserAttendance() {
 					</Form>
 					<Button
 						className="gx-btn gx-btn-primary gx-text-white "
-						onClick={() => {}}
+						onClick={() => {
+							setToogle(true);
+						}}
 					>
 						Add
 					</Button>
