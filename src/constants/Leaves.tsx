@@ -44,17 +44,7 @@ const LEAVES_COLUMN = (
 		key: "action",
 		width: 10,
 		render: (text: any, record: any) => {
-			const selectedDates = record.dates.split(',');
-			const currentDate = Date.now();
-			console.log(currentDate, '-', record.dates)
-			let showEdit = null;
-
-
-			if (isAdmin)	
-				console.log('dates', selectedDates);
-				// selectedDates.forEach((date:Date) => {if(date < currentDate){
-
-				// }})
+			if (isAdmin)
 				return (
 					<div style={{ display: "flex", justifyContent: "space-between" }}>
 						<span
@@ -79,7 +69,6 @@ const LEAVES_COLUMN = (
 								/>
 							</>
 						)}
-								
 					</div>
 				);
 			return record.status === "pending" ? (
