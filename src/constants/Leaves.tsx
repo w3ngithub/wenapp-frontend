@@ -44,7 +44,17 @@ const LEAVES_COLUMN = (
 		key: "action",
 		width: 10,
 		render: (text: any, record: any) => {
-			if (isAdmin)
+			const selectedDates = record.dates.split(',');
+			const currentDate = Date.now();
+			console.log(currentDate, '-', record.dates)
+			let showEdit = null;
+
+
+			if (isAdmin)	
+				console.log('dates', selectedDates);
+				// selectedDates.forEach((date:Date) => {if(date < currentDate){
+
+				// }})
 				return (
 					<div style={{ display: "flex", justifyContent: "space-between" }}>
 						<span
@@ -54,21 +64,22 @@ const LEAVES_COLUMN = (
 							View Details
 						</span>
 						{!["approved", "cancelled"].includes(record.status) && (
-							<Popconfirm
-								title="Are you sure you want to approve?"
-								onConfirm={() => onApproveClick(record)}
-								okText="Yes"
-								cancelText="No"
-							>
-								<span className="gx-link gx-text-green">Approve</span>
-							</Popconfirm>
+							<>
+								<Popconfirm
+									title="Are you sure you want to approve?"
+									onConfirm={() => onApproveClick(record)}
+									okText="Yes"
+									cancelText="No"
+								>
+									<span className="gx-link gx-text-green">Approve</span>
+								</Popconfirm>
+								<i
+									className="icon icon-edit gx-link"
+									onClick={() => onEditClick(record, false)}
+								/>
+							</>
 						)}
-						{!["approved", "cancelled"].includes(record.status) && (
-							<i
-								className="icon icon-edit gx-link"
-								onClick={() => onEditClick(record, false)}
-							/>
-						)}
+								
 					</div>
 				);
 			return record.status === "pending" ? (
