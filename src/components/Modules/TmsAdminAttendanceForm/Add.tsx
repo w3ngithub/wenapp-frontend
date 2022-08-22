@@ -53,9 +53,12 @@ function TmsAdminAddAttendanceForm({
 	);
 
 	const handleAdd = (values: any) => {
+		const attendanceDate = moment(values.attendanceDate)
+			.startOf("day")
+			.format();
 		const punchInTime =
 			moment
-				.utc(values.attendanceDate)
+				.utc(attendanceDate)
 				.format()
 				.split("T")[0] +
 			"T" +
@@ -65,7 +68,7 @@ function TmsAdminAddAttendanceForm({
 				.split("T")[1];
 		const punchOutTime = values.punchOutTime
 			? moment
-					.utc(values.attendanceDate)
+					.utc(attendanceDate)
 					.format()
 					.split("T")[0] +
 			  "T" +
@@ -76,9 +79,7 @@ function TmsAdminAddAttendanceForm({
 			: undefined;
 		const payload = {
 			...values,
-			attendanceDate: moment(values.attendanceDate)
-				.startOf("day")
-				.format(),
+			attendanceDate,
 			punchInTime,
 			punchOutTime: punchOutTime
 		};
