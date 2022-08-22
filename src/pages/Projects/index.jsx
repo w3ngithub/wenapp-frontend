@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { Card, Table, Select, Input, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate, filterOptions, handleResponse } from "helpers/utils";
@@ -19,6 +19,7 @@ import ProjectModal from "components/Modules/ProjectModal";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { notification } from "helpers/notification";
+import { getAllUsers } from "services/users/userDetails";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -43,6 +44,7 @@ function ProjectsPage() {
 	const [projectStatus, setProjectStatus] = useState(undefined);
 	const [projectType, setProjectType] = useState(undefined);
 	const [projectClient, setprojectClient] = useState(undefined);
+	const [developer, setDeveloper] = useState(undefined);
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
 	const [userRecord, setUserRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
@@ -64,15 +66,36 @@ function ProjectsPage() {
 		["projectClients"],
 		getProjectClients
 	);
+	const { data: developers } = useQuery(["developers"], () =>
+		getAllUsers({ positionType: "62ff3e6b7582860104c727f3" })
+	);
+	const { data: designers } = useQuery(["designers"], () =>
+		getAllUsers({ positionType: "62ff3c816275a483c8e69048" })
+	);
+	const { data: QAs } = useQuery(["QA"], () =>
+		getAllUsers({ positionType: "62ff3c796275a483c8e69042" })
+	);
+	const { data: devops } = useQuery(["DevOps"], () =>
+		getAllUsers({ positionType: "62ff3cb46275a483c8e69050" })
+	);
 	const { data, isLoading, isError, isFetching } = useQuery(
-		["projects", page, projectType, projectStatus, projectClient, project],
+		[
+			"projects",
+			page,
+			projectType,
+			projectStatus,
+			projectClient,
+			project,
+			developer
+		],
 		() =>
 			getAllProjects({
 				...page,
 				projectType,
 				projectStatus,
 				projectClient,
-				project
+				project,
+				developer
 			}),
 		{ keepPreviousData: true }
 	);
@@ -133,7 +156,7 @@ function ProjectsPage() {
 		}
 	}, [isError]);
 
-	const handleUserDetailSubmit = (project, reset) => {
+	const handleUserDetailSubmit = project => {
 		try {
 			const updatedProject = {
 				...project,
@@ -153,7 +176,6 @@ function ProjectsPage() {
 					details: updatedProject
 				});
 			else addProjectMutation.mutate(updatedProject);
-			reset.form.resetFields();
 		} catch (error) {
 			notification({ message: "Project Addition Failed", type: "error" });
 		}
@@ -211,12 +233,16 @@ function ProjectsPage() {
 	const handleClientChange = clientId => {
 		setprojectClient(clientId);
 	};
+	const handleDeveloperChange = developerId => {
+		setDeveloper(developerId);
+	};
 
 	const handleResetFilter = () => {
 		setProject("");
 		setProjectType(undefined);
 		setProjectStatus(undefined);
 		setprojectClient(undefined);
+		setDeveloper(undefined);
 		projectRef.current.input.state.value = "";
 	};
 
@@ -243,9 +269,10 @@ function ProjectsPage() {
 				}
 				types={projectTypesData}
 				statuses={projectStatusData}
-				// developer={developer}
-				// designer={designer}
-				// qa={qa}
+				developers={developers}
+				designers={designers}
+				qas={QAs}
+				devops={devops}
 				initialValues={userRecord.project}
 				readOnly={readOnly}
 				isEditMode={isEditMode}
@@ -312,6 +339,23 @@ function ProjectsPage() {
 										projectClientsData?.data?.data?.data?.map(client => (
 											<Option value={client._id} key={client._id}>
 												{client?.name}
+											</Option>
+										))}
+								</Select>
+							</FormItem>
+							<FormItem>
+								<Select
+									placeholder="Select Developer"
+									style={{ width: 200 }}
+									onChange={handleDeveloperChange}
+									value={developer}
+									showSearch
+									filterOption={filterOptions}
+								>
+									{developers &&
+										developers?.data?.data?.data?.map(developer => (
+											<Option value={developer._id} key={developer._id}>
+												{developer?.name}
 											</Option>
 										))}
 								</Select>
