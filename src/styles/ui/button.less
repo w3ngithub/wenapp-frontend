@@ -398,3 +398,13 @@ fieldset[disabled] a.@{class-prefix}-btn {
 		}
 	}
 }
+
+.ant-radio-button-wrapper{
+	&:first-child {
+		border-left: @border-width-base @border-style-base @border-color-base;
+		border-radius: @border-radius-base 0 0 @border-radius-base!important;
+	}
+	&:last-child {
+		border-radius: @border-radius-base!important;
+	}
+}
