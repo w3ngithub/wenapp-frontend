@@ -1,5 +1,5 @@
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { useQuery } from "@tanstack/react-query";
 import {
 	Button,
@@ -16,7 +16,6 @@ import { filterOptions } from "helpers/utils";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { getProjectTags } from "services/projects";
-import { getAllUsers } from "services/users/userDetails";
 import "./style.css";
 
 const FormItem = Form.Item;
@@ -33,19 +32,21 @@ function ProjectModal({
 	readOnly = false,
 	loading = false,
 	isEditMode = false,
+	developers,
+	designers,
+	qas,
+	devops,
 	...rest
 }) {
-	const { getFieldDecorator } = rest.form;
+	const { getFieldDecorator, resetFields } = rest.form;
 	const [projectTypes, setProjectTypes] = useState([]);
 	const [projectStatuses, setProjectStatuses] = useState([]);
 	const { data, refetch } = useQuery(["tags"], getProjectTags, {
 		enabled: false
 	});
-	const usersQuery = useQuery(["users"], getAllUsers, {
-		enabled: false
-	});
+
 	const handleCancel = () => {
-		rest.form.resetFields();
+		resetFields();
 		onClose();
 	};
 
@@ -54,7 +55,7 @@ function ProjectModal({
 			if (err) {
 				return;
 			}
-			onSubmit(fieldsValue, rest);
+			onSubmit(fieldsValue);
 		});
 	};
 
@@ -63,7 +64,6 @@ function ProjectModal({
 			setProjectStatuses(statuses.data.data.data);
 			setProjectTypes(types.data.data.data);
 			refetch();
-			usersQuery.refetch();
 			if (isEditMode) {
 				rest.form.setFieldsValue({
 					name: initialValues.name ?? "",
@@ -109,6 +109,8 @@ function ProjectModal({
 				});
 			}
 		}
+
+		if (!toggle) resetFields();
 	}, [toggle]);
 	return (
 		<Modal
@@ -298,12 +300,11 @@ function ProjectModal({
 										disabled={readOnly}
 										mode="tags"
 									>
-										{usersQuery.data &&
-											usersQuery.data.data.data.data.map(tag => (
-												<Option value={tag._id} key={tag._id}>
-													{tag.name}
-												</Option>
-											))}
+										{developers?.data?.data?.data?.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
 									</Select>
 								)}
 							</FormItem>
@@ -324,12 +325,11 @@ function ProjectModal({
 										disabled={readOnly}
 										mode="tags"
 									>
-										{usersQuery.data &&
-											usersQuery.data.data.data.data.map(tag => (
-												<Option value={tag._id} key={tag._id}>
-													{tag.name}
-												</Option>
-											))}
+										{designers?.data?.data?.data?.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
 									</Select>
 								)}
 							</FormItem>
@@ -347,12 +347,11 @@ function ProjectModal({
 										disabled={readOnly}
 										mode="tags"
 									>
-										{usersQuery.data &&
-											usersQuery.data.data.data.data.map(tag => (
-												<Option value={tag._id} key={tag._id}>
-													{tag.name}
-												</Option>
-											))}
+										{qas?.data?.data?.data?.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
 									</Select>
 								)}
 							</FormItem>
@@ -372,12 +371,11 @@ function ProjectModal({
 										disabled={readOnly}
 										mode="tags"
 									>
-										{usersQuery.data &&
-											usersQuery.data.data.data.data.map(tag => (
-												<Option value={tag._id} key={tag._id}>
-													{tag.name}
-												</Option>
-											))}
+										{devops?.data?.data?.data?.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
 									</Select>
 								)}
 							</FormItem>

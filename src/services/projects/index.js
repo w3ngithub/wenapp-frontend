@@ -10,11 +10,12 @@ const getAllProjects = async ({
 	projectStatus = "",
 	projectType = "",
 	projectClient = "",
-	project = ""
+	project = "",
+	developer = ""
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.Projects}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&projectStatus=${projectStatus}&projectTypes=${projectType}&client=${projectClient}&name=${project}`
+			`${Apis.Projects}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&projectStatus=${projectStatus}&projectTypes=${projectType}&client=${projectClient}&developers=${developer}&name=${project}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {

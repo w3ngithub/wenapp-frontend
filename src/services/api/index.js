@@ -4,6 +4,7 @@ import { BASE_API_PATH } from "helpers/api";
 const BASE_API_PATH_USERS = `${BASE_API_PATH}users`;
 const BASE_API_PATH_ROLES = `${BASE_API_PATH_USERS}/roles`;
 const BASE_API_PATH_POSITIONS = `${BASE_API_PATH_USERS}/positions`;
+const BASE_API_PATH_POSITION_TYPES = `${BASE_API_PATH_USERS}/positionTypes`;
 const BASE_API_PATH_UPDATE_PROFILE = `${BASE_API_PATH_USERS}/updateMe`;
 
 // TimeLogs
@@ -33,6 +34,7 @@ export const Apis = {
 	Users: `${BASE_API_PATH_USERS}`,
 	Roles: `${BASE_API_PATH_ROLES}`,
 	Positions: `${BASE_API_PATH_POSITIONS}`,
+	PositionTypes: `${BASE_API_PATH_POSITION_TYPES}`,
 	Profile: `${BASE_API_PATH_UPDATE_PROFILE}`,
 
 	// TimeLogs

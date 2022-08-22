@@ -7,7 +7,12 @@ import ProfileHeader from "components/Modules/profile/ProfileHeader";
 import UserProfileModal from "components/Modules/profile/UserProfileModal";
 import { useMutation } from "@tanstack/react-query";
 import { updateProfile } from "services/users/userDetails";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+	ref,
+	uploadBytesResumable,
+	getDownloadURL,
+	deleteObject
+} from "firebase/storage";
 import { storage } from "firebase";
 import moment from "moment";
 import { handleResponse } from "helpers/utils";
@@ -68,11 +73,13 @@ function Profile() {
 			);
 		},
 
-		onError: () =>
+		onError: () => {
 			notification({
 				message: "Could not update profile!",
 				type: "error"
-			})
+			});
+			setIsLoading(false);
+		}
 	});
 
 	const aboutData = aboutList.map(about => ({
@@ -80,7 +87,7 @@ function Profile() {
 		desc: user.user[about.name]
 	}));
 
-	const handleProfileUpdate = user => {
+	const handleProfileUpdate = async (user, removedFile) => {
 		setIsLoading(true);
 		let updatedUser = {
 			...user,
@@ -89,7 +96,12 @@ function Profile() {
 			primaryPhone: +user.primaryPhone,
 			secondaryPhone: +user.secondaryPhone || undefined
 		};
-		if (user.photoURL) {
+		if (removedFile) {
+			const imageRef = ref(storage, removedFile);
+			await deleteObject(imageRef);
+		}
+
+		if (user?.photoURL?.name) {
 			const storageRef = ref(storage, `profile/${user?.photoURL?.name}`);
 
 			const uploadTask = uploadBytesResumable(

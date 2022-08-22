@@ -285,7 +285,6 @@ export const handleResponse = (
 	queries
 ) => {
 	if (response.status) {
-		console.log("running");
 		queries.forEach(query => {
 			query();
 		});
@@ -295,6 +294,7 @@ export const handleResponse = (
 			type: "success"
 		});
 	} else {
+		queries[queries.length - 1]();
 		notification({
 			message: response?.data?.message || `${errorMessage}!`,
 			type: "error"
