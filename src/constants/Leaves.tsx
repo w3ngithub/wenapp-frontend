@@ -63,10 +63,12 @@ const LEAVES_COLUMN = (
 								<span className="gx-link gx-text-green">Approve</span>
 							</Popconfirm>
 						)}
-						<i
-							className="icon icon-edit gx-link"
-							onClick={() => onEditClick(record, false)}
-						/>
+						{!["approved", "cancelled"].includes(record.status) && (
+							<i
+								className="icon icon-edit gx-link"
+								onClick={() => onEditClick(record, false)}
+							/>
+						)}
 					</div>
 				);
 			return record.status === "pending" ? (
