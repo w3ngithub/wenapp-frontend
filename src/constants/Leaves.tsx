@@ -4,7 +4,7 @@ import React from "react";
 const LEAVES_COLUMN = (
 	onCancelClick: (param: any) => void,
 	onApproveClick: (param: any) => void,
-	onEditClick: (param: any) => void,
+	onEditClick: (param: any, param2:any) => void,
 	isAdmin: boolean = false
 ) => [
 	{
@@ -40,7 +40,7 @@ const LEAVES_COLUMN = (
 			if (isAdmin)
 				return (
 					<div style={{ display: "flex", justifyContent: "space-between" }}>
-						<span className="gx-link gx-text-primary">View Details</span>
+						<span className="gx-link gx-text-primary" onClick={() => onEditClick(record, true)}>View Details</span>
 						{!["approved", "cancelled"].includes(record.status) && (
 							<Popconfirm
 								title="Are you sure you want to approve?"
@@ -53,7 +53,7 @@ const LEAVES_COLUMN = (
 						)}
 						<i
 							className="icon icon-edit gx-link"
-							onClick={() => onEditClick(record)}
+							onClick={() => onEditClick(record, false)}
 						/>
 					</div>
 				);

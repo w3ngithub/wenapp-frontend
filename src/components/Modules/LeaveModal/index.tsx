@@ -29,6 +29,7 @@ function LeaveModal({
 	leaveData,
 	isEditMode,
 	open,
+	readOnly = false,
 	onClose,
 	users
 }: {
@@ -37,6 +38,7 @@ function LeaveModal({
 	open: boolean;
 	onClose: () => void;
 	users: any;
+	readOnly: boolean;
 }) {
 	const queryClient = useQueryClient();
 
@@ -123,19 +125,27 @@ function LeaveModal({
 	return (
 		<Modal
 			width={1100}
-			title={isEditMode ? "Update Leave" : "Add Leave"}
+			title={!isEditMode ? "Add Leave" : readOnly ? "Details" : "Update Leave"}
 			style={{ flexDirection: "row" }}
 			visible={open}
 			onOk={onFinish}
 			onCancel={onClose}
-			footer={[
-				<Button key="back" onClick={onClose}>
-					Cancel
-				</Button>,
-				<Button key="submit" type="primary" onClick={onFinish}>
-					Submit
-				</Button>
-			]}
+			footer={
+				readOnly
+					? [
+							<Button key="back" onClick={onClose}>
+								Cancel
+							</Button>
+					  ]
+					: [
+							<Button key="back" onClick={onClose}>
+								Cancel
+							</Button>,
+							<Button key="submit" type="primary" onClick={onFinish}>
+								Submit
+							</Button>
+					  ]
+			}
 		>
 			<Spin spinning={leaveMutation.isLoading || leaveUpdateMutation.isLoading}>
 				<Form {...layout} form={form} name="control-hooks" layout="vertical">
@@ -146,7 +156,7 @@ function LeaveModal({
 									<Form.Item
 										{...formItemLayout}
 										name="leaveType"
-										label="leave Type"
+										label="Leave Type"
 										rules={[{ required: true, message: "Required!" }]}
 									>
 										<Select
@@ -155,6 +165,7 @@ function LeaveModal({
 											placeholder="Select Leave Type"
 											allowClear
 											onChange={handleLeaveTypeChange}
+											disabled={readOnly}
 										>
 											{leaveTypeQuery?.data?.map(type => (
 												<Option value={type.id} key={type.id}>
@@ -176,6 +187,7 @@ function LeaveModal({
 											filterOption={filterOptions}
 											placeholder="Select User"
 											onChange={handleUserChange}
+											disabled={readOnly}
 											allowClear
 										>
 											{users?.map((user: any) => (
@@ -195,7 +207,7 @@ function LeaveModal({
 										label="Leave Reason"
 										rules={[{ required: true, message: "Required!" }]}
 									>
-										<Input.TextArea allowClear rows={10} />
+										<Input.TextArea allowClear rows={10} disabled={readOnly}/>
 									</Form.Item>
 								</Col>
 							</Row>
@@ -238,6 +250,7 @@ function LeaveModal({
 														)
 												};
 										}}
+										disabled={readOnly}
 									/>
 								</Form.Item>
 
