@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Table, Form, DatePicker } from "antd";
 import moment from "moment";
-import { attendanceFilter, ATTENDANCE_COLUMNS } from "constants/Attendance";
+import {
+	attendanceFilter,
+	ATTENDANCE_COLUMNS,
+	intialDate,
+	monthlyState,
+	weeklyState
+} from "constants/Attendance";
 import { searchAttendacentOfUser } from "services/attendances";
 import { dateDifference, milliSecondIntoHours } from "helpers/utils";
 import ViewDetailModel from "../ViewDetailModel";
@@ -17,7 +23,7 @@ const FormItem = Form.Item;
 const formattedAttendances = attendances => {
 	return attendances?.map(att => ({
 		...att,
-		key: att._id,
+		key: att._id.attendanceDate + att._id.user,
 		attendanceDate: moment(att?._id).format("LL"),
 		attendanceDay: moment(att?._id).format("dddd"),
 		punchInTime: moment(att?.data?.[0]?.punchInTime).format("LTS"),
@@ -38,9 +44,6 @@ const formattedAttendances = attendances => {
 		)
 	}));
 };
-const intialDate = [moment().startOf("day"), moment().endOf("day")];
-const weeklyState = [moment().startOf("week"), moment().endOf("day")];
-const monthlyState = [moment().startOf("month"), moment().endOf("day")];
 
 function UserAttendance() {
 	//init hooks
@@ -153,7 +156,7 @@ function UserAttendance() {
 				}
 			}
 		];
-		const data = parentRow.data.map(att => ({
+		const data = parentRow?.data?.map(att => ({
 			...att,
 			key: att._id,
 			punchInTime: moment(att?.punchInTime).format("LTS"),

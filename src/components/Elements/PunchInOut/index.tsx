@@ -31,6 +31,7 @@ function PunchInOut() {
 			);
 
 			handleResponse(response, "Punched Successfully", "Punch  failed", [
+				() => queryClient.invalidateQueries(["adminAttendance"]),
 				() => queryClient.invalidateQueries(["userAttendance"])
 			]);
 		},
@@ -51,7 +52,8 @@ function PunchInOut() {
 				);
 
 				handleResponse(response, "Punched Successfully", "Punch  failed", [
-					() => queryClient.invalidateQueries(["userAttendance"])
+					() => queryClient.invalidateQueries(["userAttendance"]),
+					() => queryClient.invalidateQueries(["adminAttendance"])
 				]);
 			},
 			onError: error => {
