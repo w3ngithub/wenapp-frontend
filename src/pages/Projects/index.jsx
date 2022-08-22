@@ -88,7 +88,9 @@ function ProjectsPage() {
 			projectStatus,
 			projectClient,
 			project,
-			developer
+			developer,
+			designer,
+			qa
 		],
 		() =>
 			getAllProjects({
@@ -97,7 +99,9 @@ function ProjectsPage() {
 				projectStatus,
 				projectClient,
 				project,
-				developer
+				developer,
+				designer,
+				qa
 			}),
 		{ keepPreviousData: true }
 	);
@@ -239,10 +243,10 @@ function ProjectsPage() {
 		setDeveloper(developerId);
 	};
 	const handleDesignerChange = designerId => {
-		setDeveloper(designerId);
+		setDesigner(designerId);
 	};
 	const handleQaChange = qaId => {
-		setDeveloper(qaId);
+		setQa(qaId);
 	};
 
 	const handleResetFilter = () => {
@@ -251,6 +255,8 @@ function ProjectsPage() {
 		setProjectStatus(undefined);
 		setprojectClient(undefined);
 		setDeveloper(undefined);
+		setDesigner(undefined);
+		setQa(undefined);
 		projectRef.current.input.state.value = "";
 	};
 
@@ -379,8 +385,8 @@ function ProjectsPage() {
 							<Select
 								placeholder="Select Designer"
 								style={{ width: 200 }}
-								onChange={handleDeveloperChange}
-								value={developer}
+								onChange={handleDesignerChange}
+								value={designer}
 								showSearch
 								filterOption={filterOptions}
 							>
@@ -396,13 +402,13 @@ function ProjectsPage() {
 							<Select
 								placeholder="Select QA"
 								style={{ width: 200 }}
-								onChange={handleDeveloperChange}
-								value={developer}
+								onChange={handleQaChange}
+								value={qa}
 								showSearch
 								filterOption={filterOptions}
 							>
-								{qa &&
-									qa?.data?.data?.data?.map(developer => (
+								{QAs &&
+									QAs?.data?.data?.data?.map(developer => (
 										<Option value={developer._id} key={developer._id}>
 											{developer?.name}
 										</Option>
