@@ -17,6 +17,7 @@ import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
 import { getAllUsers } from "services/users/userDetails";
 import TmsAdminAttendanceForm from "components/Modules/TmsAdminAttendanceForm";
+import TmsAdminAddAttendanceForm from "components/Modules/TmsAdminAttendanceForm/Add";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -57,6 +58,8 @@ function AdminAttendance() {
 	const [user, setUser] = useState(undefined);
 	const [attFilter, setAttFilter] = useState({ id: "1", value: "Daily" });
 	const [toggleAdd, setToggleAdd] = useState(false);
+	const [toggleEdit, setToggleEdit] = useState(false);
+
 	const [AttToEdit, setAttToEdit] = useState({});
 
 	const { data: users } = useQuery(["userForAttendances"], () =>
@@ -107,7 +110,7 @@ function AdminAttendance() {
 	};
 
 	const handleEdit = record => {
-		setToggleAdd(true);
+		setToggleEdit(true);
 		setAttToEdit(record);
 	};
 
@@ -196,10 +199,17 @@ function AdminAttendance() {
 
 	return (
 		<div>
-			<TmsAdminAttendanceForm
+			<TmsAdminAddAttendanceForm
 				toogle={toggleAdd}
 				handleCancel={() => {
 					setToggleAdd(false);
+				}}
+				users={users?.data?.data?.data}
+			/>
+			<TmsAdminAttendanceForm
+				toogle={toggleEdit}
+				handleCancel={() => {
+					setToggleEdit(false);
 					setAttToEdit({});
 				}}
 				users={users?.data?.data?.data}
