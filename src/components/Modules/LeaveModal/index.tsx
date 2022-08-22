@@ -245,7 +245,7 @@ function LeaveModal({
 														)
 												};
 										}}
-										// disabled={readOnly}
+										disabled={readOnly}
 									/>
 								</Form.Item>
 
