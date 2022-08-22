@@ -29,6 +29,7 @@ function UserProfileModal({
 }) {
 	const { getFieldDecorator } = rest.form;
 	const [files, setFiles] = useState([]);
+	const [removedFile, setRemovedFile] = useState(null);
 
 	const handleCancel = () => {
 		rest.form.resetFields();
@@ -41,10 +42,13 @@ function UserProfileModal({
 			if (err) {
 				return;
 			}
-			onSubmit({
-				...fieldsValue,
-				photoURL: files.length > 0 ? files[0] : null
-			});
+			onSubmit(
+				{
+					...fieldsValue,
+					photoURL: files.length > 0 ? files[0] : null
+				},
+				removedFile
+			);
 		});
 	};
 
@@ -61,12 +65,15 @@ function UserProfileModal({
 			});
 			setFiles(
 				user?.photoURL
-					? [{ uid: "1", url: user?.photoURL, name: "profile photo" }]
+					? [{ uid: "1", url: user?.photoURL, name: "Profile Photo" }]
 					: []
 			);
 		}
 
-		if (!toggle) setFiles([]);
+		if (!toggle) {
+			setFiles([]);
+			setRemovedFile(null);
+		}
 	}, [toggle]);
 	return (
 		<Modal
@@ -94,6 +101,7 @@ function UserProfileModal({
 						<DragAndDropFile
 							files={files}
 							setFiles={setFiles}
+							onRemove={setRemovedFile}
 							displayType="picture-card"
 							allowMultiple={false}
 							accept="image/png, image/jpeg"

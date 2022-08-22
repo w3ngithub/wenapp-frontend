@@ -23,6 +23,7 @@ Props Types
 function DragAndDropFile({
 	files,
 	setFiles,
+	onRemove,
 	displayType = "text",
 	allowMultiple = true,
 	accept = ""
@@ -44,6 +45,7 @@ function DragAndDropFile({
 	};
 
 	const handleChange = info => {
+		console.log(info);
 		let fileList = [...info.fileList];
 		if (allowMultiple) setFiles(fileList);
 		else {
@@ -52,6 +54,14 @@ function DragAndDropFile({
 				: [];
 			setFiles(list);
 		}
+	};
+
+	const handleRemove = removed => {
+		if (!removed.url) return;
+
+		if (allowMultiple) {
+			onRemove(prev => [...prev, removed.url]);
+		} else onRemove(removed.url);
 	};
 	const handleCancel = () => setPreviewVisible(false);
 	return (
@@ -65,6 +75,7 @@ function DragAndDropFile({
 				}
 				fileList={files}
 				onChange={handleChange}
+				onRemove={handleRemove}
 				accept={accept}
 			>
 				<p className="ant-upload-drag-icon">
