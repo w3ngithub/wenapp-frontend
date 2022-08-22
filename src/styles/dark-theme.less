@@ -3010,6 +3010,15 @@ body.dark-theme {
 	}
 }
 
+.max-two-lines {
+	display: -webkit-box;
+	line-clamp: 2;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	word-break: break-word;
+}
+
 @media screen and (max-width: @screen-md-max) {
 	.dark-theme .@{class-prefix}-popover-horizantal {
 		& .@{class-prefix}-search-bar input[type="search"] {
@@ -3064,3 +3073,4 @@ body.dark-theme {
 		}
 	}
 }
+

@@ -85,7 +85,7 @@ function Leaves({
 	};
 	const handleOpenModal = () => {
 		setOpenModal(true);
-		 setReadOnly(false);
+		setReadOnly(false);
 	};
 
 	const handleOpenEditModal = (data, mode) => {
