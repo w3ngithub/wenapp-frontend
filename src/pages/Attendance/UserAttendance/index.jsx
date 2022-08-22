@@ -2,12 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Table, Form, DatePicker } from "antd";
 import moment from "moment";
-import { attendanceFilter, ATTENDANCE_COLUMNS } from "constants/Attendance";
+import {
+	attendanceFilter,
+	ATTENDANCE_COLUMNS,
+	intialDate,
+	monthlyState,
+	weeklyState
+} from "constants/Attendance";
 import { searchAttendacentOfUser } from "services/attendances";
-import { dateDifference } from "helpers/utils";
+import { dateDifference, milliSecondIntoHours } from "helpers/utils";
 import ViewDetailModel from "../ViewDetailModel";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
+import { EyeOutlined } from "@ant-design/icons";
+import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -15,21 +23,27 @@ const FormItem = Form.Item;
 const formattedAttendances = attendances => {
 	return attendances?.map(att => ({
 		...att,
-		key: att._id,
-		attendanceDate: moment(att?.attendanceDate).format("LL"),
-		attendanceDay: moment(att?.attendanceDate).format("dddd"),
-		punchInTime: moment(att?.punchInTime).format("LTS"),
-		punchOutTime: att?.punchOutTime
-			? moment(att?.punchOutTime).format("LTS")
+		key: att._id.attendanceDate + att._id.user,
+		attendanceDate: moment(att?._id).format("LL"),
+		attendanceDay: moment(att?._id).format("dddd"),
+		punchInTime: moment(att?.data?.[0]?.punchInTime).format("LTS"),
+		punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
+			? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format("LTS")
 			: "",
-		officeHour: att?.punchOutTime
-			? dateDifference(att?.punchOutTime, att?.punchInTime)
-			: ""
+		officeHour: milliSecondIntoHours(
+			att?.data
+				?.map(x =>
+					x?.punchOutTime
+						? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
+						: ""
+				)
+				.filter(Boolean)
+				?.reduce((accumulator, value) => {
+					return accumulator + value;
+				}, 0)
+		)
 	}));
 };
-const intialDate = [moment().startOf("day"), moment().endOf("day")];
-const weeklyState = [moment().startOf("week"), moment().endOf("day")];
-const monthlyState = [moment().startOf("month"), moment().endOf("day")];
 
 function UserAttendance() {
 	//init hooks
@@ -39,8 +53,10 @@ function UserAttendance() {
 	const [attToView, setAttToView] = useState({});
 	const [date, setDate] = useState(intialDate);
 	const [attFilter, setAttFilter] = useState({ id: "1", value: "Daily" });
+	const [toogle, setToogle] = useState(false);
 
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
+	const punch = JSON.parse(localStorage.getItem("punch") || "{}");
 
 	const { data, isLoading, isFetching } = useQuery(
 		["userAttendance", user, date, page],
@@ -75,7 +91,14 @@ function UserAttendance() {
 
 	const handleView = record => {
 		setOpenView(true);
-		setAttToView(record);
+		setAttToView({
+			...record,
+			attendanceDate: moment(record?.attendanceDate).format("LL"),
+			attendanceDay: moment(record?.attendanceDate).format("dddd"),
+			punchInTime: record?.punchInTime,
+			punchOutTime: record?.punchOutTime ? record?.punchOutTime : "",
+			officeHour: record?.officeHour ? record?.officeHour : ""
+		});
 	};
 
 	const handleAttChnageChange = val => {
@@ -102,8 +125,60 @@ function UserAttendance() {
 		}
 	}, [isLoading, data?.status]);
 
+	const expandedRowRender = parentRow => {
+		const columns = [
+			{
+				title: "Punch-in Time",
+				dataIndex: "punchInTime",
+				key: "punchInTime"
+			},
+			{
+				title: "Punch-out Time",
+				dataIndex: "punchOutTime",
+				key: "punchOutTime"
+			},
+			{
+				title: "Office hour",
+				dataIndex: "officeHour",
+				key: "officeHour"
+			},
+			{
+				title: "Action",
+				key: "action",
+				render: (text, record) => {
+					return (
+						<span>
+							<span className="gx-link" onClick={() => handleView(record)}>
+								<EyeOutlined style={{ fontSize: "18px" }} />
+							</span>
+						</span>
+					);
+				}
+			}
+		];
+		const data = parentRow?.data?.map(att => ({
+			...att,
+			key: att._id,
+			punchInTime: moment(att?.punchInTime).format("LTS"),
+			punchOutTime: att?.punchOutTime
+				? moment(att?.punchOutTime).format("LTS")
+				: "",
+			officeHour: att?.punchOutTime
+				? dateDifference(att?.punchOutTime, att?.punchInTime)
+				: ""
+		}));
+
+		return <Table columns={columns} dataSource={data} pagination={false} />;
+	};
+
 	return (
 		<div>
+			<TmsMyAttendanceForm
+				punch={punch}
+				title="Time Attendance"
+				toogle={toogle}
+				handleCancel={() => setToogle(false)}
+			/>
 			<ViewDetailModel
 				title="Attendance Details"
 				toogle={openView}
@@ -131,7 +206,9 @@ function UserAttendance() {
 					</Form>
 					<Button
 						className="gx-btn gx-btn-primary gx-text-white "
-						onClick={() => {}}
+						onClick={() => {
+							setToogle(true);
+						}}
 					>
 						Add
 					</Button>
@@ -140,14 +217,17 @@ function UserAttendance() {
 			<Table
 				className="gx-table-responsive"
 				columns={ATTENDANCE_COLUMNS(sort, handleView)}
-				dataSource={formattedAttendances(data?.data?.data?.attendances)}
+				dataSource={formattedAttendances(
+					data?.data?.data?.attendances?.[0]?.data
+				)}
+				expandable={{ expandedRowRender }}
 				onChange={handleTableChange}
 				pagination={{
 					current: page.page,
 					pageSize: page.limit,
 					pageSizeOptions: ["5", "10", "20", "50"],
 					showSizeChanger: true,
-					total: data?.data?.data?.count || 1,
+					total: data?.data?.data?.attendances?.[0]?.metadata?.[0]?.total || 1,
 					onShowSizeChange,
 					onChange: handlePageChange
 				}}

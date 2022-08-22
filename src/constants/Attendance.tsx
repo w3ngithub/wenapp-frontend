@@ -1,5 +1,6 @@
 import React, { ReactElement } from "react";
 import { EyeOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 interface notice {
 	title: string;
@@ -75,22 +76,6 @@ const ATTENDANCE_COLUMNS = (
 					sorter: (a, b) =>
 						a.officeHour?.toString().localeCompare(b.officeHour?.toString()),
 					sortOrder: sortedInfo.columnKey === "officeHour" && sortedInfo.order
-				},
-				{
-					title: "Action",
-					key: "action",
-					render: (text, record) => {
-						return (
-							<span>
-								<span
-									className="gx-link"
-									onClick={() => openModal(record, true)}
-								>
-									<EyeOutlined style={{ fontSize: "18px" }} />
-								</span>
-							</span>
-						);
-					}
 				}
 		  ]
 		: [
@@ -142,22 +127,6 @@ const ATTENDANCE_COLUMNS = (
 					sorter: (a, b) =>
 						a.officeHour?.toString().localeCompare(b.officeHour?.toString()),
 					sortOrder: sortedInfo.columnKey === "officeHour" && sortedInfo.order
-				},
-				{
-					title: "Action",
-					key: "action",
-					render: (text, record) => {
-						return (
-							<span>
-								<span
-									className="gx-link"
-									onClick={() => openModal(record, true)}
-								>
-									<EyeOutlined style={{ fontSize: "18px" }} />
-								</span>
-							</span>
-						);
-					}
 				}
 		  ];
 
@@ -166,5 +135,9 @@ const attendanceFilter = [
 	{ id: 2, value: "Weekly" },
 	{ id: 3, value: "Monthly" }
 ];
+
+export const intialDate = [moment().startOf("day"), moment().endOf("day")];
+export const weeklyState = [moment().startOf("week"), moment().endOf("day")];
+export const monthlyState = [moment().startOf("month"), moment().endOf("day")];
 
 export { ATTENDANCE_COLUMNS, attendanceFilter };
