@@ -1,18 +1,12 @@
-import { Card, Checkbox, Col, Collapse, Input, Select } from "antd";
+import { Checkbox, Collapse, Input } from "antd";
 import { Form } from "@ant-design/compatible";
 
-import { CheckboxValueType } from "antd/lib/checkbox/Group";
-import { filterOptions } from "helpers/utils";
-import React, { useState } from "react";
+import React from "react";
 
 const { Panel } = Collapse;
 const CheckboxGroup = Checkbox.Group;
 const FormItem = Form.Item;
 
-const layout = {
-	labelCol: { span: 8 },
-	wrapperCol: { span: 16 }
-};
 const formItemLayout = {
 	labelCol: {
 		xs: { span: 0 },
@@ -39,67 +33,102 @@ const plainOptions = [
 	"December"
 ];
 
-function Maintainance({ getFieldDecorator, selectedMonth, setSelectedMonth }) {
+function Maintainance({ maintenance, setMaintenance }) {
 	const handleMonthChange = value => {
 		if (value.includes("Toggle All")) {
-			setSelectedMonth(plainOptions);
+			const valuesWithoutToggleAll = value.slice(1);
+
+			if (
+				valuesWithoutToggleAll.length < 12 &&
+				!maintenance[0]?.selectMonths?.includes("Toggle All")
+			) {
+				setMaintenance(prev => [{ ...prev[0], selectMonths: plainOptions }]);
+				return;
+			}
+
+			setMaintenance(prev => [
+				{ ...prev[0], selectMonths: valuesWithoutToggleAll }
+			]);
 			return;
 		}
 
-		if (selectedMonth.includes("Toggle All")) {
-			setSelectedMonth([]);
+		if (!value.includes("Toggle All")) {
+			if (value.length === 12) {
+				setMaintenance(prev => [{ ...prev[0], selectMonths: [] }]);
+				return;
+			}
+
+			setMaintenance(prev => [{ ...prev[0], selectMonths: value }]);
 			return;
 		}
-		setSelectedMonth(prev => [...prev, ...value]);
+	};
+
+	const handleMonthlyChange = value => {
+		setMaintenance(prev => [{ ...prev[0], monthly: Boolean(value.length) }]);
+	};
+
+	const handleMailDayChange = event => {
+		setMaintenance(prev => [{ ...prev[0], emailDay: event.target.value }]);
+	};
+
+	const handleEmailChange = event => {
+		setMaintenance(prev => [{ ...prev[0], sendEmailTo: event.target.value }]);
 	};
 	return (
 		<Collapse accordion>
 			<Panel header="Maintenance" key="1">
-				<Form {...layout} name="control-hooks" layout="vertical">
-					<FormItem
-						{...formItemLayout}
-						style={{ marginBottom: "30px", display: "block" }}
-						label="Enable Maintenance"
-						help="Check this box to enable recurring monthly maintenance on this
+				<FormItem
+					{...formItemLayout}
+					style={{ marginBottom: "30px", display: "block" }}
+					label="Enable Maintenance"
+					help="Check this box to enable recurring monthly maintenance on this
                         project."
-					>
-						{getFieldDecorator("monthly", {})(<Checkbox>Yes</Checkbox>)}
-					</FormItem>
-					<FormItem
-						{...formItemLayout}
-						style={{ marginBottom: "30px", display: "block" }}
-						label="Select Month"
-					>
-						<CheckboxGroup
-							className="gx-d-flex gx-flex-row gx-row-gap-10"
-							style={{ marginTop: "15px" }}
-							options={plainOptions}
-							onChange={handleMonthChange}
-							value={selectedMonth}
-						/>
-					</FormItem>
+				>
+					<CheckboxGroup
+						options={[{ label: "Yes", value: true }]}
+						onChange={handleMonthlyChange}
+						value={[maintenance[0]?.monthly]}
+					/>
+				</FormItem>
+				<FormItem
+					{...formItemLayout}
+					style={{ marginBottom: "30px", display: "block" }}
+					label="Select Month"
+				>
+					<CheckboxGroup
+						className="gx-d-flex gx-flex-row gx-row-gap-10"
+						style={{ marginTop: "15px" }}
+						options={plainOptions}
+						onChange={handleMonthChange}
+						value={maintenance[0]?.selectMonths}
+					/>
+				</FormItem>
 
-					<FormItem
-						style={{ marginBottom: "30px", display: "block" }}
-						{...formItemLayout}
-						label="Send Mail On"
-						help="Select the day of the month e.g. if you input 12 - the field mail will be sent on the 12th of every month."
-					>
-						{getFieldDecorator("emailDay", {
-							rules: [{ required: true, message: "Required!" }]
-						})(<Input placeholder="0" style={{ marginTop: "15px" }} />)}
-					</FormItem>
-					<FormItem
-						{...formItemLayout}
-						style={{ marginBottom: "30px", display: "block" }}
-						label="Project Coordinator E-mail"
-						help="will default to info@webexpertsnepal.com if left blank"
-					>
-						{getFieldDecorator("sendEmailTo", {
-							rules: [{ required: true, message: "Required!" }]
-						})(<Input style={{ marginTop: "15px" }} />)}
-					</FormItem>
-				</Form>
+				<FormItem
+					style={{ marginBottom: "30px", display: "block" }}
+					{...formItemLayout}
+					label="Send Mail On"
+					help="Select the day of the month e.g. if you input 12 - the field mail will be sent on the 12th of every month."
+				>
+					<Input
+						placeholder="0"
+						style={{ marginTop: "15px" }}
+						value={maintenance[0]?.emailDay}
+						onChange={handleMailDayChange}
+					/>
+				</FormItem>
+				<FormItem
+					{...formItemLayout}
+					style={{ marginBottom: "30px", display: "block" }}
+					label="Project Coordinator E-mail"
+					help="will default to info@webexpertsnepal.com if left blank"
+				>
+					<Input
+						style={{ marginTop: "15px" }}
+						onChange={handleEmailChange}
+						value={maintenance[0]?.sendEmailTo}
+					/>
+				</FormItem>
 			</Panel>
 		</Collapse>
 	);
