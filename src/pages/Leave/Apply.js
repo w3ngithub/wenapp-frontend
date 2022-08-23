@@ -4,9 +4,12 @@ import { filterOptions, handleResponse } from "helpers/utils";
 import React, { useState } from "react";
 import { Calendar, DateObject } from "react-multi-date-picker";
 import { createLeave, getLeaveTypes } from "services/leaves";
+import { useSelector } from "react-redux";
 import { Form } from "@ant-design/compatible";
 import { getTeamLeads } from "services/users/userDetails";
 import { notification } from "helpers/notification";
+import { THEME_TYPE_DARK } from "constants/ThemeSetting";
+import "react-multi-date-picker/styles/backgrounds/bg-dark.css"
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -15,6 +18,8 @@ const Option = Select.Option;
 function Apply({ ...rest }) {
 	const { getFieldDecorator } = rest.form;
 	const queryClient = useQueryClient();
+	const {themeType} = useSelector(state => state.settings);
+	const darkCalendar = themeType === THEME_TYPE_DARK
 
 	const [leaveType, setLeaveType] = useState("");
 	const leaveTypeQuery = useQuery(["leaveType"], getLeaveTypes, {
@@ -81,6 +86,7 @@ function Apply({ ...rest }) {
 								rules: [{ required: true, message: "Required!" }]
 							})(
 								<Calendar
+									className={darkCalendar ? 'bg-dark' : 'null'}
 									numberOfMonths={1}
 									disableMonthPicker
 									disableYearPicker
@@ -92,12 +98,7 @@ function Apply({ ...rest }) {
 									}
 									mapDays={({ date, today }) => {
 										let isWeekend = [0, 6].includes(date.weekDay.index);
-										let isOldDate =
-											date.day < today.day && leaveType !== "Sick";
-										let isOldMonth =
-											date.month.index < today.month.index &&
-											leaveType !== "Sick";
-										if (isWeekend || isOldDate || isOldMonth)
+										if (isWeekend)
 											return {
 												disabled: true,
 												style: { color: "#ccc" },

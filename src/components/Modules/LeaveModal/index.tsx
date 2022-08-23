@@ -6,6 +6,10 @@ import { createLeaveOfUser, getLeaveTypes, updateLeave } from "services/leaves";
 import { filterOptions, handleResponse } from "helpers/utils";
 import leaveTypeInterface from "types/Leave";
 import { notification } from "helpers/notification";
+import { THEME_TYPE_DARK } from "constants/ThemeSetting";
+import { useSelector } from "react-redux";
+import "react-multi-date-picker/styles/backgrounds/bg-dark.css"
+
 
 const { Option } = Select;
 
@@ -46,6 +50,8 @@ function LeaveModal({
 	const [leaveType, setLeaveType] = useState("");
 	const [user, setUser] = useState("");
 	const [leaveId, setLeaveId] = useState(null);
+	const {themeType} = useSelector((state: any) => state.settings);
+	const darkCalendar = themeType === THEME_TYPE_DARK
 
 	const leaveTypeQuery = useQuery(["leaveType"], getLeaveTypes, {
 		select: res => [
@@ -221,6 +227,7 @@ function LeaveModal({
 									rules={[{ required: true, message: "Required!" }]}
 								>
 									<Calendar
+										className={darkCalendar ? 'bg-dark' : 'null'}
 										numberOfMonths={1}
 										disableMonthPicker
 										disableYearPicker
