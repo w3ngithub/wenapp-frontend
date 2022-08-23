@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect,  useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form } from "@ant-design/compatible";
 import "@ant-design/compatible/assets/index.css";
@@ -51,6 +51,7 @@ function ProjectsPage() {
 	const [userRecord, setUserRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
+	const [projectName, setProjectName] = useState('')
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 
@@ -256,6 +257,7 @@ function ProjectsPage() {
 	};
 
 	const handleResetFilter = () => {
+		setProjectName('');
 		setProject("");
 		setProjectType(undefined);
 		setProjectStatus(undefined);
@@ -307,7 +309,10 @@ function ProjectsPage() {
 								setProject(value);
 							}}
 							style={{ width: 200 }}
+							value={projectName}
+							onChange={(e)=>setProjectName(e.target.value)}
 							enterButton
+							allowClear
 						/>
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white "
