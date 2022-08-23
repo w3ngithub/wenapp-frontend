@@ -815,6 +815,13 @@ body.dark-theme {
 		& th,
 		& td {
 			border-top-color: @dark-theme-border-color;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			word-break: break-word;
+			overflow-wrap: break-word;
+			height: 3.5rem;
 		}
 
 		& thead th {
@@ -3003,6 +3010,15 @@ body.dark-theme {
 	}
 }
 
+.max-two-lines {
+	display: -webkit-box;
+	line-clamp: 2;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	word-break: break-word;
+}
+
 @media screen and (max-width: @screen-md-max) {
 	.dark-theme .@{class-prefix}-popover-horizantal {
 		& .@{class-prefix}-search-bar input[type="search"] {
@@ -3057,3 +3073,4 @@ body.dark-theme {
 		}
 	}
 }
+

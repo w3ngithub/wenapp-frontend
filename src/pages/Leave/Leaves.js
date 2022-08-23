@@ -33,6 +33,7 @@ function Leaves({
 	const [openModal, setOpenModal] = useState(false);
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [isEditMode, setIsEditMode] = useState(false);
+	const [readOnly, setReadOnly] = useState(false);
 	const [leaveStatus, setLeaveStatus] = useState(undefined);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 
@@ -82,12 +83,16 @@ function Leaves({
 		setOpenModal(false);
 		setIsEditMode(false);
 	};
-	const handleOpenModal = () => setOpenModal(true);
+	const handleOpenModal = () => {
+		setOpenModal(true);
+		setReadOnly(false);
+	};
 
-	const handleOpenEditModal = data => {
+	const handleOpenEditModal = (data, mode) => {
 		setIsEditMode(true);
 		setDataToEdit(data);
 		handleOpenModal();
+		setReadOnly(mode);
 	};
 
 	const onShowSizeChange = (_, pageSize) => {
@@ -110,6 +115,7 @@ function Leaves({
 				open={openModal}
 				onClose={handleCloseModal}
 				users={usersQuery?.data?.data?.data?.data}
+				readOnly={readOnly}
 			/>
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
