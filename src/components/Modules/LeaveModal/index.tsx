@@ -231,15 +231,8 @@ function LeaveModal({
 												: new Date()
 										}
 										mapDays={({ date }) => {
-											const todayDate = new Date();
-											let isWeekend = [0, 6].includes(date.weekDay.index);
-											// let isOldDate =
-											// 	date.day < todayDate.getDate() && leaveType !== "Sick";
-											// let isOldMonth =
-											// 	date.month.index < todayDate.getMonth() &&
-											// 	leaveType !== "Sick";		
-											//|| isOldDate || isOldMonth									
-											if (isWeekend )
+											let isWeekend = [0, 6].includes(date.weekDay.index);									
+											if (isWeekend)
 												return {
 													disabled: true,
 													style: { color: "#ccc" },
