@@ -83,7 +83,8 @@ function PunchInOut() {
 				userId: lastattendace?._id,
 				payload: {
 					punchOutNote: "",
-					midDayExit: false
+					midDayExit: false,
+					punchOutTime: moment.utc().format()
 				}
 			});
 		} else {

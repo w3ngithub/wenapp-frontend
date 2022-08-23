@@ -72,16 +72,8 @@ function TmsAdminAttendanceForm({
 	};
 
 	const handlePunchIn = (values: any) => {
-		const punchInTime =
-			moment
-				.utc(date)
-				.format()
-				.split("T")[0] +
-			"T" +
-			moment
-				.utc(values.punchInTime)
-				.format()
-				.split("T")[1];
+		const punchInTime = moment.utc(values.punchInTime).format();
+
 		const payload =
 			user === AttToEdit?.user
 				? {
@@ -106,16 +98,7 @@ function TmsAdminAttendanceForm({
 	};
 
 	const handlePunchOut = (values: any) => {
-		const punchOutTime =
-			moment
-				.utc(date)
-				.format()
-				.split("T")[0] +
-			"T" +
-			moment
-				.utc(values.punchOutTime)
-				.format()
-				.split("T")[1];
+		const punchOutTime = moment.utc(values.punchOutTime).format();
 
 		const payload =
 			user === AttToEdit?.user

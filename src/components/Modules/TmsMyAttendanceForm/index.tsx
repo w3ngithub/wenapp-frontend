@@ -93,7 +93,8 @@ function TmsMyAttendanceForm({
 			userId: lastattendace._id,
 			payload: {
 				punchOutNote: values.punchOutNote,
-				midDayExit: values.midDayExit ? true : false
+				midDayExit: values.midDayExit ? true : false,
+				punchOutTime: moment.utc().format()
 			}
 		});
 	};
