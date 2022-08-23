@@ -144,7 +144,7 @@ function Blogs() {
 				<Spin spinning={isFetching}>
 					<Row align="top">
 						{data?.data?.data?.data?.map(blog => (
-							<Col xl={6} md={8} sm={12} xs={24}>
+							<Col xl={8} md={12} sm={18} xs={24}>
 								<BlogItem
 									key={blog._id}
 									grid={true}
