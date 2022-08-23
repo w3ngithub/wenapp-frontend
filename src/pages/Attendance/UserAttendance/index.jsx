@@ -24,8 +24,8 @@ const formattedAttendances = attendances => {
 	return attendances?.map(att => ({
 		...att,
 		key: att._id.attendanceDate + att._id.user,
-		attendanceDate: moment(att?._id).format("LL"),
-		attendanceDay: moment(att?._id).format("dddd"),
+		attendanceDate: moment(att?._id.attendanceDate).format("LL"),
+		attendanceDay: moment(att?._id.attendanceDate).format("dddd"),
 		punchInTime: moment(att?.data?.[0]?.punchInTime).format("LTS"),
 		punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
 			? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format("LTS")

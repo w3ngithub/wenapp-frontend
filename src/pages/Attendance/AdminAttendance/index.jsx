@@ -16,6 +16,8 @@ import ViewDetailModel from "../ViewDetailModel";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
 import { getAllUsers } from "services/users/userDetails";
+import TmsAdminAttendanceForm from "components/Modules/TmsAdminAttendanceForm";
+import TmsAdminAddAttendanceForm from "components/Modules/TmsAdminAttendanceForm/Add";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -25,8 +27,8 @@ const formattedAttendances = attendances => {
 		...att,
 		key: att._id.attendanceDate + att._id.user,
 		user: att._id.user,
-		attendanceDate: moment(att?._id).format("LL"),
-		attendanceDay: moment(att?._id).format("dddd"),
+		attendanceDate: moment(att?._id.attendanceDate).format("LL"),
+		attendanceDay: moment(att?._id.attendanceDate).format("dddd"),
 		punchInTime: moment(att?.data?.[0]?.punchInTime).format("LTS"),
 		punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
 			? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format("LTS")
@@ -55,6 +57,10 @@ function AdminAttendance() {
 	const [date, setDate] = useState(intialDate);
 	const [user, setUser] = useState(undefined);
 	const [attFilter, setAttFilter] = useState({ id: "1", value: "Daily" });
+	const [toggleAdd, setToggleAdd] = useState(false);
+	const [toggleEdit, setToggleEdit] = useState(false);
+
+	const [AttToEdit, setAttToEdit] = useState({});
 
 	const { data: users } = useQuery(["userForAttendances"], () =>
 		getAllUsers({ fields: "name" })
@@ -93,7 +99,19 @@ function AdminAttendance() {
 
 	const handleView = record => {
 		setOpenView(true);
-		setAttToView(record);
+		setAttToView({
+			...record,
+			attendanceDate: moment(record?.attendanceDate).format("LL"),
+			attendanceDay: moment(record?.attendanceDate).format("dddd"),
+			punchInTime: record?.punchInTime,
+			punchOutTime: record?.punchOutTime ? record?.punchOutTime : "",
+			officeHour: record?.officeHour ? record?.officeHour : ""
+		});
+	};
+
+	const handleEdit = record => {
+		setToggleEdit(true);
+		setAttToEdit(record);
 	};
 
 	const handleAttChnageChange = val => {
@@ -113,7 +131,7 @@ function AdminAttendance() {
 				break;
 		}
 	};
-	const handleUserChnageChange = id => {
+	const handleUserChange = id => {
 		setUser(id);
 	};
 
@@ -156,7 +174,7 @@ function AdminAttendance() {
 								<EyeOutlined style={{ fontSize: "18px" }} />
 							</span>{" "}
 							<Divider type="vertical"></Divider>
-							<span className="gx-link" onClick={() => handleView(record)}>
+							<span className="gx-link" onClick={() => handleEdit(record)}>
 								Edit{" "}
 							</span>
 						</span>
@@ -181,10 +199,29 @@ function AdminAttendance() {
 
 	return (
 		<div>
+			<TmsAdminAddAttendanceForm
+				toogle={toggleAdd}
+				handleCancel={() => {
+					setToggleAdd(false);
+				}}
+				users={users?.data?.data?.data}
+			/>
+			<TmsAdminAttendanceForm
+				toogle={toggleEdit}
+				handleCancel={() => {
+					setToggleEdit(false);
+					setAttToEdit({});
+				}}
+				users={users?.data?.data?.data}
+				AttToEdit={AttToEdit}
+			/>
 			<ViewDetailModel
 				toogle={openView}
 				title={attToView.user ? attToView.user : "Attendance Details"}
-				handleCancel={() => setOpenView(false)}
+				handleCancel={() => {
+					setOpenView(false);
+					setAttToEdit({});
+				}}
 				attendanceToview={attToView}
 			/>
 			<div className="gx-mt-2"></div>
@@ -208,7 +245,7 @@ function AdminAttendance() {
 						<FormItem>
 							<Select
 								placeholder="Select User"
-								onChange={handleUserChnageChange}
+								onChange={handleUserChange}
 								value={user}
 								options={users?.data?.data?.data?.map(x => ({
 									id: x._id,
@@ -228,7 +265,7 @@ function AdminAttendance() {
 					</Form>
 					<Button
 						className="gx-btn gx-btn-primary gx-text-white "
-						onClick={() => {}}
+						onClick={() => setToggleAdd(true)}
 					>
 						Add
 					</Button>

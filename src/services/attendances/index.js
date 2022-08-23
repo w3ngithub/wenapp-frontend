@@ -69,10 +69,11 @@ const updatePunchout = async (userId, payload) => {
 	}
 };
 
-const addUserAttendance = async userId => {
+const addUserAttendance = async (userId, payload) => {
 	try {
 		let response = await API.post(
-			`${Apis.Users}/${userId}/${Apis.Attendances}`
+			`${Apis.Users}/${userId}/attendances`,
+			payload
 		);
 		return getAPIResponse(response);
 	} catch (err) {
