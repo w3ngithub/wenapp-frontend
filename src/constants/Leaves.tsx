@@ -2,8 +2,9 @@ import { Popconfirm } from "antd";
 import React from "react";
 
 const LEAVES_COLUMN = (
-	onEditClick: (param: any) => void,
 	onCancelClick: (param: any) => void,
+	onApproveClick: (param: any) => void,
+	onEditClick: (param: any, param2: any) => void,
 	isAdmin: boolean = false
 ) => [
 	{
@@ -22,7 +23,14 @@ const LEAVES_COLUMN = (
 		title: "Reason",
 		dataIndex: "reason",
 		width: 10,
-		key: "reason"
+		key: "reason",
+		render: (text: any, record: any) => {
+			return (
+				<div className="max-two-lines">
+					<span>{record.reason}</span>
+				</div>
+			);
+		}
 	},
 	{
 		title: "Status",
@@ -39,19 +47,28 @@ const LEAVES_COLUMN = (
 			if (isAdmin)
 				return (
 					<div style={{ display: "flex", justifyContent: "space-between" }}>
-						<span className="gx-link gx-text-primary">View Details</span>
-						<Popconfirm
-							title="Are you sure you want to approve?"
-							onConfirm={() => onCancelClick(record)}
-							okText="Yes"
-							cancelText="No"
+						<span
+							className="gx-link gx-text-primary"
+							onClick={() => onEditClick(record, true)}
 						>
-							<span className="gx-link gx-text-green">Approve</span>
-						</Popconfirm>
-						<i
-							className="icon icon-edit gx-link"
-							onClick={() => onEditClick(record)}
-						/>
+							View Details
+						</span>
+						{!["approved", "cancelled"].includes(record.status) && (
+							<>
+								<Popconfirm
+									title="Are you sure you want to approve?"
+									onConfirm={() => onApproveClick(record)}
+									okText="Yes"
+									cancelText="No"
+								>
+									<span className="gx-link gx-text-green">Approve</span>
+								</Popconfirm>
+								<i
+									className="icon icon-edit gx-link"
+									onClick={() => onEditClick(record, false)}
+								/>
+							</>
+						)}
 					</div>
 				);
 			return record.status === "pending" ? (

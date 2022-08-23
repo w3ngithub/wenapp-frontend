@@ -43,7 +43,8 @@ function Apply({ ...rest }) {
 				[
 					() => rest.form.resetFields(),
 					() => queryClient.invalidateQueries(["userLeaves"]),
-					() => queryClient.invalidateQueries(["leaves"])
+					() => queryClient.invalidateQueries(["leaves"]),
+					() => queryClient.invalidateQueries(["takenAndRemainingLeaveDays"])
 				]
 			),
 		onError: error => {
@@ -74,7 +75,8 @@ function Apply({ ...rest }) {
 		<Spin spinning={leaveMutation.isLoading}>
 			<Form layout="vertical" style={{ padding: "15px 18px" }}>
 				<Row type="flex">
-					<Col span={6} xs={24} sm={6}>
+					<Col span={6} xs={24} sm={6} >
+					{/* xl={8} md={10} */}
 						<FormItem label="Select Leave Dates">
 							{getFieldDecorator("leaveDates", {
 								rules: [{ required: true, message: "Required!" }]

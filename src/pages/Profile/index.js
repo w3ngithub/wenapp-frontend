@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Row } from "antd";
+import { Col, notification, Row } from "antd";
 import About from "components/Modules/profile/About/index";
 import Biography from "components/Modules/profile/Biography/index";
 import Auxiliary from "util/Auxiliary";
@@ -7,7 +7,17 @@ import ProfileHeader from "components/Modules/profile/ProfileHeader";
 import UserProfileModal from "components/Modules/profile/UserProfileModal";
 import { useMutation } from "@tanstack/react-query";
 import { updateProfile } from "services/users/userDetails";
+import {
+	ref,
+	uploadBytesResumable,
+	getDownloadURL,
+	deleteObject
+} from "firebase/storage";
+import { storage } from "firebase";
 import moment from "moment";
+import { handleResponse } from "helpers/utils";
+import { useDispatch } from "react-redux";
+import { setProfilePhoto } from "appRedux/actions";
 
 export const aboutList = [
 	{
@@ -40,18 +50,35 @@ function Profile() {
 	const [user, setUser] = useState(
 		JSON.parse(localStorage.getItem("user_id") || "")
 	);
+	const dispatch = useDispatch();
 	const [openModal, setOpenModal] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const mutation = useMutation(updateProfile, {
-		onError: error => {
-			console.log(error);
-		},
-		onSuccess: (data, variables, context) => {
-			setUser(data.data.data);
-			localStorage.setItem(
-				"user_id",
-				JSON.stringify({ user: data.data.data.user })
+		onSuccess: response => {
+			handleResponse(
+				response,
+				"Update profile successfully",
+				"Could not update profile",
+				[
+					() => setUser(response.data.data),
+					() =>
+						localStorage.setItem(
+							"user_id",
+							JSON.stringify({ user: response.data.data.user })
+						),
+					() => dispatch(setProfilePhoto(response.data.data.user.photoURL)),
+					() => setOpenModal(false),
+					() => setIsLoading(false)
+				]
 			);
-			setOpenModal(false);
+		},
+
+		onError: () => {
+			notification({
+				message: "Could not update profile!",
+				type: "error"
+			});
+			setIsLoading(false);
 		}
 	});
 
@@ -60,17 +87,52 @@ function Profile() {
 		desc: user.user[about.name]
 	}));
 
-	const handleProfileUpdate = user => {
-		console.log(user);
-		const updatedUser = {
+	const handleProfileUpdate = async (user, removedFile) => {
+		setIsLoading(true);
+		let updatedUser = {
 			...user,
 			dob: moment.utc(user.dob._d).format(),
 			joinDate: moment.utc(user.joinDate._d).format(),
 			primaryPhone: +user.primaryPhone,
 			secondaryPhone: +user.secondaryPhone || undefined
 		};
+		if (removedFile) {
+			const imageRef = ref(storage, removedFile);
+			await deleteObject(imageRef);
+		}
 
-		mutation.mutate(updatedUser);
+		if (user?.photoURL?.name) {
+			const storageRef = ref(storage, `profile/${user?.photoURL?.name}`);
+
+			const uploadTask = uploadBytesResumable(
+				storageRef,
+				user?.photoURL?.originFileObj
+			);
+
+			uploadTask.on(
+				"state_changed",
+				snapshot => {
+					// const pg = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+					// setProgress(() => pg);
+				},
+				error => {
+					// Handle unsuccessful uploads
+					setIsLoading(false);
+				},
+				() => {
+					getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
+						updatedUser = {
+							...updatedUser,
+
+							photoURL: downloadURL
+						};
+						mutation.mutate(updatedUser);
+					});
+				}
+			);
+		} else {
+			mutation.mutate(updatedUser);
+		}
 	};
 
 	return (
@@ -80,12 +142,16 @@ function Profile() {
 				onToggle={setOpenModal}
 				user={user.user}
 				onSubmit={handleProfileUpdate}
-				isLoading={mutation.isLoading}
+				isLoading={isLoading}
 			/>
 
 			<Auxiliary>
 				<ProfileHeader
-					user={{ name: user.user.name, position: user.user.position.name }}
+					user={{
+						name: user?.user?.name,
+						position: user.user?.position?.name,
+						photoURL: user?.user?.photoURL
+					}}
 					onMoreDetailsClick={setOpenModal}
 				/>
 				<div className="gx-profile-content">

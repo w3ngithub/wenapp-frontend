@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { Button, DatePicker, Input, Modal, Select, Spin } from "antd";
 import moment from "moment";
 import { filterOptions } from "helpers/utils";
@@ -24,13 +24,14 @@ function UserDetailForm({
 	onToggleModal,
 	roles,
 	position,
+	positionTypes,
 	onSubmit,
 	intialValues,
 	readOnly = false,
 	loading = false,
 	...rest
 }) {
-	const { getFieldDecorator } = rest.form;
+	const { getFieldDecorator, resetFields } = rest.form;
 
 	const handleCancel = () => {
 		rest.form.resetFields();
@@ -59,6 +60,10 @@ function UserDetailForm({
 					intialValues.position && intialValues.position._id
 						? intialValues.position._id
 						: undefined,
+				positionType:
+					intialValues.positionType && intialValues.positionType._id
+						? intialValues.positionType._id
+						: undefined,
 				panNumber: intialValues.panNumber && intialValues.panNumber,
 				citNumber: intialValues.citNumber && intialValues.citNumber,
 				bankAccNumber: intialValues.bankAccNumber && intialValues.bankAccNumber,
@@ -68,10 +73,12 @@ function UserDetailForm({
 				exitDate: intialValues.exitDate && moment(intialValues.exitDate)
 			});
 		}
+
+		if (!toggle) resetFields();
 	}, [toggle]);
 
 	return (
-        <Modal
+		<Modal
 			title={readOnly ? "Details" : "Update User"}
 			visible={toggle}
 			onOk={handleSubmit}
@@ -152,6 +159,35 @@ function UserDetailForm({
 									position?.data?.data?.data?.map(position => (
 										<Option value={position._id} key={position._id}>
 											{position.name}
+										</Option>
+									))}
+							</Select>
+						)}
+					</FormItem>
+					<FormItem
+						{...formItemLayout}
+						label="Position Type"
+						hasFeedback={readOnly ? false : true}
+					>
+						{getFieldDecorator("positionType", {
+							rules: [
+								{
+									required: true,
+									message: "Required!"
+								}
+							]
+						})(
+							<Select
+								showSearch
+								placeholder="Select Position Type"
+								disabled={readOnly}
+								hasFeedback={readOnly ? false : true}
+								filterOption={filterOptions}
+							>
+								{positionTypes &&
+									positionTypes?.data?.data?.data?.map(positionType => (
+										<Option value={positionType._id} key={positionType._id}>
+											{positionType.name}
 										</Option>
 									))}
 							</Select>
@@ -255,7 +291,7 @@ function UserDetailForm({
 				</Form>
 			</Spin>
 		</Modal>
-    );
+	);
 }
 
 const UserForm = Form.create()(UserDetailForm);

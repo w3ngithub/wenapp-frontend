@@ -424,12 +424,12 @@
 .ant-menu {
 	&-dark,
 	&-dark &-sub {
-		color: @menu-dark-color!important;
+		color: @menu-dark-color;
 		background: @menu-dark-bg!important;
 		.ant-menu-submenu-title .ant-menu-submenu-arrow {
 			&:after,
 			&:before {
-				background: @menu-dark-arrow-color!important;
+				background: @menu-dark-arrow-color;
 			}
 		}
 	}
@@ -475,7 +475,10 @@
 		color: @white-color;
 	}
 
-	&-dark &-submenu-selected &-submenu-selected &-item-selected > a {
+ &-submenu-selected &-submenu-selected &-item-selected > a {
+		color: @menu-dark-highlight-color;
+	}
+	&-dark &-item-selected > span > a {
 		color: @menu-dark-highlight-color!important;
 	}
 
@@ -485,9 +488,9 @@
 	&-dark &-submenu-selected,
 	&-dark &-submenu-title:hover,
 	&-dark &-submenu-open &-submenu-open &-item > a:hover {
-		color: @menu-dark-highlight-color!important;
+		color: @menu-dark-highlight-color;
 		> a {
-			color: @menu-dark-highlight-color!important;
+			color: @menu-dark-highlight-color;
 		}
 		> .ant-menu-submenu-title {
 			> .ant-menu-submenu-arrow {
@@ -501,12 +504,19 @@
 			> .ant-menu-submenu-arrow {
 				&:after,
 				&:before {
-					background: @menu-dark-highlight-color!important;
+					background: @menu-dark-highlight-color;
 				}
 			}
 		}
 	}
+	&-dark &-item-selected {
+		color: @menu-dark-highlight-color;
 
+		> a,
+		> a:hover {
+			color: @menu-dark-highlight-color;
+		}
+	}
 	&-dark &-submenu-open {
 		color: @white-color;
 	}
@@ -519,17 +529,17 @@
 	}
 
 	&-dark &-item-selected {
-		color: @menu-dark-highlight-color!important;
+		color: @menu-dark-highlight-color;
 
 		> a,
 		> a:hover {
-			color: @menu-dark-highlight-color!important;
+			color: @menu-dark-highlight-color;
 		}
 	}
 
 	&&-dark &-item-selected,
 	&-submenu-popup&-dark &-item-selected {
-		background-color: transparent !important;
+		background-color: transparent!important;
 	}
 
 	// Disabled state sets text to dark gray and nukes hover/tab effects
@@ -537,10 +547,10 @@
 	&-dark &-submenu-disabled {
 		&,
 		> a {
-			color: @disabled-color-dark !important;
+			color: @disabled-color-dark;
 		}
 		> .ant-menu-submenu-title {
-			color: @disabled-color-dark !important;
+			color: @disabled-color-dark;
 		}
 	}
 

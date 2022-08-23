@@ -13,6 +13,7 @@ import { CSVLink } from "react-csv";
 import {
 	getAllUsers,
 	getUserPosition,
+	getUserPositionTypes,
 	getUserRoles,
 	updateUser
 } from "services/users/userDetails";
@@ -56,6 +57,10 @@ function CoworkersPage() {
 
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
 	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
+	const { data: positionTypes } = useQuery(
+		["userPositionTypes"],
+		getUserPositionTypes
+	);
 	const { data, isLoading, isFetching, isError } = useQuery(
 		["users", page, activeUser, role, position, name],
 		() => getAllUsers({ ...page, active: activeUser, role, position, name }),
@@ -112,7 +117,6 @@ function CoworkersPage() {
 						: undefined
 				}
 			});
-			reset.form.resetFields();
 		} catch (error) {
 			notification({ message: "Could not update User!", type: "error" });
 		}
@@ -188,6 +192,7 @@ function CoworkersPage() {
 				loading={mutation.isLoading}
 				roles={roleData}
 				position={positionData}
+				positionTypes={positionTypes}
 				intialValues={userRecord}
 				readOnly={readOnly}
 			/>

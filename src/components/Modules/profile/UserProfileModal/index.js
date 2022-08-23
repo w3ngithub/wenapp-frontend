@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { Button, DatePicker, Input, Modal, Select, Spin } from "antd";
 import moment from "moment";
 import DragAndDropFile from "components/Modules/DragAndDropFile";
@@ -29,6 +29,7 @@ function UserProfileModal({
 }) {
 	const { getFieldDecorator } = rest.form;
 	const [files, setFiles] = useState([]);
+	const [removedFile, setRemovedFile] = useState(null);
 
 	const handleCancel = () => {
 		rest.form.resetFields();
@@ -41,12 +42,18 @@ function UserProfileModal({
 			if (err) {
 				return;
 			}
-			onSubmit(fieldsValue);
+			onSubmit(
+				{
+					...fieldsValue,
+					photoURL: files.length > 0 ? files[0] : null
+				},
+				removedFile
+			);
 		});
 	};
 
 	useEffect(() => {
-		if (toggle)
+		if (toggle) {
 			rest.form.setFieldsValue({
 				name: user.name,
 				dob: moment(user.dob),
@@ -56,6 +63,17 @@ function UserProfileModal({
 				joinDate: moment(user.joinDate),
 				maritalStatus: user.maritalStatus
 			});
+			setFiles(
+				user?.photoURL
+					? [{ uid: "1", url: user?.photoURL, name: "Profile Photo" }]
+					: []
+			);
+		}
+
+		if (!toggle) {
+			setFiles([]);
+			setRemovedFile(null);
+		}
 	}, [toggle]);
 	return (
 		<Modal
@@ -83,8 +101,10 @@ function UserProfileModal({
 						<DragAndDropFile
 							files={files}
 							setFiles={setFiles}
+							onRemove={setRemovedFile}
 							displayType="picture-card"
 							allowMultiple={false}
+							accept="image/png, image/jpeg"
 						/>
 					</FormItem>
 

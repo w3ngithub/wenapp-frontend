@@ -210,12 +210,12 @@ export const getLocalStorageData = type => {
 	let storage = sessionStorage.getItem(type) || localStorage.getItem(type);
 
 	try {
-		return JSON.parse(storage);
+		return JSON.parse(storage).user;
 	} catch (error) {
 		storage = JSON.stringify(
 			sessionStorage.getItem(type) || localStorage.getItem(type)
 		);
-		return JSON.parse(storage);
+		return JSON.parse(storage)?.user;
 	}
 };
 
@@ -243,6 +243,27 @@ export const dateDifference = (end, start) => {
 			: minutes === 1
 			? `${minutes} min`
 			: `${minutes} mins`
+	} `;
+};
+
+export const milliSecondIntoHours = milliSec => {
+	let delta = Math.abs(milliSec) / 1000;
+
+	// calculate (and subtract)  days
+	let days = Math.floor(delta / 86400);
+	delta -= days * 86400;
+
+	// calculate (and subtract)  hours
+	let hours = Math.floor(delta / 3600) % 24;
+	delta -= hours * 3600;
+
+	// calculate (and subtract)  minutes
+	let minutes = Math.floor(delta / 60) % 60;
+
+	return `${days === 0 ? "" : days === 1 ? `${days} day` : `${days} days`} ${
+		hours === 0 ? "" : hours === 1 ? `${hours} hr` : `${hours} hrs`
+	} ${
+		minutes === 0 ? "" : minutes === 1 ? `${minutes} min` : `${minutes} mins`
 	} `;
 };
 
@@ -285,7 +306,6 @@ export const handleResponse = (
 	queries
 ) => {
 	if (response.status) {
-		console.log("running");
 		queries.forEach(query => {
 			query();
 		});
@@ -295,6 +315,7 @@ export const handleResponse = (
 			type: "success"
 		});
 	} else {
+		queries[queries.length - 1]();
 		notification({
 			message: response?.data?.message || `${errorMessage}!`,
 			type: "error"
