@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, Col, Form, Input, Modal, Row, Checkbox, Spin } from "antd";
 import moment from "moment";
 import { FieldTimeOutlined } from "@ant-design/icons";
 import LiveTime from "components/Elements/LiveTime";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addAttendance, updatePunchout } from "services/attendances";
-import { handleResponse } from "helpers/utils";
+import { handleResponse, sortFromDate } from "helpers/utils";
 import { notification } from "helpers/notification";
+import { useDispatch, useSelector } from "react-redux";
+import { PUNCH_IN, PUNCH_OUT } from "constants/ActionTypes";
+import { fetchLoggedInUserAttendance } from "appRedux/actions/Attendance";
+import { Dispatch } from "redux";
 
 function TmsMyAttendanceForm({
 	title,
@@ -17,10 +21,16 @@ function TmsMyAttendanceForm({
 	toogle: boolean;
 	handleCancel: any;
 }) {
+	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
+
 	const [PUnchInform] = Form.useForm();
 	const [PUnchOutform] = Form.useForm();
 
 	const queryClient = useQueryClient();
+	const dispatch: Dispatch<any> = useDispatch();
+	const reduxuserAttendance = useSelector((state: any) => state.attendance);
+
+	const { punchIn, latestAttendance } = reduxuserAttendance;
 
 	const addAttendances: any = useMutation(payload => addAttendance(payload), {
 		onSuccess: (response: any) => {
@@ -29,7 +39,14 @@ function TmsMyAttendanceForm({
 			}
 
 			handleResponse(response, "Punched Successfully", "Punch  failed", [
-				() => queryClient.invalidateQueries(["userAttendance"])
+				() => {
+					dispatch(fetchLoggedInUserAttendance(user._id));
+				},
+				() => {
+					dispatch({ type: PUNCH_OUT });
+				},
+				() => queryClient.invalidateQueries(["userAttendance"]),
+				() => queryClient.invalidateQueries(["adminAttendance"])
 			]);
 		},
 		onError: error => {
@@ -46,7 +63,11 @@ function TmsMyAttendanceForm({
 				}
 
 				handleResponse(response, "Punched Successfully", "Punch  failed", [
-					() => queryClient.invalidateQueries(["userAttendance"])
+					() => {
+						dispatch({ type: PUNCH_IN });
+					},
+					() => queryClient.invalidateQueries(["userAttendance"]),
+					() => queryClient.invalidateQueries(["adminAttendance"])
 				]);
 			},
 			onError: error => {
@@ -66,13 +87,15 @@ function TmsMyAttendanceForm({
 	};
 
 	const handlePunchOut = (values: any) => {
-		// punchOutAttendances.mutate({
-		// 	userId: punch._id,
-		// 	payload: {
-		// 		punchOutNote: values.punchOutNote,
-		// 		midDayExit: values.midDayExit ? true : false
-		// 	}
-		// });
+		const lastattendace = sortFromDate(latestAttendance, "punchInTime").at(-1);
+
+		punchOutAttendances.mutate({
+			userId: lastattendace._id,
+			payload: {
+				punchOutNote: values.punchOutNote,
+				midDayExit: values.midDayExit ? true : false
+			}
+		});
 	};
 
 	const closeModel = () => {
@@ -115,7 +138,7 @@ function TmsMyAttendanceForm({
 								<Input.TextArea rows={5} />
 							</Form.Item>
 							<Form.Item>
-								<Button type="primary" htmlType="submit">
+								<Button type="primary" htmlType="submit" disabled={!punchIn}>
 									Punch In
 								</Button>
 							</Form.Item>
@@ -139,7 +162,7 @@ function TmsMyAttendanceForm({
 								<Checkbox>Mid-day Exit</Checkbox>
 							</Form.Item>
 							<Form.Item>
-								<Button type="primary" htmlType="submit">
+								<Button type="primary" htmlType="submit" disabled={punchIn}>
 									Punch Out
 								</Button>
 							</Form.Item>
