@@ -40,6 +40,8 @@ function TmsAdminAttendanceForm({
 		if (AttToEdit) {
 			setDate(moment(AttToEdit.attendanceDate));
 			setUser(AttToEdit.user);
+			PUnchInform.resetFields();
+			PUnchOutform.resetFields();
 		}
 	}, [AttToEdit]);
 
