@@ -65,7 +65,7 @@ const PROJECT_COLUMNS = (
 		width: 360,
 		render: (text, record) => {
 			return (
-				<span>
+				<div style={{display:'flex'}}>
 					<span
 						className="gx-link"
 						onClick={() =>
@@ -75,7 +75,7 @@ const PROJECT_COLUMNS = (
 						Log Time
 					</span>
 					<Divider type="vertical" />
-					<span className="gx-link">Detail</span>
+					<span className="gx-link" onClick={() => openModal(record, true)}>Detail</span>
 					<Divider type="vertical" />
 					<span className="gx-link" onClick={() => openModal(record, false)}>
 						Edit
@@ -89,7 +89,7 @@ const PROJECT_COLUMNS = (
 					>
 						<span className="gx-link gx-text-danger">Delete</span>
 					</Popconfirm>
-				</span>
+				</div>
 			);
 		}
 	}
