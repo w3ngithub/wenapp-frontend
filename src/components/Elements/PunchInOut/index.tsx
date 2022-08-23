@@ -10,13 +10,14 @@ import { addAttendance, updatePunchout } from "services/attendances";
 import { useDispatch, useSelector } from "react-redux";
 import { PUNCH_IN, PUNCH_OUT } from "constants/ActionTypes";
 import { fetchLoggedInUserAttendance } from "appRedux/actions/Attendance";
+import { Dispatch } from "redux";
 
 function PunchInOut() {
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
 
 	const queryClient = useQueryClient();
-	const dispatch = useDispatch();
-	const reduxuserAttendance = useSelector(state => state.attendance);
+	const dispatch: Dispatch<any> = useDispatch();
+	const reduxuserAttendance = useSelector((state: any) => state.attendance);
 
 	const { punchIn, latestAttendance } = reduxuserAttendance;
 
@@ -36,7 +37,7 @@ function PunchInOut() {
 		}
 	}, [latestAttendance, dispatch]);
 
-	const addAttendances = useMutation(payload => addAttendance(payload), {
+	const addAttendances = useMutation((payload: any) => addAttendance(payload), {
 		onSuccess: response => {
 			handleResponse(response, "Punched Successfully", "Punch  failed", [
 				() => queryClient.invalidateQueries(["adminAttendance"]),
@@ -55,7 +56,8 @@ function PunchInOut() {
 	});
 
 	const punchOutAttendances = useMutation(
-		payload => updatePunchout(payload?.userId, payload.payload),
+		(payload: { userId: string; payload: any }) =>
+			updatePunchout(payload?.userId, payload.payload),
 		{
 			onSuccess: response => {
 				handleResponse(response, "Punched Successfully", "Punch  failed", [
