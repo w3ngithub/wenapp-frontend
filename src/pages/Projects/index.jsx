@@ -214,6 +214,7 @@ function ProjectsPage() {
 
 	const handleOpenAddModal = () => {
 		setOpenUserDetailModal(prev => !prev);
+		setReadOnly(false);
 	};
 
 	const handleCloseModal = () => {

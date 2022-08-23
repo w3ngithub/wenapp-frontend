@@ -160,7 +160,12 @@ function ProjectModal({
 							<FormItem label="Name" hasFeedback={readOnly ? false : true}>
 								{getFieldDecorator("name", {
 									rules: [{ required: true, message: "Required!" }]
-								})(<Input placeholder="Enter Name" disabled={readOnly} />)}
+								})(
+									<Input
+										placeholder="Enter Name"
+										disabled={readOnly}
+									/>
+								)}
 							</FormItem>
 						</Col>
 						<Col span={24} sm={12}>

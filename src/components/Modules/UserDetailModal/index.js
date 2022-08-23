@@ -110,7 +110,12 @@ function UserDetailForm({
 					>
 						{getFieldDecorator("name", {
 							rules: [{ required: true, message: "Required!" }]
-						})(<Input placeholder="Enter Name" disabled={readOnly} />)}
+						})(
+							<Input
+								placeholder="Enter Name"
+								disabled={readOnly}
+							/>
+						)}
 					</FormItem>
 					<FormItem
 						{...formItemLayout}
