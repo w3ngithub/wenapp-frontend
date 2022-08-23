@@ -75,8 +75,7 @@ function Apply({ ...rest }) {
 		<Spin spinning={leaveMutation.isLoading}>
 			<Form layout="vertical" style={{ padding: "15px 18px" }}>
 				<Row type="flex">
-					<Col span={6} xs={24} sm={6} >
-					{/* xl={8} md={10} */}
+					<Col xs={24} sm={6} md={6} style={{flex:0.3}}>
 						<FormItem label="Select Leave Dates">
 							{getFieldDecorator("leaveDates", {
 								rules: [{ required: true, message: "Required!" }]
@@ -117,7 +116,7 @@ function Apply({ ...rest }) {
 							*Disabled dates are holidays
 						</small>
 					</Col>
-					<Col span={18} xs={24} sm={24} md={24} lg={24} xl={18}>
+					<Col span={18} xs={24} sm={24} md={15} style={{marginLeft:'6rem'}}>
 						<Row type="flex">
 							<Col span={12} xs={24} lg={12} md={24}>
 								<FormItem label="Leave Type">
