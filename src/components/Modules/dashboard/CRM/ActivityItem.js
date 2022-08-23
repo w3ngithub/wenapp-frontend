@@ -6,7 +6,7 @@ const ActivityItem = ({ task }) => {
 	return (
 		<Auxiliary>
 			<p className="gx-mb-0">{task.title}</p>
-			{task.imageList.length > 0 ? (
+			{task.imageList?.length > 0 ? (
 				<ul className="gx-list-inline gx-mb-3 gx-mt-2">
 					{task.imageList.map((image, index) => {
 						if (index === 2) {
