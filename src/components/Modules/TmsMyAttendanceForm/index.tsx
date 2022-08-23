@@ -11,24 +11,20 @@ import { notification } from "helpers/notification";
 function TmsMyAttendanceForm({
 	title,
 	toogle,
-	handleCancel,
-	punch
+	handleCancel
 }: {
 	title: string;
 	toogle: boolean;
 	handleCancel: any;
-	punch: any;
 }) {
 	const [PUnchInform] = Form.useForm();
 	const [PUnchOutform] = Form.useForm();
-	const [punchEnable, setPunchEnable] = useState(punch?._id ? true : false);
 
 	const queryClient = useQueryClient();
 
 	const addAttendances: any = useMutation(payload => addAttendance(payload), {
 		onSuccess: (response: any) => {
 			if (response.status) {
-				localStorage.setItem("punch", JSON.stringify(response.data.data.data));
 				closeModel();
 			}
 
@@ -46,7 +42,6 @@ function TmsMyAttendanceForm({
 		{
 			onSuccess: (response: any) => {
 				if (response.status) {
-					localStorage.removeItem("punch");
 					closeModel();
 				}
 
@@ -61,7 +56,6 @@ function TmsMyAttendanceForm({
 	);
 
 	const handlePunchIn = (values: any) => {
-		console.log(values);
 		addAttendances.mutate({
 			attendanceDate: moment()
 				.startOf("day")
@@ -72,20 +66,18 @@ function TmsMyAttendanceForm({
 	};
 
 	const handlePunchOut = (values: any) => {
-		console.log(values);
-		punchOutAttendances.mutate({
-			userId: punch._id,
-			payload: {
-				punchOutNote: values.punchOutNote,
-				midDayExit: values.midDayExit ? true : false
-			}
-		});
+		// punchOutAttendances.mutate({
+		// 	userId: punch._id,
+		// 	payload: {
+		// 		punchOutNote: values.punchOutNote,
+		// 		midDayExit: values.midDayExit ? true : false
+		// 	}
+		// });
 	};
 
 	const closeModel = () => {
 		PUnchInform.resetFields();
 		PUnchOutform.resetFields();
-		setPunchEnable(punch?._id ? true : false);
 		handleCancel();
 	};
 
@@ -123,7 +115,7 @@ function TmsMyAttendanceForm({
 								<Input.TextArea rows={5} />
 							</Form.Item>
 							<Form.Item>
-								<Button type="primary" htmlType="submit" disabled={punchEnable}>
+								<Button type="primary" htmlType="submit">
 									Punch In
 								</Button>
 							</Form.Item>
@@ -147,11 +139,7 @@ function TmsMyAttendanceForm({
 								<Checkbox>Mid-day Exit</Checkbox>
 							</Form.Item>
 							<Form.Item>
-								<Button
-									type="primary"
-									htmlType="submit"
-									disabled={!punchEnable}
-								>
+								<Button type="primary" htmlType="submit">
 									Punch Out
 								</Button>
 							</Form.Item>

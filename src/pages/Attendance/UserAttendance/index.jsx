@@ -56,7 +56,6 @@ function UserAttendance() {
 	const [toogle, setToogle] = useState(false);
 
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
-	const punch = JSON.parse(localStorage.getItem("punch") || "{}");
 
 	const { data, isLoading, isFetching } = useQuery(
 		["userAttendance", user, date, page],
@@ -174,7 +173,6 @@ function UserAttendance() {
 	return (
 		<div>
 			<TmsMyAttendanceForm
-				punch={punch}
 				title="Time Attendance"
 				toogle={toogle}
 				handleCancel={() => setToogle(false)}
