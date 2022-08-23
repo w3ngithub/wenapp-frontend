@@ -1,5 +1,5 @@
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { useQuery } from "@tanstack/react-query";
 import {
 	Button,
@@ -14,9 +14,9 @@ import {
 } from "antd";
 import { filterOptions } from "helpers/utils";
 import moment from "moment";
+import Maintenance from "pages/Projects/Maintainance";
 import { useEffect, useState } from "react";
 import { getProjectTags } from "services/projects";
-import { getAllUsers } from "services/users/userDetails";
 import "./style.css";
 
 const FormItem = Form.Item;
@@ -33,19 +33,22 @@ function ProjectModal({
 	readOnly = false,
 	loading = false,
 	isEditMode = false,
+	developers,
+	designers,
+	qas,
+	devops,
 	...rest
 }) {
-	const { getFieldDecorator } = rest.form;
+	const { getFieldDecorator, resetFields } = rest.form;
 	const [projectTypes, setProjectTypes] = useState([]);
 	const [projectStatuses, setProjectStatuses] = useState([]);
+	const [selectedMonth, setSelectedMonth] = useState([]);
 	const { data, refetch } = useQuery(["tags"], getProjectTags, {
 		enabled: false
 	});
-	const usersQuery = useQuery(["users"], getAllUsers, {
-		enabled: false
-	});
+
 	const handleCancel = () => {
-		rest.form.resetFields();
+		resetFields();
 		onClose();
 	};
 
@@ -54,17 +57,20 @@ function ProjectModal({
 			if (err) {
 				return;
 			}
-			onSubmit(fieldsValue, rest);
+			onSubmit({ ...fieldsValue, selectedMonth });
 		});
 	};
-
 	useEffect(() => {
 		if (toggle) {
 			setProjectStatuses(statuses.data.data.data);
 			setProjectTypes(types.data.data.data);
 			refetch();
-			usersQuery.refetch();
 			if (isEditMode) {
+				setSelectedMonth(
+					initialValues.maintenance?.length > 0
+						? initialValues.maintenance[0].selectMonths
+						: []
+				);
 				rest.form.setFieldsValue({
 					name: initialValues.name ?? "",
 					priority: initialValues.priority,
@@ -102,12 +108,25 @@ function ProjectModal({
 							: undefined,
 					liveUrl: initialValues.liveUrl,
 					notes: initialValues.notes,
-					maintenance:
+					emailDay:
 						initialValues.maintenance?.length > 0
-							? initialValues.maintenance
+							? initialValues.maintenance[0].emailDay
+							: undefined,
+					sendEmailTo:
+						initialValues.maintenance?.length > 0
+							? initialValues.maintenance[0].sendEmailTo
+							: undefined,
+					monthly:
+						initialValues.maintenance?.length > 0
+							? initialValues.maintenance[0].monthly
 							: undefined
 				});
 			}
+		}
+
+		if (!toggle) {
+			setSelectedMonth([]);
+			resetFields();
 		}
 	}, [toggle]);
 	return (
@@ -298,12 +317,11 @@ function ProjectModal({
 										disabled={readOnly}
 										mode="tags"
 									>
-										{usersQuery.data &&
-											usersQuery.data.data.data.data.map(tag => (
-												<Option value={tag._id} key={tag._id}>
-													{tag.name}
-												</Option>
-											))}
+										{developers?.data?.data?.data?.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
 									</Select>
 								)}
 							</FormItem>
@@ -324,12 +342,11 @@ function ProjectModal({
 										disabled={readOnly}
 										mode="tags"
 									>
-										{usersQuery.data &&
-											usersQuery.data.data.data.data.map(tag => (
-												<Option value={tag._id} key={tag._id}>
-													{tag.name}
-												</Option>
-											))}
+										{designers?.data?.data?.data?.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
 									</Select>
 								)}
 							</FormItem>
@@ -347,12 +364,11 @@ function ProjectModal({
 										disabled={readOnly}
 										mode="tags"
 									>
-										{usersQuery.data &&
-											usersQuery.data.data.data.data.map(tag => (
-												<Option value={tag._id} key={tag._id}>
-													{tag.name}
-												</Option>
-											))}
+										{qas?.data?.data?.data?.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
 									</Select>
 								)}
 							</FormItem>
@@ -372,12 +388,11 @@ function ProjectModal({
 										disabled={readOnly}
 										mode="tags"
 									>
-										{usersQuery.data &&
-											usersQuery.data.data.data.data.map(tag => (
-												<Option value={tag._id} key={tag._id}>
-													{tag.name}
-												</Option>
-											))}
+										{devops?.data?.data?.data?.map(tag => (
+											<Option value={tag._id} key={tag._id}>
+												{tag.name}
+											</Option>
+										))}
 									</Select>
 								)}
 							</FormItem>
@@ -430,14 +445,15 @@ function ProjectModal({
 							</FormItem>
 						</Col>
 					</Row>
-					<Col span={24} sm={12}>
-						<FormItem label="Maintenance" hasFeedback={readOnly ? false : true}>
-							{getFieldDecorator(
-								"maintenance",
-								{}
-							)(<Input placeholder="Enter Maintenance" disabled={readOnly} />)}
-						</FormItem>
-					</Col>
+					<Row type="flex">
+						<Col span={24} sm={24}>
+							<Maintenance
+								getFieldDecorator={getFieldDecorator}
+								selectedMonth={selectedMonth}
+								setSelectedMonth={setSelectedMonth}
+							/>
+						</Col>
+					</Row>
 				</Form>
 			</Spin>
 		</Modal>

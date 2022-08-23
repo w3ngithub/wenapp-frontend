@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { Card, Table, Select, Input, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate, filterOptions, handleResponse } from "helpers/utils";
@@ -19,6 +19,7 @@ import ProjectModal from "components/Modules/ProjectModal";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { notification } from "helpers/notification";
+import { getAllUsers } from "services/users/userDetails";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -43,14 +44,15 @@ function ProjectsPage() {
 	const [projectStatus, setProjectStatus] = useState(undefined);
 	const [projectType, setProjectType] = useState(undefined);
 	const [projectClient, setprojectClient] = useState(undefined);
+	const [developer, setDeveloper] = useState(undefined);
+	const [designer, setDesigner] = useState(undefined);
+	const [qa, setQa] = useState(undefined);
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
 	const [userRecord, setUserRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
-
-	const projectRef = useRef("");
 
 	const { data: projectTypesData } = useQuery(
 		["projectTypes"],
@@ -64,15 +66,40 @@ function ProjectsPage() {
 		["projectClients"],
 		getProjectClients
 	);
+	const { data: developers } = useQuery(["developers"], () =>
+		getAllUsers({ positionType: "62ff3e6b7582860104c727f3" })
+	);
+	const { data: designers } = useQuery(["designers"], () =>
+		getAllUsers({ positionType: "62ff3c816275a483c8e69048" })
+	);
+	const { data: QAs } = useQuery(["QA"], () =>
+		getAllUsers({ positionType: "62ff3c796275a483c8e69042" })
+	);
+	const { data: devops } = useQuery(["DevOps"], () =>
+		getAllUsers({ positionType: "62ff3cb46275a483c8e69050" })
+	);
 	const { data, isLoading, isError, isFetching } = useQuery(
-		["projects", page, projectType, projectStatus, projectClient, project],
+		[
+			"projects",
+			page,
+			projectType,
+			projectStatus,
+			projectClient,
+			project,
+			developer,
+			designer,
+			qa
+		],
 		() =>
 			getAllProjects({
 				...page,
 				projectType,
 				projectStatus,
 				projectClient,
-				project
+				project,
+				developer,
+				designer,
+				qa
 			}),
 		{ keepPreviousData: true }
 	);
@@ -133,7 +160,7 @@ function ProjectsPage() {
 		}
 	}, [isError]);
 
-	const handleUserDetailSubmit = (project, reset) => {
+	const handleUserDetailSubmit = project => {
 		try {
 			const updatedProject = {
 				...project,
@@ -145,15 +172,22 @@ function ProjectsPage() {
 					: undefined,
 				endDate: project.endDate
 					? moment.utc(project.endDate).format()
-					: undefined
+					: undefined,
+				maintenance: [
+					{
+						monthly: project.monthly,
+						selectMonths: project.selectMonth,
+						emailDay: +project.emailDay,
+						sendEmailTo: project.sendEmailTo
+					}
+				]
 			};
-			if (isEditMode)
-				updateProjectMutation.mutate({
-					id: userRecord.id,
-					details: updatedProject
-				});
+			if (isEditMode) console.log(updatedProject);
+			// updateProjectMutation.mutate({
+			// 	id: userRecord.id,
+			// 	details: updatedProject
+			// });
 			else addProjectMutation.mutate(updatedProject);
-			reset.form.resetFields();
 		} catch (error) {
 			notification({ message: "Project Addition Failed", type: "error" });
 		}
@@ -211,13 +245,24 @@ function ProjectsPage() {
 	const handleClientChange = clientId => {
 		setprojectClient(clientId);
 	};
+	const handleDeveloperChange = developerId => {
+		setDeveloper(developerId);
+	};
+	const handleDesignerChange = designerId => {
+		setDesigner(designerId);
+	};
+	const handleQaChange = qaId => {
+		setQa(qaId);
+	};
 
 	const handleResetFilter = () => {
 		setProject("");
 		setProjectType(undefined);
 		setProjectStatus(undefined);
 		setprojectClient(undefined);
-		projectRef.current.input.state.value = "";
+		setDeveloper(undefined);
+		setDesigner(undefined);
+		setQa(undefined);
 	};
 
 	const confirmDeleteProject = project => {
@@ -243,9 +288,10 @@ function ProjectsPage() {
 				}
 				types={projectTypesData}
 				statuses={projectStatusData}
-				// developer={developer}
-				// designer={designer}
-				// qa={qa}
+				developers={developers}
+				designers={designers}
+				qas={QAs}
+				devops={devops}
 				initialValues={userRecord.project}
 				readOnly={readOnly}
 				isEditMode={isEditMode}
@@ -253,78 +299,16 @@ function ProjectsPage() {
 
 			<Card title="Projects">
 				<div className="components-table-demo-control-bar">
-					<Search
-						placeholder="Search Projects"
-						onSearch={value => {
-							setPage(prev => ({ ...prev, page: 1 }));
-							setProject(value);
-						}}
-						style={{ width: 200 }}
-						enterButton
-						ref={projectRef}
-					/>
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-						<Form layout="inline">
-							<FormItem>
-								<Select
-									placeholder="Select Project Type"
-									style={{ width: 200 }}
-									onChange={handleProjectTypeChange}
-									value={projectType}
-									showSearch
-									filterOption={filterOptions}
-								>
-									{projectTypesData &&
-										projectTypesData?.data?.data?.data?.map(type => (
-											<Option value={type._id} key={type._id}>
-												{type?.name}
-											</Option>
-										))}
-								</Select>
-							</FormItem>
-							<FormItem>
-								<Select
-									placeholder="Select Project Status"
-									style={{ width: 200 }}
-									onChange={handleProjectStatusChange}
-									value={projectStatus}
-									showSearch
-									filterOption={filterOptions}
-								>
-									{projectStatusData &&
-										projectStatusData?.data?.data?.data?.map(status => (
-											<Option value={status._id} key={status._id}>
-												{status?.name}
-											</Option>
-										))}
-								</Select>
-							</FormItem>
-							<FormItem>
-								<Select
-									placeholder="Select Client"
-									style={{ width: 200 }}
-									onChange={handleClientChange}
-									value={projectClient}
-									showSearch
-									filterOption={filterOptions}
-								>
-									{projectClientsData &&
-										projectClientsData?.data?.data?.data?.map(client => (
-											<Option value={client._id} key={client._id}>
-												{client?.name}
-											</Option>
-										))}
-								</Select>
-							</FormItem>
-							<FormItem>
-								<Button
-									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-									onClick={handleResetFilter}
-								>
-									Reset
-								</Button>
-							</FormItem>
-						</Form>
+						<Search
+							placeholder="Search Projects"
+							onSearch={value => {
+								setPage(prev => ({ ...prev, page: 1 }));
+								setProject(value);
+							}}
+							style={{ width: 200 }}
+							enterButton
+						/>
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white "
 							onClick={handleOpenAddModal}
@@ -332,6 +316,118 @@ function ProjectsPage() {
 							Add New Project
 						</Button>
 					</div>
+					<Form layout="inline" className="gx-d-flex gx-flex-row gx-row-gap-10">
+						<FormItem>
+							<Select
+								placeholder="Select Project Type"
+								style={{ width: 200 }}
+								onChange={handleProjectTypeChange}
+								value={projectType}
+								showSearch
+								filterOption={filterOptions}
+							>
+								{projectTypesData &&
+									projectTypesData?.data?.data?.data?.map(type => (
+										<Option value={type._id} key={type._id}>
+											{type?.name}
+										</Option>
+									))}
+							</Select>
+						</FormItem>
+						<FormItem>
+							<Select
+								placeholder="Select Project Status"
+								style={{ width: 200 }}
+								onChange={handleProjectStatusChange}
+								value={projectStatus}
+								showSearch
+								filterOption={filterOptions}
+							>
+								{projectStatusData &&
+									projectStatusData?.data?.data?.data?.map(status => (
+										<Option value={status._id} key={status._id}>
+											{status?.name}
+										</Option>
+									))}
+							</Select>
+						</FormItem>
+						<FormItem>
+							<Select
+								placeholder="Select Client"
+								style={{ width: 200 }}
+								onChange={handleClientChange}
+								value={projectClient}
+								showSearch
+								filterOption={filterOptions}
+							>
+								{projectClientsData &&
+									projectClientsData?.data?.data?.data?.map(client => (
+										<Option value={client._id} key={client._id}>
+											{client?.name}
+										</Option>
+									))}
+							</Select>
+						</FormItem>
+						<FormItem>
+							<Select
+								placeholder="Select Developer"
+								style={{ width: 200 }}
+								onChange={handleDeveloperChange}
+								value={developer}
+								showSearch
+								filterOption={filterOptions}
+							>
+								{developers &&
+									developers?.data?.data?.data?.map(developer => (
+										<Option value={developer._id} key={developer._id}>
+											{developer?.name}
+										</Option>
+									))}
+							</Select>
+						</FormItem>
+						<FormItem>
+							<Select
+								placeholder="Select Designer"
+								style={{ width: 200 }}
+								onChange={handleDesignerChange}
+								value={designer}
+								showSearch
+								filterOption={filterOptions}
+							>
+								{designers &&
+									designers?.data?.data?.data?.map(developer => (
+										<Option value={developer._id} key={developer._id}>
+											{developer?.name}
+										</Option>
+									))}
+							</Select>
+						</FormItem>
+						<FormItem>
+							<Select
+								placeholder="Select QA"
+								style={{ width: 200 }}
+								onChange={handleQaChange}
+								value={qa}
+								showSearch
+								filterOption={filterOptions}
+							>
+								{QAs &&
+									QAs?.data?.data?.data?.map(developer => (
+										<Option value={developer._id} key={developer._id}>
+											{developer?.name}
+										</Option>
+									))}
+							</Select>
+						</FormItem>
+						<FormItem>
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								onClick={handleResetFilter}
+							>
+								Reset
+							</Button>
+						</FormItem>
+					</Form>
 				</div>
 				<Table
 					className="gx-table-responsive"

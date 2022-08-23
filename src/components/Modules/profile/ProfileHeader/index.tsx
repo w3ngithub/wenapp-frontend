@@ -8,7 +8,6 @@ const ProfileHeader = ({
 	user: { name: string; position: string; photoURL: string };
 	onMoreDetailsClick: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-	console.log(user?.photoURL);
 	return (
 		<div className="gx-profile-banner">
 			<div className="gx-profile-container">

@@ -30,11 +30,12 @@ const getAllUsers = async ({
 	name = "",
 	role = "",
 	position = "",
+	positionType = "",
 	active = ""
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.Users}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&name=${name}&role=${role}&position=${position}&active=${active}`
+			`${Apis.Users}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&name=${name}&role=${role}&position=${position}&positionType=${positionType}&active=${active}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -45,6 +46,15 @@ const getAllUsers = async ({
 const getUserRoles = async () => {
 	try {
 		let response = await API.get(`${Apis.Roles}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const getUserPositionTypes = async () => {
+	try {
+		let response = await API.get(`${Apis.PositionTypes}`);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);
@@ -105,6 +115,7 @@ export {
 	logoutUser,
 	getUserRoles,
 	getUserPosition,
+	getUserPositionTypes,
 	updateProfile,
 	updateUser,
 	importUsers
