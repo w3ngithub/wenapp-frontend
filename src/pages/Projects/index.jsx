@@ -54,8 +54,6 @@ function ProjectsPage() {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 
-	const projectRef = useRef("");
-
 	const { data: projectTypesData } = useQuery(
 		["projectTypes"],
 		getProjectTypes
@@ -174,13 +172,21 @@ function ProjectsPage() {
 					: undefined,
 				endDate: project.endDate
 					? moment.utc(project.endDate).format()
-					: undefined
+					: undefined,
+				maintenance: [
+					{
+						monthly: project.monthly,
+						selectMonths: project.selectMonth,
+						emailDay: +project.emailDay,
+						sendEmailTo: project.sendEmailTo
+					}
+				]
 			};
-			if (isEditMode)
-				updateProjectMutation.mutate({
-					id: userRecord.id,
-					details: updatedProject
-				});
+			if (isEditMode) console.log(updatedProject);
+			// updateProjectMutation.mutate({
+			// 	id: userRecord.id,
+			// 	details: updatedProject
+			// });
 			else addProjectMutation.mutate(updatedProject);
 		} catch (error) {
 			notification({ message: "Project Addition Failed", type: "error" });
@@ -257,7 +263,6 @@ function ProjectsPage() {
 		setDeveloper(undefined);
 		setDesigner(undefined);
 		setQa(undefined);
-		projectRef.current.input.state.value = "";
 	};
 
 	const confirmDeleteProject = project => {
@@ -303,7 +308,6 @@ function ProjectsPage() {
 							}}
 							style={{ width: 200 }}
 							enterButton
-							ref={projectRef}
 						/>
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white "

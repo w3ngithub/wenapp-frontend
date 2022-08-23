@@ -14,6 +14,7 @@ import {
 } from "antd";
 import { filterOptions } from "helpers/utils";
 import moment from "moment";
+import Maintenance from "pages/Projects/Maintainance";
 import { useEffect, useState } from "react";
 import { getProjectTags } from "services/projects";
 import "./style.css";
@@ -41,6 +42,7 @@ function ProjectModal({
 	const { getFieldDecorator, resetFields } = rest.form;
 	const [projectTypes, setProjectTypes] = useState([]);
 	const [projectStatuses, setProjectStatuses] = useState([]);
+	const [selectedMonth, setSelectedMonth] = useState([]);
 	const { data, refetch } = useQuery(["tags"], getProjectTags, {
 		enabled: false
 	});
@@ -55,16 +57,20 @@ function ProjectModal({
 			if (err) {
 				return;
 			}
-			onSubmit(fieldsValue);
+			onSubmit({ ...fieldsValue, selectedMonth });
 		});
 	};
-
 	useEffect(() => {
 		if (toggle) {
 			setProjectStatuses(statuses.data.data.data);
 			setProjectTypes(types.data.data.data);
 			refetch();
 			if (isEditMode) {
+				setSelectedMonth(
+					initialValues.maintenance?.length > 0
+						? initialValues.maintenance[0].selectMonths
+						: []
+				);
 				rest.form.setFieldsValue({
 					name: initialValues.name ?? "",
 					priority: initialValues.priority,
@@ -102,9 +108,17 @@ function ProjectModal({
 							: undefined,
 					liveUrl: initialValues.liveUrl,
 					notes: initialValues.notes,
-					maintenance:
+					emailDay:
 						initialValues.maintenance?.length > 0
-							? initialValues.maintenance
+							? initialValues.maintenance[0].emailDay
+							: undefined,
+					sendEmailTo:
+						initialValues.maintenance?.length > 0
+							? initialValues.maintenance[0].sendEmailTo
+							: undefined,
+					monthly:
+						initialValues.maintenance?.length > 0
+							? initialValues.maintenance[0].monthly
 							: undefined
 				});
 			}
@@ -428,14 +442,15 @@ function ProjectModal({
 							</FormItem>
 						</Col>
 					</Row>
-					<Col span={24} sm={12}>
-						<FormItem label="Maintenance" hasFeedback={readOnly ? false : true}>
-							{getFieldDecorator(
-								"maintenance",
-								{}
-							)(<Input placeholder="Enter Maintenance" disabled={readOnly} />)}
-						</FormItem>
-					</Col>
+					<Row type="flex">
+						<Col span={24} sm={24}>
+							<Maintenance
+								getFieldDecorator={getFieldDecorator}
+								selectedMonth={selectedMonth}
+								setSelectedMonth={setSelectedMonth}
+							/>
+						</Col>
+					</Row>
 				</Form>
 			</Spin>
 		</Modal>
