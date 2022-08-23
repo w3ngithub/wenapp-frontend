@@ -124,7 +124,10 @@ function ProjectModal({
 			}
 		}
 
-		if (!toggle) resetFields();
+		if (!toggle) {
+			setSelectedMonth([]);
+			resetFields();
+		}
 	}, [toggle]);
 	return (
 		<Modal
