@@ -173,21 +173,13 @@ function ProjectsPage() {
 					: undefined,
 				endDate: project.endDate
 					? moment.utc(project.endDate).format()
-					: undefined,
-				maintenance: [
-					{
-						monthly: project.monthly,
-						selectMonths: project.selectMonth,
-						emailDay: +project.emailDay,
-						sendEmailTo: project.sendEmailTo
-					}
-				]
+					: undefined
 			};
-			if (isEditMode) console.log(updatedProject);
-			// updateProjectMutation.mutate({
-			// 	id: userRecord.id,
-			// 	details: updatedProject
-			// });
+			if (isEditMode)
+				updateProjectMutation.mutate({
+					id: userRecord.id,
+					details: updatedProject
+				});
 			else addProjectMutation.mutate(updatedProject);
 		} catch (error) {
 			notification({ message: "Project Addition Failed", type: "error" });
