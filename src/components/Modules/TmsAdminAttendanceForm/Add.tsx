@@ -43,7 +43,10 @@ function TmsAdminAddAttendanceForm({
 					response,
 					"Punch added Successfully",
 					"Punch add failed",
-					[() => queryClient.invalidateQueries(["adminAttendance"])]
+					[
+						() => queryClient.invalidateQueries(["adminAttendance"]),
+						() => queryClient.invalidateQueries(["userAttendance"])
+					]
 				);
 			},
 			onError: error => {

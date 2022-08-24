@@ -1,17 +1,16 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { Layout } from "antd";
-
+import { Outlet } from "react-router-dom";
+import { connect, useDispatch } from "react-redux";
 import Sidebar from "containers/Sidebar/index";
 import HorizontalDefault from "containers/Topbar/HorizontalDefault/index";
 import HorizontalDark from "containers/Topbar/HorizontalDark/index";
 import InsideHeader from "containers/Topbar/InsideHeader/index";
 import AboveHeader from "containers/Topbar/AboveHeader/index";
 import BelowHeader from "containers/Topbar/BelowHeader/index";
-
 import Topbar from "containers/Topbar/index";
 import { footerText } from "util/config";
 import Customizer from "containers/Customizer";
-import { connect } from "react-redux";
 import {
 	NAV_STYLE_ABOVE_HEADER,
 	NAV_STYLE_BELOW_HEADER,
@@ -26,12 +25,20 @@ import {
 	TAB_SIZE
 } from "constants/ThemeSetting";
 import NoHeaderNotification from "containers/Topbar/NoHeaderNotification/index";
-import { Outlet } from "react-router-dom";
+import { fetchLoggedInUserAttendance } from "appRedux/actions/Attendance";
 
 const { Content, Footer } = Layout;
 
-export class MainApp extends Component {
-	getContainerClass = navStyle => {
+export const MainApp = props => {
+	const dispatch = useDispatch();
+
+	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
+
+	useEffect(() => {
+		dispatch(fetchLoggedInUserAttendance(user._id));
+	}, [dispatch, user]);
+
+	const getContainerClass = navStyle => {
 		switch (navStyle) {
 			case NAV_STYLE_DARK_HORIZONTAL:
 				return "gx-container-wrap";
@@ -47,7 +54,7 @@ export class MainApp extends Component {
 				return "";
 		}
 	};
-	getNavStyles = navStyle => {
+	const getNavStyles = navStyle => {
 		switch (navStyle) {
 			case NAV_STYLE_DEFAULT_HORIZONTAL:
 				return <HorizontalDefault />;
@@ -74,7 +81,7 @@ export class MainApp extends Component {
 		}
 	};
 
-	getSidebar = (navStyle, width) => {
+	const getSidebar = (navStyle, width) => {
 		if (width < TAB_SIZE) {
 			return <Sidebar />;
 		}
@@ -94,29 +101,28 @@ export class MainApp extends Component {
 		}
 	};
 
-	render() {
-		const { width, navStyle } = this.props;
-		return (
-			<Layout className="gx-app-layout">
-				{this.getSidebar(navStyle, width)}
-				<Layout>
-					{this.getNavStyles(navStyle)}
-					<Content
-						className={`gx-layout-content ${this.getContainerClass(navStyle)} `}
-					>
-						<div className="gx-main-content-wrapper">
-							<Outlet />
-						</div>
-						<Footer>
-							<div className="gx-layout-footer-content">{footerText}</div>
-						</Footer>
-					</Content>
-				</Layout>
-				<Customizer />
+	const { width, navStyle } = props;
+
+	return (
+		<Layout className="gx-app-layout">
+			{getSidebar(navStyle, width)}
+			<Layout>
+				{getNavStyles(navStyle)}
+				<Content
+					className={`gx-layout-content ${getContainerClass(navStyle)} `}
+				>
+					<div className="gx-main-content-wrapper">
+						<Outlet />
+					</div>
+					<Footer>
+						<div className="gx-layout-footer-content">{footerText}</div>
+					</Footer>
+				</Content>
 			</Layout>
-		);
-	}
-}
+			<Customizer />
+		</Layout>
+	);
+};
 
 const mapStateToProps = ({ settings }) => {
 	const { width, navStyle } = settings;
