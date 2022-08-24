@@ -25,32 +25,41 @@ const Dashboard = () => {
 	return (
 		<Auxiliary>
 			<Row>
-				<Col xl={8} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						// component={TeamOutlined}
 						totalCount={5}
 						label="Co-workers On Leave"
 					/>
 				</Col>
-				<Col xl={8} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						// component={<TeamOutlined />}
+						className="gx-pink-purple-gradient"
 						totalCount={30}
 						label="Co-workers Checked In Today"
 					/>
 				</Col>
-				<Col xl={8} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						// component={<TeamOutlined />}
+						className="gx-bg-orange"
 						totalCount={2}
 						label="Leave Request Pending"
+					/>
+				</Col>
+				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
+					<TotalCountCard
+						className="gx-bg-teal"
+						// component={<TeamOutlined />}
+						totalCount={38}
+						label="Total Co-workers"
 					/>
 				</Col>
 
 				<Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
 					<Widget>
 						<EventsAndAnnouncements />
-						{/* <RecentActivity recentList={recentActivity} /> */}
 					</Widget>
 				</Col>
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Form, Table } from "antd";
+import { Button, DatePicker, Form, Table } from "antd";
 import Select from "components/Elements/Select";
 import { LEAVES_COLUMN, STATUS_TYPES } from "constants/Leaves";
 import { CSVLink } from "react-csv";
@@ -9,6 +9,7 @@ import { changeLeaveStatus, getLeavesOfAllUsers } from "services/leaves";
 import { changeDate, handleResponse } from "helpers/utils";
 import Notification from "components/Elements/Notification";
 import { getAllUsers } from "services/users/userDetails";
+import moment from "moment";
 
 const FormItem = Form.Item;
 
@@ -35,12 +36,17 @@ function Leaves({
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [readOnly, setReadOnly] = useState(false);
 	const [leaveStatus, setLeaveStatus] = useState(undefined);
+	const [date, setDate] = useState(undefined);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 
 	const [user, setUser] = useState(undefined);
 
-	const leavesQuery = useQuery(["leaves", leaveStatus, user], () =>
-		getLeavesOfAllUsers(leaveStatus, user)
+	const leavesQuery = useQuery(
+		["leaves", leaveStatus, user, date],
+		() => getLeavesOfAllUsers(leaveStatus, user, date?.utc ? date?.utc : ""),
+		{
+			onError: err => console.log(err)
+		}
 	);
 	const usersQuery = useQuery(["users"], getAllUsers);
 
@@ -54,7 +60,8 @@ function Leaves({
 					"Could not approve leave",
 					[
 						() => queryClient.invalidateQueries(["userLeaves"]),
-						() => queryClient.invalidateQueries(["leaves"])
+						() => queryClient.invalidateQueries(["leaves"]),
+						() => queryClient.invalidateQueries(["takenAndRemainingLeaveDays"])
 					]
 				),
 			onError: error => {
@@ -77,6 +84,7 @@ function Leaves({
 	const handleResetFilter = () => {
 		setLeaveStatus(undefined);
 		setUser(undefined);
+		setDate(undefined);
 	};
 
 	const handleCloseModal = () => {
@@ -101,6 +109,12 @@ function Leaves({
 
 	const handlePageChange = pageNumber => {
 		setPage(prev => ({ ...prev, page: pageNumber }));
+	};
+
+	const handleDateChange = value => {
+		const m = moment(value._d);
+		m.set({ h: 5, m: 45, s: 0 });
+		setDate({ moment: value, utc: moment.utc(m._d).format() });
 	};
 	const data = formattedLeaves(leavesQuery?.data?.data?.data?.data);
 	const allUsers = usersQuery?.data?.data?.data?.data?.map(user => ({
@@ -134,6 +148,14 @@ function Leaves({
 								value={user}
 								options={allUsers}
 								onChange={handleUserChange}
+							/>
+						</FormItem>
+						<FormItem>
+							<DatePicker
+								className="gx-mb-3 "
+								style={{ width: "200px " }}
+								value={date?.moment}
+								onChange={handleDateChange}
 							/>
 						</FormItem>
 
