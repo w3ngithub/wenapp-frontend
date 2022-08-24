@@ -24,8 +24,7 @@ function Blogs() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 
-	const blogRef = useRef("");
-
+	const [typedTitle, setTypedTitle] = useState('');
 	const userData = JSON.parse(localStorage.getItem("user_id") || {});
 
 	const { data, isLoading, isError, isFetching } = useQuery(
@@ -75,9 +74,10 @@ function Blogs() {
 	};
 
 	const handleResetFilter = () => {
+		setTypedTitle('');
 		setTitle("");
 		setUser(undefined);
-		blogRef.current.input.value = "";
+		
 	};
 
 	const handleUserChange = user => {
@@ -106,8 +106,11 @@ function Blogs() {
 										setTitle(value);
 									}}
 									style={{ width: 300 }}
+									value={typedTitle}
+									allowClear
+									onChange={(e)=>setTypedTitle(e.target.value)}
 									enterButton
-									ref={blogRef}
+							
 								/>
 							</FormItem>
 							<FormItem>

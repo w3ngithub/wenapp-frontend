@@ -42,6 +42,7 @@ function CoworkersPage() {
 	const [position, setPosition] = useState(undefined);
 	const [role, setRole] = useState(undefined);
 	const [name, setName] = useState("");
+	const [typedName, setTypedName] = useState('');
 	const [userRecord, setUserRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
 	const [selectedRows, setSelectedRows] = useState([]);
@@ -50,7 +51,6 @@ function CoworkersPage() {
 	const queryClient = useQueryClient();
 
 	const activeUserRef = useRef("");
-	const nameRef = useRef("");
 
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id"));
@@ -148,12 +148,12 @@ function CoworkersPage() {
 
 	const handleResetFilter = () => {
 		setName("");
+		setTypedName('');
 		setRole(undefined);
 		setPosition(undefined);
 		setActiveUser("");
 		setSelectedRows([]);
-		nameRef.current.input.state.value = "";
-		activeUserRef.current.state.value = undefined;
+		// activeUserRef.current.state.value = undefined;
 	};
 
 	const handleRowSelect = rows => {
@@ -186,14 +186,16 @@ function CoworkersPage() {
 			<Card title="Co-workers">
 				<div className="components-table-demo-control-bar">
 					<Search
+						allowClear
 						placeholder="Search Users"
 						onSearch={value => {
 							setPage(prev => ({ ...prev, page: 1 }));
 							setName(value);
 						}}
 						style={{ width: 200 }}
+						onChange={(e)=>setTypedName(e.target.value)}
+						value={typedName}
 						enterButton
-						ref={nameRef}
 					/>
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline">
