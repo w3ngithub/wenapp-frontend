@@ -15,11 +15,11 @@ import {
 	BLOG,
 	BLOGDETAIL,
 	BLOGS,
-	CALENDAR,
 	COWORKERS,
 	DASHBOARD,
 	EDITBLOG,
 	FAQS,
+	HOLIDAY,
 	INVITE,
 	LEAVE,
 	LEAVE_REPORT,
@@ -102,7 +102,7 @@ function App(props: any) {
 							<Route path={RESOURCES} element={<Resources />}>
 								<Route path={FAQS} element={<Faqs />} />
 								<Route path={POLICY} element={<Policy />} />
-								<Route path={CALENDAR} element={<Calendar />} />
+								<Route path={HOLIDAY} element={<Calendar />} />
 							</Route>
 							<Route path={SETTINGS} element={<Settings />} />
 							<Route path={PROFILE} element={<Profile />} />

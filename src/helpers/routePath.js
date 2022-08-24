@@ -32,6 +32,7 @@ export const LEAVE_REPORT = `leave-report`;
 export const FAQS = `faq`;
 export const POLICY = "policy";
 export const CALENDAR = "calendar";
+export const HOLIDAY = "holiday";
 
 // Blog
 export const BLOGS = "";

@@ -5,7 +5,7 @@ import { filterOptions } from "helpers/utils";
 
 const Option = Dropdown.Option;
 
-const Select = ({ onChange, value, options, placeholder, style }) => {
+const Select = ({ onChange, value, options, placeholder, style, mode }) => {
 	return (
 		<Dropdown
 			showSearch
@@ -14,6 +14,7 @@ const Select = ({ onChange, value, options, placeholder, style }) => {
 			onChange={onChange}
 			value={value}
 			filterOption={filterOptions}
+			mode={mode}
 		>
 			{options &&
 				options?.map(opt => (
@@ -32,5 +33,6 @@ Select.defaultProps = {
 	value: undefined,
 	options: [],
 	placeholder: "Select Option",
-	style: {}
+	style: {},
+	mode: ""
 };
