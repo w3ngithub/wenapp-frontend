@@ -8,7 +8,7 @@ import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
 import { notification } from "helpers/notification";
 import { changeDate, handleResponse } from "helpers/utils";
 import moment from "moment";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 import {
 	getAllUsers,
@@ -49,8 +49,6 @@ function CoworkersPage() {
 	const [openImport, setOpenImport] = useState(false);
 	const [files, setFiles] = useState([]);
 	const queryClient = useQueryClient();
-
-	const activeUserRef = useRef("");
 
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id"));
@@ -136,6 +134,7 @@ function CoworkersPage() {
 
 	const setActiveInActiveUsers = e => {
 		setActiveUser(e.target.value === "active" ? true : false);
+
 	};
 
 	const handleRoleChange = roleId => {
@@ -153,7 +152,6 @@ function CoworkersPage() {
 		setPosition(undefined);
 		setActiveUser("");
 		setSelectedRows([]);
-		// activeUserRef.current.state.value = undefined;
 	};
 
 	const handleRowSelect = rows => {
@@ -225,7 +223,6 @@ function CoworkersPage() {
 								<Radio.Group
 									buttonStyle="solid"
 									onChange={setActiveInActiveUsers}
-									ref={activeUserRef}
 								>
 									<Radio.Button value="active">Active</Radio.Button>
 									<Radio.Button value="inactive">Inactive</Radio.Button>
