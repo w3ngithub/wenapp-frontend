@@ -110,7 +110,8 @@ function EventsAndAnnouncements() {
 				);
 			}
 		} else {
-			return <task.Icon className="gx-fs-xl" />;
+			return <div></div>;
+			// return <task.Icon className="gx-fs-lg" />;
 		}
 	}
 	return (
@@ -120,7 +121,7 @@ function EventsAndAnnouncements() {
 				<div className="gx-timeline-info" key={"activity" + index}>
 					<div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3">
 						<activity.Icon className="gx-fs-xxl" />
-						<h2 className=" gx-mb-1 ">{activity.day}</h2>
+						<h3 className=" gx-mb-1 ">{activity.day}</h3>
 					</div>
 					<Timeline>
 						{activity.tasks.map((task: any, index: number) => {

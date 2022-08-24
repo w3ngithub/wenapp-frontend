@@ -10,6 +10,7 @@ import { changeDate, handleResponse } from "helpers/utils";
 import Notification from "components/Elements/Notification";
 import { getAllUsers } from "services/users/userDetails";
 import moment from "moment";
+import { intialDate } from "constants/Attendance";
 
 const FormItem = Form.Item;
 
@@ -21,6 +22,12 @@ const formattedLeaves = leaves => {
 		type: leave?.leaveType.name,
 		status: leave?.leaveStatus
 	}));
+};
+
+const formatToUtc = date => {
+	const m = moment(date._d);
+	m.set({ h: 5, m: 45, s: 0 });
+	return m;
 };
 
 function Leaves({
@@ -36,7 +43,10 @@ function Leaves({
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [readOnly, setReadOnly] = useState(false);
 	const [leaveStatus, setLeaveStatus] = useState(undefined);
-	const [date, setDate] = useState(undefined);
+	const [date, setDate] = useState({
+		utc: moment.utc(formatToUtc(moment().startOf("day"))).format(),
+		moment: moment().startOf("day")
+	});
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 
 	const [user, setUser] = useState(undefined);

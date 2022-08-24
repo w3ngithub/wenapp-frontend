@@ -169,15 +169,6 @@ const Dashboard = () => {
 							/>
 						</div>
 					</Card>
-					<Row>
-						<Col xl={12} lg={12} md={24} sm={24} xs={24}>
-							<CurrentPlan />
-						</Col>
-						<Col xl={12} lg={12} md={24} sm={24} xs={24}>
-							<DealsClosedCard />
-						</Col>
-					</Row>
-					<PropertiesCard />
 				</Col>
 			</Row>
 		</Auxiliary>
