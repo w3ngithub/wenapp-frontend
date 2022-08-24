@@ -47,6 +47,7 @@
 
   &:hover {
     cursor: pointer;
+
     & .gx-text-hover {
       color: @primary-color;
     }
@@ -169,7 +170,7 @@
       border-right: 10px solid @grey-3;
     }
 
-    & > :last-child {
+    &> :last-child {
       margin-bottom: 0;
     }
   }
@@ -187,7 +188,7 @@
     .align-items(center);
     margin-bottom: 15px;
 
-    & + & {
+    &+& {
       border-top: @border-style-base @border-width-base @border-color;
       padding-top: 15px;
     }
@@ -533,6 +534,7 @@
 }
 
 .@{class-prefix}-build-box-lay {
+
   .boxed-layout &,
   .framed-layout & {
     padding: 0 10px !important;
@@ -605,7 +607,7 @@
   & li {
     padding: 0 6px;
 
-    & > img {
+    &>img {
       width: (@size-60 + 5);
 
       @media (max-width: (@screen-xl-min + 166px)) {
@@ -659,9 +661,9 @@
     margin-bottom: -2px;
 
     & .gx-size-60 {
-      height: @size-50 !important;
-      width: @size-50 !important;
-      line-height: @size-50 !important;
+      height: @size-50  !important;
+      width: @size-50  !important;
+      line-height: @size-50  !important;
     }
   }
 
@@ -751,6 +753,7 @@
   }
 
   &-nocontent {
+
     & .@{class-prefix}-fillchart-content,
     & .@{class-prefix}-fillchart-btn,
     &:hover .@{class-prefix}-fillchart-btn {
@@ -849,7 +852,7 @@
       margin-right: 0;
       margin-bottom: 15px;
 
-      & > img {
+      &>img {
         width: 100% !important;
         height: auto !important;
       }
@@ -966,7 +969,7 @@
       margin-right: 0;
       margin-bottom: 12px;
 
-      & > img {
+      &>img {
         width: 100% !important;
         height: auto !important;
       }
@@ -1048,7 +1051,7 @@
     }
 
     @media (max-width: @screen-md-max) {
-      border-left: @border-style-base @border-width-base @border-color !important;
+      border-left: @border-style-base @border-width-base @border-color  !important;
       border-top: 0 none;
       padding-top: 0;
     }
@@ -1204,7 +1207,7 @@
 .@{class-prefix}-ayurveda-thumb {
   max-height: 150px;
 
-  & > img {
+  &>img {
     object-fit: cover;
   }
 }
@@ -1229,7 +1232,7 @@
   position: relative;
   overflow: hidden;
 
-  & > * {
+  &>* {
     position: relative;
     z-index: 1;
   }
@@ -1259,7 +1262,3 @@
     }
   }
 }
-
-
-
-

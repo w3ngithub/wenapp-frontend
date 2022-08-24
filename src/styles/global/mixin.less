@@ -67,9 +67,9 @@
 
 // Flexbox display
 .flex-display(@display: flex, @direction: row, @wrap: wrap) {
-  display: ~"-webkit-@{display}";
-  display: ~"-ms-@{display}box"; // IE10 uses -ms-flexbox
-  display: ~"-ms-@{display}"; // IE11
+  display:~"-webkit-@{display}";
+  display:~"-ms-@{display}box"; // IE10 uses -ms-flexbox
+  display:~"-ms-@{display}"; // IE11
   display: @display;
 
   -webkit-flex-direction: @direction;
@@ -166,6 +166,6 @@
   background: -webkit-linear-gradient(125deg, @hstartColor 0%, @hendColor 100%);
   background: -o-linear-gradient(125deg, @hstartColor 0%, @hendColor 100%);
   background: -ms-linear-gradient(125deg, @hstartColor 0%, @hendColor 100%);
-  background: linear-gradient(325deg, @hstartColor 0%, @hendColor 100%);
+  background: linear-gradient(325deg, @hstartColor 0%, @hendColor 100%) !important;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@hstartColor', endColorstr='@hendColor', GradientType=0);
 }

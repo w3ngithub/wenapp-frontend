@@ -48,7 +48,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 		width: 360,
 		render: (text, record) => {
 			return (
-				<span>
+				<div style={{display:'flex'}}>
 					<span className="gx-link" onClick={() => openEditPopup(record, true)}>
 						View Details
 					</span>
@@ -76,7 +76,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 							</span>
 						</>
 					)}
-				</span>
+				</div>
 			);
 		}
 	}

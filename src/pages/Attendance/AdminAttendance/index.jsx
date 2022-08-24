@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Table, Form, DatePicker, Divider } from "antd";
 import moment from "moment";
@@ -11,7 +11,11 @@ import {
 	weeklyState
 } from "constants/Attendance";
 import { searchAttendacentOfUser } from "services/attendances";
-import { dateDifference, milliSecondIntoHours } from "helpers/utils";
+import {
+	dateDifference,
+	milliSecondIntoHours,
+	sortFromDate
+} from "helpers/utils";
 import ViewDetailModel from "../ViewDetailModel";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
@@ -197,6 +201,14 @@ function AdminAttendance() {
 		return <Table columns={columns} dataSource={data} pagination={false} />;
 	};
 
+	const sortedData = useMemo(() => {
+		return data?.data?.data?.attendances?.[0]?.data?.map(d => ({
+			...d,
+			data: sortFromDate(d?.data, "punchInTime")
+		}));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data?.data?.data?.attendances?.[0]?.data]);
+
 	return (
 		<div>
 			<TmsAdminAddAttendanceForm
@@ -274,9 +286,7 @@ function AdminAttendance() {
 			<Table
 				className="gx-table-responsive"
 				columns={ATTENDANCE_COLUMNS(sort, handleView, true)}
-				dataSource={formattedAttendances(
-					data?.data?.data?.attendances?.[0]?.data
-				)}
+				dataSource={formattedAttendances(sortedData)}
 				expandable={{ expandedRowRender }}
 				onChange={handleTableChange}
 				pagination={{

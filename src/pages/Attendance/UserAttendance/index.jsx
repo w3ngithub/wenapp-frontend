@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Table, Form, DatePicker } from "antd";
 import moment from "moment";
@@ -10,7 +10,11 @@ import {
 	weeklyState
 } from "constants/Attendance";
 import { searchAttendacentOfUser } from "services/attendances";
-import { dateDifference, milliSecondIntoHours } from "helpers/utils";
+import {
+	dateDifference,
+	milliSecondIntoHours,
+	sortFromDate
+} from "helpers/utils";
 import ViewDetailModel from "../ViewDetailModel";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
@@ -56,7 +60,6 @@ function UserAttendance() {
 	const [toogle, setToogle] = useState(false);
 
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
-	const punch = JSON.parse(localStorage.getItem("punch") || "{}");
 
 	const { data, isLoading, isFetching } = useQuery(
 		["userAttendance", user, date, page],
@@ -171,10 +174,17 @@ function UserAttendance() {
 		return <Table columns={columns} dataSource={data} pagination={false} />;
 	};
 
+	const sortedData = useMemo(() => {
+		return data?.data?.data?.attendances?.[0]?.data?.map(d => ({
+			...d,
+			data: sortFromDate(d?.data, "punchInTime")
+		}));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data?.data?.data?.attendances?.[0]?.data]);
+
 	return (
 		<div>
 			<TmsMyAttendanceForm
-				punch={punch}
 				title="Time Attendance"
 				toogle={toogle}
 				handleCancel={() => setToogle(false)}
@@ -217,9 +227,7 @@ function UserAttendance() {
 			<Table
 				className="gx-table-responsive"
 				columns={ATTENDANCE_COLUMNS(sort, handleView)}
-				dataSource={formattedAttendances(
-					data?.data?.data?.attendances?.[0]?.data
-				)}
+				dataSource={formattedAttendances(sortedData)}
 				expandable={{ expandedRowRender }}
 				onChange={handleTableChange}
 				pagination={{

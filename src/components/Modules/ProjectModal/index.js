@@ -42,7 +42,7 @@ function ProjectModal({
 	const { getFieldDecorator, resetFields } = rest.form;
 	const [projectTypes, setProjectTypes] = useState([]);
 	const [projectStatuses, setProjectStatuses] = useState([]);
-	const [selectedMonth, setSelectedMonth] = useState([]);
+	const [maintenance, setMaintenance] = useState([]);
 	const { data, refetch } = useQuery(["tags"], getProjectTags, {
 		enabled: false
 	});
@@ -57,7 +57,18 @@ function ProjectModal({
 			if (err) {
 				return;
 			}
-			onSubmit({ ...fieldsValue, selectedMonth });
+			onSubmit({
+				...fieldsValue,
+				maintenance: [
+					{
+						...maintenance[0],
+						selectMonths:
+							maintenance[0].selectMonths.length === 13
+								? [...maintenance[0].selectMonths.slice(1)]
+								: maintenance[0].selectMonths
+					}
+				]
+			});
 		});
 	};
 	useEffect(() => {
@@ -66,11 +77,29 @@ function ProjectModal({
 			setProjectTypes(types.data.data.data);
 			refetch();
 			if (isEditMode) {
-				setSelectedMonth(
-					initialValues.maintenance?.length > 0
-						? initialValues.maintenance[0].selectMonths
-						: []
-				);
+				setMaintenance([
+					{
+						selectMonths:
+							initialValues.maintenance?.length > 0
+								? initialValues.maintenance[0].selectMonths.length === 12
+									? ["Toggle All", ...initialValues.maintenance[0].selectMonths]
+									: initialValues.maintenance[0].selectMonths
+								: [],
+						emailDay:
+							initialValues.maintenance?.length > 0
+								? initialValues.maintenance[0].emailDay
+								: undefined,
+						sendEmailTo:
+							initialValues.maintenance?.length > 0
+								? initialValues.maintenance[0].sendEmailTo
+								: undefined,
+						monthly:
+							initialValues.maintenance?.length > 0
+								? initialValues.maintenance[0].monthly
+								: undefined
+					}
+				]);
+
 				rest.form.setFieldsValue({
 					name: initialValues.name ?? "",
 					priority: initialValues.priority,
@@ -107,25 +136,13 @@ function ProjectModal({
 							? initialValues.stagingUrls
 							: undefined,
 					liveUrl: initialValues.liveUrl,
-					notes: initialValues.notes,
-					emailDay:
-						initialValues.maintenance?.length > 0
-							? initialValues.maintenance[0].emailDay
-							: undefined,
-					sendEmailTo:
-						initialValues.maintenance?.length > 0
-							? initialValues.maintenance[0].sendEmailTo
-							: undefined,
-					monthly:
-						initialValues.maintenance?.length > 0
-							? initialValues.maintenance[0].monthly
-							: undefined
+					notes: initialValues.notes
 				});
 			}
 		}
 
 		if (!toggle) {
-			setSelectedMonth([]);
+			setMaintenance([]);
 			resetFields();
 		}
 	}, [toggle]);
@@ -160,7 +177,12 @@ function ProjectModal({
 							<FormItem label="Name" hasFeedback={readOnly ? false : true}>
 								{getFieldDecorator("name", {
 									rules: [{ required: true, message: "Required!" }]
-								})(<Input placeholder="Enter Name" disabled={readOnly} />)}
+								})(
+									<Input
+										placeholder="Enter Name"
+										disabled={readOnly}
+									/>
+								)}
 							</FormItem>
 						</Col>
 						<Col span={24} sm={12}>
@@ -449,8 +471,8 @@ function ProjectModal({
 						<Col span={24} sm={24}>
 							<Maintenance
 								getFieldDecorator={getFieldDecorator}
-								selectedMonth={selectedMonth}
-								setSelectedMonth={setSelectedMonth}
+								maintenance={maintenance}
+								setMaintenance={setMaintenance}
 							/>
 						</Col>
 					</Row>
