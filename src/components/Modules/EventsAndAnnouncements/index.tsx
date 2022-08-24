@@ -2,24 +2,32 @@ import { Avatar, Timeline } from "antd";
 import WidgetHeader from "components/Elements/WidgetHeader";
 import React from "react";
 import ActivityItem from "../dashboard/CRM/ActivityItem";
+import {
+	InfoCircleOutlined,
+	NotificationOutlined,
+	CalendarOutlined,
+	ClockCircleOutlined
+} from "@ant-design/icons";
 
 const TimeLineItem = Timeline.Item;
 
-export const events = [
+export const events: any[] = [
 	{
 		id: 1,
-		day: "Announncements",
+		day: "Announcements",
+		Icon: NotificationOutlined,
 		tasks: [
 			{
 				id: 1,
 				name: "Mila Alba",
 				title: [
 					<p>
-						08/23/2022 We will shutdown our server for maintenance today at
-						12:00PM. Please save your work accordingly
+						08/23/2022
+						<br /> We will shutdown our server for maintenance today at 12:00PM.
+						Please save your work accordingly
 					</p>
 				],
-				avatar: "https://via.placeholder.com/150x150",
+				Icon: InfoCircleOutlined,
 				imageList: []
 			}
 		]
@@ -27,72 +35,53 @@ export const events = [
 	{
 		id: 2,
 		day: "Holidays",
+		Icon: CalendarOutlined,
+
 		tasks: [
 			{
 				id: 5,
 				name: "Kily Johns",
-				title: [
-					<span className="gx-link" key={7}>
-						Today -
-					</span>,
-					" Janai Purnima"
-				],
-				avatar: ""
+				title: [<span>Today -</span>, " Janai Purnima"],
+				Icon: InfoCircleOutlined
 			}
 		]
 	},
 	{
 		id: 3,
 		day: "Salary Review",
+		Icon: ClockCircleOutlined,
+
 		tasks: [
 			{
 				id: 5,
 				name: "Kily Johns",
-				title: [
-					<span className="gx-link" key={7}>
-						Today -
-					</span>,
-					" Ashok Ganika"
-				],
-				avatar: ""
+				title: [<span>Today -</span>, " Ashok Ganika"],
+				Icon: InfoCircleOutlined
 			},
 			{
 				id: 5,
 				name: "Kily Johns",
-				title: [
-					<span className="gx-link" key={7}>
-						Tomorrow -
-					</span>,
-					" Pariskrit Moktan"
-				],
-				avatar: ""
+				title: [<span>Tomorrow -</span>, " Pariskrit Moktan"],
+				Icon: InfoCircleOutlined
 			}
 		]
 	},
 	{
 		id: 3,
 		day: "Birthdays",
+		Icon: InfoCircleOutlined,
+
 		tasks: [
 			{
 				id: 5,
-				name: "Kily Johns",
-				title: [
-					<span className="gx-link" key={7}>
-						Today -
-					</span>,
-					" Ashok Ganika"
-				],
+				name: "Ashok Ganika",
+				title: [<span>Today -</span>, " Ashok Ganika"],
 				avatar: ""
 			},
 			{
 				id: 5,
-				name: "Kily Johns",
-				title: [
-					<span className="gx-link" key={7}>
-						Tomorrow -
-					</span>,
-					" Pariskrit Moktan"
-				],
+				name: "Pariskrit Moktan",
+				title: [<span>Tomorrow -</span>, " Pariskrit Moktan"],
 				avatar: ""
 			}
 		]
@@ -106,7 +95,7 @@ function EventsAndAnnouncements() {
 			if (task.name.split(" ").length === 1) {
 				const initials = nameSplit[0].charAt(0).toUpperCase();
 				return (
-					<Avatar shape={shape} className="gx-size-40 gx-bg-primary">
+					<Avatar shape={shape} className="gx-size-24 gx-bg-primary">
 						{initials}
 					</Avatar>
 				);
@@ -115,23 +104,26 @@ function EventsAndAnnouncements() {
 					nameSplit[0].charAt(0).toUpperCase() +
 					nameSplit[1].charAt(0).toUpperCase();
 				return (
-					<Avatar shape={shape} className="gx-size-40 gx-bg-cyan">
+					<Avatar shape={shape} className="gx-size-24 gx-bg-primary">
 						{initials}
 					</Avatar>
 				);
 			}
 		} else {
-			return <Avatar shape={shape} className="gx-size-40" src={task.avatar} />;
+			return <task.Icon className="gx-fs-xl" />;
 		}
 	}
 	return (
 		<div className="gx-entry-sec">
-			<WidgetHeader title="Upcoming Events" />
+			{/* <WidgetHeader title="Upcoming Events" /> */}
 			{events.map((activity, index) => (
 				<div className="gx-timeline-info" key={"activity" + index}>
-					<h4 className="gx-timeline-info-day">{activity.day}</h4>
+					<div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3">
+						<activity.Icon className="gx-fs-xxl" />
+						<h2 className=" gx-mb-1 ">{activity.day}</h2>
+					</div>
 					<Timeline>
-						{activity.tasks.map((task, index) => {
+						{activity.tasks.map((task: any, index: number) => {
 							return (
 								<TimeLineItem
 									key={"timeline" + index}

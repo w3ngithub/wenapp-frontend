@@ -18,6 +18,11 @@ import { events } from "routes/extensions/calendar/events";
 
 import moment from "moment";
 import EventsAndAnnouncements from "components/Modules/EventsAndAnnouncements";
+import {
+	LoginOutlined,
+	LogoutOutlined,
+	ExceptionOutlined
+} from "@ant-design/icons";
 
 const localizer = momentLocalizer(moment);
 
@@ -27,33 +32,33 @@ const Dashboard = () => {
 			<Row>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
-						// component={TeamOutlined}
+						isLink={true}
 						totalCount={5}
-						label="Co-workers On Leave"
+						label="Staff On Leave"
+						icon={LogoutOutlined}
 					/>
 				</Col>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
-						// component={<TeamOutlined />}
+						icon={LoginOutlined}
 						className="gx-pink-purple-gradient"
 						totalCount={30}
-						label="Co-workers Checked In Today"
+						label="Staff Checked In Today"
 					/>
 				</Col>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
-						// component={<TeamOutlined />}
+						icon={ExceptionOutlined}
 						className="gx-bg-orange"
 						totalCount={2}
-						label="Leave Request Pending"
+						label="Pending Leave Request"
 					/>
 				</Col>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						className="gx-bg-teal"
-						// component={<TeamOutlined />}
 						totalCount={38}
-						label="Total Co-workers"
+						label="Total Staff"
 					/>
 				</Col>
 
