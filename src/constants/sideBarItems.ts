@@ -1,10 +1,10 @@
 import {
 	ATTENDANCE,
 	BLOG,
-	CALENDAR,
 	COWORKERS,
 	DASHBOARD,
 	FAQS,
+	HOLIDAY,
 	LEAVE,
 	LEAVE_REPORT,
 	LOGTIME,
@@ -124,8 +124,8 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 				id: 2
 			},
 			{
-				name: "sidebar.resources.calendar",
-				url: CALENDAR,
+				name: "sidebar.resources.holiday",
+				url: HOLIDAY,
 				id: 3
 			}
 		]
