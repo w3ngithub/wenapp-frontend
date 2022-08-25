@@ -20,6 +20,7 @@ import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
 import { EyeOutlined } from "@ant-design/icons";
 import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
+import { useSelector } from "react-redux";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -60,6 +61,8 @@ function UserAttendance() {
 	const [toogle, setToogle] = useState(false);
 
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
+
+	const punchIn = useSelector(state => state.attendance.punchIn);
 
 	const { data, isLoading, isFetching } = useQuery(
 		["userAttendance", user, date, page],
@@ -220,7 +223,7 @@ function UserAttendance() {
 							setToogle(true);
 						}}
 					>
-						Add
+						{punchIn ? "Punch In" : "Punch Out"}
 					</Button>
 				</div>
 			</div>
