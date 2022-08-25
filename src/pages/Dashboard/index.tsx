@@ -1,21 +1,10 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button, Card, Col, Form, Row } from "antd";
-import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
-
 import Auxiliary from "util/Auxiliary";
-import ChartCard from "components/Modules/dashboard/Listing/ChartCard";
-
-import UserImages from "components/Modules/dashboard/Listing/UserImages";
-import RecentActivity from "components/Modules/dashboard/CRM/RecentActivity";
-import { recentActivity } from "routes/socialApps/Wall/data";
 import Widget from "components/Elements/Widget/index";
-import CurrentPlan from "components/Modules/dashboard/Listing/CurrentPlan";
-import DealsClosedCard from "components/Modules/dashboard/Listing/DealsClosedCard";
-import PropertiesCard from "components/Modules/dashboard/Listing/PropertiesCard";
 import TotalCountCard from "components/Elements/TotalCountCard";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import { events } from "routes/extensions/calendar/events";
-
 import moment from "moment";
 import EventsAndAnnouncements from "components/Modules/EventsAndAnnouncements";
 import {
@@ -23,21 +12,38 @@ import {
 	LogoutOutlined,
 	ExceptionOutlined
 } from "@ant-design/icons";
-
 import TinyBarChart from "routes/extensions/charts/recharts/bar/Components/TinyBarChart";
 import Select from "components/Elements/Select";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "services/projects";
-import { getLogTypes } from "services/timeLogs";
-import PieChartWithCustomizedLabel from "routes/extensions/charts/recharts/pie/Components/PieChartWithCustomizedLabel";
+import { getLogTypes, getTimeLogChart } from "services/timeLogs";
 import CustomActiveShapePieChart from "routes/extensions/charts/recharts/pie/Components/CustomActiveShapePieChart";
+import { getLeavesOfAllUsers } from "services/leaves";
+import { formatToUtc } from "helpers/utils";
 
 const FormItem = Form.Item;
 
 const localizer = momentLocalizer(moment);
+const todayStartDay = moment.utc(formatToUtc(moment().startOf("day"))).format();
 
 const Dashboard = () => {
 	const [chart, setChart] = useState("1");
+	const [project, setProject] = useState("");
+	const [logType, setlogType] = useState("");
+
+	const chartQuery = useQuery(
+		["projectChart", project, logType],
+		() => getTimeLogChart({ project, logType }),
+		{ enabled: false, refetchOnWindowFocus: false }
+	);
+
+	const leavesQuery = useQuery(
+		["DashBoardleaves"],
+		() => getLeavesOfAllUsers("approved", "", todayStartDay),
+		{
+			onError: err => console.log(err)
+		}
+	);
 
 	const { data } = useQuery(["DashBoardprojects"], () =>
 		getAllProjects({
@@ -51,8 +57,19 @@ const Dashboard = () => {
 	);
 
 	const generateChart = (values: any) => {
-		setChart(values.chart);
+		if (project === "" || project === undefined) return;
+		chartQuery.refetch();
 	};
+
+	const leaveUsers = leavesQuery?.data?.data?.data?.data?.map((x: any) => ({
+		title: x.halfDay ? x?.user?.name + ":Half Day" : x?.user?.name,
+		start: new Date(new Date(Date.now()).toLocaleString().split(",")[0]),
+		end: new Date(new Date(Date.now()).toLocaleString().split(",")[0])
+	}));
+
+	// const calendarEvents = [...leaveUsers];
+
+	const chartData = chartQuery?.data?.data?.data?.chart;
 
 	return (
 		<Auxiliary>
@@ -101,6 +118,8 @@ const Dashboard = () => {
 							<Form layout="inline" onFinish={generateChart}>
 								<FormItem name="chart">
 									<Select
+										value={chart}
+										onChange={(c: any) => setChart(c)}
 										placeholder="Select Chart"
 										options={[
 											{ _id: "1", name: "Bar Chart" },
@@ -113,6 +132,8 @@ const Dashboard = () => {
 								</FormItem>
 								<FormItem name="project">
 									<Select
+										value={project}
+										onChange={(c: any) => setProject(c)}
 										placeholder="Select Project"
 										options={data?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({
@@ -124,6 +145,8 @@ const Dashboard = () => {
 								</FormItem>
 								<FormItem name="logType">
 									<Select
+										value={logType}
+										onChange={(c: any) => setlogType(c)}
 										placeholder="Select Log Types"
 										style={{ width: 250 }}
 										mode="tags"
@@ -142,20 +165,30 @@ const Dashboard = () => {
 								</FormItem>
 							</Form>
 						</div>
-						{chart === "2" ? (
-							<CustomActiveShapePieChart
-								data={logTypes?.data?.data?.data?.map((x: any) => ({
-									name: x.name,
-									value: +(Math.random() * 100).toFixed()
-								}))}
-							/>
-						) : (
-							<TinyBarChart
-								data={logTypes?.data?.data?.data?.map((x: any) => ({
-									name: x.name,
-									time: (Math.random() * 100).toFixed()
-								}))}
-							/>
+						{project && (
+							<div>
+								{chartData && chartData.length ? (
+									<div>
+										{chart === "2" ? (
+											<CustomActiveShapePieChart
+												data={chartData?.map((x: any) => ({
+													name: x.logType[0].name,
+													value: +x.timeSpent.toFixed()
+												}))}
+											/>
+										) : (
+											<TinyBarChart
+												data={chartData?.map((x: any) => ({
+													name: x.logType[0].name,
+													time: x.timeSpent.toFixed()
+												}))}
+											/>
+										)}
+									</div>
+								) : (
+									"No Data"
+								)}
+							</div>
 						)}
 					</Card>
 
@@ -163,7 +196,7 @@ const Dashboard = () => {
 						<div className="gx-rbc-calendar">
 							<Calendar
 								localizer={localizer}
-								events={events}
+								events={leaveUsers}
 								startAccessor="start"
 								endAccessor="end"
 							/>

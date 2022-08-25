@@ -1,4 +1,5 @@
 import { notification } from "./notification";
+import moment from "moment";
 
 export const handleSort = (
 	currentState,
@@ -321,4 +322,10 @@ export const handleResponse = (
 			type: "error"
 		});
 	}
+};
+
+export const formatToUtc = date => {
+	const m = moment(date._d);
+	m.set({ h: 5, m: 45, s: 0 });
+	return m;
 };

@@ -107,6 +107,17 @@ const getWeeklyReport = async ({
 	}
 };
 
+const getTimeLogChart = async ({ project = "", logType = "" }) => {
+	try {
+		let response = await API.post(
+			`${Apis.TimeLogs}/chart?project=${project}&logType=${logType}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
 export {
 	getAllTimeLogs,
 	getLogTypes,
@@ -116,5 +127,6 @@ export {
 	addLogTime,
 	updateTimeLog,
 	addUserTimeLog,
-	getWeeklyReport
+	getWeeklyReport,
+	getTimeLogChart
 };
