@@ -20,6 +20,8 @@ import { getLogTypes, getTimeLogChart } from "services/timeLogs";
 import CustomActiveShapePieChart from "routes/extensions/charts/recharts/pie/Components/CustomActiveShapePieChart";
 import { getLeavesOfAllUsers } from "services/leaves";
 import { formatToUtc } from "helpers/utils";
+import { getAllNotices } from "services/noticeboard";
+import { getAllHolidays } from "services/resources";
 
 const FormItem = Form.Item;
 
@@ -30,6 +32,13 @@ const Dashboard = () => {
 	const [chart, setChart] = useState("1");
 	const [project, setProject] = useState("");
 	const [logType, setlogType] = useState("");
+
+	const { data: notices } = useQuery(["DashBoardnotices"], () =>
+		getAllNotices({})
+	);
+	const { data: Holidays } = useQuery(["DashBoardHolidays"], () =>
+		getAllHolidays({ sort: "-createdAt", limit: "1" })
+	);
 
 	const chartQuery = useQuery(
 		["projectChart", project, logType],
@@ -67,7 +76,25 @@ const Dashboard = () => {
 		end: new Date(new Date(Date.now()).toLocaleString().split(",")[0])
 	}));
 
-	// const calendarEvents = [...leaveUsers];
+	const noticesCalendar = notices?.data?.data?.data.map((x: any) => ({
+		title: x.title,
+		end: new Date(x.endDate),
+		start: new Date(x.startDate)
+	}));
+
+	const holidaysCalendar = Holidays?.data?.data?.data?.[0].holidays?.map(
+		(x: any) => ({
+			title: x.title,
+			start: new Date(x.date),
+			end: new Date(x.date)
+		})
+	);
+
+	const calendarEvents = [
+		...(leaveUsers || []),
+		...(noticesCalendar || []),
+		...(holidaysCalendar || [])
+	];
 
 	const chartData = chartQuery?.data?.data?.data?.chart;
 
@@ -76,12 +103,12 @@ const Dashboard = () => {
 			<Row>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
-						isLink={true}
-						totalCount={5}
-						label="Staff On Leave"
-						icon={LogoutOutlined}
+						className="gx-bg-teal"
+						totalCount={38}
+						label="Total Staff"
 					/>
 				</Col>
+
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						icon={LoginOutlined}
@@ -100,15 +127,19 @@ const Dashboard = () => {
 				</Col>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
-						className="gx-bg-teal"
-						totalCount={38}
-						label="Total Staff"
+						isLink={true}
+						totalCount={5}
+						label="Staff On Leave"
+						icon={LogoutOutlined}
 					/>
 				</Col>
 
 				<Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
 					<Widget>
-						<EventsAndAnnouncements />
+						<EventsAndAnnouncements
+							announcements={notices?.data?.data?.data}
+							holidays={Holidays?.data?.data?.data?.[0].holidays}
+						/>
 					</Widget>
 				</Col>
 
@@ -196,7 +227,7 @@ const Dashboard = () => {
 						<div className="gx-rbc-calendar">
 							<Calendar
 								localizer={localizer}
-								events={leaveUsers}
+								events={calendarEvents}
 								startAccessor="start"
 								endAccessor="end"
 							/>

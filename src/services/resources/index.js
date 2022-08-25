@@ -24,4 +24,15 @@ const getAllPolicies = async ({ page = "", limit = "" }) => {
 	}
 };
 
-export { getAllFaqs, getAllPolicies };
+const getAllHolidays = async ({ page = "", limit = "", sort = "" }) => {
+	try {
+		let response = await API.get(
+			`${Apis.Resources}/holidays?page=${page}&limit=${limit}&sort=${sort}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export { getAllFaqs, getAllPolicies, getAllHolidays };
