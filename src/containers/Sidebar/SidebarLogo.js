@@ -64,7 +64,7 @@ class SidebarLogo extends Component {
 									: "gx-font-weight-semi-bold gx-fs-lg gx-text-black gx-ml-2"
 							}
 						>
-							Wen App
+							WEN App
 						</span>
 					</Link>
 				</>
