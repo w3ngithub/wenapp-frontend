@@ -91,9 +91,9 @@ const getAttendacentOfUser = async userId => {
 };
 
 const searchAttendacentOfUser = async ({
-	userId,
-	fromDate,
-	toDate,
+	userId = "",
+	fromDate = "",
+	toDate = "",
 	page = "",
 	sort = "",
 	limit = "",
