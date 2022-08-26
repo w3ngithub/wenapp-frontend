@@ -173,7 +173,7 @@ function LogTime() {
 			hours: +newLogtime.hours,
 			logDate: moment.utc(newLogtime.logDate).format(),
 			minutes: +newLogtime.minutes,
-			user: getLocalStorageData("user_id").user._id
+			user: getLocalStorageData("user_id")._id
 		};
 
 		if (isEditMode)

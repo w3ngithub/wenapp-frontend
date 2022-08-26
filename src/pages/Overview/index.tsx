@@ -32,8 +32,6 @@ const Overview = () => {
 		["checkInOverview"],
 		() =>
 			searchAttendacentOfUser({
-				// page: page.page + "",
-				// limit: page.limit + "",
 				fromDate: moment.utc(intialDate[0]).format(),
 				toDate: moment.utc(intialDate[1]).format()
 			})

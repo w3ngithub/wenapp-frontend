@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { Button, DatePicker, Input, Modal, Select, Spin } from "antd";
 import moment from "moment";
 import { useQuery } from "@tanstack/react-query";
@@ -207,7 +207,7 @@ function LogtimeModal({
 									}
 								}
 							]
-						})(<TextArea placeholder="Enter Remarks" rows={1} />)}
+						})(<TextArea placeholder="Enter Remarks" rows={2} />)}
 					</FormItem>
 				</Form>
 			</Spin>
