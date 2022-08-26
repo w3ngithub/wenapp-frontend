@@ -8,43 +8,26 @@ import {
 	CalendarOutlined,
 	ClockCircleOutlined
 } from "@ant-design/icons";
+import { changeDate } from "helpers/utils";
 
 const TimeLineItem = Timeline.Item;
 
-export const events: any[] = [
+export const events: any = ({
+	announcementsData = [],
+	holidaysData = []
+}): any => [
 	{
 		id: 1,
 		day: "Announcements",
 		Icon: NotificationOutlined,
-		tasks: [
-			{
-				id: 1,
-				name: "Mila Alba",
-				title: [
-					<p>
-						08/23/2022
-						<br /> We will shutdown our server for maintenance today at 12:00PM.
-						Please save your work accordingly
-					</p>
-				],
-				Icon: InfoCircleOutlined,
-				imageList: []
-			}
-		]
+		tasks: announcementsData || []
 	},
 	{
 		id: 2,
 		day: "Holidays",
 		Icon: CalendarOutlined,
 
-		tasks: [
-			{
-				id: 5,
-				name: "Kily Johns",
-				title: [<span>Today -</span>, " Janai Purnima"],
-				Icon: InfoCircleOutlined
-			}
-		]
+		tasks: holidaysData || []
 	},
 	{
 		id: 3,
@@ -88,11 +71,40 @@ export const events: any[] = [
 	}
 ];
 
-function EventsAndAnnouncements() {
+function EventsAndAnnouncements({
+	announcements,
+	holidays
+}: {
+	announcements: any;
+	holidays: any;
+}) {
+	const announcementsData = announcements?.map((x: any) => ({
+		id: x._id,
+		name: x.title,
+		title: [
+			<p>
+				{x.startDate && changeDate(x.startDate)}
+				<br /> {x.details}
+			</p>
+		],
+		Icon: InfoCircleOutlined,
+		imageList: []
+	}));
+
+	const holidaysData = holidays?.map((x: any) => ({
+		id: x._id,
+		name: x.title,
+		title: [
+			<p>
+				{x.date && changeDate(x.date)} - {x.title}
+			</p>
+		],
+		Icon: InfoCircleOutlined
+	}));
 	function getName(task: any, shape: any) {
-		if (task.avatar === "") {
-			let nameSplit = task.name.split(" ");
-			if (task.name.split(" ").length === 1) {
+		if (task?.avatar === "") {
+			let nameSplit = task?.name.split(" ");
+			if (task?.name.split(" ").length === 1) {
 				const initials = nameSplit[0].charAt(0).toUpperCase();
 				return (
 					<Avatar shape={shape} className="gx-size-24 gx-bg-primary">
@@ -117,27 +129,29 @@ function EventsAndAnnouncements() {
 	return (
 		<div className="gx-entry-sec">
 			{/* <WidgetHeader title="Upcoming Events" /> */}
-			{events.map((activity, index) => (
-				<div className="gx-timeline-info" key={"activity" + index}>
-					<div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3">
-						<activity.Icon className="gx-fs-xxl" />
-						<h3 className=" gx-mb-1 ">{activity.day}</h3>
+			{events({ announcementsData, holidaysData })?.map(
+				(activity: any, index: number) => (
+					<div className="gx-timeline-info" key={"activity" + index}>
+						<div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3">
+							<activity.Icon className="gx-fs-xxl" />
+							<h3 className=" gx-mb-1 ">{activity?.day}</h3>
+						</div>
+						<Timeline>
+							{activity?.tasks?.map((task: any, index: number) => {
+								return (
+									<TimeLineItem
+										key={"timeline" + index}
+										// mode="alternate"
+										dot={getName(task, "")}
+									>
+										<ActivityItem task={task} />
+									</TimeLineItem>
+								);
+							})}
+						</Timeline>
 					</div>
-					<Timeline>
-						{activity.tasks.map((task: any, index: number) => {
-							return (
-								<TimeLineItem
-									key={"timeline" + index}
-									// mode="alternate"
-									dot={getName(task, "")}
-								>
-									<ActivityItem task={task} />
-								</TimeLineItem>
-							);
-						})}
-					</Timeline>
-				</div>
-			))}
+				)
+			)}
 			{/* <span
         className="gx-link gx-btn-link"
         onClick={this.onLoadMore.bind(this)}
