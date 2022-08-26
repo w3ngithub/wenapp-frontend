@@ -10,7 +10,6 @@ import { changeDate, handleResponse } from "helpers/utils";
 import Notification from "components/Elements/Notification";
 import { getAllUsers } from "services/users/userDetails";
 import moment from "moment";
-import { intialDate } from "constants/Attendance";
 
 const FormItem = Form.Item;
 
