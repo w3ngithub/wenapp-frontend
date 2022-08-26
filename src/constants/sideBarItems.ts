@@ -9,6 +9,7 @@ import {
 	LEAVE_REPORT,
 	LOGTIME,
 	NOTICEBOARD,
+	OVERVIEW,
 	POLICY,
 	PROJECTS,
 	REPORTS,
@@ -26,6 +27,13 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		url: DASHBOARD,
 		isExpandable: false,
 		id: 1
+	},
+	{
+		icon: "view-o",
+		name: "sidebar.overview",
+		url: OVERVIEW,
+		isExpandable: false,
+		id: 12
 	},
 	{
 		icon: "contacts",
