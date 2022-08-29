@@ -24,7 +24,7 @@ const TinyBarChart = ({ data }) => {
 				<CartesianGrid strokeDasharray="3 3" />
 				<Tooltip />
 				<Legend />
-				<Bar dataKey="time" fill="#FE9E15" name="Hours Spent" />
+				<Bar dataKey="time" fill="#003366" name="Hours Spent" />
 			</BarChart>
 		</ResponsiveContainer>
 	);

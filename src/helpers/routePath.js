@@ -15,6 +15,7 @@ export const BLOG = "blog";
 export const SETTINGS = "settings";
 export const REPORTS = "reports";
 export const RESOURCES = "resources";
+export const OVERVIEW = "todays-overview";
 
 // Project Log page
 export const PROJECT_LOG = `${PROJECTS}/:slug`;
