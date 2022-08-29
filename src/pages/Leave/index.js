@@ -13,6 +13,7 @@ import RemainingAndAppliedLeaveCards from "./RemainingAndAppliedLeaveCards";
 import LeavesApply from "./Apply";
 import Leaves from "./Leaves";
 import CircularProgress from "components/Elements/CircularProgress";
+import LeavesCalendar from "./LeavesCalendar";
 
 const TabPane = Tabs.TabPane;
 
@@ -22,7 +23,7 @@ const formattedLeaves = leaves => {
 		key: leave._id,
 		dates: leave?.leaveDates.map(date => changeDate(date)).join(" , "),
 		type: leave?.leaveType.name,
-		status: leave?.leaveStatus,
+		status: leave?.leaveStatus
 	}));
 };
 
@@ -118,17 +119,22 @@ function Leave() {
 					/>
 				</TabPane>
 				{loggedInUser?.role?.value === "Admin" && (
-					<TabPane tab="Leaves" key="3">
-						<Leaves
-							selectedRows={selectedRows}
-							handleCancelLeave={handleCancelLeave}
-							rowSelection={{
-								onChange: handleRowSelect,
-								selectedRowKeys: selectedRows
-							}}
-							isExportDisabled={selectedRows.length === 0}
-						/>
-					</TabPane>
+					<>
+						<TabPane tab="Leaves" key="3">
+							<Leaves
+								selectedRows={selectedRows}
+								handleCancelLeave={handleCancelLeave}
+								rowSelection={{
+									onChange: handleRowSelect,
+									selectedRowKeys: selectedRows
+								}}
+								isExportDisabled={selectedRows.length === 0}
+							/>
+						</TabPane>
+						<TabPane tab="Leaves Calendar" key="4">
+							<LeavesCalendar />
+						</TabPane>
+					</>
 				)}
 			</Tabs>
 		</Card>
