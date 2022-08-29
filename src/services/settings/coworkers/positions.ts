@@ -20,6 +20,18 @@ export const addPosition = async (payload: { name: string }) => {
 	}
 };
 
+export const editPosition = async (payload: { name: string; id: string }) => {
+	try {
+		let response = await API.patch(
+			`${Apis.Users}/positions/${payload?.id}`,
+			payload
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export const deletePosition = async (payload: { id: string }) => {
 	try {
 		let response = await API.delete(`${Apis.Users}/positions/${payload.id}`);
