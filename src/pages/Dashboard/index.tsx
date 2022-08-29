@@ -1,10 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Button, Card, Col, Form, Row } from "antd";
 import Auxiliary from "util/Auxiliary";
 import Widget from "components/Elements/Widget/index";
 import TotalCountCard from "components/Elements/TotalCountCard";
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import { events } from "routes/extensions/calendar/events";
 import moment from "moment";
 import EventsAndAnnouncements from "components/Modules/EventsAndAnnouncements";
 import {
@@ -28,7 +27,8 @@ import { getAllNotices } from "services/noticeboard";
 import { getAllHolidays } from "services/resources";
 import {
 	getActiveUsersCount,
-	getBirthMonthUsers
+	getBirthMonthUsers,
+	getSalaryReviewUsers
 } from "services/users/userDetails";
 import { getTodaysUserAttendanceCount } from "services/attendances";
 
@@ -41,6 +41,11 @@ const Dashboard = () => {
 	const [chart, setChart] = useState("1");
 	const [project, setProject] = useState("");
 	const [logType, setlogType] = useState("");
+
+	const { data: salaryReview } = useQuery(
+		["usersSalaryReview"],
+		getSalaryReviewUsers
+	);
 
 	const { data: AttendanceCount } = useQuery(
 		["todaysAttendance"],
