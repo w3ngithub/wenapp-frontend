@@ -109,6 +109,15 @@ const getTodaysUserLeaveCount = async () => {
 	}
 };
 
+const getFiscalYearLeaves = async () => {
+	try {
+		let response = await API.get(`${Apis.Leaves}/users/fiscalYearLeaves`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	getLeaveDaysOfAllUsers,
 	getLeavesOfUser,
@@ -120,5 +129,6 @@ export {
 	createLeaveOfUser,
 	updateLeave,
 	getPendingLeavesCount,
-	getTodaysUserLeaveCount
+	getTodaysUserLeaveCount,
+	getFiscalYearLeaves
 };

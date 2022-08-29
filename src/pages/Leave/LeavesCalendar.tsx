@@ -3,24 +3,27 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import { getLeavesOfAllUsers } from "services/leaves";
+import { getFiscalYearLeaves } from "services/leaves";
 
 const localizer = momentLocalizer(moment);
 
 const LeavesCalendar = () => {
 	const leavesQuery = useQuery(
 		["leavesCalendar"],
-		() => getLeavesOfAllUsers("approved", "", ""),
+		() => getFiscalYearLeaves(),
 		{
 			onError: err => console.log(err)
 		}
 	);
 
-	const leaveUsers = leavesQuery?.data?.data?.data?.data?.map((x: any) => ({
-		title: x.halfDay ? x?.user?.name + ":Half Day" : x?.user?.name,
-		start: new Date(new Date(Date.now()).toLocaleString().split(",")[0]),
-		end: new Date(new Date(Date.now()).toLocaleString().split(",")[0])
-	}));
+	const leaveUsers = leavesQuery?.data?.data?.data?.data?.map(
+		({ _id }: any) => ({
+			title: _id.halfDay ? _id.user[0] + " : Half Day" : _id?.user[0],
+			start: new Date(_id.leaveDates),
+			end: new Date(_id.leaveDates)
+		})
+	);
+	console.log(leavesQuery?.data?.data?.data?.data);
 	return (
 		<Card className="gx-card" title="Calendar">
 			<div className="gx-rbc-calendar">
