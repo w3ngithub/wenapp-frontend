@@ -8,7 +8,7 @@ import {
 	getProjectTags,
 	getProjectTypes
 } from "services/settings";
-import SettingTable from "../SettingTable";
+import SettingTable from "../CommonTable";
 
 function Projects() {
 	const { data: projectTypes }: { data: any } = useQuery(

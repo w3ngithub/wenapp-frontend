@@ -1,13 +1,7 @@
 import { Avatar, Timeline } from "antd";
-import WidgetHeader from "components/Elements/WidgetHeader";
 import React from "react";
 import ActivityItem from "../dashboard/CRM/ActivityItem";
-import {
-	InfoCircleOutlined,
-	NotificationOutlined,
-	CalendarOutlined,
-	ClockCircleOutlined
-} from "@ant-design/icons";
+
 import { changeDate } from "helpers/utils";
 
 const TimeLineItem = Timeline.Item;

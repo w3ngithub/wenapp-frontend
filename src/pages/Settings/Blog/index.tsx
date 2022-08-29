@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "antd";
-import SettingTable from "../SettingTable";
+import SettingTable from "../CommonTable";
 import { getBlogCategories } from "services/settings";
 import { POSITION_COLUMN } from "constants/Settings";
 
