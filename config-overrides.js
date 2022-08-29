@@ -4,7 +4,7 @@ const { override, fixBabelImports } = require("customize-cra");
 const addLessLoader = require("customize-cra-less-loader");
 
 const options = {
-	stylesDir: path.join(__dirname, "./src/styles"),
+	//stylesDir: path.join(__dirname, "./src/styles"),
 	antDir: path.join(__dirname, "./node_modules/antd"),
 	varFile: path.join(__dirname, "./src/styles/variables.less"),
 	mainLessFile: path.join(__dirname, "./src/styles/wieldy.less"),

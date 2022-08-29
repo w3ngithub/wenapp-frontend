@@ -298,10 +298,13 @@
 	}
 }
 .ant-input,
-.ant-input-group-addon {
+.ant-input-group-addon,
+.ant-picker {
 	border-radius: @border-radius-base !important;
 }
-
+.ant-checkbox-inner {
+	border-radius: @border-radius-sm !important;
+}
 .ant-input-search
 	> .ant-input-group
 	> .ant-input-group-addon:last-child
@@ -312,7 +315,8 @@
 .ant-select:not(.ant-select-customize-input) .ant-select-selector {
 	border-radius: @border-radius-base!important;
 }
-.ant-input-group > .ant-input:first-child, .ant-input-group-addon:first-child{
-	border-top-right-radius:0 !important;
-	border-bottom-right-radius:0 !important;
+.ant-input-group > .ant-input:first-child,
+.ant-input-group-addon:first-child {
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
 }
