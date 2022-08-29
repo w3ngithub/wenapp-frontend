@@ -2,13 +2,15 @@ import { Avatar, Timeline } from "antd";
 import React from "react";
 import ActivityItem from "../dashboard/CRM/ActivityItem";
 
-import { changeDate } from "helpers/utils";
+import { changeDate, dayCheck } from "helpers/utils";
+import moment from "moment";
 
 const TimeLineItem = Timeline.Item;
 
 export const events: any = ({
 	announcementsData = [],
-	holidaysData = []
+	holidaysData = [],
+	birthdayData = []
 }): any => [
 	{
 		id: 1,
@@ -49,29 +51,18 @@ export const events: any = ({
 		day: "Birthdays",
 		Icon: <i className="icon icon-birthday-new gx-fs-xxl" />,
 
-		tasks: [
-			{
-				id: 1,
-				name: "Ashok Ganika",
-				title: [<span>Today -</span>, " Ashok Ganika"],
-				avatar: ""
-			},
-			{
-				id: 2,
-				name: "Pariskrit Moktan",
-				title: [<span>Tomorrow -</span>, " Pariskrit Moktan"],
-				avatar: ""
-			}
-		]
+		tasks: birthdayData
 	}
 ];
 
 function EventsAndAnnouncements({
 	announcements,
-	holidays
+	holidays,
+	birthdays
 }: {
 	announcements: any;
 	holidays: any;
+	birthdays: any[];
 }) {
 	const announcementsData = announcements?.map((x: any) => ({
 		id: x._id,
@@ -96,6 +87,14 @@ function EventsAndAnnouncements({
 		],
 		Icon: "important-o"
 	}));
+
+	const birthdayData = birthdays?.map((x: any) => ({
+		id: 1,
+		name: x.name,
+		title: [<span>{dayCheck(x.dob)} -</span>, ` ${x.name}`],
+		avatar: x.photoURL || ""
+	}));
+
 	function getName(task: any, shape: any) {
 		if (task?.avatar === "") {
 			let nameSplit = task?.name.split(" ");
@@ -116,15 +115,24 @@ function EventsAndAnnouncements({
 					</Avatar>
 				);
 			}
-		} else {
+		} else if (task?.avatar === undefined || task.avatar === null) {
 			return <i className={`icon icon-${task.Icon} gx-fs-xl`} />;
 			// return <task.Icon className="gx-fs-lg" />;
+		} else {
+			console.log(task.avatar);
+			return (
+				<Avatar
+					shape={shape}
+					className="gx-size-30 gx-bg-primary"
+					src={task.avatar}
+				/>
+			);
 		}
 	}
 	return (
 		<div className="gx-entry-sec">
 			{/* <WidgetHeader title="Upcoming Events" /> */}
-			{events({ announcementsData, holidaysData })?.map(
+			{events({ announcementsData, holidaysData, birthdayData })?.map(
 				(activity: any, index: number) => (
 					<div className="gx-timeline-info" key={"activity" + index}>
 						<div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3">

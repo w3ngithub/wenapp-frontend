@@ -91,6 +91,24 @@ const updateLeave = async payload => {
 	}
 };
 
+const getPendingLeavesCount = async () => {
+	try {
+		let response = await API.get(`${Apis.Leaves}/pending/count`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const getTodaysUserLeaveCount = async () => {
+	try {
+		let response = await API.get(`${Apis.Leaves}/users/today/count`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	getLeaveDaysOfAllUsers,
 	getLeavesOfUser,
@@ -100,5 +118,7 @@ export {
 	changeLeaveStatus,
 	createLeave,
 	createLeaveOfUser,
-	updateLeave
+	updateLeave,
+	getPendingLeavesCount,
+	getTodaysUserLeaveCount
 };

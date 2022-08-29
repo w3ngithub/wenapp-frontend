@@ -1,10 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Button, Card, Col, Form, Row } from "antd";
 import Auxiliary from "util/Auxiliary";
 import Widget from "components/Elements/Widget/index";
 import TotalCountCard from "components/Elements/TotalCountCard";
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import { events } from "routes/extensions/calendar/events";
 import moment from "moment";
 import EventsAndAnnouncements from "components/Modules/EventsAndAnnouncements";
 import {
@@ -18,10 +17,20 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "services/projects";
 import { getLogTypes, getTimeLogChart } from "services/timeLogs";
 import CustomActiveShapePieChart from "routes/extensions/charts/recharts/pie/Components/CustomActiveShapePieChart";
-import { getLeavesOfAllUsers } from "services/leaves";
+import {
+	getLeavesOfAllUsers,
+	getPendingLeavesCount,
+	getTodaysUserLeaveCount
+} from "services/leaves";
 import { formatToUtc } from "helpers/utils";
 import { getAllNotices } from "services/noticeboard";
 import { getAllHolidays } from "services/resources";
+import {
+	getActiveUsersCount,
+	getBirthMonthUsers,
+	getSalaryReviewUsers
+} from "services/users/userDetails";
+import { getTodaysUserAttendanceCount } from "services/attendances";
 
 const FormItem = Form.Item;
 
@@ -32,6 +41,36 @@ const Dashboard = () => {
 	const [chart, setChart] = useState("1");
 	const [project, setProject] = useState("");
 	const [logType, setlogType] = useState("");
+
+	const { data: salaryReview } = useQuery(
+		["usersSalaryReview"],
+		getSalaryReviewUsers
+	);
+
+	const { data: AttendanceCount } = useQuery(
+		["todaysAttendance"],
+		getTodaysUserAttendanceCount
+	);
+
+	const { data: PendingLeaves } = useQuery(
+		["pendingLeave"],
+		getPendingLeavesCount
+	);
+
+	const { data: ActiveUsers } = useQuery(
+		["DashBoardActiveUsers"],
+		getActiveUsersCount
+	);
+
+	const { data: TodaysLeave } = useQuery(
+		["DashBoardTodaysLeave"],
+		getTodaysUserLeaveCount
+	);
+
+	const { data: BirthMonthUsers } = useQuery(
+		["bithMonthUsers"],
+		getBirthMonthUsers
+	);
 
 	const { data: notices } = useQuery(["DashBoardnotices"], () =>
 		getAllNotices({})
@@ -104,7 +143,7 @@ const Dashboard = () => {
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						className="gx-bg-teal"
-						totalCount={38}
+						totalCount={ActiveUsers?.data?.data?.user || 0}
 						label="Total Staff"
 					/>
 				</Col>
@@ -113,7 +152,7 @@ const Dashboard = () => {
 					<TotalCountCard
 						icon={LoginOutlined}
 						className="gx-pink-purple-gradient"
-						totalCount={30}
+						totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
 						label="Staff Checked In Today"
 					/>
 				</Col>
@@ -121,14 +160,14 @@ const Dashboard = () => {
 					<TotalCountCard
 						icon={ExceptionOutlined}
 						className="gx-bg-orange"
-						totalCount={2}
+						totalCount={PendingLeaves?.data?.data?.leaves || 0}
 						label="Pending Leave Request"
 					/>
 				</Col>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						isLink={true}
-						totalCount={5}
+						totalCount={TodaysLeave?.data?.leaves?.[0]?.count || 0}
 						label="Staff On Leave"
 						icon={LogoutOutlined}
 					/>
@@ -139,6 +178,7 @@ const Dashboard = () => {
 						<EventsAndAnnouncements
 							announcements={notices?.data?.data?.data}
 							holidays={Holidays?.data?.data?.data?.[0].holidays}
+							birthdays={BirthMonthUsers?.data?.data?.users}
 						/>
 					</Widget>
 				</Col>
