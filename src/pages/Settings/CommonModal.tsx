@@ -1,5 +1,5 @@
 import { Button, Form, Input, Modal, Spin } from "antd";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 interface modalInterface {
 	isEditMode: boolean;
