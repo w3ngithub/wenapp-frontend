@@ -1,14 +1,16 @@
 import { Button, Table } from "antd";
 import React from "react";
 
-function SettingTable({
+function CommonTable({
 	data,
 	columns,
-	isLoading
+	isLoading,
+	onAddClick
 }: {
 	data: any;
 	columns: any;
 	isLoading?: boolean;
+	onAddClick?: React.MouseEventHandler<HTMLElement>;
 }) {
 	return (
 		<>
@@ -16,7 +18,7 @@ function SettingTable({
 				<div></div>
 				<Button
 					className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-					// onClick={handleOpenModal}
+					onClick={onAddClick}
 				>
 					Add
 				</Button>
@@ -41,4 +43,4 @@ function SettingTable({
 	);
 }
 
-export default SettingTable;
+export default CommonTable;

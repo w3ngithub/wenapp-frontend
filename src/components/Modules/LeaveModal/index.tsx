@@ -6,7 +6,7 @@ import { createLeaveOfUser, getLeaveTypes, updateLeave } from "services/leaves";
 import { filterOptions, handleResponse } from "helpers/utils";
 import leaveTypeInterface from "types/Leave";
 import { notification } from "helpers/notification";
-import { BLUE, THEME_TYPE_DARK } from "constants/ThemeSetting";
+import { THEME_TYPE_DARK } from "constants/ThemeSetting";
 import { useSelector } from "react-redux";
 import "react-multi-date-picker/styles/backgrounds/bg-dark.css";
 
@@ -192,7 +192,7 @@ function LeaveModal({
 											filterOption={filterOptions}
 											placeholder="Select User"
 											onChange={handleUserChange}
-											disabled={readOnly} 
+											disabled={readOnly}
 											allowClear
 										>
 											{users?.map((user: any) => (
@@ -217,8 +217,8 @@ function LeaveModal({
 											rows={10}
 											disabled={readOnly}
 											style={{
-												background: darkCalendar ? "#434f5a" : "",
-											}} 
+												background: darkCalendar ? "#434f5a" : ""
+											}}
 										/>
 									</Form.Item>
 								</Col>

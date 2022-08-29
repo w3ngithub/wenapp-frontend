@@ -1,13 +1,7 @@
 import { Avatar, Timeline } from "antd";
-import WidgetHeader from "components/Elements/WidgetHeader";
 import React from "react";
 import ActivityItem from "../dashboard/CRM/ActivityItem";
-import {
-	InfoCircleOutlined,
-	NotificationOutlined,
-	CalendarOutlined,
-	ClockCircleOutlined
-} from "@ant-design/icons";
+
 import { changeDate } from "helpers/utils";
 
 const TimeLineItem = Timeline.Item;
@@ -19,50 +13,51 @@ export const events: any = ({
 	{
 		id: 1,
 		day: "Announcements",
-		Icon: NotificationOutlined,
+		Icon: <i className="icon icon-alert gx-fs-xxl" />,
+
 		tasks: announcementsData || []
 	},
 	{
 		id: 2,
 		day: "Holidays",
-		Icon: CalendarOutlined,
+		Icon: <i className="icon icon-calendar gx-fs-xxl" />,
 
 		tasks: holidaysData || []
 	},
 	{
 		id: 3,
 		day: "Salary Review",
-		Icon: ClockCircleOutlined,
+		Icon: <i className="icon icon-schedule gx-fs-xxl" />,
 
 		tasks: [
 			{
-				id: 5,
-				name: "Kily Johns",
-				title: [<span>Today -</span>, " Ashok Ganika"],
-				Icon: InfoCircleOutlined
-			},
-			{
-				id: 5,
-				name: "Kily Johns",
-				title: [<span>Tomorrow -</span>, " Pariskrit Moktan"],
-				Icon: InfoCircleOutlined
-			}
-		]
-	},
-	{
-		id: 3,
-		day: "Birthdays",
-		Icon: InfoCircleOutlined,
-
-		tasks: [
-			{
-				id: 5,
+				id: 1,
 				name: "Ashok Ganika",
 				title: [<span>Today -</span>, " Ashok Ganika"],
 				avatar: ""
 			},
 			{
-				id: 5,
+				id: 2,
+				name: "Pariskrit Moktan",
+				title: [<span>Tomorrow -</span>, " Pariskrit Moktan"],
+				avatar: ""
+			}
+		]
+	},
+	{
+		id: 4,
+		day: "Birthdays",
+		Icon: <i className="icon icon-birthday-new gx-fs-xxl" />,
+
+		tasks: [
+			{
+				id: 1,
+				name: "Ashok Ganika",
+				title: [<span>Today -</span>, " Ashok Ganika"],
+				avatar: ""
+			},
+			{
+				id: 2,
 				name: "Pariskrit Moktan",
 				title: [<span>Tomorrow -</span>, " Pariskrit Moktan"],
 				avatar: ""
@@ -82,12 +77,12 @@ function EventsAndAnnouncements({
 		id: x._id,
 		name: x.title,
 		title: [
-			<p>
-				{x.startDate && changeDate(x.startDate)}
-				<br /> {x.details}
-			</p>
+			<>
+				<p className="gx-mb-0">{x.startDate && changeDate(x.startDate)}</p>
+				{x.details}
+			</>
 		],
-		Icon: InfoCircleOutlined,
+		Icon: "notification",
 		imageList: []
 	}));
 
@@ -99,7 +94,7 @@ function EventsAndAnnouncements({
 				{x.date && changeDate(x.date)} - {x.title}
 			</p>
 		],
-		Icon: InfoCircleOutlined
+		Icon: "important-o"
 	}));
 	function getName(task: any, shape: any) {
 		if (task?.avatar === "") {
@@ -116,13 +111,13 @@ function EventsAndAnnouncements({
 					nameSplit[0].charAt(0).toUpperCase() +
 					nameSplit[1].charAt(0).toUpperCase();
 				return (
-					<Avatar shape={shape} className="gx-size-24 gx-bg-primary">
+					<Avatar shape={shape} className="gx-size-30 gx-bg-primary">
 						{initials}
 					</Avatar>
 				);
 			}
 		} else {
-			return <div></div>;
+			return <i className={`icon icon-${task.Icon} gx-fs-xl`} />;
 			// return <task.Icon className="gx-fs-lg" />;
 		}
 	}
@@ -133,15 +128,16 @@ function EventsAndAnnouncements({
 				(activity: any, index: number) => (
 					<div className="gx-timeline-info" key={"activity" + index}>
 						<div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3">
-							<activity.Icon className="gx-fs-xxl" />
+							{/* <activity.Icon className="gx-fs-xxl" /> */}
+							{activity.Icon}
 							<h3 className=" gx-mb-1 ">{activity?.day}</h3>
 						</div>
 						<Timeline>
 							{activity?.tasks?.map((task: any, index: number) => {
 								return (
 									<TimeLineItem
+										style={{ marginLeft: "8px" }}
 										key={"timeline" + index}
-										// mode="alternate"
 										dot={getName(task, "")}
 									>
 										<ActivityItem task={task} />
@@ -152,12 +148,6 @@ function EventsAndAnnouncements({
 					</div>
 				)
 			)}
-			{/* <span
-        className="gx-link gx-btn-link"
-        onClick={this.onLoadMore.bind(this)}
-    >
-        Load More
-    </span> */}
 		</div>
 	);
 }

@@ -2,24 +2,6 @@ import API from "helpers/api";
 import { Apis } from "services/api";
 import { getAPIResponse } from "helpers/getApiResponse";
 
-export const getPosition = async () => {
-	try {
-		let response = await API.get(`${Apis.Positions}`);
-		return getAPIResponse(response);
-	} catch (err) {
-		return getAPIResponse(err?.response);
-	}
-};
-
-export const getPositionTypes = async () => {
-	try {
-		let response = await API.get(`${Apis.PositionTypes}`);
-		return getAPIResponse(response);
-	} catch (err) {
-		return getAPIResponse(err?.response);
-	}
-};
-
 export const getRoles = async () => {
 	try {
 		let response = await API.get(`${Apis.Roles}`);
@@ -91,6 +73,15 @@ export const getNoticeboardTypes = async () => {
 export const getBlogCategories = async () => {
 	try {
 		let response = await API.get(`${Apis.Blog}/categories`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export const inviteUsers = async (payload: { email: string }) => {
+	try {
+		let response = await API.post(`${Apis.Users}/invite`, payload);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

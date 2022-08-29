@@ -25,7 +25,7 @@ export const POSITION_COLUMN = (
 						Edit
 					</span>
 					<Popconfirm
-						title="Are you sure you want to cancel?"
+						title="Are you sure you want to delete?"
 						onConfirm={() => onDeleteClick(record)}
 						okText="Yes"
 						cancelText="No"
@@ -38,14 +38,14 @@ export const POSITION_COLUMN = (
 	}
 ];
 
-export const POSITION_TYPES_COLUMN = (
+export const INVITED_EMPLOYEES_COLUMN = (
 	onDeleteClick: (param: any) => void,
 	onEditClick: (param: any, param2: any) => void
 ) => [
 	{
-		title: "Name",
-		dataIndex: "name",
-		key: "name",
+		title: "Email",
+		dataIndex: "email",
+		key: "email",
 		width: 630
 	},
 
