@@ -179,6 +179,7 @@ const Dashboard = () => {
 							announcements={notices?.data?.data?.data}
 							holidays={Holidays?.data?.data?.data?.[0].holidays}
 							birthdays={BirthMonthUsers?.data?.data?.users}
+							salaryReview={salaryReview?.data?.data?.users}
 						/>
 					</Widget>
 				</Col>
