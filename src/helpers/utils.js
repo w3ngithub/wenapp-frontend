@@ -329,3 +329,16 @@ export const formatToUtc = date => {
 	m.set({ h: 5, m: 45, s: 0 });
 	return m;
 };
+
+export function dayCheck(date) {
+	var thisYear = moment().year();
+	var mom = moment(date).year(thisYear);
+	return mom.calendar(null, {
+		sameDay: "[Today]",
+		nextDay: "[Tomorrow]",
+		nextWeek: "dddd",
+		lastDay: "[Yesterday]",
+		lastWeek: "[Last] dddd",
+		sameElse: "DD/MM/YYYY"
+	});
+}

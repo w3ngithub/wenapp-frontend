@@ -114,4 +114,36 @@ const OVERVIEW_CHECKEDIN = (sortedInfo: any): tableCol[] => [
 	}
 ];
 
-export { OVERVIEW_LEAVES, OVERVIEW_CHECKEDIN };
+const OVERVIEW_NOTCHECKEDIN = (sortedInfo: any): tableCol[] => [
+	{
+		title: "Name",
+		dataIndex: "name",
+		key: "name",
+		width: 150,
+		sorter: (a, b) => {
+			return a.name.toString().localeCompare(b.name.toString());
+		},
+		sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order
+	},
+	{
+		title: "Checked In At",
+		dataIndex: "checkIn",
+		key: "checkIn",
+		width: 150,
+		sorter: (a, b) => a.checkIn.toString().localeCompare(b.checkIn.toString()),
+		sortOrder: sortedInfo.columnKey === "checkIn" && sortedInfo.order
+	},
+
+	{
+		title: "Checked Out At",
+		dataIndex: "checkOut",
+		width: 150,
+		key: "checkOut",
+		sorter: (a, b) =>
+			a.checkOut.toString().localeCompare(b.checkOut.toString()),
+
+		sortOrder: sortedInfo.columnKey === "checkOut" && sortedInfo.order
+	}
+];
+
+export { OVERVIEW_LEAVES, OVERVIEW_CHECKEDIN, OVERVIEW_NOTCHECKEDIN };

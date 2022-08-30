@@ -11,8 +11,18 @@ import CheckedInEmployee from "./CheckInEmployee";
 import { intialDate } from "constants/Attendance";
 import { searchAttendacentOfUser } from "services/attendances";
 import CircularProgress from "components/Elements/CircularProgress";
+import { getAllUsers } from "services/users/userDetails";
+import UnCheckedInEmployee from "./UnCheckedEmployee";
 
 const Overview = () => {
+	const { data, isLoading } = useQuery(
+		["users"],
+		() => getAllUsers({ active: "true", fields: "name,-role,-position,_id" }),
+		{
+			keepPreviousData: true
+		}
+	);
+
 	const { data: leaves, isLoading: leaveLoading } = useQuery(
 		["leavesOverview"],
 		() =>
@@ -44,6 +54,12 @@ const Overview = () => {
 			data: sortFromDate(d?.data, "punchInTime")
 		})) || [];
 
+	const checkInUsers = checkInSecition?.map((x: any) => x._id.user);
+
+	const notCheckInSection = data?.data?.data?.data?.filter(
+		(user: any) => !checkInUsers.includes(user.name)
+	);
+
 	if (leaveLoading || checkInLoading) {
 		return <CircularProgress className="" />;
 	}
@@ -52,14 +68,7 @@ const Overview = () => {
 		<div>
 			<LeaveEmployee leaves={leavesSection} />
 			<CheckedInEmployee checkIn={checkInSecition} />
-			<Card
-				title={
-					<h3>
-						<WalletOutlined />
-						<span className="gx-ml-3">Employee who have not checked in</span>
-					</h3>
-				}
-			></Card>
+			<UnCheckedInEmployee notCheckInSection={notCheckInSection} />
 		</div>
 	);
 };
