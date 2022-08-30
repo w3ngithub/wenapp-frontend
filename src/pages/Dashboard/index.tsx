@@ -185,6 +185,16 @@ const Dashboard = () => {
 				</Col>
 
 				<Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
+				<Card className="gx-card" title="Calendar">
+						<div className="gx-rbc-calendar">
+							<Calendar
+								localizer={localizer}
+								events={calendarEvents}
+								startAccessor="start"
+								endAccessor="end"
+							/>
+						</div>
+					</Card>
 					<Card className="gx-card" title="Project Time Log Report">
 						<div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
 							<Form layout="inline" onFinish={generateChart}>
@@ -264,16 +274,7 @@ const Dashboard = () => {
 						)}
 					</Card>
 
-					<Card className="gx-card" title="Calendar">
-						<div className="gx-rbc-calendar">
-							<Calendar
-								localizer={localizer}
-								events={calendarEvents}
-								startAccessor="start"
-								endAccessor="end"
-							/>
-						</div>
-					</Card>
+
 				</Col>
 			</Row>
 		</Auxiliary>
