@@ -2,12 +2,14 @@ import React from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { events } from "routes/extensions/calendar/events";
+import CommonModal from "./CommonModal";
 
 const localizer = momentLocalizer(moment);
 
-function CalendarResource() {
+function Holiday() {
 	return (
 		<div className="gx-main-content">
+			<CommonModal />
 			<div className="gx-rbc-calendar">
 				<Calendar
 					localizer={localizer}
@@ -20,4 +22,4 @@ function CalendarResource() {
 	);
 }
 
-export default CalendarResource;
+export default Holiday;
