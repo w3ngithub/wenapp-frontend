@@ -38,7 +38,8 @@ const HOLIDAY_COLUMNS = (
 		key: "remarks",
 		sorter: (a, b) =>
 			a.remarks?.toString().localeCompare(b.remarks?.toString()),
-		sortOrder: sortedInfo.columnKey === "remarks" && sortedInfo.order
+		sortOrder: sortedInfo.columnKey === "remarks" && sortedInfo.order,
+		width: 500
 	},
 
 	{
