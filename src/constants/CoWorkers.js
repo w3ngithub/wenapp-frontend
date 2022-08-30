@@ -1,5 +1,6 @@
 import React from "react";
 import { Divider } from "antd";
+import { EyeOutlined, EditOutlined } from "@ant-design/icons";
 
 const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 	{
@@ -48,9 +49,9 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 		width: 360,
 		render: (text, record) => {
 			return (
-				<div style={{display:'flex'}}>
+				<div style={{ display: "flex" }}>
 					<span className="gx-link" onClick={() => openEditPopup(record, true)}>
-						View Details
+						<EyeOutlined style={{ fontSize: "18px" }} />
 					</span>
 					<Divider type="vertical" />
 					<span
@@ -72,7 +73,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 								className="gx-link"
 								onClick={() => openEditPopup(record, false)}
 							>
-								Edit
+								<EditOutlined style={{ fontSize: "18px" }} />
 							</span>
 						</>
 					)}
