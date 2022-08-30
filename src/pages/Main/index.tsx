@@ -58,7 +58,7 @@ import WorkLogReport from "pages/Reports/WorkLogReport";
 import LeaveReport from "pages/Reports/LeaveReport";
 import Faqs from "pages/Resources/Faqs";
 import Policy from "pages/Resources/Policy";
-import Calendar from "pages/Resources/Calendar";
+import Calendar from "pages/Resources/Holiday";
 import Blogs from "pages/Blog/Blogs";
 import BlogDetail from "pages/Blog/BlogDetail";
 import AddBlog from "pages/Blog/AddBlog";
