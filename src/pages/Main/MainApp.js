@@ -10,7 +10,7 @@ import AboveHeader from "containers/Topbar/AboveHeader/index";
 import BelowHeader from "containers/Topbar/BelowHeader/index";
 import Topbar from "containers/Topbar/index";
 import { footerText } from "util/config";
-import Customizer from "containers/Customizer";
+// import Customizer from "containers/Customizer";
 import {
 	NAV_STYLE_ABOVE_HEADER,
 	NAV_STYLE_BELOW_HEADER,
@@ -119,7 +119,7 @@ export const MainApp = props => {
 					</Footer>
 				</Content>
 			</Layout>
-			<Customizer />
+			{/* <Customizer /> */}
 		</Layout>
 	);
 };
