@@ -1,4 +1,5 @@
 import { Popconfirm } from "antd";
+import CustomIcon from "components/Elements/Icons";
 
 export const POSITION_COLUMN = (
 	onDeleteClick: (param: any) => void,
@@ -22,7 +23,7 @@ export const POSITION_COLUMN = (
 						className="gx-link gx-text-primary"
 						onClick={() => onEditClick(record, true)}
 					>
-						Edit
+						<CustomIcon name="edit" />
 					</span>
 					<Popconfirm
 						title="Are you sure you want to delete?"
@@ -30,7 +31,9 @@ export const POSITION_COLUMN = (
 						okText="Yes"
 						cancelText="No"
 					>
-						<span className="gx-link gx-text-danger">Delete</span>
+						<span className="gx-link gx-text-danger">
+							<CustomIcon name="delete" />
+						</span>
 					</Popconfirm>
 				</div>
 			);
@@ -83,7 +86,7 @@ export const LEAVES_COLUMN = (
 						className="gx-link gx-text-primary"
 						onClick={() => onEditClick(record, true)}
 					>
-						Edit
+						<CustomIcon name="edit" />
 					</span>
 					<Popconfirm
 						title="Are you sure you want to delete?"
@@ -91,7 +94,10 @@ export const LEAVES_COLUMN = (
 						okText="Yes"
 						cancelText="No"
 					>
-						<span className="gx-link gx-text-danger">Delete</span>
+						<span className="gx-link gx-text-danger">
+							{" "}
+							<CustomIcon name="delete" />
+						</span>
 					</Popconfirm>
 				</div>
 			);

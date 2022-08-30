@@ -1,5 +1,6 @@
 import React, { ReactElement } from "react";
 import { Divider, Popconfirm } from "antd";
+import CustomIcon from "components/Elements/Icons";
 
 interface notice {
 	title: string;
@@ -50,7 +51,7 @@ const HOLIDAY_COLUMNS = (
 				<span>
 					<Divider type="vertical" />
 					<span className="gx-link" onClick={() => openModal(record, false)}>
-						Edit
+						<CustomIcon name="edit" />
 					</span>
 					<Divider type="vertical" />
 					<Popconfirm
@@ -59,7 +60,9 @@ const HOLIDAY_COLUMNS = (
 						okText="Yes"
 						cancelText="No"
 					>
-						<span className="gx-link gx-text-danger">Delete</span>
+						<span className="gx-link gx-text-danger">
+							<CustomIcon name="delete" />
+						</span>
 					</Popconfirm>
 				</span>
 			);
