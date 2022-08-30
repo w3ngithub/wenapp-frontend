@@ -78,9 +78,9 @@ function TmsMyAttendanceForm({
 
 	const handlePunchIn = (values: any) => {
 		addAttendances.mutate({
-			attendanceDate: moment()
-				.startOf("day")
-				.format(),
+			// attendanceDate: moment()
+			// 	.startOf("day")
+			// 	.format(),
 			punchInTime: moment.utc().format(),
 			punchInNote: values.punchInNote
 		});

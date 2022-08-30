@@ -89,9 +89,9 @@ function PunchInOut() {
 			});
 		} else {
 			addAttendances.mutate({
-				attendanceDate: moment()
-					.startOf("day")
-					.format(),
+				// attendanceDate: moment()
+				// 	.startOf("day")
+				// 	.format(),
 				punchInTime: moment.utc().format()
 			});
 		}
