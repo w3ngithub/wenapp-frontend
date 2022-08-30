@@ -1,5 +1,5 @@
 import React from "react";
-import { EyeOutlined, EditOutlined } from "@ant-design/icons";
+import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 function CustomIcon({ name }: { name: string }) {
 	switch (name) {
@@ -8,6 +8,9 @@ function CustomIcon({ name }: { name: string }) {
 
 		case "edit":
 			return <EditOutlined style={{ fontSize: "18px" }} />;
+
+		case "delete":
+			return <DeleteOutlined style={{ fontSize: "18px" }} />;
 
 		default:
 			return <EyeOutlined style={{ fontSize: "18px" }} />;
