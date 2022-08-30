@@ -5,18 +5,33 @@ import { events } from "routes/extensions/calendar/events";
 import CommonModal from "./CommonModal";
 import { useQuery } from "@tanstack/react-query";
 import { getAllHolidays } from "services/resources";
-import { Button, Card } from "antd";
+import { Button, Card, Table } from "antd";
+import { HOLIDAY_COLUMNS } from "constants/Holidays";
+import { changeDate } from "helpers/utils";
 
 const localizer = momentLocalizer(moment);
 
+const formattedHoliday = holidays => {
+	return holidays?.map(holiday => ({
+		...holiday,
+		key: holiday._id,
+		date: changeDate(holiday.date)
+	}));
+};
+
 function Holiday() {
 	const [openAdd, setOpenAdd] = useState(false);
+	const [sort, setSort] = useState({});
 
-	const { data: Holidays } = useQuery(["DashBoardHolidays"], () =>
-		getAllHolidays({ sort: "-createdAt", limit: "1" })
+	const { data: Holidays, isLoading, isFetching } = useQuery(
+		["DashBoardHolidays"],
+		() => getAllHolidays({ sort: "-createdAt", limit: "1" })
 	);
 
-	console.log(Holidays?.data?.data?.data?.[0]?.holidays);
+	const handleTableChange = (pagination, filters, sorter) => {
+		setSort(sorter);
+	};
+
 	return (
 		<div className="gx-main-content">
 			<CommonModal toggle={openAdd} onCancel={() => setOpenAdd(false)} />
@@ -34,7 +49,22 @@ function Holiday() {
 						</span>
 					</span>
 				}
-			></Card>
+			>
+				<Table
+					className="gx-table-responsive"
+					columns={HOLIDAY_COLUMNS(
+						sort
+						// handleOpenEditModal,
+						// confirmDeleteProject
+					)}
+					dataSource={formattedHoliday(
+						Holidays?.data?.data?.data?.[0]?.holidays
+					)}
+					onChange={handleTableChange}
+					pagination={false}
+					loading={isLoading || isFetching}
+				/>
+			</Card>
 			<Card title="Holidays Calendar">
 				<div className="gx-rbc-calendar">
 					<Calendar
