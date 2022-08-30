@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card } from "antd";
+import { Button, Card } from "antd";
 import SettingTable from "../CommonTable";
 import { POSITION_COLUMN } from "constants/Settings";
 import {
@@ -20,7 +20,7 @@ function Noticeboard() {
 	const [openModal, setOpenModal] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [dataToEdit, setDataToEdit] = useState<any>({});
-	const { data: noticeBoardTypes }: { data: any } = useQuery(
+	const { data: noticeBoardTypes, isLoading }: any  = useQuery(
 		["noticeBoardTypes"],
 		getNoticeboardTypes
 	);
@@ -127,7 +127,17 @@ function Noticeboard() {
 				onSubmit={isEditMode ? handleEditClick : handleAddClick}
 				onCancel={handleCloseModal}
 			/>
-			<Card title="Category">
+			<Card
+				title="Category"
+				extra={
+					<Button
+						className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+						onClick={() => handleOpenModal("Category")}
+					>
+						Add
+					</Button>
+				}
+			>
 				<SettingTable
 					data={noticeBoardTypes?.data?.data?.data}
 					columns={POSITION_COLUMN(
@@ -135,7 +145,7 @@ function Noticeboard() {
 						value => handleOpenEditModal(value, "Category")
 					)}
 					onAddClick={() => handleOpenModal("Category")}
-					isLoading={deleteNoticeboardTypeMutation.isLoading}
+					isLoading={isLoading || deleteNoticeboardTypeMutation.isLoading}
 				/>
 			</Card>
 		</>
