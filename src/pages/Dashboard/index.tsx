@@ -141,7 +141,7 @@ const Dashboard = () => {
 			<Row>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
-						className="gx-bg-teal"
+						className="gx-cyan-green-gradient"
 						totalCount={ActiveUsers?.data?.data?.user || 0}
 						label="Total Staff"
 					/>
@@ -150,7 +150,7 @@ const Dashboard = () => {
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						icon={LoginOutlined}
-						className="gx-pink-purple-gradient"
+						className="gx-pink-purple-corner-gradient"
 						totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
 						label="Staff Checked In Today"
 					/>
@@ -158,7 +158,7 @@ const Dashboard = () => {
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						icon={ExceptionOutlined}
-						className="gx-bg-orange"
+						className="gx-pink-orange-corner-gradient"
 						totalCount={PendingLeaves?.data?.data?.leaves || 0}
 						label="Pending Leave Request"
 					/>
