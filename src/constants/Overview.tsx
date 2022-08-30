@@ -80,7 +80,7 @@ const OVERVIEW_CHECKEDIN = (sortedInfo: any): tableCol[] => [
 		sortOrder: sortedInfo.columnKey === "checkIn" && sortedInfo.order
 	},
 	{
-		title: "Check In Loacation",
+		title: "Punch In Location",
 		dataIndex: "checkInLocation",
 		key: "checkInLocation",
 		width: 150,
@@ -100,7 +100,7 @@ const OVERVIEW_CHECKEDIN = (sortedInfo: any): tableCol[] => [
 		sortOrder: sortedInfo.columnKey === "checkOut" && sortedInfo.order
 	},
 	{
-		title: "Check Out Loacation",
+		title: "Punch Out Location",
 		dataIndex: "checkOutLocation",
 		width: 150,
 		key: "checkOutLocation",

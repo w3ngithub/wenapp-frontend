@@ -185,7 +185,7 @@ const Dashboard = () => {
 				</Col>
 
 				<Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
-				<Card className="gx-card" title="Calendar">
+					<Card className="gx-card" title="Calendar">
 						<div className="gx-rbc-calendar">
 							<Calendar
 								localizer={localizer}
@@ -273,8 +273,6 @@ const Dashboard = () => {
 							</div>
 						)}
 					</Card>
-
-
 				</Col>
 			</Row>
 		</Auxiliary>
