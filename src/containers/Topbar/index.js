@@ -58,32 +58,7 @@ class Topbar extends Component {
 					</div>
 
 					<ul className="gx-header-notifications gx-ml-auto">
-						<li className="gx-notify">
-							<Popover
-								overlayClassName="gx-popover-horizantal"
-								placement="bottomRight"
-								content={<AppNotification />}
-								trigger="click"
-							>
-								<span className="gx-pointer gx-d-block">
-									<i className="icon icon-notification" />
-								</span>
-							</Popover>
-						</li>
-
-						<li className="gx-msg">
-							<Popover
-								overlayClassName="gx-popover-horizantal"
-								placement="bottomRight"
-								content={<MailNotification />}
-								trigger="click"
-							>
-								<span className="gx-pointer gx-status-pos gx-d-block">
-									<i className="icon icon-chat-new" />
-									<span className="gx-status gx-status-rtl gx-small gx-orange" />
-								</span>
-							</Popover>
-						</li>
+						<li className="gx-notify"></li>
 
 						<li className="gx-user-nav">
 							<UserInfo />

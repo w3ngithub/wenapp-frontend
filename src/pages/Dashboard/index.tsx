@@ -143,7 +143,7 @@ const Dashboard = () => {
 					<TotalCountCard
 						className="gx-bg-teal"
 						totalCount={ActiveUsers?.data?.data?.user || 0}
-						label="Total Staff"
+						label="Total Co-workers"
 					/>
 				</Col>
 
@@ -152,7 +152,7 @@ const Dashboard = () => {
 						icon={LoginOutlined}
 						className="gx-pink-purple-gradient"
 						totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
-						label="Staff Checked In Today"
+						label="Co-workers Punched In Today"
 					/>
 				</Col>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
@@ -167,7 +167,7 @@ const Dashboard = () => {
 					<TotalCountCard
 						isLink={true}
 						totalCount={TodaysLeave?.data?.leaves?.[0]?.count || 0}
-						label="Staff On Leave"
+						label="Co-workers On Leave"
 						icon={LogoutOutlined}
 					/>
 				</Col>
