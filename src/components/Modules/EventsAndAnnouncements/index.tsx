@@ -1,112 +1,98 @@
 import { Avatar, Timeline } from "antd";
-import WidgetHeader from "components/Elements/WidgetHeader";
 import React from "react";
 import ActivityItem from "../dashboard/CRM/ActivityItem";
+import { changeDate, dayCheck } from "helpers/utils";
 
 const TimeLineItem = Timeline.Item;
 
-export const events = [
+export const events: any = ({
+	announcementsData = [],
+	holidaysData = [],
+	birthdayData = [],
+	SalaryReviewData = []
+}): any => [
 	{
 		id: 1,
-		day: "Announncements",
-		tasks: [
-			{
-				id: 1,
-				name: "Mila Alba",
-				title: [
-					<p>
-						08/23/2022 We will shutdown our server for maintenance today at
-						12:00PM. Please save your work accordingly
-					</p>
-				],
-				avatar: "https://via.placeholder.com/150x150",
-				imageList: []
-			}
-		]
+		day: "Announcements",
+		Icon: <i className="icon icon-alert gx-fs-xxl" />,
+		tasks: announcementsData || []
 	},
 	{
 		id: 2,
 		day: "Holidays",
-		tasks: [
-			{
-				id: 5,
-				name: "Kily Johns",
-				title: [
-					<span className="gx-link" key={7}>
-						Today -
-					</span>,
-					" Janai Purnima"
-				],
-				avatar: ""
-			}
-		]
+		Icon: <i className="icon icon-calendar gx-fs-xxl" />,
+		tasks: holidaysData || []
 	},
 	{
 		id: 3,
 		day: "Salary Review",
-		tasks: [
-			{
-				id: 5,
-				name: "Kily Johns",
-				title: [
-					<span className="gx-link" key={7}>
-						Today -
-					</span>,
-					" Ashok Ganika"
-				],
-				avatar: ""
-			},
-			{
-				id: 5,
-				name: "Kily Johns",
-				title: [
-					<span className="gx-link" key={7}>
-						Tomorrow -
-					</span>,
-					" Pariskrit Moktan"
-				],
-				avatar: ""
-			}
-		]
+		Icon: <i className="icon icon-schedule gx-fs-xxl" />,
+		tasks: SalaryReviewData
 	},
 	{
-		id: 3,
+		id: 4,
 		day: "Birthdays",
-		tasks: [
-			{
-				id: 5,
-				name: "Kily Johns",
-				title: [
-					<span className="gx-link" key={7}>
-						Today -
-					</span>,
-					" Ashok Ganika"
-				],
-				avatar: ""
-			},
-			{
-				id: 5,
-				name: "Kily Johns",
-				title: [
-					<span className="gx-link" key={7}>
-						Tomorrow -
-					</span>,
-					" Pariskrit Moktan"
-				],
-				avatar: ""
-			}
-		]
+		Icon: <i className="icon icon-birthday-new gx-fs-xxl" />,
+		tasks: birthdayData
 	}
 ];
 
-function EventsAndAnnouncements() {
+function EventsAndAnnouncements({
+	announcements,
+	holidays,
+	birthdays,
+	salaryReview
+}: {
+	announcements: any;
+	holidays: any;
+	birthdays: any[];
+	salaryReview: any[];
+}) {
+	const announcementsData = announcements?.map((x: any) => ({
+		id: x._id,
+		name: x.title,
+		title: [
+			<>
+				<p className="gx-mb-0">{x.startDate && changeDate(x.startDate)}</p>
+				{x.details}
+			</>
+		],
+		Icon: "notification",
+		imageList: []
+	}));
+
+	const holidaysData = holidays?.map((x: any) => ({
+		id: x._id,
+		name: x.title,
+		title: [
+			<p>
+				{x.date && changeDate(x.date)} - {x.title}
+			</p>
+		],
+		Icon: "important-o"
+	}));
+
+	const birthdayData = birthdays?.map((x: any) => ({
+		id: x._id,
+		name: x.name,
+		title: [<span>{dayCheck(x.dob)} -</span>, ` ${x.name}`],
+		avatar: x.photoURL || ""
+	}));
+
+	const SalaryReviewData = salaryReview?.map((x: any) => ({
+		id: x._id,
+		name: x.name,
+		title: [<span>{dayCheck(x.newSalaryReviewDate)} -</span>, ` ${x.name}`],
+		avatar: x.photoURL || ""
+	}));
+
 	function getName(task: any, shape: any) {
-		if (task.avatar === "") {
-			let nameSplit = task.name.split(" ");
-			if (task.name.split(" ").length === 1) {
+		if (task?.avatar === "") {
+			let nameSplit = task?.name.split(" ");
+			if (task?.name.split(" ").length === 1) {
 				const initials = nameSplit[0].charAt(0).toUpperCase();
 				return (
-					<Avatar shape={shape} className="gx-size-40 gx-bg-primary">
+					<Avatar shape={shape} className="gx-size-24 gx-bg-primary">
 						{initials}
 					</Avatar>
 				);
@@ -115,27 +101,45 @@ function EventsAndAnnouncements() {
 					nameSplit[0].charAt(0).toUpperCase() +
 					nameSplit[1].charAt(0).toUpperCase();
 				return (
-					<Avatar shape={shape} className="gx-size-40 gx-bg-cyan">
+					<Avatar shape={shape} className="gx-size-30 gx-bg-primary">
 						{initials}
 					</Avatar>
 				);
 			}
+		} else if (task?.avatar === undefined || task.avatar === null) {
+			return <i className={`icon icon-${task.Icon} gx-fs-xl`} />;
+			// return <task.Icon className="gx-fs-lg" />;
 		} else {
-			return <Avatar shape={shape} className="gx-size-40" src={task.avatar} />;
+			return (
+				<Avatar
+					shape={shape}
+					className="gx-size-30 gx-bg-primary"
+					src={task.avatar}
+				/>
+			);
 		}
 	}
 	return (
 		<div className="gx-entry-sec">
-			<WidgetHeader title="Upcoming Events" />
-			{events.map((activity, index) => (
+			{/* <WidgetHeader title="Upcoming Events" /> */}
+			{events({
+				announcementsData,
+				holidaysData,
+				birthdayData,
+				SalaryReviewData
+			})?.map((activity: any, index: number) => (
 				<div className="gx-timeline-info" key={"activity" + index}>
-					<h4 className="gx-timeline-info-day">{activity.day}</h4>
+					<div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3">
+						{/* <activity.Icon className="gx-fs-xxl" /> */}
+						{activity.Icon}
+						<h3 className=" gx-mb-1 ">{activity?.day}</h3>
+					</div>
 					<Timeline>
-						{activity.tasks.map((task, index) => {
+						{activity?.tasks?.map((task: any, index: number) => {
 							return (
 								<TimeLineItem
+									style={{ marginLeft: "8px" }}
 									key={"timeline" + index}
-									// mode="alternate"
 									dot={getName(task, "")}
 								>
 									<ActivityItem task={task} />
@@ -145,12 +149,6 @@ function EventsAndAnnouncements() {
 					</Timeline>
 				</div>
 			))}
-			{/* <span
-        className="gx-link gx-btn-link"
-        onClick={this.onLoadMore.bind(this)}
-    >
-        Load More
-    </span> */}
 		</div>
 	);
 }

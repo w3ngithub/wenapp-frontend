@@ -1,4 +1,5 @@
 import { notification } from "./notification";
+import moment from "moment";
 
 export const handleSort = (
 	currentState,
@@ -322,3 +323,22 @@ export const handleResponse = (
 		});
 	}
 };
+
+export const formatToUtc = date => {
+	const m = moment(date._d);
+	m.set({ h: 5, m: 45, s: 0 });
+	return m;
+};
+
+export function dayCheck(date) {
+	var thisYear = moment().year();
+	var mom = moment(date).year(thisYear);
+	return mom.calendar(null, {
+		sameDay: "[Today]",
+		nextDay: "[Tomorrow]",
+		nextWeek: "dddd",
+		lastDay: "[Yesterday]",
+		lastWeek: "[Last] dddd",
+		sameElse: "DD/MM/YYYY"
+	});
+}

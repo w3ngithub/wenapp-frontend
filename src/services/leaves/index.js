@@ -20,10 +20,10 @@ const getTakenAndRemainingLeaveDaysOfUser = async id => {
 	}
 };
 
-const getLeavesOfAllUsers = async (status = "", user = "") => {
+const getLeavesOfAllUsers = async (status = "", user = "", date = "") => {
 	try {
 		let response = await API.get(
-			`${Apis.Leaves}?leaveStatus=${status}&user=${user}`
+			`${Apis.Leaves}?leaveStatus=${status}&user=${user}&leaveDates=${date}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
@@ -91,6 +91,33 @@ const updateLeave = async payload => {
 	}
 };
 
+const getPendingLeavesCount = async () => {
+	try {
+		let response = await API.get(`${Apis.Leaves}/pending/count`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const getTodaysUserLeaveCount = async () => {
+	try {
+		let response = await API.get(`${Apis.Leaves}/users/today/count`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const getFiscalYearLeaves = async () => {
+	try {
+		let response = await API.get(`${Apis.Leaves}/users/fiscalYearLeaves`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	getLeaveDaysOfAllUsers,
 	getLeavesOfUser,
@@ -100,5 +127,8 @@ export {
 	changeLeaveStatus,
 	createLeave,
 	createLeaveOfUser,
-	updateLeave
+	updateLeave,
+	getPendingLeavesCount,
+	getTodaysUserLeaveCount,
+	getFiscalYearLeaves
 };

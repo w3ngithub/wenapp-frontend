@@ -15,16 +15,17 @@ import {
 	BLOG,
 	BLOGDETAIL,
 	BLOGS,
-	CALENDAR,
 	COWORKERS,
 	DASHBOARD,
 	EDITBLOG,
 	FAQS,
+	HOLIDAY,
 	INVITE,
 	LEAVE,
 	LEAVE_REPORT,
 	LOGTIME,
 	NOTICEBOARD,
+	OVERVIEW,
 	POLICY,
 	PROFILE,
 	PROJECTS,
@@ -61,6 +62,7 @@ import Calendar from "pages/Resources/Calendar";
 import Blogs from "pages/Blog/Blogs";
 import BlogDetail from "pages/Blog/BlogDetail";
 import AddBlog from "pages/Blog/AddBlog";
+import Overview from "pages/Overview";
 
 function App(props: any) {
 	const { locale, authUser } = props;
@@ -82,6 +84,7 @@ function App(props: any) {
 					<Route element={<ProtectedRoute auth={authUser} />}>
 						<Route element={<MainApp />}>
 							<Route path={DASHBOARD} element={<Dashboard />} />
+							<Route path={OVERVIEW} element={<Overview />} />
 							<Route path={COWORKERS} element={<Coworkers />} />
 							<Route path={PROJECTS} element={<Projects />}></Route>
 							<Route path={ATTENDANCE} element={<Attendace />} />
@@ -102,7 +105,7 @@ function App(props: any) {
 							<Route path={RESOURCES} element={<Resources />}>
 								<Route path={FAQS} element={<Faqs />} />
 								<Route path={POLICY} element={<Policy />} />
-								<Route path={CALENDAR} element={<Calendar />} />
+								<Route path={HOLIDAY} element={<Calendar />} />
 							</Route>
 							<Route path={SETTINGS} element={<Settings />} />
 							<Route path={PROFILE} element={<Profile />} />

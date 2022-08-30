@@ -1,14 +1,15 @@
 import {
 	ATTENDANCE,
 	BLOG,
-	CALENDAR,
 	COWORKERS,
 	DASHBOARD,
 	FAQS,
+	HOLIDAY,
 	LEAVE,
 	LEAVE_REPORT,
 	LOGTIME,
 	NOTICEBOARD,
+	OVERVIEW,
 	POLICY,
 	PROJECTS,
 	REPORTS,
@@ -26,6 +27,13 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 		url: DASHBOARD,
 		isExpandable: false,
 		id: 1
+	},
+	{
+		icon: "view-o",
+		name: "sidebar.overview",
+		url: OVERVIEW,
+		isExpandable: false,
+		id: 12
 	},
 	{
 		icon: "contacts",
@@ -124,8 +132,8 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
 				id: 2
 			},
 			{
-				name: "sidebar.resources.calendar",
-				url: CALENDAR,
+				name: "sidebar.resources.holiday",
+				url: HOLIDAY,
 				id: 3
 			}
 		]

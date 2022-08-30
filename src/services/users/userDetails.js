@@ -108,6 +108,32 @@ const importUsers = async payload => {
 	}
 };
 
+const getActiveUsersCount = async () => {
+	try {
+		let response = await API.get(`${Apis.Users}/count`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const getBirthMonthUsers = async () => {
+	try {
+		let response = await API.get(`${Apis.Users}/birthday`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const getSalaryReviewUsers = async () => {
+	try {
+		let response = await API.get(`${Apis.Users}/salaryReview`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
 export {
 	loginInUsers,
 	getAllUsers,
@@ -118,5 +144,8 @@ export {
 	getUserPositionTypes,
 	updateProfile,
 	updateUser,
-	importUsers
+	importUsers,
+	getActiveUsersCount,
+	getBirthMonthUsers,
+	getSalaryReviewUsers
 };

@@ -91,9 +91,9 @@ const getAttendacentOfUser = async userId => {
 };
 
 const searchAttendacentOfUser = async ({
-	userId,
-	fromDate,
-	toDate,
+	userId = "",
+	fromDate = "",
+	toDate = "",
 	page = "",
 	sort = "",
 	limit = "",
@@ -120,6 +120,15 @@ const updatePunchReqestCount = async userId => {
 	}
 };
 
+const getTodaysUserAttendanceCount = async userId => {
+	try {
+		let response = await API.get(`${Apis.Attendances}/today/count`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	getAllAttendances,
 	getAttendance,
@@ -130,5 +139,6 @@ export {
 	updatePunchout,
 	getAttendacentOfUser,
 	searchAttendacentOfUser,
-	updatePunchReqestCount
+	updatePunchReqestCount,
+	getTodaysUserAttendanceCount
 };
