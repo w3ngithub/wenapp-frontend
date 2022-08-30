@@ -66,11 +66,21 @@ const getNoticeTypes = async () => {
 	}
 };
 
+const getWeeklyNotices = async () => {
+	try {
+		let response = await API.get(`${Apis.NoticeBoard}/weekNotices`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	getAllNotices,
 	getNotice,
 	deleteNotice,
 	addNotice,
 	updateNotice,
-	getNoticeTypes
+	getNoticeTypes,
+	getWeeklyNotices
 };

@@ -22,8 +22,8 @@ import {
 	getPendingLeavesCount,
 	getTodaysUserLeaveCount
 } from "services/leaves";
-import { formatToUtc } from "helpers/utils";
-import { getAllNotices } from "services/noticeboard";
+import { formatToUtc, oneWeekFilterCheck } from "helpers/utils";
+import { getAllNotices, getWeeklyNotices } from "services/noticeboard";
 import { getAllHolidays } from "services/resources";
 import {
 	getActiveUsersCount,
@@ -72,9 +72,8 @@ const Dashboard = () => {
 		getBirthMonthUsers
 	);
 
-	const { data: notices } = useQuery(["DashBoardnotices"], () =>
-		getAllNotices({})
-	);
+	const { data: notices } = useQuery(["DashBoardnotices"], getWeeklyNotices);
+
 	const { data: Holidays } = useQuery(["DashBoardHolidays"], () =>
 		getAllHolidays({ sort: "-createdAt", limit: "1" })
 	);
@@ -115,19 +114,19 @@ const Dashboard = () => {
 		end: new Date(new Date(Date.now()).toLocaleString().split(",")[0])
 	}));
 
-	const noticesCalendar = notices?.data?.data?.data.map((x: any) => ({
+	const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
 		title: x.title,
-		end: new Date(x.endDate),
+		end: x.endDate ? new Date(x.endDate) : new Date(x.startDate),
 		start: new Date(x.startDate)
 	}));
 
-	const holidaysCalendar = Holidays?.data?.data?.data?.[0].holidays?.map(
-		(x: any) => ({
+	const holidaysCalendar = Holidays?.data?.data?.data?.[0]?.holidays
+		?.filter(oneWeekFilterCheck)
+		?.map((x: any) => ({
 			title: x.title,
 			start: new Date(x.date),
 			end: new Date(x.date)
-		})
-	);
+		}));
 
 	const calendarEvents = [
 		...(leaveUsers || []),
@@ -176,7 +175,7 @@ const Dashboard = () => {
 				<Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
 					<Widget>
 						<EventsAndAnnouncements
-							announcements={notices?.data?.data?.data}
+							announcements={notices?.data?.data?.notices}
 							holidays={Holidays?.data?.data?.data?.[0].holidays}
 							birthdays={BirthMonthUsers?.data?.data?.users}
 							salaryReview={salaryReview?.data?.data?.users}
