@@ -15,13 +15,15 @@ const CommonModal = (props: modalType) => {
 	const [form] = Form.useForm();
 	const { isEditMode, toggle = true, onCancel, onSubmit } = props;
 
-	const onFinish = (values: any) => {
-		console.log("Received values of form:", values);
-	};
-
 	const handleSubmit = () => {
-		console.log(form.getFieldsValue());
-		form.validateFields().then(values => onSubmit(form.getFieldsValue()));
+		console.log({
+			holidays: form
+				.getFieldsValue()
+				.holidays.filter(
+					(holiday: { date: string; title: string; remarks: string }) => holiday
+				)
+		});
+		// form.validateFields().then(values => onSubmit(form.getFieldsValue()));
 	};
 
 	return (
@@ -43,7 +45,6 @@ const CommonModal = (props: modalType) => {
 			<Form
 				form={form}
 				name="dynamic_form_nest_item"
-				onFinish={onFinish}
 				autoComplete="off"
 				style={{ marginLeft: 10 }}
 			>
