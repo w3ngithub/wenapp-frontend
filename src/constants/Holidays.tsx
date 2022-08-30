@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { Divider, Popconfirm } from "antd";
 
-interface notice {
+interface holiday {
 	title: string;
 	dataIndex?: string;
 	key: any;
@@ -13,9 +13,9 @@ interface notice {
 
 const HOLIDAY_COLUMNS = (
 	sortedInfo: any,
-	openModal: Function,
-	confirmDelete: Function
-): notice[] => [
+	confirmDelete: Function,
+	openModal: Function
+): holiday[] => [
 	{
 		title: "Title",
 		dataIndex: "title",

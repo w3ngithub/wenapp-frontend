@@ -24,6 +24,7 @@ const getAllPolicies = async ({ page = "", limit = "" }) => {
 	}
 };
 
+// Holidays
 const getAllHolidays = async ({ page = "", limit = "", sort = "" }) => {
 	try {
 		let response = await API.get(
@@ -35,4 +36,42 @@ const getAllHolidays = async ({ page = "", limit = "", sort = "" }) => {
 	}
 };
 
-export { getAllFaqs, getAllPolicies, getAllHolidays };
+const createHolidays = async payload => {
+	try {
+		let response = await API.post(`${Apis.Resources}/holidays`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+const deleteHoliday = async payload => {
+	try {
+		let response = await API.delete(
+			`${Apis.Resources}/holidays/remove/${payload.docId}/${payload.holidayId}`
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+const updateHoliday = async payload => {
+	try {
+		let response = await API.patch(
+			`${Apis.Resources}/holidays/${payload?.id}`,
+			payload?.holidays
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err.response);
+	}
+};
+
+export {
+	getAllFaqs,
+	getAllPolicies,
+	getAllHolidays,
+	createHolidays,
+	deleteHoliday,
+	updateHoliday
+};
