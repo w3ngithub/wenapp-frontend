@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import { events } from "routes/extensions/calendar/events";
 import CommonModal from "./CommonModal";
 import { useQuery } from "@tanstack/react-query";
 import { getAllHolidays } from "services/resources";
@@ -31,6 +30,14 @@ function Holiday() {
 	const handleTableChange = (pagination, filters, sorter) => {
 		setSort(sorter);
 	};
+
+	const holidaysCalendar = Holidays?.data?.data?.data?.[0]?.holidays?.map(
+		x => ({
+			title: x.title,
+			start: new Date(x.date),
+			end: new Date(x.date)
+		})
+	);
 
 	return (
 		<div className="gx-main-content">
@@ -69,7 +76,7 @@ function Holiday() {
 				<div className="gx-rbc-calendar">
 					<Calendar
 						localizer={localizer}
-						events={events}
+						events={holidaysCalendar}
 						startAccessor="start"
 						endAccessor="end"
 					/>
