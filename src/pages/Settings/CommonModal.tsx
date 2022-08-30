@@ -1,5 +1,5 @@
 import { Button, Form, Input, Modal, Spin } from "antd";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 interface modalInterface {
 	isEditMode: boolean;
@@ -8,6 +8,7 @@ interface modalInterface {
 	onCancel: React.MouseEventHandler<HTMLElement>;
 	type: string;
 	isLoading: boolean;
+	editData: any;
 }
 
 const layout = {
@@ -21,23 +22,21 @@ function CommonModal({
 	onSubmit,
 	onCancel,
 	type,
-	isLoading
+	isLoading,
+	editData
 }: modalInterface) {
 	const [form] = Form.useForm();
-	const [input, setInput] = useState("");
-
-	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setInput(event.target.value);
-	};
 
 	const handleSubmit = () => {
-		form.validateFields().then(values => onSubmit(input));
+		form.validateFields().then(values => onSubmit(form.getFieldValue("name")));
 	};
 
 	useEffect(() => {
+		if (toggle) {
+			if (isEditMode) form.setFieldValue("name", editData?.name);
+		}
 		if (!toggle) form.resetFields();
 	}, [toggle]);
-
 	return (
 		<Modal
 			title={isEditMode ? `Update ${type}` : `Add ${type}`}
@@ -56,11 +55,15 @@ function CommonModal({
 			<Spin spinning={isLoading}>
 				<Form {...layout} form={form} name="control-hooks" layout="vertical">
 					<Form.Item
-						name={type}
+						name="name"
 						label={type}
 						rules={[{ required: true, message: "Required!" }]}
 					>
-						<Input placeholder={type} onChange={handleInputChange} />
+						<Input
+							// value={input}
+							placeholder={type}
+							// onChange={handleInputChange}
+						/>
 					</Form.Item>
 				</Form>
 			</Spin>
