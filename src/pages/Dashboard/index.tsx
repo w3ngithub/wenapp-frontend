@@ -23,7 +23,7 @@ import {
 	getTodaysUserLeaveCount
 } from "services/leaves";
 import { formatToUtc, oneWeekFilterCheck } from "helpers/utils";
-import { getAllNotices, getWeeklyNotices } from "services/noticeboard";
+import { getWeeklyNotices } from "services/noticeboard";
 import { getAllHolidays } from "services/resources";
 import {
 	getActiveUsersCount,
@@ -46,6 +46,8 @@ const Dashboard = () => {
 		["usersSalaryReview"],
 		getSalaryReviewUsers
 	);
+
+	console.log(project);
 
 	const { data: AttendanceCount } = useQuery(
 		["todaysAttendance"],
@@ -212,6 +214,7 @@ const Dashboard = () => {
 												value: x.name
 											})
 										)}
+										inputSelect
 									/>
 								</FormItem>
 								<FormItem name="logType">
