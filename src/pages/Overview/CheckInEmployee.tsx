@@ -29,7 +29,7 @@ function CheckedInEmployee({ checkIn }: { checkIn: any[] }) {
 			title={
 				<h3>
 					<WalletOutlined />
-					<span className="gx-ml-3">Employee Who already checked in</span>
+					<span className="gx-ml-3">Coworkers Who already punched in</span>
 				</h3>
 			}
 		>

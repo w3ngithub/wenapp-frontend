@@ -153,7 +153,7 @@ const Dashboard = () => {
 						icon={LoginOutlined}
 						className="gx-pink-purple-corner-gradient"
 						totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
-						label="Staff Checked In Today"
+						label="Staff Punched In Today"
 					/>
 				</Col>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>

@@ -32,7 +32,7 @@ function LeaveEmployee({ leaves }: { leaves: any[] }) {
 			title={
 				<h3>
 					<WalletOutlined />
-					<span className="gx-ml-3">Employee on leave</span>
+					<span className="gx-ml-3">Coworkers on leave</span>
 				</h3>
 			}
 		>

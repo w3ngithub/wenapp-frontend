@@ -27,7 +27,7 @@ function UnCheckedInEmployee({
 			title={
 				<h3>
 					<WalletOutlined />
-					<span className="gx-ml-3">Employee who have not checked in</span>
+					<span className="gx-ml-3">Coworkers who have not punched in</span>
 				</h3>
 			}
 		>

@@ -72,7 +72,7 @@ const OVERVIEW_CHECKEDIN = (sortedInfo: any): tableCol[] => [
 		sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order
 	},
 	{
-		title: "Checked In At",
+		title: "Punched In At",
 		dataIndex: "checkIn",
 		key: "checkIn",
 		width: 150,
@@ -90,7 +90,7 @@ const OVERVIEW_CHECKEDIN = (sortedInfo: any): tableCol[] => [
 		render: text => <Link to="#">{text}</Link>
 	},
 	{
-		title: "Checked Out At",
+		title: "Punched Out At",
 		dataIndex: "checkOut",
 		width: 150,
 		key: "checkOut",
@@ -126,7 +126,7 @@ const OVERVIEW_NOTCHECKEDIN = (sortedInfo: any): tableCol[] => [
 		sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order
 	},
 	{
-		title: "Checked In At",
+		title: "Punched In At",
 		dataIndex: "checkIn",
 		key: "checkIn",
 		width: 150,
@@ -135,7 +135,7 @@ const OVERVIEW_NOTCHECKEDIN = (sortedInfo: any): tableCol[] => [
 	},
 
 	{
-		title: "Checked Out At",
+		title: "Punched Out At",
 		dataIndex: "checkOut",
 		width: 150,
 		key: "checkOut",
