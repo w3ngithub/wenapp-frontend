@@ -58,7 +58,7 @@ function SidebarContent(props) {
 									key={item.url}
 									className={getNavStyleSubMenuClass(navStyle)}
 									title={
-										<span>
+										<span style={{ display: "flex", alignItems: "center" }}>
 											<i className={`icon icon-${item.icon} gx-fs-xlxl`} />
 											<IntlMessages id={item.name} />
 										</span>
@@ -75,7 +75,10 @@ function SidebarContent(props) {
 								</SubMenu>
 							) : (
 								<Menu.Item key={item.url}>
-									<Link to={`/${item.url}`}>
+									<Link
+										to={`/${item.url}`}
+										style={{ display: "flex", alignItems: "center" }}
+									>
 										<i className={`icon icon-${item.icon} gx-fs-xlxl`} />
 										<IntlMessages id={item.name} />
 									</Link>
