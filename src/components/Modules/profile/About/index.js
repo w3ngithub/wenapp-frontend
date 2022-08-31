@@ -1,10 +1,7 @@
 import React from "react";
-import { Col, Row, Tabs } from "antd";
+import { Col, Row } from "antd";
 import Widget from "components/Elements/Widget";
-import { aboutList } from "routes/socialApps/Profile/data";
 import AboutItem from "./AboutItem";
-
-const TabPane = Tabs.TabPane;
 
 class About extends React.Component {
 	render() {

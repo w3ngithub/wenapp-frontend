@@ -22,6 +22,7 @@ import Select from "components/Elements/Select";
 import { getAllUsers } from "services/users/userDetails";
 import TmsAdminAttendanceForm from "components/Modules/TmsAdminAttendanceForm";
 import TmsAdminAddAttendanceForm from "components/Modules/TmsAdminAttendanceForm/Add";
+import CustomIcon from "components/Elements/Icons";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -175,11 +176,11 @@ function AdminAttendance() {
 					return (
 						<span>
 							<span className="gx-link" onClick={() => handleView(record)}>
-								<EyeOutlined style={{ fontSize: "18px" }} />
+								<CustomIcon name="view" />
 							</span>{" "}
 							<Divider type="vertical"></Divider>
 							<span className="gx-link" onClick={() => handleEdit(record)}>
-								Edit{" "}
+								<CustomIcon name="edit" />
 							</span>
 						</span>
 					);
@@ -256,7 +257,7 @@ function AdminAttendance() {
 						</FormItem>
 						<FormItem>
 							<Select
-								placeholder="Select User"
+								placeholder="Select Co-worker"
 								onChange={handleUserChange}
 								value={user}
 								options={users?.data?.data?.data?.map(x => ({

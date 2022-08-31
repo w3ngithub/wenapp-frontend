@@ -1,4 +1,5 @@
 import { Popconfirm } from "antd";
+import CustomIcon from "components/Elements/Icons";
 import React from "react";
 
 const LEAVES_COLUMN = (
@@ -51,7 +52,7 @@ const LEAVES_COLUMN = (
 							className="gx-link gx-text-primary"
 							onClick={() => onEditClick(record, true)}
 						>
-							View Details
+							<CustomIcon name="view" />
 						</span>
 						{!["approved", "cancelled"].includes(record.status) && (
 							<>

@@ -69,7 +69,7 @@ function UserDetailForm({
 				bankAccNumber: intialValues.bankAccNumber && intialValues.bankAccNumber,
 				bankName: intialValues.bankName && intialValues.bankName,
 				lastReviewDate:
-					intialValues.lastReviewDate && moment(intialValues.lastReview),
+					intialValues.lastReviewDate && moment(intialValues.lastReviewDate),
 				exitDate: intialValues.exitDate && moment(intialValues.exitDate)
 			});
 		}
@@ -110,12 +110,7 @@ function UserDetailForm({
 					>
 						{getFieldDecorator("name", {
 							rules: [{ required: true, message: "Required!" }]
-						})(
-							<Input
-								placeholder="Enter Name"
-								disabled={readOnly}
-							/>
-						)}
+						})(<Input placeholder="Enter Name" disabled={readOnly} />)}
 					</FormItem>
 					<FormItem
 						{...formItemLayout}

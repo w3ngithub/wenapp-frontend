@@ -22,8 +22,8 @@ import {
 	getPendingLeavesCount,
 	getTodaysUserLeaveCount
 } from "services/leaves";
-import { formatToUtc } from "helpers/utils";
-import { getAllNotices } from "services/noticeboard";
+import { formatToUtc, oneWeekFilterCheck } from "helpers/utils";
+import { getWeeklyNotices } from "services/noticeboard";
 import { getAllHolidays } from "services/resources";
 import {
 	getActiveUsersCount,
@@ -46,6 +46,8 @@ const Dashboard = () => {
 		["usersSalaryReview"],
 		getSalaryReviewUsers
 	);
+
+	console.log(project);
 
 	const { data: AttendanceCount } = useQuery(
 		["todaysAttendance"],
@@ -72,9 +74,8 @@ const Dashboard = () => {
 		getBirthMonthUsers
 	);
 
-	const { data: notices } = useQuery(["DashBoardnotices"], () =>
-		getAllNotices({})
-	);
+	const { data: notices } = useQuery(["DashBoardnotices"], getWeeklyNotices);
+
 	const { data: Holidays } = useQuery(["DashBoardHolidays"], () =>
 		getAllHolidays({ sort: "-createdAt", limit: "1" })
 	);
@@ -115,19 +116,19 @@ const Dashboard = () => {
 		end: new Date(new Date(Date.now()).toLocaleString().split(",")[0])
 	}));
 
-	const noticesCalendar = notices?.data?.data?.data.map((x: any) => ({
+	const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
 		title: x.title,
-		end: new Date(x.endDate),
+		end: x.endDate ? new Date(x.endDate) : new Date(x.startDate),
 		start: new Date(x.startDate)
 	}));
 
-	const holidaysCalendar = Holidays?.data?.data?.data?.[0].holidays?.map(
-		(x: any) => ({
+	const holidaysCalendar = Holidays?.data?.data?.data?.[0]?.holidays
+		?.filter(oneWeekFilterCheck)
+		?.map((x: any) => ({
 			title: x.title,
 			start: new Date(x.date),
 			end: new Date(x.date)
-		})
-	);
+		}));
 
 	const calendarEvents = [
 		...(leaveUsers || []),
@@ -144,7 +145,7 @@ const Dashboard = () => {
 					<TotalCountCard
 						className="gx-cyan-green-gradient"
 						totalCount={ActiveUsers?.data?.data?.user || 0}
-						label="Total Staff"
+						label="Total Co-workers"
 					/>
 				</Col>
 
@@ -153,7 +154,7 @@ const Dashboard = () => {
 						icon={LoginOutlined}
 						className="gx-pink-purple-corner-gradient"
 						totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
-						label="Staff Checked In Today"
+						label="Co-workers Punched In Today"
 					/>
 				</Col>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
@@ -168,7 +169,7 @@ const Dashboard = () => {
 					<TotalCountCard
 						isLink={true}
 						totalCount={TodaysLeave?.data?.leaves?.[0]?.count || 0}
-						label="Staff On Leave"
+						label="Co-workers On Leave"
 						icon={LogoutOutlined}
 					/>
 				</Col>
@@ -176,7 +177,7 @@ const Dashboard = () => {
 				<Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
 					<Widget>
 						<EventsAndAnnouncements
-							announcements={notices?.data?.data?.data}
+							announcements={notices?.data?.data?.notices}
 							holidays={Holidays?.data?.data?.data?.[0].holidays}
 							birthdays={BirthMonthUsers?.data?.data?.users}
 							salaryReview={salaryReview?.data?.data?.users}
@@ -185,6 +186,16 @@ const Dashboard = () => {
 				</Col>
 
 				<Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
+					<Card className="gx-card" title="Calendar">
+						<div className="gx-rbc-calendar">
+							<Calendar
+								localizer={localizer}
+								events={calendarEvents}
+								startAccessor="start"
+								endAccessor="end"
+							/>
+						</div>
+					</Card>
 					<Card className="gx-card" title="Project Time Log Report">
 						<div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
 							<Form layout="inline" onFinish={generateChart}>
@@ -213,6 +224,7 @@ const Dashboard = () => {
 												value: x.name
 											})
 										)}
+										inputSelect
 									/>
 								</FormItem>
 								<FormItem name="logType">
@@ -262,17 +274,6 @@ const Dashboard = () => {
 								)}
 							</div>
 						)}
-					</Card>
-
-					<Card className="gx-card" title="Calendar">
-						<div className="gx-rbc-calendar">
-							<Calendar
-								localizer={localizer}
-								events={calendarEvents}
-								startAccessor="start"
-								endAccessor="end"
-							/>
-						</div>
 					</Card>
 				</Col>
 			</Row>

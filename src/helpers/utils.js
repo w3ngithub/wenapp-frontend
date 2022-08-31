@@ -342,3 +342,8 @@ export function dayCheck(date) {
 		sameElse: "DD/MM/YYYY"
 	});
 }
+
+export const oneWeekFilterCheck = x =>
+	new Date(x.date) >= new Date() &&
+	new Date(x.date) <=
+		new Date(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000));

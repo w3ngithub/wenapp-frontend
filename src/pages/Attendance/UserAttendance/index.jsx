@@ -21,6 +21,7 @@ import Select from "components/Elements/Select";
 import { EyeOutlined } from "@ant-design/icons";
 import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
 import { useSelector } from "react-redux";
+import CustomIcon from "components/Elements/Icons";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -155,7 +156,7 @@ function UserAttendance() {
 					return (
 						<span>
 							<span className="gx-link" onClick={() => handleView(record)}>
-								<EyeOutlined style={{ fontSize: "18px" }} />
+								<CustomIcon name="view" />
 							</span>
 						</span>
 					);

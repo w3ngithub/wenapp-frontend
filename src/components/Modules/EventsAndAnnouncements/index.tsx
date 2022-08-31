@@ -1,7 +1,7 @@
 import { Avatar, Timeline } from "antd";
 import React from "react";
 import ActivityItem from "../dashboard/CRM/ActivityItem";
-import { changeDate, dayCheck } from "helpers/utils";
+import { changeDate, dayCheck, oneWeekFilterCheck } from "helpers/utils";
 
 const TimeLineItem = Timeline.Item;
 
@@ -61,13 +61,16 @@ function EventsAndAnnouncements({
 		imageList: []
 	}));
 
-	const holidaysData = holidays?.map((x: any) => ({
+	const holidaysData = holidays?.filter(oneWeekFilterCheck)?.map((x: any) => ({
 		id: x._id,
 		name: x.title,
 		title: [
-			<p>
-				{x.date && changeDate(x.date)} - {x.title}
-			</p>
+			<div style={{ marginTop: -5 }}>
+				<p className="gx-mb-0 gx-font-weight-medium">{x.title}</p>{" "}
+				<p className="gx-mb-0 gx-font-weight-light">
+					{x.date && changeDate(x.date)}
+				</p>
+			</div>
 		],
 		Icon: "important-o"
 	}));
@@ -75,14 +78,26 @@ function EventsAndAnnouncements({
 	const birthdayData = birthdays?.map((x: any) => ({
 		id: x._id,
 		name: x.name,
-		title: [<span>{dayCheck(x.dob)} -</span>, ` ${x.name}`],
+		title: [
+			<>
+				<p className="gx-mb-0 gx-font-weight-medium">{x.name}</p>{" "}
+				<p className="gx-mb-0 gx-font-weight-light">{dayCheck(x.dob)}</p>
+			</>
+		],
 		avatar: x.photoURL || ""
 	}));
 
 	const SalaryReviewData = salaryReview?.map((x: any) => ({
 		id: x._id,
 		name: x.name,
-		title: [<span>{dayCheck(x.newSalaryReviewDate)} -</span>, ` ${x.name}`],
+		title: [
+			<>
+				<p className="gx-mb-0 gx-font-weight-medium">{x.name}</p>{" "}
+				<p className="gx-mb-0 gx-font-weight-light">
+					{dayCheck(x.newSalaryReviewDate)}
+				</p>
+			</>
+		],
 		avatar: x.photoURL || ""
 	}));
 
@@ -129,16 +144,16 @@ function EventsAndAnnouncements({
 				SalaryReviewData
 			})?.map((activity: any, index: number) => (
 				<div className="gx-timeline-info" key={"activity" + index}>
-					<div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3">
+					<div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3 gx-border-bottom gx-pb-2 ">
 						{/* <activity.Icon className="gx-fs-xxl" /> */}
 						{activity.Icon}
-						<h3 className=" gx-mb-1 ">{activity?.day}</h3>
+						<h2 className=" gx-mb-1 ">{activity?.day}</h2>
 					</div>
 					<Timeline>
 						{activity?.tasks?.map((task: any, index: number) => {
 							return (
 								<TimeLineItem
-									style={{ marginLeft: "8px" }}
+									style={{ marginLeft: "12px" }}
 									key={"timeline" + index}
 									dot={getName(task, "")}
 								>

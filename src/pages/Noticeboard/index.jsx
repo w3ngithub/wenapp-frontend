@@ -227,13 +227,13 @@ function NoticeBoardPage() {
 									ref={noticeRef}
 								/>
 							</FormItem>
-							<FormItem>
+							{/* <FormItem>
 								<RangePicker
 									onChange={handleChangeDate}
 									value={date}
 									style={{ width: "240px" }}
 								/>
-							</FormItem>
+							</FormItem> */}
 							<FormItem>
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
@@ -267,7 +267,7 @@ function NoticeBoardPage() {
 						showSizeChanger: true,
 						total: data?.data?.data?.count || 1,
 						onShowSizeChange,
-						hideOnSinglePage: true,
+						hideOnSinglePage: false,
 						onChange: handlePageChange
 					}}
 					loading={isLoading || isFetching || deleteNoticeMutation.isLoading}

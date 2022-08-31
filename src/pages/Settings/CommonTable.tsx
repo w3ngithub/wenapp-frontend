@@ -16,17 +16,6 @@ function CommonTable({
 }) {
 	return (
 		<>
-			<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-				<div></div>
-				{hideAddButton ? null : (
-					<Button
-						className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-						onClick={onAddClick}
-					>
-						Add
-					</Button>
-				)}
-			</div>
 			<Table
 				className="gx-table-responsive"
 				columns={columns}

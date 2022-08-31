@@ -1,22 +1,23 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-
+import { Layout, Switch } from "antd";
+import { FaMoon } from "react-icons/fa";
+import { BsFillSunFill } from "react-icons/bs";
 import { toggleCollapsedSideNav } from "appRedux/actions/Setting";
 import UserInfo from "components/Elements/UserInfo";
-import AppNotification from "components/Elements/AppNotification";
-import MailNotification from "components/Modules/MailNotification";
 import Auxiliary from "util/Auxiliary";
-import { Layout, Popover } from "antd";
 
 import {
 	NAV_STYLE_DRAWER,
 	NAV_STYLE_FIXED,
 	NAV_STYLE_MINI_SIDEBAR,
-	TAB_SIZE
+	TAB_SIZE,
+	THEME_TYPE_DARK,
+	THEME_TYPE_SEMI_DARK
 } from "constants/ThemeSetting";
 import { connect } from "react-redux";
 import PunchInOut from "components/Elements/PunchInOut";
-import { getLocalStorageData } from "helpers/utils";
+import { setThemeType } from "appRedux/actions/Setting";
 
 const { Header } = Layout;
 
@@ -31,8 +32,23 @@ class Topbar extends Component {
 		});
 	};
 
+	handleThemeChange = e => {
+		if (e) {
+			this.props.setThemeType(THEME_TYPE_DARK);
+		} else {
+			this.props.setThemeType(THEME_TYPE_SEMI_DARK);
+		}
+	};
+
 	render() {
-		const { width, navCollapsed, navStyle } = this.props;
+		const { width, navCollapsed, navStyle, themeType } = this.props;
+
+		if (themeType === THEME_TYPE_DARK) {
+			document.body.classList.add("dark-theme");
+		} else if (document.body.classList.contains("dark-theme")) {
+			document.body.classList.remove("dark-theme");
+		}
+
 		return (
 			<Auxiliary>
 				<Header>
@@ -59,30 +75,27 @@ class Topbar extends Component {
 
 					<ul className="gx-header-notifications gx-ml-auto">
 						<li className="gx-notify">
-							<Popover
-								overlayClassName="gx-popover-horizantal"
-								placement="bottomRight"
-								content={<AppNotification />}
-								trigger="click"
-							>
-								<span className="gx-pointer gx-d-block">
-									<i className="icon icon-notification" />
-								</span>
-							</Popover>
-						</li>
-
-						<li className="gx-msg">
-							<Popover
-								overlayClassName="gx-popover-horizantal"
-								placement="bottomRight"
-								content={<MailNotification />}
-								trigger="click"
-							>
-								<span className="gx-pointer gx-status-pos gx-d-block">
-									<i className="icon icon-chat-new" />
-									<span className="gx-status gx-status-rtl gx-small gx-orange" />
-								</span>
-							</Popover>
+							<Switch
+								unCheckedChildren={
+									<FaMoon
+										style={{
+											fontSize: "15px",
+											color: "#3a3939",
+											marginTop: "3px"
+										}}
+									/>
+								}
+								checkedChildren={
+									<BsFillSunFill
+										style={{
+											color: "yellow",
+											fontSize: "18px",
+											marginTop: "2px"
+										}}
+									/>
+								}
+								onChange={this.handleThemeChange}
+							/>
 						</li>
 
 						<li className="gx-user-nav">
@@ -96,8 +109,11 @@ class Topbar extends Component {
 }
 
 const mapStateToProps = ({ settings }) => {
-	const { navStyle, navCollapsed, width } = settings;
-	return { navStyle, navCollapsed, width };
+	const { navStyle, navCollapsed, width, themeType } = settings;
+	return { navStyle, navCollapsed, width, themeType };
 };
 
-export default connect(mapStateToProps, { toggleCollapsedSideNav })(Topbar);
+export default connect(mapStateToProps, {
+	toggleCollapsedSideNav,
+	setThemeType
+})(Topbar);

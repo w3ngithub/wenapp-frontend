@@ -21,7 +21,7 @@ const TotalCountCard = ({
 				isLink ? "gx-link" : ""
 			}`}
 		>
-			<div className="gx-flex-row gx-align-items-center  gx-mb-2">
+			<div className="gx-d-flex gx-align-items-center  gx-mb-2">
 				<Icon className="gx-fs-icon-lg gx-mr-2" />
 				<div>
 					<h2 className="gx-text-white">{totalCount}</h2>

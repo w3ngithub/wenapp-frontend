@@ -1,0 +1,87 @@
+import { Button, Form, Input, Modal, Spin } from "antd";
+import React, { useEffect } from "react";
+
+interface modalInterface {
+	isEditMode: boolean;
+	toggle: boolean;
+	onSubmit: (leave: { name: string; leaveDays: string }) => void;
+	onCancel: React.MouseEventHandler<HTMLElement>;
+	isLoading: boolean;
+	editData: any;
+}
+
+const layout = {
+	labelCol: { span: 8 },
+	wrapperCol: { span: 16 }
+};
+
+function LeaveModal({
+	isEditMode,
+	toggle,
+	onSubmit,
+	onCancel,
+	isLoading,
+	editData
+}: modalInterface) {
+	const [form] = Form.useForm();
+
+	const handleSubmit = () => {
+		form.validateFields().then(values => onSubmit(form.getFieldsValue()));
+	};
+
+	useEffect(() => {
+		if (toggle) {
+			if (isEditMode)
+				form.setFieldsValue({
+					name: editData?.name,
+					leaveDays: editData?.leaveDays
+				});
+		}
+		if (!toggle) form.resetFields();
+	}, [toggle]);
+	return (
+		<Modal
+			title={isEditMode ? `Update Leave Type` : `Add Leave Type`}
+			visible={toggle}
+			onOk={handleSubmit}
+			onCancel={onCancel}
+			footer={[
+				<Button key="back" onClick={onCancel}>
+					Cancel
+				</Button>,
+				<Button key="submit" type="primary" onClick={handleSubmit}>
+					Submit
+				</Button>
+			]}
+		>
+			<Spin spinning={isLoading}>
+				<Form {...layout} form={form} name="control-hooks" layout="vertical">
+					<Form.Item
+						name="name"
+						label="Name"
+						rules={[{ required: true, message: "Required!" }]}
+					>
+						<Input
+							// value={input}
+							placeholder="name"
+							// onChange={handleInputChange}
+						/>
+					</Form.Item>
+					<Form.Item
+						name="leaveDays"
+						label="Leave Days"
+						rules={[{ required: true, message: "Required!" }]}
+					>
+						<Input
+							// value={input}
+							placeholder="leave days"
+							// onChange={handleInputChange}
+						/>
+					</Form.Item>
+				</Form>
+			</Spin>
+		</Modal>
+	);
+}
+
+export default LeaveModal;
