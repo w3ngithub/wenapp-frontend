@@ -1,5 +1,6 @@
 import React from "react";
 import { PROJECTS } from "helpers/routePath";
+import CustomIcon from "components/Elements/Icons";
 
 const WEEKLY_REPORT_COLUMNS = (sortedInfo, navigateToProjectLogs) => [
 	{
@@ -38,7 +39,7 @@ const WEEKLY_REPORT_COLUMNS = (sortedInfo, navigateToProjectLogs) => [
 						className="gx-link"
 						onClick={() => navigateToProjectLogs(`/${PROJECTS}/${record.key}`)}
 					>
-						Details
+						<CustomIcon name="view" />
 					</span>
 				</span>
 			);

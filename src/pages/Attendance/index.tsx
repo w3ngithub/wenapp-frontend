@@ -10,7 +10,7 @@ function Attendace() {
 				<Tabs.TabPane key="1" tab="My Attendance">
 					<UserAttendance />
 				</Tabs.TabPane>
-				<Tabs.TabPane key="2" tab="Co-workers' Attendance">
+			 	<Tabs.TabPane key="2" tab="Co-workers Attendance">
 					<AdminAttendance />
 				</Tabs.TabPane>
 			</Tabs>

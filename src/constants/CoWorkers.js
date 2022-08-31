@@ -1,5 +1,6 @@
 import React from "react";
-import { Divider } from "antd";
+import { Divider, Popconfirm } from "antd";
+import CustomIcon from "components/Elements/Icons";
 
 const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 	{
@@ -48,22 +49,33 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 		width: 360,
 		render: (text, record) => {
 			return (
-				<div style={{display:'flex'}}>
+				<div style={{ display: "flex" }}>
 					<span className="gx-link" onClick={() => openEditPopup(record, true)}>
-						View Details
+						<CustomIcon name="view" />
 					</span>
 					<Divider type="vertical" />
-					<span
-						className="gx-link"
-						onClick={() => {
+					<Popconfirm
+						title={`Are you sure to make user ${
+							record.active ? "inactive" : "active"
+						} ?`}
+						onConfirm={() => {
 							mutation.mutate({
 								userId: record._id,
 								updatedData: { active: !record.active }
 							});
 						}}
+						okText="Yes"
+						cancelText="No"
 					>
-						Make User {record.active ? "Inactive" : "Active"}
-					</span>
+						<span className="gx-link">
+							{record.active ? (
+								<CustomIcon name="deactiveUser" />
+							) : (
+								<CustomIcon name="activeUser" />
+							)}
+						</span>
+					</Popconfirm>
+
 					{record.isAdmin && (
 						<>
 							{" "}
@@ -72,7 +84,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 								className="gx-link"
 								onClick={() => openEditPopup(record, false)}
 							>
-								Edit
+								<CustomIcon name="edit" />
 							</span>
 						</>
 					)}

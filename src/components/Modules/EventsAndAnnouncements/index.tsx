@@ -1,7 +1,7 @@
 import { Avatar, Timeline } from "antd";
 import React from "react";
 import ActivityItem from "../dashboard/CRM/ActivityItem";
-import { changeDate, dayCheck } from "helpers/utils";
+import { changeDate, dayCheck, oneWeekFilterCheck } from "helpers/utils";
 
 const TimeLineItem = Timeline.Item;
 
@@ -61,7 +61,7 @@ function EventsAndAnnouncements({
 		imageList: []
 	}));
 
-	const holidaysData = holidays?.map((x: any) => ({
+	const holidaysData = holidays?.filter(oneWeekFilterCheck)?.map((x: any) => ({
 		id: x._id,
 		name: x.title,
 		title: [

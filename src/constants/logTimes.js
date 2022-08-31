@@ -1,6 +1,7 @@
 import React from "react";
 import { Divider, Popconfirm } from "antd";
 import { roundedToFixed } from "helpers/utils";
+import CustomIcon from "components/Elements/Icons";
 
 const LOGTIMES_COLUMNS = (
 	sortedInfo,
@@ -80,7 +81,7 @@ const LOGTIMES_COLUMNS = (
 									className="gx-link"
 									onClick={() => onOpenEditModal(record)}
 								>
-									Edit
+									<CustomIcon name="edit" />
 								</span>
 							</span>
 						);
@@ -148,7 +149,7 @@ const LOGTIMES_COLUMNS = (
 									className="gx-link"
 									onClick={() => onOpenEditModal(record)}
 								>
-									Edit
+									<CustomIcon name="edit" />
 								</span>
 								<Divider type="vertical" />
 								<Popconfirm
@@ -157,7 +158,9 @@ const LOGTIMES_COLUMNS = (
 									okText="Yes"
 									cancelText="No"
 								>
-									<span className="gx-link gx-text-danger">Delete</span>
+									<span className="gx-link gx-text-danger">
+										<CustomIcon name="delete" />
+									</span>
 								</Popconfirm>
 							</span>
 						);

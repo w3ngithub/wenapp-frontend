@@ -12,7 +12,7 @@ interface notice {
 	render?: (text: any, record: any) => ReactElement | null;
 }
 
-const NOTICE_COLUMNS = (
+const HOLIDAY_COLUMNS = (
 	sortedInfo: any,
 	openModal: Function,
 	confirmDelete: Function
@@ -27,39 +27,28 @@ const NOTICE_COLUMNS = (
 		sortOrder: sortedInfo.columnKey === "title" && sortedInfo.order
 	},
 	{
-		title: "Category",
-		dataIndex: "category",
-		key: "category",
-		sorter: (a, b) =>
-			a.category?.toString().localeCompare(b.category?.toString()),
-		sortOrder: sortedInfo.columnKey === "category" && sortedInfo.order
+		title: "Date",
+		dataIndex: "date",
+		key: "date",
+		sorter: (a, b) => a.date?.toString().localeCompare(b.date?.toString()),
+		sortOrder: sortedInfo.columnKey === "date" && sortedInfo.order
 	},
 	{
-		title: "Start Date",
-		dataIndex: "startDate",
-		key: "startDate",
+		title: "Remarks",
+		dataIndex: "remarks",
+		key: "remarks",
 		sorter: (a, b) =>
-			a.startDate?.toString().localeCompare(b.startDate?.toString()),
-		sortOrder: sortedInfo.columnKey === "startDate" && sortedInfo.order
+			a.remarks?.toString().localeCompare(b.remarks?.toString()),
+		sortOrder: sortedInfo.columnKey === "remarks" && sortedInfo.order,
+		width: 500
 	},
-	{
-		title: "End Date",
-		dataIndex: "endDate",
-		key: "endDate",
-		sorter: (a, b) =>
-			a.endDate?.toString().localeCompare(b.endDate?.toString()),
-		sortOrder: sortedInfo.columnKey === "endDate" && sortedInfo.order
-	},
+
 	{
 		title: "Action",
 		key: "action",
 		render: (text, record) => {
 			return (
 				<span>
-					<span className="gx-link" onClick={() => openModal(record, true)}>
-						<CustomIcon name="view" />
-					</span>
-
 					<Divider type="vertical" />
 					<span className="gx-link" onClick={() => openModal(record, false)}>
 						<CustomIcon name="edit" />
@@ -72,7 +61,6 @@ const NOTICE_COLUMNS = (
 						cancelText="No"
 					>
 						<span className="gx-link gx-text-danger">
-							{" "}
 							<CustomIcon name="delete" />
 						</span>
 					</Popconfirm>
@@ -82,4 +70,4 @@ const NOTICE_COLUMNS = (
 	}
 ];
 
-export { NOTICE_COLUMNS };
+export { HOLIDAY_COLUMNS };

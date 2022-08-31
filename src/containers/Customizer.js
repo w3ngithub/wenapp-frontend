@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { Button, Drawer, message, Radio } from "antd";
 import { connect } from "react-redux";
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { Divider, Popconfirm } from "antd";
+import CustomIcon from "components/Elements/Icons";
 
 const PROJECT_COLUMNS = (
 	sortedInfo,
@@ -65,7 +66,7 @@ const PROJECT_COLUMNS = (
 		width: 360,
 		render: (text, record) => {
 			return (
-				<div style={{display:'flex'}}>
+				<div style={{ display: "flex" }}>
 					<span
 						className="gx-link"
 						onClick={() =>
@@ -75,10 +76,12 @@ const PROJECT_COLUMNS = (
 						Log Time
 					</span>
 					<Divider type="vertical" />
-					<span className="gx-link" onClick={() => openModal(record, true)}>Detail</span>
+					<span className="gx-link" onClick={() => openModal(record, true)}>
+						<CustomIcon name="view" />
+					</span>
 					<Divider type="vertical" />
 					<span className="gx-link" onClick={() => openModal(record, false)}>
-						Edit
+						<CustomIcon name="edit" />
 					</span>
 					<Divider type="vertical" />
 					<Popconfirm
@@ -87,7 +90,9 @@ const PROJECT_COLUMNS = (
 						okText="Yes"
 						cancelText="No"
 					>
-						<span className="gx-link gx-text-danger">Delete</span>
+						<span className="gx-link gx-text-danger">
+							<CustomIcon name="delete" />
+						</span>
 					</Popconfirm>
 				</div>
 			);

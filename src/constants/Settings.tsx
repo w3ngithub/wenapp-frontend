@@ -1,3 +1,4 @@
+import CustomIcon from "components/Elements/Icons";
 import { Divider, Popconfirm } from "antd";
 
 export const POSITION_COLUMN = (
@@ -22,7 +23,7 @@ export const POSITION_COLUMN = (
 						className="gx-link gx-text-primary"
 						onClick={() => onEditClick(record, true)}
 					>
-						Edit
+						<CustomIcon name="edit" />
 					</span>
 					<Divider type="vertical"/>
 					<Popconfirm
@@ -31,7 +32,9 @@ export const POSITION_COLUMN = (
 						okText="Yes"
 						cancelText="No"
 					>
-						<span className="gx-link gx-text-danger">Delete</span>
+						<span className="gx-link gx-text-danger">
+							<CustomIcon name="delete" />
+						</span>
 					</Popconfirm>
 				</div>
 			);
@@ -84,7 +87,7 @@ export const LEAVES_COLUMN = (
 						className="gx-link gx-text-primary"
 						onClick={() => onEditClick(record, true)}
 					>
-						Edit
+						<CustomIcon name="edit" />
 					</span>
 					<Divider type="vertical" style={{color:'blue'}}/>
 					<Popconfirm
@@ -93,7 +96,10 @@ export const LEAVES_COLUMN = (
 						okText="Yes"
 						cancelText="No"
 					>
-						<span className="gx-link gx-text-danger">Delete</span>
+						<span className="gx-link gx-text-danger">
+							{" "}
+							<CustomIcon name="delete" />
+						</span>
 					</Popconfirm>
 				</div>
 			);

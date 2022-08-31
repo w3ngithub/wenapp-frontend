@@ -10,6 +10,7 @@ const Widget = ({ title, children, styleName, cover, extra, actions }) => {
 			cover={cover}
 			className={`gx-card-widget ${styleName}`}
 			extra={extra}
+			style={{ height: "80%" }}
 		>
 			{children}
 		</Card>
