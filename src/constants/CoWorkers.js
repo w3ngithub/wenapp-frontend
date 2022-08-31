@@ -1,5 +1,5 @@
 import React from "react";
-import { Divider } from "antd";
+import { Divider, Popconfirm } from "antd";
 import CustomIcon from "components/Elements/Icons";
 
 const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
@@ -54,17 +54,28 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 						<CustomIcon name="view" />
 					</span>
 					<Divider type="vertical" />
-					<span
-						className="gx-link"
-						onClick={() => {
+					<Popconfirm
+						title={`Are you sure to make user ${
+							record.active ? "inactive" : "active"
+						} ?`}
+						onConfirm={() => {
 							mutation.mutate({
 								userId: record._id,
 								updatedData: { active: !record.active }
 							});
 						}}
+						okText="Yes"
+						cancelText="No"
 					>
-						Make User {record.active ? "Inactive" : "Active"}
-					</span>
+						<span className="gx-link">
+							{record.active ? (
+								<CustomIcon name="deactiveUser" />
+							) : (
+								<CustomIcon name="activeUser" />
+							)}
+						</span>
+					</Popconfirm>
+
 					{record.isAdmin && (
 						<>
 							{" "}

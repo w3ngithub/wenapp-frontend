@@ -1,20 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { Select as Dropdown } from "antd";
 
 import { filterOptions } from "helpers/utils";
 
 const Option = Dropdown.Option;
 
-const Select = ({ onChange, value, options, placeholder, style, mode }) => {
+const Select = ({
+	onChange,
+	value,
+	options,
+	placeholder,
+	style,
+	mode,
+	inputSelect = false
+}) => {
+	const [searchValue, setSearchValue] = useState("");
 	return (
 		<Dropdown
 			showSearch
 			placeholder={placeholder}
 			style={{ width: 200, ...style }}
 			onChange={onChange}
+			onSearch={e => {
+				inputSelect && setSearchValue(e);
+			}}
 			value={value}
 			filterOption={filterOptions}
 			mode={mode}
+			showArrow={false}
+			open={!inputSelect ? undefined : searchValue.length ? true : false}
+			onSelect={() => {
+				inputSelect && setSearchValue("");
+			}}
 		>
 			{options &&
 				options?.map(opt => (
