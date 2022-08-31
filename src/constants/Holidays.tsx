@@ -48,14 +48,13 @@ const HOLIDAY_COLUMNS = (
 		key: "action",
 		render: (text, record) => {
 			return (
-				<span>
-					<Divider type="vertical" />
+				<div style={{ display: "flex" }}>
 					<span className="gx-link" onClick={() => openModal(record, false)}>
 						<CustomIcon name="edit" />
 					</span>
 					<Divider type="vertical" />
 					<Popconfirm
-						title="Are you sure to delete this project?"
+						title="Are you sure to delete this holiday?"
 						onConfirm={() => confirmDelete(record)}
 						okText="Yes"
 						cancelText="No"
@@ -64,7 +63,7 @@ const HOLIDAY_COLUMNS = (
 							<CustomIcon name="delete" />
 						</span>
 					</Popconfirm>
-				</span>
+				</div>
 			);
 		}
 	}

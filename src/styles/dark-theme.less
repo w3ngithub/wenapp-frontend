@@ -274,6 +274,7 @@ body.dark-theme {
 			> .ant-menu-submenu-open
 			> .ant-menu-submenu-title:before {
 			color: @menu-dark-highlight-color!important;
+			background: white!important;
 		}
 	}
 
@@ -321,7 +322,7 @@ body.dark-theme {
 
 	& .ant-menu-submenu-title {
 		&:hover {
-			color: @menu-dark-highlight-color!important;
+			color: #fff!important;
 		}
 	}
 
@@ -1419,6 +1420,10 @@ body.dark-theme {
 		&-extra {
 			color: @dark-theme-text-color;
 		}
+	}
+
+	&.dark-theme .ant-menu-submenu-title:hover {
+		color: #fff
 	}
 
 	& .ant-input,
