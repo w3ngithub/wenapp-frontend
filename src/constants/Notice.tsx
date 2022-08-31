@@ -66,7 +66,7 @@ const NOTICE_COLUMNS = (
 					</span>
 					<Divider type="vertical" />
 					<Popconfirm
-						title="Are you sure to delete this project?"
+						title="Are you sure to delete this notice?"
 						onConfirm={() => confirmDelete(record)}
 						okText="Yes"
 						cancelText="No"
