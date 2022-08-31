@@ -34,15 +34,33 @@ export const aboutList = [
 	},
 	{
 		id: 3,
-		title: "Phone",
+		title: "Primary Phone",
 		icon: "phone",
 		name: "primaryPhone"
 	},
 	{
 		id: 4,
+		title: "Secondary Phone",
+		icon: "phone",
+		name: "secondaryPhone"
+	},
+	{
+		id: 5,
 		title: "Marital Status",
 		icon: "home",
 		name: "maritalStatus"
+	},
+	{
+		id: 6,
+		title: "Date Of Birth",
+		icon: "birthday",
+		name: "dob"
+	},
+	{
+		id: 7,
+		title: "Join Date",
+		icon: "signup",
+		name: "joinDate"
 	}
 ];
 
@@ -84,7 +102,10 @@ function Profile() {
 
 	const aboutData = aboutList.map(about => ({
 		...about,
-		desc: user.user[about.name]
+		desc:
+			about.name === "dob" || about.name === "joinDate"
+				? user.user[about.name].split("T")[0]
+				: user.user[about.name]
 	}));
 
 	const handleProfileUpdate = async (user, removedFile) => {
@@ -158,7 +179,6 @@ function Profile() {
 					<Row>
 						<Col xs={24}>
 							<About data={aboutData} />
-							<Biography />
 						</Col>
 					</Row>
 				</div>

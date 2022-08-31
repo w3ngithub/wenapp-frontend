@@ -239,7 +239,7 @@ function LeaveModal({
 										disableYearPicker
 										multiple
 										minDate={
-											leaveType === "Sick"
+											leaveType === "Sick" || isEditMode
 												? new DateObject().subtract(2, "months")
 												: new Date()
 										}

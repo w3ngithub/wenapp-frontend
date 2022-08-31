@@ -54,7 +54,11 @@ export const INVITED_EMPLOYEES_COLUMN = () => [
 		key: "status",
 		width: 10,
 		render: (text: any, record: any) => {
-			return record?.inviteTokenUsed ? <span></span> : <span>pending</span>;
+			return record?.inviteTokenUsed ? (
+				<span>accepted</span>
+			) : (
+				<span>pending</span>
+			);
 		}
 	}
 ];
