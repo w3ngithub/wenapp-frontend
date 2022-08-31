@@ -23,7 +23,7 @@ const LEAVES_COLUMN = (
 	{
 		title: "Reason",
 		dataIndex: "reason",
-		width: 10,
+		width: 300,
 		key: "reason",
 		render: (text: any, record: any) => {
 			return (
