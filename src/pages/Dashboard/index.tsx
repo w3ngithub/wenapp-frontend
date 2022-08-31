@@ -153,7 +153,7 @@ const Dashboard = () => {
 						icon={LoginOutlined}
 						className="gx-pink-purple-corner-gradient"
 						totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
-						label="Staff Checked In Today"
+						label="Staff Punched In Today"
 					/>
 				</Col>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
@@ -185,6 +185,16 @@ const Dashboard = () => {
 				</Col>
 
 				<Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
+					<Card className="gx-card" title="Calendar">
+						<div className="gx-rbc-calendar">
+							<Calendar
+								localizer={localizer}
+								events={calendarEvents}
+								startAccessor="start"
+								endAccessor="end"
+							/>
+						</div>
+					</Card>
 					<Card className="gx-card" title="Project Time Log Report">
 						<div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
 							<Form layout="inline" onFinish={generateChart}>
@@ -262,17 +272,6 @@ const Dashboard = () => {
 								)}
 							</div>
 						)}
-					</Card>
-
-					<Card className="gx-card" title="Calendar">
-						<div className="gx-rbc-calendar">
-							<Calendar
-								localizer={localizer}
-								events={calendarEvents}
-								startAccessor="start"
-								endAccessor="end"
-							/>
-						</div>
 					</Card>
 				</Col>
 			</Row>

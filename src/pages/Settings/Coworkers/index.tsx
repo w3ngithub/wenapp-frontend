@@ -310,7 +310,7 @@ function Coworkers() {
 				onSubmit={isEditMode ? handleEditClick : handleAddClick}
 				onCancel={handleCloseModal}
 			/>
-			<Card title="Invite An Employee">
+			<Card title="Invite A Co-worker">
 				<Form {...layout} form={form} name="control-hooks" layout="vertical">
 					<Form.Item
 						name="email"
