@@ -1,7 +1,7 @@
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, DatePicker, Form, Input, Modal, Row, Spin } from "antd";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 interface modalType {
 	isEditMode: boolean;
@@ -10,6 +10,12 @@ interface modalType {
 	onCancel: React.MouseEventHandler<HTMLElement>;
 	isLoading: boolean;
 	editData: any;
+}
+
+interface holidayType {
+	date: string;
+	title: string;
+	remarks: string;
 }
 
 const CommonModal = (props: modalType) => {
@@ -22,18 +28,33 @@ const CommonModal = (props: modalType) => {
 		isLoading,
 		editData
 	} = props;
+	const [error, setError] = useState<{
+		index: number;
+	}>({ index: 0 });
 
 	const handleSubmit = () => {
-		form.validateFields().then(values =>
-			onSubmit({
-				holidays: form
-					.getFieldsValue()
-					.holidays.filter(
-						(holiday: { date: string; title: string; remarks: string }) =>
-							holiday
-					)
+		form
+			.validateFields()
+			.then(values => {
+				onSubmit({
+					holidays: form
+						.getFieldsValue()
+						.holidays.filter((holiday: holidayType) => holiday)
+						.map((holiday: holidayType) => ({
+							...holiday,
+							date: moment.utc(holiday.date).format()
+						}))
+				});
 			})
-		);
+			.catch(err => console.log(err));
+	};
+
+	const handleInputChange = (event: any, index: any, name: string) => {
+		if (name === "title") {
+			setError({ index });
+		} else {
+			setError({ index });
+		}
 	};
 
 	useEffect(() => {
@@ -89,7 +110,7 @@ const CommonModal = (props: modalType) => {
 					>
 						{(fields, { add, remove }) => (
 							<>
-								{fields.map(field => (
+								{fields.map((field, index) => (
 									<Row key={field.key} style={{ columnGap: 6 }}>
 										<Col span={24} sm={7}>
 											<Form.Item
@@ -103,9 +124,17 @@ const CommonModal = (props: modalType) => {
 													{...field}
 													label="Date"
 													name={[field.name, "date"]}
-													// rules={[{ required: true, message: "required!" }]}
+													required={false}
+													rules={
+														error?.index === index
+															? [{ required: true, message: "required!" }]
+															: undefined
+													}
 												>
-													<DatePicker className=" gx-w-100" />
+													<DatePicker
+														className=" gx-w-100"
+														onChange={e => handleInputChange(e, index, "date")}
+													/>
 												</Form.Item>
 											</Form.Item>
 										</Col>
@@ -121,9 +150,16 @@ const CommonModal = (props: modalType) => {
 													{...field}
 													label="Title"
 													name={[field.name, "title"]}
-													// rules={[{ required: true, message: "required!" }]}
+													required={false}
+													rules={
+														error?.index === index
+															? [{ required: true, message: "required!" }]
+															: [{}]
+													}
 												>
-													<Input />
+													<Input
+														onChange={e => handleInputChange(e, index, "title")}
+													/>
 												</Form.Item>
 											</Form.Item>
 										</Col>
