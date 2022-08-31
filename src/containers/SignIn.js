@@ -1,27 +1,19 @@
 import React, { useEffect } from "react";
-import { Form } from "@ant-design/compatible";
-import "@ant-design/compatible/assets/index.css";
-import { Button, Checkbox, Input, message } from "antd";
+// import "@ant-design/compatible/assets/index.css";
+import { Button, Checkbox, Input, message, Form } from "antd";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 import { hideMessage, showAuthLoader, userSignIn } from "appRedux/actions/Auth";
 import IntlMessages from "util/IntlMessages";
-import CircularProgress from "components/Elements/CircularProgress/index";
 
 const FormItem = Form.Item;
 
 function SignIn(props) {
 	const navigate = useNavigate();
 
-	const handleSubmit = e => {
-		e.preventDefault();
-		props.form.validateFields((err, values) => {
-			if (!err) {
-				props.showAuthLoader();
-				props.userSignIn(values);
-			}
-		});
+	const handleSubmit = values => {
+		props.showAuthLoader();
+		props.userSignIn(values);
 	};
 
 	useEffect(() => {
@@ -36,7 +28,6 @@ function SignIn(props) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.authUser, props.showMessage, navigate]);
 
-	const { getFieldDecorator } = props.form;
 	const { showMessage, loader, alertMessage } = props;
 
 	return (
@@ -67,41 +58,52 @@ function SignIn(props) {
 					</div>
 					<div className="gx-app-login-content">
 						<Form
-							onSubmit={handleSubmit}
+							onFinish={handleSubmit}
 							className="gx-signin-form gx-form-row0"
 							layout="vertical"
+							autoComplete="off"
 						>
-							<FormItem label="Email" hasFeedback>
-								{getFieldDecorator("email", {
-									rules: [
-										{
-											required: true,
-											type: "email",
-											message: "The input is not valid E-mail!"
-										}
-									]
-								})(<Input placeholder="Email" />)}
+							<FormItem
+								label="Email"
+								hasFeedback
+								name="email"
+								rules={[
+									{
+										required: true,
+										type: "email",
+										message: "The input is not valid E-mail!"
+									}
+								]}
+							>
+								<Input />
 							</FormItem>
-							<FormItem label="Password" hasFeedback>
-								{getFieldDecorator("password", {
-									rules: [
-										{ required: true, message: "Please input your Password!" }
-									]
-								})(<Input.Password type="password" placeholder="Password" />)}
+							<FormItem
+								label="Password"
+								hasFeedback
+								name="password"
+								rules={[
+									{ required: true, message: "Please input your Password!" }
+								]}
+							>
+								<Input.Password />
 							</FormItem>
-							<FormItem>
-								{getFieldDecorator("remember", {
-									valuePropName: "checked",
-									initialValue: false
-								})(
-									<Checkbox>
-										<IntlMessages id="appModule.iAccept" />
-									</Checkbox>
-								)}
+							<FormItem
+								name="remember"
+								valuePropName={"checked"}
+								initialValue={false}
+							>
+								<Checkbox>
+									<IntlMessages id="appModule.iAccept" />
+								</Checkbox>
 							</FormItem>
+
 							<FormItem>
 								<Button type="primary" className="gx-mb-0" htmlType="submit">
-									<IntlMessages id="app.userAuth.signIn" />
+									{loader ? (
+										"Signing In..."
+									) : (
+										<IntlMessages id="app.userAuth.signIn" />
+									)}
 								</Button>
 							</FormItem>
 
@@ -109,19 +111,12 @@ function SignIn(props) {
 						</Form>
 					</div>
 
-					{loader ? (
-						<div className="gx-loader-view">
-							<CircularProgress />
-						</div>
-					) : null}
 					{showMessage ? message.error(alertMessage.toString()) : null}
 				</div>
 			</div>
 		</div>
 	);
 }
-
-const WrappedNormalLoginForm = Form.create()(SignIn);
 
 const mapStateToProps = ({ auth }) => {
 	const { loader, alertMessage, showMessage, authUser } = auth;
@@ -132,4 +127,4 @@ export default connect(mapStateToProps, {
 	userSignIn,
 	hideMessage,
 	showAuthLoader
-})(WrappedNormalLoginForm);
+})(SignIn);
