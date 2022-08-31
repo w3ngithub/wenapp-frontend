@@ -55,7 +55,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 					</span>
 					<Divider type="vertical" />
 					<Popconfirm
-						title={`Are you sure to make user ${
+						title={`Are you sure to make Co-worker ${
 							record.active ? "inactive" : "active"
 						} ?`}
 						onConfirm={() => {
