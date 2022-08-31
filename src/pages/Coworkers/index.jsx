@@ -39,6 +39,7 @@ function CoworkersPage() {
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
 	const [activeUser, setActiveUser] = useState("");
+	const [defaultUser, setDefaultUser] = useState("");
 	const [position, setPosition] = useState(undefined);
 	const [role, setRole] = useState(undefined);
 	const [name, setName] = useState("");
@@ -133,6 +134,7 @@ function CoworkersPage() {
 	};
 
 	const setActiveInActiveUsers = e => {
+		setDefaultUser(e.target.value)
 		setActiveUser(e.target.value === "active" ? true : false);
 	};
 
@@ -149,16 +151,9 @@ function CoworkersPage() {
 		setTypedName("");
 		setRole(undefined);
 		setPosition(undefined);
-		setActiveUser(true);
+		setActiveUser('');
+		setDefaultUser('');
 		setSelectedRows([]);
-		const radioBtn = document
-			.getElementById("radio")
-			.getElementsByTagName("label");
-		Array.from(radioBtn).forEach(item => {
-			item?.classList?.remove("ant-radio-button-wrapper-checked");
-			const spanEls = item?.getElementsByTagName("span")
-			Array.from(spanEls).forEach(span=> span?.classList?.remove("ant-radio-button-checked"))
-		});
 	};
 
 	const handleRowSelect = rows => {
@@ -229,6 +224,7 @@ function CoworkersPage() {
 							<FormItem>
 								<Radio.Group
 									buttonStyle="solid"
+									value={defaultUser}
 									onChange={setActiveInActiveUsers}
 									id="radio"
 								>
