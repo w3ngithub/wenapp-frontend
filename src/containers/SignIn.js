@@ -100,7 +100,12 @@ function SignIn(props) {
 								)}
 							</FormItem>
 							<FormItem>
-								<Button type="primary" className="gx-mb-0" htmlType="submit">
+								<Button
+									type="primary"
+									className="gx-mb-0"
+									htmlType="submit"
+									disabled={loader}
+								>
 									{loader ? (
 										"Loading..."
 									) : (
