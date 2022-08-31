@@ -156,7 +156,8 @@ function CoworkersPage() {
 			.getElementsByTagName("label");
 		Array.from(radioBtn).forEach(item => {
 			item?.classList?.remove("ant-radio-button-wrapper-checked");
-			item?.getElementsByTagName("span")?.classList?.remove("ant-radio-button-checked");
+			const spanEls = item?.getElementsByTagName("span")
+			Array.from(spanEls).forEach(span=> span?.classList?.remove("ant-radio-button-checked"))
 		});
 	};
 
