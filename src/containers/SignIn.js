@@ -100,8 +100,17 @@ function SignIn(props) {
 								)}
 							</FormItem>
 							<FormItem>
-								<Button type="primary" className="gx-mb-0" htmlType="submit">
-									<IntlMessages id="app.userAuth.signIn" />
+								<Button
+									type="primary"
+									className="gx-mb-0"
+									htmlType="submit"
+									disabled={loader}
+								>
+									{loader ? (
+										"Loading..."
+									) : (
+										<IntlMessages id="app.userAuth.signIn" />
+									)}
 								</Button>
 							</FormItem>
 
@@ -109,11 +118,6 @@ function SignIn(props) {
 						</Form>
 					</div>
 
-					{loader ? (
-						<div className="gx-loader-view">
-							<CircularProgress />
-						</div>
-					) : null}
 					{showMessage ? message.error(alertMessage.toString()) : null}
 				</div>
 			</div>
