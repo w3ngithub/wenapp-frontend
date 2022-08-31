@@ -1,3 +1,5 @@
 module.exports = {
-	footerText: "© - 2022 Built with Pride by WebExperts."
+	footerText: `© - ${new Date().getFullYear()} Built with Pride by WebExperts.`
+
+
 };

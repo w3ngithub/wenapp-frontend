@@ -38,7 +38,7 @@ function PropertiesItemCard({data}) {
             <h2 className="gx-text-primary gx-mb-1 gx-font-weight-medium">{prize}</h2>
             <p className="gx-text-grey gx-fs-sm">{sqft}</p>
           </div>
-          <p className="gx-text-primary gx-text-truncate gx-mt-auto gx-mb-0 gx-pointer">Check in detail <i
+          <p className="gx-text-primary gx-text-truncate gx-mt-auto gx-mb-0 gx-pointer">Punch in detail <i
             className={`icon icon-long-arrow-right gx-fs-xxl gx-ml-2 gx-d-inline-flex gx-vertical-align-middle`}/></p>
         </div>
 

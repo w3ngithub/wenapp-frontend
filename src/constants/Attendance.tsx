@@ -20,7 +20,7 @@ const ATTENDANCE_COLUMNS = (
 	admin
 		? [
 				{
-					title: "User",
+					title: "Co-worker",
 					dataIndex: "user",
 					key: "user",
 					sorter: (a, b) => {

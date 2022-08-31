@@ -139,7 +139,7 @@ function TmsAdminAddAttendanceForm({
 										style={{ width: 200, marginRight: 20 }}
 										showSearch
 										filterOption={filterOptions}
-										placeholder="Select User"
+										placeholder="Select Co-worker"
 									>
 										{users?.map(type => (
 											<Select.Option value={type._id} key={type._id}>

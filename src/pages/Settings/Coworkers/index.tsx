@@ -312,12 +312,22 @@ function Coworkers() {
 			/>
 			<Row>
 				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
-					<Card title="Invite An Employee">
-						<Form
-							{...layout}
-							form={form}
-							name="control-hooks"
-							layout="vertical"
+			  <Card title="Invite A Co-worker">
+				<Form {...layout} form={form} name="control-hooks" layout="vertical">
+					<Form.Item
+						name="email"
+						label="Email"
+						rules={[{ required: true, message: "Required!" }]}
+						help="To invite multiple email, separate the emails using comma."
+					>
+						<Input placeholder="Email address" onChange={handleEmailChange} />
+					</Form.Item>
+					<Form.Item>
+						<Button
+							key="submit"
+							type="primary"
+							style={{ marginTop: "20px" }}
+							onClick={handleInviteSubmit}
 						>
 							<div className="gx-d-flex gx-justify-content-between">
 								<Form.Item

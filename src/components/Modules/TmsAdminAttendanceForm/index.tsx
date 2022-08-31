@@ -152,7 +152,7 @@ function TmsAdminAttendanceForm({
 			<Spin spinning={updateAttendances.isLoading}>
 				<div className="gx-d-flex gx-mb-4 gx-flex-row" style={{ gap: 10 }}>
 					<Select
-						placeholder="Select User"
+						placeholder="Select Co-worker"
 						onChange={handleUserChange}
 						value={user}
 						options={users?.map((x: any) => ({
