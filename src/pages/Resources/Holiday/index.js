@@ -120,9 +120,9 @@ function Holiday() {
 	};
 
 	const handleCloseModal = () => {
-		// setIsEditMode(false);
+		setIsEditMode(false);
 
-		// setDataToEdit({});
+		setDataToEdit({});
 		setOpenAdd(false);
 	};
 

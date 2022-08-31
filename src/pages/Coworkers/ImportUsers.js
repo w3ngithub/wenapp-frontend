@@ -66,7 +66,7 @@ function ImportUsers({ toggle, onClose, files, setFiles }) {
 
 	return (
 		<Modal
-			title={"Import Users"}
+			title={"Import Co-workers"}
 			visible={toggle}
 			onOk={handleSubmit}
 			onCancel={handleCancel}

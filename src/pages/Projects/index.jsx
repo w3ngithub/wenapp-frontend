@@ -294,19 +294,22 @@ function ProjectsPage() {
 
 			<Card title="Projects">
 				<div className="components-table-demo-control-bar">
-					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-						<Search
-							placeholder="Search Projects"
-							onSearch={value => {
-								setPage(prev => ({ ...prev, page: 1 }));
-								setProject(value);
-							}}
-							style={{ width: 200 }}
-							value={projectName}
-							onChange={e => setProjectName(e.target.value)}
-							enterButton
-							allowClear
-						/>
+					<div className="gx-d-flex gx-flex-row gx-column-gap-10">
+						<div className="gx-mr-2">
+							{" "}
+							<Search
+								placeholder="Search Projects"
+								onSearch={value => {
+									setPage(prev => ({ ...prev, page: 1 }));
+									setProject(value);
+								}}
+								style={{ width: 200 }}
+								value={projectName}
+								onChange={e => setProjectName(e.target.value)}
+								enterButton
+								allowClear
+							/>
+						</div>
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white "
 							onClick={handleOpenAddModal}

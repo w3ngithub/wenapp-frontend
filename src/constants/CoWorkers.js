@@ -17,7 +17,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 		title: "Email",
 		dataIndex: "email",
 		key: "email",
-		width: 150,
+		width: 250,
 		sorter: (a, b) => a.email.toString().localeCompare(b.email.toString()),
 		sortOrder: sortedInfo.columnKey === "email" && sortedInfo.order
 	},
@@ -46,7 +46,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 	{
 		title: "Action",
 		key: "action",
-		width: 360,
+		width: 150,
 		render: (text, record) => {
 			return (
 				<div style={{ display: "flex" }}>
@@ -55,7 +55,7 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
 					</span>
 					<Divider type="vertical" />
 					<Popconfirm
-						title={`Are you sure to make user ${
+						title={`Are you sure to make Co-worker ${
 							record.active ? "inactive" : "active"
 						} ?`}
 						onConfirm={() => {

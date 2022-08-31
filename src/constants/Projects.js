@@ -63,7 +63,7 @@ const PROJECT_COLUMNS = (
 	{
 		title: "Action",
 		key: "action",
-		width: 360,
+		width: 250,
 		render: (text, record) => {
 			return (
 				<div style={{ display: "flex" }}>
