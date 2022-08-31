@@ -42,7 +42,7 @@ function CoworkersPage() {
 	const [position, setPosition] = useState(undefined);
 	const [role, setRole] = useState(undefined);
 	const [name, setName] = useState("");
-	const [typedName, setTypedName] = useState('');
+	const [typedName, setTypedName] = useState("");
 	const [userRecord, setUserRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
 	const [selectedRows, setSelectedRows] = useState([]);
@@ -134,7 +134,6 @@ function CoworkersPage() {
 
 	const setActiveInActiveUsers = e => {
 		setActiveUser(e.target.value === "active" ? true : false);
-
 	};
 
 	const handleRoleChange = roleId => {
@@ -147,11 +146,18 @@ function CoworkersPage() {
 
 	const handleResetFilter = () => {
 		setName("");
-		setTypedName('');
+		setTypedName("");
 		setRole(undefined);
 		setPosition(undefined);
-		setActiveUser("");
+		setActiveUser(true);
 		setSelectedRows([]);
+		const radioBtn = document
+			.getElementById("radio")
+			.getElementsByTagName("label");
+		Array.from(radioBtn).forEach(item => {
+			item?.classList?.remove("ant-radio-button-wrapper-checked");
+			item?.getElementsByTagName("span")?.classList?.remove("ant-radio-button-checked");
+		});
 	};
 
 	const handleRowSelect = rows => {
@@ -191,7 +197,7 @@ function CoworkersPage() {
 							setName(value);
 						}}
 						style={{ width: 200 }}
-						onChange={(e)=>setTypedName(e.target.value)}
+						onChange={e => setTypedName(e.target.value)}
 						value={typedName}
 						enterButton
 					/>
@@ -223,6 +229,7 @@ function CoworkersPage() {
 								<Radio.Group
 									buttonStyle="solid"
 									onChange={setActiveInActiveUsers}
+									id="radio"
 								>
 									<Radio.Button value="active">Active</Radio.Button>
 									<Radio.Button value="inactive">Inactive</Radio.Button>

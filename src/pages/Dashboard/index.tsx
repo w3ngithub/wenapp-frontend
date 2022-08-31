@@ -197,10 +197,11 @@ const Dashboard = () => {
 						</div>
 					</Card>
 					<Card className="gx-card" title="Project Time Log Report">
-						<div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
+						<div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3" >
 							<Form layout="inline" onFinish={generateChart}>
 								<FormItem name="chart">
 									<Select
+										style={{width: 115}}
 										value={chart}
 										onChange={(c: any) => setChart(c)}
 										placeholder="Select Chart"
