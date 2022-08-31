@@ -185,7 +185,7 @@ function CoworkersPage() {
 				<div className="components-table-demo-control-bar">
 					<Search
 						allowClear
-						placeholder="Search Users"
+						placeholder="Search Co-workers"
 						onSearch={value => {
 							setPage(prev => ({ ...prev, page: 1 }));
 							setName(value);
