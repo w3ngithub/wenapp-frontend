@@ -18,7 +18,6 @@ import {
 import ViewDetailModel from "../ViewDetailModel";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
-import { EyeOutlined } from "@ant-design/icons";
 import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
 import { useSelector } from "react-redux";
 import CustomIcon from "components/Elements/Icons";

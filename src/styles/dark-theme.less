@@ -166,7 +166,7 @@ body.dark-theme {
 		& .ant-menu-horizontal>.ant-menu-submenu-active>.ant-menu-submenu-title:before,
 		& .ant-menu-horizontal>.ant-menu-item-open>.ant-menu-submenu-title:before,
 		& .ant-menu-horizontal>.ant-menu-submenu-open>.ant-menu-submenu-title:before {
-			color: @menu-dark-highlight-color  !important;
+			color: @menu-dark-highlight-color !important;
 		}
 	}
 
@@ -189,7 +189,8 @@ body.dark-theme {
 		& .ant-menu-horizontal>.ant-menu-submenu-active>.ant-menu-submenu-title:before,
 		& .ant-menu-horizontal>.ant-menu-item-open>.ant-menu-submenu-title:before,
 		& .ant-menu-horizontal>.ant-menu-submenu-open>.ant-menu-submenu-title:before {
-			color: @menu-dark-highlight-color  !important;
+			color: @menu-dark-highlight-color !important;
+			background: white !important;
 		}
 	}
 
@@ -200,7 +201,7 @@ body.dark-theme {
 		& .ant-menu-submenu-active>.ant-menu-submenu-title,
 		& .ant-menu-item-open>.ant-menu-submenu-title,
 		& .ant-menu-submenu-open>.ant-menu-submenu-title {
-			color: @menu-dark-highlight-color  !important;
+			color: @menu-dark-highlight-color !important;
 		}
 	}
 
@@ -227,8 +228,8 @@ body.dark-theme {
 	}
 
 	& .ant-menu-dark {
-		color: @dark-theme-text-color  !important;
-		background: @dark-theme-sidebar-dark-bg  !important;
+		color: @dark-theme-text-color !important;
+		background: @dark-theme-sidebar-dark-bg !important;
 
 		& .ant-menu-submenu-title .ant-menu-submenu-arrow:after,
 		& .ant-menu-submenu-title .ant-menu-submenu-arrow:before {
@@ -238,7 +239,7 @@ body.dark-theme {
 
 	& .ant-menu-submenu-title {
 		&:hover {
-			color: @menu-dark-highlight-color  !important;
+			color: #fff !important;
 		}
 	}
 
@@ -246,7 +247,7 @@ body.dark-theme {
 		color: @dark-theme-text-color;
 
 		&:hover {
-			color: @menu-dark-highlight-color  !important;
+			color: @menu-dark-highlight-color !important;
 		}
 	}
 
@@ -261,7 +262,7 @@ body.dark-theme {
 
 		& .ant-menu-submenu-title:hover .ant-menu-submenu-arrow:after,
 		& .ant-menu-submenu-title:hover .ant-menu-submenu-arrow:before {
-			background: @menu-dark-highlight-color  !important;
+			background: @menu-dark-highlight-color !important;
 		}
 	}
 
@@ -269,12 +270,12 @@ body.dark-theme {
 		color: @dark-theme-text-color;
 
 		&:hover {
-			color: @menu-dark-highlight-color  !important;
+			color: @menu-dark-highlight-color !important;
 		}
 	}
 
 	& .ant-menu-item-selected>a:hover {
-		color: @menu-dark-highlight-color  !important;
+		color: @menu-dark-highlight-color !important;
 	}
 
 	& .ant-menu-dark.ant-menu-submenu-popup,
@@ -293,7 +294,7 @@ body.dark-theme {
 
 	& .ant-menu-submenu-popup.ant-menu-light .ant-menu-submenu-open>.ant-menu-submenu-title .ant-menu-submenu-arrow::before,
 	& .ant-menu-submenu-popup.ant-menu-light .ant-menu-submenu-open>.ant-menu-submenu-title .ant-menu-submenu-arrow::after {
-		background: @menu-dark-highlight-color  !important;
+		background: @menu-dark-highlight-color !important;
 	}
 
 	& .ant-menu-dark.ant-menu-horizontal {
@@ -352,7 +353,7 @@ body.dark-theme {
 	& .ant-menu-item:active,
 	& .ant-menu-submenu-title:active {
 		background-color: lighten(@dark-theme-component-background, 5%) !important;
-		color: @dark-theme-text-color  !important;
+		color: @dark-theme-text-color !important;
 	}
 
 	& .ant-layout-sider .ant-menu-submenu>.ant-menu,
@@ -364,14 +365,14 @@ body.dark-theme {
 	& .ant-menu-item-group-title,
 	& .ant-menu-item-selected,
 	& .ant-menu-submenu-selected .ant-menu-submenu-title {
-		color: @dark-theme-text-color  !important;
+		color: @dark-theme-text-color !important;
 	}
 
 	& .ant-menu-item:hover,
 	& .ant-menu-item-active,
 	& .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open,
 	& .ant-menu-submenu-active {
-		color: @dark-theme-text-color  !important;
+		color: @dark-theme-text-color !important;
 	}
 
 	& .ant-menu-item-disabled,
@@ -380,28 +381,28 @@ body.dark-theme {
 	}
 
 	& .ant-menu-dark .ant-menu-item-group-title {
-		color: @dark-theme-text-color  !important;
+		color: @dark-theme-text-color !important;
 	}
 
 	& .ant-menu-dark .ant-menu-item {
-		color: @dark-theme-text-color  !important;
+		color: @dark-theme-text-color !important;
 	}
 
 	& .ant-menu-dark .ant-menu-item>a {
-		color: @white-color  !important;
+		color: @white-color !important;
 
 		&:hover {
-			color: @menu-dark-highlight-color  !important;
+			color: @menu-dark-highlight-color !important;
 		}
 	}
 
 	& .ant-menu-dark .ant-menu-item-selected>span>a {
-		color: @menu-dark-highlight-color  !important;
+		color: @menu-dark-highlight-color !important;
 	}
 
 	& .ant-menu-submenu-horizontal {
 		&>.ant-menu-submenu-title {
-			color: @dark-theme-text-color  !important;
+			color: @dark-theme-text-color !important;
 		}
 	}
 
@@ -425,8 +426,8 @@ body.dark-theme {
 
 	& .ant-layout-sider,
 	& .@{class-prefix}-layout-sider-dark {
-		background-color: @dark-theme-sidebar-dark-bg  !important;
-		color: @dark-theme-sidebar-dark-text-color  !important;
+		background-color: @dark-theme-sidebar-dark-bg !important;
+		color: @dark-theme-sidebar-dark-text-color !important;
 		.box-shadow(0px 0 4px rgba(0, 0, 0, 0.35));
 	}
 
@@ -579,42 +580,42 @@ body.dark-theme {
 	}
 
 	& .ant-card {
-		color: @dark-theme-text-color  !important;
+		color: @dark-theme-text-color !important;
 
 		&:not([class*="gx-bg-"]) {
-			background: @dark-theme-component-background  !important;
+			background: @dark-theme-component-background !important;
 		}
 
 		&-bordered {
-			border-color: @dark-theme-border-color  !important;
+			border-color: @dark-theme-border-color !important;
 		}
 
 		&-head {
-			border-color: @dark-theme-border-color  !important;
+			border-color: @dark-theme-border-color !important;
 
 			&-title {
-				color: @dark-theme-text-color  !important;
+				color: @dark-theme-text-color !important;
 			}
 		}
 
 		&-type-inner .ant-card-head {
-			background: @dark-theme-component-background  !important;
+			background: @dark-theme-component-background !important;
 		}
 
 		&-meta-title,
 		&-meta-description {
-			color: @dark-theme-text-color  !important;
+			color: @dark-theme-text-color !important;
 		}
 
 		&-actions {
-			border-top-color: @dark-theme-border-color  !important;
-			background: @dark-theme-component-background  !important;
+			border-top-color: @dark-theme-border-color !important;
+			background: @dark-theme-component-background !important;
 
 			>li {
-				color: @dark-theme-text-color  !important;
+				color: @dark-theme-text-color !important;
 
 				&:not(:last-child) {
-					border-right-color: @dark-theme-border-color  !important;
+					border-right-color: @dark-theme-border-color !important;
 				}
 
 				&>span:hover {
@@ -975,17 +976,17 @@ body.dark-theme {
 	}
 
 	& .ant-table {
-		color: @dark-theme-text-color  !important;
-		background: @dark-theme-component-background  !important;
+		color: @dark-theme-text-color !important;
+		background: @dark-theme-component-background !important;
 
 		&-thead>tr>th {
 			background: lighten(@dark-theme-component-background, 5%) !important;
-			color: @dark-theme-text-color  !important;
-			border-bottom-color: @dark-theme-border-color  !important;
+			color: @dark-theme-text-color !important;
+			border-bottom-color: @dark-theme-border-color !important;
 		}
 
 		&-tbody>tr>td {
-			border-bottom-color: @dark-theme-border-color  !important;
+			border-bottom-color: @dark-theme-border-color !important;
 			background: transparent;
 		}
 
@@ -1253,6 +1254,10 @@ body.dark-theme {
 		}
 	}
 
+	&.dark-theme .ant-menu-submenu-title:hover {
+		color: #fff
+	}
+
 	& .ant-input,
 	& .ant-picker,
 	& .ant-input-affix-wrapper {
@@ -1289,7 +1294,7 @@ body.dark-theme {
 
 			& .ant-select-open .ant-select-selector,
 			& .ant-select-focused .ant-select-selector {
-				color: @dark-theme-text-color  !important;
+				color: @dark-theme-text-color !important;
 			}
 		}
 
@@ -1340,8 +1345,6 @@ body.dark-theme {
 	.ant-input-password {
 		background-color: white !important;
 	}
-
-
 
 	& .ant-input.@{class-prefix}-chat-textarea,
 	& .ant-picker.@{class-prefix}-chat-textarea {
@@ -1397,7 +1400,7 @@ body.dark-theme {
 	}
 
 	& .ant-select {
-		color: @dark-theme-text-color  !important;
+		color: @dark-theme-text-color !important;
 
 		&-selector {
 			background-color: fade(@grey-2, 10%) !important;
@@ -1409,7 +1412,7 @@ body.dark-theme {
 		}
 
 		&-arrow {
-			color: @dark-theme-text-color  !important;
+			color: @dark-theme-text-color !important;
 		}
 
 		&-focused .ant-select-selector,
@@ -1451,7 +1454,7 @@ body.dark-theme {
 			&-active {
 				background-color: darken(@dark-theme-component-background,
 						8%) !important;
-				color: @dark-theme-text-color  !important;
+				color: @dark-theme-text-color !important;
 			}
 		}
 
@@ -1563,7 +1566,7 @@ body.dark-theme {
 
 		&-cell-in-range {
 			&:before {
-				background: @dark-theme-in-range-bg  !important;
+				background: @dark-theme-in-range-bg !important;
 			}
 		}
 

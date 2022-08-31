@@ -58,7 +58,7 @@ import WorkLogReport from "pages/Reports/WorkLogReport";
 import LeaveReport from "pages/Reports/LeaveReport";
 import Faqs from "pages/Resources/Faqs";
 import Policy from "pages/Resources/Policy";
-import Calendar from "pages/Resources/Holiday";
+import Holiday from "pages/Resources/Holiday";
 import Blogs from "pages/Blog/Blogs";
 import BlogDetail from "pages/Blog/BlogDetail";
 import AddBlog from "pages/Blog/AddBlog";
@@ -105,7 +105,7 @@ function App(props: any) {
 							<Route path={RESOURCES} element={<Resources />}>
 								<Route path={FAQS} element={<Faqs />} />
 								<Route path={POLICY} element={<Policy />} />
-								<Route path={HOLIDAY} element={<Calendar />} />
+								<Route path={HOLIDAY} element={<Holiday />} />
 							</Route>
 							<Route path={SETTINGS} element={<Settings />} />
 							<Route path={PROFILE} element={<Profile />} />

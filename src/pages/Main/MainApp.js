@@ -36,7 +36,7 @@ export const MainApp = props => {
 
 	useEffect(() => {
 		dispatch(fetchLoggedInUserAttendance(user._id));
-	}, [dispatch, user]);
+	}, [dispatch, user._id]);
 
 	const getContainerClass = navStyle => {
 		switch (navStyle) {

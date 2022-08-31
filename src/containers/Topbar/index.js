@@ -52,56 +52,63 @@ class Topbar extends Component {
 		return (
 			<Auxiliary>
 				<Header>
-					{navStyle === NAV_STYLE_DRAWER ||
-					((navStyle === NAV_STYLE_FIXED ||
-						navStyle === NAV_STYLE_MINI_SIDEBAR) &&
-						width < TAB_SIZE) ? (
-						<div className="gx-linebar gx-mr-3">
-							<i
-								className="gx-icon-btn icon icon-menu"
-								onClick={() => {
-									this.props.toggleCollapsedSideNav(!navCollapsed);
-								}}
-							/>
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "space-between",
+							width: "100%",
+							alignItems: 'center'
+						}}
+					> 
+						{navStyle === NAV_STYLE_DRAWER ||
+						((navStyle === NAV_STYLE_FIXED ||
+							navStyle === NAV_STYLE_MINI_SIDEBAR) &&
+							width < TAB_SIZE) ? (
+							<div className="gx-linebar gx-mr-3">
+								<i
+									className="gx-icon-btn icon icon-menu"
+									onClick={() => {
+										this.props.toggleCollapsedSideNav(!navCollapsed);
+									}}
+								/>
+							</div>
+						) : null}
+
+						<div className="gx-header-notifications gx-mt-2">
+							<PunchInOut />
 						</div>
-					) : null}
-					<Link to="/" className="gx-d-block gx-d-lg-none gx-pointer">
-						<img alt="" src={require("assets/images/logo.png")} />
-					</Link>
+						<div>
+							<ul className="gx-header-notifications gx-ml-auto">
+								<li className="gx-notify">
+									<Switch
+										unCheckedChildren={
+											<FaMoon
+												style={{
+													fontSize: "15px",
+													color: "#3a3939",
+													marginTop: "3px"
+												}}
+											/>
+										}
+										checkedChildren={
+											<BsFillSunFill
+												style={{
+													color: "yellow",
+													fontSize: "18px",
+													marginTop: "2px"
+												}}
+											/>
+										}
+										onChange={this.handleThemeChange}
+									/>
+								</li>
 
-					<div className="gx-header-notifications gx-mt-auto">
-						<PunchInOut />
+								<li className="gx-user-nav">
+									<UserInfo />
+								</li>
+							</ul>
+						</div>
 					</div>
-
-					<ul className="gx-header-notifications gx-ml-auto">
-						<li className="gx-notify">
-							<Switch
-								unCheckedChildren={
-									<FaMoon
-										style={{
-											fontSize: "15px",
-											color: "#3a3939",
-											marginTop: "3px"
-										}}
-									/>
-								}
-								checkedChildren={
-									<BsFillSunFill
-										style={{
-											color: "yellow",
-											fontSize: "18px",
-											marginTop: "2px"
-										}}
-									/>
-								}
-								onChange={this.handleThemeChange}
-							/>
-						</li>
-
-						<li className="gx-user-nav">
-							<UserInfo />
-						</li>
-					</ul>
 				</Header>
 			</Auxiliary>
 		);
