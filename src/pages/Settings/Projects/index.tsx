@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card } from "antd";
+import { Card, Row, Col, Button } from "antd";
 import { POSITION_COLUMN } from "constants/Settings";
 import { notification } from "helpers/notification";
 import { handleResponse } from "helpers/utils";
@@ -51,7 +51,7 @@ function Projects() {
 		["projectTags"],
 		getProjectTags
 	);
-	const { data: clients }: { data: any } = useQuery(["clients"], getClients);
+	const { data: clients, isLoading }: any  = useQuery(["clients"], getClients);
 
 	const addProjectTypeMutation = useMutation(addProjectType, {
 		onSuccess: response =>
@@ -332,50 +332,102 @@ function Projects() {
 				onSubmit={isEditMode ? handleEditClick : handleAddClick}
 				onCancel={handleCloseModal}
 			/>
-			<Card title="Project Type">
-				<SettingTable
-					data={projectTypes?.data?.data?.data}
-					onAddClick={() => handleOpenModal(types.PROJECT_TYPE)}
-					columns={POSITION_COLUMN(
-						value => handleDeleteClick(value, types.PROJECT_TYPE),
-						value => handleOpenEditModal(value, types.PROJECT_TYPE)
-					)}
-					isLoading={deleteProjectTypeMutation.isLoading}
-				/>
-			</Card>
-			<Card title="Project Status">
-				<SettingTable
-					data={projectStatuses?.data?.data?.data}
-					columns={POSITION_COLUMN(
-						value => handleDeleteClick(value, types.PROJECT_STATUS),
-						value => handleOpenEditModal(value, types.PROJECT_STATUS)
-					)}
-					onAddClick={() => handleOpenModal(types.PROJECT_STATUS)}
-					isLoading={deleteProjectStatusMutation.isLoading}
-				/>
-			</Card>
-			<Card title="Project Tag">
-				<SettingTable
-					data={projectTags?.data?.data?.data}
-					columns={POSITION_COLUMN(
-						value => handleDeleteClick(value, types.PROJECT_TAG),
-						value => handleOpenEditModal(value, types.PROJECT_TAG)
-					)}
-					onAddClick={() => handleOpenModal(types.PROJECT_TAG)}
-					isLoading={deleteProjectTagMutation.isLoading}
-				/>
-			</Card>
-			<Card title="Clients">
-				<SettingTable
-					data={clients?.data?.data?.data}
-					columns={POSITION_COLUMN(
-						value => handleDeleteClick(value, types.CLIENTS),
-						value => handleOpenEditModal(value, types.CLIENTS)
-					)}
-					onAddClick={() => handleOpenModal(types.CLIENTS)}
-					isLoading={deleteClientMutation.isLoading}
-				/>
-			</Card>
+			<Row>
+				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
+					<Card
+						title="Project Type"
+						extra={
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								onClick={() => handleOpenModal(types.PROJECT_TYPE)}
+							>
+								Add
+							</Button>
+						}
+					>
+						<SettingTable
+							data={projectTypes?.data?.data?.data}
+							onAddClick={() => handleOpenModal(types.PROJECT_TYPE)}
+							columns={POSITION_COLUMN(
+								value => handleDeleteClick(value, types.PROJECT_TYPE),
+								value => handleOpenEditModal(value, types.PROJECT_TYPE)
+							)}
+							isLoading={isLoading || deleteProjectTypeMutation.isLoading}
+						/>
+					</Card>
+				</Col>
+				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
+					<Card
+						title="Project Status"
+						extra={
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								onClick={() => handleOpenModal(types.PROJECT_STATUS)}
+							>
+								Add
+							</Button>
+						}
+					>
+						<SettingTable
+							data={projectStatuses?.data?.data?.data}
+							columns={POSITION_COLUMN(
+								value => handleDeleteClick(value, types.PROJECT_STATUS),
+								value => handleOpenEditModal(value, types.PROJECT_STATUS)
+							)}
+							onAddClick={() => handleOpenModal(types.PROJECT_STATUS)}
+							isLoading={isLoading || deleteProjectStatusMutation.isLoading}
+						/>
+					</Card>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
+					<Card
+						title="Project Tag"
+						extra={
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								onClick={() => handleOpenModal(types.PROJECT_TAG)}
+							>
+								Add
+							</Button>
+						}
+					>
+						<SettingTable
+							data={projectTags?.data?.data?.data}
+							columns={POSITION_COLUMN(
+								value => handleDeleteClick(value, types.PROJECT_TAG),
+								value => handleOpenEditModal(value, types.PROJECT_TAG)
+							)}
+							onAddClick={() => handleOpenModal(types.PROJECT_TAG)}
+							isLoading={isLoading || deleteProjectTagMutation.isLoading}
+						/>
+					</Card>
+				</Col>
+				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
+					<Card
+						title="Clients"
+						extra={
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								onClick={() => handleOpenModal(types.CLIENTS)}
+							>
+								Add
+							</Button>
+						}
+					>
+						<SettingTable
+							data={clients?.data?.data?.data}
+							columns={POSITION_COLUMN(
+								value => handleDeleteClick(value, types.CLIENTS),
+								value => handleOpenEditModal(value, types.CLIENTS)
+							)}
+							onAddClick={() => handleOpenModal(types.CLIENTS)}
+							isLoading={isLoading || deleteClientMutation.isLoading}
+						/>
+					</Card>
+				</Col>
+			</Row>
 		</>
 	);
 }

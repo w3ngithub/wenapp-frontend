@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card } from "antd";
+import { Button, Card } from "antd";
 import SettingTable from "../CommonTable";
 import { POSITION_COLUMN } from "constants/Settings";
 import {
@@ -20,7 +20,7 @@ function Blog() {
 	const [openModal, setOpenModal] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [dataToEdit, setDataToEdit] = useState<any>({});
-	const { data: blogCategories }: { data: any } = useQuery(
+	const { data: blogCategories, isLoading }: any  = useQuery(
 		["blogCategories"],
 		getBlogCategories
 	);
@@ -126,7 +126,17 @@ function Blog() {
 				onSubmit={isEditMode ? handleEditClick : handleAddClick}
 				onCancel={handleCloseModal}
 			/>
-			<Card title="Category">
+			<Card
+				title="Category"
+				extra={
+					<Button
+						className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+						onClick={() => handleOpenModal("Category")}
+					>
+						Add
+					</Button>
+				}
+			>
 				<SettingTable
 					data={blogCategories?.data?.data?.data}
 					columns={POSITION_COLUMN(
@@ -134,7 +144,7 @@ function Blog() {
 						value => handleOpenEditModal(value, "Category")
 					)}
 					onAddClick={() => handleOpenModal("Category")}
-					isLoading={deleteBlogCategoryMutation.isLoading}
+					isLoading={isLoading || deleteBlogCategoryMutation.isLoading}
 				/>
 			</Card>
 		</>

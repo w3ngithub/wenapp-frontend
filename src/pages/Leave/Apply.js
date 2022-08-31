@@ -146,7 +146,7 @@ function Apply({ ...rest }) {
 									</FormItem>
 								</Col>
 								<Col span={10} xs={24} lg={12} md={24}>
-									<FormItem label="Select Teams Leads">
+									<FormItem label="Select Team Leads">
 										{getFieldDecorator("assignTo", {
 											rules: [{ required: true, message: "Required!" }]
 										})(

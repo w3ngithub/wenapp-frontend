@@ -257,7 +257,7 @@ function AdminAttendance() {
 						</FormItem>
 						<FormItem>
 							<Select
-								placeholder="Select User"
+								placeholder="Select Co-worker"
 								onChange={handleUserChange}
 								value={user}
 								options={users?.data?.data?.data?.map(x => ({

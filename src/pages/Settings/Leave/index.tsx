@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card } from "antd";
+import { Button, Card } from "antd";
 import SettingTable from "../CommonTable";
 import { LEAVES_COLUMN } from "constants/Settings";
 import {
@@ -24,7 +24,7 @@ function Leave() {
 	const [openModal, setOpenModal] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [dataToEdit, setDataToEdit] = useState<any>({});
-	const { data: leaveTypes }: { data: any } = useQuery(
+	const { data: leaveTypes, isLoading }: any  = useQuery(
 		["leaveTypes"],
 		getLeaveTypes
 	);
@@ -116,7 +116,17 @@ function Leave() {
 				onSubmit={isEditMode ? handleEditClick : handleAddClick}
 				onCancel={handleCloseModal}
 			/>
-			<Card title="Leave Type">
+			<Card
+				title="Leave Type"
+				extra={
+					<Button
+						className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+						onClick={() => handleOpenModal("Leave Type")}
+					>
+						Add
+					</Button>
+				}
+			>
 				<SettingTable
 					data={leaveTypes?.data?.data?.data}
 					columns={LEAVES_COLUMN(
@@ -124,7 +134,7 @@ function Leave() {
 						value => handleOpenEditModal(value, "Leave Type")
 					)}
 					onAddClick={() => handleOpenModal("Leave Type")}
-					isLoading={deleteLeaveTypeMutation.isLoading}
+					isLoading={isLoading || deleteLeaveTypeMutation.isLoading}
 				/>
 			</Card>
 		</>

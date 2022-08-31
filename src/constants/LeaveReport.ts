@@ -8,7 +8,7 @@ interface LeaveReport {
 
 const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
 	{
-		title: "Users",
+		title: "Co-workers",
 		dataIndex: "name",
 		key: "name",
 		sorter: (a, b) => {

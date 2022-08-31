@@ -153,7 +153,7 @@ function Leaves({
 						</FormItem>
 						<FormItem>
 							<Select
-								placeholder="Select User"
+								placeholder="Select Co-worker"
 								value={user}
 								options={allUsers}
 								onChange={handleUserChange}

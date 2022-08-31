@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Card, Form, Input } from "antd";
+import { Button, Card, Form, Input, Col, Row, Divider } from "antd";
 import SettingTable from "../CommonTable";
 import {
 	getInvitedUsers,
@@ -50,7 +50,7 @@ function Coworkers() {
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [dataToEdit, setDataToEdit] = useState<any>({});
 
-	const { data: positions, isFetching: isPositionsFetching }: any = useQuery(
+	const { data: positions, isFetching: isPositionsFetching , isLoading}: any = useQuery(
 		["positions"],
 		getPosition
 	);
@@ -310,7 +310,9 @@ function Coworkers() {
 				onSubmit={isEditMode ? handleEditClick : handleAddClick}
 				onCancel={handleCloseModal}
 			/>
-			<Card title="Invite An Employee">
+			<Row>
+				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
+			  <Card title="Invite A Co-worker">
 				<Form {...layout} form={form} name="control-hooks" layout="vertical">
 					<Form.Item
 						name="email"
@@ -327,52 +329,115 @@ function Coworkers() {
 							style={{ marginTop: "20px" }}
 							onClick={handleInviteSubmit}
 						>
-							Invite
-						</Button>
-					</Form.Item>
-				</Form>
-				<SettingTable
-					data={invitedUsers?.data?.data?.data}
-					isLoading={isInviteUsersFetching}
-					columns={INVITED_EMPLOYEES_COLUMN()}
-					hideAddButton
-				/>
-			</Card>
-			<Card title="Position">
-				<SettingTable
-					data={positions?.data?.data?.data}
-					columns={POSITION_COLUMN(
-						value => handleDeleteClick(value, types.POSITION),
-						value => handleOpenEditModal(value, types.POSITION)
-					)}
-					onAddClick={() => handleOpenModal(types.POSITION)}
-					isLoading={isPositionsFetching || deletePositionMutation.isLoading}
-				/>
-			</Card>
-			<Card title="Position Type">
-				<SettingTable
-					data={positionTypes?.data?.data?.data}
-					columns={POSITION_COLUMN(
-						value => handleDeleteClick(value, types.POSITION_TYPE),
-						value => handleOpenEditModal(value, types.POSITION_TYPE)
-					)}
-					isLoading={
-						isPositionTypesFetching || deletePositionTypeMutation.isLoading
-					}
-					onAddClick={() => handleOpenModal("Position Type")}
-				/>
-			</Card>
-			<Card title="Role">
-				<SettingTable
-					data={roles}
-					columns={POSITION_COLUMN(
-						value => handleDeleteClick(value, types.ROLE),
-						value => handleOpenEditModal(value, types.ROLE)
-					)}
-					isLoading={deleteRoleMutation.isLoading}
-					onAddClick={() => handleOpenModal("Role")}
-				/>
-			</Card>
+							<div className="gx-d-flex gx-justify-content-between">
+								<Form.Item
+									name="email"
+									label="Email"
+									rules={[{ required: true, message: "Required!" }]}
+									help="To invite multiple email, separate the emails using comma."
+								>
+									<Input
+										placeholder="Email address"
+										onChange={handleEmailChange}
+									/>
+								</Form.Item>
+								<Form.Item>
+									<Button
+										key="submit"
+										type="primary"
+										style={{ marginTop: "20px" }}
+										onClick={handleInviteSubmit}
+									>
+										Invite
+									</Button>
+								</Form.Item>
+							</div>
+						</Form>
+						<SettingTable
+							data={invitedUsers?.data?.data?.data}
+							isLoading={isLoading || isInviteUsersFetching}
+							columns={INVITED_EMPLOYEES_COLUMN()}
+							hideAddButton
+						/>
+					</Card>
+				</Col>
+
+				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
+					<Card
+						title="Position"
+						extra={
+								<Button
+									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+									onClick={() => handleOpenModal("Position Type")}
+								>
+									Add
+								</Button>
+						}
+					>
+						<SettingTable
+							data={positions?.data?.data?.data}
+							columns={POSITION_COLUMN(
+								value => handleDeleteClick(value, types.POSITION),
+								value => handleOpenEditModal(value, types.POSITION)
+							)}
+							onAddClick={() => handleOpenModal(types.POSITION)}
+							isLoading={
+								isLoading || isPositionsFetching || deletePositionMutation.isLoading
+							}
+						/>
+					</Card>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
+					<Card
+						title="Position Type"
+						extra={
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								onClick={() => handleOpenModal("Position Type")}
+							>
+								Add
+							</Button>
+						}
+					>
+						<SettingTable
+							data={positionTypes?.data?.data?.data}
+							columns={POSITION_COLUMN(
+								value => handleDeleteClick(value, types.POSITION_TYPE),
+								value => handleOpenEditModal(value, types.POSITION_TYPE)
+							)}
+							isLoading={
+								isLoading || isPositionTypesFetching || deletePositionTypeMutation.isLoading
+							}
+							onAddClick={() => handleOpenModal("Position Type")}
+						/>
+					</Card>
+				</Col>
+				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
+					<Card
+						title="Role"
+						extra={
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								onClick={() => handleOpenModal("Role")}
+							>
+								Add
+							</Button>
+						}
+					>
+						<SettingTable
+							data={roles}
+							columns={POSITION_COLUMN(
+								value => handleDeleteClick(value, types.ROLE),
+								value => handleOpenEditModal(value, types.ROLE)
+							)}
+							isLoading={deleteRoleMutation.isLoading || isLoading}
+							onAddClick={() => handleOpenModal("Role")}
+						/>
+					</Card>
+				</Col>
+			</Row>
 		</>
 	);
 }

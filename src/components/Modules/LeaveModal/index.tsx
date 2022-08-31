@@ -184,13 +184,13 @@ function LeaveModal({
 									<Form.Item
 										{...formItemLayout}
 										name="user"
-										label="User"
+										label="Co-worker"
 										rules={[{ required: true, message: "Required!" }]}
 									>
 										<Select
 											showSearch
 											filterOption={filterOptions}
-											placeholder="Select User"
+											placeholder="Select Co-worker"
 											onChange={handleUserChange}
 											disabled={readOnly}
 											allowClear
