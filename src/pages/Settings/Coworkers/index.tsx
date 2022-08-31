@@ -50,10 +50,11 @@ function Coworkers() {
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [dataToEdit, setDataToEdit] = useState<any>({});
 
-	const { data: positions, isFetching: isPositionsFetching , isLoading}: any = useQuery(
-		["positions"],
-		getPosition
-	);
+	const {
+		data: positions,
+		isFetching: isPositionsFetching,
+		isLoading
+	}: any = useQuery(["positions"], getPosition);
 	const {
 		data: invitedUsers,
 		isFetching: isInviteUsersFetching
@@ -312,22 +313,12 @@ function Coworkers() {
 			/>
 			<Row>
 				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
-			  <Card title="Invite A Co-worker">
-				<Form {...layout} form={form} name="control-hooks" layout="vertical">
-					<Form.Item
-						name="email"
-						label="Email"
-						rules={[{ required: true, message: "Required!" }]}
-						help="To invite multiple email, separate the emails using comma."
-					>
-						<Input placeholder="Email address" onChange={handleEmailChange} />
-					</Form.Item>
-					<Form.Item>
-						<Button
-							key="submit"
-							type="primary"
-							style={{ marginTop: "20px" }}
-							onClick={handleInviteSubmit}
+					<Card title="Invite A Co-worker">
+						<Form
+							{...layout}
+							form={form}
+							name="control-hooks"
+							layout="vertical"
 						>
 							<div className="gx-d-flex gx-justify-content-between">
 								<Form.Item
@@ -366,12 +357,12 @@ function Coworkers() {
 					<Card
 						title="Position"
 						extra={
-								<Button
-									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-									onClick={() => handleOpenModal("Position Type")}
-								>
-									Add
-								</Button>
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								onClick={() => handleOpenModal("Position Type")}
+							>
+								Add
+							</Button>
 						}
 					>
 						<SettingTable
@@ -382,7 +373,9 @@ function Coworkers() {
 							)}
 							onAddClick={() => handleOpenModal(types.POSITION)}
 							isLoading={
-								isLoading || isPositionsFetching || deletePositionMutation.isLoading
+								isLoading ||
+								isPositionsFetching ||
+								deletePositionMutation.isLoading
 							}
 						/>
 					</Card>
@@ -408,7 +401,9 @@ function Coworkers() {
 								value => handleOpenEditModal(value, types.POSITION_TYPE)
 							)}
 							isLoading={
-								isLoading || isPositionTypesFetching || deletePositionTypeMutation.isLoading
+								isLoading ||
+								isPositionTypesFetching ||
+								deletePositionTypeMutation.isLoading
 							}
 							onAddClick={() => handleOpenModal("Position Type")}
 						/>
