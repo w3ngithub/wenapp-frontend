@@ -20,11 +20,14 @@ export const addLeaveType = async (payload: { name: string }) => {
 	}
 };
 
-export const editLeaveType = async (payload: { name: string; id: string }) => {
+export const editLeaveType = async (payload: {
+	leave: { name: string; leaveDays: string };
+	id: string;
+}) => {
 	try {
 		let response = await API.patch(
 			`${Apis.Leaves}/types/${payload?.id}`,
-			payload
+			payload?.leave
 		);
 		return getAPIResponse(response);
 	} catch (err) {

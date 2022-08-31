@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card } from "antd";
+import { Button, Card } from "antd";
 import SettingTable from "../CommonTable";
 import { LEAVES_COLUMN } from "constants/Settings";
 import {
@@ -11,16 +11,20 @@ import {
 } from "services/settings/leaveType";
 import { handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
-import CommonModal from "../CommonModal";
+import LeaveModal from "./LeaveModal";
+
+interface leaveType {
+	name: string;
+	leaveDays: string;
+}
 
 function Leave() {
 	const queryClient = useQueryClient();
-	const [type, setType] = useState("");
 
 	const [openModal, setOpenModal] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [dataToEdit, setDataToEdit] = useState<any>({});
-	const { data: leaveTypes }: { data: any } = useQuery(
+	const { data: leaveTypes, isLoading }: any  = useQuery(
 		["leaveTypes"],
 		getLeaveTypes
 	);
@@ -72,21 +76,19 @@ function Leave() {
 		}
 	});
 
-	const handleAddClick = (input: string) => {
-		addLeaveTypeMutation.mutate({ name: input });
+	const handleAddClick = (leave: leaveType) => {
+		addLeaveTypeMutation.mutate(leave);
 	};
 
-	const handleEditClick = (input: any) => {
-		editLeaveTypeMutation.mutate({ id: dataToEdit?._id, name: input });
+	const handleEditClick = (leave: leaveType) => {
+		editLeaveTypeMutation.mutate({ id: dataToEdit?._id, leave });
 	};
 
-	const handleDeleteClick = (data: any, type: string) => {
+	const handleDeleteClick = (data: any) => {
 		deleteLeaveTypeMutation.mutate({ id: data._id });
 	};
 
 	const handleOpenEditModal = (data: any, type: string) => {
-		setType(type);
-
 		setIsEditMode(true);
 		setOpenModal(true);
 		setDataToEdit(data);
@@ -99,16 +101,13 @@ function Leave() {
 		setOpenModal(false);
 	};
 	const handleOpenModal = (type: string) => {
-		setType(type);
-
 		setOpenModal(true);
 	};
 
 	return (
 		<>
-			<CommonModal
+			<LeaveModal
 				toggle={openModal}
-				type={type}
 				isEditMode={isEditMode}
 				editData={dataToEdit}
 				isLoading={
@@ -117,15 +116,25 @@ function Leave() {
 				onSubmit={isEditMode ? handleEditClick : handleAddClick}
 				onCancel={handleCloseModal}
 			/>
-			<Card title="Leave Type">
+			<Card
+				title="Leave Type"
+				extra={
+					<Button
+						className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+						onClick={() => handleOpenModal("Leave Type")}
+					>
+						Add
+					</Button>
+				}
+			>
 				<SettingTable
 					data={leaveTypes?.data?.data?.data}
 					columns={LEAVES_COLUMN(
-						value => handleDeleteClick(value, "Leave Type"),
+						value => handleDeleteClick(value),
 						value => handleOpenEditModal(value, "Leave Type")
 					)}
 					onAddClick={() => handleOpenModal("Leave Type")}
-					isLoading={deleteLeaveTypeMutation.isLoading}
+					isLoading={isLoading || deleteLeaveTypeMutation.isLoading}
 				/>
 			</Card>
 		</>

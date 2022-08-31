@@ -1,4 +1,4 @@
-import { Popconfirm } from "antd";
+import { Divider, Popconfirm } from "antd";
 
 export const POSITION_COLUMN = (
 	onDeleteClick: (param: any) => void,
@@ -17,13 +17,14 @@ export const POSITION_COLUMN = (
 		width: 10,
 		render: (text: any, record: any) => {
 			return (
-				<div style={{ display: "flex", justifyContent: "space-between" }}>
+				<div style={{ display: "flex"}}>
 					<span
 						className="gx-link gx-text-primary"
 						onClick={() => onEditClick(record, true)}
 					>
 						Edit
 					</span>
+					<Divider type="vertical"/>
 					<Popconfirm
 						title="Are you sure you want to delete?"
 						onConfirm={() => onDeleteClick(record)}
@@ -78,13 +79,14 @@ export const LEAVES_COLUMN = (
 		width: 10,
 		render: (text: any, record: any) => {
 			return (
-				<div style={{ display: "flex", justifyContent: "space-between" }}>
+				<div className="gx-d-flex">
 					<span
 						className="gx-link gx-text-primary"
 						onClick={() => onEditClick(record, true)}
 					>
 						Edit
 					</span>
+					<Divider type="vertical" style={{color:'blue'}}/>
 					<Popconfirm
 						title="Are you sure you want to delete?"
 						onConfirm={() => onDeleteClick(record)}

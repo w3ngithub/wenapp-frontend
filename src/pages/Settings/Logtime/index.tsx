@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card } from "antd";
+import { Button, Card } from "antd";
 import SettingTable from "../CommonTable";
 import { POSITION_COLUMN } from "constants/Settings";
 import {
@@ -21,7 +21,7 @@ function Logtime() {
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [dataToEdit, setDataToEdit] = useState<any>({});
 
-	const { data: logTypes }: { data: any } = useQuery(["logTypes"], getLogtypes);
+	const { data: logTypes, isLoading } : any = useQuery(["logTypes"], getLogtypes);
 
 	const addLogTypeMutation = useMutation(addLogType, {
 		onSuccess: response =>
@@ -115,7 +115,17 @@ function Logtime() {
 				onSubmit={isEditMode ? handleEditClick : handleAddClick}
 				onCancel={handleCloseModal}
 			/>
-			<Card title="Log Type">
+			<Card
+				title="Log Type"
+				extra={
+					<Button
+						className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+						onClick={() => handleOpenModal("Log Type")}
+					>
+						Add
+					</Button>
+				}
+			>
 				<SettingTable
 					data={logTypes?.data?.data?.data}
 					columns={POSITION_COLUMN(
@@ -123,7 +133,7 @@ function Logtime() {
 						value => handleOpenEditModal(value, "Log Type")
 					)}
 					onAddClick={() => handleOpenModal("Log Type")}
-					isLoading={deleteLogTypeMutation.isLoading}
+					isLoading={isLoading || deleteLogTypeMutation.isLoading}
 				/>
 			</Card>
 		</>
