@@ -42,7 +42,7 @@ function CoworkersPage() {
 	const [position, setPosition] = useState(undefined);
 	const [role, setRole] = useState(undefined);
 	const [name, setName] = useState("");
-	const [typedName, setTypedName] = useState('');
+	const [typedName, setTypedName] = useState("");
 	const [userRecord, setUserRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
 	const [selectedRows, setSelectedRows] = useState([]);
@@ -147,7 +147,7 @@ function CoworkersPage() {
 
 	const handleResetFilter = () => {
 		setName("");
-		setTypedName('');
+		setTypedName("");
 		setRole(undefined);
 		setPosition(undefined);
 		setActiveUser("");
@@ -191,7 +191,7 @@ function CoworkersPage() {
 							setName(value);
 						}}
 						style={{ width: 200 }}
-						onChange={(e)=>setTypedName(e.target.value)}
+						onChange={e => setTypedName(e.target.value)}
 						value={typedName}
 						enterButton
 					/>

@@ -17,6 +17,7 @@ const TotalCountCard = ({
 }) => {
 	return (
 		<Widget
+			style={{ height: "80%" }}
 			styleName={`${className} gx-text-white gx-card-1367-p ${
 				isLink ? "gx-link" : ""
 			}`}
