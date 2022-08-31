@@ -1,4 +1,4 @@
-import { Popconfirm } from "antd";
+import { Divider, Popconfirm } from "antd";
 import CustomIcon from "components/Elements/Icons";
 import React from "react";
 
@@ -47,13 +47,14 @@ const LEAVES_COLUMN = (
 		render: (text: any, record: any) => {
 			if (isAdmin)
 				return (
-					<div style={{ display: "flex", justifyContent: "space-between" }}>
+					<div style={{ display: "flex" }}>
 						<span
 							className="gx-link gx-text-primary"
 							onClick={() => onEditClick(record, true)}
 						>
 							<CustomIcon name="view" />
 						</span>
+						<Divider type="vertical" />
 						{!["approved", "cancelled"].includes(record.status) && (
 							<>
 								<Popconfirm
@@ -64,6 +65,8 @@ const LEAVES_COLUMN = (
 								>
 									<span className="gx-link gx-text-green">Approve</span>
 								</Popconfirm>
+								<Divider type="vertical" />
+
 								<i
 									className="icon icon-edit gx-link"
 									onClick={() => onEditClick(record, false)}
