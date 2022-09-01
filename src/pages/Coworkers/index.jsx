@@ -39,6 +39,7 @@ function CoworkersPage() {
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
 	const [activeUser, setActiveUser] = useState("");
+	const [defaultUser, setDefaultUser] = useState("");
 	const [position, setPosition] = useState(undefined);
 	const [role, setRole] = useState(undefined);
 	const [name, setName] = useState("");
@@ -133,8 +134,8 @@ function CoworkersPage() {
 	};
 
 	const setActiveInActiveUsers = e => {
+		setDefaultUser(e.target.value)
 		setActiveUser(e.target.value === "active" ? true : false);
-
 	};
 
 	const handleRoleChange = roleId => {
@@ -150,7 +151,8 @@ function CoworkersPage() {
 		setTypedName("");
 		setRole(undefined);
 		setPosition(undefined);
-		setActiveUser("");
+		setActiveUser('');
+		setDefaultUser('');
 		setSelectedRows([]);
 	};
 
@@ -222,7 +224,9 @@ function CoworkersPage() {
 							<FormItem>
 								<Radio.Group
 									buttonStyle="solid"
+									value={defaultUser}
 									onChange={setActiveInActiveUsers}
+									id="radio"
 								>
 									<Radio.Button value="active">Active</Radio.Button>
 									<Radio.Button value="inactive">Inactive</Radio.Button>

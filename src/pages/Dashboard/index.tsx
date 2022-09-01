@@ -178,7 +178,7 @@ const Dashboard = () => {
 					<Widget>
 						<EventsAndAnnouncements
 							announcements={notices?.data?.data?.notices}
-							holidays={Holidays?.data?.data?.data?.[0].holidays}
+							holidays={Holidays?.data?.data?.data?.[0]?.holidays}
 							birthdays={BirthMonthUsers?.data?.data?.users}
 							salaryReview={salaryReview?.data?.data?.users}
 						/>
@@ -201,6 +201,7 @@ const Dashboard = () => {
 							<Form layout="inline" onFinish={generateChart}>
 								<FormItem name="chart">
 									<Select
+										style={{width: 115}}
 										value={chart}
 										onChange={(c: any) => setChart(c)}
 										placeholder="Select Chart"
@@ -217,6 +218,7 @@ const Dashboard = () => {
 									<Select
 										value={project}
 										onChange={(c: any) => setProject(c)}
+										style={{width: 150}}
 										placeholder="Select Project"
 										options={data?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({
@@ -232,7 +234,7 @@ const Dashboard = () => {
 										value={logType}
 										onChange={(c: any) => setlogType(c)}
 										placeholder="Select Log Types"
-										style={{ width: 250 }}
+										style={{ width: 215 }}
 										mode="tags"
 										options={logTypes?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({
