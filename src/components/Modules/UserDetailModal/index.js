@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import { Form } from "@ant-design/compatible";
 import "@ant-design/compatible/assets/index.css";
-import { Button, DatePicker, Input, Modal, Select, Spin } from "antd";
+import { Button, DatePicker, Input, Modal, Select, Spin, Form } from "antd";
 import moment from "moment";
 import { filterOptions } from "helpers/utils";
 
@@ -28,29 +27,22 @@ function UserDetailForm({
 	onSubmit,
 	intialValues,
 	readOnly = false,
-	loading = false,
-	...rest
+	loading = false
 }) {
-	const { getFieldDecorator, resetFields } = rest.form;
-
+	const [form] = Form.useForm();
 	const handleCancel = () => {
-		rest.form.resetFields();
+		form.resetFields();
 		onToggleModal({});
 	};
 
 	const handleSubmit = () => {
-		rest.form.validateFields((err, fieldsValue) => {
-			if (err) {
-				return;
-			}
+		form.validateFields().then(values => onSubmit({...intialValues,...values}));
 
-			onSubmit({ ...intialValues, ...fieldsValue }, rest);
-		});
 	};
 
 	useEffect(() => {
 		if (toggle) {
-			rest.form.setFieldsValue({
+			form.setFieldsValue({
 				name: intialValues.name ? intialValues.name : "",
 				role:
 					intialValues.role && intialValues.role._id
@@ -74,7 +66,7 @@ function UserDetailForm({
 			});
 		}
 
-		if (!toggle) resetFields();
+		if (!toggle) form.resetFields();
 	}, [toggle]);
 
 	return (
@@ -101,192 +93,175 @@ function UserDetailForm({
 			}
 		>
 			<Spin spinning={loading}>
-				<Form>
+				<Form form={form}>
 					<FormItem
 						{...formItemLayout}
 						label="Name"
 						name="name"
+						rules={[{ required: true, message: "Required!" }]}
 						hasFeedback={readOnly ? false : true}
 					>
-						{getFieldDecorator("name", {
-							rules: [{ required: true, message: "Required!" }]
-						})(<Input placeholder="Enter Name" disabled={readOnly} />)}
+						<Input placeholder="Enter Name" disabled={readOnly} />
 					</FormItem>
 					<FormItem
 						{...formItemLayout}
 						label="Role"
 						hasFeedback={readOnly ? false : true}
+						name="role"
+						rules={[{ required: true, message: "Required!" }]}
 					>
-						{getFieldDecorator("role", {
-							rules: [{ required: true, message: "Required!" }]
-						})(
-							<Select
-								showSearch
-								placeholder="Select Role"
-								disabled={readOnly}
-								filterOption={filterOptions}
-							>
-								{roles &&
-									roles?.data?.data?.data?.map(role => (
-										<Option value={role._id} key={role._id}>
-											{role.value}
-										</Option>
-									))}
-							</Select>
-						)}
+						<Select
+							showSearch
+							placeholder="Select Role"
+							disabled={readOnly}
+							filterOption={filterOptions}
+						>
+							{roles &&
+								roles?.data?.data?.data?.map(role => (
+									<Option value={role._id} key={role._id}>
+										{role.value}
+									</Option>
+								))}
+						</Select>
 					</FormItem>
 					<FormItem
 						{...formItemLayout}
 						label="Position"
 						hasFeedback={readOnly ? false : true}
+						name="position"
+						rules={[
+							{
+								required: true,
+								message: "Required!"
+							}
+						]}
 					>
-						{getFieldDecorator("position", {
-							rules: [
-								{
-									required: true,
-									message: "Required!"
-								}
-							]
-						})(
-							<Select
-								showSearch
-								placeholder="Select Position"
-								disabled={readOnly}
-								hasFeedback={readOnly ? false : true}
-								filterOption={filterOptions}
-							>
-								{position &&
-									position?.data?.data?.data?.map(position => (
-										<Option value={position._id} key={position._id}>
-											{position.name}
-										</Option>
-									))}
-							</Select>
-						)}
+						<Select
+							showSearch
+							placeholder="Select Position"
+							disabled={readOnly}
+							hasFeedback={readOnly ? false : true}
+							filterOption={filterOptions}
+						>
+							{position &&
+								position?.data?.data?.data?.map(position => (
+									<Option value={position._id} key={position._id}>
+										{position.name}
+									</Option>
+								))}
+						</Select>
 					</FormItem>
 					<FormItem
 						{...formItemLayout}
 						label="Position Type"
 						hasFeedback={readOnly ? false : true}
+						name="positionType"
+						rules={[
+							{
+								required: true,
+								message: "Required!"
+							}
+						]}
 					>
-						{getFieldDecorator("positionType", {
-							rules: [
-								{
-									required: true,
-									message: "Required!"
-								}
-							]
-						})(
-							<Select
-								showSearch
-								placeholder="Select Position Type"
-								disabled={readOnly}
-								hasFeedback={readOnly ? false : true}
-								filterOption={filterOptions}
-							>
-								{positionTypes &&
-									positionTypes?.data?.data?.data?.map(positionType => (
-										<Option value={positionType._id} key={positionType._id}>
-											{positionType.name}
-										</Option>
-									))}
-							</Select>
-						)}
+						<Select
+							showSearch
+							placeholder="Select Position Type"
+							disabled={readOnly}
+							hasFeedback={readOnly ? false : true}
+							filterOption={filterOptions}
+						>
+							{positionTypes &&
+								positionTypes?.data?.data?.data?.map(positionType => (
+									<Option value={positionType._id} key={positionType._id}>
+										{positionType.name}
+									</Option>
+								))}
+						</Select>
 					</FormItem>
 					<FormItem
 						{...formItemLayout}
 						label="Last Review Date"
 						hasFeedback={readOnly ? false : true}
+						name="lastReviewDate"
+						rules={[
+							{
+								type: "object",
+								message: "Required!",
+								whitespace: true
+							}
+						]}
 					>
-						{getFieldDecorator("lastReviewDate", {
-							rules: [
-								{
-									type: "object",
-									message: "Required!",
-									whitespace: true
-								}
-							]
-						})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+						<DatePicker className=" gx-w-100" disabled={readOnly} />
 					</FormItem>
 					<FormItem
 						{...formItemLayout}
 						label="Exit Date"
 						hasFeedback={readOnly ? false : true}
+						name="exitDate"
+						rules={[
+							{
+								type: "object",
+								message: "Required!",
+								whitespace: true
+							}
+						]}
 					>
-						{getFieldDecorator("exitDate", {
-							rules: [
-								{
-									type: "object",
-									message: "Required!",
-									whitespace: true
-								}
-							]
-						})(<DatePicker className=" gx-w-100" disabled={readOnly} />)}
+						<DatePicker className=" gx-w-100" disabled={readOnly} />
 					</FormItem>
 					<FormItem
 						{...formItemLayout}
 						label="Pan Number"
 						hasFeedback={readOnly ? false : true}
+						name="panNumber"
+						rules={[
+							{
+								pattern: new RegExp(/^[0-9]+$/),
+								message: "Pan must be a number!"
+							}
+						]}
 					>
-						{getFieldDecorator("panNumber", {
-							rules: [
-								{
-									pattern: new RegExp(/^[0-9]+$/),
-									message: "Pan must be a number!"
-								}
-							]
-						})(
-							<Input
-								placeholder="Enter Pan Number"
-								type="number"
-								disabled={readOnly}
-							/>
-						)}
+						<Input
+							placeholder="Enter Pan Number"
+							type="number"
+							disabled={readOnly}
+						/>
 					</FormItem>
 					<FormItem
 						{...formItemLayout}
 						label="CIT Number"
 						hasFeedback={readOnly ? false : true}
+						name="citNumber"
+						rules={[
+							{
+								pattern: new RegExp(/^[0-9]+$/),
+								message: "CIT must be a number!"
+							}
+						]}
 					>
-						{getFieldDecorator("citNumber", {
-							rules: [
-								{
-									pattern: new RegExp(/^[0-9]+$/),
-									message: "CIT must be a number!"
-								}
-							]
-						})(
-							<Input
-								placeholder="Enter Cit Number"
-								type="number"
-								disabled={readOnly}
-							/>
-						)}
+						<Input
+							placeholder="Enter Cit Number"
+							type="number"
+							disabled={readOnly}
+						/>
 					</FormItem>
 					<FormItem
 						{...formItemLayout}
 						label="Bank Name"
 						hasFeedback={readOnly ? false : true}
+						name="bankName"
 					>
-						{getFieldDecorator(
-							"bankName",
-							{}
-						)(<Input placeholder="Enter Bank Name" disabled={readOnly} />)}
+						<Input placeholder="Enter Bank Name" disabled={readOnly} />
 					</FormItem>
 					<FormItem
 						{...formItemLayout}
 						label="Bank Account Number"
 						hasFeedback={readOnly ? false : true}
+						name="bankAccNumber"
 					>
-						{getFieldDecorator(
-							"bankAccNumber",
-							{}
-						)(
-							<Input
-								placeholder="Enter Bank Account Number"
-								disabled={readOnly}
-							/>
-						)}
+						<Input
+							placeholder="Enter Bank Account Number"
+							disabled={readOnly}
+						/>
 					</FormItem>
 				</Form>
 			</Spin>
@@ -294,5 +269,4 @@ function UserDetailForm({
 	);
 }
 
-const UserForm = Form.create()(UserDetailForm);
-export default UserForm;
+export default UserDetailForm;

@@ -1,5 +1,4 @@
-import { Checkbox, Collapse, Input } from "antd";
-import { Form } from "@ant-design/compatible";
+import { Checkbox, Collapse, Input, Form } from "antd";
 
 import React from "react";
 
