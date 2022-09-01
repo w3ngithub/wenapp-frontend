@@ -130,10 +130,25 @@ const Dashboard = () => {
 			end: new Date(x.date)
 		}));
 
+	const BirthDayCalendar = BirthMonthUsers?.data?.data?.users?.map(
+		(x: any) => ({
+			title: x.name,
+			start: new Date(
+				`${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
+					1}/${new Date(x.dob).getDate()}`
+			),
+			end: new Date(
+				`${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
+					1}/${new Date(x.dob).getDate()}`
+			)
+		})
+	);
+
 	const calendarEvents = [
 		...(leaveUsers || []),
 		...(noticesCalendar || []),
-		...(holidaysCalendar || [])
+		...(holidaysCalendar || []),
+		...(BirthDayCalendar || [])
 	];
 
 	const chartData = chartQuery?.data?.data?.data?.chart;
@@ -201,7 +216,7 @@ const Dashboard = () => {
 							<Form layout="inline" onFinish={generateChart}>
 								<FormItem name="chart">
 									<Select
-										style={{width: 115}}
+										style={{ width: 115 }}
 										value={chart}
 										onChange={(c: any) => setChart(c)}
 										placeholder="Select Chart"
@@ -218,7 +233,7 @@ const Dashboard = () => {
 									<Select
 										value={project}
 										onChange={(c: any) => setProject(c)}
-										style={{width: 150}}
+										style={{ width: 150 }}
 										placeholder="Select Project"
 										options={data?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({
