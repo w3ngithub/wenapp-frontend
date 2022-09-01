@@ -18,6 +18,7 @@ const Select = ({
 	return (
 		<Dropdown
 			showSearch
+			allowClear
 			placeholder={placeholder}
 			style={{ width: 200, ...style }}
 			onChange={onChange}
