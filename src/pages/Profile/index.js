@@ -122,7 +122,7 @@ function Profile() {
 			await deleteObject(imageRef);
 		}
 
-		if (user?.photoURL?.name) {
+		if (user?.photoURL?.originFileObj) {
 			const storageRef = ref(storage, `profile/${user?.photoURL?.name}`);
 
 			const uploadTask = uploadBytesResumable(
@@ -152,7 +152,7 @@ function Profile() {
 				}
 			);
 		} else {
-			mutation.mutate(updatedUser);
+			mutation.mutate({ ...updatedUser, photoURL: updatedUser?.photoURL?.url });
 		}
 	};
 
