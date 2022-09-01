@@ -150,7 +150,7 @@ function ProjectModal({
 		<Modal
 			width={900}
 			mask={false}
-			title={isEditMode ? "Update Project" : "Add Project"}
+			title={!isEditMode ? "Add Project" : (readOnly ? 'Project Details': 'Update Project')}
 			visible={toggle}
 			onOk={handleSubmit}
 			onCancel={handleCancel}

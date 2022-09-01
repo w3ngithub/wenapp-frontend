@@ -2878,6 +2878,15 @@ body.dark-theme {
 		background-color: @cyan-color  !important;
 	}
 
+	& .ant-legacy-form-item-children {
+		.ant-picker-input > input[disabled] {
+			color: rgba(0, 0, 0, 0.75);
+			background-color: #53616e;
+			border-color: #d9d9d9;
+			box-shadow: none;
+		}
+	}
+
 	& .@{class-prefix}-bg-white .@{class-prefix}-text-grey {
 		color: @dark-theme-primary-color  !important;
 	}
@@ -2957,6 +2966,7 @@ body.dark-theme {
 		background: @cyan-color;
 	}
 }
+
 
 @media screen and (max-width: @screen-md-max) {
 	.dark-theme .@{class-prefix}-popover-horizantal {
