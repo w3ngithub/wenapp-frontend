@@ -149,6 +149,7 @@ function ProjectModal({
 	return (
 		<Modal
 			width={900}
+			mask={false}
 			title={isEditMode ? "Update Project" : "Add Project"}
 			visible={toggle}
 			onOk={handleSubmit}
@@ -177,12 +178,7 @@ function ProjectModal({
 							<FormItem label="Name" hasFeedback={readOnly ? false : true}>
 								{getFieldDecorator("name", {
 									rules: [{ required: true, message: "Required!" }]
-								})(
-									<Input
-										placeholder="Enter Name"
-										disabled={readOnly}
-									/>
-								)}
+								})(<Input placeholder="Enter Name" disabled={readOnly} />)}
 							</FormItem>
 						</Col>
 						<Col span={24} sm={12}>
