@@ -469,6 +469,7 @@ function ProjectModal({
 								getFieldDecorator={getFieldDecorator}
 								maintenance={maintenance}
 								setMaintenance={setMaintenance}
+								readOnly={readOnly}
 							/>
 						</Col>
 					</Row>

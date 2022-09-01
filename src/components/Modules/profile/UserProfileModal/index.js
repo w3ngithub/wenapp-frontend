@@ -169,7 +169,7 @@ function UserProfileModal({
 									whitespace: true
 								}
 							]
-						})(<DatePicker className=" gx-w-100" />)}
+						})(<DatePicker className=" gx-w-100" disabled={true}/>)}
 					</FormItem>
 					<FormItem {...formItemLayout} label="Marital Status" hasFeedback>
 						{getFieldDecorator("maritalStatus", {
