@@ -111,7 +111,7 @@ function Apply({ ...rest }) {
 									}
 									mapDays={({ date, today }) => {
 										let isWeekend = [0, 6].includes(date.weekDay.index);
-										let holidayList = holidaysThisYear.filter(
+										let holidayList = holidaysThisYear?.filter(
 											holiday => date.day === holiday?.date
 										);
 										let isHoliday = holidayList?.length > 0;
