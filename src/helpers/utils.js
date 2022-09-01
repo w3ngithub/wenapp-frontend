@@ -347,3 +347,31 @@ export const oneWeekFilterCheck = x =>
 	new Date(x.date) >= new Date() &&
 	new Date(x.date) <=
 		new Date(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000));
+
+export const checkIfTimeISBetweenOfficeHour = () => {
+	const now = new Date();
+
+	const startTime = "09:10:00";
+	const endTime = "17:30:00";
+
+	const s = startTime.split(":");
+	const startTime1 = new Date(
+		now.getFullYear(),
+		now.getMonth(),
+		now.getDate(),
+		parseInt(s[0]),
+		parseInt(s[1]),
+		parseInt(s[2])
+	);
+
+	const e = endTime.split(":");
+	const endTime2 = new Date(
+		now.getFullYear(),
+		now.getMonth(),
+		now.getDate(),
+		parseInt(e[0]),
+		parseInt(e[1]),
+		parseInt(e[2])
+	);
+	return now > startTime1 && now < endTime2;
+};

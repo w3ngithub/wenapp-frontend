@@ -1,19 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ScheduleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Button } from "antd";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import LiveTime from "../LiveTime/index";
-import { handleResponse, sortFromDate } from "helpers/utils";
+import {
+	checkIfTimeISBetweenOfficeHour,
+	handleResponse,
+	sortFromDate
+} from "helpers/utils";
 import { notification } from "helpers/notification";
 import { addAttendance, updatePunchout } from "services/attendances";
 import { useDispatch, useSelector } from "react-redux";
 import { PUNCH_IN, PUNCH_OUT } from "constants/ActionTypes";
 import { fetchLoggedInUserAttendance } from "appRedux/actions/Attendance";
 import { Dispatch } from "redux";
+import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
 
 function PunchInOut() {
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
+
+	const [toogle, setToogle] = useState(false);
 
 	const queryClient = useQueryClient();
 	const dispatch: Dispatch<any> = useDispatch();
@@ -62,6 +69,9 @@ function PunchInOut() {
 			onSuccess: response => {
 				handleResponse(response, "Punched Successfully", "Punch  failed", [
 					() => {
+						dispatch(fetchLoggedInUserAttendance(user._id));
+					},
+					() => {
 						dispatch({ type: PUNCH_IN });
 					},
 					() => queryClient.invalidateQueries(["userAttendance"]),
@@ -75,6 +85,10 @@ function PunchInOut() {
 	);
 
 	const handlePunch = () => {
+		if (checkIfTimeISBetweenOfficeHour()) {
+			setToogle(true);
+			return;
+		}
 		if (!punchIn) {
 			const lastattendace = sortFromDate(latestAttendance, "punchInTime").at(
 				-1
@@ -98,6 +112,11 @@ function PunchInOut() {
 	};
 	return (
 		<>
+			<TmsMyAttendanceForm
+				title="Time Attendance"
+				toogle={toogle}
+				handleCancel={() => setToogle(false)}
+			/>
 			<Button
 				onClick={handlePunch}
 				className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
