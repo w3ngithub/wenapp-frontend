@@ -32,7 +32,7 @@ const plainOptions = [
 	"December"
 ];
 
-function Maintainance({ maintenance, setMaintenance }) {
+function Maintainance({ maintenance, setMaintenance, readOnly }) {
 	const handleMonthChange = value => {
 		if (value.includes("Toggle All")) {
 			const valuesWithoutToggleAll = value.slice(1);
@@ -87,6 +87,7 @@ function Maintainance({ maintenance, setMaintenance }) {
 						options={[{ label: "Yes", value: true }]}
 						onChange={handleMonthlyChange}
 						value={[maintenance[0]?.monthly]}
+						disabled={readOnly}
 					/>
 				</FormItem>
 				<FormItem
@@ -100,6 +101,7 @@ function Maintainance({ maintenance, setMaintenance }) {
 						options={plainOptions}
 						onChange={handleMonthChange}
 						value={maintenance[0]?.selectMonths}
+						disabled={readOnly}
 					/>
 				</FormItem>
 
@@ -114,6 +116,7 @@ function Maintainance({ maintenance, setMaintenance }) {
 						style={{ marginTop: "15px" }}
 						value={maintenance[0]?.emailDay}
 						onChange={handleMailDayChange}
+						disabled={readOnly}
 					/>
 				</FormItem>
 				<FormItem
@@ -126,6 +129,7 @@ function Maintainance({ maintenance, setMaintenance }) {
 						style={{ marginTop: "15px" }}
 						onChange={handleEmailChange}
 						value={maintenance[0]?.sendEmailTo}
+						disabled={readOnly}
 					/>
 				</FormItem>
 			</Panel>

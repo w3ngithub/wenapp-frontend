@@ -444,6 +444,7 @@ function ProjectModal({
 					<Row type="flex">
 						<Col span={24} sm={24}>
 							<Maintenance
+								readOnly={readOnly}
 								maintenance={maintenance}
 								setMaintenance={setMaintenance}
 							/>

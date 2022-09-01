@@ -2881,6 +2881,14 @@ body.dark-theme {
 	& .@{class-prefix}-bg-white .@{class-prefix}-text-grey {
 		color: @dark-theme-primary-color  !important;
 	}
+	&.ant-form-item-control-input{
+		.ant-picker-input > input[disabled] {
+			color: rgba(0, 0, 0, 0.75);
+			background-color: #53616e;
+			border-color: #d9d9d9;
+			box-shadow: none;
+		}
+	}
 
 	.bg-dark.rmdp-wrapper,
 	.bg-dark .rmdp-month-picker,
