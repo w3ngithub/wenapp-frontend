@@ -125,7 +125,10 @@ function LeaveModal({
 			}
 		}
 
-		if (!open) form.resetFields();
+		if (!open) {
+			form.resetFields();
+			setUser("");
+		}
 	}, [open]);
 	return (
 		<Modal

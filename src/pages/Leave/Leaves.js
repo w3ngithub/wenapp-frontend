@@ -17,6 +17,7 @@ const formattedLeaves = leaves => {
 	return leaves?.map(leave => ({
 		...leave,
 		key: leave._id,
+		coWorker: leave?.user?.name,
 		dates: leave?.leaveDates.map(date => changeDate(date)).join(" , "),
 		type: leave?.leaveType.name,
 		status: leave?.leaveStatus

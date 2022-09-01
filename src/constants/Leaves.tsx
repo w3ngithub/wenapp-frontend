@@ -9,6 +9,12 @@ const LEAVES_COLUMN = (
 	isAdmin: boolean = false
 ) => [
 	{
+		title: "Co-worker",
+		dataIndex: "coWorker",
+		key: "Co-worker",
+		width: 150
+	},
+	{
 		title: "Dates",
 		dataIndex: "dates",
 		key: "dates",
