@@ -165,10 +165,9 @@ function LogtimeModal({
 					</FormItem>
 					{isUserLogtime && (
 						<FormItem {...formItemLayout} label="Project Name" hasFeedback>
-							{getFieldDecorator(
-								"project",
-								{}
-							)(
+							{getFieldDecorator("project", {
+								rules: [{ required: true, message: "Required!" }]
+							})(
 								<Select
 									showSearch
 									filterOption={filterOptions}

@@ -22,7 +22,11 @@ import {
 	getPendingLeavesCount,
 	getTodaysUserLeaveCount
 } from "services/leaves";
-import { formatToUtc, oneWeekFilterCheck } from "helpers/utils";
+import {
+	formatToUtc,
+	getLocalStorageData,
+	oneWeekFilterCheck
+} from "helpers/utils";
 import { getWeeklyNotices } from "services/noticeboard";
 import { getAllHolidays } from "services/resources";
 import {
@@ -31,6 +35,7 @@ import {
 	getSalaryReviewUsers
 } from "services/users/userDetails";
 import { getTodaysUserAttendanceCount } from "services/attendances";
+import { useNavigate } from "react-router-dom";
 
 const FormItem = Form.Item;
 
@@ -41,13 +46,13 @@ const Dashboard = () => {
 	const [chart, setChart] = useState("1");
 	const [project, setProject] = useState("");
 	const [logType, setlogType] = useState("");
+	const navigate = useNavigate();
+	const loggedInUser = getLocalStorageData("user_id");
 
 	const { data: salaryReview } = useQuery(
 		["usersSalaryReview"],
 		getSalaryReviewUsers
 	);
-
-	console.log(project);
 
 	const { data: AttendanceCount } = useQuery(
 		["todaysAttendance"],
@@ -143,34 +148,59 @@ const Dashboard = () => {
 			<Row>
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
+						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						className="gx-cyan-green-gradient"
 						totalCount={ActiveUsers?.data?.data?.user || 0}
 						label="Total Co-workers"
+						onClick={
+							loggedInUser?.role?.value !== "Admin"
+								? null
+								: () => navigate("/coworkers")
+						}
 					/>
 				</Col>
 
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
+						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						icon={LoginOutlined}
 						className="gx-pink-purple-corner-gradient"
 						totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
 						label="Co-workers Punched In Today"
+						onClick={
+							loggedInUser?.role?.value !== "Admin"
+								? null
+								: () => navigate("/todays-overview")
+						}
 					/>
 				</Col>
+				{loggedInUser?.role?.value === "Admin" && (
+					<Col xl={6} lg={12} md={12} sm={12} xs={24}>
+						<TotalCountCard
+							isLink={loggedInUser?.role?.value === "Admin" ? true : false}
+							icon={ExceptionOutlined}
+							className="gx-pink-orange-corner-gradient"
+							totalCount={PendingLeaves?.data?.data?.leaves || 0}
+							label="Pending Leave Request"
+							onClick={() =>
+								navigate("/leave", {
+									state: { tabKey: "3", leaveStatus: "pending" }
+								})
+							}
+						/>
+					</Col>
+				)}
 				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
-						icon={ExceptionOutlined}
-						className="gx-pink-orange-corner-gradient"
-						totalCount={PendingLeaves?.data?.data?.leaves || 0}
-						label="Pending Leave Request"
-					/>
-				</Col>
-				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
-					<TotalCountCard
-						isLink={true}
+						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						totalCount={TodaysLeave?.data?.leaves?.[0]?.count || 0}
 						label="Co-workers On Leave"
 						icon={LogoutOutlined}
+						onClick={
+							loggedInUser?.role?.value !== "Admin"
+								? null
+								: () => navigate("/todays-overview")
+						}
 					/>
 				</Col>
 
@@ -201,7 +231,7 @@ const Dashboard = () => {
 							<Form layout="inline" onFinish={generateChart}>
 								<FormItem name="chart">
 									<Select
-										style={{width: 115}}
+										style={{ width: 115 }}
 										value={chart}
 										onChange={(c: any) => setChart(c)}
 										placeholder="Select Chart"
@@ -218,7 +248,7 @@ const Dashboard = () => {
 									<Select
 										value={project}
 										onChange={(c: any) => setProject(c)}
-										style={{width: 150}}
+										style={{ width: 150 }}
 										placeholder="Select Project"
 										options={data?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({

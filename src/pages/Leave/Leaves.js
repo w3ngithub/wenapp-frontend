@@ -31,6 +31,7 @@ const formatToUtc = date => {
 };
 
 function Leaves({
+	status,
 	selectedRows,
 	handleCancelLeave,
 	rowSelection,
@@ -42,11 +43,15 @@ function Leaves({
 	const [dataToEdit, setDataToEdit] = useState({});
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [readOnly, setReadOnly] = useState(false);
-	const [leaveStatus, setLeaveStatus] = useState(undefined);
-	const [date, setDate] = useState({
-		utc: moment.utc(formatToUtc(moment().startOf("day"))).format(),
-		moment: moment().startOf("day")
-	});
+	const [leaveStatus, setLeaveStatus] = useState(status ?? undefined);
+	const [date, setDate] = useState(
+		!status
+			? {
+					utc: moment.utc(formatToUtc(moment().startOf("day"))).format(),
+					moment: moment().startOf("day")
+			  }
+			: undefined
+	);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 
 	const [user, setUser] = useState(undefined);

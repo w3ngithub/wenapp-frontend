@@ -14,6 +14,7 @@ import LeavesApply from "./Apply";
 import Leaves from "./Leaves";
 import CircularProgress from "components/Elements/CircularProgress";
 import LeavesCalendar from "./LeavesCalendar";
+import { useLocation } from "react-router-dom";
 
 const TabPane = Tabs.TabPane;
 
@@ -29,6 +30,7 @@ const formattedLeaves = leaves => {
 
 function Leave() {
 	const queryClient = useQueryClient();
+	const location = useLocation();
 
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [selectedRows, setSelectedRows] = useState([]);
@@ -92,7 +94,11 @@ function Leave() {
 				leavesTaken={leaveDaysQuery?.data?.data?.data?.data[0]?.leavesTaken}
 			/>
 
-			<Tabs type="card" onChange={handleTabChange}>
+			<Tabs
+				type="card"
+				defaultActiveKey={location?.state?.tabKey}
+				onChange={handleTabChange}
+			>
 				<TabPane tab="Apply" key="1">
 					<LeavesApply />
 				</TabPane>
@@ -122,6 +128,7 @@ function Leave() {
 					<>
 						<TabPane tab="Leaves" key="3">
 							<Leaves
+								status={location?.state?.leaveStatus}
 								selectedRows={selectedRows}
 								handleCancelLeave={handleCancelLeave}
 								rowSelection={{

@@ -7,13 +7,15 @@ const TotalCountCard = ({
 	totalCount,
 	label,
 	className = "gx-blue-cyan-gradient",
-	icon: Icon = TeamOutlined
+	icon: Icon = TeamOutlined,
+	onClick
 }: {
 	isLink?: boolean;
 	className?: string;
 	totalCount: number;
 	label: string;
 	icon?: any;
+	onClick?: React.MouseEventHandler<HTMLDivElement> | null;
 }) => {
 	return (
 		<Widget
@@ -21,6 +23,7 @@ const TotalCountCard = ({
 			styleName={`${className} gx-text-white gx-card-1367-p ${
 				isLink ? "gx-link" : ""
 			}`}
+			onClick={onClick}
 		>
 			<div className="gx-d-flex gx-align-items-center  gx-mb-2">
 				<Icon className="gx-fs-icon-lg gx-mr-2" />
