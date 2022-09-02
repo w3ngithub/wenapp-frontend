@@ -70,6 +70,7 @@ function ImportUsers({ toggle, onClose, files, setFiles }) {
 			visible={toggle}
 			onOk={handleSubmit}
 			onCancel={handleCancel}
+			mask={false}
 			footer={[
 				<Button key="back" onClick={handleCancel}>
 					Cancel
