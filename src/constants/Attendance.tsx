@@ -1,6 +1,8 @@
 import React, { ReactElement } from "react";
 import { EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
+import CustomIcon from "components/Elements/Icons";
+import { Popconfirm } from "antd";
 
 interface notice {
 	title: string;
@@ -130,6 +132,54 @@ const ATTENDANCE_COLUMNS = (
 				}
 		  ];
 
+const LATE_ATTENDANCE_COLUMNS = (sortedInfo: any): notice[] => [
+	{
+		title: "Co-worker",
+		dataIndex: "user",
+		key: "user",
+		sorter: (a, b) => {
+			return a.user.toString().localeCompare(b.user.toString());
+		},
+		sortOrder: sortedInfo.columnKey === "user" && sortedInfo.order
+	},
+
+	{
+		title: "Count",
+		dataIndex: "count",
+		key: "count",
+		sorter: (a, b) => a.count?.toString().localeCompare(b.count?.toString()),
+		sortOrder: sortedInfo.columnKey === "count" && sortedInfo.order
+	},
+	{
+		title: "Status",
+		dataIndex: "status",
+		key: "status",
+		sorter: (a, b) => a.status?.toString().localeCompare(b.status?.toString()),
+		sortOrder: sortedInfo.columnKey === "status" && sortedInfo.order
+	},
+	{
+		title: "Action",
+		key: "action",
+		width: 150,
+		render: (text, record) => {
+			return (
+				<div style={{ display: "flex" }}>
+					<Popconfirm
+						title={`Are you sure you want to cut leave of ${record?.user} ?`}
+						onConfirm={() => {}}
+						okText="Yes"
+						cancelText="No"
+					>
+						<span className="gx-link">
+							<CustomIcon name="leaveCut" />
+						</span>
+					</Popconfirm>
+				</div>
+			);
+		}
+	}
+];
+
 const attendanceFilter = [
 	{ id: 1, value: "Daily" },
 	{ id: 2, value: "Weekly" },
@@ -140,4 +190,4 @@ export const intialDate = [moment().startOf("day"), moment().endOf("day")];
 export const weeklyState = [moment().startOf("week"), moment().endOf("day")];
 export const monthlyState = [moment().startOf("month"), moment().endOf("day")];
 
-export { ATTENDANCE_COLUMNS, attendanceFilter };
+export { ATTENDANCE_COLUMNS, attendanceFilter, LATE_ATTENDANCE_COLUMNS };

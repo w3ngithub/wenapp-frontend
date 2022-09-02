@@ -4,28 +4,32 @@ import {
 	EditOutlined,
 	DeleteOutlined,
 	UserAddOutlined,
-	UserDeleteOutlined
+	UserDeleteOutlined,
+	MinusSquareOutlined
 } from "@ant-design/icons";
 
 function CustomIcon({ name }: { name: string }) {
+	const style = { fontSize: "18px" };
 	switch (name) {
 		case "view":
-			return <EyeOutlined style={{ fontSize: "18px" }} />;
+			return <EyeOutlined style={style} />;
 
 		case "edit":
-			return <EditOutlined style={{ fontSize: "18px" }} />;
+			return <EditOutlined style={style} />;
 
 		case "delete":
-			return <DeleteOutlined style={{ fontSize: "18px" }} />;
+			return <DeleteOutlined style={style} />;
 
 		case "activeUser":
-			return <UserAddOutlined style={{ fontSize: "18px" }} />;
+			return <UserAddOutlined style={style} />;
 		case "deactiveUser":
 			return (
-				<UserDeleteOutlined
-					style={{ fontSize: "18px" }}
-					className="gx-link gx-text-danger"
-				/>
+				<UserDeleteOutlined style={style} className="gx-link gx-text-danger" />
+			);
+
+		case "leaveCut":
+			return (
+				<MinusSquareOutlined style={style} className="gx-link gx-text-danger" />
 			);
 
 		default:
