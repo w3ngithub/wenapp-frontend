@@ -42,6 +42,7 @@ function CommonModal({
 			title={isEditMode ? `Update ${type}` : `Add ${type}`}
 			visible={toggle}
 			onOk={handleSubmit}
+			mask={false}
 			onCancel={onCancel}
 			footer={[
 				<Button key="back" onClick={onCancel}>

@@ -85,6 +85,7 @@ function LogtimeModal({
 		<Modal
 			title={isEditMode ? "Update Log Time" : "Add Log Time"}
 			visible={toggle}
+			mask={false}
 			onOk={handleSubmit}
 			onCancel={handleCancel}
 			footer={[

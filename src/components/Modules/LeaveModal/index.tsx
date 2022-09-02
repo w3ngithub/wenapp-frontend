@@ -136,6 +136,7 @@ function LeaveModal({
 			title={!isEditMode ? "Add Leave" : readOnly ? "Details" : "Update Leave"}
 			style={{ flexDirection: "row" }}
 			visible={open}
+			mask={false}
 			onOk={onFinish}
 			onCancel={onClose}
 			footer={
