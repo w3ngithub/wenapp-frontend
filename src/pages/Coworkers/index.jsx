@@ -99,7 +99,7 @@ function CoworkersPage() {
 		setReadOnly(mode);
 	};
 
-	const handleUserDetailSubmit = (user, reset) => {
+	const handleUserDetailSubmit = (user) => {
 		try {
 			const userTofind = data.data.data.data.find(x => x._id === user._id);
 			mutation.mutate({

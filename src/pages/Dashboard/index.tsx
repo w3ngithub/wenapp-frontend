@@ -18,15 +18,11 @@ import { getAllProjects } from "services/projects";
 import { getLogTypes, getTimeLogChart } from "services/timeLogs";
 import CustomActiveShapePieChart from "routes/extensions/charts/recharts/pie/Components/CustomActiveShapePieChart";
 import {
-	getLeavesOfAllUsers,
 	getPendingLeavesCount,
-	getTodaysUserLeaveCount
+	getTodaysUserLeaveCount,
+	getWeekRangeLeaves
 } from "services/leaves";
-import {
-	formatToUtc,
-	getLocalStorageData,
-	oneWeekFilterCheck
-} from "helpers/utils";
+import { getLocalStorageData, oneWeekFilterCheck } from "helpers/utils";
 import { getWeeklyNotices } from "services/noticeboard";
 import { getAllHolidays } from "services/resources";
 import {
@@ -40,7 +36,6 @@ import { useNavigate } from "react-router-dom";
 const FormItem = Form.Item;
 
 const localizer = momentLocalizer(moment);
-const todayStartDay = moment.utc(formatToUtc(moment().startOf("day"))).format();
 
 const Dashboard = () => {
 	const [chart, setChart] = useState("1");
@@ -93,7 +88,7 @@ const Dashboard = () => {
 
 	const leavesQuery = useQuery(
 		["DashBoardleaves"],
-		() => getLeavesOfAllUsers("approved", "", todayStartDay),
+		() => getWeekRangeLeaves(),
 		{
 			onError: err => console.log(err)
 		}
@@ -115,11 +110,15 @@ const Dashboard = () => {
 		chartQuery.refetch();
 	};
 
-	const leaveUsers = leavesQuery?.data?.data?.data?.data?.map((x: any) => ({
-		title: x.halfDay ? x?.user?.name + ":Half Day" : x?.user?.name,
-		start: new Date(new Date(Date.now()).toLocaleString().split(",")[0]),
-		end: new Date(new Date(Date.now()).toLocaleString().split(",")[0])
-	}));
+	const leaveUsers = leavesQuery?.data?.data?.data?.users?.map(
+		({ _id: x }: any) => ({
+			title: x.halfDay ? x?.user?.[0] + ":Half Day" : x?.user?.[0],
+			start: new Date(
+				new Date(x.leaveDates).toLocaleDateString().split("T")[0]
+			),
+			end: new Date(new Date(x.leaveDates).toLocaleDateString().split("T")[0])
+		})
+	);
 
 	const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
 		title: x.title,
@@ -135,10 +134,25 @@ const Dashboard = () => {
 			end: new Date(x.date)
 		}));
 
+	const BirthDayCalendar = BirthMonthUsers?.data?.data?.users?.map(
+		(x: any) => ({
+			title: x.name,
+			start: new Date(
+				`${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
+					1}/${new Date(x.dob).getDate()}`
+			),
+			end: new Date(
+				`${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
+					1}/${new Date(x.dob).getDate()}`
+			)
+		})
+	);
+
 	const calendarEvents = [
 		...(leaveUsers || []),
 		...(noticesCalendar || []),
-		...(holidaysCalendar || [])
+		...(holidaysCalendar || []),
+		...(BirthDayCalendar || [])
 	];
 
 	const chartData = chartQuery?.data?.data?.data?.chart;

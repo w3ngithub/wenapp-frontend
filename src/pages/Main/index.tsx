@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ConfigProvider } from "antd";
@@ -63,11 +63,20 @@ import Blogs from "pages/Blog/Blogs";
 import BlogDetail from "pages/Blog/BlogDetail";
 import AddBlog from "pages/Blog/AddBlog";
 import Overview from "pages/Overview";
+import { THEME_TYPE_DARK } from "constants/ThemeSetting";
 
 function App(props: any) {
-	const { locale, authUser } = props;
+	const { locale, authUser, themeType } = props;
 
 	const currentAppLocale = AppLocale[locale.locale];
+
+	useEffect(() => {
+		if (themeType === THEME_TYPE_DARK) {
+			document.body.classList.add("dark-theme");
+		} else if (document.body.classList.contains("dark-theme")) {
+			document.body.classList.remove("dark-theme");
+		}
+	}, [themeType]);
 
 	return (
 		<ConfigProvider locale={currentAppLocale.antd}>
@@ -119,8 +128,8 @@ function App(props: any) {
 }
 
 const mapStateToProps = ({ settings, auth }: { settings: any; auth: any }) => {
-	const { locale } = settings;
+	const { locale, themeType } = settings;
 	const { authUser } = auth;
-	return { locale, authUser };
+	return { locale, authUser, themeType };
 };
 export default connect(mapStateToProps)(App);

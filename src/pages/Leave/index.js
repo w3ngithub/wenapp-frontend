@@ -105,7 +105,7 @@ function Leave() {
 				<TabPane tab="My History" key="2">
 					<Table
 						className="gx-table-responsive"
-						columns={LEAVES_COLUMN(handleCancelLeave)}
+						columns={LEAVES_COLUMN(handleCancelLeave).filter((item, index)=> index !== 0)}
 						dataSource={formattedLeaves(
 							userLeavesQuery?.data?.data?.data?.data
 						)}

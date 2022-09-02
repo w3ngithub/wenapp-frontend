@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { Layout, Switch } from "antd";
 import { FaMoon } from "react-icons/fa";
 import { BsFillSunFill } from "react-icons/bs";
@@ -35,19 +34,15 @@ class Topbar extends Component {
 	handleThemeChange = e => {
 		if (e) {
 			this.props.setThemeType(THEME_TYPE_DARK);
+			localStorage.setItem("theme", THEME_TYPE_DARK);
 		} else {
 			this.props.setThemeType(THEME_TYPE_SEMI_DARK);
+			localStorage.setItem("theme", THEME_TYPE_SEMI_DARK);
 		}
 	};
 
 	render() {
 		const { width, navCollapsed, navStyle, themeType } = this.props;
-
-		if (themeType === THEME_TYPE_DARK) {
-			document.body.classList.add("dark-theme");
-		} else if (document.body.classList.contains("dark-theme")) {
-			document.body.classList.remove("dark-theme");
-		}
 
 		return (
 			<Auxiliary>
@@ -57,9 +52,9 @@ class Topbar extends Component {
 							display: "flex",
 							justifyContent: "space-between",
 							width: "100%",
-							alignItems: 'center'
+							alignItems: "center"
 						}}
-					> 
+					>
 						{navStyle === NAV_STYLE_DRAWER ||
 						((navStyle === NAV_STYLE_FIXED ||
 							navStyle === NAV_STYLE_MINI_SIDEBAR) &&
@@ -98,6 +93,9 @@ class Topbar extends Component {
 													marginTop: "2px"
 												}}
 											/>
+										}
+										defaultChecked={
+											themeType === THEME_TYPE_DARK ? true : false
 										}
 										onChange={this.handleThemeChange}
 									/>
