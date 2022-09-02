@@ -14,7 +14,7 @@ const initialSettings = {
 	navCollapsed: true,
 	navStyle: NAV_STYLE_FIXED,
 	layoutType: LAYOUT_TYPE_FULL,
-	themeType: THEME_TYPE_SEMI_DARK,
+	themeType: localStorage.getItem("theme") || THEME_TYPE_SEMI_DARK,
 	colorSelection: THEME_COLOR_SELECTION_PRESET,
 
 	pathname: "",
