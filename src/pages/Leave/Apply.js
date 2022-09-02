@@ -69,7 +69,6 @@ function Apply() {
 	const handleFormReset = () => form.resetFields();
 
 	const handleSubmit = () => {
-
 		form.validateFields().then(values =>
 			leaveMutation.mutate({
 				...values,
@@ -175,25 +174,29 @@ function Apply() {
 						</Row>
 						<Row>
 							<Col span={24}>
-								<FormItem label="Leave Reason" name="reason" rules={[
-											{
-												validator:async(rule, value) => {
-													try {
-														if (!value) throw new Error("Required!");
+								<FormItem
+									label="Leave Reason"
+									name="reason"
+									rules={[
+										{
+											validator: async (rule, value) => {
+												try {
+													if (!value) throw new Error("Required!");
 
-														const trimmedValue = value && value.trim();
-														if (trimmedValue?.length < 10) {
-															throw new Error(
-																"Reason should be at least 10 letters!"
-															);
-														}
-													} catch (err) {
-														throw new Error(err.message);
+													const trimmedValue = value && value.trim();
+													if (trimmedValue?.length < 10) {
+														throw new Error(
+															"Reason should be at least 10 letters!"
+														);
 													}
+												} catch (err) {
+													throw new Error(err.message);
 												}
 											}
-										]}>
-								<TextArea placeholder="Enter Leave Reason" rows={10} />
+										}
+									]}
+								>
+									<TextArea placeholder="Enter Leave Reason" rows={10} />
 								</FormItem>
 								<div>
 									<Button type="primary" onClick={handleSubmit}>
