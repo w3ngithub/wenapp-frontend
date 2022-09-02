@@ -187,6 +187,7 @@ function Holiday() {
 						events={holidaysCalendar}
 						startAccessor="start"
 						endAccessor="end"
+						popup
 					/>
 				</div>
 			</Card>

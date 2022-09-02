@@ -31,6 +31,7 @@ const LeavesCalendar = () => {
 					events={leaveUsers}
 					startAccessor="start"
 					endAccessor="end"
+					popup
 				/>
 			</div>
 		</Card>
