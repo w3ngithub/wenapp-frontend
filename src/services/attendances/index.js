@@ -148,6 +148,18 @@ const getTodaysUserAttendanceCount = async userId => {
 	}
 };
 
+const updateLateAttendance = async attendance => {
+	try {
+		let response = await API.post(
+			`${Apis.Attendances}/updateLateAttendace`,
+			attendance
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	getAllAttendances,
 	getAttendance,
@@ -160,5 +172,6 @@ export {
 	searchAttendacentOfUser,
 	updatePunchReqestCount,
 	getTodaysUserAttendanceCount,
-	searchLateAttendacentOfUser
+	searchLateAttendacentOfUser,
+	updateLateAttendance
 };

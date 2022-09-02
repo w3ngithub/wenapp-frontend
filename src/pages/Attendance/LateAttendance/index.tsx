@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Table, Form, DatePicker } from "antd";
 import moment from "moment";
 import {
@@ -9,10 +9,20 @@ import {
 	monthlyState,
 	weeklyState
 } from "constants/Attendance";
-import { searchLateAttendacentOfUser } from "services/attendances";
-import { changeDate, dateDifference, sortFromDate } from "helpers/utils";
+import {
+	searchLateAttendacentOfUser,
+	updateLateAttendance
+} from "services/attendances";
+import {
+	changeDate,
+	dateDifference,
+	handleResponse,
+	sortFromDate
+} from "helpers/utils";
 import Select from "components/Elements/Select";
 import { getAllUsers } from "services/users/userDetails";
+import { createLeaveOfUser } from "services/leaves";
+import { notification } from "helpers/notification";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -28,11 +38,15 @@ const formattedAttendances = (attendances: any) => {
 };
 
 function LateAttendance() {
-	//init hooks
 	const [sort, setSort] = useState({});
 	const [date, setDate] = useState(intialDate);
 	const [user, setUser] = useState<undefined | string>(undefined);
 	const [attFilter, setAttFilter] = useState({ id: "1", value: "Daily" });
+
+	//init hooks
+	const queryClient = useQueryClient();
+
+	let recordRef: any = {};
 
 	const { data: users } = useQuery(["userForAttendances"], () =>
 		getAllUsers({ fields: "name" })
@@ -54,6 +68,37 @@ function LateAttendance() {
 			setAttFilter({ id: "1", value: "Daily" });
 		}
 	};
+
+	const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
+		onSuccess: response => {
+			if (response.status) {
+				handleCutLeaveInAttendance();
+			}
+			handleResponse(
+				response,
+				"Leave created successfully",
+				"Leave creation failed",
+				[() => queryClient.invalidateQueries(["lateAttendaceAttendance"])]
+			);
+		},
+		onError: error => {
+			notification({ message: "Leave creation failed!", type: "error" });
+		}
+	});
+
+	const attendanceGroupMutation = useMutation(
+		(lateAttendace: any) => updateLateAttendance(lateAttendace),
+		{
+			onSuccess: response => {
+				if (response.status) {
+					recordRef = {};
+				}
+			},
+			onError: error => {
+				notification({ message: "Leave creation failed!", type: "error" });
+			}
+		}
+	);
 
 	const handleTableChange = (pagination: any, filters: any, sorter: any) => {
 		setSort(sorter);
@@ -85,6 +130,28 @@ function LateAttendance() {
 		setUser(undefined);
 		setAttFilter({ id: "1", value: "Daily" });
 		setDate(intialDate);
+	};
+
+	const handleCutLeave = (record: any) => {
+		recordRef = record;
+		leaveMutation.mutate({
+			id: record._id.userId,
+			data: {
+				leaveDates: [
+					moment()
+						.startOf("day")
+						.format()
+				],
+				reason: "Leave cut due to late attendance",
+				leaveType: "6311db3536dd767d63ad72f4",
+				leaveStatus: "approved"
+			}
+		});
+	};
+
+	const handleCutLeaveInAttendance = () => {
+		const payload = recordRef.data.map((x: any) => x._id) || [];
+		attendanceGroupMutation.mutate(payload);
 	};
 
 	const expandedRowRender = (parentRow: any) => {
@@ -196,7 +263,7 @@ function LateAttendance() {
 			</div>
 			<Table
 				className="gx-table-responsive"
-				columns={LATE_ATTENDANCE_COLUMNS(sort)}
+				columns={LATE_ATTENDANCE_COLUMNS(sort, handleCutLeave)}
 				dataSource={formattedAttendances(formattedAttendaces)}
 				expandable={{ expandedRowRender }}
 				onChange={handleTableChange}

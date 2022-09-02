@@ -132,7 +132,10 @@ const ATTENDANCE_COLUMNS = (
 				}
 		  ];
 
-const LATE_ATTENDANCE_COLUMNS = (sortedInfo: any): notice[] => [
+const LATE_ATTENDANCE_COLUMNS = (
+	sortedInfo: any,
+	handleCutLeave: Function
+): notice[] => [
 	{
 		title: "Co-worker",
 		dataIndex: "user",
@@ -166,7 +169,7 @@ const LATE_ATTENDANCE_COLUMNS = (sortedInfo: any): notice[] => [
 				<div style={{ display: "flex" }}>
 					<Popconfirm
 						title={`Are you sure you want to cut leave of ${record?.user} ?`}
-						onConfirm={() => {}}
+						onConfirm={() => handleCutLeave(record)}
 						okText="Yes"
 						cancelText="No"
 					>
