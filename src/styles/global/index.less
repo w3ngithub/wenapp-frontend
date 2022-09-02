@@ -89,6 +89,53 @@
     color: rgba(0, 0, 0, 0.75);
     background-color: #f5f5f5;
 }
+
+.ant-form-item-control-input {
+	.ant-input[disabled] {
+        color: rgba(0, 0, 0, 0.75);
+        background-color: #F5F5F5;
+        cursor: not-allowed;
+        opacity: 1;
+    }
+    .ant-select-disabled {
+        color: rgba(0, 0, 0, 0.75);
+    }
+    .ant-select-disabled.ant-select:not(.ant-select-customize-input)
+        .ant-select-selector {
+        color: rgba(0, 0, 0, 0.75);
+        background: #F5F5F5;
+    }
+	.ant-picker-input > input[disabled] {
+		color: rgba(0, 0, 0, 0.75);
+		border-color: #d9d9d9;
+		box-shadow: none;
+	}
+	.ant-radio-button-wrapper-disabled.ant-radio-button-wrapper-checked {
+		color: rgba(0, 0, 0, 0.75);
+		border-color: #d9d9d9;
+		box-shadow: none;
+	}
+	.ant-select-disabled.ant-select-multiple .ant-select-selection-item {
+		color: rgba(0,0,0,0.75);
+		border-color: #d9d9d9;
+	}
+	.ant-checkbox-disabled .ant-checkbox-inner {
+		border-color: #d9d9d9 !important;
+	}
+	.ant-checkbox-disabled + span {
+		color: rgba(0, 0, 0, 0.75);
+	}
+	.ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+		color: rgba(0, 0, 0, 0.75);
+	}
+	.ant-input[disabled] {
+		color: rgba(0, 0, 0, 0.75);
+		background-color: #f5f5f5;
+		border-color: #d9d9d9;
+		box-shadow: none;
+	}
+}
+
 .ant-menu-submenu-title:hover {
     .ant-menu-submenu-arrow::before, .ant-menu-submenu-arrow::after {
         background: white!important;

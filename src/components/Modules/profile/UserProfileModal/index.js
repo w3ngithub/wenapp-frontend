@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Form } from "@ant-design/compatible";
 import "@ant-design/compatible/assets/index.css";
-import { Button, DatePicker, Input, Modal, Select, Spin } from "antd";
+import { Button, DatePicker, Input, Modal, Select, Spin, Form } from "antd";
 import moment from "moment";
 import DragAndDropFile from "components/Modules/DragAndDropFile";
 
@@ -19,42 +18,32 @@ const formItemLayout = {
 	}
 };
 
-function UserProfileModal({
-	user,
-	toggle,
-	onToggle,
-	onSubmit,
-	isLoading,
-	...rest
-}) {
-	const { getFieldDecorator } = rest.form;
+function UserProfileModal({ user, toggle, onToggle, onSubmit, isLoading }) {
+	const [form] = Form.useForm();
 	const [files, setFiles] = useState([]);
 	const [removedFile, setRemovedFile] = useState(null);
 
 	const handleCancel = () => {
-		rest.form.resetFields();
+		form.resetFields();
 		setFiles([]);
 		onToggle();
 	};
 
 	const handleSubmit = () => {
-		rest.form.validateFields((err, fieldsValue) => {
-			if (err) {
-				return;
-			}
+		form.validateFields().then(values =>
 			onSubmit(
 				{
-					...fieldsValue,
+					...values,
 					photoURL: files.length > 0 ? files[0] : null
 				},
 				removedFile
-			);
-		});
+			)
+		);
 	};
 
 	useEffect(() => {
 		if (toggle) {
-			rest.form.setFieldsValue({
+			form.setFieldsValue({
 				name: user.name,
 				dob: moment(user.dob),
 				gender: user.gender,
@@ -91,11 +80,15 @@ function UserProfileModal({
 			]}
 		>
 			<Spin spinning={isLoading}>
-				<Form>
-					<FormItem {...formItemLayout} label="Name" hasFeedback>
-						{getFieldDecorator("name", {
-							rules: [{ required: true, message: "Required!" }]
-						})(<Input placeholder="Enter Name" />)}
+				<Form form={form}>
+					<FormItem
+						{...formItemLayout}
+						label="Name"
+						hasFeedback
+						name="name"
+						rules={[{ required: true, message: "Required!" }]}
+					>
+						<Input placeholder="Enter Name" />
 					</FormItem>
 					<FormItem {...formItemLayout} label="Profile Photo">
 						<DragAndDropFile
@@ -108,84 +101,103 @@ function UserProfileModal({
 						/>
 					</FormItem>
 
-					<FormItem {...formItemLayout} label="DOB" hasFeedback>
-						{getFieldDecorator("dob", {
-							rules: [
-								{
-									type: "object",
-									required: true,
-									message: "required!",
-									whitespace: true
-								}
-							]
-						})(<DatePicker className=" gx-w-100" />)}
+					<FormItem
+						{...formItemLayout}
+						label="DOB"
+						hasFeedback
+						name="dob"
+						rules={[
+							{
+								type: "object",
+								required: true,
+								message: "required!",
+								whitespace: true
+							}
+						]}
+					>
+						<DatePicker className=" gx-w-100" />
 					</FormItem>
 
-					<FormItem {...formItemLayout} label="Gender" hasFeedback>
-						{getFieldDecorator("gender", {
-							rules: [
-								{
-									required: true,
-									message: "Required!",
-									whitespace: true
-								}
-							]
-						})(
-							<Select placeholder="Select Gender">
-								<Option value="Male">Male</Option>
-								<Option value="Female">Female</Option>
-							</Select>
-						)}
+					<FormItem
+						{...formItemLayout}
+						label="Gender"
+						hasFeedback
+						name="gender"
+						rules={[
+							{
+								required: true,
+								message: "Required!",
+								whitespace: true
+							}
+						]}
+					>
+						<Select placeholder="Select Gender">
+							<Option value="Male">Male</Option>
+							<Option value="Female">Female</Option>
+						</Select>
 					</FormItem>
-					<FormItem {...formItemLayout} label="Primary Phone" hasFeedback>
-						{getFieldDecorator("primaryPhone", {
-							rules: [
-								{
-									required: true,
-									message: "Required!",
-									whitespace: true
-								}
-							]
-						})(<Input placeholder="Enter Primary Phone" />)}
+					<FormItem
+						{...formItemLayout}
+						label="Primary Phone"
+						hasFeedback
+						name="primaryPhone"
+						rules={[
+							{
+								required: true,
+								message: "Required!",
+								whitespace: true
+							}
+						]}
+					>
+						<Input placeholder="Enter Primary Phone" />
 					</FormItem>
-					<FormItem {...formItemLayout} label="Secondary Phone">
-						{getFieldDecorator("secondaryPhone", {
-							rules: [
-								{
-									message: "field must be a number!",
-									whitespace: true
-								}
-							]
-						})(<Input placeholder="Enter Secondary Phone" />)}
+					<FormItem
+						{...formItemLayout}
+						label="Secondary Phone"
+						name="secondaryPhone"
+						rules={[
+							{
+								message: "field must be a number!",
+								whitespace: true
+							}
+						]}
+					>
+						<Input placeholder="Enter Secondary Phone" />
 					</FormItem>
 
-					<FormItem {...formItemLayout} label="Join Date" hasFeedback>
-						{getFieldDecorator("joinDate", {
-							rules: [
-								{
-									type: "object",
-									required: true,
-									message: "Required!",
-									whitespace: true
-								}
-							]
-						})(<DatePicker className=" gx-w-100" />)}
+					<FormItem
+						{...formItemLayout}
+						label="Join Date"
+						hasFeedback
+						name="joinDate"
+						rules={[
+							{
+								type: "object",
+								required: true,
+								message: "Required!",
+								whitespace: true
+							}
+						]}
+					>
+						<DatePicker className=" gx-w-100" disabled={true} />
 					</FormItem>
-					<FormItem {...formItemLayout} label="Marital Status" hasFeedback>
-						{getFieldDecorator("maritalStatus", {
-							rules: [
-								{
-									required: true,
-									message: "Required!",
-									whitespace: true
-								}
-							]
-						})(
-							<Select placeholder="Select Marital Status">
-								<Option value="Married">Married</Option>
-								<Option value="Unmarried">Unmarried</Option>
-							</Select>
-						)}
+					<FormItem
+						{...formItemLayout}
+						label="Marital Status"
+						hasFeedback
+						name="maritalStatus"
+						rules={[
+							{
+								required: true,
+								message: "Required!",
+								whitespace: true
+							}
+						]}
+					>
+						<Select placeholder="Select Marital Status">
+							<Option value="Married">Married</Option>
+							<Option value="Unmarried">Unmarried</Option>
+						</Select>
 					</FormItem>
 				</Form>
 			</Spin>
@@ -193,5 +205,4 @@ function UserProfileModal({
 	);
 }
 
-const UserModal = Form.create()(UserProfileModal);
-export default UserModal;
+export default UserProfileModal;

@@ -23,7 +23,6 @@ const LeavesCalendar = () => {
 			end: new Date(_id.leaveDates)
 		})
 	);
-	console.log(leavesQuery?.data?.data?.data?.data);
 	return (
 		<Card className="gx-card" title="Calendar">
 			<div className="gx-rbc-calendar">
