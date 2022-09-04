@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Table, Form, DatePicker } from "antd";
+import { Button, Table, Form } from "antd";
 import moment from "moment";
 import {
 	attendanceFilter,
@@ -23,8 +23,9 @@ import Select from "components/Elements/Select";
 import { getAllUsers } from "services/users/userDetails";
 import { createLeaveOfUser } from "services/leaves";
 import { notification } from "helpers/notification";
+import { LATE_LEAVE_TYPE_ID } from "constants/Leaves";
+import RangePicker from "components/Elements/RangePicker";
 
-const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 
 const formattedAttendances = (attendances: any) => {
@@ -33,7 +34,11 @@ const formattedAttendances = (attendances: any) => {
 		key: att._id.userId,
 		user: att._id.user,
 		count: att.data.length,
-		status: "Leave Not Cut"
+		status: att.data.every((item: any) => item.lateArrivalLeaveCut === true) ? (
+			<span className="gx-text-danger">Leave Cut</span>
+		) : (
+			<span className="gx-text-green">Leave Not Cut</span>
+		)
 	}));
 };
 
@@ -73,13 +78,12 @@ function LateAttendance() {
 		onSuccess: response => {
 			if (response.status) {
 				handleCutLeaveInAttendance();
+			} else {
+				notification({
+					message: `Leave creation failed !`,
+					type: "success"
+				});
 			}
-			handleResponse(
-				response,
-				"Leave created successfully",
-				"Leave creation failed",
-				[() => queryClient.invalidateQueries(["lateAttendaceAttendance"])]
-			);
 		},
 		onError: error => {
 			notification({ message: "Leave creation failed!", type: "error" });
@@ -93,6 +97,12 @@ function LateAttendance() {
 				if (response.status) {
 					recordRef = {};
 				}
+				handleResponse(
+					response,
+					"Leave Cut Successfull",
+					"Leave creation failed",
+					[() => queryClient.invalidateQueries(["lateAttendaceAttendance"])]
+				);
 			},
 			onError: error => {
 				notification({ message: "Leave creation failed!", type: "error" });
@@ -143,7 +153,7 @@ function LateAttendance() {
 						.format()
 				],
 				reason: "Leave cut due to late attendance",
-				leaveType: "6311db3536dd767d63ad72f4",
+				leaveType: LATE_LEAVE_TYPE_ID,
 				leaveStatus: "approved"
 			}
 		});
@@ -225,11 +235,7 @@ function LateAttendance() {
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 					<Form layout="inline">
 						<FormItem>
-							<RangePicker
-								onChange={handleChangeDate}
-								// value={date}
-								style={{ width: "240px" }}
-							/>
+							<RangePicker date={date} handleChangeDate={handleChangeDate} />
 						</FormItem>
 						<FormItem>
 							<Select

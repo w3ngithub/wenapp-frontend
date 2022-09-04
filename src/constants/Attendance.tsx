@@ -166,7 +166,15 @@ const LATE_ATTENDANCE_COLUMNS = (
 		width: 150,
 		render: (text, record) => {
 			return (
-				<div style={{ display: "flex" }}>
+				<div
+					style={{
+						display: record?.data?.every(
+							(item: any) => item.lateArrivalLeaveCut === true
+						)
+							? "none"
+							: "flex"
+					}}
+				>
 					<Popconfirm
 						title={`Are you sure you want to cut leave of ${record?.user} ?`}
 						onConfirm={() => handleCutLeave(record)}
