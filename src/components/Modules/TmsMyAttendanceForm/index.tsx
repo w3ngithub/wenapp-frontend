@@ -64,6 +64,9 @@ function TmsMyAttendanceForm({
 
 				handleResponse(response, "Punched Successfully", "Punch  failed", [
 					() => {
+						dispatch(fetchLoggedInUserAttendance(user._id));
+					},
+					() => {
 						dispatch({ type: PUNCH_IN });
 					},
 					() => queryClient.invalidateQueries(["userAttendance"]),
@@ -107,13 +110,9 @@ function TmsMyAttendanceForm({
 
 	return (
 		<Modal
-			width={"85%"}
 			title={
-				<span className="gx-d-flex" style={{ gap: 10, fontWeight: "400" }}>
+				<span className="gx-flex-row" style={{ gap: 10, fontWeight: "400" }}>
 					{title}
-					<FieldTimeOutlined style={{ fontSize: "24px" }} />
-					<LiveTime />
-					<span>{moment().format("dddd, MMMM D, YYYY")}</span>
 				</span>
 			}
 			visible={toogle}
@@ -128,47 +127,67 @@ function TmsMyAttendanceForm({
 				spinning={addAttendances.isLoading || punchOutAttendances.isLoading}
 			>
 				<Row>
-					<Col span={24} sm={12} xs={24}>
-						<Form layout="vertical" onFinish={handlePunchIn} form={PUnchInform}>
-							<Form.Item
-								label="Punch In Note"
-								name="punchInNote"
-								rules={[{ required: true, message: "Required!" }]}
-								hasFeedback
-							>
-								<Input.TextArea rows={5} />
-							</Form.Item>
-							<Form.Item>
-								<Button type="primary" htmlType="submit" disabled={!punchIn}>
-									Punch In
-								</Button>
-							</Form.Item>
-						</Form>
-					</Col>
-					<Col span={24} sm={12}>
-						<Form
-							layout="vertical"
-							onFinish={handlePunchOut}
-							form={PUnchOutform}
+					<Col span={24} sm={24} xs={24}>
+						<div
+							className="gx-flex-row gx-mb-4"
+							style={{ gap: 10, fontWeight: "400" }}
 						>
-							<Form.Item
-								label="Punch Out Note"
-								name="punchOutNote"
-								rules={[{ required: true, message: "Required!" }]}
-								hasFeedback
-							>
-								<Input.TextArea rows={5} />
-							</Form.Item>
-							<Form.Item name="midDayExit" valuePropName="checked">
-								<Checkbox>Mid-day Exit</Checkbox>
-							</Form.Item>
-							<Form.Item>
-								<Button type="primary" htmlType="submit" disabled={punchIn}>
-									Punch Out
-								</Button>
-							</Form.Item>
-						</Form>
+							{" "}
+							<FieldTimeOutlined
+								style={{ fontSize: "24px", marginTop: "-2px" }}
+							/>
+							<LiveTime />
+							<span>{moment().format("dddd, MMMM D, YYYY")}</span>
+						</div>
 					</Col>
+					{punchIn ? (
+						<Col span={24} sm={24} xs={24}>
+							<Form
+								layout="vertical"
+								onFinish={handlePunchIn}
+								form={PUnchInform}
+							>
+								<Form.Item
+									label="Punch In Note"
+									name="punchInNote"
+									rules={[{ required: true, message: "Required!" }]}
+									hasFeedback
+								>
+									<Input.TextArea rows={5} />
+								</Form.Item>
+								<Form.Item>
+									<Button type="primary" htmlType="submit" disabled={!punchIn}>
+										Punch In
+									</Button>
+								</Form.Item>
+							</Form>
+						</Col>
+					) : (
+						<Col span={24} sm={24}>
+							<Form
+								layout="vertical"
+								onFinish={handlePunchOut}
+								form={PUnchOutform}
+							>
+								<Form.Item
+									label="Punch Out Note"
+									name="punchOutNote"
+									rules={[{ required: true, message: "Required!" }]}
+									hasFeedback
+								>
+									<Input.TextArea rows={5} />
+								</Form.Item>
+								<Form.Item name="midDayExit" valuePropName="checked">
+									<Checkbox>Mid-day Exit</Checkbox>
+								</Form.Item>
+								<Form.Item>
+									<Button type="primary" htmlType="submit" disabled={punchIn}>
+										Punch Out
+									</Button>
+								</Form.Item>
+							</Form>
+						</Col>
+					)}
 				</Row>
 			</Spin>
 		</Modal>

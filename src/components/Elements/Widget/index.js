@@ -9,7 +9,8 @@ const Widget = ({
 	cover,
 	extra,
 	actions,
-	style
+	style,
+	onClick
 }) => {
 	return (
 		<Card
@@ -19,6 +20,7 @@ const Widget = ({
 			className={`gx-card-widget ${styleName}`}
 			extra={extra}
 			style={style}
+			onClick={onClick}
 		>
 			{children}
 		</Card>
@@ -36,5 +38,6 @@ Widget.propTypes = {
 	cover: PropTypes.node,
 	actions: PropTypes.node,
 	children: PropTypes.node.isRequired,
-	style: PropTypes.any
+	style: PropTypes.any,
+	onClick: PropTypes.any
 };
