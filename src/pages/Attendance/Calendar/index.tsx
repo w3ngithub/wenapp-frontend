@@ -83,7 +83,6 @@ function AttendanceCalendar() {
 		});
 	});
 
-	console.log(leaves);
 	return (
 		<Card className="gx-card" title="Calendar">
 			<Spin spinning={isLoading}>
