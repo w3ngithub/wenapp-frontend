@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Form } from "@ant-design/compatible";
 import "@ant-design/compatible/assets/index.css";
-import { Card, Table, Select, Input, Button } from "antd";
+import { Card, Table, Select, Input, Button, Form } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate, filterOptions, handleResponse } from "helpers/utils";
 import {
@@ -20,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { notification } from "helpers/notification";
 import { getAllUsers } from "services/users/userDetails";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -39,6 +39,8 @@ const formattedProjects = projects => {
 function ProjectsPage() {
 	// init hooks
 	const [sort, setSort] = useState({});
+	const { innerWidth } = useWindowsSize();
+	const [form] = Form.useForm();
 	const [project, setProject] = useState("");
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [projectStatus, setProjectStatus] = useState(undefined);
@@ -295,7 +297,7 @@ function ProjectsPage() {
 			<Card title="Projects">
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-flex-row gx-column-gap-10">
-						<div className="gx-mr-2">
+						
 							{" "}
 							<Search
 								placeholder="Search Projects"
@@ -303,25 +305,31 @@ function ProjectsPage() {
 									setPage(prev => ({ ...prev, page: 1 }));
 									setProject(value);
 								}}
-								style={{ width: 200 }}
+								style={{ width: innerWidth <= 512 ? "100%" : 200 }}
 								value={projectName}
 								onChange={e => setProjectName(e.target.value)}
 								enterButton
 								allowClear
 							/>
-						</div>
+						<div style={{marginBottom:'0.5rem'}}>
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white "
 							onClick={handleOpenAddModal}
 						>
 							Add New Project
 						</Button>
+						</div>
+
 					</div>
-					<Form layout="inline" className="gx-d-flex gx-flex-row gx-row-gap-10">
+					<Form
+						layout="inline"
+						className="gx-d-flex gx-flex-row gx-row-gap-10"
+						form={form}
+					>
 						<FormItem>
 							<Select
 								placeholder="Select Project Type"
-								style={{ width: 200 }}
+								style={{ width: "100%" }}
 								onChange={handleProjectTypeChange}
 								value={projectType}
 								showSearch
@@ -338,7 +346,7 @@ function ProjectsPage() {
 						<FormItem>
 							<Select
 								placeholder="Select Project Status"
-								style={{ width: 200 }}
+								style={{ width: "100%" }}
 								onChange={handleProjectStatusChange}
 								value={projectStatus}
 								showSearch
@@ -355,7 +363,7 @@ function ProjectsPage() {
 						<FormItem>
 							<Select
 								placeholder="Select Client"
-								style={{ width: 200 }}
+								style={{ width: "100%" }}
 								onChange={handleClientChange}
 								value={projectClient}
 								showSearch
@@ -372,7 +380,7 @@ function ProjectsPage() {
 						<FormItem>
 							<Select
 								placeholder="Select Developer"
-								style={{ width: 200 }}
+								style={{ width: "100%" }}
 								onChange={handleDeveloperChange}
 								value={developer}
 								showSearch
@@ -389,7 +397,7 @@ function ProjectsPage() {
 						<FormItem>
 							<Select
 								placeholder="Select Designer"
-								style={{ width: 200 }}
+								style={{ width: "100%" }}
 								onChange={handleDesignerChange}
 								value={designer}
 								showSearch
@@ -406,7 +414,7 @@ function ProjectsPage() {
 						<FormItem>
 							<Select
 								placeholder="Select QA"
-								style={{ width: 200 }}
+								style={{ width: "100%" }}
 								onChange={handleQaChange}
 								value={qa}
 								showSearch

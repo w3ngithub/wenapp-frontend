@@ -13,6 +13,7 @@ import {
 } from "services/noticeboard";
 import { NOTICE_COLUMNS } from "constants/Notice";
 import NoticeBoardModal from "components/Modules/noticeboardModal";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const { RangePicker } = DatePicker;
 const Search = Input.Search;
@@ -32,6 +33,7 @@ function NoticeBoardPage() {
 	// init hooks
 	const [sort, setSort] = useState({});
 	const [title, setTitle] = useState("");
+	const {innerWidth} = useWindowsSize()
 	const [date, setDate] = useState(undefined);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
@@ -215,7 +217,7 @@ function NoticeBoardPage() {
 			<Card title="Notice Board">
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-						<Form layout="inline">
+						<Form layout="inline" form={form}> 
 							<FormItem>
 								<Search
 									placeholder="Search Notices"
@@ -223,7 +225,7 @@ function NoticeBoardPage() {
 										setPage(prev => ({ ...prev, page: 1 }));
 										setTitle(value);
 									}}
-									style={{ width: 200 }}
+									style={{ width: ( innerWidth <=604 ? '100%' : 200 ) }}
 									enterButton
 									ref={noticeRef}
 								/>

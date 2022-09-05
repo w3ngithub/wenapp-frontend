@@ -54,6 +54,7 @@ function CoworkersPage() {
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id"));
 	const {innerWidth} = useWindowsSize()
+	const [form] = Form.useForm();
 
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
 	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
@@ -199,7 +200,7 @@ function CoworkersPage() {
 						enterButton
 					/>
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-						<Form layout="inline">
+						<Form layout="inline" form={form}>
 							<FormItem>
 								<Select
 									width='100%'
