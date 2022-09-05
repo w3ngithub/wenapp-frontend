@@ -1,8 +1,8 @@
 import React, { ReactElement } from "react";
-import { EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
 import CustomIcon from "components/Elements/Icons";
 import { Popconfirm } from "antd";
+import { NINE_HOURS } from "./Common";
 
 interface notice {
 	title: string;
@@ -77,7 +77,30 @@ const ATTENDANCE_COLUMNS = (
 					key: "officeHour",
 					sorter: (a, b) =>
 						a.officeHour?.toString().localeCompare(b.officeHour?.toString()),
-					sortOrder: sortedInfo.columnKey === "officeHour" && sortedInfo.order
+					sortOrder: sortedInfo.columnKey === "officeHour" && sortedInfo.order,
+					render: (text: string, record) => {
+						return (
+							<span
+								className={
+									record.data
+										?.map((x: any) =>
+											x?.punchOutTime
+												? new Date(x?.punchOutTime).getTime() -
+												  new Date(x?.punchInTime).getTime()
+												: ""
+										)
+										.filter(Boolean)
+										?.reduce((accumulator: number, value: number) => {
+											return accumulator + value;
+										}, 0) < NINE_HOURS
+										? "gx-text-danger"
+										: ""
+								}
+							>
+								{text}
+							</span>
+						);
+					}
 				}
 		  ]
 		: [
@@ -128,7 +151,30 @@ const ATTENDANCE_COLUMNS = (
 					key: "officeHour",
 					sorter: (a, b) =>
 						a.officeHour?.toString().localeCompare(b.officeHour?.toString()),
-					sortOrder: sortedInfo.columnKey === "officeHour" && sortedInfo.order
+					sortOrder: sortedInfo.columnKey === "officeHour" && sortedInfo.order,
+					render: (text: string, record) => {
+						return (
+							<span
+								className={
+									record.data
+										?.map((x: any) =>
+											x?.punchOutTime
+												? new Date(x?.punchOutTime).getTime() -
+												  new Date(x?.punchInTime).getTime()
+												: ""
+										)
+										.filter(Boolean)
+										?.reduce((accumulator: number, value: number) => {
+											return accumulator + value;
+										}, 0) < NINE_HOURS
+										? "gx-text-danger"
+										: ""
+								}
+							>
+								{text}
+							</span>
+						);
+					}
 				}
 		  ];
 

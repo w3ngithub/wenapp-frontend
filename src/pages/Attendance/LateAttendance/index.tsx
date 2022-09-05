@@ -33,8 +33,10 @@ const formattedAttendances = (attendances: any) => {
 		...att,
 		key: att._id.userId,
 		user: att._id.user,
-		count: att.data.length,
-		status: att.data.every((item: any) => item.lateArrivalLeaveCut === true) ? (
+		count: att.data?.length,
+		status: att.data?.every(
+			(item: any) => item.lateArrivalLeaveCut === true
+		) ? (
 			<span className="gx-text-danger">Leave Cut</span>
 		) : (
 			<span className="gx-text-green">Leave Not Cut</span>
@@ -227,7 +229,7 @@ function LateAttendance() {
 	const formattedAttendaces = data?.data?.data?.attendances?.map(
 		(att: any) => ({
 			...att,
-			data: sortedData(att.data)
+			data: att.data && sortedData(att.data)
 		})
 	);
 

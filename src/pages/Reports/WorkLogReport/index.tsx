@@ -64,7 +64,7 @@ function WorkLogReport() {
 	};
 
 	return (
-		<Card title="Work Log repoprt">
+		<Card title="Work Log Report">
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 					<Form layout="inline">
