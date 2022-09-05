@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Scrollbars } from "react-custom-scrollbars";
 import useWindowsSize from "hooks/useWindowsSize";
 
 const CustomScrollbars = props => {
-	const { innerHeight } = useWindowsSize();
+	const {innerHeight} = useWindowsSize();
 
 	return (
 		<Scrollbars

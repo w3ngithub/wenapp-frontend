@@ -12,7 +12,8 @@ const Select = ({
 	placeholder,
 	style,
 	mode,
-	inputSelect = false
+	inputSelect = false,
+	width=200
 }) => {
 	const [searchValue, setSearchValue] = useState("");
 	return (
@@ -20,7 +21,7 @@ const Select = ({
 			showSearch
 			allowClear
 			placeholder={placeholder}
-			style={{ width: 200, ...style }}
+			style={{ width, ...style }}
 			onChange={onChange}
 			onSearch={e => {
 				inputSelect && setSearchValue(e);
