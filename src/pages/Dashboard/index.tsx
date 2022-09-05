@@ -237,6 +237,7 @@ const Dashboard = () => {
 								events={calendarEvents}
 								startAccessor="start"
 								endAccessor="end"
+								popup
 							/>
 						</div>
 					</Card>

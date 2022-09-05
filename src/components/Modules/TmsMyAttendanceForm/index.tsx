@@ -115,6 +115,7 @@ function TmsMyAttendanceForm({
 					{title}
 				</span>
 			}
+			mask={false}
 			visible={toogle}
 			onCancel={closeModel}
 			footer={[

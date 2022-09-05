@@ -104,6 +104,7 @@ function TmsAdminAddAttendanceForm({
 					<span>{moment().format("dddd, MMMM D, YYYY")}</span>
 				</span>
 			}
+			mask={false}
 			visible={toogle}
 			onCancel={closeModel}
 			footer={[

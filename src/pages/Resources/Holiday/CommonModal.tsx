@@ -77,6 +77,7 @@ const CommonModal = (props: modalType) => {
 			visible={toggle}
 			onOk={handleSubmit}
 			onCancel={onCancel}
+			mask={false}
 			footer={[
 				<Button key="back" onClick={onCancel}>
 					Cancel

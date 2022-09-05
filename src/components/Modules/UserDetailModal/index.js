@@ -73,6 +73,7 @@ function UserDetailForm({
 		<Modal
 			title={readOnly ? "Details" : "Update User"}
 			visible={toggle}
+			mask={false}
 			onOk={handleSubmit}
 			onCancel={handleCancel}
 			footer={

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { DatePicker, Input, Select, Card, Button } from "antd";
+import "@ant-design/compatible/assets/index.css";
+import { DatePicker, Input, Select, Card, Button, Form } from "antd";
 import DragAndDropFile from "components/Modules/DragAndDropFile";
 import moment from "moment";
 import "./style.css";
@@ -23,22 +22,18 @@ const formItemLayout = {
 function InviteUserSignup(props) {
 	const [files, setFiles] = useState([]);
 
-	const { getFieldDecorator } = props.form;
+	const [form] = Form.useForm();
 
 	const handleFormSubmit = e => {
-		e.preventDefault();
 
-		props.form.validateFields((err, fieldsValue) => {
-			if (err) {
-				return;
-			}
+		form.validateFields().then(values => {
 			const updatedUser = {
-				...fieldsValue,
-				dob: moment.utc(fieldsValue.dob._d).format(),
-				joinDate: moment.utc(fieldsValue.joinDate._d).format(),
-				primaryPhone: +fieldsValue.primaryPhone,
+				...values,
+				dob: moment.utc(values.dob._d).format(),
+				joinDate: moment.utc(values.joinDate._d).format(),
+				primaryPhone: +values.primaryPhone,
 				secondaryPhone:
-					fieldsValue.secondaryPhone && +fieldsValue.secondaryPhone,
+					values.secondaryPhone && +values.secondaryPhone,
 				profilePhoto: files[0]
 			};
 			console.log(updatedUser);
@@ -49,11 +44,15 @@ function InviteUserSignup(props) {
 		<div className="signup-wrapper">
 			<div className="gx-app-login-container">
 				<Card className="gx-card" title="Sign Up">
-					<Form onSubmit={handleFormSubmit}>
-						<FormItem {...formItemLayout} label="Name" hasFeedback>
-							{getFieldDecorator("name", {
-								rules: [{ required: true, message: "Required!" }]
-							})(<Input placeholder="Enter Name" />)}
+					<Form onSubmit={handleFormSubmit} form={form}>
+						<FormItem
+							{...formItemLayout}
+							label="Name"
+							hasFeedback
+							name="name"
+							rules={[{ required: true, message: "Required!" }]}
+						>
+							<Input placeholder="Enter Name" />
 						</FormItem>
 						<FormItem {...formItemLayout} label="Profile Photo">
 							<DragAndDropFile
@@ -64,84 +63,103 @@ function InviteUserSignup(props) {
 							/>
 						</FormItem>
 
-						<FormItem {...formItemLayout} label="DOB" hasFeedback>
-							{getFieldDecorator("dob", {
-								rules: [
-									{
-										type: "object",
-										required: true,
-										message: "Required!",
-										whitespace: true
-									}
-								]
-							})(<DatePicker className=" gx-w-100" />)}
+						<FormItem
+							{...formItemLayout}
+							label="DOB"
+							hasFeedback
+							name="dob"
+							rules={[
+								{
+									type: "object",
+									required: true,
+									message: "Required!",
+									whitespace: true
+								}
+							]}
+						>
+							<DatePicker className=" gx-w-100" />
 						</FormItem>
 
-						<FormItem {...formItemLayout} label="Gender" hasFeedback>
-							{getFieldDecorator("gender", {
-								rules: [
-									{
-										required: true,
-										message: "Required!",
-										whitespace: true
-									}
-								]
-							})(
-								<Select placeholder="Select Gender">
-									<Option value="Male">Male</Option>
-									<Option value="Female">Female</Option>
-								</Select>
-							)}
+						<FormItem
+							{...formItemLayout}
+							label="Gender"
+							hasFeedback
+							name="gender"
+							rules={[
+								{
+									required: true,
+									message: "Required!",
+									whitespace: true
+								}
+							]}
+						>
+							<Select placeholder="Select Gender">
+								<Option value="Male">Male</Option>
+								<Option value="Female">Female</Option>
+							</Select>
 						</FormItem>
-						<FormItem {...formItemLayout} label="Primary Phone" hasFeedback>
-							{getFieldDecorator("primaryPhone", {
-								rules: [
-									{
-										required: true,
-										message: "Required!",
-										whitespace: true
-									}
-								]
-							})(<Input placeholder="Enter Primary Phone" type="number" />)}
+						<FormItem
+							{...formItemLayout}
+							label="Primary Phone"
+							hasFeedback
+							name="primaryPhone"
+							rules={[
+								{
+									required: true,
+									message: "Required!",
+									whitespace: true
+								}
+							]}
+						>
+							<Input placeholder="Enter Primary Phone" type="number" />
 						</FormItem>
-						<FormItem {...formItemLayout} label="Secondary Phone">
-							{getFieldDecorator("secondaryPhone", {
-								rules: [
-									{
-										message: "field must be a number!",
-										whitespace: true
-									}
-								]
-							})(<Input placeholder="Enter Secondary Phone" type="number" />)}
+						<FormItem
+							{...formItemLayout}
+							label="Secondary Phone"
+							name="secondaryPhone"
+							rules={[
+								{
+									message: "field must be a number!",
+									whitespace: true
+								}
+							]}
+						>
+							<Input placeholder="Enter Secondary Phone" type="number" />
 						</FormItem>
 
-						<FormItem {...formItemLayout} label="Join Date" hasFeedback>
-							{getFieldDecorator("joinDate", {
-								rules: [
-									{
-										type: "object",
-										required: true,
-										message: "Required!",
-										whitespace: true
-									}
-								]
-							})(<DatePicker className=" gx-w-100" disabled={true}/>)}
+						<FormItem
+							{...formItemLayout}
+							label="Join Date"
+							hasFeedback
+							name="joinDate"
+							rules={[
+								{
+									type: "object",
+									required: true,
+									message: "Required!",
+									whitespace: true
+								}
+							]}
+						>
+							<DatePicker className=" gx-w-100" />
 						</FormItem>
-						<FormItem {...formItemLayout} label="Marital Status" hasFeedback>
-							{getFieldDecorator("maritalStatus", {
-								rules: [
-									{
-										required: true,
-										message: "Required!",
-										whitespace: true
-									}
-								]
-							})(
-								<Select placeholder="Select Marital Status">
-									<Option value="Married">Married</Option>
-									<Option value="Unmarried">Unmarried</Option>
-								</Select>
-							)}
+						<FormItem
+							{...formItemLayout}
+							label="Marital Status"
+							hasFeedback
+							name="maritalStatus"
+							rules={[
+								{
+									required: true,
+									message: "Required!",
+									whitespace: true
+								}
+							]}
+						>
+							<Select placeholder="Select Marital Status">
+								<Option value="Married">Married</Option>
+								<Option value="Unmarried">Unmarried</Option>
+							</Select>
 						</FormItem>
 						<Button
 							type="primary"
@@ -157,6 +175,6 @@ function InviteUserSignup(props) {
 	);
 }
 
-const SignupForm = Form.create()(InviteUserSignup);
+// const SignupForm = Form.create()(InviteUserSignup);
 
-export default SignupForm;
+export default InviteUserSignup;

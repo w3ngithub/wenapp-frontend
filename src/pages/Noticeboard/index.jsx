@@ -38,6 +38,7 @@ function NoticeBoardPage() {
 	const [noticeRecord, setNoticeRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
+	const [form] = Form.useForm()
 
 	const queryClient = useQueryClient();
 
@@ -132,7 +133,7 @@ function NoticeBoardPage() {
 					details: updatedProject
 				});
 			} else addNoticeMutation.mutate(updatedProject);
-			reset.form.resetFields();
+			form.resetFields();
 		} catch (error) {
 			notification({ message: "Notice Addition Failed", type: "error" });
 		}
