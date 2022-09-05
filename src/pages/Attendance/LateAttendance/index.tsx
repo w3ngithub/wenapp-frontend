@@ -148,7 +148,7 @@ function LateAttendance() {
 			id: record._id.userId,
 			data: {
 				leaveDates: [
-					moment()
+					moment(record.data.at(-1).attendanceDate)
 						.startOf("day")
 						.format()
 				],
