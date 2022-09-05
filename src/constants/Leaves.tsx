@@ -102,3 +102,5 @@ const STATUS_TYPES = [
 ];
 
 export { LEAVES_COLUMN, STATUS_TYPES };
+
+export const LATE_LEAVE_TYPE_ID = "631192ec8194d8f22afe6685";
