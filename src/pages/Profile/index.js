@@ -41,7 +41,7 @@ export const aboutList = [
 	},
 	{
 		id: 4,
-		title: "Join Date",
+		title: "Joined Date",
 		icon: "signup",
 		name: "joinDate"
 	}
