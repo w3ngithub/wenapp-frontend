@@ -1,31 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const CustomScrollbars = props => {
-	const getWindowsSize = () => {
-		const { innerHeight } = window;
-		return innerHeight;
-	};
-	const [windowSize, setWindowSize] = useState(getWindowsSize());
-
-	useEffect(() => {
-		const handleWindowResize = () => {
-			setWindowSize(getWindowsSize());
-		};
-
-		window.addEventListener("resize", handleWindowResize);
-
-		return () => {
-			window.removeEventListener("resize", handleWindowResize);
-		};
-	}, []);
+	const { innerHeight } = useWindowsSize();
 
 	return (
 		<Scrollbars
 			{...props}
 			autoHide
 			autoHeight
-			autoHeightMin={windowSize - 100}
+			autoHeightMin={innerHeight - 100}
 			renderTrackHorizontal={props => (
 				<div
 					{...props}
