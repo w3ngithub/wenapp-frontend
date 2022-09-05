@@ -204,6 +204,7 @@ function LateAttendance() {
 	};
 
 	const sortedData = (datas: any[]) => {
+		// group by attendance date in object
 		const groupByAttendance = datas?.reduce((acc, item: any) => {
 			acc[item.attendanceDate] = [...(acc[item.attendanceDate] || [])].concat(
 				item
@@ -211,10 +212,12 @@ function LateAttendance() {
 			return acc;
 		}, {});
 
+		// sort  by earliest punchInTime
 		Object.keys(groupByAttendance)?.forEach(x => {
 			groupByAttendance[x] = sortFromDate(groupByAttendance[x], "punchInTime");
 		});
 
+		// get first punchInTime Attendance  a day
 		return Object.values(groupByAttendance)?.reduce((acc: any, x: any) => {
 			acc.push(x[0]);
 			return acc;
