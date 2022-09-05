@@ -1,32 +1,37 @@
-import { Card, Spin } from "antd";
+import { Button, Card, Form, Spin } from "antd";
 import React, { useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { useQuery } from "@tanstack/react-query";
-import {
-	getLocalStorageData,
-	MuiFormatDate,
-	sortFromDate
-} from "helpers/utils";
+import { MuiFormatDate, sortFromDate } from "helpers/utils";
 import { searchAttendacentOfUser } from "services/attendances";
 import { monthlyState } from "constants/Attendance";
 import { getLeavesOfAllUsers } from "services/leaves";
+import Select from "components/Elements/Select";
+import { getAllUsers } from "services/users/userDetails";
 
 const localizer = momentLocalizer(moment);
+const FormItem = Form.Item;
 
-function AttendanceCalendar() {
-	const user = getLocalStorageData("user_id");
+function AdminAttendanceCalendar() {
 	const [date, setDate] = useState(monthlyState);
-	const { data, isLoading } = useQuery(["userAttendance", user, date], () =>
-		searchAttendacentOfUser({
-			userId: user._id,
-			fromDate: date?.[0] ? MuiFormatDate(date[0]) + "T00:00:00Z" : "",
-			toDate: date?.[1] ? MuiFormatDate(date[1]) + "T00:00:00Z" : ""
-		})
+	const [user, setUser] = useState("");
+
+	const { data: users, isLoading } = useQuery(["userForAttendances"], () =>
+		getAllUsers({ fields: "name" })
+	);
+	const { data, isFetching: attendanceLoading } = useQuery(
+		["userAttendance", user, date],
+		() =>
+			searchAttendacentOfUser({
+				userId: user,
+				fromDate: date?.[0] ? MuiFormatDate(date[0]) + "T00:00:00Z" : "",
+				toDate: date?.[1] ? MuiFormatDate(date[1]) + "T00:00:00Z" : ""
+			})
 	);
 	const { data: userLeaves } = useQuery(
-		["userLeaves"],
-		() => getLeavesOfAllUsers("approved", user._id),
+		["userLeaves", user],
+		() => getLeavesOfAllUsers("approved", user),
 		{
 			select: res => {
 				return res?.data?.data?.data;
@@ -47,6 +52,14 @@ function AttendanceCalendar() {
 		} else {
 			setDate([calendarDate.start, calendarDate.end]);
 		}
+	};
+
+	const handleUserChange = (id: string) => {
+		setUser(id);
+	};
+
+	const handleReset = () => {
+		setUser("");
 	};
 
 	let attendances: any[] = [],
@@ -83,14 +96,39 @@ function AttendanceCalendar() {
 		});
 	});
 
-	console.log(leaves);
 	return (
 		<Card className="gx-card" title="Calendar">
-			<Spin spinning={isLoading}>
+			<div className="components-table-demo-control-bar">
+				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
+					<Form layout="inline">
+						<FormItem>
+							<Select
+								placeholder="Select Co-worker"
+								onChange={handleUserChange}
+								value={user}
+								options={users?.data?.data?.data?.map((x: any) => ({
+									id: x._id,
+									value: x.name
+								}))}
+							/>
+						</FormItem>
+
+						<FormItem>
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white "
+								onClick={handleReset}
+							>
+								Reset
+							</Button>
+						</FormItem>
+					</Form>
+				</div>
+			</div>
+			<Spin spinning={isLoading || attendanceLoading}>
 				<div className="gx-rbc-calendar">
 					<Calendar
 						localizer={localizer}
-						events={[...attendances, ...leaves]}
+						events={user ? [...attendances, ...leaves] : []}
 						startAccessor="start"
 						endAccessor="end"
 						onRangeChange={handleCalendarRangeChange}
@@ -102,4 +140,4 @@ function AttendanceCalendar() {
 	);
 }
 
-export default AttendanceCalendar;
+export default AdminAttendanceCalendar;
