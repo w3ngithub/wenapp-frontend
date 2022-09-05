@@ -14,6 +14,7 @@ import { searchAttendacentOfUser } from "services/attendances";
 import {
 	dateDifference,
 	milliSecondIntoHours,
+	MuiFormatDate,
 	sortFromDate
 } from "helpers/utils";
 import ViewDetailModel from "../ViewDetailModel";
@@ -78,8 +79,8 @@ function AdminAttendance() {
 				page: page.page + "",
 				limit: page.limit + "",
 				userId: user || "",
-				fromDate: date?.[0] ? moment.utc(date[0]).format() : "",
-				toDate: date?.[1] ? moment.utc(date[1]).format() : ""
+				fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + "T00:00:00Z" : "",
+				toDate: date?.[1] ? MuiFormatDate(date[1]._d) + "T00:00:00Z" : ""
 			})
 	);
 
