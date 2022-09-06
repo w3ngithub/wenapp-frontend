@@ -11,7 +11,7 @@ import {
 	DatePicker,
 	TimePicker
 } from "antd";
-import moment, { Moment, utc } from "moment";
+import moment, { Moment } from "moment";
 import { FieldTimeOutlined } from "@ant-design/icons";
 import LiveTime from "components/Elements/LiveTime";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,6 +19,7 @@ import { updateAttendance } from "services/attendances";
 import { handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
+import useLocation from "hooks/useLocation";
 
 function TmsAdminAttendanceForm({
 	toogle,
@@ -31,6 +32,7 @@ function TmsAdminAttendanceForm({
 	users: any[];
 	AttToEdit: any;
 }) {
+	const location = useLocation();
 	const [PUnchInform] = Form.useForm();
 	const [PUnchOutform] = Form.useForm();
 	const [user, setUser] = useState(undefined);
@@ -89,6 +91,7 @@ function TmsAdminAttendanceForm({
 							.format(),
 						punchInTime: punchInTime,
 						punchInNote: values.punchInNote,
+						punchInLocation: location,
 						user: user
 				  };
 		updateAttendances.mutate({
@@ -117,6 +120,7 @@ function TmsAdminAttendanceForm({
 						punchOutTime: punchOutTime,
 						punchOutNote: values.punchOutNote,
 						midDayExit: values.midDayExit ? true : false,
+						punchOutLocation: location,
 						user: user
 				  };
 		updateAttendances.mutate({

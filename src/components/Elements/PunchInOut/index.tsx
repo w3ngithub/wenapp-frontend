@@ -16,12 +16,13 @@ import { PUNCH_IN, PUNCH_OUT } from "constants/ActionTypes";
 import { fetchLoggedInUserAttendance } from "appRedux/actions/Attendance";
 import { Dispatch } from "redux";
 import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
+import useLocation from "hooks/useLocation";
 
 function PunchInOut() {
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
 
+	const location = useLocation();
 	const [toogle, setToogle] = useState(false);
-
 	const queryClient = useQueryClient();
 	const dispatch: Dispatch<any> = useDispatch();
 	const reduxuserAttendance = useSelector((state: any) => state.attendance);
@@ -98,7 +99,8 @@ function PunchInOut() {
 				payload: {
 					punchOutNote: "",
 					midDayExit: false,
-					punchOutTime: moment.utc().format()
+					punchOutTime: moment.utc().format(),
+					punchOutLocation: location
 				}
 			});
 		} else {
@@ -106,7 +108,8 @@ function PunchInOut() {
 				// attendanceDate: moment()
 				// 	.startOf("day")
 				// 	.format(),
-				punchInTime: moment.utc().format()
+				punchInTime: moment.utc().format(),
+				punchInLocation: location
 			});
 		}
 	};
