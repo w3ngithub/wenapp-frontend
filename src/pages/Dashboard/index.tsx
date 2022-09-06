@@ -110,13 +110,83 @@ const Dashboard = () => {
 		chartQuery.refetch();
 	};
 
+	const handleEventStyle = (event: any) => {
+		let style: any = {
+			fontSize: "10px",
+			width: "fit-content",
+			margin: "3px auto",
+			fontWeight: "600",
+			backgroundColor: "white"
+		};
+		if (event.type === "birthday")
+			style = {
+				...style,
+				color: "#FC6BAB"
+			};
+		if (event.type === "holiday")
+			style = {
+				...style,
+				color: "rgb(255 40 40)"
+			};
+		if (event.type === "leave")
+			style = {
+				...style,
+				color: "#038fde"
+			};
+
+		return {
+			style
+		};
+	};
+
+	const CustomEvent = (props: any) => {
+		const style = {
+			display: "flex",
+			alignItems: "center",
+			gap: "4px"
+		};
+		if (props.event.type === "birthday")
+			return (
+				<p style={style}>
+					<i className="icon icon-birthday-new gx-fs-xxl" />
+					{props?.event?.title}
+				</p>
+			);
+		if (props.event.type === "holiday")
+			return (
+				<p style={{ ...style, marginTop: "25px" }}>{props?.event?.title}</p>
+			);
+
+		if (props.event.type === "leave")
+			return <p style={{ ...style }}>{props?.event?.title}</p>;
+
+		return <p>{props?.event?.title}</p>;
+	};
+	const CustomEventWrapper = (props: any) => {
+		if (props.event.type === "leave")
+			return (
+				<div>
+					<h6 style={{ textAlign: "center", fontWeight: "500" }}>On Leave:</h6>
+					{props.children}
+				</div>
+			);
+
+		return <div>{props?.children}</div>;
+	};
+
+	let components = {
+		event: CustomEvent, // used by each view (Month, Day, Week)
+		eventWrapper: CustomEventWrapper
+	};
+
 	const leaveUsers = leavesQuery?.data?.data?.data?.users?.map(
-		({ _id: x }: any) => ({
+		({ _id: x }: any, index: number) => ({
 			title: x.halfDay ? x?.user?.[0] + ":Half Day" : x?.user?.[0],
 			start: new Date(
 				new Date(x.leaveDates).toLocaleDateString().split("T")[0]
 			),
-			end: new Date(new Date(x.leaveDates).toLocaleDateString().split("T")[0])
+			end: new Date(new Date(x.leaveDates).toLocaleDateString().split("T")[0]),
+			type: "leave"
 		})
 	);
 
@@ -131,7 +201,8 @@ const Dashboard = () => {
 		?.map((x: any) => ({
 			title: x.title,
 			start: new Date(x.date),
-			end: new Date(x.date)
+			end: new Date(x.date),
+			type: "holiday"
 		}));
 
 	const BirthDayCalendar = BirthMonthUsers?.data?.data?.users?.map(
@@ -144,7 +215,8 @@ const Dashboard = () => {
 			end: new Date(
 				`${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
 					1}/${new Date(x.dob).getDate()}`
-			)
+			),
+			type: "birthday"
 		})
 	);
 
@@ -233,11 +305,13 @@ const Dashboard = () => {
 					<Card className="gx-card" title="Calendar">
 						<div className="gx-rbc-calendar">
 							<Calendar
+								components={components}
 								localizer={localizer}
 								events={calendarEvents}
 								startAccessor="start"
 								endAccessor="end"
 								popup
+								eventPropGetter={handleEventStyle}
 							/>
 						</div>
 					</Card>
