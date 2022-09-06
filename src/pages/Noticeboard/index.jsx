@@ -220,6 +220,7 @@ function NoticeBoardPage() {
 						<Form layout="inline" form={form}> 
 							<FormItem>
 								<Search
+									allowClear
 									placeholder="Search Notices"
 									onSearch={value => {
 										setPage(prev => ({ ...prev, page: 1 }));
