@@ -206,7 +206,7 @@ function UserAttendance() {
 			<div className="gx-mt-2"></div>
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-					<Form layout="inline" form={form}>
+					<Form layout="inline" form={form} >
 						<FormItem>
 							<RangePicker
 								onChange={handleChangeDate}

@@ -217,7 +217,7 @@ function NoticeBoardPage() {
 			<Card title="Notice Board">
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-						<Form layout="inline" form={form}> 
+						<Form layout="inline" form={form} > 
 							<FormItem>
 								<Search
 									allowClear
@@ -226,7 +226,7 @@ function NoticeBoardPage() {
 										setPage(prev => ({ ...prev, page: 1 }));
 										setTitle(value);
 									}}
-									style={{ width: ( innerWidth <=604 ? '100%' : 200 ) }}
+									style={{ width: ( innerWidth <=604 ? '100%' : 200 ), marginBottom: '10px' }}
 									enterButton
 									ref={noticeRef}
 								/>

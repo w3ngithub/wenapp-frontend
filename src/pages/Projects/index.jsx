@@ -296,7 +296,7 @@ function ProjectsPage() {
 
 			<Card title="Projects">
 				<div className="components-table-demo-control-bar">
-					<div className="gx-d-flex gx-flex-row gx-column-gap-10">
+					<div className="gx-d-flex gx-flex-row">
 						
 							{" "}
 							<Search
@@ -311,7 +311,7 @@ function ProjectsPage() {
 								enterButton
 								allowClear
 							/>
-						<div style={{marginBottom:'0.5rem'}}>
+						<div style={{marginBottom:'0.4rem'}}>
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white "
 							onClick={handleOpenAddModal}
@@ -323,7 +323,7 @@ function ProjectsPage() {
 					</div>
 					<Form
 						layout="inline"
-						className="gx-d-flex gx-flex-row gx-row-gap-10"
+						className="gx-d-flex gx-flex-row"
 						form={form}
 					>
 						<FormItem>

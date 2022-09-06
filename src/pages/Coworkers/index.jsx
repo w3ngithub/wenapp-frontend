@@ -199,7 +199,7 @@ function CoworkersPage() {
 						value={typedName}
 						enterButton
 					/>
-					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
+					<div className="gx-d-flex gx-justify-content-between gx-flex-row " >
 						<Form layout="inline" form={form}>
 							<FormItem>
 								<Select
@@ -236,7 +236,7 @@ function CoworkersPage() {
 										<Radio.Button value="inactive">Inactive</Radio.Button>
 									</Radio.Group>
 								</FormItem>
-							<FormItem>
+							<FormItem style={{marginTop:( innerWidth <= 504 ? '7px' : 0 )}}>
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}

@@ -32,6 +32,7 @@ import {
 } from "services/users/userDetails";
 import { getTodaysUserAttendanceCount } from "services/attendances";
 import { useNavigate } from "react-router-dom";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const FormItem = Form.Item;
 
@@ -43,6 +44,8 @@ const Dashboard = () => {
 	const [logType, setlogType] = useState("");
 	const navigate = useNavigate();
 	const loggedInUser = getLocalStorageData("user_id");
+	const {innerWidth} = useWindowsSize();
+	const[form] = Form.useForm()
 
 	const { data: salaryReview } = useQuery(
 		["usersSalaryReview"],
@@ -243,10 +246,10 @@ const Dashboard = () => {
 					</Card>
 					<Card className="gx-card" title="Project Time Log Report">
 						<div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
-							<Form layout="inline" onFinish={generateChart}>
+							<Form layout="inline" onFinish={generateChart} form={form}>
 								<FormItem name="chart">
 									<Select
-										style={{ width: 115 }}
+										style={{ width: ( innerWidth <= 504 ? '100%' : 115 )}}
 										value={chart}
 										onChange={(c: any) => setChart(c)}
 										placeholder="Select Chart"
@@ -263,7 +266,7 @@ const Dashboard = () => {
 									<Select
 										value={project}
 										onChange={(c: any) => setProject(c)}
-										style={{ width: 150 }}
+										style={{ width: ( innerWidth <= 504 ? '100%' : 150 )}}
 										placeholder="Select Project"
 										options={data?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({
@@ -279,7 +282,7 @@ const Dashboard = () => {
 										value={logType}
 										onChange={(c: any) => setlogType(c)}
 										placeholder="Select Log Types"
-										style={{ width: 215 }}
+										style={{ width: ( innerWidth <= 504 ? '100%' : 215 )}}
 										mode="tags"
 										options={logTypes?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({
