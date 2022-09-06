@@ -15,7 +15,7 @@ function LocationMap({
 }) {
 	return (
 		<Modal
-			width={1100}
+			// width={1100}
 			title={title}
 			style={{ flexDirection: "row" }}
 			visible={open}

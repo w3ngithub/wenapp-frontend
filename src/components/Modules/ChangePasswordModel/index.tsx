@@ -46,7 +46,6 @@ function ChangePasswordModel({
 		passwordCurrent: string;
 	}): void => {
 		updatePasswordMutation.mutate(values);
-		console.log(values);
 	};
 
 	const handleClose = () => {
