@@ -189,6 +189,7 @@ function UserAttendance() {
 		}));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data?.data?.data?.attendances?.[0]?.data]);
+	console.log('innerWidth', innerWidth);
 
 	return (
 		<div>
@@ -210,8 +211,7 @@ function UserAttendance() {
 						<FormItem>
 							<RangePicker
 								onChange={handleChangeDate}
-								value={date}
-								style={{width : ( innerWidth <= 640 ? '100%' : '240px')}}
+								value={date} 
 							/>
 						</FormItem>
 						<FormItem>
@@ -219,7 +219,6 @@ function UserAttendance() {
 								onChange={handleAttChnageChange}
 								value={attFilter}
 								options={attendanceFilter}
-								style={{width : ( innerWidth <= 640 ? '100%' : '240px')}}
 							/>
 						</FormItem>
 					</Form>

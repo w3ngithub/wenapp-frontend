@@ -226,7 +226,7 @@ function NoticeBoardPage() {
 										setPage(prev => ({ ...prev, page: 1 }));
 										setTitle(value);
 									}}
-									style={{ width: ( innerWidth <=604 ? '100%' : 200 ), marginBottom: '10px' }}
+									style={{ marginBottom: '10px' }}
 									enterButton
 									ref={noticeRef}
 								/>

@@ -248,7 +248,6 @@ function AdminAttendance() {
 							<RangePicker
 								onChange={handleChangeDate}
 								value={date}
-								style={{ width: innerWidth <= 640 ? "100%" : "240px" }}
 							/>
 						</FormItem>
 						<FormItem>
@@ -256,19 +255,19 @@ function AdminAttendance() {
 								onChange={handleAttChnageChange}
 								value={attFilter}
 								options={attendanceFilter}
-								style={{ width: innerWidth <= 640 ? "100%" : "240px" }}
+								style={{ marginLeft : (innerWidth > 748 ? '2rem' : 0) }}
 							/>
 						</FormItem>
 						<FormItem>
 							<Select
 								placeholder="Select Co-worker"
 								onChange={handleUserChange}
+								style={{ marginLeft : (innerWidth > 748 ? '0.5rem' : 0) }}
 								value={user}
 								options={users?.data?.data?.data?.map(x => ({
 									id: x._id,
 									value: x.name
 								}))}
-								style={{ width: innerWidth <= 640 ? "100%" : "240px" }}
 							/>
 						</FormItem>
 

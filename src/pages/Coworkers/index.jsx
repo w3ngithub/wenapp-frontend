@@ -194,7 +194,6 @@ function CoworkersPage() {
 							setPage(prev => ({ ...prev, page: 1 }));
 							setName(value);
 						}}
-						style={{ width: ( innerWidth <= 504 ? '100%' : 200 )}}
 						onChange={e => setTypedName(e.target.value)}
 						value={typedName}
 						enterButton
@@ -203,7 +202,6 @@ function CoworkersPage() {
 						<Form layout="inline" form={form}>
 							<FormItem>
 								<Select
-									width='100%'
 									placeholder="Select Role"
 									onChange={handleRoleChange}
 									value={role}
@@ -215,7 +213,6 @@ function CoworkersPage() {
 							</FormItem>
 							<FormItem>
 								<Select
-									width='100%'
 									placeholder="Select Position"
 									onChange={handlePositionChange}
 									value={position}

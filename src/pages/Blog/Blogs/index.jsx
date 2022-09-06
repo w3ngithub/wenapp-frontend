@@ -107,7 +107,6 @@ function Blogs() {
 										setPage(prev => ({ ...prev, page: 1 }));
 										setTitle(value);
 									}}
-									style={{ width: innerWidth <= 604 ? "100%" : 300 }}
 									value={typedTitle}
 									allowClear
 									onChange={e => setTypedTitle(e.target.value)}
@@ -123,7 +122,6 @@ function Blogs() {
 										id: x._id,
 										value: x.name
 									}))}
-									style={{ width: innerWidth <= 604 ? "100%" : "200px" }}
 								/>
 							</FormItem>
 
