@@ -15,11 +15,9 @@ function LocationMap({
 }) {
 	return (
 		<Modal
-			// width={1100}
 			title={title}
 			style={{ flexDirection: "row" }}
 			visible={open}
-			mask={false}
 			onCancel={onClose}
 			footer={[
 				<Button key="back" onClick={onClose}>
@@ -27,18 +25,14 @@ function LocationMap({
 				</Button>
 			]}
 		>
-			{open ? (
-				<Map
-					position={
-						Array.isArray(location) && location?.length === 2
-							? location
-							: undefined
-					}
-					name={title}
-				/>
-			) : (
-				""
-			)}
+			<Map
+				position={
+					Array.isArray(location) && location?.length === 2
+						? location
+						: undefined
+				}
+				name={title}
+			/>
 		</Modal>
 	);
 }
