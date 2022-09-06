@@ -19,6 +19,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addUserAttendance } from "services/attendances";
 import { filterOptions, handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
+import useLocation from "hooks/useLocation";
 
 function TmsAdminAddAttendanceForm({
 	toogle,
@@ -29,6 +30,7 @@ function TmsAdminAddAttendanceForm({
 	handleCancel: any;
 	users: any[];
 }) {
+	const location = useLocation();
 	const [PUnchform] = Form.useForm();
 	const queryClient = useQueryClient();
 
@@ -85,7 +87,9 @@ function TmsAdminAddAttendanceForm({
 			...values,
 			attendanceDate,
 			punchInTime,
-			punchOutTime: punchOutTime
+			punchOutTime: punchOutTime,
+			punchOutLocation: location,
+			punchInLocation: location
 		};
 		addAttendances.mutate({ id: values.user, payload });
 	};
