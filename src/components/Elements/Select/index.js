@@ -14,16 +14,16 @@ const Select = ({
 	style,
 	mode,
 	inputSelect = false,
-	width=200
+	width = 200
 }) => {
 	const [searchValue, setSearchValue] = useState("");
-	const {innerWidth} = useWindowsSize();
+	const { innerWidth } = useWindowsSize();
 	return (
 		<Dropdown
-			showSearch
 			allowClear
+			showSearch
 			placeholder={placeholder}
-			style={{ width:( innerWidth <=604 ? '100%' : 200 ), ...style }}
+			style={{ width: innerWidth <= 604 ? "100%" : 200, ...style }}
 			onChange={onChange}
 			onSearch={e => {
 				inputSelect && setSearchValue(e);

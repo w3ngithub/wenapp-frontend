@@ -5,9 +5,8 @@ import IconWithTextCard from "components/Modules/Metrics/IconWithTextCard";
 
 function TimeSummary({ tsw, tst }) {
 	return (
-		<Col xl={24} lg={24} md={24} sm={24} xs={24} className="gx-order-sm-1">
 			<Row>
-				<Col xl={12} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={12} lg={12} md={12} sm={12} xs={24} className="gx-col-full"> 
 					<IconWithTextCard
 						cardColor="cyan"
 						icon="diamond"
@@ -15,7 +14,7 @@ function TimeSummary({ tsw, tst }) {
 						subTitle="Time Spent This Week"
 					/>
 				</Col>
-				<Col xl={12} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={12} lg={12} md={12} sm={12} xs={24} className="gx-col-full">
 					<IconWithTextCard
 						cardColor={tst ? "orange" : "danger"}
 						icon="tasks"
@@ -24,7 +23,6 @@ function TimeSummary({ tsw, tst }) {
 					/>
 				</Col>
 			</Row>
-		</Col>
 	);
 }
 
