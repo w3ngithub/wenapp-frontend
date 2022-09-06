@@ -219,6 +219,7 @@ function UserAttendance() {
 								onChange={handleAttChnageChange}
 								value={attFilter}
 								options={attendanceFilter}
+								style={{marginLeft : (innerWidth > 748 ? '2rem' : 0)}}
 							/>
 						</FormItem>
 					</Form>
