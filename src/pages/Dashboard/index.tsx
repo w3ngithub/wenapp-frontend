@@ -112,11 +112,11 @@ const Dashboard = () => {
 
 	const handleEventStyle = (event: any) => {
 		let style: any = {
-			fontSize: "10px",
+			fontSize: "12px",
 			width: "fit-content",
 			margin: "3px auto",
-			fontWeight: "600",
-			backgroundColor: "white"
+			fontWeight: "400",
+			background: "transparent"
 		};
 		if (event.type === "birthday")
 			style = {
@@ -126,7 +126,7 @@ const Dashboard = () => {
 		if (event.type === "holiday")
 			style = {
 				...style,
-				color: "rgb(255 40 40)"
+				color: "rgb(235 68 68)"
 			};
 		if (event.type === "leave")
 			style = {
@@ -147,8 +147,8 @@ const Dashboard = () => {
 		};
 		if (props.event.type === "birthday")
 			return (
-				<p style={style}>
-					<i className="icon icon-birthday-new gx-fs-xxl" />
+				<p style={{ ...style, marginTop: "20px" }}>
+					<i className="icon icon-birthday-new gx-fs-lg" />
 					{props?.event?.title}
 				</p>
 			);
@@ -158,7 +158,7 @@ const Dashboard = () => {
 			);
 
 		if (props.event.type === "leave")
-			return <p style={{ ...style }}>{props?.event?.title}</p>;
+			return <p style={style}>{props?.event?.title}</p>;
 
 		return <p>{props?.event?.title}</p>;
 	};
@@ -228,11 +228,13 @@ const Dashboard = () => {
 	];
 
 	const chartData = chartQuery?.data?.data?.data?.chart;
+	const isAdmin = loggedInUser?.role?.value === "Admin";
+	const width = isAdmin ? 6 : 8;
 
 	return (
 		<Auxiliary>
 			<Row>
-				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={width} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						className="gx-cyan-green-gradient"
@@ -246,7 +248,7 @@ const Dashboard = () => {
 					/>
 				</Col>
 
-				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={width} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						icon={LoginOutlined}
@@ -260,7 +262,7 @@ const Dashboard = () => {
 						}
 					/>
 				</Col>
-				{loggedInUser?.role?.value === "Admin" && (
+				{isAdmin && (
 					<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 						<TotalCountCard
 							isLink={loggedInUser?.role?.value === "Admin" ? true : false}
@@ -276,7 +278,7 @@ const Dashboard = () => {
 						/>
 					</Col>
 				)}
-				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={width} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						totalCount={TodaysLeave?.data?.leaves?.[0]?.count || 0}

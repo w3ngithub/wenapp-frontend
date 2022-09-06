@@ -67,6 +67,11 @@ function AttendanceCalendar() {
 				...style,
 				backgroundColor: "#E14B4B"
 			};
+		if (!event.isLessHourWorked && event.type !== "leave")
+			style = {
+				...style,
+				backgroundColor: "#038fde"
+			};
 
 		return {
 			style
