@@ -34,8 +34,10 @@ const formattedAttendances = (attendances: any) => {
 		...att,
 		key: att._id.userId,
 		user: att._id.user,
-		count: att.data.length,
-		status: att.data.every((item: any) => item.lateArrivalLeaveCut === true) ? (
+		count: att.data?.length,
+		status: att.data?.every(
+			(item: any) => item.lateArrivalLeaveCut === true
+		) ? (
 			<span className="gx-text-danger">Leave Cut</span>
 		) : (
 			<span className="gx-text-green">Leave Not Cut</span>
@@ -151,7 +153,7 @@ function LateAttendance() {
 			id: record._id.userId,
 			data: {
 				leaveDates: [
-					moment()
+					moment(record.data.at(-1).attendanceDate)
 						.startOf("day")
 						.format()
 				],
@@ -230,7 +232,7 @@ function LateAttendance() {
 	const formattedAttendaces = data?.data?.data?.attendances?.map(
 		(att: any) => ({
 			...att,
-			data: sortedData(att.data)
+			data: att.data && sortedData(att.data)
 		})
 	);
 

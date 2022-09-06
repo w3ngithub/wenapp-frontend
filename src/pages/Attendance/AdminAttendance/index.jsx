@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Table, Form, DatePicker, Divider } from "antd";
 import moment from "moment";
-import { EyeOutlined } from "@ant-design/icons";
 import {
 	attendanceFilter,
 	ATTENDANCE_COLUMNS,
