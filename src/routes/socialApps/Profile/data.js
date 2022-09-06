@@ -93,32 +93,24 @@ export const eventList = [
 	}
 ];
 
-export const contactList = [
+export const contactList = user => [
 	{
 		id: 1,
 		title: "Email",
 		icon: "email",
-		desc: [
-			<span className="gx-link" key={1}>
-				kiley.brown@example.com
-			</span>
-		]
+		value: [<span className="gx-link">{user?.user?.email}</span>]
 	},
 	{
 		id: 2,
-		title: "Web page",
-		icon: "link",
-		desc: [
-			<span className="gx-link" key={2}>
-				example.com
-			</span>
-		]
+		title: "Primary Phone",
+		icon: "phone",
+		value: user?.user?.primaryPhone
 	},
 	{
 		id: 3,
-		title: "Phone",
+		title: "Secondary Phone",
 		icon: "phone",
-		desc: ["+1-987 (454) 987"]
+		value: user?.user?.secondaryPhone
 	}
 ];
 

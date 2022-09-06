@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Col, notification, Row } from "antd";
 import About from "components/Modules/profile/About/index";
 import Biography from "components/Modules/profile/Biography/index";
+import Contact from '../../components/Modules/profile/Contact/index'
 import Auxiliary from "util/Auxiliary";
 import ProfileHeader from "components/Modules/profile/ProfileHeader";
 import UserProfileModal from "components/Modules/profile/UserProfileModal";
@@ -22,43 +23,25 @@ import { setProfilePhoto } from "appRedux/actions";
 export const aboutList = [
 	{
 		id: 1,
-		title: "Email",
-		icon: "email",
-		name: "email"
-	},
-	{
-		id: 2,
 		title: "Gender",
 		icon: "user-o",
 		name: "gender"
 	},
 	{
-		id: 3,
-		title: "Primary Phone",
-		icon: "phone",
-		name: "primaryPhone"
-	},
-	{
-		id: 4,
-		title: "Secondary Phone",
-		icon: "phone",
-		name: "secondaryPhone"
-	},
-	{
-		id: 5,
+		id: 2,
 		title: "Marital Status",
 		icon: "home",
 		name: "maritalStatus"
 	},
 	{
-		id: 6,
+		id: 3,
 		title: "Date Of Birth",
 		icon: "birthday",
 		name: "dob"
 	},
 	{
-		id: 7,
-		title: "Join Date",
+		id: 4,
+		title: "Joined Date",
 		icon: "signup",
 		name: "joinDate"
 	}
@@ -176,11 +159,14 @@ function Profile() {
 					onMoreDetailsClick={setOpenModal}
 				/>
 				<div className="gx-profile-content">
-					<Row>
-						<Col xs={24}>
-							<About data={aboutData} />
-						</Col>
-					</Row>
+						<Row>
+							<Col xs={15}>
+								<About data={aboutData} />
+							</Col>
+							<Col xs={9}>
+								<Contact user={user}/>
+							</Col>
+						</Row>
 				</div>
 			</Auxiliary>
 		</>

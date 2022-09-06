@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Select as Dropdown } from "antd";
 
 import { filterOptions } from "helpers/utils";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const Option = Dropdown.Option;
 
@@ -12,15 +13,17 @@ const Select = ({
 	placeholder,
 	style,
 	mode,
-	inputSelect = false
+	inputSelect = false,
+	width=200
 }) => {
 	const [searchValue, setSearchValue] = useState("");
+	const {innerWidth} = useWindowsSize();
 	return (
 		<Dropdown
 			showSearch
 			allowClear
 			placeholder={placeholder}
-			style={{ width: 200, ...style }}
+			style={{ width:( innerWidth <=604 ? '100%' : 200 ), ...style }}
 			onChange={onChange}
 			onSearch={e => {
 				inputSelect && setSearchValue(e);

@@ -1,7 +1,6 @@
-import { Form } from "@ant-design/compatible";
 import "@ant-design/compatible/assets/index.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Card, Input, Radio, Table } from "antd";
+import { Button, Card, Form, Input, Radio, Table } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import UserDetailForm from "components/Modules/UserDetailModal";
 import { CO_WORKERCOLUMNS } from "constants/CoWorkers";
@@ -19,6 +18,7 @@ import {
 } from "services/users/userDetails";
 import ImportUsers from "./ImportUsers";
 import Select from "components/Elements/Select";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -53,6 +53,8 @@ function CoworkersPage() {
 
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id"));
+	const {innerWidth} = useWindowsSize()
+	const [form] = Form.useForm();
 
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);
 	const { data: positionData } = useQuery(["userPositions"], getUserPosition);
@@ -99,7 +101,7 @@ function CoworkersPage() {
 		setReadOnly(mode);
 	};
 
-	const handleUserDetailSubmit = (user) => {
+	const handleUserDetailSubmit = user => {
 		try {
 			const userTofind = data.data.data.data.find(x => x._id === user._id);
 			mutation.mutate({
@@ -134,7 +136,7 @@ function CoworkersPage() {
 	};
 
 	const setActiveInActiveUsers = e => {
-		setDefaultUser(e.target.value)
+		setDefaultUser(e.target.value);
 		setActiveUser(e.target.value === "active" ? true : false);
 	};
 
@@ -151,8 +153,8 @@ function CoworkersPage() {
 		setTypedName("");
 		setRole(undefined);
 		setPosition(undefined);
-		setActiveUser('');
-		setDefaultUser('');
+		setActiveUser("");
+		setDefaultUser("");
 		setSelectedRows([]);
 	};
 
@@ -160,10 +162,10 @@ function CoworkersPage() {
 		setSelectedRows(rows);
 	};
 
+
 	if (isLoading) {
 		return <CircularProgress />;
 	}
-
 	return (
 		<div>
 			<ImportUsers
@@ -192,15 +194,16 @@ function CoworkersPage() {
 							setPage(prev => ({ ...prev, page: 1 }));
 							setName(value);
 						}}
-						style={{ width: 200 }}
+						style={{ width: ( innerWidth <= 504 ? '100%' : 200 )}}
 						onChange={e => setTypedName(e.target.value)}
 						value={typedName}
 						enterButton
 					/>
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-						<Form layout="inline">
+						<Form layout="inline" form={form}>
 							<FormItem>
 								<Select
+									width='100%'
 									placeholder="Select Role"
 									onChange={handleRoleChange}
 									value={role}
@@ -212,6 +215,7 @@ function CoworkersPage() {
 							</FormItem>
 							<FormItem>
 								<Select
+									width='100%'
 									placeholder="Select Position"
 									onChange={handlePositionChange}
 									value={position}
@@ -221,17 +225,17 @@ function CoworkersPage() {
 									}))}
 								/>
 							</FormItem>
-							<FormItem>
-								<Radio.Group
-									buttonStyle="solid"
-									value={defaultUser}
-									onChange={setActiveInActiveUsers}
-									id="radio"
-								>
-									<Radio.Button value="active">Active</Radio.Button>
-									<Radio.Button value="inactive">Inactive</Radio.Button>
-								</Radio.Group>
-							</FormItem>
+								<FormItem>
+									<Radio.Group
+										buttonStyle="solid"
+										value={defaultUser}
+										onChange={setActiveInActiveUsers}
+										id="radio"
+									>
+										<Radio.Button value="active">Active</Radio.Button>
+										<Radio.Button value="inactive">Inactive</Radio.Button>
+									</Radio.Group>
+								</FormItem>
 							<FormItem>
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"

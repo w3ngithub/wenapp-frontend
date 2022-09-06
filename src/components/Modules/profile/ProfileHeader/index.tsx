@@ -1,5 +1,6 @@
 import React from "react";
-import { Avatar } from "antd";
+import { Avatar, Divider } from "antd";
+import CustomIcon from "components/Elements/Icons";
 
 const ProfileHeader = ({
 	user,
@@ -26,12 +27,13 @@ const ProfileHeader = ({
 				</div>
 				<div className="gx-profile-banner-bottom">
 					<span className="gx-link ">
-						<i className="icon icon-add gx-fs-lg gx-mr-2 gx-mr-sm-3 gx-d-inline-flex gx-vertical-align-middle" />
+					<CustomIcon name="edit" />
+					<Divider type="vertical" style={{backgroundColor: 'transparent'}}/>
 						<span
 							className="gx-d-inline-flex gx-vertical-align-middle gx-ml-1 gx-ml-sm-0"
 							onClick={() => onMoreDetailsClick(true)}
 						>
-							More Details
+							Edit Details
 						</span>
 					</span>
 				</div>

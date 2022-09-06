@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, Form, Input, Button, Pagination, Spin, Col, Row } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
@@ -10,6 +10,7 @@ import Select from "components/Elements/Select";
 import { useNavigate } from "react-router-dom";
 import { ADDBLOG } from "helpers/routePath";
 import { handleResponse } from "helpers/utils";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -23,6 +24,8 @@ function Blogs() {
 	// init hooks
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
+	const {innerWidth} = useWindowsSize();
+	const [form] = Form.useForm();
 
 	const [typedTitle, setTypedTitle] = useState('');
 	const userData = JSON.parse(localStorage.getItem("user_id") || {});
@@ -97,7 +100,7 @@ function Blogs() {
 			<Card title="Blogs">
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-						<Form layout="inline">
+						<Form layout="inline" form={form}>
 							<FormItem>
 								<Search
 									placeholder="Search Blogs"
@@ -105,7 +108,7 @@ function Blogs() {
 										setPage(prev => ({ ...prev, page: 1 }));
 										setTitle(value);
 									}}
-									style={{ width: 300 }}
+									style={{ width: ( innerWidth <=604 ? '100%' : 300 ) }}
 									value={typedTitle}
 									allowClear
 									onChange={(e)=>setTypedTitle(e.target.value)}
@@ -122,6 +125,7 @@ function Blogs() {
 										id: x._id,
 										value: x.name
 									}))}
+									style={{ width: ( innerWidth <=604 ? '100%' : '200px' ) }}
 								/>
 							</FormItem>
 

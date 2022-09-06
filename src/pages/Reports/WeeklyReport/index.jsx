@@ -10,6 +10,7 @@ import { getLogTypes, getWeeklyReport } from "services/timeLogs";
 import Select from "components/Elements/Select";
 import { WEEKLY_REPORT_COLUMNS } from "constants/weeklyReport";
 import { roundedToFixed } from "helpers/utils";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -41,6 +42,9 @@ function WeeklyReport() {
 	const [logType, setLogType] = useState(undefined);
 	const [projectClient, setprojectClient] = useState(undefined);
 	const [date, setDate] = useState(intialDate);
+	const [form] = Form.useForm();
+	const {innerWidth} = useWindowsSize();
+
 
 	const navigate = useNavigate();
 
@@ -128,12 +132,12 @@ function WeeklyReport() {
 			<Card title="Weekly Report">
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-						<Form layout="inline">
+						<Form layout="inline" form={form}>
 							<FormItem>
 								<RangePicker
 									onChange={handleChangeDate}
 									value={date}
-									style={{ width: "240px" }}
+									style={{ width:( innerWidth <=604 ? '100%' : '200px') }}
 								/>
 							</FormItem>
 							<FormItem>
