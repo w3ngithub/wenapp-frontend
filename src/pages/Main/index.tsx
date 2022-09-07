@@ -19,6 +19,7 @@ import {
 	DASHBOARD,
 	EDITBLOG,
 	FAQS,
+	FORGOT_PASSWORD,
 	HOLIDAY,
 	INVITE,
 	LEAVE,
@@ -64,6 +65,7 @@ import BlogDetail from "pages/Blog/BlogDetail";
 import AddBlog from "pages/Blog/AddBlog";
 import Overview from "pages/Overview";
 import { THEME_TYPE_DARK } from "constants/ThemeSetting";
+import ForgotPassword from "containers/ForgotPassword";
 
 function App(props: any) {
 	const { locale, authUser, themeType } = props;
@@ -89,6 +91,7 @@ function App(props: any) {
 					<Route path={SIGNIN} element={<SignIn />} />
 					<Route path={SIGNUP} element={<SignUp />} />
 					<Route path={INVITE} element={<InviteUserSignup />} />
+					<Route path={FORGOT_PASSWORD} element={<ForgotPassword />} />
 
 					<Route element={<ProtectedRoute auth={authUser} />}>
 						<Route element={<MainApp />}>
