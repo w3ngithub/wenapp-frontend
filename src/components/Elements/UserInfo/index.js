@@ -4,13 +4,20 @@ import { Avatar, Popover } from "antd";
 import { userSignOut } from "appRedux/actions/Auth";
 import { useNavigate } from "react-router-dom";
 import { PROFILE } from "helpers/routePath";
+import ChangePasswordModel from "components/Modules/ChangePasswordModel";
 
 function UserInfo(props) {
 	const navigate = useNavigate();
 	const [visible, setVisible] = useState(false);
+	const [openPasswordModel, setOpenPasswordChangeModel] = useState(false);
 
 	const handleVisibleChange = newVisible => {
 		setVisible(newVisible);
+	};
+
+	const handleChangePassword = () => {
+		handleVisibleChange(false);
+		setOpenPasswordChangeModel(true);
 	};
 
 	const userMenuOptions = (
@@ -23,7 +30,13 @@ function UserInfo(props) {
 			>
 				Profile
 			</li>
-			<li>Change Password</li>
+			<li
+				onClick={() => {
+					handleChangePassword();
+				}}
+			>
+				Change Password
+			</li>
 			<li
 				onClick={() => {
 					handleVisibleChange(false);
@@ -35,20 +48,28 @@ function UserInfo(props) {
 		</ul>
 	);
 	return (
-		<Popover
-			overlayClassName="gx-popover-horizantal"
-			placement="bottomRight"
-			content={userMenuOptions}
-			trigger="click"
-			visible={visible}
-			onVisibleChange={handleVisibleChange}
-		>
-			<Avatar
-				src={props.authUser?.user?.photoURL}
-				className="gx-avatar gx-pointer"
-				alt=""
+		<>
+			<ChangePasswordModel
+				open={openPasswordModel}
+				onClose={() => {
+					setOpenPasswordChangeModel(false);
+				}}
 			/>
-		</Popover>
+			<Popover
+				overlayClassName="gx-popover-horizantal"
+				placement="bottomRight"
+				content={userMenuOptions}
+				trigger="click"
+				visible={visible}
+				onVisibleChange={handleVisibleChange}
+			>
+				<Avatar
+					src={props.authUser?.user?.photoURL}
+					className="gx-avatar gx-pointer"
+					alt=""
+				/>
+			</Popover>
+		</>
 	);
 }
 

@@ -1,5 +1,4 @@
 import React, { ReactElement } from "react";
-import { Link } from "react-router-dom";
 
 interface tableCol {
 	title: string;
@@ -60,7 +59,10 @@ const OVERVIEW_LEAVES = (sortedInfo: any): tableCol[] => [
 	}
 ];
 
-const OVERVIEW_CHECKEDIN = (sortedInfo: any): tableCol[] => [
+const OVERVIEW_CHECKEDIN = (
+	sortedInfo: any,
+	handleShowMap: any
+): tableCol[] => [
 	{
 		title: "Name",
 		dataIndex: "name",
@@ -87,7 +89,16 @@ const OVERVIEW_CHECKEDIN = (sortedInfo: any): tableCol[] => [
 		sorter: (a, b) =>
 			a.checkInLocation.toString().localeCompare(b.checkInLocation.toString()),
 		sortOrder: sortedInfo.columnKey === "checkInLocation" && sortedInfo.order,
-		render: text => <Link to="#">{text}</Link>
+		render: (text, record) => (
+			<span
+				className="gx-link"
+				onClick={() => {
+					handleShowMap(record);
+				}}
+			>
+				{text}
+			</span>
+		)
 	},
 	{
 		title: "Punched Out At",
@@ -110,7 +121,16 @@ const OVERVIEW_CHECKEDIN = (sortedInfo: any): tableCol[] => [
 				.localeCompare(b.checkOutLocation.toString()),
 
 		sortOrder: sortedInfo.columnKey === "checkOutLocation" && sortedInfo.order,
-		render: text => <Link to="#">{text}</Link>
+		render: (text, record) => (
+			<span
+				className="gx-link"
+				onClick={() => {
+					handleShowMap(record, "out");
+				}}
+			>
+				{text}
+			</span>
+		)
 	}
 ];
 

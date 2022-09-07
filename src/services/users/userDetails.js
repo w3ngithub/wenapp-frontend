@@ -134,6 +134,16 @@ const getSalaryReviewUsers = async () => {
 		return getAPIResponse(err?.response);
 	}
 };
+
+const UpdateUserPassword = async payload => {
+	try {
+		let response = await API.patch(`${Apis.Users}/updateMyPassword`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	loginInUsers,
 	getAllUsers,
@@ -147,5 +157,6 @@ export {
 	importUsers,
 	getActiveUsersCount,
 	getBirthMonthUsers,
-	getSalaryReviewUsers
+	getSalaryReviewUsers,
+	UpdateUserPassword
 };
