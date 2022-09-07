@@ -152,7 +152,7 @@ function Leaves({
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 					<Form layout="inline" form={form}>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Status"
 								onChange={handleStatusChange}
@@ -160,7 +160,7 @@ function Leaves({
 								options={STATUS_TYPES}
 							/>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Co-worker"
 								value={user}

@@ -43,8 +43,7 @@ function WeeklyReport() {
 	const [projectClient, setprojectClient] = useState(undefined);
 	const [date, setDate] = useState(intialDate);
 	const [form] = Form.useForm();
-	const {innerWidth} = useWindowsSize();
-
+	const { innerWidth } = useWindowsSize();
 
 	const navigate = useNavigate();
 
@@ -133,14 +132,10 @@ function WeeklyReport() {
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline" form={form}>
-							<FormItem>
-								<RangePicker
-									onChange={handleChangeDate}
-									value={date}
-									style={{ width:( innerWidth <=604 ? '100%' : '200px') }}
-								/>
+							<FormItem style={{width:250}}>
+								<RangePicker onChange={handleChangeDate} value={date} />
 							</FormItem>
-							<FormItem>
+							<FormItem className="direct-form-item">
 								<Select
 									placeholder="Select Project Status"
 									onChange={handleProjectStatusChange}
@@ -152,7 +147,7 @@ function WeeklyReport() {
 									}))}
 								/>
 							</FormItem>
-							<FormItem>
+							<FormItem className="direct-form-item">
 								<Select
 									placeholder="Select Log Type"
 									onChange={handleLogTypeChange}
@@ -164,7 +159,7 @@ function WeeklyReport() {
 									}))}
 								/>
 							</FormItem>
-							<FormItem>
+							<FormItem className="direct-form-item">
 								<Select
 									placeholder="Select Client"
 									onChange={handleClientChange}

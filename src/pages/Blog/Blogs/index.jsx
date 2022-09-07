@@ -113,7 +113,7 @@ function Blogs() {
 									enterButton
 								/>
 							</FormItem>
-							<FormItem>
+							<FormItem className="direct-form-item">
 								<Select
 									placeholder="Select Author"
 									onChange={handleUserChange}

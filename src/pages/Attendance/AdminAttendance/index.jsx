@@ -23,7 +23,6 @@ import { getAllUsers } from "services/users/userDetails";
 import TmsAdminAttendanceForm from "components/Modules/TmsAdminAttendanceForm";
 import TmsAdminAddAttendanceForm from "components/Modules/TmsAdminAttendanceForm/Add";
 import CustomIcon from "components/Elements/Icons";
-import useWindowsSize from "hooks/useWindowsSize";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -58,7 +57,6 @@ function AdminAttendance() {
 	//init hooks
 	const [sort, setSort] = useState({});
 	const [form] = Form.useForm();
-	const {innerWidth} = useWindowsSize();
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openView, setOpenView] = useState(false);
 	const [attToView, setAttToView] = useState({});
@@ -250,19 +248,17 @@ function AdminAttendance() {
 								value={date}
 							/>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								onChange={handleAttChnageChange}
 								value={attFilter}
 								options={attendanceFilter}
-								style={{ marginLeft : (innerWidth > 748 ? '2rem' : 0) }}
 							/>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Co-worker"
 								onChange={handleUserChange}
-								style={{ marginLeft : (innerWidth > 748 ? '0.5rem' : 0) }}
 								value={user}
 								options={users?.data?.data?.data?.map(x => ({
 									id: x._id,

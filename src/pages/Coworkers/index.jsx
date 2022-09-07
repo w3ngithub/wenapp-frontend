@@ -197,10 +197,11 @@ function CoworkersPage() {
 						onChange={e => setTypedName(e.target.value)}
 						value={typedName}
 						enterButton
+						className="direct-form-item"
 					/>
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row " >
 						<Form layout="inline" form={form}>
-							<FormItem>
+							<FormItem className="direct-form-item">
 								<Select
 									placeholder="Select Role"
 									onChange={handleRoleChange}
@@ -211,7 +212,7 @@ function CoworkersPage() {
 									}))}
 								/>
 							</FormItem>
-							<FormItem>
+							<FormItem className="direct-form-item">
 								<Select
 									placeholder="Select Position"
 									onChange={handlePositionChange}
@@ -222,7 +223,7 @@ function CoworkersPage() {
 									}))}
 								/>
 							</FormItem>
-								<FormItem>
+								<FormItem className="direct-form-item">
 									<Radio.Group
 										buttonStyle="solid"
 										value={defaultUser}
@@ -233,7 +234,7 @@ function CoworkersPage() {
 										<Radio.Button value="inactive">Inactive</Radio.Button>
 									</Radio.Group>
 								</FormItem>
-							<FormItem style={{marginTop:( innerWidth <= 504 ? '7px' : 0 )}}>
+							<FormItem style={{marginTop:( innerWidth <= 504 ? '7px' : 0 )}} className="direct-form-item">
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}

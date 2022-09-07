@@ -297,35 +297,35 @@ function ProjectsPage() {
 			<Card title="Projects">
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-flex-row">
-						
-							{" "}
-							<Search
-								placeholder="Search Projects"
-								onSearch={value => {
-									setPage(prev => ({ ...prev, page: 1 }));
-									setProject(value);
-								}}
-								value={projectName}
-								onChange={e => setProjectName(e.target.value)}
-								enterButton
-								allowClear
-							/>
-						<div style={{marginBottom:'0.4rem', marginLeft: (innerWidth >= 720 ? '1rem' : 0)}}>
-						<Button
-							className="gx-btn gx-btn-primary gx-text-white "
-							onClick={handleOpenAddModal}
+						{" "}
+						<Search
+							placeholder="Search Projects"
+							onSearch={value => {
+								setPage(prev => ({ ...prev, page: 1 }));
+								setProject(value);
+							}}
+							value={projectName}
+							onChange={e => setProjectName(e.target.value)}
+							enterButton
+							allowClear
+							className="direct-form-item"
+						/>
+						<div
+							style={{
+								marginBottom: "0.4rem",
+								marginLeft: innerWidth >= 720 ? "1rem" : 0
+							}}
 						>
-							Add New Project
-						</Button>
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white "
+								onClick={handleOpenAddModal}
+							>
+								Add New Project
+							</Button>
 						</div>
-
 					</div>
-					<Form
-						layout="inline"
-						className="gx-d-flex gx-flex-row"
-						form={form}
-					>
-						<FormItem>
+					<Form layout="inline" className="gx-d-flex gx-flex-row" form={form}>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Project Type"
 								onChange={handleProjectTypeChange}
@@ -341,7 +341,7 @@ function ProjectsPage() {
 									))}
 							</Select>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Project Status"
 								onChange={handleProjectStatusChange}
@@ -357,7 +357,7 @@ function ProjectsPage() {
 									))}
 							</Select>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Client"
 								onChange={handleClientChange}
@@ -373,7 +373,7 @@ function ProjectsPage() {
 									))}
 							</Select>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Developer"
 								onChange={handleDeveloperChange}
@@ -389,7 +389,7 @@ function ProjectsPage() {
 									))}
 							</Select>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Designer"
 								onChange={handleDesignerChange}
@@ -405,7 +405,7 @@ function ProjectsPage() {
 									))}
 							</Select>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select QA"
 								onChange={handleQaChange}
