@@ -243,10 +243,7 @@ function AdminAttendance() {
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 					<Form layout="inline" form={form}>
 						<FormItem>
-							<RangePicker
-								onChange={handleChangeDate}
-								value={date}
-							/>
+							<RangePicker onChange={handleChangeDate} value={date} />
 						</FormItem>
 						<FormItem className="direct-form-item">
 							<Select
@@ -267,7 +264,7 @@ function AdminAttendance() {
 							/>
 						</FormItem>
 
-						<FormItem>
+						<FormItem style={{ marginBottom: "1px" }}>
 							<Button
 								className="gx-btn gx-btn-primary gx-text-white "
 								onClick={() => handleReset()}

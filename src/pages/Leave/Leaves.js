@@ -168,7 +168,7 @@ function Leaves({
 								onChange={handleUserChange}
 							/>
 						</FormItem>
-						<FormItem>
+						<FormItem style={{marginBottom: '0.5px'}}>
 							<DatePicker
 								className="gx-mb-3 "
 								style={{ width: ( innerWidth <= 748 ? "100%" : '200px') }}
@@ -177,7 +177,7 @@ function Leaves({
 							/>
 						</FormItem>
 
-						<FormItem>
+						<FormItem style={{marginBottom: '0.8px'}}>
 							<Button
 								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 								onClick={handleResetFilter}
