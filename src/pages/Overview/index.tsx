@@ -1,6 +1,4 @@
 import React from "react";
-import { Card } from "antd";
-import { WalletOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { getLeavesOfAllUsers } from "services/leaves";
 import moment from "moment";

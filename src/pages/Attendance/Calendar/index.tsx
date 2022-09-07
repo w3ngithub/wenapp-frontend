@@ -1,5 +1,5 @@
 import { Card, Spin } from "antd";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { useQuery } from "@tanstack/react-query";
@@ -49,15 +49,46 @@ function AttendanceCalendar() {
 		}
 	};
 
+	const handleEventStyle = (event: any) => {
+		let style: any = {
+			fontSize: "13px",
+			width: "fit-content",
+			margin: "3px auto",
+			fontWeight: "500"
+		};
+		if (event.type === "leave")
+			style = {
+				...style,
+				backgroundColor: "#FC6BAB"
+			};
+
+		if (event.isLessHourWorked)
+			style = {
+				...style,
+				backgroundColor: "#E14B4B"
+			};
+		if (!event.isLessHourWorked && event.type !== "leave")
+			style = {
+				...style,
+				backgroundColor: "#038fde"
+			};
+
+		return {
+			style
+		};
+	};
+
 	let attendances: any[] = [],
 		leaves: any[] = [];
 
 	userLeaves?.forEach((leave: any) => {
 		leaves.push({
 			id: leave?._id,
-			title: "On Leave",
+			title: leave?.leaveType?.name,
 			start: new Date(leave?.leaveDates?.[0]),
-			end: new Date(leave?.leaveDates?.[0])
+			end: new Date(leave?.leaveDates?.[0]),
+			type: "leave",
+			allDay: true
 		});
 	});
 
@@ -77,9 +108,11 @@ function AttendanceCalendar() {
 
 		attendances.push({
 			id: attendance?._id,
-			title: "Office Hrs: " + totalHoursWorked,
+			title: "Hours: " + totalHoursWorked,
 			start: new Date(attendance._id?.attendanceDate),
-			end: new Date(attendance._id?.attendanceDate)
+			end: new Date(attendance._id?.attendanceDate),
+			isLessHourWorked: totalHoursWorked < 9,
+			allDay: true
 		});
 	});
 
@@ -94,6 +127,8 @@ function AttendanceCalendar() {
 						endAccessor="end"
 						onRangeChange={handleCalendarRangeChange}
 						popup
+						views={["month", "week", "day"]}
+						eventPropGetter={handleEventStyle}
 					/>
 				</div>
 			</Spin>
