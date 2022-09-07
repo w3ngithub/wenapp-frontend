@@ -132,7 +132,7 @@ function WeeklyReport() {
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline" form={form}>
-							<FormItem style={{width:250}}>
+							<FormItem style={{ width: innerWidth <= 748 ? "100%" : 250 }}>
 								<RangePicker onChange={handleChangeDate} value={date} />
 							</FormItem>
 							<FormItem className="direct-form-item">
