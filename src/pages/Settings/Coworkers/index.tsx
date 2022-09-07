@@ -326,13 +326,14 @@ function Coworkers() {
 									label="Email"
 									rules={[{ required: true, message: "Required!" }]}
 									help="To invite multiple email, separate the emails using comma."
+									style={{ flex: "70%" }}
 								>
 									<Input
 										placeholder="Email address"
 										onChange={handleEmailChange}
 									/>
 								</Form.Item>
-								<Form.Item>
+								<Form.Item style={{ flex: "0.2" }}>
 									<Button
 										key="submit"
 										type="primary"
