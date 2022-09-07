@@ -166,6 +166,7 @@ function AdminAttendanceCalendar() {
 						popup
 						eventPropGetter={handleEventStyle}
 						views={["month", "week", "day"]}
+						showAllEvents
 					/>
 				</div>
 			</Spin>

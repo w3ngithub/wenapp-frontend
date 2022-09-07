@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, Form, Input, Select, Row, Col, Spin } from "antd";
 import { Calendar, DateObject } from "react-multi-date-picker";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createLeaveOfUser, getLeaveTypes, updateLeave } from "services/leaves";
+import {
+	createLeaveOfUser,
+	getLeavesOfUser,
+	getLeaveTypes,
+	updateLeave
+} from "services/leaves";
 import { filterOptions, handleResponse } from "helpers/utils";
 import leaveTypeInterface from "types/Leave";
 import { notification } from "helpers/notification";
@@ -50,6 +55,8 @@ function LeaveModal({
 	const [user, setUser] = useState("");
 	const [leaveId, setLeaveId] = useState(null);
 	const { themeType } = useSelector((state: any) => state.settings);
+	const [holidays, setHolidays] = useState([]);
+	const [leaves, setLeaves] = useState<any[]>([]);
 	const darkCalendar = themeType === THEME_TYPE_DARK;
 
 	const leaveTypeQuery = useQuery(["leaveType"], getLeaveTypes, {
@@ -60,6 +67,10 @@ function LeaveModal({
 			}))
 		]
 	});
+
+	const userLeavesQuery = useQuery(["userLeaves", user], () =>
+		getLeavesOfUser(user)
+	);
 
 	const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
 		onSuccess: response =>
@@ -88,19 +99,21 @@ function LeaveModal({
 	});
 
 	const onFinish = (values: any) => {
-		form.submit();
-		const data = form.getFieldsValue();
-		const newLeave = {
-			leaveDates: data.leaveDates.join(",").split(","),
-			reason: data.reason,
-			leaveType: data.leaveType
-		};
-		if (isEditMode) leaveUpdateMutation.mutate({ id: leaveId, data: newLeave });
-		else
-			leaveMutation.mutate({
-				id: data.user,
-				data: newLeave
-			});
+		form.validateFields().then(values => {
+			const data = form.getFieldsValue();
+			const newLeave = {
+				leaveDates: data.leaveDates.join(",").split(","),
+				reason: data.reason,
+				leaveType: data.leaveType
+			};
+			if (isEditMode)
+				leaveUpdateMutation.mutate({ id: leaveId, data: newLeave });
+			else
+				leaveMutation.mutate({
+					id: data.user,
+					data: newLeave
+				});
+		});
 	};
 
 	const handleLeaveTypeChange = (value: string) => {
@@ -123,6 +136,14 @@ function LeaveModal({
 				setUser(leaveData.user._id);
 				setLeaveId(leaveData._id);
 			}
+			setHolidays(
+				queryClient
+					.getQueryData<any>(["DashBoardHolidays"])
+					?.data?.data?.data?.[0]?.holidays?.map((holiday: any) => ({
+						date: new DateObject(holiday?.date).format(),
+						name: holiday?.title
+					}))
+			);
 		}
 
 		if (!open) {
@@ -130,6 +151,18 @@ function LeaveModal({
 			setUser("");
 		}
 	}, [open]);
+
+	let userLeaves: any[] = [];
+
+	userLeavesQuery?.data?.data?.data?.data?.forEach((leave: any) => {
+		if (leave?.leaveDates > 1) {
+			for (let i = 0; i < leave?.leaveDates.length; i++) {
+				userLeaves.push(new DateObject(leave?.leaveDates[i]).format());
+			}
+		} else {
+			userLeaves.push(new DateObject(leave?.leaveDates[0]).format());
+		}
+	});
 	return (
 		<Modal
 			width={1100}
@@ -214,7 +247,24 @@ function LeaveModal({
 										{...formItemLayout}
 										name="reason"
 										label="Leave Reason"
-										rules={[{ required: true, message: "Required!" }]}
+										rules={[
+											{
+												validator: async (rule, value) => {
+													try {
+														if (!value) throw new Error("Required!");
+
+														const trimmedValue = value && value.trim();
+														if (trimmedValue?.length < 10) {
+															throw new Error(
+																"Reason should be at least 10 letters!"
+															);
+														}
+													} catch (err) {
+														throw new Error(err.message);
+													}
+												}
+											}
+										]}
 									>
 										<Input.TextArea
 											allowClear
@@ -241,6 +291,7 @@ function LeaveModal({
 										numberOfMonths={1}
 										disableMonthPicker
 										disableYearPicker
+										weekStartDayIndex={1}
 										multiple
 										minDate={
 											leaveType === "Sick" || isEditMode
@@ -249,16 +300,29 @@ function LeaveModal({
 										}
 										mapDays={({ date }) => {
 											let isWeekend = [0, 6].includes(date.weekDay.index);
-											if (isWeekend)
+											let holidayList: any[] = holidays?.filter(
+												(holiday: any) => date.format() === holiday?.date
+											);
+											let isHoliday = holidayList?.length > 0;
+											let leaveAlreadyTakenDates = userLeaves?.includes(
+												date.format()
+											);
+											if (isWeekend || isHoliday || leaveAlreadyTakenDates)
 												return {
 													disabled: true,
-													style: { color: "#ccc" },
-													onClick: () =>
-														alert(
-															isWeekend
-																? "weekends are disabled"
-																: "past dates are disabled"
-														)
+													style: {
+														color:
+															isWeekend || leaveAlreadyTakenDates
+																? "#ccc"
+																: "rgb(237 45 45)"
+													},
+													onClick: () => {
+														if (isWeekend) alert("weekends are disabled");
+														if (isHoliday)
+															alert(`${holidayList[0]?.name} holiday`);
+														if (leaveAlreadyTakenDates)
+															alert(`Leave already taken`);
+													}
 												};
 										}}
 										// disabled={readOnly}

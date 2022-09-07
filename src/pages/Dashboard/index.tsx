@@ -314,6 +314,7 @@ const Dashboard = () => {
 								endAccessor="end"
 								popup
 								eventPropGetter={handleEventStyle}
+								views={["month", "week", "day"]}
 								showAllEvents
 							/>
 						</div>
