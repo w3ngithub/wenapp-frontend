@@ -29,7 +29,10 @@ function ForgotPassword() {
 				}
 			},
 			onError: error => {
-				notification({ message: "Notice addition failed!", type: "error" });
+				notification({
+					message: "Could not send link to your email account",
+					type: "error"
+				});
 			}
 		}
 	);
@@ -64,6 +67,7 @@ function ForgotPassword() {
 						form={form}
 					>
 						<FormItem
+							hasFeedback
 							name="email"
 							rules={[
 								{

@@ -153,6 +153,18 @@ const forgotPassword = async payload => {
 	}
 };
 
+const resetPassword = async (token, payload) => {
+	try {
+		let response = await API.patch(
+			`${Apis.Users}/resetPassword/${token}`,
+			payload
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	loginInUsers,
 	getAllUsers,
@@ -168,5 +180,6 @@ export {
 	getBirthMonthUsers,
 	getSalaryReviewUsers,
 	UpdateUserPassword,
-	forgotPassword
+	forgotPassword,
+	resetPassword
 };
