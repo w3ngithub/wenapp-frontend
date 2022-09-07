@@ -1,61 +1,102 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Spin } from "antd";
 import React from "react";
 import IntlMessages from "util/IntlMessages";
+import { useMutation } from "@tanstack/react-query";
+import { forgotPassword } from "services/users/userDetails";
+import { notification } from "helpers/notification";
+import { handleResponse } from "helpers/utils";
+import { useNavigate } from "react-router-dom";
+import { SIGNIN } from "helpers/routePath";
 
 const FormItem = Form.Item;
 
 function ForgotPassword() {
 	const [form] = Form.useForm();
+	const navigate = useNavigate();
+
+	const forgetPasswordMutation = useMutation(
+		(payload: { email: string }) => forgotPassword(payload),
+		{
+			onSuccess: response => {
+				handleResponse(
+					response,
+					"Link sent ! Please check your Email",
+					"Could not send link to your email account",
+					[() => {}]
+				);
+				if (response.status) {
+					navigate(`/${SIGNIN}`);
+				}
+			},
+			onError: error => {
+				notification({ message: "Notice addition failed!", type: "error" });
+			}
+		}
+	);
 
 	const handleSubmit = (values: { email: string }) => {
-		console.log(values);
+		forgetPasswordMutation.mutate(values);
 	};
 	return (
 		<div className="gx-login-container">
-			<div className="gx-login-content">
-				<div className="gx-login-header">
-					<img
-						src={require("assets/images/wenlogo.png")}
-						alt="WebExperts Nepal"
-						title="'"
-					/>
-				</div>
-				<div className="gx-mb-4">
-					<h2>Forgot Your Password ?</h2>
-					<p>
-						<IntlMessages id="app.userAuth.forgot" />
-					</p>
-				</div>
-
-				<Form
-					layout="vertical"
-					onFinish={handleSubmit}
-					className="gx-login-form gx-form-row0"
-					form={form}
+			<Spin spinning={forgetPasswordMutation.isLoading}>
+				<div
+					className="gx-login-content"
+					style={{ backgroundColor: "#a7a8a8" }}
 				>
-					<FormItem
-						name="email"
-						rules={[
-							{
-								type: "email",
-								message: "The input is not valid E-mail!"
-							},
-							{
-								required: true,
-								message: "Please input your E-mail!"
-							}
-						]}
+					<div className="gx-login-header">
+						<img
+							src={require("assets/images/wenlogo.png")}
+							alt="WebExperts Nepal"
+							title="'"
+						/>
+					</div>
+					<div className="gx-mb-4">
+						<h2>Forgot Your Password ?</h2>
+						<p>
+							<IntlMessages id="app.userAuth.forgot" />
+						</p>
+					</div>{" "}
+					<Form
+						layout="vertical"
+						onFinish={handleSubmit}
+						className="gx-login-form gx-form-row0"
+						form={form}
 					>
-						<Input type="email" placeholder="E-Mail Address" />
-					</FormItem>
+						<FormItem
+							name="email"
+							rules={[
+								{
+									type: "email",
+									message: "The input is not valid E-mail!"
+								},
+								{
+									required: true,
+									message: "Please input your E-mail!"
+								}
+							]}
+						>
+							<Input type="email" placeholder="E-Mail Address" />
+						</FormItem>
 
-					<FormItem>
-						<Button type="primary" htmlType="submit">
-							<IntlMessages id="app.userAuth.send" />
-						</Button>
-					</FormItem>
-				</Form>
-			</div>
+						<FormItem>
+							<Button
+								type="primary"
+								htmlType="submit"
+								disabled={forgetPasswordMutation.isLoading}
+							>
+								<IntlMessages id="app.userAuth.send" />
+							</Button>
+						</FormItem>
+					</Form>
+					<span>
+						Already have login and password?{" "}
+						<span className="gx-link" onClick={() => navigate(`/${SIGNIN}`)}>
+							Log In
+						</span>
+					</span>
+				</div>
+			</Spin>
 		</div>
 	);
 }

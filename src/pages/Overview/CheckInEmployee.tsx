@@ -14,7 +14,11 @@ const formattedUsers = (users: any[]) => {
 		checkOut: user?.data?.[user?.data.length - 1]?.punchOutTime
 			? moment(user?.data?.[user?.data.length - 1]?.punchOutTime).format("LTS")
 			: "N/A",
-		checkOutLocation: "Show On Map",
+		checkOutLocation:
+			user?.data?.[user?.data.length - 1]?.punchOutLocation &&
+			user?.data?.[user?.data.length - 1]?.punchOutLocation?.length === 2
+				? "Show On Map"
+				: "",
 		checkInLocation: "Show On Map",
 		punchInLocation: user?.data?.[0]?.punchInLocation,
 		punchOutLocation: user?.data?.[user?.data.length - 1]?.punchOutLocation
@@ -25,6 +29,7 @@ function CheckedInEmployee({ checkIn }: { checkIn: any[] }) {
 	const [openMap, setOpenMap] = useState(false);
 	const [sort, setSort] = useState({});
 	const [selectedCheckedInUser, setSelectedCheckedInUser] = useState([]);
+	const [selectedUsername, setSelectedUserName] = useState("");
 
 	const handleTableChange = (pagination: any, filters: any, sorter: any) => {
 		setSort(sorter);
@@ -38,18 +43,20 @@ function CheckedInEmployee({ checkIn }: { checkIn: any[] }) {
 			) {
 				setOpenMap(true);
 				setSelectedCheckedInUser(record?.punchOutLocation || undefined);
+				setSelectedUserName(record?.name);
 			} else {
 				return;
 			}
 		} else {
 			setOpenMap(true);
 			setSelectedCheckedInUser(record?.punchInLocation || undefined);
+			setSelectedUserName(record?.name);
 		}
 	};
 	return (
 		<>
 			<LocationMap
-				title="Ashok Ganika"
+				title={selectedUsername}
 				open={openMap}
 				onClose={() => {
 					setOpenMap(false);
