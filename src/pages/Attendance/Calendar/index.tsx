@@ -53,8 +53,10 @@ function AttendanceCalendar() {
 		let style: any = {
 			fontSize: "13px",
 			width: "fit-content",
-			margin: "3px auto",
-			fontWeight: "500"
+			margin: "0px auto",
+			fontWeight: "500",
+			height: "27px",
+			padding: "5px 10px"
 		};
 		if (event.type === "leave")
 			style = {

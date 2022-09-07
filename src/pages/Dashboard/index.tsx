@@ -44,8 +44,8 @@ const Dashboard = () => {
 	const [logType, setlogType] = useState("");
 	const navigate = useNavigate();
 	const loggedInUser = getLocalStorageData("user_id");
-	const {innerWidth} = useWindowsSize();
-	const[form] = Form.useForm()
+	const { innerWidth } = useWindowsSize();
+	const [form] = Form.useForm();
 
 	const { data: salaryReview } = useQuery(
 		["usersSalaryReview"],
@@ -119,7 +119,8 @@ const Dashboard = () => {
 			width: "fit-content",
 			margin: "3px auto",
 			fontWeight: "400",
-			background: "transparent"
+			background: "transparent",
+			minHeight: "40px"
 		};
 		if (event.type === "birthday")
 			style = {
@@ -161,35 +162,31 @@ const Dashboard = () => {
 			);
 
 		if (props.event.type === "leave")
-			return <p style={style}>{props?.event?.title}</p>;
+			return (
+				<>
+					<h6 style={{ textAlign: "center", fontWeight: "500" }}>
+						{props.event?.leaveType}:
+					</h6>
+					<p style={style}>{props?.event?.title}</p>
+				</>
+			);
 
 		return <p>{props?.event?.title}</p>;
 	};
-	const CustomEventWrapper = (props: any) => {
-		if (props.event.type === "leave")
-			return (
-				<div>
-					<h6 style={{ textAlign: "center", fontWeight: "500" }}>On Leave:</h6>
-					{props.children}
-				</div>
-			);
-
-		return <div>{props?.children}</div>;
-	};
 
 	let components = {
-		event: CustomEvent, // used by each view (Month, Day, Week)
-		eventWrapper: CustomEventWrapper
+		event: CustomEvent // used by each view (Month, Day, Week)
 	};
 
 	const leaveUsers = leavesQuery?.data?.data?.data?.users?.map(
 		({ _id: x }: any, index: number) => ({
-			title: x.halfDay ? x?.user?.[0] + ":Half Day" : x?.user?.[0],
+			title: x?.user?.[0],
 			start: new Date(
 				new Date(x.leaveDates).toLocaleDateString().split("T")[0]
 			),
 			end: new Date(new Date(x.leaveDates).toLocaleDateString().split("T")[0]),
-			type: "leave"
+			type: "leave",
+			leaveType: x?.leaveType?.[0]
 		})
 	);
 
@@ -317,6 +314,7 @@ const Dashboard = () => {
 								endAccessor="end"
 								popup
 								eventPropGetter={handleEventStyle}
+								showAllEvents
 							/>
 						</div>
 					</Card>
@@ -325,7 +323,7 @@ const Dashboard = () => {
 							<Form layout="inline" onFinish={generateChart} form={form}>
 								<FormItem name="chart">
 									<Select
-										style={{ width: ( innerWidth <= 504 ? '100%' : 115 )}}
+										style={{ width: innerWidth <= 504 ? "100%" : 115 }}
 										value={chart}
 										onChange={(c: any) => setChart(c)}
 										placeholder="Select Chart"
@@ -342,7 +340,7 @@ const Dashboard = () => {
 									<Select
 										value={project}
 										onChange={(c: any) => setProject(c)}
-										style={{ width: ( innerWidth <= 504 ? '100%' : 150 )}}
+										style={{ width: innerWidth <= 504 ? "100%" : 150 }}
 										placeholder="Select Project"
 										options={data?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({
@@ -358,7 +356,7 @@ const Dashboard = () => {
 										value={logType}
 										onChange={(c: any) => setlogType(c)}
 										placeholder="Select Log Types"
-										style={{ width: ( innerWidth <= 504 ? '100%' : 215 )}}
+										style={{ width: innerWidth <= 504 ? "100%" : 215 }}
 										mode="tags"
 										options={logTypes?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({
