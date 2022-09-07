@@ -62,6 +62,30 @@ function AdminAttendanceCalendar() {
 		setUser("");
 	};
 
+	const handleEventStyle = (event: any) => {
+		let style: any = {
+			fontSize: "14px",
+			width: "fit-content",
+			margin: "3px auto",
+			fontWeight: "600"
+		};
+		if (event.type === "leave")
+			style = {
+				...style,
+				backgroundColor: "#FC6BAB"
+			};
+
+		if (event.isLessHourWorked)
+			style = {
+				...style,
+				backgroundColor: "#E14B4B"
+			};
+
+		return {
+			style
+		};
+	};
+
 	let attendances: any[] = [],
 		leaves: any[] = [];
 
@@ -70,7 +94,9 @@ function AdminAttendanceCalendar() {
 			id: leave?._id,
 			title: "On Leave",
 			start: new Date(leave?.leaveDates?.[0]),
-			end: new Date(leave?.leaveDates?.[0])
+			end: new Date(leave?.leaveDates?.[0]),
+			type: "leave",
+			allDay: true
 		});
 	});
 
@@ -92,7 +118,9 @@ function AdminAttendanceCalendar() {
 			id: attendance?._id,
 			title: "Office Hrs: " + totalHoursWorked,
 			start: new Date(attendance._id?.attendanceDate),
-			end: new Date(attendance._id?.attendanceDate)
+			end: new Date(attendance._id?.attendanceDate),
+			isLessHourWorked: totalHoursWorked < 9,
+			allDay: true
 		});
 	});
 
@@ -103,7 +131,7 @@ function AdminAttendanceCalendar() {
 					<Form layout="inline">
 						<FormItem>
 							<Select
-								placeholder="Select Co-worker"
+								placeholder="helllllooooooooo"
 								onChange={handleUserChange}
 								value={user}
 								options={users?.data?.data?.data?.map((x: any) => ({
@@ -133,6 +161,8 @@ function AdminAttendanceCalendar() {
 						endAccessor="end"
 						onRangeChange={handleCalendarRangeChange}
 						popup
+						eventPropGetter={handleEventStyle}
+						views={["month", "week", "day"]}
 					/>
 				</div>
 			</Spin>

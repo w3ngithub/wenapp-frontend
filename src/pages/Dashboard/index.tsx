@@ -113,13 +113,83 @@ const Dashboard = () => {
 		chartQuery.refetch();
 	};
 
+	const handleEventStyle = (event: any) => {
+		let style: any = {
+			fontSize: "12px",
+			width: "fit-content",
+			margin: "3px auto",
+			fontWeight: "400",
+			background: "transparent"
+		};
+		if (event.type === "birthday")
+			style = {
+				...style,
+				color: "#FC6BAB"
+			};
+		if (event.type === "holiday")
+			style = {
+				...style,
+				color: "rgb(235 68 68)"
+			};
+		if (event.type === "leave")
+			style = {
+				...style,
+				color: "#038fde"
+			};
+
+		return {
+			style
+		};
+	};
+
+	const CustomEvent = (props: any) => {
+		const style = {
+			display: "flex",
+			alignItems: "center",
+			gap: "4px"
+		};
+		if (props.event.type === "birthday")
+			return (
+				<p style={{ ...style, marginTop: "20px" }}>
+					<i className="icon icon-birthday-new gx-fs-lg" />
+					{props?.event?.title}
+				</p>
+			);
+		if (props.event.type === "holiday")
+			return (
+				<p style={{ ...style, marginTop: "25px" }}>{props?.event?.title}</p>
+			);
+
+		if (props.event.type === "leave")
+			return <p style={style}>{props?.event?.title}</p>;
+
+		return <p>{props?.event?.title}</p>;
+	};
+	const CustomEventWrapper = (props: any) => {
+		if (props.event.type === "leave")
+			return (
+				<div>
+					<h6 style={{ textAlign: "center", fontWeight: "500" }}>On Leave:</h6>
+					{props.children}
+				</div>
+			);
+
+		return <div>{props?.children}</div>;
+	};
+
+	let components = {
+		event: CustomEvent, // used by each view (Month, Day, Week)
+		eventWrapper: CustomEventWrapper
+	};
+
 	const leaveUsers = leavesQuery?.data?.data?.data?.users?.map(
-		({ _id: x }: any) => ({
+		({ _id: x }: any, index: number) => ({
 			title: x.halfDay ? x?.user?.[0] + ":Half Day" : x?.user?.[0],
 			start: new Date(
 				new Date(x.leaveDates).toLocaleDateString().split("T")[0]
 			),
-			end: new Date(new Date(x.leaveDates).toLocaleDateString().split("T")[0])
+			end: new Date(new Date(x.leaveDates).toLocaleDateString().split("T")[0]),
+			type: "leave"
 		})
 	);
 
@@ -134,7 +204,8 @@ const Dashboard = () => {
 		?.map((x: any) => ({
 			title: x.title,
 			start: new Date(x.date),
-			end: new Date(x.date)
+			end: new Date(x.date),
+			type: "holiday"
 		}));
 
 	const BirthDayCalendar = BirthMonthUsers?.data?.data?.users?.map(
@@ -147,7 +218,8 @@ const Dashboard = () => {
 			end: new Date(
 				`${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
 					1}/${new Date(x.dob).getDate()}`
-			)
+			),
+			type: "birthday"
 		})
 	);
 
@@ -159,11 +231,13 @@ const Dashboard = () => {
 	];
 
 	const chartData = chartQuery?.data?.data?.data?.chart;
+	const isAdmin = loggedInUser?.role?.value === "Admin";
+	const width = isAdmin ? 6 : 8;
 
 	return (
 		<Auxiliary>
 			<Row>
-				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={width} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						className="gx-cyan-green-gradient"
@@ -177,7 +251,7 @@ const Dashboard = () => {
 					/>
 				</Col>
 
-				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={width} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						icon={LoginOutlined}
@@ -191,7 +265,7 @@ const Dashboard = () => {
 						}
 					/>
 				</Col>
-				{loggedInUser?.role?.value === "Admin" && (
+				{isAdmin && (
 					<Col xl={6} lg={12} md={12} sm={12} xs={24}>
 						<TotalCountCard
 							isLink={loggedInUser?.role?.value === "Admin" ? true : false}
@@ -207,7 +281,7 @@ const Dashboard = () => {
 						/>
 					</Col>
 				)}
-				<Col xl={6} lg={12} md={12} sm={12} xs={24}>
+				<Col xl={width} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						totalCount={TodaysLeave?.data?.leaves?.[0]?.count || 0}
@@ -236,11 +310,13 @@ const Dashboard = () => {
 					<Card className="gx-card" title="Calendar">
 						<div className="gx-rbc-calendar">
 							<Calendar
+								components={components}
 								localizer={localizer}
 								events={calendarEvents}
 								startAccessor="start"
 								endAccessor="end"
 								popup
+								eventPropGetter={handleEventStyle}
 							/>
 						</div>
 					</Card>
