@@ -26,13 +26,13 @@ const ProfileHeader = ({
 					</div>
 				</div>
 				<div className="gx-profile-banner-bottom">
-					<span className="gx-link ">
-					<CustomIcon name="edit" />
-					<Divider type="vertical" style={{backgroundColor: 'transparent'}}/>
-						<span
-							className="gx-d-inline-flex gx-vertical-align-middle gx-ml-1 gx-ml-sm-0"
-							onClick={() => onMoreDetailsClick(true)}
-						>
+					<span className="gx-link " onClick={() => onMoreDetailsClick(true)}>
+						<CustomIcon name="edit" />
+						<Divider
+							type="vertical"
+							style={{ backgroundColor: "transparent" }}
+						/>
+						<span className="gx-d-inline-flex gx-vertical-align-middle gx-ml-1 gx-ml-sm-0">
 							Edit Details
 						</span>
 					</span>

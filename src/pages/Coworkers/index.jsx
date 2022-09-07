@@ -194,16 +194,14 @@ function CoworkersPage() {
 							setPage(prev => ({ ...prev, page: 1 }));
 							setName(value);
 						}}
-						style={{ width: ( innerWidth <= 504 ? '100%' : 200 )}}
 						onChange={e => setTypedName(e.target.value)}
 						value={typedName}
 						enterButton
 					/>
-					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
+					<div className="gx-d-flex gx-justify-content-between gx-flex-row " >
 						<Form layout="inline" form={form}>
 							<FormItem>
 								<Select
-									width='100%'
 									placeholder="Select Role"
 									onChange={handleRoleChange}
 									value={role}
@@ -215,7 +213,6 @@ function CoworkersPage() {
 							</FormItem>
 							<FormItem>
 								<Select
-									width='100%'
 									placeholder="Select Position"
 									onChange={handlePositionChange}
 									value={position}
@@ -236,7 +233,7 @@ function CoworkersPage() {
 										<Radio.Button value="inactive">Inactive</Radio.Button>
 									</Radio.Group>
 								</FormItem>
-							<FormItem>
+							<FormItem style={{marginTop:( innerWidth <= 504 ? '7px' : 0 )}}>
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}

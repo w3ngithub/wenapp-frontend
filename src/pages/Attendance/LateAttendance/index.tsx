@@ -243,17 +243,14 @@ function LateAttendance() {
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 					<Form layout="inline" form={form}>
 						<FormItem>
-							<RangePicker
-								handleChangeDate={handleChangeDate}
-								date={date}
-							/>
+							<RangePicker handleChangeDate={handleChangeDate} date={date} />
 						</FormItem>
 						<FormItem>
 							<Select
 								onChange={handleAttChnageChange}
 								value={attFilter}
 								options={attendanceFilter}
-								style={{ width: innerWidth <= 640 ? "100%" : "240px" }}
+								style={{ marginLeft: innerWidth > 748 ? "2rem" : 0 }}
 							/>
 						</FormItem>
 						<FormItem>
@@ -265,7 +262,7 @@ function LateAttendance() {
 									id: x._id,
 									value: x.name
 								}))}
-								style={{ width: innerWidth <= 640 ? "100%" : "240px" }}
+								style={{ marginLeft: innerWidth > 748 ? "0.5rem" : 0 }}
 							/>
 						</FormItem>
 

@@ -1,10 +1,19 @@
 /*Input Styles*/
 .ant-input-search {
 	margin-bottom: 16px;
+	width: 200px;
 
 	& > .ant-input-suffix > .ant-input-search-button {
 		margin-right: 0;
 	}
+}
+
+.ant-form-item{
+	width: 200px
+}
+
+.ant-picker {
+	width: 240px
 }
 
 .ant-col-xs-0 {
@@ -321,4 +330,20 @@
 .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
 	border-top-right-radius: 0 !important;
 	border-bottom-right-radius: 0 !important;
+}
+
+
+
+@media (max-width: 748px) { 
+	.ant-form-item {
+		width: 100%;
+	}
+	.ant-picker {
+		width: 100%
+	}
+}
+@media (max-width: 720px){
+	.ant-input-search{
+		width: 100%;
+	}
 }

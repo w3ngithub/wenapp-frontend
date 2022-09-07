@@ -189,6 +189,7 @@ function UserAttendance() {
 		}));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data?.data?.data?.attendances?.[0]?.data]);
+	console.log('innerWidth', innerWidth);
 
 	return (
 		<div>
@@ -206,12 +207,11 @@ function UserAttendance() {
 			<div className="gx-mt-2"></div>
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-					<Form layout="inline" form={form}>
+					<Form layout="inline" form={form} >
 						<FormItem>
 							<RangePicker
 								onChange={handleChangeDate}
-								value={date}
-								style={{width : ( innerWidth <= 640 ? '100%' : '240px')}}
+								value={date} 
 							/>
 						</FormItem>
 						<FormItem>
@@ -219,7 +219,7 @@ function UserAttendance() {
 								onChange={handleAttChnageChange}
 								value={attFilter}
 								options={attendanceFilter}
-								style={{width : ( innerWidth <= 640 ? '100%' : '240px')}}
+								style={{marginLeft : (innerWidth > 748 ? '2rem' : 0)}}
 							/>
 						</FormItem>
 					</Form>

@@ -24,10 +24,10 @@ function Blogs() {
 	// init hooks
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
-	const {innerWidth} = useWindowsSize();
+	const { innerWidth } = useWindowsSize();
 	const [form] = Form.useForm();
 
-	const [typedTitle, setTypedTitle] = useState('');
+	const [typedTitle, setTypedTitle] = useState("");
 	const userData = JSON.parse(localStorage.getItem("user_id") || {});
 
 	const { data, isLoading, isError, isFetching } = useQuery(
@@ -77,10 +77,9 @@ function Blogs() {
 	};
 
 	const handleResetFilter = () => {
-		setTypedTitle('');
+		setTypedTitle("");
 		setTitle("");
 		setUser(undefined);
-		
 	};
 
 	const handleUserChange = user => {
@@ -96,10 +95,10 @@ function Blogs() {
 	}
 
 	return (
-		<div className="ant-row" style={{rowGap:0}}>
+		<div className="ant-row" style={{ rowGap: 0 }}>
 			<Card title="Blogs">
 				<div className="components-table-demo-control-bar">
-					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
+					<div className="gx-d-flex gx-justify-content-between gx-flex-row ">
 						<Form layout="inline" form={form}>
 							<FormItem>
 								<Search
@@ -108,12 +107,10 @@ function Blogs() {
 										setPage(prev => ({ ...prev, page: 1 }));
 										setTitle(value);
 									}}
-									style={{ width: ( innerWidth <=604 ? '100%' : 300 ) }}
 									value={typedTitle}
 									allowClear
-									onChange={(e)=>setTypedTitle(e.target.value)}
+									onChange={e => setTypedTitle(e.target.value)}
 									enterButton
-							
 								/>
 							</FormItem>
 							<FormItem>
@@ -125,11 +122,10 @@ function Blogs() {
 										id: x._id,
 										value: x.name
 									}))}
-									style={{ width: ( innerWidth <=604 ? '100%' : '200px' ) }}
 								/>
 							</FormItem>
 
-							<FormItem>
+							<FormItem style={{ marginBottom: "2px" }}>
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}

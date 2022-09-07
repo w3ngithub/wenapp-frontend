@@ -8,12 +8,12 @@ const Contact = ({ user }) => {
 			{contactList(user).map((data, index) => (
 				<div
 					key={index}
-					className="gx-media gx-align-items-center gx-flex-nowrap gx-pro-contact-list"
+					className="gx-media gx-align-items-center gx-flex-nowrap gx-pro-contact-list "
 				>
 					<div className="gx-mr-3">
 						<i className={`icon icon-${data?.icon} gx-fs-xxl gx-text-grey`} />
 					</div>
-					<div className="gx-media-body">
+					<div className="gx-media-body max-two-lines">
 						<span className="gx-mb-0 gx-text-grey gx-fs-sm">{data?.title}</span>
 						<p className="gx-mb-0">{data?.value}</p>
 					</div>

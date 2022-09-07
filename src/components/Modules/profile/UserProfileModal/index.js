@@ -70,6 +70,7 @@ function UserProfileModal({ user, toggle, onToggle, onSubmit, isLoading }) {
 			visible={toggle}
 			onOk={handleSubmit}
 			onCancel={handleCancel}
+			mask={false}
 			footer={[
 				<Button key="back" onClick={handleCancel}>
 					Cancel

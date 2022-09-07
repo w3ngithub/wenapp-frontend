@@ -296,7 +296,7 @@ function ProjectsPage() {
 
 			<Card title="Projects">
 				<div className="components-table-demo-control-bar">
-					<div className="gx-d-flex gx-flex-row gx-column-gap-10">
+					<div className="gx-d-flex gx-flex-row">
 						
 							{" "}
 							<Search
@@ -305,13 +305,12 @@ function ProjectsPage() {
 									setPage(prev => ({ ...prev, page: 1 }));
 									setProject(value);
 								}}
-								style={{ width: innerWidth <= 512 ? "100%" : 200 }}
 								value={projectName}
 								onChange={e => setProjectName(e.target.value)}
 								enterButton
 								allowClear
 							/>
-						<div style={{marginBottom:'0.5rem'}}>
+						<div style={{marginBottom:'0.4rem', marginLeft: (innerWidth >= 720 ? '1rem' : 0)}}>
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white "
 							onClick={handleOpenAddModal}
@@ -323,13 +322,12 @@ function ProjectsPage() {
 					</div>
 					<Form
 						layout="inline"
-						className="gx-d-flex gx-flex-row gx-row-gap-10"
+						className="gx-d-flex gx-flex-row"
 						form={form}
 					>
 						<FormItem>
 							<Select
 								placeholder="Select Project Type"
-								style={{ width: "100%" }}
 								onChange={handleProjectTypeChange}
 								value={projectType}
 								showSearch
@@ -346,7 +344,6 @@ function ProjectsPage() {
 						<FormItem>
 							<Select
 								placeholder="Select Project Status"
-								style={{ width: "100%" }}
 								onChange={handleProjectStatusChange}
 								value={projectStatus}
 								showSearch
@@ -363,7 +360,6 @@ function ProjectsPage() {
 						<FormItem>
 							<Select
 								placeholder="Select Client"
-								style={{ width: "100%" }}
 								onChange={handleClientChange}
 								value={projectClient}
 								showSearch
@@ -380,7 +376,6 @@ function ProjectsPage() {
 						<FormItem>
 							<Select
 								placeholder="Select Developer"
-								style={{ width: "100%" }}
 								onChange={handleDeveloperChange}
 								value={developer}
 								showSearch
@@ -397,7 +392,6 @@ function ProjectsPage() {
 						<FormItem>
 							<Select
 								placeholder="Select Designer"
-								style={{ width: "100%" }}
 								onChange={handleDesignerChange}
 								value={designer}
 								showSearch
@@ -414,7 +408,6 @@ function ProjectsPage() {
 						<FormItem>
 							<Select
 								placeholder="Select QA"
-								style={{ width: "100%" }}
 								onChange={handleQaChange}
 								value={qa}
 								showSearch

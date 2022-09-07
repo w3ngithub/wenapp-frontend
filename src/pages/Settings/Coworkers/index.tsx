@@ -320,7 +320,7 @@ function Coworkers() {
 							name="control-hooks"
 							layout="vertical"
 						>
-							<div className="gx-d-flex gx-justify-content-between">
+							<div className="gx-d-flex gx-justify-content-between margin-1r">
 								<Form.Item
 									name="email"
 									label="Email"

@@ -160,10 +160,10 @@ function Profile() {
 				/>
 				<div className="gx-profile-content">
 						<Row>
-							<Col xs={15}>
+							<Col xs={24} sm={24} md={14}>
 								<About data={aboutData} />
 							</Col>
-							<Col xs={9}>
+							<Col xs={24} sm={24} md={10}>
 								<Contact user={user}/>
 							</Col>
 						</Row>

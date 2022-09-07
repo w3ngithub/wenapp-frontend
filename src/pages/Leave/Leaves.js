@@ -10,6 +10,7 @@ import { changeDate, handleResponse } from "helpers/utils";
 import Notification from "components/Elements/Notification";
 import { getAllUsers } from "services/users/userDetails";
 import moment from "moment";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const FormItem = Form.Item;
 
@@ -44,6 +45,8 @@ function Leaves({
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [readOnly, setReadOnly] = useState(false);
 	const [leaveStatus, setLeaveStatus] = useState(status ?? undefined);
+	const {innerWidth} = useWindowsSize();
+	const [form] = Form.useForm();
 	const [date, setDate] = useState(
 		!status
 			? {
@@ -148,7 +151,7 @@ function Leaves({
 			/>
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-					<Form layout="inline">
+					<Form layout="inline" form={form}>
 						<FormItem>
 							<Select
 								placeholder="Select Status"
@@ -168,7 +171,7 @@ function Leaves({
 						<FormItem>
 							<DatePicker
 								className="gx-mb-3 "
-								style={{ width: "200px " }}
+								style={{ width: ( innerWidth <= 748 ? "100%" : '200px') }}
 								value={date?.moment}
 								onChange={handleDateChange}
 							/>
