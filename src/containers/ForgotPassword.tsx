@@ -43,10 +43,7 @@ function ForgotPassword() {
 	return (
 		<div className="gx-login-container">
 			<Spin spinning={forgetPasswordMutation.isLoading}>
-				<div
-					className="gx-login-content"
-					style={{ backgroundColor: "#a7a8a8" }}
-				>
+				<div className="gx-login-content">
 					<div className="gx-login-header">
 						<img
 							src={require("assets/images/wenlogo.png")}
