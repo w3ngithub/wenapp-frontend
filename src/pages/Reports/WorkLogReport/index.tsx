@@ -14,6 +14,7 @@ const FormItem = Form.Item;
 function WorkLogReport() {
 	//init state
 	const [sort, setSort] = useState({});
+	const [form] = Form.useForm()
 	const [date, setDate] = useState(intialDate);
 	const [logType, setLogType] = useState<string | undefined>(undefined);
 	const [project, setProject] = useState<string | undefined>(undefined);
@@ -67,11 +68,11 @@ function WorkLogReport() {
 		<Card title="Work Log Report">
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-					<Form layout="inline">
+					<Form layout="inline" form={form}>
 						<FormItem>
 							<RangePicker handleChangeDate={handleChangeDate} date={date} />
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Project"
 								onChange={handleProjectChange}
@@ -84,7 +85,7 @@ function WorkLogReport() {
 								inputSelect
 							/>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Co-worker"
 								onChange={handleUserChange}
@@ -96,7 +97,7 @@ function WorkLogReport() {
 								}))}
 							/>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Log Type"
 								onChange={handleLogTypeChange}

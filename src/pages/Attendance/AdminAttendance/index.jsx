@@ -23,7 +23,6 @@ import { getAllUsers } from "services/users/userDetails";
 import TmsAdminAttendanceForm from "components/Modules/TmsAdminAttendanceForm";
 import TmsAdminAddAttendanceForm from "components/Modules/TmsAdminAttendanceForm/Add";
 import CustomIcon from "components/Elements/Icons";
-import useWindowsSize from "hooks/useWindowsSize";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -58,7 +57,6 @@ function AdminAttendance() {
 	//init hooks
 	const [sort, setSort] = useState({});
 	const [form] = Form.useForm();
-	const {innerWidth} = useWindowsSize();
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openView, setOpenView] = useState(false);
 	const [attToView, setAttToView] = useState({});
@@ -245,24 +243,19 @@ function AdminAttendance() {
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 					<Form layout="inline" form={form}>
 						<FormItem>
-							<RangePicker
-								onChange={handleChangeDate}
-								value={date}
-							/>
+							<RangePicker onChange={handleChangeDate} value={date} />
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								onChange={handleAttChnageChange}
 								value={attFilter}
 								options={attendanceFilter}
-								style={{ marginLeft : (innerWidth > 748 ? '2rem' : 0) }}
 							/>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Co-worker"
 								onChange={handleUserChange}
-								style={{ marginLeft : (innerWidth > 748 ? '0.5rem' : 0) }}
 								value={user}
 								options={users?.data?.data?.data?.map(x => ({
 									id: x._id,
@@ -271,7 +264,7 @@ function AdminAttendance() {
 							/>
 						</FormItem>
 
-						<FormItem>
+						<FormItem style={{ marginBottom: "1px" }}>
 							<Button
 								className="gx-btn gx-btn-primary gx-text-white "
 								onClick={() => handleReset()}

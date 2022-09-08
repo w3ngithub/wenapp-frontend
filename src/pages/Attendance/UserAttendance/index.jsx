@@ -22,7 +22,6 @@ import Select from "components/Elements/Select";
 import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
 import { useSelector } from "react-redux";
 import CustomIcon from "components/Elements/Icons";
-import useWindowsSize from "hooks/useWindowsSize";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -55,7 +54,6 @@ const formattedAttendances = attendances => {
 function UserAttendance() {
 	//init hooks
 	const [sort, setSort] = useState({});
-	const {innerWidth} = useWindowsSize();
 	const [form] = Form.useForm();
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openView, setOpenView] = useState(false);
@@ -189,7 +187,6 @@ function UserAttendance() {
 		}));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data?.data?.data?.attendances?.[0]?.data]);
-	console.log('innerWidth', innerWidth);
 
 	return (
 		<div>
@@ -207,19 +204,15 @@ function UserAttendance() {
 			<div className="gx-mt-2"></div>
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-					<Form layout="inline" form={form} >
+					<Form layout="inline" form={form}>
 						<FormItem>
-							<RangePicker
-								onChange={handleChangeDate}
-								value={date} 
-							/>
+							<RangePicker onChange={handleChangeDate} value={date} />
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								onChange={handleAttChnageChange}
 								value={attFilter}
 								options={attendanceFilter}
-								style={{marginLeft : (innerWidth > 748 ? '2rem' : 0)}}
 							/>
 						</FormItem>
 					</Form>

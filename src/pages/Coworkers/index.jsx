@@ -197,10 +197,11 @@ function CoworkersPage() {
 						onChange={e => setTypedName(e.target.value)}
 						value={typedName}
 						enterButton
+						className="direct-form-item"
 					/>
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row " >
 						<Form layout="inline" form={form}>
-							<FormItem>
+							<FormItem className="direct-form-item margin-1r">
 								<Select
 									placeholder="Select Role"
 									onChange={handleRoleChange}
@@ -211,9 +212,10 @@ function CoworkersPage() {
 									}))}
 								/>
 							</FormItem>
-							<FormItem>
+							<FormItem className="direct-form-item ">
 								<Select
 									placeholder="Select Position"
+									className="margin-1r"
 									onChange={handlePositionChange}
 									value={position}
 									options={positionData?.data?.data?.data?.map(x => ({
@@ -222,7 +224,7 @@ function CoworkersPage() {
 									}))}
 								/>
 							</FormItem>
-								<FormItem>
+								<FormItem style={{marginBottom: '6px'}}>
 									<Radio.Group
 										buttonStyle="solid"
 										value={defaultUser}
@@ -233,7 +235,7 @@ function CoworkersPage() {
 										<Radio.Button value="inactive">Inactive</Radio.Button>
 									</Radio.Group>
 								</FormItem>
-							<FormItem style={{marginTop:( innerWidth <= 504 ? '7px' : 0 )}}>
+							<FormItem style={{marginBottom: '1px'}}>
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}
@@ -242,7 +244,7 @@ function CoworkersPage() {
 								</Button>
 							</FormItem>
 						</Form>
-						<div>
+						<div style={{marginBottom: '4px'}}>
 							<Button
 								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 								onClick={() => setOpenImport(true)}

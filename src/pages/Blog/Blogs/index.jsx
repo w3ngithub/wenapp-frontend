@@ -111,9 +111,10 @@ function Blogs() {
 									allowClear
 									onChange={e => setTypedTitle(e.target.value)}
 									enterButton
+									style={{ marginBottom: 0 }}
 								/>
 							</FormItem>
-							<FormItem>
+							<FormItem className="direct-form-item">
 								<Select
 									placeholder="Select Author"
 									onChange={handleUserChange}
@@ -134,14 +135,17 @@ function Blogs() {
 								</Button>
 							</FormItem>
 						</Form>
-						<Button
-							className="gx-btn gx-btn-primary gx-text-white "
-							onClick={() => {
-								navigate(`${ADDBLOG}`);
-							}}
-						>
-							Add New Blog
-						</Button>
+
+						<div className="margin-1r">
+							<Button
+								className="gx-btn gx-btn-primary gx-text-white "
+								onClick={() => {
+									navigate(`${ADDBLOG}`);
+								}}
+							>
+								Add New Blog
+							</Button>
+						</div>
 					</div>
 				</div>
 				<Spin spinning={isFetching}>

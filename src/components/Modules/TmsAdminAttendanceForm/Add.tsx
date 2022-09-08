@@ -20,6 +20,7 @@ import { addUserAttendance } from "services/attendances";
 import { filterOptions, handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
 import useLocation from "hooks/useLocation";
+import useWindowsSize from "hooks/useWindowsSize";
 
 function TmsAdminAddAttendanceForm({
 	toogle,
@@ -33,6 +34,7 @@ function TmsAdminAddAttendanceForm({
 	const location = useLocation();
 	const [PUnchform] = Form.useForm();
 	const queryClient = useQueryClient();
+	const {innerWidth} = useWindowsSize();
 
 	const addAttendances: any = useMutation(
 		(payload: any) => addUserAttendance(payload.id, payload.payload),
@@ -140,9 +142,11 @@ function TmsAdminAddAttendanceForm({
 								<Form.Item
 									name="user"
 									rules={[{ required: true, message: "Required!" }]}
+									className="direct-form-item"
+									style={{marginRight : innerWidth <= 748 ? 0 : '1rem' }}
+
 								>
 									<Select
-										style={{ width: 200, marginRight: 20 }}
 										showSearch
 										filterOption={filterOptions}
 										placeholder="Select Co-worker"
@@ -158,7 +162,9 @@ function TmsAdminAddAttendanceForm({
 									name="attendanceDate"
 									rules={[{ required: true, message: "Required!" }]}
 								>
-									<DatePicker />
+									<DatePicker
+										style={{ width: innerWidth <= 748 ? "100%" : "200px" }}
+									/>
 								</Form.Item>
 							</Row>
 						</Col>
