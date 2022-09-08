@@ -337,11 +337,11 @@ const Dashboard = () => {
 										}))}
 									/>
 								</FormItem>
-								<FormItem name="project">
+								<FormItem name="project" className="direct-form-item">
 									<Select
 										value={project}
 										onChange={(c: any) => setProject(c)}
-										style={{ width: innerWidth <= 504 ? "100%" : 150 }}
+										// style={{ width: ( innerWidth <= 504 ? '100%' : 150 )}}
 										placeholder="Select Project"
 										options={data?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({
@@ -352,12 +352,12 @@ const Dashboard = () => {
 										inputSelect
 									/>
 								</FormItem>
-								<FormItem name="logType">
+								<FormItem name="logType" className="direct-form-item">
 									<Select
 										value={logType}
 										onChange={(c: any) => setlogType(c)}
 										placeholder="Select Log Types"
-										style={{ width: innerWidth <= 504 ? "100%" : 215 }}
+										// style={{ width: ( innerWidth <= 504 ? '100%' : 215 )}}
 										mode="tags"
 										options={logTypes?.data?.data?.data?.map(
 											(x: { _id: string; name: string }) => ({

@@ -25,7 +25,6 @@ import { createLeaveOfUser } from "services/leaves";
 import { notification } from "helpers/notification";
 import { LATE_LEAVE_TYPE_ID } from "constants/Leaves";
 import RangePicker from "components/Elements/RangePicker";
-import useWindowsSize from "hooks/useWindowsSize";
 
 const FormItem = Form.Item;
 
@@ -48,7 +47,6 @@ const formattedAttendances = (attendances: any) => {
 function LateAttendance() {
 	const [sort, setSort] = useState({});
 	const [form] = Form.useForm();
-	const { innerWidth } = useWindowsSize();
 	const [date, setDate] = useState(intialDate);
 	const [user, setUser] = useState<undefined | string>(undefined);
 	const [attFilter, setAttFilter] = useState({ id: "1", value: "Daily" });
@@ -245,15 +243,14 @@ function LateAttendance() {
 						<FormItem>
 							<RangePicker handleChangeDate={handleChangeDate} date={date} />
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								onChange={handleAttChnageChange}
 								value={attFilter}
 								options={attendanceFilter}
-								style={{ marginLeft: innerWidth > 748 ? "2rem" : 0 }}
 							/>
 						</FormItem>
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
 								placeholder="Select Co-worker"
 								onChange={handleUserChange}
@@ -262,7 +259,6 @@ function LateAttendance() {
 									id: x._id,
 									value: x.name
 								}))}
-								style={{ marginLeft: innerWidth > 748 ? "0.5rem" : 0 }}
 							/>
 						</FormItem>
 

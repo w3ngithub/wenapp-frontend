@@ -18,6 +18,7 @@ function LocationMap({
 			title={title}
 			style={{ flexDirection: "row" }}
 			visible={open}
+			mask={false}
 			onCancel={onClose}
 			footer={[
 				<Button key="back" onClick={onClose}>

@@ -2,6 +2,8 @@ export const app = "/wenapp";
 
 export const SIGNIN = "signin";
 export const SIGNUP = "signup";
+export const FORGOT_PASSWORD = "forget-password";
+export const RESET_PASSWORD = "reset-password/:token";
 
 // Sidebar
 export const DASHBOARD = "dashboard";

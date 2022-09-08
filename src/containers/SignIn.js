@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { hideMessage, showAuthLoader, userSignIn } from "appRedux/actions/Auth";
 import IntlMessages from "util/IntlMessages";
+import { FORGOT_PASSWORD } from "helpers/routePath";
 
 const FormItem = Form.Item;
 
@@ -87,7 +88,7 @@ function SignIn(props) {
 							>
 								<Input.Password />
 							</FormItem>
-							<FormItem
+							{/* <FormItem
 								name="remember"
 								valuePropName={"checked"}
 								initialValue={false}
@@ -95,6 +96,15 @@ function SignIn(props) {
 								<Checkbox>
 									<IntlMessages id="appModule.iAccept" />
 								</Checkbox>
+							</FormItem> */}
+
+							<FormItem style={{ marginTop: "-15px", marginBottom: "4px" }}>
+								<span
+									className="gx-link"
+									onClick={() => navigate(`/${FORGOT_PASSWORD}`)}
+								>
+									Forgot Password ?
+								</span>
 							</FormItem>
 
 							<FormItem>

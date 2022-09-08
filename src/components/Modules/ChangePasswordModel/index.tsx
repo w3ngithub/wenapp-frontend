@@ -109,7 +109,7 @@ function ChangePasswordModel({
 								message: "Must match Password",
 								validator: (_, val) => {
 									console.log(form.getFieldValue("password"));
-									if (form.getFieldValue("password") === val) {
+									if (form.getFieldValue("password") === val || !val) {
 										return Promise.resolve();
 									} else {
 										return Promise.reject("Must match Password");

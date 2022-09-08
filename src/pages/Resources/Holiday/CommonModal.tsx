@@ -1,5 +1,6 @@
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, DatePicker, Form, Input, Modal, Row, Spin } from "antd";
+import useWindowsSize from "hooks/useWindowsSize";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 
@@ -31,6 +32,8 @@ const CommonModal = (props: modalType) => {
 	const [error, setError] = useState<{
 		index: number;
 	}>({ index: 0 });
+
+	const {innerWidth} = useWindowsSize()
 
 	const handleSubmit = () => {
 		form
@@ -93,6 +96,8 @@ const CommonModal = (props: modalType) => {
 					name="dynamic_form_nest_item"
 					autoComplete="off"
 					style={{ marginLeft: 10 }}
+					className="add-holiday"
+					
 				>
 					<Form.List
 						name="holidays"
@@ -112,14 +117,15 @@ const CommonModal = (props: modalType) => {
 						{(fields, { add, remove }) => (
 							<>
 								{fields.map((field, index) => (
-									<Row key={field.key} style={{ columnGap: 6 }}>
+									<Row key={field.key} style={{ columnGap: 6, marginLeft: innerWidth <=748 ? '' : '1rem' }}>
 										<Col span={24} sm={7}>
 											<Form.Item
 												noStyle
 												shouldUpdate={(prevValues, curValues) =>
 													prevValues.area !== curValues.area ||
 													prevValues.sights !== curValues.sights
-												}
+												}			
+
 											>
 												<Form.Item
 													{...field}
@@ -131,6 +137,7 @@ const CommonModal = (props: modalType) => {
 															? [{ required: true, message: "required!" }]
 															: undefined
 													}
+
 												>
 													<DatePicker
 														className=" gx-w-100"
@@ -139,7 +146,7 @@ const CommonModal = (props: modalType) => {
 												</Form.Item>
 											</Form.Item>
 										</Col>
-										<Col span={24} sm={7}>
+										<Col span={24} sm={7} >
 											<Form.Item
 												noStyle
 												shouldUpdate={(prevValues, curValues) =>

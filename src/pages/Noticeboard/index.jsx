@@ -218,7 +218,7 @@ function NoticeBoardPage() {
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline" form={form} > 
-							<FormItem>
+							<FormItem style={{marginBottom: 0}}>
 								<Search
 									allowClear
 									placeholder="Search Notices"
@@ -238,7 +238,7 @@ function NoticeBoardPage() {
 									style={{ width: "240px" }}
 								/>
 							</FormItem> */}
-							<FormItem>
+							<FormItem style={{marginBottom: 0}}>
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}

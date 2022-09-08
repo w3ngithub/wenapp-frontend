@@ -15,7 +15,7 @@ const FormItem = Form.Item;
 
 function AdminAttendanceCalendar() {
 	const [date, setDate] = useState(monthlyState);
-	const [user, setUser] = useState("");
+	const [user, setUser] = useState<undefined | string>(undefined);
 
 	const { data: users, isLoading } = useQuery(["userForAttendances"], () =>
 		getAllUsers({ fields: "name" })
@@ -59,7 +59,7 @@ function AdminAttendanceCalendar() {
 	};
 
 	const handleReset = () => {
-		setUser("");
+		setUser(undefined);
 	};
 
 	const handleEventStyle = (event: any) => {
@@ -132,15 +132,16 @@ function AdminAttendanceCalendar() {
 			<div className="components-table-demo-control-bar">
 				<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 					<Form layout="inline">
-						<FormItem>
+						<FormItem className="direct-form-item">
 							<Select
-								placeholder="helllllooooooooo"
+								placeholder="Search Co-worker"
 								onChange={handleUserChange}
 								value={user}
 								options={users?.data?.data?.data?.map((x: any) => ({
 									id: x._id,
 									value: x.name
 								}))}
+								
 							/>
 						</FormItem>
 
