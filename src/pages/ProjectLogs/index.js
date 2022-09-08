@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Form } from '@ant-design/compatible';
 import '@ant-design/compatible/assets/index.css';
-import { Card, Table, Select, Button } from "antd";
+import { Card, Table, Select, Button, Form } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import LogTimeModal from "components/Modules/LogtimeModal";
 import { LOGTIMES_COLUMNS } from "constants/logTimes";
@@ -43,6 +42,7 @@ function ProjectLogs() {
 	// init hooks
 	const { slug } = useParams();
 	const queryClient = useQueryClient();
+	const [form] = Form.useForm()
 
 	// init states
 	const [sort, setSort] = useState({});
@@ -259,13 +259,12 @@ function ProjectLogs() {
 			<Card title={projectSlug + " Logs"}>
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-						<Form layout="inline">
-							<FormItem>
+						<Form layout="inline" form={form}>
+							<FormItem className="direct-form-item">
 								<Select
 									showSearch
 									filterOption={filterOptions}
 									placeholder="Select Log Type"
-									style={{ width: 200 }}
 									onChange={handlelogTypeChange}
 									value={logType}
 								>
@@ -277,12 +276,11 @@ function ProjectLogs() {
 										))}
 								</Select>
 							</FormItem>
-							<FormItem>
+							<FormItem className="direct-form-item">
 								<Select
 									showSearch
 									filterOption={filterOptions}
 									placeholder="Select Log Author"
-									style={{ width: 200 }}
 									onChange={handleAuthorChange}
 									value={author}
 								>
@@ -295,7 +293,7 @@ function ProjectLogs() {
 								</Select>
 							</FormItem>
 
-							<FormItem>
+							<FormItem style={{marginBottom :  0}}>
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}

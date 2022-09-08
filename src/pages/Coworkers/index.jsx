@@ -212,7 +212,7 @@ function CoworkersPage() {
 									}))}
 								/>
 							</FormItem>
-							<FormItem className="direct-form-item ">
+							<FormItem className="direct-form-item">
 								<Select
 									placeholder="Select Position"
 									className="margin-1r"
