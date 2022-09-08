@@ -6,23 +6,26 @@ import moment from "moment";
 import LocationMap from "./LocationMap";
 
 const formattedUsers = (users: any[]) => {
-	return users?.map(user => ({
-		...user,
-		key: user._id.attendanceDate + user._id.user,
-		name: user._id.user,
-		checkIn: moment(user?.data?.[0]?.punchInTime).format("LTS"),
-		checkOut: user?.data?.[user?.data.length - 1]?.punchOutTime
-			? moment(user?.data?.[user?.data.length - 1]?.punchOutTime).format("LTS")
-			: "N/A",
-		checkOutLocation:
-			user?.data?.[user?.data.length - 1]?.punchOutLocation &&
-			user?.data?.[user?.data.length - 1]?.punchOutLocation?.length === 2
-				? "Show On Map"
-				: "",
-		checkInLocation: "Show On Map",
-		punchInLocation: user?.data?.[0]?.punchInLocation,
-		punchOutLocation: user?.data?.[user?.data.length - 1]?.punchOutLocation
-	}));
+	return users?.map(user => {
+		const punchInLocation = user?.data?.[0]?.punchInLocation;
+		const punchOutLocation = user?.data?.at(-1)?.punchOutLocation;
+		const checkIn = user?.data?.[0]?.punchInTime;
+		const checkOut = user?.data?.at(-1)?.punchOutTime;
+
+		return {
+			...user,
+			key: user._id.attendanceDate + user._id.user,
+			name: user._id.user,
+			checkIn: moment(checkIn).format("LTS"),
+			checkOut: checkOut ? moment(checkOut).format("LTS") : "N/A",
+			checkOutLocation:
+				punchOutLocation && punchOutLocation?.length === 2 ? "Show On Map" : "",
+			checkInLocation:
+				punchInLocation && punchInLocation?.length === 2 ? "Show On Map" : "",
+			punchInLocation: punchInLocation,
+			punchOutLocation: punchOutLocation
+		};
+	});
 };
 
 function CheckedInEmployee({ checkIn }: { checkIn: any[] }) {

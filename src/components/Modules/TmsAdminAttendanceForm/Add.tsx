@@ -19,8 +19,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addUserAttendance } from "services/attendances";
 import { filterOptions, handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
-import useLocation from "hooks/useLocation";
 import useWindowsSize from "hooks/useWindowsSize";
+import getLocation from "helpers/getLocation";
 
 function TmsAdminAddAttendanceForm({
 	toogle,
@@ -31,10 +31,9 @@ function TmsAdminAddAttendanceForm({
 	handleCancel: any;
 	users: any[];
 }) {
-	const location = useLocation();
 	const [PUnchform] = Form.useForm();
 	const queryClient = useQueryClient();
-	const {innerWidth} = useWindowsSize();
+	const { innerWidth } = useWindowsSize();
 
 	const addAttendances: any = useMutation(
 		(payload: any) => addUserAttendance(payload.id, payload.payload),
@@ -59,7 +58,7 @@ function TmsAdminAddAttendanceForm({
 		}
 	);
 
-	const handleAdd = (values: any) => {
+	const handleAdd = async (values: any) => {
 		const attendanceDate = moment(values.attendanceDate)
 			.startOf("day")
 			.format()
@@ -90,8 +89,8 @@ function TmsAdminAddAttendanceForm({
 			attendanceDate,
 			punchInTime,
 			punchOutTime: punchOutTime,
-			punchOutLocation: location,
-			punchInLocation: location
+			punchOutLocation: await getLocation(),
+			punchInLocation: await getLocation()
 		};
 		addAttendances.mutate({ id: values.user, payload });
 	};
@@ -143,8 +142,7 @@ function TmsAdminAddAttendanceForm({
 									name="user"
 									rules={[{ required: true, message: "Required!" }]}
 									className="direct-form-item"
-									style={{marginRight : innerWidth <= 748 ? 0 : '1rem' }}
-
+									style={{ marginRight: innerWidth <= 748 ? 0 : "1rem" }}
 								>
 									<Select
 										showSearch

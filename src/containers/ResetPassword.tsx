@@ -69,6 +69,7 @@ function ResetPassword() {
 							className="gx-login-form gx-form-row0"
 						>
 							<FormItem
+								style={{ minWidth: "330px" }}
 								hasFeedback
 								name="password"
 								rules={[
@@ -83,6 +84,7 @@ function ResetPassword() {
 							</FormItem>
 
 							<FormItem
+								style={{ minWidth: "330px" }}
 								hasFeedback
 								name="passwordConfirm"
 								rules={[

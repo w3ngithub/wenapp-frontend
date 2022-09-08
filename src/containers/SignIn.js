@@ -103,7 +103,7 @@ function SignIn(props) {
 									className="gx-link"
 									onClick={() => navigate(`/${FORGOT_PASSWORD}`)}
 								>
-									Forgot Password ?
+									Forgot Password?
 								</span>
 							</FormItem>
 
