@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Col, notification, Row } from "antd";
 import About from "components/Modules/profile/About/index";
 import Biography from "components/Modules/profile/Biography/index";
-import Contact from '../../components/Modules/profile/Contact/index'
+import Contact from "../../components/Modules/profile/Contact/index";
 import Auxiliary from "util/Auxiliary";
 import ProfileHeader from "components/Modules/profile/ProfileHeader";
 import UserProfileModal from "components/Modules/profile/UserProfileModal";
@@ -93,12 +93,13 @@ function Profile() {
 
 	const handleProfileUpdate = async (user, removedFile) => {
 		setIsLoading(true);
+		console.log(user);
 		let updatedUser = {
 			...user,
 			dob: moment.utc(user.dob._d).format(),
 			joinDate: moment.utc(user.joinDate._d).format(),
 			primaryPhone: +user.primaryPhone,
-			secondaryPhone: +user.secondaryPhone || undefined
+			secondaryPhone: +user.secondaryPhone || null
 		};
 		if (removedFile) {
 			const imageRef = ref(storage, removedFile);
@@ -159,14 +160,14 @@ function Profile() {
 					onMoreDetailsClick={setOpenModal}
 				/>
 				<div className="gx-profile-content">
-						<Row>
-							<Col xs={24} sm={24} md={14}>
-								<About data={aboutData} />
-							</Col>
-							<Col xs={24} sm={24} md={10}>
-								<Contact user={user}/>
-							</Col>
-						</Row>
+					<Row>
+						<Col xs={24} sm={24} md={14}>
+							<About data={aboutData} />
+						</Col>
+						<Col xs={24} sm={24} md={10}>
+							<Contact user={user} />
+						</Col>
+					</Row>
 				</div>
 			</Auxiliary>
 		</>
