@@ -216,14 +216,16 @@ function UserAttendance() {
 							/>
 						</FormItem>
 					</Form>
-					<Button
-						className="gx-btn gx-btn-primary gx-text-white "
-						onClick={() => {
-							setToogle(true);
-						}}
-					>
-						{punchIn ? "Punch In" : "Punch Out"}
-					</Button>
+					<div className="form-buttons">
+						<Button
+							className="gx-btn-form gx-btn-primary gx-text-white "
+							onClick={() => {
+								setToogle(true);
+							}}
+						>
+							{punchIn ? "Punch In" : "Punch Out"}
+						</Button>
+					</div>
 				</div>
 			</div>
 			<Table

@@ -224,7 +224,7 @@ function LogTime() {
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Button
-							className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+							className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
 							onClick={handleOpenAddModal}
 						>
 							Add New Log Time

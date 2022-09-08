@@ -224,7 +224,7 @@ function CoworkersPage() {
 									}))}
 								/>
 							</FormItem>
-								<FormItem style={{marginBottom: '6px'}}>
+								<FormItem style={{marginBottom: '10px'}}>
 									<Radio.Group
 										buttonStyle="solid"
 										value={defaultUser}
@@ -235,7 +235,7 @@ function CoworkersPage() {
 										<Radio.Button value="inactive">Inactive</Radio.Button>
 									</Radio.Group>
 								</FormItem>
-							<FormItem style={{marginBottom: '1px'}}>
+							<FormItem >
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}
@@ -244,7 +244,7 @@ function CoworkersPage() {
 								</Button>
 							</FormItem>
 						</Form>
-						<div style={{marginBottom: '4px'}}>
+						<div className="gx-btn-form">
 							<Button
 								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 								onClick={() => setOpenImport(true)}

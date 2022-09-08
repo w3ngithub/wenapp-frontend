@@ -312,7 +312,7 @@ function ProjectsPage() {
 						/>
 						<div
 							style={{
-								marginBottom: "0.4rem",
+								marginBottom: "1rem",
 								marginLeft: innerWidth >= 720 ? "1rem" : 0
 							}}
 						>

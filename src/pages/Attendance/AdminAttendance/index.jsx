@@ -266,7 +266,7 @@ function AdminAttendance() {
 
 						<FormItem style={{ marginBottom: "1px" }}>
 							<Button
-								className="gx-btn gx-btn-primary gx-text-white "
+								className="gx-btn-form gx-btn-primary gx-text-white "
 								onClick={() => handleReset()}
 							>
 								Reset
@@ -274,7 +274,7 @@ function AdminAttendance() {
 						</FormItem>
 					</Form>
 					<Button
-						className="gx-btn gx-btn-primary gx-text-white "
+						className="gx-btn-form gx-btn-primary gx-text-white "
 						onClick={() => setToggleAdd(true)}
 					>
 						Add

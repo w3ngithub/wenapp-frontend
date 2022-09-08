@@ -126,9 +126,9 @@ function Blogs() {
 								/>
 							</FormItem>
 
-							<FormItem style={{ marginBottom: "2px" }}>
+							<FormItem style={{ marginBottom: '-2px' }}>
 								<Button
-									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+									className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}
 								>
 									Reset

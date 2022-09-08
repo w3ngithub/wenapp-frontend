@@ -218,7 +218,7 @@ function NoticeBoardPage() {
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
 						<Form layout="inline" form={form} > 
-							<FormItem style={{marginBottom: 0}}>
+							<FormItem style={{marginBottom: '-2px'}}>
 								<Search
 									allowClear
 									placeholder="Search Notices"
@@ -226,7 +226,7 @@ function NoticeBoardPage() {
 										setPage(prev => ({ ...prev, page: 1 }));
 										setTitle(value);
 									}}
-									style={{ marginBottom: '10px' }}
+									style={{ marginBottom: '16px' }}
 									enterButton
 									ref={noticeRef}
 								/>
@@ -238,9 +238,9 @@ function NoticeBoardPage() {
 									style={{ width: "240px" }}
 								/>
 							</FormItem> */}
-							<FormItem style={{marginBottom: 0}}>
+							<FormItem style={{marginBottom: '-2px'}}>
 								<Button
-									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+									className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}
 								>
 									Reset
@@ -248,7 +248,7 @@ function NoticeBoardPage() {
 							</FormItem>
 						</Form>
 						<Button
-							className="gx-btn gx-btn-primary gx-text-white "
+							className="gx-btn-form gx-btn-primary gx-text-white "
 							onClick={handleOpenAddModal}
 						>
 							Add New Notice
