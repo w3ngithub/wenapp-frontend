@@ -52,7 +52,7 @@ function Detail() {
 								</small>
 							</div>
 							{access && (
-								<Button type="primary" onClick={handleEdit}>
+								<Button type="primary" onClick={handleEdit} className="gx-btn gx-btn-primary gx-text-white gx-mt-auto">
 									Edit
 								</Button>
 							)}
