@@ -58,6 +58,7 @@ function ChangePasswordModel({
 			visible={open}
 			title={"Update Your Password"}
 			onCancel={handleClose}
+			mask={false}
 			footer={[
 				<Button
 					key="submit"
