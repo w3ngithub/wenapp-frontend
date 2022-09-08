@@ -19,6 +19,7 @@ import {
 	DASHBOARD,
 	EDITBLOG,
 	FAQS,
+	FORGOT_PASSWORD,
 	HOLIDAY,
 	INVITE,
 	LEAVE,
@@ -31,6 +32,7 @@ import {
 	PROJECTS,
 	PROJECT_LOG,
 	REPORTS,
+	RESET_PASSWORD,
 	RESOURCES,
 	SETTINGS,
 	SIGNIN,
@@ -64,6 +66,8 @@ import BlogDetail from "pages/Blog/BlogDetail";
 import AddBlog from "pages/Blog/AddBlog";
 import Overview from "pages/Overview";
 import { THEME_TYPE_DARK } from "constants/ThemeSetting";
+import ForgotPassword from "containers/ForgotPassword";
+import ResetPassword from "containers/ResetPassword";
 
 function App(props: any) {
 	const { locale, authUser, themeType } = props;
@@ -89,6 +93,8 @@ function App(props: any) {
 					<Route path={SIGNIN} element={<SignIn />} />
 					<Route path={SIGNUP} element={<SignUp />} />
 					<Route path={INVITE} element={<InviteUserSignup />} />
+					<Route path={FORGOT_PASSWORD} element={<ForgotPassword />} />
+					<Route path={RESET_PASSWORD} element={<ResetPassword />} />
 
 					<Route element={<ProtectedRoute auth={authUser} />}>
 						<Route element={<MainApp />}>

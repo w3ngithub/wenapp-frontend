@@ -144,6 +144,27 @@ const UpdateUserPassword = async payload => {
 	}
 };
 
+const forgotPassword = async payload => {
+	try {
+		let response = await API.post(`${Apis.Users}/forgotPassword`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+const resetPassword = async (token, payload) => {
+	try {
+		let response = await API.patch(
+			`${Apis.Users}/resetPassword/${token}`,
+			payload
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 export {
 	loginInUsers,
 	getAllUsers,
@@ -158,5 +179,7 @@ export {
 	getActiveUsersCount,
 	getBirthMonthUsers,
 	getSalaryReviewUsers,
-	UpdateUserPassword
+	UpdateUserPassword,
+	forgotPassword,
+	resetPassword
 };
