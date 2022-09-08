@@ -66,9 +66,12 @@ function AdminAttendanceCalendar() {
 		let style: any = {
 			fontSize: "14px",
 			width: "fit-content",
-			margin: "3px auto",
-			fontWeight: "600"
+			margin: "0px auto",
+			fontWeight: "500",
+			height: "27px",
+			padding: "5px 10px"
 		};
+
 		if (event.type === "leave")
 			style = {
 				...style,
@@ -92,7 +95,7 @@ function AdminAttendanceCalendar() {
 	userLeaves?.forEach((leave: any) => {
 		leaves.push({
 			id: leave?._id,
-			title: "On Leave",
+			title: leave?.leaveType?.name,
 			start: new Date(leave?.leaveDates?.[0]),
 			end: new Date(leave?.leaveDates?.[0]),
 			type: "leave",
@@ -116,7 +119,7 @@ function AdminAttendanceCalendar() {
 
 		attendances.push({
 			id: attendance?._id,
-			title: "Office Hrs: " + totalHoursWorked,
+			title: "Hours: " + totalHoursWorked,
 			start: new Date(attendance._id?.attendanceDate),
 			end: new Date(attendance._id?.attendanceDate),
 			isLessHourWorked: totalHoursWorked < 9,
@@ -164,6 +167,7 @@ function AdminAttendanceCalendar() {
 						popup
 						eventPropGetter={handleEventStyle}
 						views={["month", "week", "day"]}
+						showAllEvents
 					/>
 				</div>
 			</Spin>

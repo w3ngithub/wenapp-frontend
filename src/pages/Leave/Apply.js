@@ -15,7 +15,7 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 const Option = Select.Option;
 
-function Apply() {
+function Apply({ leaves }) {
 	const [form] = Form.useForm();
 	const queryClient = useQueryClient();
 	const { themeType } = useSelector(state => state.settings);
@@ -76,13 +76,23 @@ function Apply() {
 			})
 		);
 	};
+
+	let userLeaves = [];
 	const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays?.map(
 		holiday => ({
-			date: new Date(holiday?.date).getDate(),
+			date: new DateObject(holiday?.date).format(),
 			name: holiday?.title
 		})
 	);
-
+	leaves?.forEach(leave => {
+		if (leave?.leaveDates > 1) {
+			for (let i = 0; i < leave?.leaveDates.length; i++) {
+				userLeaves.push(new DateObject(leave?.leaveDates[i]).format());
+			}
+		} else {
+			userLeaves.push(new DateObject(leave?.leaveDates[0]).format());
+		}
+	});
 	return (
 		<Spin spinning={leaveMutation.isLoading}>
 			<Form layout="vertical" style={{ padding: "15px 18px" }} form={form}>
@@ -108,19 +118,27 @@ function Apply() {
 								mapDays={({ date, today }) => {
 									let isWeekend = [0, 6].includes(date.weekDay.index);
 									let holidayList = holidaysThisYear?.filter(
-										holiday => date.day === holiday?.date
+										holiday => date.format() === holiday?.date
 									);
 									let isHoliday = holidayList?.length > 0;
-									if (isWeekend || isHoliday)
+									let leaveAlreadyTakenDates = userLeaves.includes(
+										date.format()
+									);
+									if (isWeekend || isHoliday || leaveAlreadyTakenDates)
 										return {
 											disabled: true,
-											style: { color: isWeekend ? "#ccc" : "rgb(237 45 45)" },
-											onClick: () =>
-												alert(
-													isWeekend
-														? "weekends are disabled"
-														: `${holidayList[0]?.name} holiday`
-												)
+											style: {
+												color:
+													isWeekend || leaveAlreadyTakenDates
+														? "#ccc"
+														: "rgb(237 45 45)"
+											},
+											onClick: () => {
+												if (isWeekend) alert("weekends are disabled");
+												if (isHoliday) alert(`${holidayList[0]?.name} holiday`);
+												if (leaveAlreadyTakenDates)
+													alert(`Leave already taken`);
+											}
 										};
 								}}
 							/>
