@@ -17,7 +17,7 @@ const getAllProjects = async ({
 }) => {
 	try {
 		let response = await API.get(
-			`${Apis.Projects}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&projectStatus=${projectStatus}&projectTypes=${projectType}&client=${projectClient}&developers=${developer}&designers=${designer}&qa=${qa}&name=${project}`
+			`${Apis.Projects}?search=${project}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&projectStatus=${projectStatus}&projectTypes=${projectType}&client=${projectClient}&developers=${developer}&designers=${designer}&qa=${qa}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {
