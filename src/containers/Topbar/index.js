@@ -52,7 +52,8 @@ class Topbar extends Component {
 							display: "flex",
 							justifyContent: "space-between",
 							width: "100%",
-							alignItems: "center"
+							alignItems: "center",
+							gap: '2px'
 						}}
 					>
 						{navStyle === NAV_STYLE_DRAWER ||
@@ -73,8 +74,8 @@ class Topbar extends Component {
 							<PunchInOut />
 						</div>
 						<div>
-							<ul className="gx-header-notifications gx-ml-auto">
-								<li className="gx-notify">
+							<ul className="gx-header-notifications gx-ml-auto gx-d-flex" style={{flexWrap:'nowrap'}}>
+								<li className="gx-notify" >
 									<Switch
 										unCheckedChildren={
 											<FaMoon
@@ -101,7 +102,7 @@ class Topbar extends Component {
 									/>
 								</li>
 
-								<li className="gx-user-nav">
+								<li className="gx-user-nav li-gap" >
 									<UserInfo />
 								</li>
 							</ul>
