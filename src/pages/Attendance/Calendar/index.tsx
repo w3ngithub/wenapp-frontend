@@ -131,7 +131,6 @@ function AttendanceCalendar() {
 						popup
 						views={["month", "week", "day"]}
 						eventPropGetter={handleEventStyle}
-						showAllEvents
 					/>
 				</div>
 			</Spin>

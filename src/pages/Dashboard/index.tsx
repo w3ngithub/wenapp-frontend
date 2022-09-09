@@ -120,7 +120,7 @@ const Dashboard = () => {
 			width: "fit-content",
 			margin: "0px auto",
 			fontWeight: "600",
-			marginBottom: "6px",
+			marginBottom: "10px",
 
 			background: "transparent"
 		};
@@ -137,7 +137,7 @@ const Dashboard = () => {
 		if (event.type === "leave")
 			style = {
 				...style,
-				fontSize: "8px",
+				fontWeight: "400",
 
 				color: "#038fde"
 			};
@@ -173,8 +173,8 @@ const Dashboard = () => {
 						style={{
 							margin: "0px",
 							textAlign: "center",
-							fontSize: "8px",
-							fontWeight: "400"
+							fontSize: "10px",
+							fontWeight: "600"
 						}}
 					>
 						{props?.event?.leaveType}:
