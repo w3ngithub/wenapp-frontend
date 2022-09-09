@@ -12,8 +12,8 @@ interface modalInterface {
 }
 
 const layout = {
-	labelCol: { span: 8 },
-	wrapperCol: { span: 16 }
+	// labelCol: { span: 8 },
+	// wrapperCol: { span: 16 }
 };
 
 function CommonModal({

@@ -115,12 +115,14 @@ const Dashboard = () => {
 
 	const handleEventStyle = (event: any) => {
 		let style: any = {
-			fontSize: "12px",
+			fontSize: "10px",
+
 			width: "fit-content",
-			margin: "3px auto",
-			fontWeight: "400",
-			background: "transparent",
-			minHeight: "40px"
+			margin: "0px auto",
+			fontWeight: "600",
+			marginBottom: "6px",
+
+			background: "transparent"
 		};
 		if (event.type === "birthday")
 			style = {
@@ -135,6 +137,8 @@ const Dashboard = () => {
 		if (event.type === "leave")
 			style = {
 				...style,
+				fontSize: "8px",
+
 				color: "#038fde"
 			};
 
@@ -147,11 +151,12 @@ const Dashboard = () => {
 		const style = {
 			display: "flex",
 			alignItems: "center",
-			gap: "4px"
+			gap: "4px",
+			margin: "0 !important"
 		};
 		if (props.event.type === "birthday")
 			return (
-				<p style={{ ...style, marginTop: "20px" }}>
+				<p style={{ ...style, marginTop: "20px", flexWrap: "wrap" }}>
 					<i className="icon icon-birthday-new gx-fs-lg" />
 					{props?.event?.title}
 				</p>
@@ -164,10 +169,17 @@ const Dashboard = () => {
 		if (props.event.type === "leave")
 			return (
 				<>
-					<h6 style={{ textAlign: "center", fontWeight: "500" }}>
-						{props.event?.leaveType}:
+					<h6
+						style={{
+							margin: "0px",
+							textAlign: "center",
+							fontSize: "8px",
+							fontWeight: "400"
+						}}
+					>
+						{props?.event?.leaveType}:
 					</h6>
-					<p style={style}>{props?.event?.title}</p>
+					{props?.event?.title}
 				</>
 			);
 
@@ -315,7 +327,6 @@ const Dashboard = () => {
 								popup
 								eventPropGetter={handleEventStyle}
 								views={["month", "week", "day"]}
-								showAllEvents
 							/>
 						</div>
 					</Card>

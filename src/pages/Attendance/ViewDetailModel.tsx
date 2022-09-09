@@ -40,7 +40,7 @@ function ViewDetailModel({
 						<div className={styles.itemHeading}>Date</div>
 						<div className={styles.itemValue}>{attendanceDate}</div>
 					</div>
-					<div className={styles.item}>
+					<div className={`${styles.item} day-attendance`}>
 						<div className={styles.itemHeading}>Day</div>
 						<div className={styles.itemValue}>{attendanceDay}</div>
 					</div>

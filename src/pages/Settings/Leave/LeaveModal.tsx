@@ -11,8 +11,8 @@ interface modalInterface {
 }
 
 const layout = {
-	labelCol: { span: 8 },
-	wrapperCol: { span: 16 }
+	// labelCol: { span: 8 },
+	// wrapperCol: { span: 16 }
 };
 
 function LeaveModal({
@@ -63,7 +63,7 @@ function LeaveModal({
 					>
 						<Input
 							// value={input}
-							placeholder="name"
+							placeholder="Name"
 							// onChange={handleInputChange}
 						/>
 					</Form.Item>
@@ -74,7 +74,7 @@ function LeaveModal({
 					>
 						<Input
 							// value={input}
-							placeholder="leave days"
+							placeholder="Leave days"
 							// onChange={handleInputChange}
 						/>
 					</Form.Item>

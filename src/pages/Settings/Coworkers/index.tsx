@@ -30,8 +30,8 @@ import {
 } from "services/settings/coworkers/roles";
 
 const layout = {
-	labelCol: { span: 8 },
-	wrapperCol: { span: 16 }
+	// labelCol: { span: 8 },
+	// wrapperCol: { span: 16 }
 };
 
 const types = {
@@ -54,16 +54,16 @@ function Coworkers() {
 		data: positions,
 		isFetching: isPositionsFetching,
 		isLoading
-	}: any = useQuery(["positions"], getPosition);
-	const {
-		data: invitedUsers,
-		isFetching: isInviteUsersFetching
-	}: any = useQuery(["inviteUsers"], getInvitedUsers);
-	const {
-		data: positionTypes,
-		isFetching: isPositionTypesFetching
-	}: any = useQuery(["positionTypes"], getPositionTypes);
-	const { data: roles }: { data: any } = useQuery(["roles"], getRoles, {
+	} = useQuery(["positions"], getPosition);
+	const { data: invitedUsers, isFetching: isInviteUsersFetching } = useQuery(
+		["inviteUsers"],
+		getInvitedUsers
+	);
+	const { data: positionTypes, isFetching: isPositionTypesFetching } = useQuery(
+		["positionTypes"],
+		getPositionTypes
+	);
+	const { data: roles } = useQuery(["roles"], getRoles, {
 		onError: err => console.log(err),
 		select: res =>
 			res?.data?.data?.data?.map(
@@ -320,24 +320,26 @@ function Coworkers() {
 							name="control-hooks"
 							layout="vertical"
 						>
-							<div className="gx-d-flex gx-justify-content-between margin-1r">
-								<Form.Item
-									name="email"
-									label="Email"
-									rules={[{ required: true, message: "Required!" }]}
-									help="To invite multiple email, separate the emails using comma."
-									style={{ flex: "70%" }}
-								>
-									<Input
-										placeholder="Email address"
-										onChange={handleEmailChange}
-									/>
-								</Form.Item>
-								<Form.Item style={{ flex: "0.2" }}>
+							<div className="gx-d-flex gx-justify-content-between flex-column ">
+								<div className="email-input">
+									<Form.Item
+										name="email"
+										label="Email"
+										rules={[{ required: true, message: "Required!" }]}
+										help="To invite multiple email, separate the emails using comma."
+										className="email-input"
+									>
+										<Input
+											placeholder="Email address"
+											onChange={handleEmailChange}
+										/>
+									</Form.Item>
+								</div>
+								<Form.Item>
 									<Button
 										key="submit"
 										type="primary"
-										style={{ marginTop: "20px" }}
+										className=" gx-btn gx-btn-primary gx-text-white email-invite"
 										onClick={handleInviteSubmit}
 									>
 										Invite
@@ -354,12 +356,12 @@ function Coworkers() {
 					</Card>
 				</Col>
 
-				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }}>
+				<Col span={6} xs={24} md={12} style={{ paddingLeft: 0 }} >
 					<Card
 						title="Position"
 						extra={
 							<Button
-								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								className="gx-btn gx-btn-primary gx-text-white "
 								onClick={() => handleOpenModal("Position Type")}
 							>
 								Add
@@ -388,7 +390,7 @@ function Coworkers() {
 						title="Position Type"
 						extra={
 							<Button
-								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								className="gx-btn gx-btn-primary gx-text-white settings-add"
 								onClick={() => handleOpenModal("Position Type")}
 							>
 								Add
@@ -415,7 +417,7 @@ function Coworkers() {
 						title="Role"
 						extra={
 							<Button
-								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								className="gx-btn gx-btn-primary gx-text-white settings-add"
 								onClick={() => handleOpenModal("Role")}
 							>
 								Add

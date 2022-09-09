@@ -55,11 +55,10 @@ const NOTICE_COLUMNS = (
 		key: "action",
 		render: (text, record) => {
 			return (
-				<span>
+				<div style={{ display: "flex" }}>
 					<span className="gx-link" onClick={() => openModal(record, true)}>
 						<CustomIcon name="view" />
 					</span>
-
 					<Divider type="vertical" />
 					<span className="gx-link" onClick={() => openModal(record, false)}>
 						<CustomIcon name="edit" />
@@ -76,7 +75,7 @@ const NOTICE_COLUMNS = (
 							<CustomIcon name="delete" />
 						</span>
 					</Popconfirm>
-				</span>
+				</div>
 			);
 		}
 	}

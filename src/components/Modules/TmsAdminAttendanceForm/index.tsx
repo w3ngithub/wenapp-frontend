@@ -20,6 +20,7 @@ import { handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
 import getLocation from "helpers/getLocation";
+import useWindowsSize from "hooks/useWindowsSize";
 
 function TmsAdminAttendanceForm({
 	toogle,
@@ -34,6 +35,7 @@ function TmsAdminAttendanceForm({
 }) {
 	const [PUnchInform] = Form.useForm();
 	const [PUnchOutform] = Form.useForm();
+	const {innerWidth} = useWindowsSize();
 	const [user, setUser] = useState(undefined);
 	const [date, setDate] = useState<null | Moment>(null);
 
@@ -144,6 +146,7 @@ function TmsAdminAttendanceForm({
 					<span>{moment().format("dddd, MMMM D, YYYY")}</span>
 				</span>
 			}
+			mask={false}
 			visible={toogle}
 			onCancel={closeModel}
 			footer={[
@@ -153,21 +156,24 @@ function TmsAdminAttendanceForm({
 			]}
 		>
 			<Spin spinning={updateAttendances.isLoading}>
-				<div className="gx-d-flex gx-mb-4 gx-flex-row" style={{ gap: 10 }}>
-					<Select
-						placeholder="Select Co-worker"
-						onChange={handleUserChange}
-						value={user}
-						options={users?.map((x: any) => ({
-							id: x._id,
-							value: x.name
-						}))}
-					/>
-					<DatePicker
-						placeholder="Select Date"
-						value={date}
-						onChange={d => setDate(d)}
-					/>
+				<div className="gx-d-flex gx-mb-4 gx-flex-row" style={{gap: 4}}>
+							<Select
+								placeholder="Select Co-worker"
+								onChange={handleUserChange}
+								value={user}
+								options={users?.map((x: any) => ({
+									id: x._id,
+									value: x.name
+								}))}
+								style = {{width : innerWidth <=540 ? '100%' : '200px', marginBottom : innerWidth <=540 ? '16px' : 0 }}
+							/>
+							<DatePicker
+								placeholder="Select Date"
+								value={date}
+								onChange={d => setDate(d)}
+								style = {{width : innerWidth <=540 ? '100%' : '200px' }}
+
+							/>
 				</div>
 				<Row>
 					<Col span={24} sm={12} xs={24}>
