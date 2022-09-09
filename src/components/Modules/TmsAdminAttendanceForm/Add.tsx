@@ -104,11 +104,11 @@ function TmsAdminAddAttendanceForm({
 		<Modal
 			width={"85%"}
 			title={
-				<span className="gx-d-flex" style={{ gap: 10, fontWeight: "400" }}>
+				<div className="gx-d-flex gx-flex-row">
 					<FieldTimeOutlined style={{ fontSize: "24px" }} />
 					<LiveTime />
 					<span>{moment().format("dddd, MMMM D, YYYY")}</span>
-				</span>
+				</div>
 			}
 			mask={false}
 			visible={toogle}
