@@ -54,8 +54,7 @@ function AttendanceCalendar() {
 	const handleEventStyle = (event: any) => {
 		let style: any = {
 			fontSize: "13px",
-			width: 'fit-content',
-			// width: innerWidth <=729 ? '2.5rem' : 'fit-content',
+			width: innerWidth <=729 ? '2.5rem' : 'fit-content',
 			margin: "0px auto",
 			fontWeight: "500",
 			height: "27px",
