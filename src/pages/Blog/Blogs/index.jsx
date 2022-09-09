@@ -96,7 +96,7 @@ function Blogs() {
 
 	return (
 		<div className="ant-row" style={{ rowGap: 0 }}>
-			<Card title="Blogs">
+			<Card title="Blogs" style={{width: '100%'}}>
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row ">
 						<Form layout="inline" form={form}>
