@@ -116,8 +116,7 @@ const Dashboard = () => {
 	const handleEventStyle = (event: any) => {
 		let style: any = {
 			fontSize: "10px",
-
-			width: "fit-content",
+			width: innerWidth <=729 ? '2.5rem' : 'fit-content',
 			margin: "0px auto",
 			fontWeight: "600",
 			marginBottom: "10px",
