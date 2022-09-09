@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { PUNCH_IN, PUNCH_OUT } from "constants/ActionTypes";
 import { fetchLoggedInUserAttendance } from "appRedux/actions/Attendance";
 import { Dispatch } from "redux";
-import useLocation from "hooks/useLocation";
+import getLocation from "helpers/getLocation";
 
 function TmsMyAttendanceForm({
 	title,
@@ -26,8 +26,6 @@ function TmsMyAttendanceForm({
 
 	const [PUnchInform] = Form.useForm();
 	const [PUnchOutform] = Form.useForm();
-
-	const location = useLocation();
 
 	const queryClient = useQueryClient();
 	const dispatch: Dispatch<any> = useDispatch();
@@ -82,18 +80,18 @@ function TmsMyAttendanceForm({
 		}
 	);
 
-	const handlePunchIn = (values: any) => {
+	const handlePunchIn = async (values: any) => {
 		addAttendances.mutate({
 			// attendanceDate: moment()
 			// 	.startOf("day")
 			// 	.format(),
 			punchInTime: moment.utc().format(),
 			punchInNote: values.punchInNote,
-			punchInLocation: location
+			punchInLocation: await getLocation()
 		});
 	};
 
-	const handlePunchOut = (values: any) => {
+	const handlePunchOut = async (values: any) => {
 		const lastattendace = sortFromDate(latestAttendance, "punchInTime").at(-1);
 
 		punchOutAttendances.mutate({
@@ -102,7 +100,7 @@ function TmsMyAttendanceForm({
 				punchOutNote: values.punchOutNote,
 				midDayExit: values.midDayExit ? true : false,
 				punchOutTime: moment.utc().format(),
-				punchOutLocation: location
+				punchOutLocation: await getLocation()
 			}
 		});
 	};

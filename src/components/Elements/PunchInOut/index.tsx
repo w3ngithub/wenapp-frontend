@@ -16,12 +16,11 @@ import { PUNCH_IN, PUNCH_OUT } from "constants/ActionTypes";
 import { fetchLoggedInUserAttendance } from "appRedux/actions/Attendance";
 import { Dispatch } from "redux";
 import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
-import useLocation from "hooks/useLocation";
+import getLocation from "helpers/getLocation";
 
 function PunchInOut() {
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
 
-	const location = useLocation();
 	const [toogle, setToogle] = useState(false);
 	const queryClient = useQueryClient();
 	const dispatch: Dispatch<any> = useDispatch();
@@ -85,7 +84,7 @@ function PunchInOut() {
 		}
 	);
 
-	const handlePunch = () => {
+	const handlePunch = async () => {
 		if (checkIfTimeISBetweenOfficeHour()) {
 			setToogle(true);
 			return;
@@ -100,7 +99,7 @@ function PunchInOut() {
 					punchOutNote: "",
 					midDayExit: false,
 					punchOutTime: moment.utc().format(),
-					punchOutLocation: location
+					punchOutLocation: await getLocation()
 				}
 			});
 		} else {
@@ -109,7 +108,7 @@ function PunchInOut() {
 				// 	.startOf("day")
 				// 	.format(),
 				punchInTime: moment.utc().format(),
-				punchInLocation: location
+				punchInLocation: await getLocation()
 			});
 		}
 	};

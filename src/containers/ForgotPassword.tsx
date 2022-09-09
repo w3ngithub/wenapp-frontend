@@ -93,7 +93,7 @@ function ForgotPassword() {
 					<span>
 						Already have login and password?{" "}
 						<span className="gx-link" onClick={() => navigate(`/${SIGNIN}`)}>
-							Log In
+							Sign In
 						</span>
 					</span>
 				</div>

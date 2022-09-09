@@ -19,7 +19,7 @@ import { updateAttendance } from "services/attendances";
 import { handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
 import Select from "components/Elements/Select";
-import useLocation from "hooks/useLocation";
+import getLocation from "helpers/getLocation";
 import useWindowsSize from "hooks/useWindowsSize";
 
 function TmsAdminAttendanceForm({
@@ -33,7 +33,6 @@ function TmsAdminAttendanceForm({
 	users: any[];
 	AttToEdit: any;
 }) {
-	const location = useLocation();
 	const [PUnchInform] = Form.useForm();
 	const [PUnchOutform] = Form.useForm();
 	const {innerWidth} = useWindowsSize();
@@ -75,7 +74,7 @@ function TmsAdminAttendanceForm({
 		setUser(userId);
 	};
 
-	const handlePunchIn = (values: any) => {
+	const handlePunchIn = async (values: any) => {
 		const punchInTime = moment.utc(values.punchInTime).format();
 
 		const payload =
@@ -93,7 +92,7 @@ function TmsAdminAttendanceForm({
 							.format(),
 						punchInTime: punchInTime,
 						punchInNote: values.punchInNote,
-						punchInLocation: location,
+						punchInLocation: await getLocation(),
 						user: user
 				  };
 		updateAttendances.mutate({
@@ -102,7 +101,7 @@ function TmsAdminAttendanceForm({
 		});
 	};
 
-	const handlePunchOut = (values: any) => {
+	const handlePunchOut = async (values: any) => {
 		const punchOutTime = moment.utc(values.punchOutTime).format();
 
 		const payload =
@@ -122,7 +121,7 @@ function TmsAdminAttendanceForm({
 						punchOutTime: punchOutTime,
 						punchOutNote: values.punchOutNote,
 						midDayExit: values.midDayExit ? true : false,
-						punchOutLocation: location,
+						punchOutLocation: await getLocation(),
 						user: user
 				  };
 		updateAttendances.mutate({
