@@ -16,6 +16,8 @@ import { BLOG } from "helpers/routePath";
 import AddMediaModel from "components/Modules/AddMediaModal";
 import CircularProgress from "components/Elements/CircularProgress/index";
 import { storage } from "firebase";
+import { THEME_TYPE_DARK } from "constants/ThemeSetting";
+import { useSelector } from "react-redux";
 
 function AddBlog() {
 	// init state
@@ -25,6 +27,8 @@ function AddBlog() {
 	const [openMedia, setopenMedia] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [progress, setProgress] = useState(null);
+	const { themeType } = useSelector((state) => state.settings);
+	const darkMode= themeType === THEME_TYPE_DARK;
 
 	// init hooks
 	const navigate = useNavigate();
@@ -247,9 +251,10 @@ function AddBlog() {
 										minHeight: 500,
 										borderWidth: 1,
 										borderStyle: "solid",
-										borderColor: "lightgray"
+										borderColor: "lightgray",
+										background : darkMode ? '#434f5a' : 'white', 
+										color : darkMode ? '#e0e0e0' : 'black'
 									}}
-									className="dark-bg"
 									editorState={editorState}
 									wrapperClassName="demo-wrapper"
 									onEditorStateChange={onEditorStateChange}
