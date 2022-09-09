@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { PUNCH_IN, PUNCH_OUT } from "constants/ActionTypes";
 import { fetchLoggedInUserAttendance } from "appRedux/actions/Attendance";
 import { Dispatch } from "redux";
-import getLocation from "helpers/getLocation";
+import getLocation, { checkLocationPermission } from "helpers/getLocation";
 
 function TmsMyAttendanceForm({
 	title,
@@ -81,28 +81,42 @@ function TmsMyAttendanceForm({
 	);
 
 	const handlePunchIn = async (values: any) => {
-		addAttendances.mutate({
-			// attendanceDate: moment()
-			// 	.startOf("day")
-			// 	.format(),
-			punchInTime: moment.utc().format(),
-			punchInNote: values.punchInNote,
-			punchInLocation: await getLocation()
-		});
+		const location = await getLocation();
+
+		if (await checkLocationPermission()) {
+			addAttendances.mutate({
+				punchInTime: moment.utc().format(),
+				punchInNote: values.punchInNote,
+				punchInLocation: location
+			});
+		} else {
+			notification({
+				message: "Please allow Location Access to Punch for Attendance",
+				type: "error"
+			});
+		}
 	};
 
 	const handlePunchOut = async (values: any) => {
+		const location = await getLocation();
 		const lastattendace = sortFromDate(latestAttendance, "punchInTime").at(-1);
 
-		punchOutAttendances.mutate({
-			userId: lastattendace._id,
-			payload: {
-				punchOutNote: values.punchOutNote,
-				midDayExit: values.midDayExit ? true : false,
-				punchOutTime: moment.utc().format(),
-				punchOutLocation: await getLocation()
-			}
-		});
+		if (await checkLocationPermission()) {
+			punchOutAttendances.mutate({
+				userId: lastattendace._id,
+				payload: {
+					punchOutNote: values.punchOutNote,
+					midDayExit: values.midDayExit ? true : false,
+					punchOutTime: moment.utc().format(),
+					punchOutLocation: location
+				}
+			});
+		} else {
+			notification({
+				message: "Please allow Location Access to Punch for Attendance",
+				type: "error"
+			});
+		}
 	};
 
 	const closeModel = () => {

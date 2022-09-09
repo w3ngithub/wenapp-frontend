@@ -15,4 +15,18 @@ const getLocation = (): Promise<[] | [number, number]> =>
 		}
 	});
 
+export const checkLocationPermission = (): Promise<boolean> =>
+	new Promise(resolve => {
+		if (navigator.permissions) {
+			navigator.permissions.query({ name: "geolocation" }).then(result => {
+				if (result.state === "granted") {
+					resolve(true);
+				}
+				resolve(false);
+			});
+		} else {
+			resolve(false);
+		}
+	});
+
 export default getLocation;

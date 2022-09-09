@@ -16,7 +16,7 @@ import { PUNCH_IN, PUNCH_OUT } from "constants/ActionTypes";
 import { fetchLoggedInUserAttendance } from "appRedux/actions/Attendance";
 import { Dispatch } from "redux";
 import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
-import getLocation from "helpers/getLocation";
+import getLocation, { checkLocationPermission } from "helpers/getLocation";
 
 function PunchInOut() {
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
@@ -89,26 +89,31 @@ function PunchInOut() {
 			setToogle(true);
 			return;
 		}
-		if (!punchIn) {
-			const lastattendace = sortFromDate(latestAttendance, "punchInTime").at(
-				-1
-			);
-			punchOutAttendances.mutate({
-				userId: lastattendace?._id,
-				payload: {
-					punchOutNote: "",
-					midDayExit: false,
-					punchOutTime: moment.utc().format(),
-					punchOutLocation: await getLocation()
-				}
-			});
+		const location = await getLocation();
+		if (await checkLocationPermission()) {
+			if (!punchIn) {
+				const lastattendace = sortFromDate(latestAttendance, "punchInTime").at(
+					-1
+				);
+				punchOutAttendances.mutate({
+					userId: lastattendace?._id,
+					payload: {
+						punchOutNote: "",
+						midDayExit: false,
+						punchOutTime: moment.utc().format(),
+						punchOutLocation: location
+					}
+				});
+			} else {
+				addAttendances.mutate({
+					punchInTime: moment.utc().format(),
+					punchInLocation: location
+				});
+			}
 		} else {
-			addAttendances.mutate({
-				// attendanceDate: moment()
-				// 	.startOf("day")
-				// 	.format(),
-				punchInTime: moment.utc().format(),
-				punchInLocation: await getLocation()
+			notification({
+				message: "Please allow Location Access to Punch for Attendance",
+				type: "error"
 			});
 		}
 	};
