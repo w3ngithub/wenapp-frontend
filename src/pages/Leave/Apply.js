@@ -87,10 +87,16 @@ function Apply({ leaves }) {
 	leaves?.forEach(leave => {
 		if (leave?.leaveDates > 1) {
 			for (let i = 0; i < leave?.leaveDates.length; i++) {
-				userLeaves.push(new DateObject(leave?.leaveDates[i]).format());
+				userLeaves.push({
+					leaveStatus: leave?.leaveStatus,
+					date: new DateObject(leave?.leaveDates[i]).format()
+				});
 			}
 		} else {
-			userLeaves.push(new DateObject(leave?.leaveDates[0]).format());
+			userLeaves.push({
+				leaveStatus: leave?.leaveStatus,
+				date: new DateObject(leave?.leaveDates[0]).format()
+			});
 		}
 	});
 	return (
@@ -121,9 +127,12 @@ function Apply({ leaves }) {
 										holiday => date.format() === holiday?.date
 									);
 									let isHoliday = holidayList?.length > 0;
-									let leaveAlreadyTakenDates = userLeaves.includes(
-										date.format()
+									let leaveDate = userLeaves?.filter(
+										leave => leave.date === date.format()
 									);
+									let leaveAlreadyTakenDates =
+										leaveDate?.length > 0 &&
+										leaveDate?.[0]?.leaveStatus !== "cancelled";
 									if (isWeekend || isHoliday || leaveAlreadyTakenDates)
 										return {
 											disabled: true,

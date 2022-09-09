@@ -56,7 +56,6 @@ function LeaveModal({
 	const [leaveId, setLeaveId] = useState(null);
 	const { themeType } = useSelector((state: any) => state.settings);
 	const [holidays, setHolidays] = useState([]);
-	const [leaves, setLeaves] = useState<any[]>([]);
 	const darkCalendar = themeType === THEME_TYPE_DARK;
 
 	const leaveTypeQuery = useQuery(["leaveType"], getLeaveTypes, {
@@ -157,10 +156,16 @@ function LeaveModal({
 	userLeavesQuery?.data?.data?.data?.data?.forEach((leave: any) => {
 		if (leave?.leaveDates > 1) {
 			for (let i = 0; i < leave?.leaveDates.length; i++) {
-				userLeaves.push(new DateObject(leave?.leaveDates[i]).format());
+				userLeaves.push({
+					leaveStatus: leave?.leaveStatus,
+					date: new DateObject(leave?.leaveDates[i]).format()
+				});
 			}
 		} else {
-			userLeaves.push(new DateObject(leave?.leaveDates[0]).format());
+			userLeaves.push({
+				leaveStatus: leave?.leaveStatus,
+				date: new DateObject(leave?.leaveDates[0]).format()
+			});
 		}
 	});
 	return (
@@ -304,9 +309,13 @@ function LeaveModal({
 												(holiday: any) => date.format() === holiday?.date
 											);
 											let isHoliday = holidayList?.length > 0;
-											let leaveAlreadyTakenDates = userLeaves?.includes(
-												date.format()
+											let leaveDate = userLeaves?.filter(
+												leave => leave.date === date.format()
 											);
+											let leaveAlreadyTakenDates =
+												leaveDate?.length > 0 &&
+												leaveDate?.[0]?.leaveStatus !== "cancelled" &&
+												!isEditMode;
 											if (isWeekend || isHoliday || leaveAlreadyTakenDates)
 												return {
 													disabled: true,

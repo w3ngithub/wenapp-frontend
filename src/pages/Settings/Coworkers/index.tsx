@@ -54,16 +54,16 @@ function Coworkers() {
 		data: positions,
 		isFetching: isPositionsFetching,
 		isLoading
-	}: any = useQuery(["positions"], getPosition);
-	const {
-		data: invitedUsers,
-		isFetching: isInviteUsersFetching
-	}: any = useQuery(["inviteUsers"], getInvitedUsers);
-	const {
-		data: positionTypes,
-		isFetching: isPositionTypesFetching
-	}: any = useQuery(["positionTypes"], getPositionTypes);
-	const { data: roles }: { data: any } = useQuery(["roles"], getRoles, {
+	} = useQuery(["positions"], getPosition);
+	const { data: invitedUsers, isFetching: isInviteUsersFetching } = useQuery(
+		["inviteUsers"],
+		getInvitedUsers
+	);
+	const { data: positionTypes, isFetching: isPositionTypesFetching } = useQuery(
+		["positionTypes"],
+		getPositionTypes
+	);
+	const { data: roles } = useQuery(["roles"], getRoles, {
 		onError: err => console.log(err),
 		select: res =>
 			res?.data?.data?.data?.map(
