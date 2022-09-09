@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card, Table, Form, Input, Button, DatePicker } from "antd";
+import { Card, Table, Form, Input, Button } from "antd";
 import CircularProgress from "components/Elements/CircularProgress";
 import { changeDate, handleResponse } from "helpers/utils";
 import moment from "moment";
@@ -13,9 +13,7 @@ import {
 } from "services/noticeboard";
 import { NOTICE_COLUMNS } from "constants/Notice";
 import NoticeBoardModal from "components/Modules/noticeboardModal";
-import useWindowsSize from "hooks/useWindowsSize";
 
-const { RangePicker } = DatePicker;
 const Search = Input.Search;
 const FormItem = Form.Item;
 
@@ -33,18 +31,16 @@ function NoticeBoardPage() {
 	// init hooks
 	const [sort, setSort] = useState({});
 	const [title, setTitle] = useState("");
-	const {innerWidth} = useWindowsSize()
+	const [typedNotice, setTypedNotice] = useState('');
 	const [date, setDate] = useState(undefined);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
 	const [noticeRecord, setNoticeRecord] = useState({});
 	const [readOnly, setReadOnly] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
-	const [form] = Form.useForm()
+	const [form] = Form.useForm();
 
 	const queryClient = useQueryClient();
-
-	const noticeRef = useRef("");
 
 	const { data, isLoading, isError, isFetching } = useQuery(
 		["notices", page, title, date],
@@ -156,7 +152,7 @@ function NoticeBoardPage() {
 	const handleResetFilter = () => {
 		setTitle("");
 		setDate(undefined);
-		noticeRef.current.input.state.value = "";
+		setTypedNotice('');
 	};
 
 	const confirmDeleteProject = notice => {
@@ -217,8 +213,8 @@ function NoticeBoardPage() {
 			<Card title="Notice Board">
 				<div className="components-table-demo-control-bar">
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row">
-						<Form layout="inline" form={form} > 
-							<FormItem style={{marginBottom: '-2px'}}>
+						<Form layout="inline" form={form}>
+							<FormItem style={{ marginBottom: "-2px" }}>
 								<Search
 									allowClear
 									placeholder="Search Notices"
@@ -226,9 +222,10 @@ function NoticeBoardPage() {
 										setPage(prev => ({ ...prev, page: 1 }));
 										setTitle(value);
 									}}
-									style={{ marginBottom: '16px' }}
+									onChange={e => setTypedNotice(e.target.value)}
+									value={typedNotice}
+									style={{ marginBottom: "16px" }}
 									enterButton
-									ref={noticeRef}
 								/>
 							</FormItem>
 							{/* <FormItem>
@@ -238,7 +235,7 @@ function NoticeBoardPage() {
 									style={{ width: "240px" }}
 								/>
 							</FormItem> */}
-							<FormItem style={{marginBottom: '-2px'}}>
+							<FormItem style={{ marginBottom: "-2px" }}>
 								<Button
 									className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}
