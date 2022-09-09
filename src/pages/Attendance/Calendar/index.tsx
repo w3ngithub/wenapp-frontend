@@ -11,11 +11,13 @@ import {
 import { searchAttendacentOfUser } from "services/attendances";
 import { monthlyState } from "constants/Attendance";
 import { getLeavesOfAllUsers } from "services/leaves";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const localizer = momentLocalizer(moment);
 
 function AttendanceCalendar() {
 	const user = getLocalStorageData("user_id");
+	const {innerWidth} = useWindowsSize();
 	const [date, setDate] = useState(monthlyState);
 	const { data, isLoading } = useQuery(["userAttendance", user, date], () =>
 		searchAttendacentOfUser({
@@ -52,7 +54,8 @@ function AttendanceCalendar() {
 	const handleEventStyle = (event: any) => {
 		let style: any = {
 			fontSize: "13px",
-			width: "fit-content",
+			width: 'fit-content',
+			// width: innerWidth <=729 ? '2.5rem' : 'fit-content',
 			margin: "0px auto",
 			fontWeight: "500",
 			height: "27px",
