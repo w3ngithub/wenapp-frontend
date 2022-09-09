@@ -184,7 +184,10 @@ function LogtimeModal({
 								filterOption={filterOptions}
 								placeholder="Select Project"
 							>
-								{projectsQuery?.data?.data?.data?.data.map(project => (
+								{[
+									...(projectsQuery?.data?.data?.data?.data || []),
+									{ _id: process.env.REACT_APP_OTHER_PROJECT_ID, name: "Other" }
+								].map(project => (
 									<Option value={project._id} key={project._id}>
 										{project.name}
 									</Option>
@@ -200,7 +203,7 @@ function LogtimeModal({
 						name="remarks"
 						rules={[
 							{
-								validator: async(rule, value ) => {
+								validator: async (rule, value) => {
 									try {
 										if (!value) throw new Error("Required!");
 
@@ -211,7 +214,6 @@ function LogtimeModal({
 									} catch (err) {
 										throw new Error(err.message);
 									}
-
 								}
 							}
 						]}
