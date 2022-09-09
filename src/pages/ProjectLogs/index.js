@@ -293,7 +293,7 @@ function ProjectLogs() {
 								</Select>
 							</FormItem>
 
-							<FormItem style={{marginBottom :  0}}>
+							<FormItem style={{marginBottom :  '0.8rem'}}>
 								<Button
 									className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 									onClick={handleResetFilter}
@@ -305,6 +305,7 @@ function ProjectLogs() {
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white "
 							onClick={handleOpenAddModal}
+							style={{marginBottom : '16px'}}
 						>
 							Add New TimeLog
 						</Button>

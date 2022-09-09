@@ -177,16 +177,16 @@ function Leaves({
 							/>
 						</FormItem>
 
-						<FormItem style={{marginBottom: '0.8px'}}>
+						<FormItem style={{marginBottom: '3px'}}>
 							<Button
-								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+								className="gx-btn-primary gx-text-white"
 								onClick={handleResetFilter}
 							>
 								Reset
 							</Button>
 						</FormItem>
 					</Form>
-					<div>
+					<div className="gx-btn-form"> 
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 							onClick={handleOpenModal}

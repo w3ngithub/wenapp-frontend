@@ -232,6 +232,7 @@ function AddBlog() {
 							<>
 								<Button
 									type="primary"
+									className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
 									htmlType="button"
 									icon={<CameraOutlined />}
 									onClick={() => {
@@ -248,6 +249,7 @@ function AddBlog() {
 										borderStyle: "solid",
 										borderColor: "lightgray"
 									}}
+									className="dark-bg"
 									editorState={editorState}
 									wrapperClassName="demo-wrapper"
 									onEditorStateChange={onEditorStateChange}
@@ -271,7 +273,11 @@ function AddBlog() {
 							</Select>
 						</Form.Item>
 						<Form.Item>
-							<Button type="primary" htmlType="submit">
+							<Button
+								type="primary"
+								htmlType="submit"
+								className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+							>
 								Publish
 							</Button>
 						</Form.Item>

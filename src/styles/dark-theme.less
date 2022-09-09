@@ -1221,6 +1221,10 @@ body.dark-theme {
 		}
 	}
 
+	& .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+		background : @dark-theme-component-background
+	}
+
 	& .ant-table {
 		color: @dark-theme-text-color !important;
 		background: @dark-theme-component-background !important;
@@ -1642,7 +1646,11 @@ body.dark-theme {
 	}
 
 	.ant-input-password {
-		background-color: white !important;
+		background-color: @dark-theme-component-background  !important;
+	}
+
+	.ant-select-multiple .ant-select-selection-item {
+		background: @dark-theme-component-background;
 	}
 
 	.gx-app-login-wrap {
