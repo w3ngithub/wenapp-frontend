@@ -1,4 +1,4 @@
-const getLocation = () =>
+const getLocation = (): Promise<[] | [number, number]> =>
 	new Promise(resolve => {
 		if ("geolocation" in navigator) {
 			navigator.geolocation.getCurrentPosition(
