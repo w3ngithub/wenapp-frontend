@@ -325,7 +325,7 @@ function ProjectsPage() {
 						</div>
 					</div>
 					<Form layout="inline" className="gx-d-flex gx-flex-row" form={form}>
-						<FormItem className="direct-form-item">
+						<FormItem className="direct-form-search">
 							<Select
 								placeholder="Select Project Type"
 								onChange={handleProjectTypeChange}
@@ -341,7 +341,7 @@ function ProjectsPage() {
 									))}
 							</Select>
 						</FormItem>
-						<FormItem className="direct-form-item">
+						<FormItem className="direct-form-search">
 							<Select
 								placeholder="Select Project Status"
 								onChange={handleProjectStatusChange}
@@ -357,7 +357,7 @@ function ProjectsPage() {
 									))}
 							</Select>
 						</FormItem>
-						<FormItem className="direct-form-item">
+						<FormItem className="direct-form-search">
 							<Select
 								placeholder="Select Client"
 								onChange={handleClientChange}
@@ -373,7 +373,7 @@ function ProjectsPage() {
 									))}
 							</Select>
 						</FormItem>
-						<FormItem className="direct-form-item">
+						<FormItem className="direct-form-search">
 							<Select
 								placeholder="Select Developer"
 								onChange={handleDeveloperChange}
@@ -389,7 +389,7 @@ function ProjectsPage() {
 									))}
 							</Select>
 						</FormItem>
-						<FormItem className="direct-form-item">
+						<FormItem className="direct-form-search">
 							<Select
 								placeholder="Select Designer"
 								onChange={handleDesignerChange}
@@ -405,7 +405,7 @@ function ProjectsPage() {
 									))}
 							</Select>
 						</FormItem>
-						<FormItem className="direct-form-item">
+						<FormItem className="direct-form-search">
 							<Select
 								placeholder="Select QA"
 								onChange={handleQaChange}
