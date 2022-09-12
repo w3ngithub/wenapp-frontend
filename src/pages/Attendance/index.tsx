@@ -1,15 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Tabs } from "antd";
 import UserAttendance from "./UserAttendance";
 import AdminAttendance from "./AdminAttendance";
 import LateAttendance from "./LateAttendance";
 import AttendanceCalendar from "./Calendar";
 import AdminAttendanceCalendar from "./AdminCalendar";
+import { useLocation } from "react-router-dom";
 
 function Attendace() {
+	const { state }: { state: any } = useLocation();
+
+	const [tabKey, setTabKey] = useState("1");
+
+	useEffect(() => {
+		setTabKey(state?.tab);
+	}, [state?.tab]);
+
 	return (
 		<Card title="Attendance">
-			<Tabs type="card">
+			<Tabs
+				type="card"
+				activeKey={tabKey || "1"}
+				onChange={tab => {
+					setTabKey(tab);
+				}}
+			>
 				<Tabs.TabPane key="1" tab="My Attendance">
 					<UserAttendance />
 				</Tabs.TabPane>
