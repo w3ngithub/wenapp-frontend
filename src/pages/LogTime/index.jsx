@@ -30,7 +30,7 @@ const formattedLogs = logs => {
 		logType: log?.logType?.name,
 		logDate: changeDate(log?.logDate),
 		user: log?.user?.name,
-		project: log?.project?.name
+		project: log?.project?.name || "Other"
 	}));
 };
 

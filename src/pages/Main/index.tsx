@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import { connect } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ConfigProvider } from "antd";
@@ -40,21 +40,22 @@ import {
 	WEEKLY_REPORT,
 	WORK_LOG_REPORT
 } from "helpers/routePath";
-import Coworkers from "pages/Coworkers";
-import Projects from "pages/Projects";
 import { ProtectedRoute } from "components/Elements/ProtectedRoute";
-import LogTime from "pages/LogTime";
-import Leave from "pages/Leave";
-import Noticeboard from "pages/Noticeboard";
-import Blog from "pages/Blog";
-import Reports from "pages/Reports";
-import Resources from "pages/Resources";
-import Settings from "pages/Settings";
-import Attendace from "pages/Attendance";
-import Dashboard from "pages/Dashboard";
+// import Coworkers from "pages/Coworkers";
+// import Projects from "pages/Projects";
+// import LogTime from "pages/LogTime";
+// import Leave from "pages/Leave";
+// import Noticeboard from "pages/Noticeboard";
+// import Blog from "pages/Blog";
+// import Reports from "pages/Reports";
+// import Resources from "pages/Resources";
+// import Settings from "pages/Settings";
+// import Attendace from "pages/Attendance";
+// import Dashboard from "pages/Dashboard";
+// import Overview from "pages/Overview";
+// import ProjectLogs from "pages/ProjectLogs";
 import Profile from "pages/Profile";
 import InviteUserSignup from "pages/InviteUserSignup";
-import ProjectLogs from "pages/ProjectLogs";
 import WeeklyReport from "pages/Reports/WeeklyReport";
 import WorkLogReport from "pages/Reports/WorkLogReport";
 import LeaveReport from "pages/Reports/LeaveReport";
@@ -64,10 +65,24 @@ import Holiday from "pages/Resources/Holiday";
 import Blogs from "pages/Blog/Blogs";
 import BlogDetail from "pages/Blog/BlogDetail";
 import AddBlog from "pages/Blog/AddBlog";
-import Overview from "pages/Overview";
 import { THEME_TYPE_DARK } from "constants/ThemeSetting";
 import ForgotPassword from "containers/ForgotPassword";
 import ResetPassword from "containers/ResetPassword";
+import CircularProgress from "components/Elements/CircularProgress";
+
+const Dashboard = lazy(() => import("pages/Dashboard"));
+const Overview = lazy(() => import("pages/Overview"));
+const Coworkers = lazy(() => import("pages/Coworkers"));
+const Projects = lazy(() => import("pages/Projects"));
+const Attendace = lazy(() => import("pages/Attendance"));
+const LogTime = lazy(() => import("pages/LogTime"));
+const Leave = lazy(() => import("pages/Leave"));
+const Noticeboard = lazy(() => import("pages/Noticeboard"));
+const Blog = lazy(() => import("pages/Blog"));
+const Reports = lazy(() => import("pages/Reports"));
+const Resources = lazy(() => import("pages/Resources"));
+const Settings = lazy(() => import("pages/Settings"));
+const ProjectLogs = lazy(() => import("pages/ProjectLogs"));
 
 function App(props: any) {
 	const { locale, authUser, themeType } = props;
@@ -98,33 +113,124 @@ function App(props: any) {
 
 					<Route element={<ProtectedRoute auth={authUser} />}>
 						<Route element={<MainApp />}>
-							<Route path={DASHBOARD} element={<Dashboard />} />
-							<Route path={OVERVIEW} element={<Overview />} />
-							<Route path={COWORKERS} element={<Coworkers />} />
-							<Route path={PROJECTS} element={<Projects />}></Route>
-							<Route path={ATTENDANCE} element={<Attendace />} />
-							<Route path={LOGTIME} element={<LogTime />} />
-							<Route path={LEAVE} element={<Leave />} />
-							<Route path={NOTICEBOARD} element={<Noticeboard />} />
-							<Route path={BLOG} element={<Blog />}>
+							<Route
+								path={DASHBOARD}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Dashboard />
+									</Suspense>
+								}
+							/>
+							<Route
+								path={OVERVIEW}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Overview />
+									</Suspense>
+								}
+							/>
+							<Route
+								path={COWORKERS}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Coworkers />
+									</Suspense>
+								}
+							/>
+							<Route
+								path={PROJECTS}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Projects />
+									</Suspense>
+								}
+							></Route>
+							<Route
+								path={ATTENDANCE}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Attendace />
+									</Suspense>
+								}
+							/>
+							<Route
+								path={LOGTIME}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<LogTime />
+									</Suspense>
+								}
+							/>
+							<Route
+								path={LEAVE}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Leave />
+									</Suspense>
+								}
+							/>
+							<Route
+								path={NOTICEBOARD}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Noticeboard />
+									</Suspense>
+								}
+							/>
+							<Route
+								path={BLOG}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Blog />
+									</Suspense>
+								}
+							>
 								<Route path={BLOGS} element={<Blogs />} />
 								<Route path={ADDBLOG} element={<AddBlog />} />
 								<Route path={EDITBLOG} element={<AddBlog />} />
 								<Route path={BLOGDETAIL} element={<BlogDetail />} />
 							</Route>
-							<Route path={REPORTS} element={<Reports />}>
+							<Route
+								path={REPORTS}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Reports />
+									</Suspense>
+								}
+							>
 								<Route path={WEEKLY_REPORT} element={<WeeklyReport />} />
 								<Route path={WORK_LOG_REPORT} element={<WorkLogReport />} />
 								<Route path={LEAVE_REPORT} element={<LeaveReport />} />
 							</Route>
-							<Route path={RESOURCES} element={<Resources />}>
+							<Route
+								path={RESOURCES}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Resources />
+									</Suspense>
+								}
+							>
 								<Route path={FAQS} element={<Faqs />} />
 								<Route path={POLICY} element={<Policy />} />
 								<Route path={HOLIDAY} element={<Holiday />} />
 							</Route>
-							<Route path={SETTINGS} element={<Settings />} />
+							<Route
+								path={SETTINGS}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<Settings />
+									</Suspense>
+								}
+							/>
+							<Route
+								path={PROJECT_LOG}
+								element={
+									<Suspense fallback={<FallBack />}>
+										<ProjectLogs />
+									</Suspense>
+								}
+							/>
 							<Route path={PROFILE} element={<Profile />} />
-							<Route path={PROJECT_LOG} element={<ProjectLogs />} />
 						</Route>
 					</Route>
 				</Routes>
@@ -132,6 +238,8 @@ function App(props: any) {
 		</ConfigProvider>
 	);
 }
+
+const FallBack = () => <CircularProgress className="" />;
 
 const mapStateToProps = ({ settings, auth }: { settings: any; auth: any }) => {
 	const { locale, themeType } = settings;

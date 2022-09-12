@@ -1,4 +1,4 @@
-const getLocation = () =>
+const getLocation = (): Promise<[] | [number, number]> =>
 	new Promise(resolve => {
 		if ("geolocation" in navigator) {
 			navigator.geolocation.getCurrentPosition(
@@ -12,6 +12,20 @@ const getLocation = () =>
 			);
 		} else {
 			return resolve([]);
+		}
+	});
+
+export const checkLocationPermission = (): Promise<boolean> =>
+	new Promise(resolve => {
+		if (navigator.permissions) {
+			navigator.permissions.query({ name: "geolocation" }).then(result => {
+				if (result.state === "granted") {
+					resolve(true);
+				}
+				resolve(false);
+			});
+		} else {
+			resolve(false);
 		}
 	});
 

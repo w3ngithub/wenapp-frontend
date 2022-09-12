@@ -26,12 +26,15 @@ const intialDate = [
 ];
 
 const formattedWeeklyReports = (reports, clients) => {
-	return reports?.map(report => ({
-		key: report?.project?.[0]?._id,
-		name: report?.project?.[0]?.name,
-		client: clients[report?.project?.[0]?.client] || "",
-		timeSpent: roundedToFixed(report?.timeSpent || 0, 2)
-	}));
+	console.log(reports);
+	return reports
+		?.filter(reportFil => reportFil.project?.length !== 0)
+		?.map(report => ({
+			key: report?.project?.[0]?._id,
+			name: report?.project?.[0]?.name,
+			client: clients[report?.project?.[0]?.client] || "",
+			timeSpent: roundedToFixed(report?.timeSpent || 0, 2)
+		}));
 };
 
 function WeeklyReport() {
