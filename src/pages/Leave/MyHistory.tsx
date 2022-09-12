@@ -6,6 +6,7 @@ import { changeDate } from "helpers/utils";
 import useWindowsSize from "hooks/useWindowsSize";
 import moment, { Moment } from "moment";
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { getLeavesOfUser } from "services/leaves";
 
 const FormItem = Form.Item;
@@ -32,9 +33,16 @@ function MyHistory({
 	isLoading: boolean;
 }) {
 	const [form] = Form.useForm();
+	const location: any = useLocation();
+	let selectedDate = location.state?.date;
 	const { innerWidth } = useWindowsSize();
 	const [leaveStatus, setLeaveStatus] = useState("");
-	const [date, setDate] = useState<{ moment: Moment; utc: string }>();
+	const [date, setDate] = useState<{ moment: Moment | undefined; utc: string }>(
+		{
+			utc: selectedDate ? selectedDate : undefined,
+			moment: selectedDate ? moment(selectedDate).startOf("day") : undefined
+		}
+	);
 
 	const [page, setPage] = useState(defaultPage);
 
@@ -60,20 +68,22 @@ function MyHistory({
 	const handleDateChange = (value: any) => {
 		if (page?.page > 1) setPage(defaultPage);
 
-		const m = new Date(value._d);
-		m.setHours(5);
-		m.setMinutes(45);
-		m.setSeconds(0);
 		setDate({
 			moment: value,
-			utc: moment.utc(moment(m)).format()
+			utc: moment
+				.utc(value._d)
+				.startOf("day")
+				.format()
 		});
 	};
 
 	const handleResetFilter = () => {
 		setLeaveStatus("");
 		setPage(defaultPage);
-		setDate(undefined);
+		setDate({
+			utc: "",
+			moment: undefined
+		});
 	};
 	return (
 		<div>

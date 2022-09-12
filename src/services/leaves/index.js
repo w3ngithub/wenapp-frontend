@@ -20,10 +20,16 @@ const getTakenAndRemainingLeaveDaysOfUser = async id => {
 	}
 };
 
-const getLeavesOfAllUsers = async (status = "", user = "", date = "") => {
+const getLeavesOfAllUsers = async (
+	status = "",
+	user = "",
+	date = "",
+	page = 1,
+	limit = 10
+) => {
 	try {
 		let response = await API.get(
-			`${Apis.Leaves}?leaveStatus=${status}&user=${user}&leaveDates=${date}`
+			`${Apis.Leaves}?leaveStatus=${status}&user=${user}&leaveDates=${date}&page=${page}&limit=${limit}`
 		);
 		return getAPIResponse(response);
 	} catch (err) {

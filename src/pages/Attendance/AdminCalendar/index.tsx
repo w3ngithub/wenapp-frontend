@@ -132,9 +132,14 @@ function AdminAttendanceCalendar() {
 	});
 
 	const handleSelectEvent = (data: any) => {
-		navigate(`/${ATTENDANCE}`, {
-			state: { tab: "3", date: data?.id?.attendanceDate, user }
-		});
+		if (data.type === "leave")
+			navigate(`/leave`, {
+				state: { tabKey: "3", date: new Date(data?.start).toJSON(), user }
+			});
+		else
+			navigate(`/${ATTENDANCE}`, {
+				state: { tab: "3", date: data?.id?.attendanceDate, user }
+			});
 	};
 
 	return (

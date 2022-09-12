@@ -3,14 +3,9 @@ import { Card, Tabs } from "antd";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	changeLeaveStatus,
-	getLeavesOfUser,
 	getTakenAndRemainingLeaveDaysOfUser
 } from "services/leaves";
-import {
-	formatToUtc,
-	getLocalStorageData,
-	handleResponse
-} from "helpers/utils";
+import { getLocalStorageData, handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
 import RemainingAndAppliedLeaveCards from "./RemainingAndAppliedLeaveCards";
 import LeavesApply from "./Apply";
@@ -19,7 +14,6 @@ import CircularProgress from "components/Elements/CircularProgress";
 import LeavesCalendar from "./LeavesCalendar";
 import { useLocation } from "react-router-dom";
 import MyHistory from "./MyHistory";
-import moment from "moment";
 
 const TabPane = Tabs.TabPane;
 
@@ -62,10 +56,6 @@ function Leave() {
 		setSelectedRows(rows);
 	};
 
-	function handleTabChange(key) {
-		// if (key === "3") leavesQuery.refetch();
-	}
-
 	if (leaveDaysQuery.isLoading) return <CircularProgress />;
 	return (
 		<Card title="Leave Management System">
@@ -76,11 +66,7 @@ function Leave() {
 				leavesTaken={leaveDaysQuery?.data?.data?.data?.data[0]?.leavesTaken}
 			/>
 
-			<Tabs
-				type="card"
-				defaultActiveKey={location?.state?.tabKey}
-				onChange={handleTabChange}
-			>
+			<Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
 				<TabPane tab="Apply" key="1">
 					<LeavesApply user={loggedInUser?._id} />
 				</TabPane>
@@ -116,7 +102,9 @@ function Leave() {
 					<>
 						<TabPane tab="Leaves" key="3">
 							<Leaves
+								selectedUser={location?.state?.user}
 								status={location?.state?.leaveStatus}
+								selectedDate={location?.state?.date}
 								selectedRows={selectedRows}
 								handleCancelLeave={handleCancelLeave}
 								rowSelection={{

@@ -125,9 +125,14 @@ function AttendanceCalendar() {
 	});
 
 	const handleSelectEvent = (data: any) => {
-		navigate(`/${ATTENDANCE}`, {
-			state: { tab: "1", date: data?.id?.attendanceDate }
-		});
+		if (data.type === "leave")
+			navigate(`/leave`, {
+				state: { tabKey: "2", date: new Date(data?.start).toJSON() }
+			});
+		else
+			navigate(`/${ATTENDANCE}`, {
+				state: { tab: "1", date: data?.id?.attendanceDate }
+			});
 	};
 
 	return (
