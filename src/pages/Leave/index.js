@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { Card, Table, Tabs } from "antd";
-import { LEAVES_COLUMN } from "constants/Leaves";
+import { Card, Tabs } from "antd";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	changeLeaveStatus,
 	getLeavesOfUser,
 	getTakenAndRemainingLeaveDaysOfUser
 } from "services/leaves";
-import { changeDate, getLocalStorageData, handleResponse } from "helpers/utils";
+import {
+	formatToUtc,
+	getLocalStorageData,
+	handleResponse
+} from "helpers/utils";
 import { notification } from "helpers/notification";
 import RemainingAndAppliedLeaveCards from "./RemainingAndAppliedLeaveCards";
 import LeavesApply from "./Apply";
@@ -15,31 +18,18 @@ import Leaves from "./Leaves";
 import CircularProgress from "components/Elements/CircularProgress";
 import LeavesCalendar from "./LeavesCalendar";
 import { useLocation } from "react-router-dom";
+import MyHistory from "./MyHistory";
+import moment from "moment";
 
 const TabPane = Tabs.TabPane;
 
-const formattedLeaves = leaves => {
-	return leaves?.map(leave => ({
-		...leave,
-		key: leave._id,
-		dates: leave?.leaveDates.map(date => changeDate(date)).join(" , "),
-		type: leave?.leaveType.name,
-		status: leave?.leaveStatus
-	}));
-};
-
 function Leave() {
-	const queryClient = useQueryClient();
 	const location = useLocation();
+	const queryClient = useQueryClient();
 
-	const [page, setPage] = useState({ page: 1, limit: 10 });
 	const [selectedRows, setSelectedRows] = useState([]);
 
 	const loggedInUser = getLocalStorageData("user_id");
-
-	const userLeavesQuery = useQuery(["userLeaves"], () =>
-		getLeavesOfUser(loggedInUser._id)
-	);
 
 	const leaveDaysQuery = useQuery(["takenAndRemainingLeaveDays"], () =>
 		getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
@@ -68,14 +58,6 @@ function Leave() {
 		leaveCancelMutation.mutate({ id: leave._id, type: "cancel" });
 	};
 
-	const onShowSizeChange = (_, pageSize) => {
-		setPage(prev => ({ ...page, limit: pageSize }));
-	};
-
-	const handlePageChange = pageNumber => {
-		setPage(prev => ({ ...prev, page: pageNumber }));
-	};
-
 	const handleRowSelect = rows => {
 		setSelectedRows(rows);
 	};
@@ -100,10 +82,14 @@ function Leave() {
 				onChange={handleTabChange}
 			>
 				<TabPane tab="Apply" key="1">
-					<LeavesApply leaves={userLeavesQuery?.data?.data?.data?.data} />
+					<LeavesApply user={loggedInUser?._id} />
 				</TabPane>
 				<TabPane tab="My History" key="2">
-					<Table
+					<MyHistory
+						userId={loggedInUser?._id}
+						handleCancelLeave={handleCancelLeave}
+					/>
+					{/* <Table
 						className="gx-table-responsive"
 						columns={LEAVES_COLUMN(handleCancelLeave).filter(
 							(item, index) => index !== 0
@@ -124,7 +110,7 @@ function Leave() {
 						loading={
 							userLeavesQuery.isFetching || leaveCancelMutation.isLoading
 						}
-					/>
+					/> */}
 				</TabPane>
 				{loggedInUser?.role?.value === "Admin" && (
 					<>

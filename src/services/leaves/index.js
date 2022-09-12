@@ -31,9 +31,14 @@ const getLeavesOfAllUsers = async (status = "", user = "", date = "") => {
 	}
 };
 
-const getLeavesOfUser = async id => {
+const getLeavesOfUser = async (id, status = "", date, page = 1, limit = 10) => {
 	try {
-		let response = await API.get(`${Apis.Leaves}?user=${id}`);
+		let response = await API.get(
+			`${
+				Apis.Leaves
+			}?user=${id}&page=${page}&limit=${limit}&leaveStatus=${status}&leaveDates=${date ??
+				""}`
+		);
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err?.response);

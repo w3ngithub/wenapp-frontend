@@ -3,7 +3,7 @@ import { Button, Checkbox, Col, Input, Row, Select, Spin, Form } from "antd";
 import { filterOptions, handleResponse } from "helpers/utils";
 import React, { useState } from "react";
 import { Calendar, DateObject } from "react-multi-date-picker";
-import { createLeave, getLeaveTypes } from "services/leaves";
+import { createLeave, getLeavesOfUser, getLeaveTypes } from "services/leaves";
 import { useSelector } from "react-redux";
 import { getTeamLeads } from "services/users/userDetails";
 import { notification } from "helpers/notification";
@@ -15,13 +15,15 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 const Option = Select.Option;
 
-function Apply({ leaves }) {
+function Apply({ user }) {
 	const [form] = Form.useForm();
 	const queryClient = useQueryClient();
 	const { themeType } = useSelector(state => state.settings);
 	const darkCalendar = themeType === THEME_TYPE_DARK;
 
 	const [leaveType, setLeaveType] = useState("");
+
+	const userLeavesQuery = useQuery(["userLeaves"], () => getLeavesOfUser(user));
 
 	const { data: Holidays } = useQuery(["DashBoardHolidays"], () =>
 		getAllHolidays({ sort: "-createdAt", limit: "1" })
@@ -84,7 +86,7 @@ function Apply({ leaves }) {
 			name: holiday?.title
 		})
 	);
-	leaves?.forEach(leave => {
+	userLeavesQuery?.data?.data?.data?.data?.forEach(leave => {
 		if (leave?.leaveDates > 1) {
 			for (let i = 0; i < leave?.leaveDates.length; i++) {
 				userLeaves.push({
