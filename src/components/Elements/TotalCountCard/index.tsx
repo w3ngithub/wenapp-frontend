@@ -6,7 +6,7 @@ const TotalCountCard = ({
 	isLink,
 	totalCount,
 	label,
-	className = "gx-blue-cyan-gradient",
+	className = "gx-bg-blue-cyan-gradient",
 	icon: Icon = TeamOutlined,
 	onClick
 }: {

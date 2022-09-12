@@ -248,7 +248,7 @@ const Dashboard = () => {
 				<Col xl={width} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
-						className="gx-cyan-green-gradient"
+						className="gx-bg-cyan-green-gradient"
 						totalCount={ActiveUsers?.data?.data?.user || 0}
 						label="Total Co-workers"
 						onClick={
@@ -263,7 +263,7 @@ const Dashboard = () => {
 					<TotalCountCard
 						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						icon={LoginOutlined}
-						className="gx-pink-purple-corner-gradient"
+						className="gx-bg-pink-purple-corner-gradient"
 						totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
 						label="Co-workers Punched In Today"
 						onClick={
@@ -278,7 +278,7 @@ const Dashboard = () => {
 						<TotalCountCard
 							isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 							icon={ExceptionOutlined}
-							className="gx-pink-orange-corner-gradient"
+							className="gx-bg-pink-orange-corner-gradient"
 							totalCount={PendingLeaves?.data?.data?.leaves || 0}
 							label="Pending Leave Request"
 							onClick={() =>
