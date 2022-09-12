@@ -66,7 +66,9 @@ function LogtimeModal({
 								minutes: initialValues?.minutes,
 								logType: initialValues?.logType._id,
 								remarks: initialValues?.remarks,
-								project: initialValues?.project._id
+								project:
+									initialValues?.project?._id ||
+									process.env.REACT_APP_OTHER_PROJECT_ID
 						  }
 						: {
 								logDate: moment(initialValues?.logDate),

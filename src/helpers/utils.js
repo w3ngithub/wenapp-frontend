@@ -336,7 +336,7 @@ export function dayCheck(date) {
 	return mom.calendar(null, {
 		sameDay: "[Today]",
 		nextDay: "[Tomorrow]",
-		nextWeek: "[Next] dddd",
+		nextWeek: "dddd",
 		lastDay: "[Yesterday]",
 		lastWeek: "[Last] dddd",
 		sameElse: "DD/MM/YYYY"

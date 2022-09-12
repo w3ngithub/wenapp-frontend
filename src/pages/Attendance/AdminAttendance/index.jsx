@@ -23,6 +23,7 @@ import { getAllUsers } from "services/users/userDetails";
 import TmsAdminAttendanceForm from "components/Modules/TmsAdminAttendanceForm";
 import TmsAdminAddAttendanceForm from "components/Modules/TmsAdminAttendanceForm/Add";
 import CustomIcon from "components/Elements/Icons";
+import { useLocation } from "react-router-dom";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -55,6 +56,7 @@ const formattedAttendances = attendances => {
 
 function AdminAttendance() {
 	//init hooks
+	const { state } = useLocation();
 	const [sort, setSort] = useState({});
 	const [form] = Form.useForm();
 	const [page, setPage] = useState({ page: 1, limit: 10 });
@@ -65,8 +67,15 @@ function AdminAttendance() {
 	const [attFilter, setAttFilter] = useState({ id: "1", value: "Daily" });
 	const [toggleAdd, setToggleAdd] = useState(false);
 	const [toggleEdit, setToggleEdit] = useState(false);
-
 	const [AttToEdit, setAttToEdit] = useState({});
+
+	// set inital date to date selected from Co-workers attendance calendar
+	useEffect(() => {
+		if (state?.date && state?.user) {
+			setDate([moment(state.date), moment(state.date)]);
+			setUser(state?.user);
+		}
+	}, [state?.date, state?.user]);
 
 	const { data: users } = useQuery(["userForAttendances"], () =>
 		getAllUsers({ fields: "name" })
