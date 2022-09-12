@@ -14,7 +14,7 @@ function Attendace() {
 
 	useEffect(() => {
 		setTabKey(state?.tab);
-	}, [state?.tab]);
+	}, [state]);
 
 	return (
 		<Card title="Attendance">
