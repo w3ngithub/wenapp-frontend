@@ -18,7 +18,6 @@ import {
 } from "services/users/userDetails";
 import ImportUsers from "./ImportUsers";
 import Select from "components/Elements/Select";
-import useWindowsSize from "hooks/useWindowsSize";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -53,7 +52,6 @@ function CoworkersPage() {
 
 	// get user detail from storage
 	const { user } = JSON.parse(localStorage.getItem("user_id"));
-	const {innerWidth} = useWindowsSize()
 	const [form] = Form.useForm();
 
 	const { data: roleData } = useQuery(["userRoles"], getUserRoles);

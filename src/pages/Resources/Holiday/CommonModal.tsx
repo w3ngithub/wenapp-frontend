@@ -187,6 +187,7 @@ const CommonModal = (props: modalType) => {
 													<MinusCircleOutlined
 														onClick={() => remove(field.name)}
 														style={{ marginBottom: 20 }}
+														className="svg-clear"
 													/>
 												</Col>
 											</Row>

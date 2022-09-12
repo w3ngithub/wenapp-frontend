@@ -124,6 +124,7 @@ function PunchInOut() {
 				className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 				icon={<ScheduleOutlined />}
 				disabled={addAttendances.isLoading || punchOutAttendances.isLoading}
+				style={{ width: "200px" }}
 			>
 				{punchIn ? "Punch In" : "Punch Out"}
 				<LiveTime />

@@ -141,7 +141,6 @@ function AdminAttendanceCalendar() {
 									id: x._id,
 									value: x.name
 								}))}
-								
 							/>
 						</FormItem>
 
@@ -167,7 +166,6 @@ function AdminAttendanceCalendar() {
 						popup
 						eventPropGetter={handleEventStyle}
 						views={["month", "week", "day"]}
-						showAllEvents
 					/>
 				</div>
 			</Spin>

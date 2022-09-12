@@ -62,6 +62,26 @@ body.dark-theme {
 			color: lighten(@dark-theme-text-color, 30%);
 		}
 	}
+	& .rdw-editor-toolbar {
+		background: @dark-theme-component-background;
+	}
+	& .rdw-option-wrapper {
+		background: @dark-theme-component-background;
+	}
+
+	& .rdw-option-wrapper {
+		img {
+			filter: invert(1)
+		}
+	}
+
+	& .rdw-dropdown-wrapper {
+		background: @dark-theme-component-background;
+	}
+
+	& .svg-clear {
+		color: @dark-theme-text-color;
+	}
 
 	& .ant-form-item-control-input {
 		& .ant-input[disabled] {
@@ -2714,7 +2734,6 @@ body.dark-theme {
 
 	& .rdw-editor-wrapper {
 		color: darken(@dark-theme-text-color, 60%);
-		background-color: @component-background;
 
 		& + textarea {
 			color: darken(@dark-theme-text-color, 60%);
