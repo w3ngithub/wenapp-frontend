@@ -18,6 +18,7 @@ import {
 } from "services/users/userDetails";
 import ImportUsers from "./ImportUsers";
 import Select from "components/Elements/Select";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -40,6 +41,7 @@ function CoworkersPage() {
 	const [activeUser, setActiveUser] = useState("");
 	const [defaultUser, setDefaultUser] = useState("");
 	const [position, setPosition] = useState(undefined);
+	const {innerWidth} = useWindowsSize();
 	const [role, setRole] = useState(undefined);
 	const [name, setName] = useState("");
 	const [typedName, setTypedName] = useState("");
@@ -199,7 +201,7 @@ function CoworkersPage() {
 					/>
 					<div className="gx-d-flex gx-justify-content-between gx-flex-row " >
 						<Form layout="inline" form={form}>
-							<FormItem className="direct-form-item margin-1r">
+							<FormItem className="direct-form-search margin-1r">
 								<Select
 									placeholder="Select Role"
 									onChange={handleRoleChange}
@@ -210,7 +212,7 @@ function CoworkersPage() {
 									}))}
 								/>
 							</FormItem>
-							<FormItem className="direct-form-item">
+							<FormItem className="direct-form-search">
 								<Select
 									placeholder="Select Position"
 									className="margin-1r"

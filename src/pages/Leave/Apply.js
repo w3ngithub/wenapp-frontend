@@ -10,6 +10,7 @@ import { notification } from "helpers/notification";
 import { THEME_TYPE_DARK } from "constants/ThemeSetting";
 import "react-multi-date-picker/styles/backgrounds/bg-dark.css";
 import { getAllHolidays } from "services/resources";
+import useWindowsSize from "hooks/useWindowsSize";
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -19,6 +20,7 @@ function Apply({ leaves }) {
 	const [form] = Form.useForm();
 	const queryClient = useQueryClient();
 	const { themeType } = useSelector(state => state.settings);
+	const { innerWidth } = useWindowsSize();
 	const darkCalendar = themeType === THEME_TYPE_DARK;
 
 	const [leaveType, setLeaveType] = useState("");
@@ -156,8 +158,19 @@ function Apply({ leaves }) {
 							*Disabled dates are holidays
 						</small>
 					</Col>
-					<Col span={18} xs={24} sm={24} md={15}>
-						<Row type="flex">
+					<Col
+						span={18}
+						xs={24}
+						sm={24}
+						md={15}
+						style={{
+							marginTop: "0.5rem"
+						}}
+					>
+						<Row
+							type="flex"
+							style={{ marginLeft: innerWidth < 900 ? "-15px" : 0 }}
+						>
 							<Col span={12} xs={24} lg={12} md={24}>
 								<FormItem
 									label="Leave Type"
