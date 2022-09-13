@@ -32,6 +32,8 @@ const formatToUtc = date => {
 };
 
 function Leaves({
+	selectedDate,
+	selectedUser,
 	status,
 	selectedRows,
 	handleCancelLeave,
@@ -45,23 +47,34 @@ function Leaves({
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [readOnly, setReadOnly] = useState(false);
 	const [leaveStatus, setLeaveStatus] = useState(status ?? undefined);
-	const {innerWidth} = useWindowsSize();
+	const { innerWidth } = useWindowsSize();
 	const [form] = Form.useForm();
 	const [date, setDate] = useState(
 		!status
 			? {
-					utc: moment.utc(formatToUtc(moment().startOf("day"))).format(),
-					moment: moment().startOf("day")
+					utc: selectedDate
+						? selectedDate
+						: moment.utc(formatToUtc(moment().startOf("day"))).format(),
+					moment: selectedDate
+						? moment(selectedDate).startOf("day")
+						: moment().startOf("day")
 			  }
 			: undefined
 	);
 	const [page, setPage] = useState({ page: 1, limit: 10 });
 
-	const [user, setUser] = useState(undefined);
+	const [user, setUser] = useState(selectedUser ?? undefined);
 
 	const leavesQuery = useQuery(
-		["leaves", leaveStatus, user, date],
-		() => getLeavesOfAllUsers(leaveStatus, user, date?.utc ? date?.utc : ""),
+		["leaves", leaveStatus, user, date, page],
+		() =>
+			getLeavesOfAllUsers(
+				leaveStatus,
+				user,
+				date?.utc ? date?.utc : "",
+				page.page,
+				page.limit
+			),
 		{
 			onError: err => console.log(err)
 		}
@@ -168,16 +181,16 @@ function Leaves({
 								onChange={handleUserChange}
 							/>
 						</FormItem>
-						<FormItem style={{marginBottom: '0.5px'}}>
+						<FormItem style={{ marginBottom: "0.5px" }}>
 							<DatePicker
 								className="gx-mb-3 "
-								style={{ width: ( innerWidth <= 748 ? "100%" : '200px') }}
+								style={{ width: innerWidth <= 748 ? "100%" : "200px" }}
 								value={date?.moment}
 								onChange={handleDateChange}
 							/>
 						</FormItem>
 
-						<FormItem style={{marginBottom: '3px'}}>
+						<FormItem style={{ marginBottom: "3px" }}>
 							<Button
 								className="gx-btn-primary gx-text-white"
 								onClick={handleResetFilter}
@@ -186,7 +199,7 @@ function Leaves({
 							</Button>
 						</FormItem>
 					</Form>
-					<div className="gx-btn-form"> 
+					<div className="gx-btn-form">
 						<Button
 							className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
 							onClick={handleOpenModal}

@@ -116,7 +116,7 @@ const Dashboard = () => {
 	const handleEventStyle = (event: any) => {
 		let style: any = {
 			fontSize: "10px",
-			width: innerWidth <=729 ? '2.5rem' : 'fit-content',
+			width: innerWidth <= 729 ? "2.5rem" : "fit-content",
 			margin: "0px auto",
 			fontWeight: "600",
 			marginBottom: "10px",
@@ -315,7 +315,7 @@ const Dashboard = () => {
 				</Col>
 
 				<Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
-					<Card className="gx-card" title="Calendar">
+					<Card className="gx-card dashboard-calendar" title="Calendar">
 						<div className="gx-rbc-calendar">
 							<Calendar
 								components={components}

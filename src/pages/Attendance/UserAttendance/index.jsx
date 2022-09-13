@@ -22,6 +22,7 @@ import Select from "components/Elements/Select";
 import TmsMyAttendanceForm from "components/Modules/TmsMyAttendanceForm";
 import { useSelector } from "react-redux";
 import CustomIcon from "components/Elements/Icons";
+import { useLocation } from "react-router-dom";
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -53,6 +54,7 @@ const formattedAttendances = attendances => {
 
 function UserAttendance() {
 	//init hooks
+	const { state } = useLocation();
 	const [sort, setSort] = useState({});
 	const [form] = Form.useForm();
 	const [page, setPage] = useState({ page: 1, limit: 10 });
@@ -65,6 +67,13 @@ function UserAttendance() {
 	const { user } = JSON.parse(localStorage.getItem("user_id") || "{}");
 
 	const punchIn = useSelector(state => state.attendance.punchIn);
+
+	// set inital date to date selected from my attendance calendar
+	useEffect(() => {
+		if (state?.date) {
+			setDate([moment(state.date), moment(state.date)]);
+		}
+	}, [state?.date]);
 
 	const { data, isLoading, isFetching } = useQuery(
 		["userAttendance", user, date, page],

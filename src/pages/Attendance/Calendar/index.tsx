@@ -1,5 +1,6 @@
+import React, { useState } from "react";
 import { Card, Spin } from "antd";
-import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { useQuery } from "@tanstack/react-query";
@@ -12,12 +13,15 @@ import { searchAttendacentOfUser } from "services/attendances";
 import { monthlyState } from "constants/Attendance";
 import { getLeavesOfAllUsers } from "services/leaves";
 import useWindowsSize from "hooks/useWindowsSize";
+import { ATTENDANCE } from "helpers/routePath";
 
 const localizer = momentLocalizer(moment);
 
 function AttendanceCalendar() {
+	const navigate = useNavigate();
+
 	const user = getLocalStorageData("user_id");
-	const {innerWidth} = useWindowsSize();
+	const { innerWidth } = useWindowsSize();
 	const [date, setDate] = useState(monthlyState);
 	const { data, isLoading } = useQuery(["userAttendance", user, date], () =>
 		searchAttendacentOfUser({
@@ -54,7 +58,7 @@ function AttendanceCalendar() {
 	const handleEventStyle = (event: any) => {
 		let style: any = {
 			fontSize: "13px",
-			width: innerWidth <=729 ? '2.5rem' : 'fit-content',
+			width: innerWidth <= 729 ? "2.5rem" : "fit-content",
 			margin: "0px auto",
 			fontWeight: "500",
 			height: "27px",
@@ -120,6 +124,17 @@ function AttendanceCalendar() {
 		});
 	});
 
+	const handleSelectEvent = (data: any) => {
+		if (data.type === "leave")
+			navigate(`/leave`, {
+				state: { tabKey: "2", date: new Date(data?.start).toJSON() }
+			});
+		else
+			navigate(`/${ATTENDANCE}`, {
+				state: { tab: "1", date: data?.id?.attendanceDate }
+			});
+	};
+
 	return (
 		<Card className="gx-card" title="Calendar">
 			<Spin spinning={isLoading}>
@@ -133,6 +148,7 @@ function AttendanceCalendar() {
 						popup
 						views={["month", "week", "day"]}
 						eventPropGetter={handleEventStyle}
+						onSelectEvent={handleSelectEvent}
 					/>
 				</div>
 			</Spin>
