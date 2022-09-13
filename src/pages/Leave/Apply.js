@@ -215,7 +215,7 @@ function Apply({ user }) {
 								</FormItem>
 							</Col>
 						</Row>
-						<Row>
+						<Row style={{ marginLeft: innerWidth < 900 ? "-15px" : 0 }}>
 							<Col span={24}>
 								<FormItem
 									label="Leave Reason"
