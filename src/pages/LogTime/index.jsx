@@ -15,9 +15,9 @@ import React, { useState } from "react";
 import {
 	addUserTimeLog,
 	deleteTimeLog,
-	getAllTimeLogs,
 	getLogTypes,
 	getTodayTimeLogSummary,
+	getWeeklyTimeLogs,
 	getWeeklyTimeLogSummary,
 	updateTimeLog
 } from "services/timeLogs";
@@ -56,7 +56,7 @@ function LogTime() {
 	} = useQuery(
 		["UsertimeLogs", page, _id],
 		() =>
-			getAllTimeLogs({
+			getWeeklyTimeLogs({
 				...page,
 				user: _id,
 				sort: "-logDate"

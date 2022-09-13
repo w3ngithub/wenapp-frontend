@@ -9,11 +9,15 @@ import { monthlyState } from "constants/Attendance";
 import { getLeavesOfAllUsers } from "services/leaves";
 import Select from "components/Elements/Select";
 import { getAllUsers } from "services/users/userDetails";
+import { useNavigate } from "react-router-dom";
+import { ATTENDANCE } from "helpers/routePath";
 
 const localizer = momentLocalizer(moment);
 const FormItem = Form.Item;
 
 function AdminAttendanceCalendar() {
+	const navigate = useNavigate();
+
 	const [date, setDate] = useState(monthlyState);
 	const [user, setUser] = useState<undefined | string>(undefined);
 
@@ -127,6 +131,17 @@ function AdminAttendanceCalendar() {
 		});
 	});
 
+	const handleSelectEvent = (data: any) => {
+		if (data.type === "leave")
+			navigate(`/leave`, {
+				state: { tabKey: "3", date: new Date(data?.start).toJSON(), user }
+			});
+		else
+			navigate(`/${ATTENDANCE}`, {
+				state: { tab: "3", date: data?.id?.attendanceDate, user }
+			});
+	};
+
 	return (
 		<Card className="gx-card" title="Calendar">
 			<div className="components-table-demo-control-bar">
@@ -166,6 +181,7 @@ function AdminAttendanceCalendar() {
 						popup
 						eventPropGetter={handleEventStyle}
 						views={["month", "week", "day"]}
+						onSelectEvent={handleSelectEvent}
 					/>
 				</div>
 			</Spin>

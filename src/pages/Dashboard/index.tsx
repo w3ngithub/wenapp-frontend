@@ -116,7 +116,7 @@ const Dashboard = () => {
 	const handleEventStyle = (event: any) => {
 		let style: any = {
 			fontSize: "10px",
-			width: innerWidth <=729 ? '2.5rem' : 'fit-content',
+			width: innerWidth <= 729 ? "2.5rem" : "fit-content",
 			margin: "0px auto",
 			fontWeight: "600",
 			marginBottom: "10px",
@@ -248,7 +248,7 @@ const Dashboard = () => {
 				<Col xl={width} lg={12} md={12} sm={12} xs={24}>
 					<TotalCountCard
 						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
-						className="gx-cyan-green-gradient"
+						className="gx-bg-cyan-green-gradient"
 						totalCount={ActiveUsers?.data?.data?.user || 0}
 						label="Total Co-workers"
 						onClick={
@@ -263,7 +263,7 @@ const Dashboard = () => {
 					<TotalCountCard
 						isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 						icon={LoginOutlined}
-						className="gx-pink-purple-corner-gradient"
+						className="gx-bg-pink-purple-corner-gradient"
 						totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
 						label="Co-workers Punched In Today"
 						onClick={
@@ -278,7 +278,7 @@ const Dashboard = () => {
 						<TotalCountCard
 							isLink={loggedInUser?.role?.value === "Admin" ? true : false}
 							icon={ExceptionOutlined}
-							className="gx-pink-orange-corner-gradient"
+							className="gx-bg-pink-orange-corner-gradient"
 							totalCount={PendingLeaves?.data?.data?.leaves || 0}
 							label="Pending Leave Request"
 							onClick={() =>
@@ -315,7 +315,7 @@ const Dashboard = () => {
 				</Col>
 
 				<Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
-					<Card className="gx-card" title="Calendar">
+					<Card className="gx-card dashboard-calendar" title="Calendar">
 						<div className="gx-rbc-calendar">
 							<Calendar
 								components={components}

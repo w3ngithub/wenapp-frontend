@@ -4,8 +4,8 @@ import React from "react";
 
 const LEAVES_COLUMN = (
 	onCancelClick: (param: any) => void,
-	onApproveClick: (param: any) => void,
-	onEditClick: (param: any, param2: any) => void,
+	onApproveClick?: (param: any) => void,
+	onEditClick?: (param: any, param2: any) => void,
 	isAdmin: boolean = false
 ) => [
 	{
@@ -51,7 +51,7 @@ const LEAVES_COLUMN = (
 		key: "action",
 		width: 10,
 		render: (text: any, record: any) => {
-			if (isAdmin)
+			if (isAdmin && onEditClick && onApproveClick)
 				return (
 					<div style={{ display: "flex" }}>
 						<span
