@@ -6,6 +6,7 @@ import Logtime from "./Logtime";
 import Leave from "./Leave";
 import Noticeboard from "./Noticeboard";
 import Blog from "./Blog";
+import Resources from "./Resources";
 
 const TabPane = Tabs.TabPane;
 
@@ -31,6 +32,9 @@ function Settings() {
 				</TabPane>
 				<TabPane tab="Blog" key="6">
 					<Blog />
+				</TabPane>
+				<TabPane tab="Resources" key="7">
+					<Resources />
 				</TabPane>
 			</Tabs>
 		</Card>
