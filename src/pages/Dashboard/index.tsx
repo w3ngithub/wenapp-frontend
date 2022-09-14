@@ -119,7 +119,7 @@ const Dashboard = () => {
 			width: innerWidth <= 729 ? "2.5rem" : "fit-content",
 			margin: "0px auto",
 			fontWeight: "600",
-			marginBottom: "10px",
+			height: "fit-content",
 
 			background: "transparent"
 		};
@@ -137,7 +137,8 @@ const Dashboard = () => {
 			style = {
 				...style,
 				fontWeight: "400",
-
+				marginTop: "-8px",
+				marginBottom: "8px",
 				color: "#038fde"
 			};
 
@@ -155,19 +156,17 @@ const Dashboard = () => {
 		};
 		if (props.event.type === "birthday")
 			return (
-				<p style={{ ...style, marginTop: "20px", flexWrap: "wrap" }}>
+				<p style={{ ...style, margin: 0, flexWrap: "wrap" }}>
 					<i className="icon icon-birthday-new gx-fs-lg" />
 					{props?.event?.title}
 				</p>
 			);
 		if (props.event.type === "holiday")
-			return (
-				<p style={{ ...style, marginTop: "25px" }}>{props?.event?.title}</p>
-			);
+			return <p style={{ ...style }}>{props?.event?.title}</p>;
 
 		if (props.event.type === "leave")
 			return (
-				<>
+				<div>
 					<h6
 						style={{
 							margin: "0px",
@@ -176,10 +175,18 @@ const Dashboard = () => {
 							fontWeight: "600"
 						}}
 					>
-						{props?.event?.leaveType}:
+						Leave:
 					</h6>
-					{props?.event?.title}
-				</>
+					<div style={{ display: "flex" }}>
+						<p style={{ margin: "0" }}>{props?.event?.title.split(" ")[0]} </p>
+
+						{props?.event?.halfDay ? (
+							<p style={{ whiteSpace: "normal", margin: "0" }}>
+								: {props?.event?.leaveType}
+							</p>
+						) : null}
+					</div>
+				</div>
 			);
 
 		return <p>{props?.event?.title}</p>;
@@ -197,7 +204,11 @@ const Dashboard = () => {
 			),
 			end: new Date(new Date(x.leaveDates).toLocaleDateString().split("T")[0]),
 			type: "leave",
-			leaveType: x?.leaveType?.[0]
+			halfDay: x?.halfDay,
+			leaveType: x?.leaveType[0]
+				.split(" ")
+				.slice(0, 2)
+				.join(" ")
 		})
 	);
 

@@ -76,7 +76,12 @@ function Apply({ user }) {
 		form.validateFields().then(values =>
 			leaveMutation.mutate({
 				...values,
-				leaveDates: values.leaveDates.join(",").split(",")
+				leaveDates: values.leaveDates.join(",").split(","),
+				halfDay: ["first-half", "second-half"].includes(
+					leaveTypeQuery?.data
+						?.find(type => type.id === values.leaveType)
+						.value.toLowerCase()
+				)
 			})
 		);
 	};
@@ -194,18 +199,30 @@ function Apply({ user }) {
 									</Select>
 								</FormItem>
 							</Col>
-							<Col span={10} xs={24} lg={12} md={24} style={{paddingLeft:0, paddingRight:0}}>
+							<Col
+								span={10}
+								xs={24}
+								lg={12}
+								md={24}
+								style={{ paddingLeft: 0, paddingRight: 0 }}
+							>
 								<FormItem
 									label="Select Team Leads"
 									name="assignTo"
 									rules={[{ required: true, message: "Required!" }]}
-									
 								>
-									<Checkbox.Group style={{ width: "100%" }} >
+									<Checkbox.Group style={{ width: "100%" }}>
 										<Row style={{ flexDirection: "row" }}>
 											{teamLeadsQuery?.data?.data?.map(lead => (
-												<Col span={12} key={lead._id}  style={{paddingLeft:0, paddingRight:0}}>
-													<Checkbox className="gx-mb-3 team-leads" value={lead._id} >
+												<Col
+													span={12}
+													key={lead._id}
+													style={{ paddingLeft: 0, paddingRight: 0 }}
+												>
+													<Checkbox
+														className="gx-mb-3 team-leads"
+														value={lead._id}
+													>
 														{lead.name}
 													</Checkbox>
 												</Col>
