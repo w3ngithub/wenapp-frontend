@@ -134,9 +134,9 @@ const CommonModal = (props: modalType) => {
 													required={false}
 													rules={
 														error?.index === index
-															? [{ required: true, message: "required!" }]
-															: undefined
-													}
+														? [{ required: true, message: "required!" }]
+														: undefined
+													}												
 
 												>
 													<DatePicker
