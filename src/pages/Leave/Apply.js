@@ -105,7 +105,7 @@ function Apply({ user }) {
 	});
 	return (
 		<Spin spinning={leaveMutation.isLoading}>
-			<Form layout="vertical" style={{ padding: "15px 18px" }} form={form}>
+			<Form layout="vertical" style={{ padding: "15px 0" }} form={form}>
 				<Row type="flex">
 					<Col xs={24} sm={6} md={6} style={{ flex: 0.3, marginRight: "4rem" }}>
 						<FormItem
@@ -202,7 +202,7 @@ function Apply({ user }) {
 									<Checkbox.Group style={{ width: "100%" }} >
 										<Row style={{ flexDirection: "row" }}>
 											{teamLeadsQuery?.data?.data?.map(lead => (
-												<Col span={12} key={lead._id}  style={{paddingLeft:0, paddingRight:0}}>
+												<Col span={12} key={lead._id}  style={{paddingLeft:0, paddingRight:0, minWidth:'fit-content'}}>
 													<Checkbox className="gx-mb-3 team-leads" value={lead._id} >
 														{lead.name}
 													</Checkbox>
