@@ -195,9 +195,9 @@ function LeaveModal({
 			}
 		>
 			<Spin spinning={leaveMutation.isLoading || leaveUpdateMutation.isLoading}>
-				<Form {...layout} form={form} name="control-hooks" layout="vertical">
+				<Form {...layout} form={form} name="control-hooks" layout="vertical" className="padding-lt-0">
 					<Row>
-						<Col span={6} xs={24} sm={16} style={{ paddingLeft: 0 }}>
+						<Col span={6} xs={24} sm={16}>
 							<Row>
 								<Col span={6} xs={24} sm={12}>
 									<Form.Item
@@ -205,6 +205,7 @@ function LeaveModal({
 										name="leaveType"
 										label="Leave Type"
 										rules={[{ required: true, message: "Required!" }]}
+										
 									>
 										<Select
 											showSearch
@@ -213,6 +214,7 @@ function LeaveModal({
 											allowClear
 											onChange={handleLeaveTypeChange}
 											disabled={readOnly}
+											
 										>
 											{leaveTypeQuery?.data?.map(type => (
 												<Option value={type.id} key={type.id}>

@@ -107,7 +107,7 @@ function Apply({ user }) {
 		<Spin spinning={leaveMutation.isLoading}>
 			<Form layout="vertical" style={{ padding: "15px 18px" }} form={form}>
 				<Row type="flex">
-					<Col xs={24} sm={6} md={6} style={{ flex: 0.3, marginRight: "6rem" }}>
+					<Col xs={24} sm={6} md={6} style={{ flex: 0.3, marginRight: "4rem" }}>
 						<FormItem
 							label="Select Leave Dates"
 							name="leaveDates"
@@ -194,17 +194,18 @@ function Apply({ user }) {
 									</Select>
 								</FormItem>
 							</Col>
-							<Col span={10} xs={24} lg={12} md={24}>
+							<Col span={10} xs={24} lg={12} md={24} style={{paddingLeft:0, paddingRight:0}}>
 								<FormItem
 									label="Select Team Leads"
 									name="assignTo"
 									rules={[{ required: true, message: "Required!" }]}
+									
 								>
-									<Checkbox.Group style={{ width: "100%" }}>
+									<Checkbox.Group style={{ width: "100%" }} >
 										<Row style={{ flexDirection: "row" }}>
 											{teamLeadsQuery?.data?.data?.map(lead => (
-												<Col span={12} key={lead._id}>
-													<Checkbox className="gx-mb-3" value={lead._id}>
+												<Col span={12} key={lead._id}  style={{paddingLeft:0, paddingRight:0}}>
+													<Checkbox className="gx-mb-3 team-leads" value={lead._id} >
 														{lead.name}
 													</Checkbox>
 												</Col>
@@ -214,7 +215,7 @@ function Apply({ user }) {
 								</FormItem>
 							</Col>
 						</Row>
-						<Row>
+						<Row style={{ marginLeft: innerWidth < 900 ? "-15px" : 0 }}>
 							<Col span={24}>
 								<FormItem
 									label="Leave Reason"
