@@ -13,6 +13,36 @@ const getAllFaqs = async ({ page = "", limit = "" }) => {
 	}
 };
 
+export const addFaqs = async (payload) => {
+	try {
+		let response = await API.post(`${Apis.Resources}/faqs`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export const editFaqs = async (payload) => {
+	try {
+		let response = await API.patch(
+			`${Apis.Resources}/faqs/${payload?.id}`,
+			payload
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export const deleteFaqs = async (payload) => {
+	try {
+		let response = await API.delete(`${Apis.Resources}/faqs/${payload.id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
 const getAllPolicies = async ({ page = "", limit = "" }) => {
 	try {
 		let response = await API.get(
@@ -21,6 +51,36 @@ const getAllPolicies = async ({ page = "", limit = "" }) => {
 		return getAPIResponse(response);
 	} catch (err) {
 		return getAPIResponse(err.response);
+	}
+};
+
+export const addPolicies = async (payload) => {
+	try {
+		let response = await API.post(`${Apis.Resources}/policies`, payload);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export const editPolicies = async (payload) => {
+	try {
+		let response = await API.patch(
+			`${Apis.Resources}/policies/${payload?.id}`,
+			payload
+		);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
+	}
+};
+
+export const deletePolicies = async (payload) => {
+	try {
+		let response = await API.delete(`${Apis.Resources}/policies/${payload.id}`);
+		return getAPIResponse(response);
+	} catch (err) {
+		return getAPIResponse(err?.response);
 	}
 };
 

@@ -110,7 +110,7 @@ function Apply({ user }) {
 	});
 	return (
 		<Spin spinning={leaveMutation.isLoading}>
-			<Form layout="vertical" style={{ padding: "15px 18px" }} form={form}>
+			<Form layout="vertical" style={{ padding: "15px 0" }} form={form}>
 				<Row type="flex">
 					<Col xs={24} sm={6} md={6} style={{ flex: 0.3, marginRight: "4rem" }}>
 						<FormItem
