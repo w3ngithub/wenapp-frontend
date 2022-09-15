@@ -30,10 +30,6 @@ function Resources() {
 	const [openModal, setOpenModal] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [dataToEdit, setDataToEdit] = useState<any>({});
-	// const { data: noticeBoardTypes, isLoading }: any = useQuery(
-	// 	["noticeBoardTypes"],
-	// 	getNoticeboardTypes
-	// );
 	const pageLimit = {
 		page: "",
 		limit: ""
@@ -49,25 +45,6 @@ function Resources() {
 		isLoading: isPolicyLoading,
 		isError: isPolicyError
 	} = useQuery(["policies", pageLimit], () => getAllPolicies(pageLimit));
-
-	// const addNoticeboardTypeMutation = useMutation(addNoticeboardType, {
-	// 	onSuccess: response =>
-	// 		handleResponse(
-	// 			response,
-	// 			"Noticeboard type added successfully",
-	// 			"Noticeboard type add failed",
-	// 			[
-	// 				handleCloseModal,
-	// 				() => queryClient.invalidateQueries(["noticeBoardTypes"])
-	// 			]
-	// 		),
-	// 	onError: error => {
-	// 		notification({
-	// 			message: "Noticeboard type add failed!",
-	// 			type: "error"
-	// 		});
-	// 	}
-	// });
 
 	const addFaqMutation = useMutation(addFaqs, {
 		onSuccess: response =>
@@ -98,25 +75,6 @@ function Resources() {
 			});
 		}
 	});
-
-	// const deleteNoticeboardTypeMutation = useMutation(deleteNoticeboardType, {
-	// 	onSuccess: response =>
-	// 		handleResponse(
-	// 			response,
-	// 			"Noticeboard type deleted successfully",
-	// 			"Noticeboard type deletion failed",
-	// 			[
-	// 				handleCloseModal,
-	// 				() => queryClient.invalidateQueries(["noticeBoardTypes"])
-	// 			]
-	// 		),
-	// 	onError: error => {
-	// 		notification({
-	// 			message: "Noticeboard Type deletion failed!",
-	// 			type: "error"
-	// 		});
-	// 	}
-	// });
 
 	const deleteFaqMutation = useMutation(deleteFaqs, {
 		onSuccess: response =>
@@ -149,25 +107,6 @@ function Resources() {
 			});
 		}
 	});
-
-	// const editNoticeboardTypeMutation = useMutation(editNoticeboardType, {
-	// 	onSuccess: response =>
-	// 		handleResponse(
-	// 			response,
-	// 			"Noticeboard type updated successfully",
-	// 			"Noticeboard type update failed",
-	// 			[
-	// 				handleCloseModal,
-	// 				() => queryClient.invalidateQueries(["noticeBoardTypes"])
-	// 			]
-	// 		),
-	// 	onError: error => {
-	// 		notification({
-	// 			message: "Noticeboard type update failed!",
-	// 			type: "error"
-	// 		});
-	// 	}
-	// });
 
 	const editFaqMutation = useMutation(editFaqs, {
 		onSuccess: response =>
@@ -212,20 +151,19 @@ function Resources() {
 
 	const handleEditClick = (input: {title:string, content:string}) => {
 		if (type === "FAQ") {
-			addFaqMutation.mutate({ id: dataToEdit?._id, title: input?.title, content: input?.content  });
+			editFaqMutation.mutate({ id: dataToEdit?._id, title: input?.title, content: input?.content  });
 		}
 		if (type === "Policy") {
-			addPolicyMutation.mutate({ id: dataToEdit?._id, title: input?.title, content: input?.content });
+			editPolicyMutation.mutate({ id: dataToEdit?._id, title: input?.title, content: input?.content });
 		}
 	};
 
 	const handleDeleteClick = (data: any, type: string) => {
-		// deleteNoticeboardTypeMutation.mutate({ id: data._id });
         if (type === "FAQ") {
-			deleteFaqMutation.mutate({ id: dataToEdit?._id });
+			deleteFaqMutation.mutate({ id: data?._id });
 		}
 		if (type === "Policy") {
-			deletePolicyMutation.mutate({ id: dataToEdit?._id });
+			deletePolicyMutation.mutate({ id: data?._id });
 		}
 	};
 
