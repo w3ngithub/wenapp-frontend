@@ -103,7 +103,12 @@ function LeaveModal({
 			const newLeave = {
 				leaveDates: data.leaveDates.join(",").split(","),
 				reason: data.reason,
-				leaveType: data.leaveType
+				leaveType: data.leaveType,
+				halfDay: ["first half", "second half"].includes(
+					leaveTypeQuery?.data
+						?.find(leave => data.leaveType === leave?.id)
+						.value.toLowerCase()
+				)
 			};
 			if (isEditMode)
 				leaveUpdateMutation.mutate({ id: leaveId, data: newLeave });
@@ -195,7 +200,13 @@ function LeaveModal({
 			}
 		>
 			<Spin spinning={leaveMutation.isLoading || leaveUpdateMutation.isLoading}>
-				<Form {...layout} form={form} name="control-hooks" layout="vertical" className="padding-lt-0">
+				<Form
+					{...layout}
+					form={form}
+					name="control-hooks"
+					layout="vertical"
+					className="padding-lt-0"
+				>
 					<Row>
 						<Col span={6} xs={24} sm={16}>
 							<Row>
@@ -205,7 +216,6 @@ function LeaveModal({
 										name="leaveType"
 										label="Leave Type"
 										rules={[{ required: true, message: "Required!" }]}
-										
 									>
 										<Select
 											showSearch
@@ -214,7 +224,6 @@ function LeaveModal({
 											allowClear
 											onChange={handleLeaveTypeChange}
 											disabled={readOnly}
-											
 										>
 											{leaveTypeQuery?.data?.map(type => (
 												<Option value={type.id} key={type.id}>
