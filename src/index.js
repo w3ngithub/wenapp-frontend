@@ -1,11 +1,11 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App";
-import registerServiceWorker from "./registerServiceWorker";
+import React from 'react'
+import {createRoot} from 'react-dom/client'
+import App from './App'
+import registerServiceWorker from './registerServiceWorker'
 
-const root = createRoot(document.getElementById("root"));
+const root = createRoot(document.getElementById('root'))
 
-root.render(<App />);
+root.render(<App />)
 
 // Do this once
-registerServiceWorker();
+registerServiceWorker()
