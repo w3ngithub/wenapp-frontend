@@ -204,7 +204,7 @@ function LogtimeModal({
 						hasFeedback
 						name="remarks"
 						rules={[
-							{
+							{	required:true,
 								validator: async (rule, value) => {
 									try {
 										if (!value) throw new Error("Required!");
@@ -217,7 +217,7 @@ function LogtimeModal({
 										throw new Error(err.message);
 									}
 								}
-							}
+							},
 						]}
 					>
 						<TextArea placeholder="Enter Remarks" rows={2} />

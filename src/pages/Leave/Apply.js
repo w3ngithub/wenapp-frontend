@@ -161,7 +161,7 @@ function Apply({ user }) {
 								}}
 							/>
 						</FormItem>
-						<small style={{ color: "red", fontSize: "14px", width: "10%" }}>
+						<small style={{ color: "red", fontSize: "14px"}}>
 							*Disabled dates are holidays
 						</small>
 					</Col>
@@ -170,15 +170,13 @@ function Apply({ user }) {
 						xs={24}
 						sm={24}
 						md={15}
-						style={{
-							marginTop: "0.5rem"
-						}}
+						style={{marginTop : innerWidth < 974 ? '1.2rem' : 0}}
 					>
 						<Row
 							type="flex"
-							style={{ marginLeft: innerWidth < 900 ? "-15px" : 0 }}
+							style={{ marginLeft: innerWidth < 764 ? "-15px" : 0 }}
 						>
-							<Col span={12} xs={24} lg={12} md={24}>
+							<Col span={12} xs={24} lg={12} md={24} style={{ marginBottom : innerWidth < 974 ? '1.2rem' : 0}}>
 								<FormItem
 									label="Leave Type"
 									name="leaveType"
@@ -199,13 +197,7 @@ function Apply({ user }) {
 									</Select>
 								</FormItem>
 							</Col>
-							<Col
-								span={10}
-								xs={24}
-								lg={12}
-								md={24}
-								style={{ paddingLeft: 0, paddingRight: 0 }}
-							>
+							<Col span={24} xs={24} lg={12} md={24} style={{paddingLeft:innerWidth < 981 ? "15px" : 0, paddingRight:0}}>
 								<FormItem
 									label="Select Team Leads"
 									name="assignTo"
@@ -232,13 +224,16 @@ function Apply({ user }) {
 								</FormItem>
 							</Col>
 						</Row>
-						<Row style={{ marginLeft: innerWidth < 900 ? "-15px" : 0 }}>
+						<Row 
+						style={{ marginLeft: innerWidth < 764 ? "-15px" : 0 }}
+						>
 							<Col span={24}>
 								<FormItem
 									label="Leave Reason"
 									name="reason"
 									rules={[
 										{
+											required: true,
 											validator: async (rule, value) => {
 												try {
 													if (!value) throw new Error("Required!");
