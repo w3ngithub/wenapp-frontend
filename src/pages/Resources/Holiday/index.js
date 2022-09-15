@@ -151,18 +151,14 @@ function Holiday() {
 				}
 			/>
 			<Card
-				title={
-					<span className="gx-d-flex gx-justify-content-between">
-						<span>Holidays</span>
-						<span>
-							<Button
-								className="gx-btn gx-btn-primary gx-text-white "
-								onClick={() => setOpenAdd(true)}
-							>
-								Add New Year Holidays
-							</Button>
-						</span>
-					</span>
+				title="Holidays"
+				extra={
+					<Button
+						className="gx-btn gx-btn-primary gx-text-white "
+						onClick={() => setOpenAdd(true)}
+					>
+						Add New Year Holidays
+					</Button>
 				}
 			>
 				<Table

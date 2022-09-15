@@ -256,6 +256,7 @@ function LeaveModal({
 										label="Leave Reason"
 										rules={[
 											{
+												required: true,
 												validator: async (rule, value) => {
 													try {
 														if (!value) throw new Error("Required!");
