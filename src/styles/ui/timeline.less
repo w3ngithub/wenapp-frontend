@@ -17,7 +17,7 @@
   position: relative;
 
   &:not(:last-child) {
-    padding-bottom: 20px;
+    padding-bottom: 30px;
   }
 
   &-day {
@@ -46,6 +46,7 @@
   }
 
   & .ant-timeline-item-content {
+    min-height: 0px;
     padding-left: 0;
     top: 0;
     margin-left: 0;
@@ -105,7 +106,7 @@
 
   &:before {
     border-left: @border-style-base 2px @grey-4;
-    content: "";
+    content: '';
     left: 25px;
     position: absolute;
     top: 25px;
@@ -144,7 +145,7 @@
 
   &:after {
     position: absolute;
-    content: "";
+    content: '';
     width: 42px;
     height: 42px;
     background-color: transparent;
@@ -155,8 +156,8 @@
     z-index: 1;
   }
 
-  & [class^="gx-"]:before,
-  & [class*="gx-"]:before {
+  & [class^='gx-']:before,
+  & [class*='gx-']:before {
     line-height: 50px;
   }
 }
@@ -177,7 +178,7 @@
 
   &:after,
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     border-style: solid;
     display: inline-block;
@@ -188,7 +189,6 @@
     border-color: transparent @grey-4;
     border-width: 10px 17px 10px 0;
     left: -18px;
-
   }
 
   &:after {
@@ -347,7 +347,9 @@
 }
 
 @media screen and (max-width: @screen-md-max) {
-  .@{class-prefix}-timeline-zigzag .@{class-prefix}-timeline-item + .@{class-prefix}-timeline-item {
+  .@{class-prefix}-timeline-zigzag
+    .@{class-prefix}-timeline-item
+    + .@{class-prefix}-timeline-item {
     margin-top: -60px;
   }
 

@@ -110,10 +110,10 @@ const Dashboard = () => {
     if (project === '' || project === undefined) return
     chartQuery.refetch()
   }
-
+  console.log(innerWidth)
   const handleEventStyle = (event: any) => {
     let style: any = {
-      fontSize: '10px',
+      fontSize: innerWidth <= 1500 ? '7px' : '9px',
       width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
       margin: '0px auto',
       fontWeight: '600',
@@ -129,14 +129,21 @@ const Dashboard = () => {
     if (event.type === 'holiday')
       style = {
         ...style,
+        marginTop: '30px',
         color: 'rgb(235 68 68)',
       }
     if (event.type === 'leave')
       style = {
         ...style,
         fontWeight: '400',
-        marginTop: '-8px',
+        marginTop: '-4px',
         marginBottom: '8px',
+        color: '#038fde',
+      }
+    if (event.type === 'notice')
+      style = {
+        ...style,
+        fontWeight: '400',
         color: '#038fde',
       }
 
@@ -164,28 +171,26 @@ const Dashboard = () => {
 
     if (props.event.type === 'leave')
       return (
-        <div>
-          <h6
-            style={{
-              margin: '0px',
-              textAlign: 'center',
-              fontSize: '10px',
-              fontWeight: '600',
-            }}
-          >
-            Leave:
-          </h6>
-          <div style={{display: 'flex', fontSize: '9px'}}>
-            <p style={{margin: '0'}}>{props?.event?.title.split(' ')[0]} </p>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
+          <p style={{margin: '0'}}>{props?.event?.title}:</p>
 
-            {props?.event?.halfDay ? (
-              <p style={{whiteSpace: 'normal', margin: '0'}}>
-                : {props?.event?.leaveType}
-              </p>
-            ) : null}
-          </div>
+          <p style={{whiteSpace: 'normal', margin: '0', color: '#9d7979'}}>
+            {props?.event?.halfDay
+              ? `${props?.event?.leaveType} Leave`
+              : 'Leave'}
+          </p>
         </div>
       )
+
+    if (props.event.type === 'notice') return <p>{props?.event?.title}</p>
 
     return <p>{props?.event?.title}</p>
   }
@@ -214,6 +219,7 @@ const Dashboard = () => {
     title: x.title,
     end: x.endDate ? new Date(x.endDate) : new Date(x.startDate),
     start: new Date(x.startDate),
+    type: 'notice',
   }))
 
   const holidaysCalendar = Holidays?.data?.data?.data?.[0]?.holidays
@@ -241,10 +247,10 @@ const Dashboard = () => {
   )
 
   const calendarEvents = [
-    ...(leaveUsers || []),
-    ...(noticesCalendar || []),
-    ...(holidaysCalendar || []),
     ...(BirthDayCalendar || []),
+    // ...(noticesCalendar || []),
+    ...(leaveUsers || []),
+    ...(holidaysCalendar || []),
   ]
 
   const chartData = chartQuery?.data?.data?.data?.chart
