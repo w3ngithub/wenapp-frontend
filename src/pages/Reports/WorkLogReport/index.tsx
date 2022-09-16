@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Button, Card, Form, Table} from 'antd'
+import {Button, Card, Divider, Form, Table, Tag} from 'antd'
 import RangePicker from 'components/Elements/RangePicker'
 import {intialDate} from 'constants/Attendance'
 import Select from 'components/Elements/Select'
@@ -18,19 +18,32 @@ const formattedWorkLogReport: any = (logs: any) => {
     ...log,
     user: log?._id?.[0]?.name,
     timeSpent: toRoundoff(log?.totalTimeSpent),
-    details: Object.values(log?.timeLogs)?.map((x: any, i: number) => (
-      <div style={{marginBottom: 10}} key={i}>
-        <span>{changeDate(x?.[0]?.logDate)}</span>
-        {x.map((item: any) => (
-          <div className=" gx-d-flex" key={item.remarks + item.totalHours}>
-            <span>{item.project?.[0]?.name || 'Other'}</span>
-            <span className="gx-ml-5">
-              -{item.remarks} ({toRoundoff(item.totalHours)}hrs)
+    details: Object.values(log?.timeLogs)?.map(
+      (x: any, i: number, totalTimeLogs: any) => (
+        <>
+          {' '}
+          <div key={i}>
+            <span style={{marginLeft: '-1px'}}>
+              <Tag color="">{changeDate(x?.[0]?.logDate)}</Tag>
             </span>
+            {x.map((item: any) => (
+              <div className=" gx-d-flex" key={item.remarks + item.totalHours}>
+                <span className="gx-mr-5">
+                  {item.project?.[0]?.name || 'Other'}
+                </span>
+                <span>
+                  -{item.remarks}
+                  <Tag color="cyan" className="gx-ml-1">
+                    {' '}
+                    {toRoundoff(item.totalHours)}hrs
+                  </Tag>
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    )),
+        </>
+      )
+    ),
   }))
 }
 
