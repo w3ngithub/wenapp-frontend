@@ -110,7 +110,6 @@ const Dashboard = () => {
     if (project === '' || project === undefined) return
     chartQuery.refetch()
   }
-  console.log(innerWidth)
   const handleEventStyle = (event: any) => {
     let style: any = {
       fontSize: innerWidth <= 1500 ? '7px' : '9px',
@@ -124,12 +123,12 @@ const Dashboard = () => {
     if (event.type === 'birthday')
       style = {
         ...style,
+
         color: '#FC6BAB',
       }
     if (event.type === 'holiday')
       style = {
         ...style,
-        marginTop: '30px',
         color: 'rgb(235 68 68)',
       }
     if (event.type === 'leave')
@@ -137,14 +136,17 @@ const Dashboard = () => {
         ...style,
         fontWeight: '400',
         marginTop: '-4px',
-        marginBottom: '8px',
+        marginBottom: '3px',
         color: '#038fde',
       }
     if (event.type === 'notice')
       style = {
         ...style,
-        fontWeight: '400',
-        color: '#038fde',
+        width: '100%',
+        fontWeight: '500',
+        background: '#a7acaf',
+        color: 'black',
+        marginBottom: '6px',
       }
 
     return {
@@ -180,7 +182,7 @@ const Dashboard = () => {
             flexWrap: 'wrap',
           }}
         >
-          <p style={{margin: '0'}}>{props?.event?.title}:</p>
+          <p style={{margin: '0', fontWeight: '500'}}>{props?.event?.title}:</p>
 
           <p style={{whiteSpace: 'normal', margin: '0', color: '#9d7979'}}>
             {props?.event?.halfDay
@@ -190,7 +192,22 @@ const Dashboard = () => {
         </div>
       )
 
-    if (props.event.type === 'notice') return <p>{props?.event?.title}</p>
+    if (props.event.type === 'notice')
+      return (
+        <p
+          onClick={() =>
+            navigate('/noticeboard', {state: {name: props?.event?.name}})
+          }
+          style={{
+            margin: '0',
+            textAlign: 'center',
+            padding: '4px',
+            whiteSpace: 'normal',
+          }}
+        >
+          {props?.event?.title}
+        </p>
+      )
 
     return <p>{props?.event?.title}</p>
   }
@@ -216,10 +233,11 @@ const Dashboard = () => {
   )
 
   const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
-    title: x.title,
+    title: x?.noticeType?.name,
     end: x.endDate ? new Date(x.endDate) : new Date(x.startDate),
     start: new Date(x.startDate),
     type: 'notice',
+    name: x?.title,
   }))
 
   const holidaysCalendar = Holidays?.data?.data?.data?.[0]?.holidays
@@ -247,10 +265,10 @@ const Dashboard = () => {
   )
 
   const calendarEvents = [
-    ...(BirthDayCalendar || []),
-    // ...(noticesCalendar || []),
-    ...(leaveUsers || []),
     ...(holidaysCalendar || []),
+    ...(noticesCalendar || []),
+    ...(BirthDayCalendar || []),
+    ...(leaveUsers || []),
   ]
 
   const chartData = chartQuery?.data?.data?.data?.chart
