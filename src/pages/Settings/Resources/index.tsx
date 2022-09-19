@@ -3,12 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Card, Col, Row } from "antd";
 import SettingTable from "../CommonTable";
 import { RESOURCES_COLUMN } from "constants/Settings";
-import {
-	addNoticeboardType,
-	deleteNoticeboardType,
-	editNoticeboardType,
-	getNoticeboardTypes
-} from "services/settings/noticeBoard";
 import { handleResponse } from "helpers/utils";
 import { notification } from "helpers/notification";
 import CommonResourceModal from "../CommonResourceModal";
