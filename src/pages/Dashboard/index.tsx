@@ -181,6 +181,19 @@ const Dashboard = () => {
             justifyContent: 'center',
             flexWrap: 'wrap',
           }}
+          onClick={
+            isAdmin
+              ? () =>
+                  navigate('/leave', {
+                    state: {
+                      tabKey: '3',
+                      leaveStatus: 'approved',
+                      date: props.event.date,
+                      user: props.event.id,
+                    },
+                  })
+              : () => {}
+          }
         >
           <p style={{margin: '0', fontWeight: '500'}}>{props?.event?.title}:</p>
 
@@ -195,8 +208,11 @@ const Dashboard = () => {
     if (props.event.type === 'notice')
       return (
         <p
-          onClick={() =>
-            navigate('/noticeboard', {state: {name: props?.event?.name}})
+          onClick={
+            isAdmin
+              ? () =>
+                  navigate('/noticeboard', {state: {name: props?.event?.name}})
+              : () => {}
           }
           style={{
             margin: '0',
@@ -215,20 +231,21 @@ const Dashboard = () => {
   let components = {
     event: CustomEvent, // used by each view (Month, Day, Week)
   }
-
   const leaveUsers = leavesQuery?.data?.data?.data?.users?.map(
-    ({_id: x}: any, index: number) => ({
-      title: x?.user?.[0],
+    (x: any, index: number) => ({
+      title: x?.user[0],
       start: new Date(
         new Date(x.leaveDates).toLocaleDateString().split('T')[0]
       ),
       end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
       type: 'leave',
+      date: x?.leaveDates,
       halfDay: x?.halfDay,
       leaveType: x?.leaveType[0]
         .split(' ')
         .slice(0, 2)
         .join(' '),
+      id: x?._id[0],
     })
   )
 
@@ -384,7 +401,6 @@ const Dashboard = () => {
                   <Select
                     value={project}
                     onChange={(c: any) => setProject(c)}
-                    // style={{ width: ( innerWidth <= 504 ? '100%' : 150 )}}
                     placeholder="Select Project"
                     options={data?.data?.data?.data?.map(
                       (x: {_id: string; name: string}) => ({
@@ -400,7 +416,6 @@ const Dashboard = () => {
                     value={logType}
                     onChange={(c: any) => setlogType(c)}
                     placeholder="Select Log Types"
-                    // style={{ width: ( innerWidth <= 504 ? '100%' : 215 )}}
                     mode="tags"
                     options={logTypes?.data?.data?.data?.map(
                       (x: {_id: string; name: string}) => ({
