@@ -49,7 +49,18 @@ function Leaves({
   const [leaveStatus, setLeaveStatus] = useState(status ?? 'pending')
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
-  const [date, setDate] = useState(undefined)
+  const [date, setDate] = useState(
+    selectedDate
+      ? {
+          utc: selectedDate
+            ? selectedDate
+            : moment.utc(formatToUtc(moment().startOf('day'))).format(),
+          moment: selectedDate
+            ? moment(selectedDate).startOf('day')
+            : moment().startOf('day'),
+        }
+      : undefined
+  )
   const [page, setPage] = useState({page: 1, limit: 10})
 
   const [user, setUser] = useState(selectedUser ?? undefined)
