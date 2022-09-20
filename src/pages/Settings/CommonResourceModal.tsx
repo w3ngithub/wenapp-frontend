@@ -74,7 +74,7 @@ function CommonResourceModal({
           <Form.Item
             name="content"
             label="Description"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[{required: true, message: 'Required!'},{min:10, message:'At least 10 characters required'}]}
           >
             <TextArea
               placeholder={`Enter ${type} Description`}
