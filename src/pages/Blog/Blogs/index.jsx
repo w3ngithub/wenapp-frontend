@@ -150,7 +150,7 @@ function Blogs() {
         </div>
         <Spin spinning={isFetching}>
           <Row align="top">
-            <Col xl={8} md={12} sm={18} xs={24}>
+            <Col xl={8} md={12} sm={24} xs={24}>
               {data?.data?.data?.data?.map((blog, index) => {
                 if (innerWidth > 1200 && (index + 1) % 3 === 1) {
                   return (
@@ -163,6 +163,16 @@ function Blogs() {
                     />
                   )
                 } else if (innerWidth < 1200 && (index + 1) % 2 !== 0) {
+                  return (
+                    <BlogItem
+                      key={blog._id}
+                      grid={true}
+                      blog={blog}
+                      removeBlog={removeBlog}
+                      access={userData?.user?._id === blog.createdBy._id}
+                    />
+                  )
+                } else if (innerWidth < 765) {
                   return (
                     <BlogItem
                       key={blog._id}
@@ -187,18 +197,19 @@ function Blogs() {
                       access={userData?.user?._id === blog.createdBy._id}
                     />
                   )
-                }
-				else if (innerWidth < 1200 && (index + 1) % 2 === 0) {
-					return (
-					  <BlogItem
-						key={blog._id}
-						grid={true}
-						blog={blog}
-						removeBlog={removeBlog}
-						access={userData?.user?._id === blog.createdBy._id}
-					  />
-					)
-				  } else return null
+                } else if (innerWidth < 1200 && (index + 1) % 2 === 0) {
+                  return (
+                    <BlogItem
+                      key={blog._id}
+                      grid={true}
+                      blog={blog}
+                      removeBlog={removeBlog}
+                      access={userData?.user?._id === blog.createdBy._id}
+                    />
+                  )
+                } else if (innerWidth < 765) {
+                  return null
+                } else return null
               })}
             </Col>
             <Col xl={8} md={12} sm={18} xs={24}>
@@ -213,6 +224,8 @@ function Blogs() {
                       access={userData?.user?._id === blog.createdBy._id}
                     />
                   )
+                } else if (innerWidth < 765) {
+                  return null
                 } else return null
               })}
             </Col>
