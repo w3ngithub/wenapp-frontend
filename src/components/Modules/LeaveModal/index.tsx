@@ -9,6 +9,7 @@ import {
   Col,
   Spin,
   Checkbox,
+  Radio,
 } from 'antd'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
@@ -114,11 +115,7 @@ function LeaveModal({
         leaveDates: data.leaveDates.join(',').split(','),
         reason: data.reason,
         leaveType: data.leaveType,
-        halfDay: ['first half', 'second half'].includes(
-          leaveTypeQuery?.data
-            ?.find(leave => data.leaveType === leave?.id)
-            .value.toLowerCase()
-        ),
+        halfDay: data.halfDay,
       }
       if (isEditMode) leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
       else
@@ -145,9 +142,11 @@ function LeaveModal({
           leaveDates: leaveData.leaveDates,
           reason: leaveData.reason,
           user: leaveData.user._id,
+          halfDay: leaveData.halfDay,
         })
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
+        setLeaveType(leaveData.leaveType.name.split(' ')[0])
       }
       setHolidays(
         queryClient
@@ -161,6 +160,7 @@ function LeaveModal({
 
     if (!open) {
       form.resetFields()
+      setLeaveType('')
       setUser('')
     }
   }, [open])
@@ -245,33 +245,12 @@ function LeaveModal({
                     <Form.Item
                       {...formItemLayout}
                       label="Half Leave"
-                      name="halfLeave"
-                      rules={[{required: true, message: 'Required!'}]}
+                      name="halfDay"
                     >
-                      <Row style={{flexDirection: 'row'}}>
-                        <Col
-                          span={12}
-                          style={{paddingLeft: 0, paddingRight: 0}}
-                        >
-                          <Checkbox
-                            className="gx-mb-3 team-leads"
-                            value="firstHalf"
-                          >
-                            First-Half
-                          </Checkbox>
-                        </Col>
-                        <Col
-                          span={12}
-                          style={{paddingLeft: 0, paddingRight: 0}}
-                        >
-                          <Checkbox
-                            className="gx-mb-3 team-leads"
-                            value="secondHalf"
-                          >
-                            Second-Half
-                          </Checkbox>
-                        </Col>
-                      </Row>
+                      <Radio.Group disabled={readOnly}>
+                        <Radio value="first-half">First-Half</Radio>
+                        <Radio value="second-half">Second-Half</Radio>
+                      </Radio.Group>
                     </Form.Item>
                   )}
                 </Col>

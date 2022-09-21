@@ -1,5 +1,15 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {Button, Checkbox, Col, Input, Row, Select, Spin, Form} from 'antd'
+import {
+  Button,
+  Checkbox,
+  Col,
+  Input,
+  Row,
+  Select,
+  Spin,
+  Form,
+  Radio,
+} from 'antd'
 import {filterOptions, handleResponse} from 'helpers/utils'
 import React, {useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
@@ -55,7 +65,7 @@ function Apply({user}) {
         'Leave submitted successfully',
         'Leave submittion failed',
         [
-          () => form.resetFields(),
+          () => handleFormReset(),
           () => queryClient.invalidateQueries(['userLeaves']),
           () => queryClient.invalidateQueries(['leaves']),
           () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
@@ -70,18 +80,17 @@ function Apply({user}) {
     setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value)
   }
 
-  const handleFormReset = () => form.resetFields()
+  const handleFormReset = () => {
+    form.resetFields()
+    setLeaveType('')
+  }
 
   const handleSubmit = () => {
     form.validateFields().then(values =>
       leaveMutation.mutate({
         ...values,
         leaveDates: values.leaveDates.join(',').split(','),
-        halfDay: ['first-half', 'second-half'].includes(
-          leaveTypeQuery?.data
-            ?.find(type => type.id === values.leaveType)
-            .value.toLowerCase()
-        ),
+        halfDay: values.halfDay,
       })
     )
   }
@@ -108,7 +117,6 @@ function Apply({user}) {
       })
     }
   })
-  console.log(leaveType)
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
@@ -203,29 +211,11 @@ function Apply({user}) {
                   </Select>
                 </FormItem>
                 {(leaveType === 'Casual' || leaveType === 'Sick') && (
-                  <FormItem
-                    label="Half Leave"
-                    name="halfLeave"
-                    rules={[{required: true, message: 'Required!'}]}
-                  >
-                    <Row style={{flexDirection: 'row'}}>
-                      <Col span={12} style={{paddingLeft: 0, paddingRight: 0}}>
-                        <Checkbox
-                          className="gx-mb-3 team-leads"
-                          value="firstHalf"
-                        >
-                          First-Half
-                        </Checkbox>
-                      </Col>
-                      <Col span={12} style={{paddingLeft: 0, paddingRight: 0}}>
-                        <Checkbox
-                          className="gx-mb-3 team-leads"
-                          value="secondHalf"
-                        >
-                          Second-Half
-                        </Checkbox>
-                      </Col>
-                    </Row>
+                  <FormItem label="Half Leave" name="halfDay">
+                    <Radio.Group>
+                      <Radio value="first-half">First-Half</Radio>
+                      <Radio value="second-half">Second-Half</Radio>
+                    </Radio.Group>
                   </FormItem>
                 )}
               </Col>
