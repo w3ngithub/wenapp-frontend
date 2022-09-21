@@ -21,7 +21,7 @@ function CommonQuarter({fromDate, toDate}) {
   const [page, setPage] = useState({page: 1, limit: 10})
 
   const {data, isLoading, isError, isFetching} = useQuery(
-    ['leaveReport'],
+    ['leaveReport' + fromDate],
     () => getLeaveDaysOfAllUsers(fromDate, toDate),
     {keepPreviousData: true}
   )
