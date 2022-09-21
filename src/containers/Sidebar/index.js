@@ -79,7 +79,7 @@ export class Sidebar extends Component {
 						onClose={this.onToggleCollapsedNav.bind(this)}
 						visible={navCollapsed}
 					>
-						<SidebarContent />
+						<SidebarContent collapse={this.onToggleCollapsedNav.bind(this)}/>
 					</Drawer>
 				) : (
 					<SidebarContent />

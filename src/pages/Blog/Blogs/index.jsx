@@ -185,7 +185,7 @@ function Blogs() {
                 } else return null
               })}
             </Col>
-            <Col xl={8} md={12} sm={18} xs={24}>
+            <Col xl={8} md={12} sm={24} xs={24}>
               {data?.data?.data?.data?.map((blog, index) => {
                 if (innerWidth > 1200 && (index + 1) % 3 === 2) {
                   return (
@@ -197,7 +197,7 @@ function Blogs() {
                       access={userData?.user?._id === blog.createdBy._id}
                     />
                   )
-                } else if (innerWidth < 1200 && (index + 1) % 2 === 0) {
+                } else if (innerWidth > 765 && innerWidth < 1200 && (index + 1) % 2 === 0) {
                   return (
                     <BlogItem
                       key={blog._id}
@@ -212,9 +212,9 @@ function Blogs() {
                 } else return null
               })}
             </Col>
-            <Col xl={8} md={12} sm={18} xs={24}>
+            <Col xl={8} md={12} sm={24} xs={24}>
               {data?.data?.data?.data?.map((blog, index) => {
-                if (innerWidth > 1200 && (index + 1) % 3 === 0) {
+                if (innerWidth > 765 && innerWidth > 1200 && (index + 1) % 3 === 0) {
                   return (
                     <BlogItem
                       key={blog._id}
