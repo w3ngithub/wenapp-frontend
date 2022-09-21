@@ -36,7 +36,7 @@ function MyHistory({
 	const location: any = useLocation();
 	let selectedDate = location.state?.date;
 	const { innerWidth } = useWindowsSize();
-	const [leaveStatus, setLeaveStatus] = useState("");
+	const [leaveStatus, setLeaveStatus] = useState('a');
 	const [date, setDate] = useState<{ moment: Moment | undefined; utc: string }>(
 		{
 			utc: selectedDate ? selectedDate : undefined,
@@ -93,7 +93,7 @@ function MyHistory({
 						<Select
 							placeholder="Select Status"
 							onChange={handleStatusChange}
-							value={leaveStatus}
+							// value={leaveStatus}
 							options={STATUS_TYPES}
 						/>
 					</FormItem>
