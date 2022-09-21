@@ -36,7 +36,7 @@ function MyHistory({
 	const location: any = useLocation();
 	let selectedDate = location.state?.date;
 	const { innerWidth } = useWindowsSize();
-	const [leaveStatus, setLeaveStatus] = useState('a');
+	const [leaveStatus, setLeaveStatus] = useState('');
 	const [date, setDate] = useState<{ moment: Moment | undefined; utc: string }>(
 		{
 			utc: selectedDate ? selectedDate : undefined,
