@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {useQuery} from '@tanstack/react-query'
-import {Card, Table, Tabs} from 'antd'
+import {Table} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {notification} from 'helpers/notification'
 import {LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
