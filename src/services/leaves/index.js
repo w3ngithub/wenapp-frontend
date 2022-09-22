@@ -144,6 +144,10 @@ const getWeekRangeLeaves = async () => {
     return getAPIResponse(err?.response)
   }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 42e5524d65a995a6562005687ef8dfba9391ecea
 const getQuarters = async () => {
   try {
     let response = await API.get(
