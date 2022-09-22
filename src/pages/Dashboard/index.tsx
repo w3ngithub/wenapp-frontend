@@ -156,10 +156,9 @@ const Dashboard = () => {
 
   const CustomEvent = (props: any) => {
     console.log('event type', props.event)
-    const nameSplitted= props?.event?.title.split(" ");
-		const lastName = `${nameSplitted.pop().substring(0,1)}.`;
-		const shortName = `${nameSplitted.join(" ")} ${lastName}`;
-    
+    const nameSplitted = props?.event?.title.split(' ')
+    const lastName = `${nameSplitted.pop().substring(0, 1)}.`
+    const shortName = `${nameSplitted.join(' ')} ${lastName}`
 
     const style = {
       display: 'flex',
@@ -175,7 +174,12 @@ const Dashboard = () => {
         </p>
       )
     if (props.event.type === 'holiday')
-      return <p style={{...style}}>{props?.event?.title}</p>
+      return (
+        <p style={{...style, margin: 0, flexWrap: 'wrap'}}>
+          <i className="icon icon-calendar gx-fs-xxl" />
+          <p style={{...style}}>{props?.event?.title}</p>
+        </p>
+      )
 
     if (props.event.type === 'leave')
       return (
@@ -201,7 +205,7 @@ const Dashboard = () => {
               : () => {}
           }
         >
-          <p style={{...style, margin: 0, flexWrap: 'wrap',  fontWeight: '500'}}>
+          <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
             <i className="icon icon-birthday-new gx-fs-lg" />
             {shortName}
           </p>
