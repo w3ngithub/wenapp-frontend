@@ -359,12 +359,19 @@ function Leave() {
           <Card
             title="Leave Quarter"
             extra={
-              <Button
-                className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal('Leave Quarter')}
-              >
-                Add
-              </Button>
+              new Date() >
+              new Date(
+                leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.toDate
+              ) ? (
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                  onClick={() => handleOpenModal('Leave Quarter')}
+                >
+                  Add
+                </Button>
+              ) : (
+                ''
+              )
             }
           >
             <SettingTable
