@@ -22,6 +22,15 @@ const getTakenAndRemainingLeaveDaysOfUser = async id => {
   }
 }
 
+const getQuarterTakenAndRemainingLeaveDaysOfUser = async id => {
+  try {
+    let response = await API.get(`${Apis.Leaves}/${id}/quarterleavedays`)
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err?.response)
+  }
+}
+
 const getLeavesOfAllUsers = async (
   status = '',
   user = '',
@@ -161,6 +170,7 @@ export {
   getLeavesOfUser,
   getLeavesOfAllUsers,
   getTakenAndRemainingLeaveDaysOfUser,
+  getQuarterTakenAndRemainingLeaveDaysOfUser,
   getLeaveTypes,
   changeLeaveStatus,
   createLeave,

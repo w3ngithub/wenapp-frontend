@@ -3,6 +3,7 @@ import {Card, Tabs} from 'antd'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {
   changeLeaveStatus,
+  getQuarterTakenAndRemainingLeaveDaysOfUser,
   getTakenAndRemainingLeaveDaysOfUser,
 } from 'services/leaves'
 import {getLocalStorageData, handleResponse} from 'helpers/utils'
@@ -30,6 +31,11 @@ function Leave() {
 
   const leaveDaysQuery = useQuery(['takenAndRemainingLeaveDays'], () =>
     getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
+  )
+
+  const quarterleaveDaysQuery = useQuery(
+    ['quartertakenAndRemainingLeaveDays'],
+    () => getQuarterTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
 
   const leaveCancelMutation = useMutation(
