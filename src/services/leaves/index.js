@@ -39,13 +39,21 @@ const getLeavesOfAllUsers = async (
   }
 }
 
-const getLeavesOfUser = async (id, status = '', date, page = 1, limit = 10) => {
+const getLeavesOfUser = async (
+  id,
+  status = '',
+  date,
+  page = 1,
+  limit = 10,
+  fromDate = '',
+  toDate = ''
+) => {
   try {
     let response = await API.get(
       `${
         Apis.Leaves
       }?user=${id}&page=${page}&limit=${limit}&leaveStatus=${status}&leaveDates=${date ??
-        ''}`
+        ''}&fromDate=${fromDate}&toDate=${toDate}`
     )
     return getAPIResponse(response)
   } catch (err) {
@@ -137,6 +145,17 @@ const getWeekRangeLeaves = async () => {
   }
 }
 
+const getQuarters = async () => {
+  try {
+    let response = await API.get(
+      `${Apis.Leaves}/quarters?sort=-createdAt&limit=1`
+    )
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err?.response)
+  }
+}
+
 export {
   getLeaveDaysOfAllUsers,
   getLeavesOfUser,
@@ -151,4 +170,5 @@ export {
   getTodaysUserLeaveCount,
   getFiscalYearLeaves,
   getWeekRangeLeaves,
+  getQuarters,
 }
