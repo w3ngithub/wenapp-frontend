@@ -2,9 +2,11 @@ import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
 
-const getLeaveDaysOfAllUsers = async () => {
+const getLeaveDaysOfAllUsers = async (fromDate, toDate) => {
   try {
-    let response = await API.get(`${Apis.Leaves}/users/leavedays`)
+    let response = await API.get(
+      `${Apis.Leaves}/users/leavedays?fromDate=${fromDate}&toDate=${toDate}`
+    )
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)
