@@ -3,6 +3,8 @@ import '@ant-design/compatible/assets/index.css'
 import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
 import moment from 'moment'
 import {filterOptions} from 'helpers/utils'
+import {useQuery} from '@tanstack/react-query'
+import {getQuarters} from 'services/leaves'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -30,15 +32,60 @@ function UserDetailForm({
   loading = false,
 }) {
   const [form] = Form.useForm()
+  const quarterQuery = useQuery(['quarters'], getQuarters, {
+    select: res => {
+      const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
+        quarter =>
+          new Date(quarter[1].fromDate) >
+          new Date() <
+          new Date(quarter[1].toDate)
+      )
+      return {
+        name: ongoingQuarter[0],
+        ...ongoingQuarter[1],
+      }
+    },
+  })
   const handleCancel = () => {
     form.resetFields()
     onToggleModal({})
   }
 
   const handleSubmit = () => {
-    form.validateFields().then(values => onSubmit({...intialValues, ...values}))
+    const data = intialValues?.allocatedLeaves
+      ? JSON.parse(intialValues?.allocatedLeaves)
+      : {}
+    form.validateFields().then(values =>
+      onSubmit({
+        ...intialValues,
+        ...values,
+        allocatedLeaves: JSON.stringify({
+          ...data,
+          [quarterQuery?.data.name]: values.allocatedLeaves,
+        }),
+      })
+    )
   }
 
+  const handleStatusChange = value => {
+    if (value === 'Probation') form.setFieldValue('allocatedLeaves', 3)
+    else form.setFieldValue('allocatedLeaves', quarterQuery?.data.leaves)
+  }
+
+  const handlePositionChange = value => {
+    const isIntern =
+      form.getFieldValue('position') ===
+      position?.data?.data?.data?.find(pos => pos.name === 'Intern')._id
+    const isTrainee =
+      form.getFieldValue('position') ===
+      position?.data?.data?.data?.find(pos => pos.name === 'Trainee')._id
+
+    const isOnProbation = form.getFieldValue('status') === 'Probation'
+
+    if (isIntern || isTrainee || isOnProbation)
+      form.setFieldValue('allocatedLeaves', 3)
+    else form.setFieldValue('allocatedLeaves', quarterQuery?.data.leaves)
+  }
   useEffect(() => {
     if (toggle) {
       form.setFieldsValue({
@@ -55,6 +102,10 @@ function UserDetailForm({
           intialValues.positionType && intialValues.positionType._id
             ? intialValues.positionType._id
             : undefined,
+        status: intialValues?.status && intialValues?.status,
+        allocatedLeaves: intialValues?.allocatedLeaves
+          ? JSON.parse(intialValues?.allocatedLeaves)[quarterQuery?.data?.name]
+          : quarterQuery?.data.leaves,
         panNumber: intialValues.panNumber && intialValues.panNumber,
         citNumber: intialValues.citNumber && intialValues.citNumber,
         bankAccNumber: intialValues.bankAccNumber && intialValues.bankAccNumber,
@@ -67,7 +118,6 @@ function UserDetailForm({
 
     if (!toggle) form.resetFields()
   }, [toggle])
-
   return (
     <Modal
       title={readOnly ? 'Details' : 'Update Co-worker'}
@@ -142,6 +192,7 @@ function UserDetailForm({
               disabled={readOnly}
               hasFeedback={readOnly ? false : true}
               filterOption={filterOptions}
+              onChange={handlePositionChange}
             >
               {position &&
                 position?.data?.data?.data?.map(position => (
@@ -177,6 +228,47 @@ function UserDetailForm({
                   </Option>
                 ))}
             </Select>
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="Status"
+            hasFeedback={readOnly ? false : true}
+            name="status"
+            rules={[
+              {
+                required: true,
+                message: 'Required!',
+              },
+            ]}
+          >
+            <Select
+              showSearch
+              placeholder="Select Status"
+              disabled={readOnly}
+              hasFeedback={readOnly ? false : true}
+              filterOption={filterOptions}
+              onChange={handleStatusChange}
+            >
+              {['Permanent', 'Probation'].map(status => (
+                <Option value={status} key={status}>
+                  {status}
+                </Option>
+              ))}
+            </Select>
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="Allocated Leaves"
+            hasFeedback={readOnly ? false : true}
+            name="allocatedLeaves"
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: 'Required!',
+            //   },
+            // ]}
+          >
+            <Input placeholder="Enter Allocated Leaves" disabled={readOnly} />
           </FormItem>
           <FormItem
             {...formItemLayout}
