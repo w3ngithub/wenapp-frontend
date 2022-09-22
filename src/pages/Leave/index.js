@@ -61,7 +61,7 @@ function Leave() {
 
   const yearlyLeavesTakn = leaveDaysQuery?.data?.data?.data?.data?.reduce(
     (acc, item) => {
-      acc[item._id[0].name] = item.leavesTaken
+      acc[item?._id[0]?.name] = item.leavesTaken
       return acc
     },
     {}
@@ -69,7 +69,7 @@ function Leave() {
 
   const allocatedYealryLeaves = leaveTypes?.data?.data?.data?.reduce(
     (acc, item) => {
-      acc[item.name] = item.leaveDays
+      acc[item?.name] = item.leaveDays
       return acc
     },
     {}
