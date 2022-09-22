@@ -7,7 +7,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import moment, {Moment} from 'moment'
 import React, {useState} from 'react'
 import {useLocation} from 'react-router-dom'
-import {getLeavesOfUser} from 'services/leaves'
+import {getLeavesOfUser, getQuarters} from 'services/leaves'
 
 const FormItem = Form.Item
 
@@ -37,6 +37,7 @@ function MyHistory({
   let selectedDate = location.state?.date
   const {innerWidth} = useWindowsSize()
   const [leaveStatus, setLeaveStatus] = useState('')
+  const [quarter, setQuarter] = useState<{id: number; value: any}>()
   const [date, setDate] = useState<{moment: Moment | undefined; utc: string}>({
     utc: selectedDate ? selectedDate : undefined,
     moment: selectedDate ? moment(selectedDate).startOf('day') : undefined,
@@ -45,9 +46,43 @@ function MyHistory({
   const [page, setPage] = useState(defaultPage)
 
   const userLeavesQuery = useQuery(
-    ['userLeaves', leaveStatus, date, page],
-    () => getLeavesOfUser(userId, leaveStatus, date?.utc, page.page, page.limit)
+    ['userLeaves', leaveStatus, date, page, quarter],
+    () =>
+      getLeavesOfUser(
+        userId,
+        leaveStatus,
+        date?.utc,
+        page.page,
+        page.limit,
+        quarter?.value.fromDate,
+        quarter?.value.toDate
+      )
   )
+  const quarterQuery = useQuery(['quarters'], () => getQuarters(), {
+    select: res => {
+      const quarters = res?.data?.data?.data[0]
+      return [
+        {
+          value: 'First Quarter',
+          fromDate: quarters.firstQuarter.fromDate,
+          toDate: quarters.firstQuarter.toDate,
+          id: 1,
+        },
+        {
+          value: 'Second Quarter',
+          fromDate: quarters.secondQuarter.fromDate,
+          toDate: quarters.secondQuarter.toDate,
+          id: 2,
+        },
+        {
+          value: 'Third Quarter',
+          fromDate: quarters.thirdQuarter.fromDate,
+          toDate: quarters.thirdQuarter.toDate,
+          id: 3,
+        },
+      ]
+    },
+  })
 
   const onShowSizeChange = (_: any, pageSize: number) => {
     setPage(prev => ({...page, limit: pageSize}))
@@ -63,26 +98,32 @@ function MyHistory({
     setLeaveStatus(statusId)
   }
 
-  const handleDateChange = (value: any) => {
+  const handleQuarterChange = (quarterId: number) => {
     if (page?.page > 1) setPage(defaultPage)
 
+    setQuarter({
+      id: quarterId,
+      value: quarterQuery?.data?.find(quarter => quarter.id === quarterId),
+    })
+  }
+  const handleDateChange = (value: any) => {
+    if (page?.page > 1) setPage(defaultPage)
     setDate({
       moment: value,
-      utc: moment
-        .utc(value._d)
-        .startOf('day')
-        .format(),
+      utc: moment.utc(value.startOf('day')).format(),
     })
   }
 
   const handleResetFilter = () => {
     setLeaveStatus('')
+    setQuarter(undefined)
     setPage(defaultPage)
     setDate({
       utc: '',
       moment: undefined,
     })
   }
+
   return (
     <div>
       <div className="gx-d-flex gx-justify-content-between gx-flex-row">
@@ -102,6 +143,15 @@ function MyHistory({
               style={{width: innerWidth <= 748 ? '100%' : '200px'}}
               value={date?.moment}
               onChange={handleDateChange}
+            />
+          </FormItem>
+
+          <FormItem className="direct-form-item">
+            <Select
+              placeholder="Select Quarter"
+              onChange={handleQuarterChange}
+              value={quarter?.id}
+              options={quarterQuery?.data}
             />
           </FormItem>
 
