@@ -155,6 +155,12 @@ const Dashboard = () => {
   }
 
   const CustomEvent = (props: any) => {
+    console.log('event type', props.event)
+    const nameSplitted= props?.event?.title.split(" ");
+		const lastName = `${nameSplitted.pop().substring(0,1)}.`;
+		const shortName = `${nameSplitted.join(" ")} ${lastName}`;
+    
+
     const style = {
       display: 'flex',
       alignItems: 'center',
@@ -165,7 +171,7 @@ const Dashboard = () => {
       return (
         <p style={{...style, margin: 0, flexWrap: 'wrap'}}>
           <i className="icon icon-birthday-new gx-fs-lg" />
-          {props?.event?.title}
+          {shortName}
         </p>
       )
     if (props.event.type === 'holiday')
@@ -195,17 +201,14 @@ const Dashboard = () => {
               : () => {}
           }
         >
-          <p style={{margin: '0', fontWeight: '500'}}>{props?.event?.title}:</p>
-
-          <p style={{whiteSpace: 'normal', margin: '0', color: '#9d7979'}}>
-            {props?.event?.halfDay
-              ? `${props?.event?.leaveType} Leave`
-              : 'Leave'}
+          <p style={{...style, margin: 0, flexWrap: 'wrap',  fontWeight: '500'}}>
+            <i className="icon icon-birthday-new gx-fs-lg" />
+            {shortName}
           </p>
         </div>
       )
 
-    if (props.event.type === 'notice')
+    if (props.event.type === 'notice') {
       return (
         <p
           onClick={
@@ -221,11 +224,12 @@ const Dashboard = () => {
             whiteSpace: 'normal',
           }}
         >
-          {props?.event?.title}
+          {props?.event?.name}
         </p>
       )
+    }
 
-    return <p>{props?.event?.title}</p>
+    return <p>{props?.event?.name}</p>
   }
 
   let components = {
