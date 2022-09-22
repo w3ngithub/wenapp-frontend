@@ -18,7 +18,7 @@ const formattedLeaves = (leaves: any) => {
 		...leave,
 		key: leave._id,
 		dates: leave?.leaveDates.map((date: any) => changeDate(date)).join(" , "),
-		type: leave?.leaveType.name,
+		type: leave?.leaveType?.name,
 		status: leave?.leaveStatus
 	}));
 };
