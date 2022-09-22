@@ -1,37 +1,38 @@
-import { useQuery } from "@tanstack/react-query";
-import { Button, DatePicker, Form, Table } from "antd";
-import Select from "components/Elements/Select";
-import { LEAVES_COLUMN, STATUS_TYPES } from "constants/Leaves";
-import { changeDate } from "helpers/utils";
-import useWindowsSize from "hooks/useWindowsSize";
-import moment, { Moment } from "moment";
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
-import { getLeavesOfUser } from "services/leaves";
+import {useQuery} from '@tanstack/react-query'
+import {Button, DatePicker, Form, Table} from 'antd'
+import Select from 'components/Elements/Select'
+import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
+import {changeDate} from 'helpers/utils'
+import useWindowsSize from 'hooks/useWindowsSize'
+import moment, {Moment} from 'moment'
+import React, {useState} from 'react'
+import {useLocation} from 'react-router-dom'
+import {getLeavesOfUser} from 'services/leaves'
 
-const FormItem = Form.Item;
+const FormItem = Form.Item
 
-const defaultPage = { page: 1, limit: 10 };
+const defaultPage = {page: 1, limit: 10}
 
 const formattedLeaves = (leaves: any) => {
-	return leaves?.map((leave: any) => ({
-		...leave,
-		key: leave._id,
-		dates: leave?.leaveDates.map((date: any) => changeDate(date)).join(" , "),
-		type: leave?.leaveType.name,
-		status: leave?.leaveStatus
-	}));
-};
+  return leaves?.map((leave: any) => ({
+    ...leave,
+    key: leave._id,
+    dates: leave?.leaveDates?.map((date: any) => changeDate(date)).join(' , '),
+    type: leave?.leaveType?.name,
+    status: leave?.leaveStatus,
+  }))
+}
 
 function MyHistory({
-	userId,
-	handleCancelLeave,
-	isLoading
+  userId,
+  handleCancelLeave,
+  isLoading,
 }: {
-	userId: string;
-	handleCancelLeave: (leave: any) => void;
-	isLoading: boolean;
+  userId: string
+  handleCancelLeave: (leave: any) => void
+  isLoading: boolean
 }) {
+
 	const [form] = Form.useForm();
 	const location: any = useLocation();
 	let selectedDate = location.state?.date;
@@ -139,4 +140,4 @@ function MyHistory({
 	);
 }
 
-export default MyHistory;
+export default MyHistory
