@@ -11,7 +11,7 @@ import {
   Radio,
   DatePicker,
 } from 'antd'
-import {convertDateToUTC, filterOptions, handleResponse} from 'helpers/utils'
+import {convertDateToUTC, filterOptions, handleResponse, MuiFormatDate} from 'helpers/utils'
 import React, {useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {createLeave, getLeavesOfUser, getLeaveTypes} from 'services/leaves'
@@ -87,31 +87,19 @@ function Apply({user}) {
     setLeaveType('')
   }
 
-  // const handleSubmit = () => {
-  //   form.validateFields().then(values =>
-  //     leaveMutation.mutate({
-  //       ...values,
-  //       leaveDates: values.leaveDates.join(',').split(','),
-  //       halfDay: values.halfDay,
-  //     })
-  //   )
-  // }
-
   const handleSubmit = () => {
     form.validateFields().then(values => {
-      console.log('values', values);
       const numberOfLeaveDays = values?.leaveType === "630ca23889efb2bce93aeb40" ? 60 : 5;
-      const appliedDate = values?.leaveDates?._d
-      console.log('app', appliedDate);
-      const newDate = new Date()
-      const endDate = new Date(newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays))
-      console.log('end', endDate);
+      const appliedDate = values?.leaveDates?._d;
+      const newDate = new Date(values?.leaveDates?._d);
+      const endDate = new Date(newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays));
+      const appliedDateUTC = convertDateToUTC(appliedDate);
       const endDateUTC = convertDateToUTC(endDate);
-
+    
       form.validateFields().then(values =>
         leaveMutation.mutate({
           ...values,
-          leaveDates: appliedDate ?  [appliedDate, endDateUTC] : values?.leaveDates.join(',').split(','),
+          leaveDates: appliedDate ?  [appliedDateUTC, endDateUTC] : values?.leaveDates.join(',').split(','),
           halfDay: values.halfDay,
           leaveStatus: appliedDate ? "approved" : "pending"
         })
