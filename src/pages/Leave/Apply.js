@@ -9,6 +9,7 @@ import {
   Spin,
   Form,
   Radio,
+  DatePicker,
 } from 'antd'
 import {filterOptions, handleResponse} from 'helpers/utils'
 import React, {useState} from 'react'
@@ -21,6 +22,7 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import {getAllHolidays} from 'services/resources'
 import useWindowsSize from 'hooks/useWindowsSize'
+import moment from 'moment'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -85,14 +87,33 @@ function Apply({user}) {
     setLeaveType('')
   }
 
+  // const handleSubmit = () => {
+  //   form.validateFields().then(values =>
+  //     leaveMutation.mutate({
+  //       ...values,
+  //       leaveDates: values.leaveDates.join(',').split(','),
+  //       halfDay: values.halfDay,
+  //     })
+  //   )
+  // }
+
   const handleSubmit = () => {
-    form.validateFields().then(values =>
-      leaveMutation.mutate({
-        ...values,
-        leaveDates: values.leaveDates.join(',').split(','),
-        halfDay: values.halfDay,
-      })
-    )
+    form.validateFields().then(values => {
+      console.log('values', moment.utc(values?.leaveDates.startOf('day')).format())
+      const appliedDate = values?.leaveDates?._d
+      console.log('app', appliedDate);
+      const newDate = new Date()
+      const endDate = new Date(newDate.setDate(appliedDate?.getDate() + 59))
+      console.log('end', endDate);
+
+      // form.validateFields().then(values =>
+      //   leaveMutation.mutate({
+      //     ...values,
+      //     leaveDates: !appliedDate ? values?.leaveDates.join(',').split(',') : [appliedDate, endDate],
+      //     halfDay: values.halfDay,
+      //   })
+      // )
+    })
   }
 
   let userLeaves = []
@@ -121,58 +142,77 @@ function Apply({user}) {
     <Spin spinning={leaveMutation.isLoading}>
       <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
         <Row type="flex">
-          <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
+          {!leaveType || leaveType === 'Casual' || leaveType === 'Sick' ? (
+            <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
+              <FormItem
+                label="Select Leave Dates"
+                name="leaveDates"
+                rules={[{required: true, message: 'Required!'}]}
+              >
+                <Calendar
+                  className={darkCalendar ? 'bg-dark' : 'null'}
+                  numberOfMonths={1}
+                  disableMonthPicker
+                  disableYearPicker
+                  weekStartDayIndex={1}
+                  multiple
+                  minDate={
+                    leaveType === 'Sick'
+                      ? new DateObject().subtract(2, 'months')
+                      : new Date()
+                  }
+                  mapDays={({date, today}) => {
+                    let isWeekend = [0, 6].includes(date.weekDay.index)
+                    let holidayList = holidaysThisYear?.filter(
+                      holiday => date.format() === holiday?.date
+                    )
+                    let isHoliday = holidayList?.length > 0
+                    let leaveDate = userLeaves?.filter(
+                      leave => leave.date === date.format()
+                    )
+                    let leaveAlreadyTakenDates =
+                      leaveDate?.length > 0 &&
+                      leaveDate?.[0]?.leaveStatus !== 'cancelled'
+                    if (isWeekend || isHoliday || leaveAlreadyTakenDates)
+                      return {
+                        disabled: true,
+                        style: {
+                          color:
+                            isWeekend || leaveAlreadyTakenDates
+                              ? '#ccc'
+                              : 'rgb(237 45 45)',
+                        },
+                        onClick: () => {
+                          if (isWeekend) alert('weekends are disabled')
+                          if (isHoliday)
+                            alert(`${holidayList[0]?.name} holiday`)
+                          if (leaveAlreadyTakenDates)
+                            alert(`Leave already taken`)
+                        },
+                      }
+                  }}
+                />
+              </FormItem>
+              <small style={{color: 'red', fontSize: '14px'}}>
+                *Disabled dates are holidays
+              </small>
+            </Col>
+          ) : (
             <FormItem
-              label="Select Leave Dates"
+              style={{marginBottom: '0.5px'}}
+              label="Leave Starting Date"
               name="leaveDates"
               rules={[{required: true, message: 'Required!'}]}
             >
-              <Calendar
-                className={darkCalendar ? 'bg-dark' : 'null'}
-                numberOfMonths={1}
-                disableMonthPicker
-                disableYearPicker
-                weekStartDayIndex={1}
-                multiple
-                minDate={
-                  leaveType === 'Sick'
-                    ? new DateObject().subtract(2, 'months')
-                    : new Date()
-                }
-                mapDays={({date, today}) => {
-                  let isWeekend = [0, 6].includes(date.weekDay.index)
-                  let holidayList = holidaysThisYear?.filter(
-                    holiday => date.format() === holiday?.date
-                  )
-                  let isHoliday = holidayList?.length > 0
-                  let leaveDate = userLeaves?.filter(
-                    leave => leave.date === date.format()
-                  )
-                  let leaveAlreadyTakenDates =
-                    leaveDate?.length > 0 &&
-                    leaveDate?.[0]?.leaveStatus !== 'cancelled'
-                  if (isWeekend || isHoliday || leaveAlreadyTakenDates)
-                    return {
-                      disabled: true,
-                      style: {
-                        color:
-                          isWeekend || leaveAlreadyTakenDates
-                            ? '#ccc'
-                            : 'rgb(237 45 45)',
-                      },
-                      onClick: () => {
-                        if (isWeekend) alert('weekends are disabled')
-                        if (isHoliday) alert(`${holidayList[0]?.name} holiday`)
-                        if (leaveAlreadyTakenDates) alert(`Leave already taken`)
-                      },
-                    }
-                }}
+              <DatePicker
+                className="gx-mb-3 "
+                style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+                // value={date?.moment}
+                // onChange={handleDateChange}
               />
             </FormItem>
-            <small style={{color: 'red', fontSize: '14px'}}>
-              *Disabled dates are holidays
-            </small>
-          </Col>
+          )}
+
           <Col
             span={18}
             xs={24}
@@ -203,11 +243,13 @@ function Apply({user}) {
                     style={{width: '100%'}}
                     onChange={handleTypesChange}
                   >
-                    {leaveTypeQuery?.data?.map(type => (
-                      <Option value={type.id} key={type.id}>
-                        {type.value}
-                      </Option>
-                    ))}
+                    {leaveTypeQuery?.data?.map(type =>
+                      type.value !== 'Late Arrival' ? (
+                        <Option value={type.id} key={type.id}>
+                          {type.value}
+                        </Option>
+                      ) : null
+                    )}
                   </Select>
                 </FormItem>
                 {(leaveType === 'Casual' || leaveType === 'Sick') && (
