@@ -85,7 +85,10 @@ function Leave() {
   return (
     <Card title="Leave Management System">
       <div style={{display: 'flex', gap: '1rem'}}>
-        <Card title="Quarterly Leave">
+        <Card
+          title="Quarterly Leave"
+          style={{flex: 0.5, background: '#e5dfdb42'}}
+        >
           <RemainingAndAppliedLeaveCards
             leavesRemaining={
               <>
@@ -108,11 +111,20 @@ function Leave() {
             }
           />
         </Card>
-        <Card title="Annual Leave">
+        <Card title="Annual Leave" style={{flex: 0.5, background: '#e5dfdb42'}}>
           <RemainingAndAppliedLeaveCards
             leavesRemaining={
               <>
-                <h3 className="gx-text-white">Leave Days Remaining</h3>
+                <h4
+                  className="gx-text-white"
+                  style={{
+                    whiteSpace: 'nowrap',
+                    marginLeft: '-68px',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  Leave Days Remaining
+                </h4>
                 <div className="gx-d-flex gx-column-gap-10">
                   {' '}
                   <div>
@@ -132,24 +144,26 @@ function Leave() {
             }
             leavesTaken={
               <>
-                <h3 className="gx-text-white">Leave Days Applied</h3>
+                <h4
+                  className="gx-text-white"
+                  style={{
+                    whiteSpace: 'nowrap',
+                    marginLeft: '-64px',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  Leave Days Applied
+                </h4>
                 <div className="gx-d-flex gx-column-gap-10">
-                  {' '}
                   <div>
-                    {' '}
-                    <p>Sick  {yearlyLeavesTakn['Sick Leave'] || 0}</p>
+                    <p>Sick {yearlyLeavesTakn['Sick Leave'] || 0}</p>
                     {/* <p>
                       Sick Remaining -
                       {allocatedYealryLeaves['Sick Leave'] -
                         yearlyLeavesTakn['Sick Leave'] ||
                         allocatedYealryLeaves['Sick Leave']}
-                    </p> */}
-                  </div>
-                  <div>
-                    {' '}
-                    <p>
-                      Casual {yearlyLeavesTakn['Casual Leave'] || 0}
-                    </p>
+                    </p> */}{' '}
+                    <p>Casual {yearlyLeavesTakn['Casual Leave'] || 0}</p>
                     {/* <p>
                       Casual Remaining -{' '}
                       {allocatedYealryLeaves['Casual Leave'] -
