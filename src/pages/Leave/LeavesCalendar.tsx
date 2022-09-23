@@ -15,14 +15,19 @@ const LeavesCalendar = () => {
 			onError: err => console.log(err)
 		}
 	);
+		
+	const leaveUsers = leavesQuery?.data?.data?.data?.data?.map(({ _id }: any) => {
+		const nameSplitted= _id?.user[0].split(" ");
+		const lastName = `${nameSplitted.pop().substring(0,1)}.`;
+		const shortName = `${nameSplitted.join(" ")} ${lastName}`
 
-	const leaveUsers = leavesQuery?.data?.data?.data?.data?.map(
-		({ _id }: any) => ({
-			title: _id.halfDay ? _id.user[0] + " : Half Day" : _id?.user[0],
+		return {
+			title: shortName,
 			start: new Date(_id.leaveDates),
 			end: new Date(_id.leaveDates)
-		})
-	);
+		}
+	})
+
 	return (
 		<Card className="gx-card" title="Calendar">
 			<div className="gx-rbc-calendar">

@@ -54,7 +54,7 @@ function EventsAndAnnouncements({
     title: [
       <>
         <p className="gx-mb-0">{x.startDate && changeDate(x.startDate)}</p>
-        {x.details}
+        {x?.title}
       </>,
     ],
     Icon: 'notification',
