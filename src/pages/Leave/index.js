@@ -3,6 +3,7 @@ import {Card, Tabs} from 'antd'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {
   changeLeaveStatus,
+  getQuarterTakenAndRemainingLeaveDaysOfUser,
   getTakenAndRemainingLeaveDaysOfUser,
 } from 'services/leaves'
 import {getLocalStorageData, handleResponse} from 'helpers/utils'
@@ -14,6 +15,7 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import LeavesCalendar from './LeavesCalendar'
 import {useLocation} from 'react-router-dom'
 import MyHistory from './MyHistory'
+import {getLeaveTypes} from 'services/settings/leaveType'
 
 const TabPane = Tabs.TabPane
 
@@ -25,8 +27,15 @@ function Leave() {
 
   const loggedInUser = getLocalStorageData('user_id')
 
+  const {data: leaveTypes, isLoading} = useQuery(['leaveTypes'], getLeaveTypes)
+
   const leaveDaysQuery = useQuery(['takenAndRemainingLeaveDays'], () =>
     getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
+  )
+
+  const quarterleaveDaysQuery = useQuery(
+    ['quartertakenAndRemainingLeaveDays'],
+    () => getQuarterTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
 
   const leaveCancelMutation = useMutation(
@@ -56,14 +65,73 @@ function Leave() {
     setSelectedRows(rows)
   }
 
+  const yearlyLeavesTakn = leaveDaysQuery?.data?.data?.data?.data?.reduce(
+    (acc, item) => {
+      acc[item?._id[0]?.name] = item.leavesTaken
+      return acc
+    },
+    {}
+  )
+
+  const allocatedYealryLeaves = leaveTypes?.data?.data?.data?.reduce(
+    (acc, item) => {
+      acc[item?.name] = item.leaveDays
+      return acc
+    },
+    {}
+  )
+
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
     <Card title="Leave Management System">
       <RemainingAndAppliedLeaveCards
         leavesRemaining={
-          leaveDaysQuery?.data?.data?.data?.data[0]?.leavesRemaining
+          <>
+            <h3 className="gx-text-white">Quarterly Leave days</h3>
+            <div className="gx-d-flex gx-column-gap-10">
+              {' '}
+              <div>
+                <p>
+                  Leave Taken -{' '}
+                  {quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0}
+                </p>
+                <p>
+                  Leave Remaining -{' '}
+                  {quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves ||
+                    0}
+                </p>
+              </div>
+            </div>
+          </>
         }
-        leavesTaken={leaveDaysQuery?.data?.data?.data?.data[0]?.leavesTaken}
+        leavesTaken={
+          <>
+            <h3 className="gx-text-white">Yearly Leave days</h3>
+            <div className="gx-d-flex gx-column-gap-10">
+              {' '}
+              <div>
+                {' '}
+                <p>Sick Taken - {yearlyLeavesTakn['Sick Leave'] || 0}</p>
+                <p>
+                  Sick Remaining -
+                  {allocatedYealryLeaves['Sick Leave'] -
+                    yearlyLeavesTakn['Sick Leave'] ||
+                    allocatedYealryLeaves['Sick Leave']}
+                </p>
+              </div>
+              <div>
+                {' '}
+                <p>Casual Taken - {yearlyLeavesTakn['Casual Leave'] || 0}</p>
+                <p>
+                  Casual Remaining -{' '}
+                  {allocatedYealryLeaves['Casual Leave'] -
+                    yearlyLeavesTakn['Casual Leave'] ||
+                    allocatedYealryLeaves['Casual Leave']}
+                </p>
+              </div>
+            </div>
+          </>
+        }
       />
 
       <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>

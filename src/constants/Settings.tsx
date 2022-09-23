@@ -185,6 +185,12 @@ export const LEAVES_QUARTER_COLUMN = (
     key: 'end',
     // width: 315,
   },
+  {
+    title: 'Leaves',
+    dataIndex: 'days',
+    key: 'days',
+    // width: 315,
+  },
 
   {
     title: 'Action',

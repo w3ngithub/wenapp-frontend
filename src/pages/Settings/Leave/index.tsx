@@ -194,6 +194,7 @@ function Leave() {
             end: changeDate(
               leaveQuarter?.data?.data?.data[0]?.firstQuarter?.toDate
             ),
+            days: leaveQuarter?.data?.data?.data[0]?.firstQuarter?.leaves,
           },
           {
             name: 'Second Quarter',
@@ -203,6 +204,7 @@ function Leave() {
             end: changeDate(
               leaveQuarter?.data?.data?.data[0]?.secondQuarter?.toDate
             ),
+            days: leaveQuarter?.data?.data?.data[0]?.secondQuarter?.leaves,
           },
           {
             name: 'Third Quarter',
@@ -212,6 +214,17 @@ function Leave() {
             end: changeDate(
               leaveQuarter?.data?.data?.data[0]?.thirdQuarter?.toDate
             ),
+            days: leaveQuarter?.data?.data?.data[0]?.thirdQuarter?.leaves,
+          },
+          {
+            name: 'Fourth Quarter',
+            start: changeDate(
+              leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.fromDate
+            ),
+            end: changeDate(
+              leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.toDate
+            ),
+            days: leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.leaves,
           },
         ]
       : []
@@ -250,20 +263,34 @@ function Leave() {
       secondstartDate,
       thirdendDate,
       thirdstartDate,
+      fourthendDate,
+      fourthstartDate,
+      firstleaves,
+      secondleaves,
+      thirdleaves,
+      fourthleaves,
     } = payload
 
     const preparedPayload = {
       firstQuarter: {
         fromDate: moment.utc(firststartDate.startOf('day')).format(),
         toDate: moment.utc(firstendDate.startOf('day')).format(),
+        leaves: firstleaves,
       },
       secondQuarter: {
         fromDate: moment.utc(secondstartDate.startOf('day')).format(),
         toDate: moment.utc(secondendDate.startOf('day')).format(),
+        leaves: secondleaves,
       },
       thirdQuarter: {
         fromDate: moment.utc(thirdstartDate.startOf('day')).format(),
         toDate: moment.utc(thirdendDate.startOf('day')).format(),
+        leaves: thirdleaves,
+      },
+      fourthQuarter: {
+        fromDate: moment.utc(fourthstartDate.startOf('day')).format(),
+        toDate: moment.utc(fourthendDate.startOf('day')).format(),
+        leaves: fourthleaves,
       },
     }
     if (isQuarterEditMode) {
@@ -332,12 +359,19 @@ function Leave() {
           <Card
             title="Leave Quarter"
             extra={
-              <Button
-                className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal('Leave Quarter')}
-              >
-                Add
-              </Button>
+              new Date() >
+              new Date(
+                leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.toDate
+              ) ? (
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                  onClick={() => handleOpenModal('Leave Quarter')}
+                >
+                  Add
+                </Button>
+              ) : (
+                ''
+              )
             }
           >
             <SettingTable
