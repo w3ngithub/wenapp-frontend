@@ -84,55 +84,85 @@ function Leave() {
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
     <Card title="Leave Management System">
-      <RemainingAndAppliedLeaveCards
-        leavesRemaining={
-          <>
-            <h3 className="gx-text-white">Quarterly Leave days</h3>
-            <div className="gx-d-flex gx-column-gap-10">
-              {' '}
-              <div>
-                <p>
-                  Leave Taken -{' '}
-                  {quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0}
-                </p>
-                <p>
-                  Leave Remaining -{' '}
+      <div style={{display: 'flex', gap: '1rem'}}>
+        <Card title="Quarterly Leave">
+          <RemainingAndAppliedLeaveCards
+            leavesRemaining={
+              <>
+                <span style={{fontSize: '2rem'}}>
                   {quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves ||
                     0}
-                </p>
-              </div>
-            </div>
-          </>
-        }
-        leavesTaken={
-          <>
-            <h3 className="gx-text-white">Yearly Leave days</h3>
-            <div className="gx-d-flex gx-column-gap-10">
-              {' '}
-              <div>
-                {' '}
-                <p>Sick Taken - {yearlyLeavesTakn['Sick Leave'] || 0}</p>
-                <p>
-                  Sick Remaining -
-                  {allocatedYealryLeaves['Sick Leave'] -
-                    yearlyLeavesTakn['Sick Leave'] ||
-                    allocatedYealryLeaves['Sick Leave']}
-                </p>
-              </div>
-              <div>
-                {' '}
-                <p>Casual Taken - {yearlyLeavesTakn['Casual Leave'] || 0}</p>
-                <p>
-                  Casual Remaining -{' '}
+                </span>
+                <p> Leave Days Remaining </p>
+              </>
+            }
+            leavesTaken={
+              <>
+                <span style={{fontSize: '2rem'}}>
                   {allocatedYealryLeaves['Casual Leave'] -
                     yearlyLeavesTakn['Casual Leave'] ||
                     allocatedYealryLeaves['Casual Leave']}
-                </p>
-              </div>
-            </div>
-          </>
-        }
-      />
+                </span>
+                <p>Leave Days Applied</p>
+              </>
+            }
+          />
+        </Card>
+        <Card title="Annual Leave">
+          <RemainingAndAppliedLeaveCards
+            leavesRemaining={
+              <>
+                <h3 className="gx-text-white">Leave Days Remaining</h3>
+                <div className="gx-d-flex gx-column-gap-10">
+                  {' '}
+                  <div>
+                    <p>
+                      Sick {'  '}
+                      {quarterleaveDaysQuery?.data?.data?.data?.leavesTaken ||
+                        0}
+                    </p>
+                    <p>
+                      Casual {'   '}
+                      {quarterleaveDaysQuery?.data?.data?.data
+                        ?.remainingLeaves || 0}
+                    </p>
+                  </div>
+                </div>
+              </>
+            }
+            leavesTaken={
+              <>
+                <h3 className="gx-text-white">Leave Days Applied</h3>
+                <div className="gx-d-flex gx-column-gap-10">
+                  {' '}
+                  <div>
+                    {' '}
+                    <p>Sick  {yearlyLeavesTakn['Sick Leave'] || 0}</p>
+                    {/* <p>
+                      Sick Remaining -
+                      {allocatedYealryLeaves['Sick Leave'] -
+                        yearlyLeavesTakn['Sick Leave'] ||
+                        allocatedYealryLeaves['Sick Leave']}
+                    </p> */}
+                  </div>
+                  <div>
+                    {' '}
+                    <p>
+                      Casual {yearlyLeavesTakn['Casual Leave'] || 0}
+                    </p>
+                    {/* <p>
+                      Casual Remaining -{' '}
+                      {allocatedYealryLeaves['Casual Leave'] -
+                        yearlyLeavesTakn['Casual Leave'] ||
+                        allocatedYealryLeaves['Casual Leave']}
+                    </p> */}
+                  </div>
+                </div>
+              </>
+            }
+          />
+        </Card>
+      </div>
 
       <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
         <TabPane tab="Apply" key="1">

@@ -11,7 +11,12 @@ import {
   Radio,
   DatePicker,
 } from 'antd'
-import {convertDateToUTC, filterOptions, handleResponse, MuiFormatDate} from 'helpers/utils'
+import {
+  convertDateToUTC,
+  filterOptions,
+  handleResponse,
+  MuiFormatDate,
+} from 'helpers/utils'
 import React, {useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {createLeave, getLeavesOfUser, getLeaveTypes} from 'services/leaves'
@@ -22,7 +27,6 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import {getAllHolidays} from 'services/resources'
 import useWindowsSize from 'hooks/useWindowsSize'
-import moment from 'moment'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -82,7 +86,6 @@ function Apply({user}) {
     setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value)
   }
 
-
   const handleFormReset = () => {
     form.resetFields()
     setLeaveType('')
@@ -91,24 +94,32 @@ function Apply({user}) {
   const handleSubmit = () => {
     form.validateFields().then(values => {
       //calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays = values?.leaveType === "630ca23889efb2bce93aeb40" ? 60 : 5; // 60 for maternity, 5 for other two
-      const appliedDate = values?.leaveDatesPeriod?._d;
-      const newDate = new Date(values?.leaveDatesPeriod?._d);
-      const endDate = new Date(newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays));
-      const appliedDateUTC = appliedDate ? convertDateToUTC(appliedDate) : '';
-      const endDateUTC =  appliedDate ? convertDateToUTC(endDate) : '';
+      const numberOfLeaveDays =
+        values?.leaveType === '630ca23889efb2bce93aeb40' ? 60 : 5 // 60 for maternity, 5 for other two
+      const appliedDate = values?.leaveDatesPeriod?._d
+      const newDate = new Date(values?.leaveDatesPeriod?._d)
+      const endDate = new Date(
+        newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
+      )
+      const appliedDateUTC = appliedDate ? convertDateToUTC(appliedDate) : ''
+      const endDateUTC = appliedDate ? convertDateToUTC(endDate) : ''
 
       //calculation for sick, casual leaves
-      const casualLeaveDays = appliedDate ? [] : values?.leaveDatesCasual?.join(',').split(',');
-      const casualLeaveDaysUTC = casualLeaveDays.map((leave) => convertDateToUTC(new Date(leave)));
+      const casualLeaveDays = appliedDate
+        ? []
+        : values?.leaveDatesCasual?.join(',').split(',')
+      const casualLeaveDaysUTC = casualLeaveDays.map(leave =>
+        convertDateToUTC(new Date(leave))
+      )
 
-    
       form.validateFields().then(values =>
         leaveMutation.mutate({
           ...values,
-          leaveDates: appliedDate ?  [appliedDateUTC, endDateUTC] : casualLeaveDaysUTC,
+          leaveDates: appliedDate
+            ? [appliedDateUTC, endDateUTC]
+            : casualLeaveDaysUTC,
           halfDay: values.halfDay,
-          leaveStatus: appliedDate ? "approved" : "pending"
+          leaveStatus: appliedDate ? 'approved' : 'pending',
         })
       )
     })
@@ -171,7 +182,7 @@ function Apply({user}) {
                     let leaveAlreadyTakenDates =
                       leaveDate?.length > 0 &&
                       leaveDate?.[0]?.leaveStatus !== 'cancelled'
-                    if (isWeekend || isHoliday || leaveAlreadyTakenDates )
+                    if (isWeekend || isHoliday || leaveAlreadyTakenDates)
                       return {
                         disabled: true,
                         style: {
