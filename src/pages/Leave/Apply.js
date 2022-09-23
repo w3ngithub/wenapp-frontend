@@ -82,6 +82,7 @@ function Apply({user}) {
     setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value)
   }
 
+
   const handleFormReset = () => {
     form.resetFields()
     setLeaveType('')
@@ -89,17 +90,23 @@ function Apply({user}) {
 
   const handleSubmit = () => {
     form.validateFields().then(values => {
-      const numberOfLeaveDays = values?.leaveType === "630ca23889efb2bce93aeb40" ? 60 : 5;
-      const appliedDate = values?.leaveDates?._d;
-      const newDate = new Date(values?.leaveDates?._d);
+      //calculation for maternity, paternity, pto leaves
+      const numberOfLeaveDays = values?.leaveType === "630ca23889efb2bce93aeb40" ? 60 : 5; // 60 for maternity, 5 for other two
+      const appliedDate = values?.leaveDatesPeriod?._d;
+      const newDate = new Date(values?.leaveDatesPeriod?._d);
       const endDate = new Date(newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays));
-      const appliedDateUTC = convertDateToUTC(appliedDate);
-      const endDateUTC = convertDateToUTC(endDate);
+      const appliedDateUTC = appliedDate ? convertDateToUTC(appliedDate) : '';
+      const endDateUTC =  appliedDate ? convertDateToUTC(endDate) : '';
+
+      //calculation for sick, casual leaves
+      const casualLeaveDays = appliedDate ? [] : values?.leaveDatesCasual?.join(',').split(',');
+      const casualLeaveDaysUTC = casualLeaveDays.map((leave) => convertDateToUTC(new Date(leave)));
+
     
       form.validateFields().then(values =>
         leaveMutation.mutate({
           ...values,
-          leaveDates: appliedDate ?  [appliedDateUTC, endDateUTC] : values?.leaveDates.join(',').split(','),
+          leaveDates: appliedDate ?  [appliedDateUTC, endDateUTC] : casualLeaveDaysUTC,
           halfDay: values.halfDay,
           leaveStatus: appliedDate ? "approved" : "pending"
         })
@@ -137,7 +144,7 @@ function Apply({user}) {
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
               <FormItem
                 label="Select Leave Dates"
-                name="leaveDates"
+                name="leaveDatesCasual"
                 rules={[{required: true, message: 'Required!'}]}
               >
                 <Calendar
@@ -164,7 +171,7 @@ function Apply({user}) {
                     let leaveAlreadyTakenDates =
                       leaveDate?.length > 0 &&
                       leaveDate?.[0]?.leaveStatus !== 'cancelled'
-                    if (isWeekend || isHoliday || leaveAlreadyTakenDates)
+                    if (isWeekend || isHoliday || leaveAlreadyTakenDates )
                       return {
                         disabled: true,
                         style: {
@@ -185,21 +192,19 @@ function Apply({user}) {
                 />
               </FormItem>
               <small style={{color: 'red', fontSize: '14px'}}>
-                *Disabled dates are holidays
+                *Disabled dates are holidays"
               </small>
             </Col>
           ) : (
             <FormItem
               style={{marginBottom: '0.5px'}}
               label="Leave Starting Date"
-              name="leaveDates"
+              name="leaveDatesPeriod"
               rules={[{required: true, message: 'Required!'}]}
             >
               <DatePicker
                 className="gx-mb-3 "
                 style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
-                // value={date?.moment}
-                // onChange={handleDateChange}
               />
             </FormItem>
           )}

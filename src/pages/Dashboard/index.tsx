@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import LeaveIcon from "assets/images/Leave.svg"
 import {Button, Card, Col, Form, Row} from 'antd'
 import Auxiliary from 'util/Auxiliary'
 import Widget from 'components/Elements/Widget/index'
@@ -155,7 +156,6 @@ const Dashboard = () => {
   }
 
   const CustomEvent = (props: any) => {
-    console.log('event type', props.event)
     const nameSplitted = props?.event?.title.split(' ')
     const lastName = `${nameSplitted.pop().substring(0, 1)}.`
     const shortName = `${nameSplitted.join(' ')} ${lastName}`
@@ -206,7 +206,7 @@ const Dashboard = () => {
           }
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
-            <i className="icon icon-birthday-new gx-fs-lg" />
+            <img src={LeaveIcon} alt="Leave Icon" style={{width:'18px'}}/>
             {shortName}
           </p>
         </div>
