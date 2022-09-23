@@ -91,8 +91,15 @@ function Leave() {
             <div className="gx-d-flex gx-column-gap-10">
               {' '}
               <div>
-                <p>Leave Taken - 0</p>
-                <p>Leave Remaining - 0</p>
+                <p>
+                  Leave Taken -{' '}
+                  {quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0}
+                </p>
+                <p>
+                  Leave Remaining -{' '}
+                  {quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves ||
+                    0}
+                </p>
               </div>
             </div>
           </>
