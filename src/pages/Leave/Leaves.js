@@ -19,7 +19,15 @@ const formattedLeaves = leaves => {
     ...leave,
     key: leave._id,
     coWorker: leave?.user?.name,
-    dates: leave?.leaveDates?.map(date => changeDate(date)).join(' , '),
+    dates: leave?.leaveDates
+      ?.map(date => changeDate(date))
+      .join(
+        leave?.leaveType?.name === 'Maternity' ||
+          leave?.leaveType?.name === 'Paternity' ||
+          leave?.leaveType?.name === 'Paid Time Off'
+          ? ' - '
+          : ' , '
+      ),
     type: leave?.leaveType?.name,
     status: leave?.leaveStatus,
   }))
