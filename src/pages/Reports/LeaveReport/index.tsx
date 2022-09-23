@@ -7,6 +7,7 @@ import Third from './Third'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {useQuery} from '@tanstack/react-query'
 import CircularProgress from 'components/Elements/CircularProgress'
+import Fourth from './Fourth'
 
 function LeaveReport() {
   const {data: leaveQuarter, isLoading: leaveQuarterLoading}: any = useQuery(
@@ -14,7 +15,7 @@ function LeaveReport() {
     getLeaveQuarter
   )
 
-  const {firstQuarter, secondQuarter, thirdQuarter} =
+  const {firstQuarter, secondQuarter, thirdQuarter, fourthQuarter} =
     leaveQuarter?.data?.data?.data?.[0] || {}
 
   if (leaveQuarterLoading) {
@@ -41,6 +42,12 @@ function LeaveReport() {
             <Third
               fromDate={thirdQuarter.fromDate}
               toDate={thirdQuarter.toDate}
+            />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Fourth Quarter" key="4">
+            <Fourth
+              fromDate={fourthQuarter.fromDate}
+              toDate={fourthQuarter.toDate}
             />
           </Tabs.TabPane>
         </Tabs>
