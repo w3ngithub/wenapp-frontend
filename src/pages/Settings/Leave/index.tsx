@@ -232,7 +232,12 @@ function Leave() {
   const Footer = () => {
     return (
       <div style={{textAlign: 'end'}}>
-        {' '}
+        <span
+          className="gx-link gx-text-primary gx-mr-2"
+          onClick={() => handleOpenEditQuarterModal()}
+        >
+          <CustomIcon name="edit" />
+        </span>{' '}
         <Popconfirm
           title="Are you sure you want to delete?"
           onConfirm={() =>
@@ -376,9 +381,7 @@ function Leave() {
           >
             <SettingTable
               data={quarters}
-              columns={LEAVES_QUARTER_COLUMN(value =>
-                handleOpenEditQuarterModal()
-              )}
+              columns={LEAVES_QUARTER_COLUMN()}
               isLoading={
                 leaveQuarterLoading || deleteQuarterTypeMutation.isLoading
               }
