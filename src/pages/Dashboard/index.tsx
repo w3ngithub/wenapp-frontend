@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import LeaveIcon from "assets/images/Leave.svg"
+import {ReactComponent as LeaveIcon} from "assets/images/Leave.svg"
 import {Button, Card, Col, Form, Row} from 'antd'
 import Auxiliary from 'util/Auxiliary'
 import Widget from 'components/Elements/Widget/index'
@@ -206,7 +206,7 @@ const Dashboard = () => {
           }
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
-            <img src={LeaveIcon} alt="Leave Icon" style={{width:'18px'}}/>
+            <LeaveIcon width='18px'/>
             {shortName}
           </p>
         </div>
