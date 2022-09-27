@@ -2,6 +2,7 @@ import React from 'react'
 import Widget from 'components/Elements/Widget/index'
 import {connect} from 'react-redux'
 import {Col, Row} from 'antd'
+import useWindowsSize from 'hooks/useWindowsSize'
 
 const IconAndNumber = props => {
   const {
@@ -15,6 +16,8 @@ const IconAndNumber = props => {
   // if (props.themeType === THEME_TYPE_DARK) {
   iconColor = 'white'
   // }
+  const {innerWidth} = useWindowsSize();
+
 
   return (
     <Widget styleName={`gx-bg-${cardColor}`}>
@@ -24,7 +27,7 @@ const IconAndNumber = props => {
         </Row>
         <Row>
           <Col>
-            <div className="gx-mr-lg-4 gx-mr-3">
+            <div style={{marginRight:'0.8rem'}}>
               <i
                 className={`icon icon-${icon} gx-fs-xlxl gx-text-${iconColor} gx-d-flex`}
                 style={{fontSize: 45}}
@@ -33,7 +36,7 @@ const IconAndNumber = props => {
           </Col>
 
           <Col>
-            <div className="gx-media-body">
+            <div className="gx-media-body" >
                 <p className={`gx-mb-0 gx-text-${iconColor}`} style={{fontSize:'2rem'}}>{number}</p>
                 <p className={`gx-mb-0 gx-text-${iconColor}`}>
                   {text}
