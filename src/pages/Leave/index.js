@@ -8,7 +8,6 @@ import {
 } from 'services/leaves'
 import {getLocalStorageData, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
-import RemainingAndAppliedLeaveCards from './RemainingAndAppliedLeaveCards'
 import LeavesApply from './Apply'
 import Leaves from './Leaves'
 import CircularProgress from 'components/Elements/CircularProgress'
