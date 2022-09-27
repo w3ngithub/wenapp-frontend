@@ -107,10 +107,6 @@ body.dark-theme {
       background-color: rgba(250, 250, 250, 0.1) !important;
       box-shadow: none;
     }
-    & .ant-picker-cell-disabled {
-      color: blue;
-      // background: rgba(250, 250, 250, 0.1)
-  }
 
     & .ant-radio-button-wrapper-disabled.ant-radio-button-wrapper-checked {
       color: @dark-theme-text-color;
@@ -2077,6 +2073,11 @@ body.dark-theme {
     &-decade-panel-last-century-cell .ant-calendar-decade-panel-decade,
     &-decade-panel-next-century-cell .ant-calendar-decade-panel-decade {
       color: darken(@dark-theme-text-color, 20%);
+    }
+
+    & .ant-picker-cell-disabled .ant-picker-cell-inner {
+      background: transparent;
+      color: rgba(0,0,0,0.6);
     }
 
     &-picker-clear {

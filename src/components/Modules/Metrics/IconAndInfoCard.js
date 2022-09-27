@@ -2,6 +2,7 @@ import React from 'react'
 import Widget from 'components/Elements/Widget/index'
 import {connect} from 'react-redux'
 import {Col, Row} from 'antd'
+import useWindowsSize from 'hooks/useWindowsSize'
 
 const IconAndInfoCard = props => {
   const {
@@ -17,7 +18,7 @@ const IconAndInfoCard = props => {
   // if (props.themeType === THEME_TYPE_DARK) {
   iconColor = 'white'
   // }
-
+  const {innerWidth} = useWindowsSize();
   return (
     <Widget styleName={`gx-bg-${cardColor}`}>
       <div style={{marginLeft: '1rem'}}>
