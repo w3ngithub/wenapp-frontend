@@ -7,9 +7,9 @@ import {LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
 import {getLeaveDaysOfAllUsers} from 'services/leaves'
 
 const formattedLeaveReports = (reports, quarter, Intern) => {
-  return reports[quarter - 1]?.map(report => ({
-    key: report?._id._id[0],
-    name: report?._id.name[0],
+  return reports?.[quarter - 1]?.map(report => ({
+    key: report?._id._id?.[0],
+    name: report?._id.name?.[0],
     leavesRemaining: accumulatedLeaveDaysRemaining(
       reports,
       quarter,
