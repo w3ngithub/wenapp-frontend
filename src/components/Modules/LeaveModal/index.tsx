@@ -29,6 +29,7 @@ import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
+import { disabledDate } from 'util/antDatePickerDisabled'
 
 const {Option} = Select
 
@@ -359,6 +360,7 @@ function LeaveModal({
                       className="gx-mb-3 "
                       style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
                       disabled={readOnly}
+                      disabledDate={disabledDate}
                     />
                   </Form.Item>
                 </Col>

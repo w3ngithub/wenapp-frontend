@@ -28,6 +28,8 @@ import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import {getAllHolidays} from 'services/resources'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
+import moment from 'moment'
+import { disabledDate } from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -148,6 +150,8 @@ function Apply({user}) {
       })
     }
   })
+
+
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
@@ -162,6 +166,7 @@ function Apply({user}) {
               <DatePicker
                 className="gx-mb-3 "
                 style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+                disabledDate={disabledDate}
               />
             </FormItem>
           ) : (
