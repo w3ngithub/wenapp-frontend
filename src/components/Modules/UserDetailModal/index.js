@@ -89,7 +89,7 @@ function UserDetailForm({
             : undefined,
         status: intialValues?.status && intialValues?.status,
         allocatedLeaves:
-          intialValues?.allocatedLeaves[currentQuarter?.data?.name],
+          intialValues?.allocatedLeaves?.[currentQuarter?.data?.name],
 
         panNumber: intialValues.panNumber && intialValues.panNumber,
         citNumber: intialValues.citNumber && intialValues.citNumber,
