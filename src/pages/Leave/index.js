@@ -103,9 +103,7 @@ function Leave() {
             leavesTaken={
               <>
                 <span style={{fontSize: '2rem'}}>
-                  {allocatedYealryLeaves['Casual Leave'] -
-                    yearlyLeavesTakn['Casual Leave'] ||
-                    allocatedYealryLeaves['Casual Leave']}
+                  {quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0}
                 </span>
                 <p>Leave Days Applied</p>
               </>
@@ -131,72 +129,9 @@ function Leave() {
                 yearlyLeavesTakn['Casual Leave'] ||
               allocatedYealryLeaves['Casual Leave']
             }
-            sickDayApplied = {yearlyLeavesTakn['Sick Leave'] || 0}
-            casualDayApplied = {yearlyLeavesTakn['Casual Leave'] || 0}
+            sickDayApplied={yearlyLeavesTakn['Sick Leave'] || 0}
+            casualDayApplied={yearlyLeavesTakn['Casual Leave'] || 0}
           />
-          {/* <RemainingAndAppliedLeaveCards
-            leavesRemaining={
-              <>
-                <h4
-                  className="gx-text-white"
-                  style={{
-                    whiteSpace: 'nowrap',
-                    marginLeft: '-68px',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  Leave Days Remaining
-                </h4>
-                <div className="gx-d-flex gx-column-gap-10">
-                  {' '}
-                  <div>
-                    <p style={{marginBotton:'2px'}}>
-                      Sick {'  '}
-                      {quarterleaveDaysQuery?.data?.data?.data?.leavesTaken ||
-                        0}
-                    </p>
-                    <p style={{marginBotton:'2px'}}>
-                      Casual {'   '}
-                      {quarterleaveDaysQuery?.data?.data?.data
-                        ?.remainingLeaves || 0}
-                    </p>
-                  </div>
-                </div>
-              </>
-            }
-            leavesTaken={
-              <>
-                <h4
-                  className="gx-text-white"
-                  style={{
-                    whiteSpace: 'nowrap',
-                    marginLeft: '-64px',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  Leave Days Applied
-                </h4>
-                <div className="gx-d-flex gx-column-gap-10">
-                  <div>
-                    <p>Sick {yearlyLeavesTakn['Sick Leave'] || 0}</p>
-                     <p>
-                      Sick Remaining -
-                      {allocatedYealryLeaves['Sick Leave'] -
-                        yearlyLeavesTakn['Sick Leave'] ||
-                        allocatedYealryLeaves['Sick Leave']}
-                    </p> 
-                    <p>Casual {yearlyLeavesTakn['Casual Leave'] || 0}</p>
-                    <p>
-                      Casual Remaining -{' '}
-                      {allocatedYealryLeaves['Casual Leave'] -
-                        yearlyLeavesTakn['Casual Leave'] ||
-                        allocatedYealryLeaves['Casual Leave']}
-                    </p>
-                  </div>
-                </div>
-              </>
-            }
-          /> */}
         </Card>
       </div>
 

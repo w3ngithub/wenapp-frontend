@@ -28,6 +28,7 @@ import {useSelector} from 'react-redux'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const {Option} = Select
 
@@ -114,7 +115,6 @@ function LeaveModal({
 
   const onFinish = (values: any) => {
     form.validateFields().then(values => {
-      console.log('values',values)
       //calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
         values?.leaveType === '630ca23889efb2bce93aeb40' ? 60 : 5 // 60 for maternity, 5 for other two
@@ -136,7 +136,9 @@ function LeaveModal({
 
       const newLeave = {
         ...values,
-        leaveDates: appliedDate ? [appliedDateUTC, endDateUTC] : casualLeaveDaysUTC,
+        leaveDates: appliedDate
+          ? [appliedDateUTC, endDateUTC]
+          : casualLeaveDaysUTC,
         reason: values.reason,
         leaveType: values.leaveType,
         halfDay: values.halfDay,
@@ -158,7 +160,6 @@ function LeaveModal({
   const handleUserChange = (user: string) => {
     setUser(user)
   }
-  console.log('leaveData', leaveData)
 
   useEffect(() => {
     if (open) {
@@ -173,7 +174,7 @@ function LeaveModal({
         })
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
-        setLeaveType(leaveData.leaveType.name.split(' ')[0])
+        setLeaveType(leaveData.leaveType.name)
       }
       setHolidays(
         queryClient
@@ -261,11 +262,13 @@ function LeaveModal({
                       onChange={handleLeaveTypeChange}
                       disabled={readOnly}
                     >
-                      {leaveTypeQuery?.data?.map(type => (
-                        <Option value={type.id} key={type.id}>
-                          {type.value}
-                        </Option>
-                      ))}
+                      {leaveTypeQuery?.data?.map(type =>
+                        type.value !== 'Late Arrival' ? (
+                          <Option value={type.id} key={type.id}>
+                            {type.value}
+                          </Option>
+                        ) : null
+                      )}
                     </Select>
                   </Form.Item>
                   {(leaveType === 'Casual' || leaveType === 'Sick') && (
@@ -344,7 +347,22 @@ function LeaveModal({
               </Row>
             </Col>
             {user &&
-              (!leaveType || leaveType === 'Casual' || leaveType === 'Sick' || leaveType === 'Late Arrival' ? (
+              (immediateApprovalLeaveTypes.includes(leaveType) ? (
+                <Col xs={24} sm={8}>
+                  <Form.Item
+                    style={{marginBottom: '0.5px'}}
+                    label="Leave Start Date"
+                    name="leaveDatesPeriod"
+                    rules={[{required: true, message: 'Required!'}]}
+                  >
+                    <DatePicker
+                      className="gx-mb-3 "
+                      style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+                      disabled={readOnly}
+                    />
+                  </Form.Item>
+                </Col>
+              ) : (
                 <Col span={6} xs={24} sm={8}>
                   <Form.Item
                     {...formItemLayout}
@@ -360,7 +378,9 @@ function LeaveModal({
                       weekStartDayIndex={1}
                       multiple
                       minDate={
-                        leaveType === 'Sick' || isEditMode
+                        leaveType === 'Sick' ||
+                        leaveType === 'Casual' ||
+                        isEditMode
                           ? new DateObject().subtract(2, 'months')
                           : new Date()
                       }
@@ -409,21 +429,6 @@ function LeaveModal({
                   >
                     *Disabled dates are holidays
                   </small>
-                </Col>
-              ) : (
-                <Col xs={24} sm={8} >
-                  <Form.Item
-                    style={{marginBottom: '0.5px'}}
-                    label="Leave Start Date"
-                    name="leaveDatesPeriod"
-                    rules={[{required: true, message: 'Required!'}]}
-                  >
-                    <DatePicker
-                      className="gx-mb-3 "
-                      style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
-                      disabled={readOnly}
-                    />
-                  </Form.Item>
                 </Col>
               ))}
           </Row>

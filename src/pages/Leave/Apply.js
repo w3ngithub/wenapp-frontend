@@ -27,6 +27,7 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import {getAllHolidays} from 'services/resources'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -151,7 +152,19 @@ function Apply({user}) {
     <Spin spinning={leaveMutation.isLoading}>
       <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
         <Row type="flex">
-          {!leaveType || leaveType === 'Casual' || leaveType === 'Sick' ? (
+          {immediateApprovalLeaveTypes.includes(leaveType) ? (
+            <FormItem
+              style={{marginBottom: '0.5px'}}
+              label="Leave Starting Date"
+              name="leaveDatesPeriod"
+              rules={[{required: true, message: 'Required!'}]}
+            >
+              <DatePicker
+                className="gx-mb-3 "
+                style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+              />
+            </FormItem>
+          ) : (
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
               <FormItem
                 label="Select Leave Dates"
@@ -166,7 +179,7 @@ function Apply({user}) {
                   weekStartDayIndex={1}
                   multiple
                   minDate={
-                    leaveType === 'Sick'
+                    leaveType === 'Sick' || leaveType === 'Casual'
                       ? new DateObject().subtract(2, 'months')
                       : new Date()
                   }
@@ -206,18 +219,6 @@ function Apply({user}) {
                 *Disabled dates are holidays"
               </small>
             </Col>
-          ) : (
-            <FormItem
-              style={{marginBottom: '0.5px'}}
-              label="Leave Starting Date"
-              name="leaveDatesPeriod"
-              rules={[{required: true, message: 'Required!'}]}
-            >
-              <DatePicker
-                className="gx-mb-3 "
-                style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
-              />
-            </FormItem>
           )}
 
           <Col
