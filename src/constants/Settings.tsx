@@ -164,9 +164,7 @@ export const LEAVES_COLUMN = (
   },
 ]
 
-export const LEAVES_QUARTER_COLUMN = (
-  onEditClick: (param: any, param2: any) => void
-) => [
+export const LEAVES_QUARTER_COLUMN = () => [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -190,23 +188,5 @@ export const LEAVES_QUARTER_COLUMN = (
     dataIndex: 'days',
     key: 'days',
     // width: 315,
-  },
-
-  {
-    title: 'Action',
-    key: 'action',
-    width: 10,
-    render: (text: any, record: any) => {
-      return (
-        <div className="gx-d-flex">
-          <span
-            className="gx-link gx-text-primary"
-            onClick={() => onEditClick(record, true)}
-          >
-            <CustomIcon name="edit" />
-          </span>
-        </div>
-      )
-    },
   },
 ]
