@@ -9,6 +9,7 @@ import {
   Col,
   Spin,
   Checkbox,
+  DatePicker,
   Radio,
 } from 'antd'
 import {Calendar, DateObject} from 'react-multi-date-picker'
@@ -19,12 +20,14 @@ import {
   getLeaveTypes,
   updateLeave,
 } from 'services/leaves'
-import {filterOptions, handleResponse} from 'helpers/utils'
+import {convertDateToUTC, filterOptions, handleResponse} from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
+import useWindowsSize from 'hooks/useWindowsSize'
+import moment from 'moment'
 
 const {Option} = Select
 
@@ -65,6 +68,7 @@ function LeaveModal({
   const [leaveType, setLeaveType] = useState('')
   const [user, setUser] = useState('')
   const [leaveId, setLeaveId] = useState(null)
+  const {innerWidth} = useWindowsSize()
   const {themeType} = useSelector((state: any) => state.settings)
   const [holidays, setHolidays] = useState([])
   const darkCalendar = themeType === THEME_TYPE_DARK
@@ -110,17 +114,38 @@ function LeaveModal({
 
   const onFinish = (values: any) => {
     form.validateFields().then(values => {
-      const data = form.getFieldsValue()
+      console.log('values',values)
+      //calculation for maternity, paternity, pto leaves
+      const numberOfLeaveDays =
+        values?.leaveType === '630ca23889efb2bce93aeb40' ? 60 : 5 // 60 for maternity, 5 for other two
+      const appliedDate = values?.leaveDatesPeriod?._d
+      const newDate = new Date(values?.leaveDatesPeriod?._d)
+      const endDate = new Date(
+        newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
+      )
+      const appliedDateUTC = appliedDate ? convertDateToUTC(appliedDate) : ''
+      const endDateUTC = appliedDate ? convertDateToUTC(endDate) : ''
+
+      //calculation for sick, casual leaves
+      const casualLeaveDays = appliedDate
+        ? []
+        : values?.leaveDatesCasual?.join(',').split(',')
+      const casualLeaveDaysUTC = casualLeaveDays.map((leave: string) =>
+        convertDateToUTC(new Date(leave))
+      )
+
       const newLeave = {
-        leaveDates: data.leaveDates.join(',').split(','),
-        reason: data.reason,
-        leaveType: data.leaveType,
-        halfDay: data.halfDay,
+        ...values,
+        leaveDates: appliedDate ? [appliedDateUTC, endDateUTC] : casualLeaveDaysUTC,
+        reason: values.reason,
+        leaveType: values.leaveType,
+        halfDay: values.halfDay,
+        leaveStatus: appliedDate ? 'approved' : 'pending',
       }
       if (isEditMode) leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
       else
         leaveMutation.mutate({
-          id: data.user,
+          id: values.user,
           data: newLeave,
         })
     })
@@ -133,13 +158,15 @@ function LeaveModal({
   const handleUserChange = (user: string) => {
     setUser(user)
   }
+  console.log('leaveData', leaveData)
 
   useEffect(() => {
     if (open) {
       if (isEditMode) {
         form.setFieldsValue({
           leaveType: leaveData.leaveType._id,
-          leaveDates: leaveData.leaveDates,
+          leaveDatesCasual: leaveData?.leaveDates,
+          leaveDatesPeriod: moment(leaveData),
           reason: leaveData.reason,
           user: leaveData.user._id,
           halfDay: leaveData.halfDay,
@@ -316,73 +343,89 @@ function LeaveModal({
                 </Col>
               </Row>
             </Col>
-            {user && (
-              <Col span={6} xs={24} sm={8}>
-                <Form.Item
-                  {...formItemLayout}
-                  name="leaveDates"
-                  label="Select Leave Date"
-                  rules={[{required: true, message: 'Required!'}]}
-                >
-                  <Calendar
-                    className={darkCalendar ? 'bg-dark' : 'null'}
-                    numberOfMonths={1}
-                    disableMonthPicker
-                    disableYearPicker
-                    weekStartDayIndex={1}
-                    multiple
-                    minDate={
-                      leaveType === 'Sick' || isEditMode
-                        ? new DateObject().subtract(2, 'months')
-                        : new Date()
-                    }
-                    mapDays={({date}) => {
-                      let isWeekend = [0, 6].includes(date.weekDay.index)
-                      let holidayList: any[] = holidays?.filter(
-                        (holiday: any) => date.format() === holiday?.date
-                      )
-                      let isHoliday = holidayList?.length > 0
-                      let leaveDate = userLeaves?.filter(
-                        leave => leave.date === date.format()
-                      )
-                      let leaveAlreadyTakenDates =
-                        leaveDate?.length > 0 &&
-                        leaveDate?.[0]?.leaveStatus !== 'cancelled' &&
-                        !isEditMode
-                      if (isWeekend || isHoliday || leaveAlreadyTakenDates)
-                        return {
-                          disabled: true,
-                          style: {
-                            color:
-                              isWeekend || leaveAlreadyTakenDates
-                                ? '#ccc'
-                                : 'rgb(237 45 45)',
-                          },
-                          onClick: () => {
-                            if (isWeekend) alert('weekends are disabled')
-                            if (isHoliday)
-                              alert(`${holidayList[0]?.name} holiday`)
-                            if (leaveAlreadyTakenDates)
-                              alert(`Leave already taken`)
-                          },
-                        }
-                    }}
-                    // disabled={readOnly}
-                  />
-                </Form.Item>
+            {user &&
+              (!leaveType || leaveType === 'Casual' || leaveType === 'Sick' || leaveType === 'Late Arrival' ? (
+                <Col span={6} xs={24} sm={8}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="leaveDatesCasual"
+                    label="Select Leave Date"
+                    rules={[{required: true, message: 'Required!'}]}
+                  >
+                    <Calendar
+                      className={darkCalendar ? 'bg-dark' : 'null'}
+                      numberOfMonths={1}
+                      disableMonthPicker
+                      disableYearPicker
+                      weekStartDayIndex={1}
+                      multiple
+                      minDate={
+                        leaveType === 'Sick' || isEditMode
+                          ? new DateObject().subtract(2, 'months')
+                          : new Date()
+                      }
+                      mapDays={({date}) => {
+                        let isWeekend = [0, 6].includes(date.weekDay.index)
+                        let holidayList: any[] = holidays?.filter(
+                          (holiday: any) => date.format() === holiday?.date
+                        )
+                        let isHoliday = holidayList?.length > 0
+                        let leaveDate = userLeaves?.filter(
+                          leave => leave.date === date.format()
+                        )
+                        let leaveAlreadyTakenDates =
+                          leaveDate?.length > 0 &&
+                          leaveDate?.[0]?.leaveStatus !== 'cancelled' &&
+                          !isEditMode
+                        if (isWeekend || isHoliday || leaveAlreadyTakenDates)
+                          return {
+                            disabled: true,
+                            style: {
+                              color:
+                                isWeekend || leaveAlreadyTakenDates
+                                  ? '#ccc'
+                                  : 'rgb(237 45 45)',
+                            },
+                            onClick: () => {
+                              if (isWeekend) alert('weekends are disabled')
+                              if (isHoliday)
+                                alert(`${holidayList[0]?.name} holiday`)
+                              if (leaveAlreadyTakenDates)
+                                alert(`Leave already taken`)
+                            },
+                          }
+                      }}
+                      // disabled={readOnly}
+                    />
+                  </Form.Item>
 
-                <small
-                  style={{
-                    color: 'red',
-                    fontSize: '14px',
-                    width: '10%',
-                    paddingLeft: 15,
-                  }}
-                >
-                  *Disabled dates are holidays
-                </small>
-              </Col>
-            )}
+                  <small
+                    style={{
+                      color: 'red',
+                      fontSize: '14px',
+                      width: '10%',
+                      paddingLeft: 15,
+                    }}
+                  >
+                    *Disabled dates are holidays
+                  </small>
+                </Col>
+              ) : (
+                <Col xs={24} sm={8} >
+                  <Form.Item
+                    style={{marginBottom: '0.5px'}}
+                    label="Leave Start Date"
+                    name="leaveDatesPeriod"
+                    rules={[{required: true, message: 'Required!'}]}
+                  >
+                    <DatePicker
+                      className="gx-mb-3 "
+                      style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+                      disabled={readOnly}
+                    />
+                  </Form.Item>
+                </Col>
+              ))}
           </Row>
         </Form>
       </Spin>

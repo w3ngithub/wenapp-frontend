@@ -11,7 +11,12 @@ import {
   Radio,
   DatePicker,
 } from 'antd'
-import {filterOptions, handleResponse} from 'helpers/utils'
+import {
+  convertDateToUTC,
+  filterOptions,
+  handleResponse,
+  MuiFormatDate,
+} from 'helpers/utils'
 import React, {useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {createLeave, getLeavesOfUser, getLeaveTypes} from 'services/leaves'
@@ -22,7 +27,6 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import {getAllHolidays} from 'services/resources'
 import useWindowsSize from 'hooks/useWindowsSize'
-import moment from 'moment'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -87,32 +91,37 @@ function Apply({user}) {
     setLeaveType('')
   }
 
-  // const handleSubmit = () => {
-  //   form.validateFields().then(values =>
-  //     leaveMutation.mutate({
-  //       ...values,
-  //       leaveDates: values.leaveDates.join(',').split(','),
-  //       halfDay: values.halfDay,
-  //     })
-  //   )
-  // }
-
   const handleSubmit = () => {
     form.validateFields().then(values => {
-      console.log('values', moment.utc(values?.leaveDates.startOf('day')).format())
-      const appliedDate = values?.leaveDates?._d
-      console.log('app', appliedDate);
-      const newDate = new Date()
-      const endDate = new Date(newDate.setDate(appliedDate?.getDate() + 59))
-      console.log('end', endDate);
+      //calculation for maternity, paternity, pto leaves
+      const numberOfLeaveDays =
+        values?.leaveType === '630ca23889efb2bce93aeb40' ? 60 : 5 // 60 for maternity, 5 for other two
+      const appliedDate = values?.leaveDatesPeriod?._d
+      const newDate = new Date(values?.leaveDatesPeriod?._d)
+      const endDate = new Date(
+        newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
+      )
+      const appliedDateUTC = appliedDate ? convertDateToUTC(appliedDate) : ''
+      const endDateUTC = appliedDate ? convertDateToUTC(endDate) : ''
 
-      // form.validateFields().then(values =>
-      //   leaveMutation.mutate({
-      //     ...values,
-      //     leaveDates: !appliedDate ? values?.leaveDates.join(',').split(',') : [appliedDate, endDate],
-      //     halfDay: values.halfDay,
-      //   })
-      // )
+      //calculation for sick, casual leaves
+      const casualLeaveDays = appliedDate
+        ? []
+        : values?.leaveDatesCasual?.join(',').split(',')
+      const casualLeaveDaysUTC = casualLeaveDays.map(leave =>
+        convertDateToUTC(new Date(leave))
+      )
+
+      form.validateFields().then(values =>
+        leaveMutation.mutate({
+          ...values,
+          leaveDates: appliedDate
+            ? [appliedDateUTC, endDateUTC]
+            : casualLeaveDaysUTC,
+          halfDay: values.halfDay,
+          leaveStatus: appliedDate ? 'approved' : 'pending',
+        })
+      )
     })
   }
 
@@ -146,7 +155,7 @@ function Apply({user}) {
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
               <FormItem
                 label="Select Leave Dates"
-                name="leaveDates"
+                name="leaveDatesCasual"
                 rules={[{required: true, message: 'Required!'}]}
               >
                 <Calendar
@@ -194,21 +203,19 @@ function Apply({user}) {
                 />
               </FormItem>
               <small style={{color: 'red', fontSize: '14px'}}>
-                *Disabled dates are holidays
+                *Disabled dates are holidays"
               </small>
             </Col>
           ) : (
             <FormItem
               style={{marginBottom: '0.5px'}}
               label="Leave Starting Date"
-              name="leaveDates"
+              name="leaveDatesPeriod"
               rules={[{required: true, message: 'Required!'}]}
             >
               <DatePicker
                 className="gx-mb-3 "
                 style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
-                // value={date?.moment}
-                // onChange={handleDateChange}
               />
             </FormItem>
           )}
