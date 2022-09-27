@@ -3,8 +3,6 @@ import '@ant-design/compatible/assets/index.css'
 import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
 import moment from 'moment'
 import {filterOptions} from 'helpers/utils'
-import {useQuery} from '@tanstack/react-query'
-import {getQuarters} from 'services/leaves'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -30,22 +28,10 @@ function UserDetailForm({
   intialValues,
   readOnly = false,
   loading = false,
+  currentQuarter,
 }) {
   const [form] = Form.useForm()
-  const quarterQuery = useQuery(['quarters'], getQuarters, {
-    select: res => {
-      const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
-        quarter =>
-          new Date(quarter[1].fromDate) >
-          new Date() <
-          new Date(quarter[1].toDate)
-      )
-      return {
-        name: ongoingQuarter[0],
-        ...ongoingQuarter[1],
-      }
-    },
-  })
+
   const handleCancel = () => {
     form.resetFields()
     onToggleModal({})
@@ -53,23 +39,22 @@ function UserDetailForm({
 
   const handleSubmit = () => {
     const data = intialValues?.allocatedLeaves
-      ? JSON.parse(intialValues?.allocatedLeaves)
-      : {}
+
     form.validateFields().then(values =>
       onSubmit({
         ...intialValues,
         ...values,
-        allocatedLeaves: JSON.stringify({
+        allocatedLeaves: {
           ...data,
-          [quarterQuery?.data.name]: values.allocatedLeaves,
-        }),
+          [currentQuarter?.data.name]: values.allocatedLeaves,
+        },
       })
     )
   }
 
   const handleStatusChange = value => {
     if (value === 'Probation') form.setFieldValue('allocatedLeaves', 3)
-    else form.setFieldValue('allocatedLeaves', quarterQuery?.data.leaves)
+    else form.setFieldValue('allocatedLeaves', currentQuarter?.data.leaves)
   }
 
   const handlePositionChange = value => {
@@ -84,7 +69,7 @@ function UserDetailForm({
 
     if (isIntern || isTrainee || isOnProbation)
       form.setFieldValue('allocatedLeaves', 3)
-    else form.setFieldValue('allocatedLeaves', quarterQuery?.data.leaves)
+    else form.setFieldValue('allocatedLeaves', currentQuarter?.data.leaves)
   }
   useEffect(() => {
     if (toggle) {
@@ -103,9 +88,9 @@ function UserDetailForm({
             ? intialValues.positionType._id
             : undefined,
         status: intialValues?.status && intialValues?.status,
-        allocatedLeaves: intialValues?.allocatedLeaves
-          ? JSON.parse(intialValues?.allocatedLeaves)[quarterQuery?.data?.name]
-          : quarterQuery?.data.leaves,
+        allocatedLeaves:
+          intialValues?.allocatedLeaves?.[currentQuarter?.data?.name],
+
         panNumber: intialValues.panNumber && intialValues.panNumber,
         citNumber: intialValues.citNumber && intialValues.citNumber,
         bankAccNumber: intialValues.bankAccNumber && intialValues.bankAccNumber,

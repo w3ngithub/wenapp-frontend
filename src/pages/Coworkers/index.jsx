@@ -14,11 +14,13 @@ import {
   getUserPosition,
   getUserPositionTypes,
   getUserRoles,
+  resetAllocatedLeaves,
   updateUser,
 } from 'services/users/userDetails'
 import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {getQuarters} from 'services/leaves'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -62,13 +64,27 @@ function CoworkersPage() {
     ['userPositionTypes'],
     getUserPositionTypes
   )
-  const {data, isLoading, isFetching, isError} = useQuery(
+  const {data, isLoading, isFetching, isError, refetch} = useQuery(
     ['users', page, activeUser, role, position, name],
     () => getAllUsers({...page, active: activeUser, role, position, name}),
     {
       keepPreviousData: true,
     }
   )
+  const quarterQuery = useQuery(['quarters'], getQuarters, {
+    select: res => {
+      const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
+        quarter =>
+          new Date(quarter[1].fromDate) >
+          moment.utc(moment(new Date()).startOf('day')).format() <
+          new Date(quarter[1].toDate)
+      )
+      return {
+        name: ongoingQuarter[0],
+        ...ongoingQuarter[1],
+      }
+    },
+  })
 
   const mutation = useMutation(
     updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
@@ -85,6 +101,24 @@ function CoworkersPage() {
         ),
       onError: error => {
         notification({message: 'Could not update User', type: 'error'})
+      },
+    }
+  )
+  const resetLeavesMutation = useMutation(
+    payload => resetAllocatedLeaves(payload),
+    {
+      onSuccess: response =>
+        handleResponse(
+          response,
+          'Allocated leaves reset of all user Successfully',
+          'Could not reset allocated leaves',
+          [() => refetch()]
+        ),
+      onError: error => {
+        notification({
+          message: 'Could not reset allocated leaves',
+          type: 'error',
+        })
       },
     }
   )
@@ -158,6 +192,10 @@ function CoworkersPage() {
     setSelectedRows([])
   }
 
+  const handleResetAllocatedLeaves = () => {
+    resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data.name})
+  }
+
   const handleRowSelect = rows => {
     setSelectedRows(rows)
   }
@@ -183,6 +221,7 @@ function CoworkersPage() {
         positionTypes={positionTypes}
         intialValues={userRecord}
         readOnly={readOnly}
+        currentQuarter={quarterQuery}
       />
       <Card title="Co-workers">
         <div className="components-table-demo-control-bar">
@@ -201,9 +240,9 @@ function CoworkersPage() {
             />
             <Button
               className="gx-btn gx-btn-primary gx-text-white gx-mb-1"
-              onClick={handleResetFilter}
+              onClick={handleResetAllocatedLeaves}
             >
-              Reset Leaves
+              Reset Allocated Leaves
             </Button>
           </div>
           <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
@@ -319,7 +358,9 @@ function CoworkersPage() {
             hideOnSinglePage: true,
             onChange: handlePageChange,
           }}
-          loading={mutation.isLoading || isFetching}
+          loading={
+            mutation.isLoading || isFetching || resetLeavesMutation.isLoading
+          }
         />
       </Card>
     </div>
