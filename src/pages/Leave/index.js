@@ -16,6 +16,7 @@ import LeavesCalendar from './LeavesCalendar'
 import {useLocation} from 'react-router-dom'
 import MyHistory from './MyHistory'
 import {getLeaveTypes} from 'services/settings/leaveType'
+import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
 
 const TabPane = Tabs.TabPane
 
@@ -87,7 +88,7 @@ function Leave() {
       <div style={{display: 'flex', gap: '1rem'}}>
         <Card
           title="Quarterly Leave"
-          style={{flex: 0.5, background: '#e5dfdb42'}}
+          style={{flex: 0.5, background: 'rgb(232 232 232 / 26%)'}}
         >
           <RemainingAndAppliedLeaveCards
             leavesRemaining={
@@ -111,8 +112,29 @@ function Leave() {
             }
           />
         </Card>
-        <Card title="Annual Leave" style={{flex: 0.5, background: '#e5dfdb42'}}>
-          <RemainingAndAppliedLeaveCards
+        <Card
+          title="Annual Leave"
+          style={{flex: 0.5, background: 'rgb(232 232 232 / 26%)'}}
+        >
+          <AnnualLeavesRemainingAndAppliedCards
+            firstTitle="Leave Days Remaining"
+            secondTitle="Leave Days Applied"
+            firstType="Sick"
+            secondType="Casual"
+            sickDayRemaining={
+              allocatedYealryLeaves['Sick Leave'] -
+                yearlyLeavesTakn['Sick Leave'] ||
+              allocatedYealryLeaves['Sick Leave']
+            }
+            casualDayRemaining={
+              allocatedYealryLeaves['Casual Leave'] -
+                yearlyLeavesTakn['Casual Leave'] ||
+              allocatedYealryLeaves['Casual Leave']
+            }
+            sickDayApplied = {yearlyLeavesTakn['Sick Leave'] || 0}
+            casualDayApplied = {yearlyLeavesTakn['Casual Leave'] || 0}
+          />
+          {/* <RemainingAndAppliedLeaveCards
             leavesRemaining={
               <>
                 <h4
@@ -128,12 +150,12 @@ function Leave() {
                 <div className="gx-d-flex gx-column-gap-10">
                   {' '}
                   <div>
-                    <p>
+                    <p style={{marginBotton:'2px'}}>
                       Sick {'  '}
                       {quarterleaveDaysQuery?.data?.data?.data?.leavesTaken ||
                         0}
                     </p>
-                    <p>
+                    <p style={{marginBotton:'2px'}}>
                       Casual {'   '}
                       {quarterleaveDaysQuery?.data?.data?.data
                         ?.remainingLeaves || 0}
@@ -157,24 +179,24 @@ function Leave() {
                 <div className="gx-d-flex gx-column-gap-10">
                   <div>
                     <p>Sick {yearlyLeavesTakn['Sick Leave'] || 0}</p>
-                    {/* <p>
+                     <p>
                       Sick Remaining -
                       {allocatedYealryLeaves['Sick Leave'] -
                         yearlyLeavesTakn['Sick Leave'] ||
                         allocatedYealryLeaves['Sick Leave']}
-                    </p> */}{' '}
+                    </p> 
                     <p>Casual {yearlyLeavesTakn['Casual Leave'] || 0}</p>
-                    {/* <p>
+                    <p>
                       Casual Remaining -{' '}
                       {allocatedYealryLeaves['Casual Leave'] -
                         yearlyLeavesTakn['Casual Leave'] ||
                         allocatedYealryLeaves['Casual Leave']}
-                    </p> */}
+                    </p>
                   </div>
                 </div>
               </>
             }
-          />
+          /> */}
         </Card>
       </div>
 
