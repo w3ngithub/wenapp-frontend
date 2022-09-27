@@ -3,15 +3,13 @@ import Widget from 'components/Elements/Widget/index'
 import {connect} from 'react-redux'
 import {Col, Row} from 'antd'
 
-const IconAndInfoCard = props => {
+const IconAndNumber = props => {
   const {
     icon,
     title,
     cardColor,
-    firstType,
-    firstTypeCount,
-    secondType,
-    secondTypeCount,
+    text,
+    number
   } = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {
@@ -36,24 +34,10 @@ const IconAndInfoCard = props => {
 
           <Col>
             <div className="gx-media-body">
-              <div
-                className="gx-d-flex"
-                style={{gap: '2rem', marginBottom: '0.2rem'}}
-              >
-                <p className={`gx-mb-0 gx-text-${iconColor}`}>{firstType}</p>
+                <p className={`gx-mb-0 gx-text-${iconColor}`} style={{fontSize:'2rem'}}>{number}</p>
                 <p className={`gx-mb-0 gx-text-${iconColor}`}>
-                  {firstTypeCount}
+                  {text}
                 </p>
-              </div>
-              <div
-                className="gx-d-flex"
-                style={{ gap: '0.9rem'}}
-              >
-                <p className={`gx-mb-0 gx-text-${iconColor}`}>{secondType}</p>
-                <p className={`gx-mb-0 gx-text-${iconColor}`}>
-                  {secondTypeCount}
-                </p>
-              </div>
             </div>
           </Col>
         </Row>
@@ -66,4 +50,4 @@ const mapStateToProps = ({settings}) => {
   const {themeType} = settings
   return {themeType}
 }
-export default connect(mapStateToProps, null)(IconAndInfoCard)
+export default connect(mapStateToProps, null)(IconAndNumber)

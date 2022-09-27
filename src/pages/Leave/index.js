@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Card, Tabs} from 'antd'
+import {Card, Col, Row, Tabs} from 'antd'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {
   changeLeaveStatus,
@@ -17,6 +17,7 @@ import {useLocation} from 'react-router-dom'
 import MyHistory from './MyHistory'
 import {getLeaveTypes} from 'services/settings/leaveType'
 import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
+import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingAndAppliedCards'
 
 const TabPane = Tabs.TabPane
 
@@ -85,55 +86,49 @@ function Leave() {
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
     <Card title="Leave Management System">
-      <div style={{display: 'flex', gap: '1rem'}}>
-        <Card
-          title="Quarterly Leave"
-          style={{flex: 0.5, background: 'rgb(232 232 232 / 26%)'}}
-        >
-          <RemainingAndAppliedLeaveCards
-            leavesRemaining={
-              <>
-                <span style={{fontSize: '2rem'}}>
-                  {quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves ||
-                    0}
-                </span>
-                <p> Leave Days Remaining </p>
-              </>
-            }
-            leavesTaken={
-              <>
-                <span style={{fontSize: '2rem'}}>
-                  {quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0}
-                </span>
-                <p>Leave Days Applied</p>
-              </>
-            }
-          />
-        </Card>
-        <Card
-          title="Annual Leave"
-          style={{flex: 0.5, background: 'rgb(232 232 232 / 26%)'}}
-        >
-          <AnnualLeavesRemainingAndAppliedCards
-            firstTitle="Leave Days Remaining"
-            secondTitle="Leave Days Applied"
-            firstType="Sick"
-            secondType="Casual"
-            sickDayRemaining={
-              allocatedYealryLeaves['Sick Leave'] -
-                yearlyLeavesTakn['Sick Leave'] ||
-              allocatedYealryLeaves['Sick Leave']
-            }
-            casualDayRemaining={
-              allocatedYealryLeaves['Casual Leave'] -
-                yearlyLeavesTakn['Casual Leave'] ||
-              allocatedYealryLeaves['Casual Leave']
-            }
-            sickDayApplied={yearlyLeavesTakn['Sick Leave'] || 0}
-            casualDayApplied={yearlyLeavesTakn['Casual Leave'] || 0}
-          />
-        </Card>
-      </div>
+      <Row>
+        <Col xl={12} lg={12} md={24} sm={24} xs={24}>
+          <Card
+            title="Quarterly Leave"
+            style={{background: 'rgb(232 232 232 / 26%)'}}
+          >
+            <QuarterlyLeavesRemainingAndAppliedCards
+              firstType="Days Remaining"
+              secondType="Days Applied"
+              firstNumber={
+                quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves || 0
+              }
+              secondNumber={quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0}
+            />
+          </Card>
+        </Col>
+
+        <Col xl={12} lg={12} md={24} sm={24} xs={24}>
+          <Card
+            title="Annual Leave"
+            style={{background: 'rgb(232 232 232 / 26%)'}}
+          >
+            <AnnualLeavesRemainingAndAppliedCards
+              firstTitle="Days Remaining"
+              secondTitle="Days Applied"
+              firstType="Sick"
+              secondType="Casual"
+              sickDayRemaining={
+                allocatedYealryLeaves['Sick Leave'] -
+                  yearlyLeavesTakn['Sick Leave'] ||
+                allocatedYealryLeaves['Sick Leave']
+              }
+              casualDayRemaining={
+                allocatedYealryLeaves['Casual Leave'] -
+                  yearlyLeavesTakn['Casual Leave'] ||
+                allocatedYealryLeaves['Casual Leave']
+              }
+              sickDayApplied={yearlyLeavesTakn['Sick Leave'] || 0}
+              casualDayApplied={yearlyLeavesTakn['Casual Leave'] || 0}
+            />
+          </Card>
+        </Col>
+      </Row>
 
       <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
         <TabPane tab="Apply" key="1">
