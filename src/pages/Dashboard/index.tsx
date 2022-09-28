@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import LeaveIcon from "assets/images/Leave.svg"
+import {ReactComponent as LeaveIcon} from "assets/images/Leave.svg"
 import {Button, Card, Col, Form, Row} from 'antd'
 import Auxiliary from 'util/Auxiliary'
 import Widget from 'components/Elements/Widget/index'
@@ -34,6 +34,8 @@ import {
 import {getTodaysUserAttendanceCount} from 'services/attendances'
 import {useNavigate} from 'react-router-dom'
 import useWindowsSize from 'hooks/useWindowsSize'
+import { THEME_TYPE_DARK } from 'constants/ThemeSetting'
+import { useSelector } from 'react-redux'
 
 const FormItem = Form.Item
 
@@ -47,6 +49,10 @@ const Dashboard = () => {
   const loggedInUser = getLocalStorageData('user_id')
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
+  const {themeType} = useSelector((state: any) => state.settings)
+  const darkTheme = themeType === THEME_TYPE_DARK
+
+  const darkThemeTextColor = '#e0e0e0';
 
   const {data: salaryReview} = useQuery(
     ['usersSalaryReview'],
@@ -125,7 +131,7 @@ const Dashboard = () => {
       style = {
         ...style,
 
-        color: '#FC6BAB',
+        color: darkTheme ? darkThemeTextColor : '#FC6BAB',
       }
     if (event.type === 'holiday')
       style = {
@@ -138,7 +144,7 @@ const Dashboard = () => {
         fontWeight: '400',
         marginTop: '-4px',
         marginBottom: '3px',
-        color: '#038fde',
+        color: darkTheme ? darkThemeTextColor : '#038fde',
       }
     if (event.type === 'notice')
       style = {
@@ -146,7 +152,7 @@ const Dashboard = () => {
         width: '100%',
         fontWeight: '500',
         background: '#a7acaf',
-        color: 'black',
+        color: darkTheme ? darkThemeTextColor : 'black',
         marginBottom: '6px',
       }
 
@@ -206,7 +212,7 @@ const Dashboard = () => {
           }
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
-            <img src={LeaveIcon} alt="Leave Icon" style={{width:'18px'}}/>
+            <LeaveIcon width='18px' fill = {darkTheme ? darkThemeTextColor : '#038fde' }/>
             {shortName}
           </p>
         </div>
