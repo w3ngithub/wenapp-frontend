@@ -5,29 +5,22 @@ import {Col, Row} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
 
 const IconAndNumber = props => {
-  const {
-    icon,
-    title,
-    cardColor,
-    text,
-    number
-  } = props
+  const {icon, title, cardColor, text, number} = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {
   iconColor = 'white'
   // }
-  const {innerWidth} = useWindowsSize();
-
+  const {innerWidth} = useWindowsSize()
 
   return (
     <Widget styleName={`gx-bg-${cardColor}`}>
-      <div style={{marginLeft: '1rem'}}>
+      <div style={{marginLeft: '1rem', paddingBottom: '3px'}}>
         <Row>
           <p className={`gx-text-${iconColor}`}>{title}</p>
         </Row>
         <Row>
           <Col>
-            <div style={{marginRight:'0.8rem'}}>
+            <div style={{marginRight: '0.8rem'}}>
               <i
                 className={`icon icon-${icon} gx-fs-xlxl gx-text-${iconColor} gx-d-flex`}
                 style={{fontSize: 45}}
@@ -36,11 +29,14 @@ const IconAndNumber = props => {
           </Col>
 
           <Col>
-            <div className="gx-media-body" >
-                <p className={`gx-mb-0 gx-text-${iconColor}`} style={{fontSize:'2rem'}}>{number}</p>
-                <p className={`gx-mb-0 gx-text-${iconColor}`}>
-                  {text}
-                </p>
+            <div className="gx-media-body">
+              <p
+                className={`gx-mb-0 gx-text-${iconColor}`}
+                style={{fontSize: '2rem'}}
+              >
+                {number}
+              </p>
+              <p className={`gx-mb-0 gx-text-${iconColor}`}>{text}</p>
             </div>
           </Col>
         </Row>

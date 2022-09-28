@@ -38,3 +38,5 @@ const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
 ]
 
 export {LEAVE_REPORT_COLUMNS}
+
+export const INTERN = 'Intern'

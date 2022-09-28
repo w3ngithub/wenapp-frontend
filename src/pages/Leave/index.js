@@ -97,7 +97,9 @@ function Leave() {
               firstNumber={
                 quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves || 0
               }
-              secondNumber={quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0}
+              secondNumber={
+                quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0
+              }
             />
           </Card>
         </Col>
