@@ -177,7 +177,17 @@ const resetAllocatedLeaves = async payload => {
   }
 }
 
+const signUp = async (payload, token) => {
+  try {
+    let response = await API.post(`${Apis.Signup}/${token}`, payload)
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err?.response)
+  }
+}
+
 export {
+  signUp,
   loginInUsers,
   getAllUsers,
   getTeamLeads,

@@ -1,6 +1,6 @@
 import '@ant-design/compatible/assets/index.css'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {Button, Card, Form, Input, Radio, Table} from 'antd'
+import {Button, Card, Form, Input, Popconfirm, Radio, Table} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import UserDetailForm from 'components/Modules/UserDetailModal'
 import {CO_WORKERCOLUMNS} from 'constants/CoWorkers'
@@ -238,12 +238,16 @@ function CoworkersPage() {
               enterButton
               className="direct-form-item"
             />
-            <Button
-              className="gx-btn gx-btn-primary gx-text-white gx-mb-1"
-              onClick={handleResetAllocatedLeaves}
+            <Popconfirm
+              title={`Are you sure to reset allocated leaves?`}
+              onConfirm={handleResetAllocatedLeaves}
+              okText="Yes"
+              cancelText="No"
             >
-              Reset Allocated Leaves
-            </Button>
+              <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
+                Reset Allocated Leaves
+              </Button>
+            </Popconfirm>
           </div>
           <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
             <Form layout="inline" form={form}>

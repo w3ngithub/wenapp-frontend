@@ -246,12 +246,12 @@ function UserDetailForm({
             label="Allocated Leaves"
             hasFeedback={readOnly ? false : true}
             name="allocatedLeaves"
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: 'Required!',
-            //   },
-            // ]}
+            rules={[
+              {
+                required: true,
+                message: 'Required!',
+              },
+            ]}
           >
             <Input placeholder="Enter Allocated Leaves" disabled={readOnly} />
           </FormItem>
