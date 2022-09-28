@@ -151,7 +151,6 @@ function Apply({user}) {
     }
   })
 
-
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
