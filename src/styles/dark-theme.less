@@ -151,18 +151,13 @@ body.dark-theme {
     color: @dark-theme-text-color;
     height: 17px;
     margin-bottom: 0.3rem;
-    padding: 2px 3px;
-    background: lighten(@dark-theme-primary-color, 5%);
+    background: transparent;
   }
 
   & .rbc-show-more {
     background-color: lighten(@dark-theme-primary-color, 5%);
-    z-index: 4;
-    font-weight: bold;
-    font-size: 85%;
-    height: auto;
-    line-height: normal;
-    color: #5c99ce;
+
+    color: white;
   }
 
   & .rbc-overlay-header {
@@ -2077,7 +2072,7 @@ body.dark-theme {
 
     & .ant-picker-cell-disabled .ant-picker-cell-inner {
       background: transparent;
-      color: rgba(0,0,0,0.6);
+      color: rgba(0, 0, 0, 0.6);
     }
 
     &-picker-clear {
