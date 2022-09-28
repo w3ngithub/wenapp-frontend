@@ -17,6 +17,7 @@ import MyHistory from './MyHistory'
 import {getLeaveTypes} from 'services/settings/leaveType'
 import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
 import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingAndAppliedCards'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const TabPane = Tabs.TabPane
 
@@ -26,7 +27,7 @@ function Leave() {
 
   const [selectedRows, setSelectedRows] = useState([])
 
-  const loggedInUser = getLocalStorageData('user_id')
+  const loggedInUser = getLocalStorageData(LOCALSTORAGE_USER)
 
   const {data: leaveTypes, isLoading} = useQuery(['leaveTypes'], getLeaveTypes)
 

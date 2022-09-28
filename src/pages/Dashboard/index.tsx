@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {ReactComponent as LeaveIcon} from "assets/images/Leave.svg"
+import {ReactComponent as LeaveIcon} from 'assets/images/Leave.svg'
 import {Button, Card, Col, Form, Row} from 'antd'
 import Auxiliary from 'util/Auxiliary'
 import Widget from 'components/Elements/Widget/index'
@@ -34,8 +34,9 @@ import {
 import {getTodaysUserAttendanceCount} from 'services/attendances'
 import {useNavigate} from 'react-router-dom'
 import useWindowsSize from 'hooks/useWindowsSize'
-import { THEME_TYPE_DARK } from 'constants/ThemeSetting'
-import { useSelector } from 'react-redux'
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
+import {useSelector} from 'react-redux'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const FormItem = Form.Item
 
@@ -46,13 +47,13 @@ const Dashboard = () => {
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
   const navigate = useNavigate()
-  const loggedInUser = getLocalStorageData('user_id')
+  const loggedInUser = getLocalStorageData(LOCALSTORAGE_USER)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)
   const darkTheme = themeType === THEME_TYPE_DARK
 
-  const darkThemeTextColor = '#e0e0e0';
+  const darkThemeTextColor = '#e0e0e0'
 
   const {data: salaryReview} = useQuery(
     ['usersSalaryReview'],
@@ -172,6 +173,7 @@ const Dashboard = () => {
       gap: '4px',
       margin: '0 !important',
     }
+
     if (props.event.type === 'birthday')
       return (
         <p style={{...style, margin: 0, flexWrap: 'wrap'}}>
@@ -212,7 +214,10 @@ const Dashboard = () => {
           }
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
-            <LeaveIcon width='18px' fill = {darkTheme ? darkThemeTextColor : '#038fde' }/>
+            <LeaveIcon
+              width="18px"
+              fill={darkTheme ? darkThemeTextColor : '#038fde'}
+            />
             {shortName}
           </p>
         </div>

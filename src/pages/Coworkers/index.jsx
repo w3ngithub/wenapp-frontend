@@ -21,6 +21,7 @@ import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {getQuarters} from 'services/leaves'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -55,7 +56,7 @@ function CoworkersPage() {
   const queryClient = useQueryClient()
 
   // get user detail from storage
-  const {user} = JSON.parse(localStorage.getItem('user_id'))
+  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
   const [form] = Form.useForm()
 
   const {data: roleData} = useQuery(['userRoles'], getUserRoles)
