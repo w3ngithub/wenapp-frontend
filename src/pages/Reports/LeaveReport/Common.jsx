@@ -6,25 +6,135 @@ import {notification} from 'helpers/notification'
 import {LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
 import {getLeaveDaysOfAllUsers} from 'services/leaves'
 
-const formattedLeaveReports = reports => {
-  return reports?.map(report => ({
-    key: report?._id,
-    name: report?._id,
-    leavesRemaining: report?.leavesRemaining,
+const formattedLeaveReports = (reports, quarter, Intern) => {
+  return reports?.[quarter - 1]?.map(report => ({
+    key: report?._id._id?.[0],
+    name: report?._id.name?.[0],
+    leavesRemaining: accumulatedLeaveDaysRemaining(
+      reports,
+      quarter,
+      report?._id._id[0],
+      report?._id.allocatedLeaves[0],
+      report?.leavesTaken,
+      Intern,
+      report?._id.position[0]
+    ),
+
     leavesTaken: report?.leavesTaken,
   }))
 }
 
-function CommonQuarter({fromDate, toDate}) {
+const accumulatedLeaveDaysRemaining = (
+  reports,
+  quarter,
+  user,
+  allocatedLeaves,
+  leavesTaken,
+  Intern,
+  position
+) => {
+  let firstQuarterLeavesTaken,
+    secondQuarterLeavesTaken,
+    thirdQuarterLeavesTaken,
+    firstQuartLeave,
+    secondQuarteLeave,
+    thirdQuarterLeave = null
+
+  switch (quarter) {
+    case 1:
+      return allocatedLeaves?.firstQuarter - leavesTaken || 0
+
+    case 2:
+      // does not accumulate other quarter remaining leaves if  position is Intern
+      if (Intern._id === position)
+        return allocatedLeaves?.secondQuarter - leavesTaken || 0
+
+      firstQuartLeave = reports[0].find(x => x?._id._id[0] === user)
+        ?.leavesTaken
+      firstQuarterLeavesTaken =
+        allocatedLeaves?.firstQuarter - firstQuartLeave > 0
+          ? allocatedLeaves?.firstQuarter - firstQuartLeave
+          : 0
+      return (
+        (allocatedLeaves?.secondQuarter - leavesTaken || 0) +
+        (firstQuarterLeavesTaken || 0)
+      )
+
+    case 3:
+      // does not accumulate other quarter remaining leaves if  position is Intern
+      if (Intern._id === position)
+        return allocatedLeaves?.thirdQuarter - leavesTaken || 0
+
+      firstQuartLeave = reports[0].find(x => x?._id._id[0] === user)
+        ?.leavesTaken
+      secondQuarteLeave = reports[1].find(x => x?._id._id[0] === user)
+        ?.leavesTaken
+
+      firstQuarterLeavesTaken =
+        allocatedLeaves?.firstQuarter - firstQuartLeave > 0
+          ? allocatedLeaves?.firstQuarter - firstQuartLeave
+          : 0
+
+      secondQuarterLeavesTaken =
+        allocatedLeaves?.secondQuarter - secondQuarteLeave > 0
+          ? allocatedLeaves?.secondQuarter - secondQuarteLeave
+          : 0
+
+      return (
+        (allocatedLeaves?.thirdQuarter - leavesTaken || 0) +
+        (firstQuarterLeavesTaken || 0) +
+        (secondQuarterLeavesTaken || 0)
+      )
+
+    case 4:
+      // does not accumulate other quarter remaining leaves if  position is Intern
+      if (Intern._id === position)
+        return allocatedLeaves?.fourthQuarter - leavesTaken || 0
+
+      firstQuartLeave = reports[0].find(x => x?._id._id[0] === user)
+        ?.leavesTaken
+      secondQuarteLeave = reports[1].find(x => x?._id._id[0] === user)
+        ?.leavesTaken
+      thirdQuarterLeave = reports[2].find(x => x?._id._id[0] === user)
+        ?.leavesTaken
+
+      firstQuarterLeavesTaken =
+        allocatedLeaves?.firstQuarter - firstQuartLeave > 0
+          ? allocatedLeaves?.firstQuarter - firstQuartLeave
+          : 0
+      secondQuarterLeavesTaken =
+        allocatedLeaves?.secondQuarter - secondQuarteLeave > 0
+          ? allocatedLeaves?.secondQuarter - secondQuarteLeave
+          : 0
+      thirdQuarterLeavesTaken =
+        allocatedLeaves?.thirdQuarter - thirdQuarterLeave > 0
+          ? allocatedLeaves?.thirdQuarter - thirdQuarterLeave
+          : 0
+
+      return (
+        (allocatedLeaves?.fourthQuarter - leavesTaken || 0) +
+        (firstQuarterLeavesTaken || 0) +
+        (secondQuarterLeavesTaken || 0) +
+        (thirdQuarterLeavesTaken || 0)
+      )
+
+    default:
+      return 0
+  }
+}
+
+function CommonQuarter({fromDate, toDate, quarter, positions}) {
   // init states
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 10})
 
   const {data, isLoading, isError, isFetching} = useQuery(
-    ['leaveReport' + fromDate],
-    () => getLeaveDaysOfAllUsers(fromDate, toDate),
+    ['leaveReport' + quarter],
+    () => getLeaveDaysOfAllUsers(fromDate, toDate, quarter),
     {keepPreviousData: true}
   )
+
+  const Intern = positions?.find(pos => pos?.name === 'Intern')
 
   useEffect(() => {
     if (isError) {
@@ -56,7 +166,11 @@ function CommonQuarter({fromDate, toDate}) {
       <Table
         className="gx-table-responsive"
         columns={LEAVE_REPORT_COLUMNS(sort)}
-        dataSource={formattedLeaveReports(data?.data?.data?.data)}
+        dataSource={formattedLeaveReports(
+          data?.data?.data?.data,
+          quarter,
+          Intern
+        )}
         onChange={handleTableChange}
         pagination={{
           current: page.page,

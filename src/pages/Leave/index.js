@@ -102,9 +102,7 @@ function Leave() {
             leavesTaken={
               <>
                 <span style={{fontSize: '2rem'}}>
-                  {allocatedYealryLeaves['Casual Leave'] -
-                    yearlyLeavesTakn['Casual Leave'] ||
-                    allocatedYealryLeaves['Casual Leave']}
+                  {quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0}
                 </span>
                 <p>Leave Days Applied</p>
               </>
