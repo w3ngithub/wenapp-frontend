@@ -37,6 +37,8 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import AccessWrapper from 'components/Modules/AccessWrapper'
+import RoleAccess from 'constants/RoleAccess'
 
 const FormItem = Form.Item
 
@@ -398,85 +400,93 @@ const Dashboard = () => {
               />
             </div>
           </Card>
-          <Card className="gx-card" title="Project Time Log Report">
-            <div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
-              <Form layout="inline" onFinish={generateChart} form={form}>
-                <FormItem name="chart">
-                  <Select
-                    style={{width: innerWidth <= 504 ? '100%' : 115}}
-                    value={chart}
-                    onChange={(c: any) => setChart(c)}
-                    placeholder="Select Chart"
-                    options={[
-                      {_id: '1', name: 'Bar Chart'},
-                      {_id: '2', name: 'Pie Chart'},
-                    ]?.map((x: {_id: string; name: string}) => ({
-                      id: x._id,
-                      value: x.name,
-                    }))}
-                  />
-                </FormItem>
-                <FormItem name="project" className="direct-form-item">
-                  <Select
-                    value={project}
-                    onChange={(c: any) => setProject(c)}
-                    placeholder="Select Project"
-                    options={data?.data?.data?.data?.map(
-                      (x: {_id: string; name: string}) => ({
+          <AccessWrapper
+            noAccessRoles={[
+              RoleAccess.HumanResource,
+              RoleAccess.Finance,
+              RoleAccess.Subscriber,
+            ]}
+          >
+            <Card className="gx-card" title="Project Time Log Report">
+              <div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
+                <Form layout="inline" onFinish={generateChart} form={form}>
+                  <FormItem name="chart">
+                    <Select
+                      style={{width: innerWidth <= 504 ? '100%' : 115}}
+                      value={chart}
+                      onChange={(c: any) => setChart(c)}
+                      placeholder="Select Chart"
+                      options={[
+                        {_id: '1', name: 'Bar Chart'},
+                        {_id: '2', name: 'Pie Chart'},
+                      ]?.map((x: {_id: string; name: string}) => ({
                         id: x._id,
                         value: x.name,
-                      })
-                    )}
-                    inputSelect
-                  />
-                </FormItem>
-                <FormItem name="logType" className="direct-form-item">
-                  <Select
-                    value={logType}
-                    onChange={(c: any) => setlogType(c)}
-                    placeholder="Select Log Types"
-                    mode="tags"
-                    options={logTypes?.data?.data?.data?.map(
-                      (x: {_id: string; name: string}) => ({
-                        id: x._id,
-                        value: x.name,
-                      })
-                    )}
-                  />
-                </FormItem>
-                <FormItem>
-                  <Button type="primary" key="submit" htmlType="submit">
-                    Generate Chart
-                  </Button>
-                </FormItem>
-              </Form>
-            </div>
-            {project && (
-              <div>
-                {chartData && chartData.length ? (
-                  <div>
-                    {chart === '2' ? (
-                      <CustomActiveShapePieChart
-                        data={chartData?.map((x: any) => ({
-                          name: x.logType[0].name,
-                          value: +x.timeSpent.toFixed(),
-                        }))}
-                      />
-                    ) : (
-                      <TinyBarChart
-                        data={chartData?.map((x: any) => ({
-                          name: x.logType[0].name,
-                          time: x.timeSpent.toFixed(),
-                        }))}
-                      />
-                    )}
-                  </div>
-                ) : (
-                  'No Data'
-                )}
+                      }))}
+                    />
+                  </FormItem>
+                  <FormItem name="project" className="direct-form-item">
+                    <Select
+                      value={project}
+                      onChange={(c: any) => setProject(c)}
+                      placeholder="Select Project"
+                      options={data?.data?.data?.data?.map(
+                        (x: {_id: string; name: string}) => ({
+                          id: x._id,
+                          value: x.name,
+                        })
+                      )}
+                      inputSelect
+                    />
+                  </FormItem>
+                  <FormItem name="logType" className="direct-form-item">
+                    <Select
+                      value={logType}
+                      onChange={(c: any) => setlogType(c)}
+                      placeholder="Select Log Types"
+                      mode="tags"
+                      options={logTypes?.data?.data?.data?.map(
+                        (x: {_id: string; name: string}) => ({
+                          id: x._id,
+                          value: x.name,
+                        })
+                      )}
+                    />
+                  </FormItem>
+                  <FormItem>
+                    <Button type="primary" key="submit" htmlType="submit">
+                      Generate Chart
+                    </Button>
+                  </FormItem>
+                </Form>
               </div>
-            )}
-          </Card>
+              {project && (
+                <div>
+                  {chartData && chartData.length ? (
+                    <div>
+                      {chart === '2' ? (
+                        <CustomActiveShapePieChart
+                          data={chartData?.map((x: any) => ({
+                            name: x.logType[0].name,
+                            value: +x.timeSpent.toFixed(),
+                          }))}
+                        />
+                      ) : (
+                        <TinyBarChart
+                          data={chartData?.map((x: any) => ({
+                            name: x.logType[0].name,
+                            time: x.timeSpent.toFixed(),
+                          }))}
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    'No Data'
+                  )}
+                </div>
+              )}
+            </Card>
+          </AccessWrapper>
         </Col>
       </Row>
     </Auxiliary>
