@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Card, Table, Form, Input, Button} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
-import {changeDate, handleResponse} from 'helpers/utils'
+import {changeDate, handleResponse, MuiFormatDate} from 'helpers/utils'
 import moment from 'moment'
 import {notification} from 'helpers/notification'
 import {
@@ -120,10 +120,10 @@ function NoticeBoardPage() {
       const updatedProject = {
         ...project,
         startDate: project.startDate
-          ? moment.utc(project.startDate).format()
+          ? MuiFormatDate(project.startDate.startOf('day').toString())
           : undefined,
         endDate: project.endDate
-          ? moment.utc(project.endDate).format()
+          ? MuiFormatDate(project.endDate.startOf('day').toString())
           : undefined,
         startTime: project.startTime
           ? moment.utc(project.startTime).format()
