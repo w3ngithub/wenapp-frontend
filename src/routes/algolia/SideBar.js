@@ -1,5 +1,5 @@
-import React from "react";
-import {Layout} from "antd";
+import React from 'react'
+import {Layout} from 'antd'
 import {
   ClearRefinements,
   HierarchicalMenu,
@@ -7,9 +7,9 @@ import {
   RangeInput,
   RatingMenu,
   RefinementList,
-} from "react-instantsearch-dom";
+} from 'react-instantsearch-dom'
 
-const {Sider} = Layout;
+const {Sider} = Layout
 const Sidebar = () => (
   <Sider className="gx-algolia-sidebar">
     <div className="gx-algolia-sidebar-content">
@@ -30,25 +30,35 @@ const Sidebar = () => (
         <div className="gx-algolia-category-title">Refine By</div>
 
         <Panel header={<span>Type</span>}>
-          <RefinementList className="gx-algolia-refinementList" attribute="type" operator="or" limit={5} searchable/>
-        </Panel>
-
-        <Panel header={<span>Materials</span>}>
-          <RefinementList className="gx-algolia-refinementList"
-                          attribute="materials"
-                          operator="or"
-                          limit={5}
-                          searchable
+          <RefinementList
+            className="gx-algolia-refinementList"
+            attribute="type"
+            operator="or"
+            limit={5}
+            searchable
           />
         </Panel>
 
+        <Panel header={<span>Materials</span>}>
+          <RefinementList
+            className="gx-algolia-refinementList"
+            attribute="materials"
+            operator="or"
+            limit={5}
+            searchable
+          />
+        </Panel>
 
         <Panel header={<span>Rating</span>}>
-          <RatingMenu className="gx-algolia-refinementList" attribute="rating" max={5}/>
+          <RatingMenu
+            className="gx-algolia-refinementList"
+            attribute="rating"
+            max={5}
+          />
         </Panel>
 
         <Panel header={<span>Price</span>}>
-          <RangeInput className="gx-algolia-refinementList" attribute="price"/>
+          <RangeInput className="gx-algolia-refinementList" attribute="price" />
         </Panel>
       </div>
 
@@ -57,8 +67,6 @@ const Sidebar = () => (
       </div>
     </div>
   </Sider>
-);
+)
 
-
-export default Sidebar;
-
+export default Sidebar

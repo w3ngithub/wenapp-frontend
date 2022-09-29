@@ -1,12 +1,11 @@
-import React, {Component} from "react";
-import {AutoComplete, Card, Input} from "antd";
+import React, {Component} from 'react'
+import {AutoComplete, Card, Input} from 'antd'
 
-const {TextArea} = Input;
+const {TextArea} = Input
 
 function onSelect(value) {
-  console.log('onSelect', value);
+  console.log('onSelect', value)
 }
-
 
 class CustomizeInputComponent extends Component {
   state = {
@@ -15,21 +14,16 @@ class CustomizeInputComponent extends Component {
 
   handleSearch = (value) => {
     this.setState({
-      dataSource: !value ? [] : [
-        value,
-        value + value,
-        value + value + value,
-      ],
-    });
+      dataSource: !value ? [] : [value, value + value, value + value + value],
+    })
   }
 
   handleKeyPress = (ev) => {
-    console.log('handleKeyPress', ev);
+    console.log('handleKeyPress', ev)
   }
 
-
   render() {
-    const {dataSource} = this.state;
+    const {dataSource} = this.state
     return (
       <Card className="gx-card" title="Customize Input Component">
         <AutoComplete
@@ -38,18 +32,16 @@ class CustomizeInputComponent extends Component {
           onSelect={onSelect}
           onSearch={this.handleSearch}
         >
-        <TextArea
-          placeholder="input here"
-          className="custom"
-          style={{height: 50}}
-          onKeyPress={this.handleKeyPress}
-        />
+          <TextArea
+            placeholder="input here"
+            className="custom"
+            style={{height: 50}}
+            onKeyPress={this.handleKeyPress}
+          />
         </AutoComplete>
       </Card>
-    );
+    )
   }
-
 }
 
-export default CustomizeInputComponent;
-
+export default CustomizeInputComponent

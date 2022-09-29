@@ -3,38 +3,37 @@ const languageData = [
     languageId: 'english',
     locale: 'en',
     name: 'English',
-    icon: 'us'
+    icon: 'us',
   },
   {
     languageId: 'chinese',
     locale: 'zh',
     name: 'Chinese',
-    icon: 'cn'
+    icon: 'cn',
   },
   {
     languageId: 'spanish',
     locale: 'es',
     name: 'Spanish',
-    icon: 'es'
+    icon: 'es',
   },
   {
     languageId: 'french',
     locale: 'fr',
     name: 'French',
-    icon: 'fr'
+    icon: 'fr',
   },
   {
     languageId: 'italian',
     locale: 'it',
     name: 'Italian',
-    icon: 'it'
+    icon: 'it',
   },
   {
     languageId: 'saudi-arabia',
     locale: 'ar',
     name: 'Arabic',
-    icon: 'sa'
-  }
-
-];
-export default languageData;
+    icon: 'sa',
+  },
+]
+export default languageData

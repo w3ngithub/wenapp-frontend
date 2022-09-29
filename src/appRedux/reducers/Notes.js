@@ -2,17 +2,15 @@ import {
   FETCH_ALL_NOTES_SUCCESS,
   GET_STICKY,
   NOTES_UPDATE,
-  UPDATE_ALL_NOTES_SUCCESS
-} from "../../constants/ActionTypes";
+  UPDATE_ALL_NOTES_SUCCESS,
+} from '../../constants/ActionTypes'
 
 const INIT_STATE = {
-  notesList: []
-};
-
+  notesList: [],
+}
 
 export default (state = INIT_STATE, action) => {
   switch (action.type) {
-
     case GET_STICKY: {
       return {
         ...state,
@@ -38,9 +36,9 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         notesList: action.notesList,
-      };
+      }
 
     default:
-      return state;
+      return state
   }
 }

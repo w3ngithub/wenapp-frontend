@@ -2,7 +2,7 @@ import React from 'react'
 import Widget from 'components/Elements/Widget/index'
 import {connect} from 'react-redux'
 
-const IconWithTextCard = props => {
+const IconWithTextCard = (props) => {
   const {icon, title, subTitle, cardColor} = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {

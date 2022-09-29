@@ -13,7 +13,7 @@ const getLeaveDaysOfAllUsers = async (fromDate, toDate, quarter) => {
   }
 }
 
-const getTakenAndRemainingLeaveDaysOfUser = async id => {
+const getTakenAndRemainingLeaveDaysOfUser = async (id) => {
   try {
     let response = await API.get(`${Apis.Leaves}/${id}/leavedays`)
     return getAPIResponse(response)
@@ -22,7 +22,7 @@ const getTakenAndRemainingLeaveDaysOfUser = async id => {
   }
 }
 
-const getQuarterTakenAndRemainingLeaveDaysOfUser = async id => {
+const getQuarterTakenAndRemainingLeaveDaysOfUser = async (id) => {
   try {
     let response = await API.get(`${Apis.Leaves}/${id}/quarterleavedays`)
     return getAPIResponse(response)
@@ -61,8 +61,9 @@ const getLeavesOfUser = async (
     let response = await API.get(
       `${
         Apis.Leaves
-      }?user=${id}&page=${page}&limit=${limit}&leaveStatus=${status}&leaveDates=${date ??
-        ''}&fromDate=${fromDate}&toDate=${toDate}`
+      }?user=${id}&page=${page}&limit=${limit}&leaveStatus=${status}&leaveDates=${
+        date ?? ''
+      }&fromDate=${fromDate}&toDate=${toDate}`
     )
     return getAPIResponse(response)
   } catch (err) {
@@ -70,7 +71,7 @@ const getLeavesOfUser = async (
   }
 }
 
-const getLeaveTypes = async id => {
+const getLeaveTypes = async (id) => {
   try {
     let response = await API.get(`${Apis.Leaves}/types`)
     return getAPIResponse(response)
@@ -88,7 +89,7 @@ const changeLeaveStatus = async (id, statusType) => {
   }
 }
 
-const createLeave = async payload => {
+const createLeave = async (payload) => {
   try {
     let response = await API.post(`${Apis.Leaves}`, payload)
     return getAPIResponse(response)
@@ -97,7 +98,7 @@ const createLeave = async payload => {
   }
 }
 
-const createLeaveOfUser = async payload => {
+const createLeaveOfUser = async (payload) => {
   try {
     let response = await API.post(
       `${Apis.Users}/${payload.id}/leaves`,
@@ -109,7 +110,7 @@ const createLeaveOfUser = async payload => {
   }
 }
 
-const updateLeave = async payload => {
+const updateLeave = async (payload) => {
   try {
     let response = await API.patch(`${Apis.Leaves}/${payload.id}`, payload.data)
     return getAPIResponse(response)

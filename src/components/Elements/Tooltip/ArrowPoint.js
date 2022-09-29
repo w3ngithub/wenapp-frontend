@@ -1,5 +1,5 @@
-import React from "react";
-import {Button, Card, Tooltip} from "antd";
+import React from 'react'
+import {Button, Card, Tooltip} from 'antd'
 
 const ArrowPoint = () => {
   return (
@@ -11,7 +11,7 @@ const ArrowPoint = () => {
         <Button>Arrow points to center </Button>
       </Tooltip>
     </Card>
-  );
-};
+  )
+}
 
-export default ArrowPoint;
+export default ArrowPoint

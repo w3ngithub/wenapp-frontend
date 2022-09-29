@@ -1,14 +1,14 @@
-import React from "react";
-import {Button, Card, TimePicker} from "antd";
+import React from 'react'
+import {Button, Card, TimePicker} from 'antd'
 
 class Addon extends React.Component {
-  state = {open: false};
+  state = {open: false}
 
   handleOpenChange = (open) => {
-    this.setState({open});
-  };
+    this.setState({open})
+  }
 
-  handleClose = () => this.setState({open: false});
+  handleClose = () => this.setState({open: false})
 
   render() {
     return (
@@ -23,8 +23,8 @@ class Addon extends React.Component {
           )}
         />
       </Card>
-    );
+    )
   }
 }
 
-export default Addon;
+export default Addon

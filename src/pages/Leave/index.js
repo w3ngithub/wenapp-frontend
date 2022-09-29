@@ -41,9 +41,9 @@ function Leave() {
   )
 
   const leaveCancelMutation = useMutation(
-    payload => changeLeaveStatus(payload.id, payload.type),
+    (payload) => changeLeaveStatus(payload.id, payload.type),
     {
-      onSuccess: response =>
+      onSuccess: (response) =>
         handleResponse(
           response,
           'Leave cancelled successfully',
@@ -53,17 +53,17 @@ function Leave() {
             () => queryClient.invalidateQueries(['leaves']),
           ]
         ),
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Could not cancel leave', type: 'error'})
       },
     }
   )
 
-  const handleCancelLeave = leave => {
+  const handleCancelLeave = (leave) => {
     leaveCancelMutation.mutate({id: leave._id, type: 'cancel'})
   }
 
-  const handleRowSelect = rows => {
+  const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
 

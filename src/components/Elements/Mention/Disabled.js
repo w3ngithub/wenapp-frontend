@@ -1,14 +1,14 @@
-import React from "react";
-import { Mention } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Card } from "antd";
+import React from 'react'
+import {Mention} from '@ant-design/compatible'
+import '@ant-design/compatible/assets/index.css'
+import {Card} from 'antd'
 
-const {toString} = Mention;
-const users = ['afc163', 'benjycui', 'yiminghe', 'jljsj33', 'dqaria', 'RaoHai'];
+const {toString} = Mention
+const users = ['afc163', 'benjycui', 'yiminghe', 'jljsj33', 'dqaria', 'RaoHai']
 
 function Disabled() {
   function onChange(editorState) {
-    console.log(toString(editorState));
+    console.log(toString(editorState))
   }
 
   return (
@@ -30,7 +30,7 @@ function Disabled() {
         readOnly
       />
     </Card>
-  );
+  )
 }
 
-export default Disabled;
+export default Disabled

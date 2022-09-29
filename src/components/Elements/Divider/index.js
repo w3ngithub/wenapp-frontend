@@ -1,25 +1,22 @@
-import React, {Component} from "react";
-import {Col, Row} from "antd";
+import React, {Component} from 'react'
+import {Col, Row} from 'antd'
 
-import Horizontal from "./Horizontal";
-import Vertical from "./Vertical";
-
+import Horizontal from './Horizontal'
+import Vertical from './Vertical'
 
 class Divider extends Component {
-
   render() {
     return (
       <Row>
         <Col span={24}>
-          <Horizontal/>
+          <Horizontal />
         </Col>
         <Col span={24}>
-          <Vertical/>
+          <Vertical />
         </Col>
       </Row>
-    );
+    )
   }
 }
 
-
-export default Divider;
+export default Divider

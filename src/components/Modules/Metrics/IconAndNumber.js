@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {Col, Row} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
 
-const IconAndNumber = props => {
+const IconAndNumber = (props) => {
   const {icon, title, cardColor, text, number} = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {

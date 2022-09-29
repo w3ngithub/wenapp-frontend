@@ -5,6 +5,6 @@ const data = [
   {name: '35-39', uv: 8.22, price: 9800, fill: '#FE9E15'},
   {name: '40-49', uv: 8.63, price: 3908, fill: '#a4de6c'},
   {name: '50+', uv: 2.63, price: 4800, fill: '#d0ed57'},
-  {name: 'unknow', uv: 6.67, price: 4800, fill: '#FE9E15'}
-];
-export default data;
+  {name: 'unknow', uv: 6.67, price: 4800, fill: '#FE9E15'},
+]
+export default data

@@ -58,11 +58,11 @@ function MyHistory({
   )
 
   const onShowSizeChange = (_: any, pageSize: number) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
   const handlePageChange = (pageNumber: number) => {
-    setPage(prev => ({...prev, page: pageNumber}))
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const handleStatusChange = (statusId: string) => {
@@ -76,10 +76,7 @@ function MyHistory({
 
     setDate({
       moment: value,
-      utc: moment
-        .utc(value._d)
-        .startOf('day')
-        .format(),
+      utc: moment.utc(value._d).startOf('day').format(),
     })
   }
 

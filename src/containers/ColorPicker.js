@@ -1,51 +1,50 @@
-import React, {Component} from "react";
-import {ChromePicker, SketchPicker} from "react-color";
+import React, {Component} from 'react'
+import {ChromePicker, SketchPicker} from 'react-color'
 
-const noop = () => {
-};
+const noop = () => {}
 
 const pickers = {
   chrome: ChromePicker,
   sketch: SketchPicker,
-};
+}
 
 export default class ColorPicker extends Component {
   static defaultProps = {
     onChange: noop,
     onChangeComplete: noop,
     position: 'bottom',
-  };
+  }
   handleClick = () => {
-    this.setState({displayColorPicker: !this.state.displayColorPicker});
-  };
+    this.setState({displayColorPicker: !this.state.displayColorPicker})
+  }
   handleClose = () => {
-    this.setState({displayColorPicker: false});
-  };
+    this.setState({displayColorPicker: false})
+  }
   handleChange = (color) => {
-    this.setState({color: color.hex});
-    this.props.onChange(color.hex, color);
-  };
+    this.setState({color: color.hex})
+    this.props.onChange(color.hex, color)
+  }
   handleChangeComplete = (color) => {
-    this.setState({color: color.hex});
-    this.props.onChangeComplete(color.hex);
-  };
+    this.setState({color: color.hex})
+    this.props.onChangeComplete(color.hex)
+  }
 
   constructor(props) {
-    super();
+    super()
     this.state = {
       displayColorPicker: false,
       color: props.color,
-    };
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({color: nextProps.color});
+    this.setState({color: nextProps.color})
   }
 
   render() {
-    const {small, type, position} = this.props;
+    const {small, type, position} = this.props
 
-    const Picker = pickers[type];
+    const Picker = pickers[type]
 
     const styles = {
       color: {
@@ -79,22 +78,22 @@ export default class ColorPicker extends Component {
         position: 'inherit',
         zIndex: '100',
       },
-    };
+    }
 
     if (position === 'top') {
-      styles.wrapper.transform = 'translateY(-100%)';
-      styles.wrapper.paddingBottom = 8;
+      styles.wrapper.transform = 'translateY(-100%)'
+      styles.wrapper.paddingBottom = 8
     }
 
     const swatch = (
       <div style={styles.swatch} onClick={this.handleClick}>
-        <span style={styles.color}/>
-        <span>        {this.props.children}</span>
+        <span style={styles.color} />
+        <span> {this.props.children}</span>
       </div>
-    );
+    )
     const picker = this.state.displayColorPicker ? (
       <div style={styles.popover}>
-        <div style={styles.cover} onClick={this.handleClose}/>
+        <div style={styles.cover} onClick={this.handleClose} />
         <div style={styles.wrapper}>
           <Picker
             {...this.props}
@@ -104,11 +103,21 @@ export default class ColorPicker extends Component {
           />
         </div>
       </div>
-    ) : null;
+    ) : null
 
     if (position === 'top') {
-      return <div>{picker}{swatch}</div>;
+      return (
+        <div>
+          {picker}
+          {swatch}
+        </div>
+      )
     }
-    return <div>{swatch}{picker}</div>;
+    return (
+      <div>
+        {swatch}
+        {picker}
+      </div>
+    )
   }
 }

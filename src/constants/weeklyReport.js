@@ -1,50 +1,50 @@
-import React from "react";
-import { PROJECTS } from "helpers/routePath";
-import CustomIcon from "components/Elements/Icons";
+import React from 'react'
+import {PROJECTS} from 'helpers/routePath'
+import CustomIcon from 'components/Elements/Icons'
 
 const WEEKLY_REPORT_COLUMNS = (sortedInfo, navigateToProjectLogs) => [
-	{
-		title: "Project",
-		dataIndex: "name",
-		key: "name",
-		sorter: (a, b) => {
-			return a.name.toString().localeCompare(b.name.toString());
-		},
-		sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order
-	},
-	{
-		title: "Client",
-		dataIndex: "client",
-		key: "client",
-		sorter: (a, b) => a.client?.toString().localeCompare(b.client?.toString()),
-		sortOrder: sortedInfo.columnKey === "client" && sortedInfo.order
-	},
-	{
-		title: "Time Spent",
-		dataIndex: "timeSpent",
-		key: "timeSpent",
-		sorter: (a, b) =>
-			a.timeSpent?.toString().localeCompare(b.timeSpent?.toString()),
+  {
+    title: 'Project',
+    dataIndex: 'name',
+    key: 'name',
+    sorter: (a, b) => {
+      return a.name.toString().localeCompare(b.name.toString())
+    },
+    sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
+  },
+  {
+    title: 'Client',
+    dataIndex: 'client',
+    key: 'client',
+    sorter: (a, b) => a.client?.toString().localeCompare(b.client?.toString()),
+    sortOrder: sortedInfo.columnKey === 'client' && sortedInfo.order,
+  },
+  {
+    title: 'Time Spent',
+    dataIndex: 'timeSpent',
+    key: 'timeSpent',
+    sorter: (a, b) =>
+      a.timeSpent?.toString().localeCompare(b.timeSpent?.toString()),
 
-		sortOrder: sortedInfo.columnKey === "timeSpent" && sortedInfo.order
-	},
+    sortOrder: sortedInfo.columnKey === 'timeSpent' && sortedInfo.order,
+  },
 
-	{
-		title: "Action",
-		key: "action",
-		render: (text, record) => {
-			return (
-				<span>
-					<span
-						className="gx-link"
-						onClick={() => navigateToProjectLogs(`/${PROJECTS}/${record.key}`)}
-					>
-						<CustomIcon name="view" />
-					</span>
-				</span>
-			);
-		}
-	}
-];
+  {
+    title: 'Action',
+    key: 'action',
+    render: (text, record) => {
+      return (
+        <span>
+          <span
+            className="gx-link"
+            onClick={() => navigateToProjectLogs(`/${PROJECTS}/${record.key}`)}
+          >
+            <CustomIcon name="view" />
+          </span>
+        </span>
+      )
+    },
+  },
+]
 
-export { WEEKLY_REPORT_COLUMNS };
+export {WEEKLY_REPORT_COLUMNS}

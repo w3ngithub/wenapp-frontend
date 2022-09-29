@@ -1,9 +1,13 @@
-import React, {Component} from "react";
-import { AppstoreOutlined, CalendarOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import { Card, Menu, Switch } from "antd";
+import React, {Component} from 'react'
+import {
+  AppstoreOutlined,
+  CalendarOutlined,
+  MailOutlined,
+  SettingOutlined,
+} from '@ant-design/icons'
+import {Card, Menu, Switch} from 'antd'
 
-const {SubMenu} = Menu;
-
+const {SubMenu} = Menu
 
 class SwitchMenu extends Component {
   state = {
@@ -13,22 +17,22 @@ class SwitchMenu extends Component {
   changeMode = (value) => {
     this.setState({
       mode: value ? 'vertical' : 'inline',
-    });
+    })
   }
   changeTheme = (value) => {
     this.setState({
       theme: value ? 'dark' : 'light',
-    });
+    })
   }
 
   render() {
     return (
       <Card className="gx-card" title="Switch Menu">
-        <Switch onChange={this.changeMode}/> Change Mode
-        <span className="ant-divider" style={{margin: '0 1em'}}/>
-        <Switch onChange={this.changeTheme}/> Change Theme
-        <br/>
-        <br/>
+        <Switch onChange={this.changeMode} /> Change Mode
+        <span className="ant-divider" style={{margin: '0 1em'}} />
+        <Switch onChange={this.changeTheme} /> Change Theme
+        <br />
+        <br />
         <Menu
           style={{width: 256}}
           defaultSelectedKeys={['1']}
@@ -44,7 +48,15 @@ class SwitchMenu extends Component {
             <CalendarOutlined />
             Navigation Two
           </Menu.Item>
-          <SubMenu key="sub1" title={<span><AppstoreOutlined /><span>Navigation Three</span></span>}>
+          <SubMenu
+            key="sub1"
+            title={
+              <span>
+                <AppstoreOutlined />
+                <span>Navigation Three</span>
+              </span>
+            }
+          >
             <Menu.Item key="3">Option 3</Menu.Item>
             <Menu.Item key="4">Option 4</Menu.Item>
             <SubMenu key="sub1-2" title="Submenu">
@@ -52,7 +64,15 @@ class SwitchMenu extends Component {
               <Menu.Item key="6">Option 6</Menu.Item>
             </SubMenu>
           </SubMenu>
-          <SubMenu key="sub2" title={<span><SettingOutlined /><span>Navigation Four</span></span>}>
+          <SubMenu
+            key="sub2"
+            title={
+              <span>
+                <SettingOutlined />
+                <span>Navigation Four</span>
+              </span>
+            }
+          >
             <Menu.Item key="7">Option 7</Menu.Item>
             <Menu.Item key="8">Option 8</Menu.Item>
             <Menu.Item key="9">Option 9</Menu.Item>
@@ -60,10 +80,8 @@ class SwitchMenu extends Component {
           </SubMenu>
         </Menu>
       </Card>
-    );
+    )
   }
-
 }
 
-
-export default SwitchMenu;
+export default SwitchMenu

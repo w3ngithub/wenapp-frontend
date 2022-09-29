@@ -1,30 +1,30 @@
-import React, {Component} from 'react';
-import qs from 'qs';
+import React, {Component} from 'react'
+import qs from 'qs'
 
-const updateAfter = 700;
-const searchStateToUrl = searchState =>
-  searchState ? `${window.location.pathname}?${qs.stringify(searchState)}` : '';
+const updateAfter = 700
+const searchStateToUrl = (searchState) =>
+  searchState ? `${window.location.pathname}?${qs.stringify(searchState)}` : ''
 
-export const withUrlSync = App =>
+export const withUrlSync = (App) =>
   class urlSync extends Component {
-    onSearchStateChange = searchState => {
-      clearTimeout(this.debouncedSetState);
+    onSearchStateChange = (searchState) => {
+      clearTimeout(this.debouncedSetState)
       this.debouncedSetState = setTimeout(() => {
         window.history.pushState(
           searchState,
           null,
           searchStateToUrl(searchState)
-        );
-      }, updateAfter);
-      this.setState({searchState});
-    };
+        )
+      }, updateAfter)
+      this.setState({searchState})
+    }
 
     constructor() {
-      super();
-      this.state = {searchState: qs.parse(window.location.search.slice(1))};
+      super()
+      this.state = {searchState: qs.parse(window.location.search.slice(1))}
       window.addEventListener('popstate', ({state: searchState}) =>
         this.setState({searchState})
-      );
+      )
     }
 
     render() {
@@ -35,6 +35,6 @@ export const withUrlSync = App =>
           onSearchStateChange={this.onSearchStateChange}
           createURL={searchStateToUrl}
         />
-      );
+      )
     }
-  };
+  }

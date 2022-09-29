@@ -1,63 +1,82 @@
-import React, {Component} from "react";
-import {AutoComplete, Card, Cascader, Col, DatePicker, Input, InputNumber, Select} from "antd";
+import React, {Component} from 'react'
+import {
+  AutoComplete,
+  Card,
+  Cascader,
+  Col,
+  DatePicker,
+  Input,
+  InputNumber,
+  Select,
+} from 'antd'
 
-const InputGroup = Input.Group;
-const Option = Select.Option;
+const InputGroup = Input.Group
+const Option = Select.Option
 
-const options = [{
-  value: 'zhejiang',
-  label: 'Zhejiang',
-  children: [{
-    value: 'hangzhou',
-    label: 'Hangzhou',
-    children: [{
-      value: 'xihu',
-      label: 'West Lake',
-    }],
-  }],
-}, {
-  value: 'jiangsu',
-  label: 'Jiangsu',
-  children: [{
-    value: 'nanjing',
-    label: 'Nanjing',
-    children: [{
-      value: 'zhonghuamen',
-      label: 'Zhong Hua Men',
-    }],
-  }],
-}];
+const options = [
+  {
+    value: 'zhejiang',
+    label: 'Zhejiang',
+    children: [
+      {
+        value: 'hangzhou',
+        label: 'Hangzhou',
+        children: [
+          {
+            value: 'xihu',
+            label: 'West Lake',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    value: 'jiangsu',
+    label: 'Jiangsu',
+    children: [
+      {
+        value: 'nanjing',
+        label: 'Nanjing',
+        children: [
+          {
+            value: 'zhonghuamen',
+            label: 'Zhong Hua Men',
+          },
+        ],
+      },
+    ],
+  },
+]
 
 class InputGroups extends Component {
   state = {
     dataSource: [],
-  };
+  }
   handleChange = (value) => {
     this.setState({
-      dataSource: !value || value.indexOf('@') >= 0 ? [] : [
-        `${value}@gmail.com`,
-        `${value}@163.com`,
-        `${value}@qq.com`,
-      ],
-    });
-  };
+      dataSource:
+        !value || value.indexOf('@') >= 0
+          ? []
+          : [`${value}@gmail.com`, `${value}@163.com`, `${value}@qq.com`],
+    })
+  }
 
   render() {
     return (
       <Card className="gx-card" title="Input Groups">
         <InputGroup size="large" className="gx-mb-3">
           <Col sm={5} xs={12}>
-            <Input defaultValue="0571"/>
+            <Input defaultValue="0571" />
           </Col>
 
           <Col sm={8} xs={12}>
-            <Input defaultValue="26888888"/>
+            <Input defaultValue="26888888" />
           </Col>
         </InputGroup>
 
         <InputGroup compact className="gx-mb-3">
-          <Input style={{width: '30%'}} defaultValue="0571"/>
-          <Input style={{width: '50%'}} defaultValue="26888888"/>
+          <Input style={{width: '30%'}} defaultValue="0571" />
+          <Input style={{width: '50%'}} defaultValue="26888888" />
         </InputGroup>
 
         <InputGroup compact className="gx-mb-3">
@@ -65,7 +84,10 @@ class InputGroups extends Component {
             <Option value="Zhejiang">Zhejiang</Option>
             <Option value="Jiangsu">Jiangsu</Option>
           </Select>
-          <Input style={{width: '50%'}} defaultValue="Xihu District, Hangzhou"/>
+          <Input
+            style={{width: '50%'}}
+            defaultValue="Xihu District, Hangzhou"
+          />
         </InputGroup>
 
         <InputGroup compact className="gx-mb-3">
@@ -73,13 +95,13 @@ class InputGroups extends Component {
             <Option value="Option1">Option1</Option>
             <Option value="Option2">Option2</Option>
           </Select>
-          <Input style={{width: '50%'}} defaultValue="input content"/>
-          <InputNumber/>
+          <Input style={{width: '50%'}} defaultValue="input content" />
+          <InputNumber />
         </InputGroup>
 
         <InputGroup compact className="gx-mb-3">
-          <Input style={{width: '50%'}} defaultValue="input content"/>
-          <DatePicker/>
+          <Input style={{width: '50%'}} defaultValue="input content" />
+          <DatePicker />
         </InputGroup>
 
         <InputGroup compact className="gx-mb-3">
@@ -98,12 +120,26 @@ class InputGroups extends Component {
             <Option value="1">Between</Option>
             <Option value="2">Except</Option>
           </Select>
-          <Input style={{width: 100, textAlign: 'center'}} placeholder="Minimum"/>
-          <Input className="gx-border-lt-xs"
-                 style={{width: 30, borderLeft: 0, pointerEvents: 'none', backgroundColor: '#fff'}} placeholder="~"
-                 disabled/>
-          <Input className="gx-border-lt-xs" style={{width: 100, textAlign: 'center', borderLeft: 0}}
-                 placeholder="Maximum"/>
+          <Input
+            style={{width: 100, textAlign: 'center'}}
+            placeholder="Minimum"
+          />
+          <Input
+            className="gx-border-lt-xs"
+            style={{
+              width: 30,
+              borderLeft: 0,
+              pointerEvents: 'none',
+              backgroundColor: '#fff',
+            }}
+            placeholder="~"
+            disabled
+          />
+          <Input
+            className="gx-border-lt-xs"
+            style={{width: 100, textAlign: 'center', borderLeft: 0}}
+            placeholder="Maximum"
+          />
         </InputGroup>
 
         <InputGroup compact className="gx-mb-3">
@@ -124,11 +160,15 @@ class InputGroups extends Component {
             <Option value="Home">Home</Option>
             <Option value="Company">Company</Option>
           </Select>
-          <Cascader style={{width: '70%'}} options={options} placeholder="Select Address"/>
+          <Cascader
+            style={{width: '70%'}}
+            options={options}
+            placeholder="Select Address"
+          />
         </InputGroup>
       </Card>
-    );
+    )
   }
 }
 
-export default InputGroups;
+export default InputGroups

@@ -1,21 +1,16 @@
-import React from "react";
-import {Card, Select} from "antd";
+import React from 'react'
+import {Card, Select} from 'antd'
 
-const {Option, OptGroup} = Select;
-
+const {Option, OptGroup} = Select
 
 const SelectOption = () => {
   function handleChange(value) {
-    console.log(`selected ${value}`);
+    console.log(`selected ${value}`)
   }
 
   return (
     <Card className="gx-card" title="Select Option">
-      <Select
-        defaultValue="lucy"
-        style={{width: 200}}
-        onChange={handleChange}
-      >
+      <Select defaultValue="lucy" style={{width: 200}} onChange={handleChange}>
         <OptGroup label="Manager">
           <Option value="jack">Jack</Option>
           <Option value="lucy">Lucy</Option>
@@ -25,7 +20,7 @@ const SelectOption = () => {
         </OptGroup>
       </Select>
     </Card>
-  );
-};
+  )
+}
 
-export default SelectOption;
+export default SelectOption

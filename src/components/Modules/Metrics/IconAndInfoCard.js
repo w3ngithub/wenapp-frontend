@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {Col, Row} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
 
-const IconAndInfoCard = props => {
+const IconAndInfoCard = (props) => {
   const {
     icon,
     title,

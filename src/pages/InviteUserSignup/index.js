@@ -31,10 +31,10 @@ function InviteUserSignup(props) {
 
   const [form] = Form.useForm()
 
-  const handleFormSubmit = e => {
+  const handleFormSubmit = (e) => {
     form
       .validateFields()
-      .then(async values => {
+      .then(async (values) => {
         setIsLoading(true)
         const updatedUser = {
           ...values,
@@ -52,7 +52,7 @@ function InviteUserSignup(props) {
           () => setIsLoading(false),
         ])
       })
-      .catch(err => console.log(err))
+      .catch((err) => console.log(err))
   }
 
   return (

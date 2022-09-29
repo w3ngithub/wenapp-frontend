@@ -29,18 +29,14 @@ function LeaveQuarterModal({
   const [form] = Form.useForm()
 
   const handleSubmit = () => {
-    form.validateFields().then(values => onSubmit(form.getFieldsValue()))
+    form.validateFields().then((values) => onSubmit(form.getFieldsValue()))
   }
 
   useEffect(() => {
     if (toggle) {
       if (isEditMode) {
-        const {
-          firstQuarter,
-          secondQuarter,
-          thirdQuarter,
-          fourthQuarter,
-        } = editData
+        const {firstQuarter, secondQuarter, thirdQuarter, fourthQuarter} =
+          editData
         form.setFieldsValue({
           firstendDate: moment(firstQuarter.toDate),
           firststartDate: moment(firstQuarter.fromDate),

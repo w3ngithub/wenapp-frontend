@@ -1,32 +1,30 @@
-import React, {Component} from "react";
-import {Col, Row} from "antd";
+import React, {Component} from 'react'
+import {Col, Row} from 'antd'
 
-import Basic from "./Basic";
-import Search from "./Search";
-import Advance from "./Advance";
-import CustomData from "./CustomData";
-
+import Basic from './Basic'
+import Search from './Search'
+import Advance from './Advance'
+import CustomData from './CustomData'
 
 class Transfer extends Component {
   render() {
     return (
       <Row>
         <Col lg={24} md={24} sm={24} xs={24}>
-          <Advance/>
+          <Advance />
         </Col>
         <Col lg={24} md={24} sm={24} xs={24}>
-          <CustomData/>
+          <CustomData />
         </Col>
         <Col lg={12} md={12} sm={24} xs={24}>
-          <Basic/>
+          <Basic />
         </Col>
         <Col lg={12} md={12} sm={24} xs={24}>
-          <Search/>
+          <Search />
         </Col>
       </Row>
-    );
+    )
   }
 }
 
-
-export default Transfer;
+export default Transfer

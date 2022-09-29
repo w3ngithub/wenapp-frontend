@@ -1,20 +1,23 @@
-import React, {Component} from "react";
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import { Card, Menu } from "antd";
+import React, {Component} from 'react'
+import {
+  AppstoreOutlined,
+  MailOutlined,
+  SettingOutlined,
+} from '@ant-design/icons'
+import {Card, Menu} from 'antd'
 
-const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
-
+const SubMenu = Menu.SubMenu
+const MenuItemGroup = Menu.ItemGroup
 
 class NavigationTop extends Component {
   state = {
     current: 'mail',
   }
   handleClick = (e) => {
-    console.log('click ', e);
+    console.log('click ', e)
     this.setState({
       current: e.key,
-    });
+    })
   }
 
   render() {
@@ -26,12 +29,21 @@ class NavigationTop extends Component {
           mode="horizontal"
         >
           <Menu.Item key="mail">
-            <MailOutlined />Navigation One
+            <MailOutlined />
+            Navigation One
           </Menu.Item>
           <Menu.Item key="app" disabled>
-            <AppstoreOutlined />Navigation Two
+            <AppstoreOutlined />
+            Navigation Two
           </Menu.Item>
-          <SubMenu title={<span><SettingOutlined />Navigation Three - Submenu</span>}>
+          <SubMenu
+            title={
+              <span>
+                <SettingOutlined />
+                Navigation Three - Submenu
+              </span>
+            }
+          >
             <MenuItemGroup title="Item 1">
               <Menu.Item key="setting:1">Option 1</Menu.Item>
               <Menu.Item key="setting:2">Option 2</Menu.Item>
@@ -42,15 +54,18 @@ class NavigationTop extends Component {
             </MenuItemGroup>
           </SubMenu>
           <Menu.Item key="alipay">
-            <a href="http://demo.g-axon.com/jumbo-react/#/app/dashboard/default" target="_blank"
-               rel="noopener noreferrer">Navigation Four - Link</a>
+            <a
+              href="http://demo.g-axon.com/jumbo-react/#/app/dashboard/default"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Navigation Four - Link
+            </a>
           </Menu.Item>
         </Menu>
       </Card>
-    );
+    )
   }
-
 }
 
-
-export default NavigationTop;
+export default NavigationTop

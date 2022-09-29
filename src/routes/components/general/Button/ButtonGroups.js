@@ -1,8 +1,13 @@
-import React from "react";
-import { CloudDownloadOutlined, CloudOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { Button, Card } from "antd";
+import React from 'react'
+import {
+  CloudDownloadOutlined,
+  CloudOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from '@ant-design/icons'
+import {Button, Card} from 'antd'
 
-const ButtonGroup = Button.Group;
+const ButtonGroup = Button.Group
 
 const ButtonGroups = () => {
   return (
@@ -26,18 +31,20 @@ const ButtonGroups = () => {
       <h4>With Icon</h4>
       <ButtonGroup>
         <Button type="primary">
-          <LeftOutlined />Go back
+          <LeftOutlined />
+          Go back
         </Button>
         <Button type="primary">
-          Go forward<RightOutlined />
+          Go forward
+          <RightOutlined />
         </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button type="primary" icon={<CloudOutlined />}/>
-        <Button type="primary" icon={<CloudDownloadOutlined />}/>
+        <Button type="primary" icon={<CloudOutlined />} />
+        <Button type="primary" icon={<CloudDownloadOutlined />} />
       </ButtonGroup>
     </Card>
-  );
-};
+  )
+}
 
-export default ButtonGroups;
+export default ButtonGroups

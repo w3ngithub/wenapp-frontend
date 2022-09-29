@@ -1,54 +1,61 @@
-import React from "react";
-import { Mention } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Button, Card, Popover } from "antd";
+import React from 'react'
+import {Mention} from '@ant-design/compatible'
+import '@ant-design/compatible/assets/index.css'
+import {Button, Card, Popover} from 'antd'
 
-const {toString, toContentState} = Mention;
+const {toString, toContentState} = Mention
 
 function onChange(editorState) {
-  console.log(toString(editorState));
+  console.log(toString(editorState))
 }
 
 function onSelect(suggestion) {
-  console.log('onSelect', suggestion);
+  console.log('onSelect', suggestion)
 }
 
 class SuggestionContainer extends React.Component {
   getSuggestionContainer = () => {
-    return this.popover.getPopupDomNode();
-  };
+    return this.popover.getPopupDomNode()
+  }
   visibleChange = (visible) => {
     if (visible && this.mention) {
-      this.mention.focus();
+      this.mention.focus()
     }
-  };
+  }
 
   render() {
     const mention = (
       <Mention
-        ref={ele => this.mention = ele}
+        ref={(ele) => (this.mention = ele)}
         style={{width: '100%'}}
         onChange={onChange}
         defaultValue={toContentState('@afc163')}
-        suggestions={['afc163', 'benjycui', 'yiminghe', 'RaoHai', '中文', 'にほんご']}
+        suggestions={[
+          'afc163',
+          'benjycui',
+          'yiminghe',
+          'RaoHai',
+          '中文',
+          'にほんご',
+        ]}
         onSelect={onSelect}
         getSuggestionContainer={this.getSuggestionContainer}
       />
-    );
+    )
     return (
       <Card className="gx-card" title="Suggestion Container">
         <Popover
           trigger="click"
           content={mention}
           title="Title"
-          ref={popover => this.popover = popover}
+          ref={(popover) => (this.popover = popover)}
           onVisibleChange={this.visibleChange}
         >
           <Button type="primary">Click Me</Button>
         </Popover>
       </Card>
-    );
+    )
   }
 }
 
-export default SuggestionContainer;
+export default SuggestionContainer

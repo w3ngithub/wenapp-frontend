@@ -1,15 +1,15 @@
-import React from "react";
-import {Card, Tree} from "antd";
+import React from 'react'
+import {Card, Tree} from 'antd'
 
-const TreeNode = Tree.TreeNode;
+const TreeNode = Tree.TreeNode
 
 class Basic extends React.Component {
   onSelect = (selectedKeys, info) => {
-    console.log('selected', selectedKeys, info);
-  };
+    console.log('selected', selectedKeys, info)
+  }
   onCheck = (checkedKeys, info) => {
-    console.log('onCheck', checkedKeys, info);
-  };
+    console.log('onCheck', checkedKeys, info)
+  }
 
   render() {
     return (
@@ -24,18 +24,20 @@ class Basic extends React.Component {
         >
           <TreeNode title="parent 1" key="0-0">
             <TreeNode title="parent 1-0" key="0-0-0" disabled>
-              <TreeNode title="leaf" key="0-0-0-0" disableCheckbox/>
-              <TreeNode title="leaf" key="0-0-0-1"/>
+              <TreeNode title="leaf" key="0-0-0-0" disableCheckbox />
+              <TreeNode title="leaf" key="0-0-0-1" />
             </TreeNode>
             <TreeNode title="parent 1-1" key="0-0-1">
-              <TreeNode title={<span style={{color: '#1890ff'}}>sss</span>} key="0-0-1-0"/>
+              <TreeNode
+                title={<span style={{color: '#1890ff'}}>sss</span>}
+                key="0-0-1-0"
+              />
             </TreeNode>
           </TreeNode>
         </Tree>
       </Card>
-    );
+    )
   }
 }
 
-
-export default Basic;
+export default Basic

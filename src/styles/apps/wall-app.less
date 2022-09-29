@@ -104,22 +104,22 @@
 }
 
 .@{class-prefix}-wall-scroll {
-  height: calc(100vh ~"-" 154px) !important;
+  height: calc(100vh ~'-' 154px) !important;
 
   .framed-layout & {
-    height: calc(100vh~"-"152px + 2 * @framed-layout-base) !important;
+    height: calc(100vh~ '-' 152px + 2 * @framed-layout-base) !important;
   }
 
   @media screen and (max-width: @screen-md-max) {
-    height: calc(100vh ~"-" 124px) !important;
+    height: calc(100vh ~'-' 124px) !important;
 
     .framed-layout & {
-      height: calc(100vh ~"-" 124px) !important;
+      height: calc(100vh ~'-' 124px) !important;
     }
   }
 
   @media screen and (max-width: @screen-xs-max) {
-    height: calc(100vh ~"-" 132px) !important;
+    height: calc(100vh ~'-' 132px) !important;
   }
 }
 
@@ -146,7 +146,7 @@
     position: relative;
 
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       bottom: -2px;
       left: 0;
@@ -265,7 +265,7 @@
     cursor: pointer;
 
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       left: 0;
       top: 0;

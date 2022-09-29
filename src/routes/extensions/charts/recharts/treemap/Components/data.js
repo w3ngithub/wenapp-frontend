@@ -128,7 +128,7 @@ const data = [
       {name: 'OperatorSwitch', size: 2581},
       {name: 'SortOperator', size: 2023},
     ],
-  }
-];
+  },
+]
 
-export default data;
+export default data

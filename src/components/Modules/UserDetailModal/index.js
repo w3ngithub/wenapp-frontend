@@ -40,7 +40,7 @@ function UserDetailForm({
   const handleSubmit = () => {
     const data = intialValues?.allocatedLeaves
 
-    form.validateFields().then(values =>
+    form.validateFields().then((values) =>
       onSubmit({
         ...intialValues,
         ...values,
@@ -52,18 +52,18 @@ function UserDetailForm({
     )
   }
 
-  const handleStatusChange = value => {
+  const handleStatusChange = (value) => {
     if (value === 'Probation') form.setFieldValue('allocatedLeaves', 3)
     else form.setFieldValue('allocatedLeaves', currentQuarter?.data.leaves)
   }
 
-  const handlePositionChange = value => {
+  const handlePositionChange = (value) => {
     const isIntern =
       form.getFieldValue('position') ===
-      position?.data?.data?.data?.find(pos => pos.name === 'Intern')._id
+      position?.data?.data?.data?.find((pos) => pos.name === 'Intern')._id
     const isTrainee =
       form.getFieldValue('position') ===
-      position?.data?.data?.data?.find(pos => pos.name === 'Trainee')._id
+      position?.data?.data?.data?.find((pos) => pos.name === 'Trainee')._id
 
     const isOnProbation = form.getFieldValue('status') === 'Probation'
 
@@ -152,7 +152,7 @@ function UserDetailForm({
               filterOption={filterOptions}
             >
               {roles &&
-                roles?.data?.data?.data?.map(role => (
+                roles?.data?.data?.data?.map((role) => (
                   <Option value={role._id} key={role._id}>
                     {role.value}
                   </Option>
@@ -180,7 +180,7 @@ function UserDetailForm({
               onChange={handlePositionChange}
             >
               {position &&
-                position?.data?.data?.data?.map(position => (
+                position?.data?.data?.data?.map((position) => (
                   <Option value={position._id} key={position._id}>
                     {position.name}
                   </Option>
@@ -207,7 +207,7 @@ function UserDetailForm({
               filterOption={filterOptions}
             >
               {positionTypes &&
-                positionTypes?.data?.data?.data?.map(positionType => (
+                positionTypes?.data?.data?.data?.map((positionType) => (
                   <Option value={positionType._id} key={positionType._id}>
                     {positionType.name}
                   </Option>
@@ -234,7 +234,7 @@ function UserDetailForm({
               filterOption={filterOptions}
               onChange={handleStatusChange}
             >
-              {['Permanent', 'Probation'].map(status => (
+              {['Permanent', 'Probation'].map((status) => (
                 <Option value={status} key={status}>
                   {status}
                 </Option>

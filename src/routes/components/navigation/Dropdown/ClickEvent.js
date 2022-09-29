@@ -1,17 +1,17 @@
-import React from "react";
-import { DownOutlined } from '@ant-design/icons';
-import { Card, Dropdown, Menu, message } from "antd";
+import React from 'react'
+import {DownOutlined} from '@ant-design/icons'
+import {Card, Dropdown, Menu, message} from 'antd'
 
 const onClick = function ({key}) {
-  message.info(`Click on item ${key}`);
-};
+  message.info(`Click on item ${key}`)
+}
 const menu = (
   <Menu onClick={onClick}>
     <Menu.Item key="1">1st menu item</Menu.Item>
     <Menu.Item key="2">2nd memu item</Menu.Item>
     <Menu.Item key="3">3rd menu item</Menu.Item>
   </Menu>
-);
+)
 const ClickEvent = () => {
   return (
     <Card className="gx-card" title="Click Event">
@@ -21,7 +21,7 @@ const ClickEvent = () => {
         </span>
       </Dropdown>
     </Card>
-  );
-};
+  )
+}
 
-export default ClickEvent;
+export default ClickEvent

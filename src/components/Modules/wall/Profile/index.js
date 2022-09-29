@@ -1,29 +1,28 @@
-import React, {Component} from "react";
-import {Button} from "antd";
-import {connect} from "react-redux";
-import Auxiliary from "util/Auxiliary";
+import React, {Component} from 'react'
+import {Button} from 'antd'
+import {connect} from 'react-redux'
+import Auxiliary from 'util/Auxiliary'
 
 class Profile extends Component {
-
   state = {
-    isFollow: false
+    isFollow: false,
   }
 
   handleToggle = () => {
     this.setState((previousState) => ({
-      isFollow: !previousState.isFollow
-    }));
+      isFollow: !previousState.isFollow,
+    }))
   }
 
   render() {
-    const {user, userInfo} = this.props;
-    const {id, name, image, address} = user;
-    const {followers, following, frinds} = userInfo;
+    const {user, userInfo} = this.props
+    const {id, name, image, address} = user
+    const {followers, following, frinds} = userInfo
     return (
       <Auxiliary>
         <div className="gx-profileon">
           <div className="gx-profileon-thumb gx-profileon-thumb-htctrcrop">
-            <img src={image} alt=''/>
+            <img src={image} alt="" />
           </div>
           <div className="gx-profileon-content">
             <p className="gx-profileon-title">{name}</p>
@@ -49,10 +48,15 @@ class Profile extends Component {
         </div>
         <div className="gx-mb-xl-4 gx-mb-3">
           <p>You are following {name}</p>
-          {this.props.authUser === id ? null :
-            <Button className="gx-btn-sm gx-mb-0" type="primary"
-                    onClick={this.handleToggle}>{this.state.isFollow === true ? 'Follow' : 'Unfollow'}</Button>
-          }
+          {this.props.authUser === id ? null : (
+            <Button
+              className="gx-btn-sm gx-mb-0"
+              type="primary"
+              onClick={this.handleToggle}
+            >
+              {this.state.isFollow === true ? 'Follow' : 'Unfollow'}
+            </Button>
+          )}
         </div>
       </Auxiliary>
     )
@@ -60,8 +64,8 @@ class Profile extends Component {
 }
 
 const mapStateToProps = ({auth}) => {
-  const {authUser} = auth;
+  const {authUser} = auth
   return {authUser}
-};
+}
 
 export default connect(mapStateToProps)(Profile)

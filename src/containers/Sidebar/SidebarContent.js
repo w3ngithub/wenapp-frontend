@@ -33,7 +33,7 @@ function SidebarContent(props) {
     paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1]
 
   const collapseNav = collapse ? collapse : () => {}
-  const getNoHeaderClass = navStyle => {
+  const getNoHeaderClass = (navStyle) => {
     if (
       navStyle === NAV_STYLE_NO_HEADER_MINI_SIDEBAR ||
       navStyle === NAV_STYLE_NO_HEADER_EXPANDED_SIDEBAR
@@ -43,7 +43,7 @@ function SidebarContent(props) {
     return ''
   }
 
-  const getNavStyleSubMenuClass = navStyle => {
+  const getNavStyleSubMenuClass = (navStyle) => {
     if (navStyle === NAV_STYLE_NO_HEADER_MINI_SIDEBAR) {
       return 'gx-no-header-submenu-popup'
     }
@@ -61,9 +61,9 @@ function SidebarContent(props) {
             mode="inline"
           >
             {SIDEBAR_ITEMS.filter(
-              item =>
+              (item) =>
                 item.roles.includes(key) || item.roles.includes(RoleAccess.All)
-            ).map(item =>
+            ).map((item) =>
               item.isExpandable ? (
                 <SubMenu
                   key={item.url}
@@ -75,7 +75,7 @@ function SidebarContent(props) {
                     </span>
                   }
                 >
-                  {item.subItems.map(subItem => (
+                  {item.subItems.map((subItem) => (
                     <Menu.Item key={subItem.url}>
                       <Link
                         to={`${item.url}/${subItem.url}`}

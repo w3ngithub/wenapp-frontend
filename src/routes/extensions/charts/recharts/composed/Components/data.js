@@ -6,5 +6,5 @@ const data = [
   {name: 'Page E', uv: 1890, price: 4800, amt: 2181},
   {name: 'Page F', uv: 2390, price: 3800, amt: 2500},
   {name: 'Page G', uv: 3490, price: 4300, amt: 2100},
-];
-export default data;
+]
+export default data

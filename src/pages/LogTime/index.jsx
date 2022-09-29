@@ -24,8 +24,8 @@ import {
 import TimeSummary from './TimeSummary'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 
-const formattedLogs = logs => {
-  return logs?.map(log => ({
+const formattedLogs = (logs) => {
+  return logs?.map((log) => ({
     ...log,
     key: log?._id,
     logType: log?.logType?.name,
@@ -73,8 +73,8 @@ function LogTime() {
     ['userweeklyTimeSpent'],
     getWeeklyTimeLogSummary
   )
-  const addLogTimeMutation = useMutation(details => addUserTimeLog(details), {
-    onSuccess: response =>
+  const addLogTimeMutation = useMutation((details) => addUserTimeLog(details), {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Added time log successfully',
@@ -86,32 +86,35 @@ function LogTime() {
           () => handleCloseTimelogModal(),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Could not add time log!', type: 'error'})
     },
   })
-  const UpdateLogTimeMutation = useMutation(details => updateTimeLog(details), {
-    onSuccess: response =>
-      handleResponse(
-        response,
-        'Updated time log successfully',
-        'Could not update time log',
-        [
-          () => queryClient.invalidateQueries(['UsertimeLogs']),
-          () => queryClient.invalidateQueries(['userTodayTimeSpent']),
-          () => queryClient.invalidateQueries(['userweeklyTimeSpent']),
-          () => handleCloseTimelogModal(),
-        ]
-      ),
-    onError: error => {
-      notification({message: 'Could not update time log!', type: 'error'})
-    },
-  })
+  const UpdateLogTimeMutation = useMutation(
+    (details) => updateTimeLog(details),
+    {
+      onSuccess: (response) =>
+        handleResponse(
+          response,
+          'Updated time log successfully',
+          'Could not update time log',
+          [
+            () => queryClient.invalidateQueries(['UsertimeLogs']),
+            () => queryClient.invalidateQueries(['userTodayTimeSpent']),
+            () => queryClient.invalidateQueries(['userweeklyTimeSpent']),
+            () => handleCloseTimelogModal(),
+          ]
+        ),
+      onError: (error) => {
+        notification({message: 'Could not update time log!', type: 'error'})
+      },
+    }
+  )
 
   const {data: logTypes} = useQuery(['logTypes'], () => getLogTypes())
 
-  const deleteLogMutation = useMutation(logId => deleteTimeLog(logId), {
-    onSuccess: response =>
+  const deleteLogMutation = useMutation((logId) => deleteTimeLog(logId), {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Deleted time log successfully',
@@ -122,7 +125,7 @@ function LogTime() {
           () => queryClient.invalidateQueries(['userweeklyTimeSpent']),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Could not delete time log!', type: 'error'})
     },
   })
@@ -131,15 +134,15 @@ function LogTime() {
     setSort(sorter)
   }
 
-  const handlePageChange = pageNumber => {
-    setPage(prev => ({...prev, page: pageNumber}))
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
-  const confirmDelete = log => {
+  const confirmDelete = (log) => {
     deleteLogMutation.mutate(log._id)
   }
 
@@ -147,9 +150,9 @@ function LogTime() {
     setOpenModal(true)
   }
 
-  const handleOpenEditModal = log => {
+  const handleOpenEditModal = (log) => {
     const originalTimelog = logTimeDetails?.data?.data?.data.find(
-      project => project.id === log.id
+      (project) => project.id === log.id
     )
     setTimelogToUpdate({
       ...log,
@@ -168,7 +171,7 @@ function LogTime() {
     setIsEditMode(false)
   }
 
-  const handleLogTypeSubmit = newLogtime => {
+  const handleLogTypeSubmit = (newLogtime) => {
     const formattedNewLogtime = {
       ...newLogtime,
       hours: +newLogtime.hours,

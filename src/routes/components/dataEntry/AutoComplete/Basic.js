@@ -1,11 +1,10 @@
-import React, {Component} from "react";
+import React, {Component} from 'react'
 
-import {AutoComplete, Card} from "antd";
+import {AutoComplete, Card} from 'antd'
 
 function onSelect(value) {
-  console.log('onSelect', value);
+  console.log('onSelect', value)
 }
-
 
 class Basic extends Component {
   state = {
@@ -14,16 +13,12 @@ class Basic extends Component {
 
   handleSearch = (value) => {
     this.setState({
-      dataSource: !value ? [] : [
-        value,
-        value + value,
-        value + value + value,
-      ],
-    });
+      dataSource: !value ? [] : [value, value + value, value + value + value],
+    })
   }
 
   render() {
-    const {dataSource} = this.state;
+    const {dataSource} = this.state
     return (
       <Card className="gx-card" title="ErrorStatus">
         <AutoComplete
@@ -34,11 +29,8 @@ class Basic extends Component {
           placeholder="input here"
         />
       </Card>
-
-    );
+    )
   }
 }
 
-
-export default Basic;
-
+export default Basic

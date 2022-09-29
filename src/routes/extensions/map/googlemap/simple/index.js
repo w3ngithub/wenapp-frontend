@@ -1,16 +1,15 @@
-import React from "react";
-import {Card} from "antd";
+import React from 'react'
+import {Card} from 'antd'
 
-import SimpleMap from "./Components/SimpleMap";
-import IntlMessages from "util/IntlMessages";
-
+import SimpleMap from './Components/SimpleMap'
+import IntlMessages from 'util/IntlMessages'
 
 const Simple = () => {
   return (
-    <Card className="gx-card" title={<IntlMessages id="sidebar.map.simple"/>}>
-      <SimpleMap/>
+    <Card className="gx-card" title={<IntlMessages id="sidebar.map.simple" />}>
+      <SimpleMap />
     </Card>
-  );
-};
+  )
+}
 
-export default Simple;
+export default Simple

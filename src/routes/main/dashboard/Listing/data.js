@@ -1,26 +1,43 @@
-import React from "react";
+import React from 'react'
 
 export const recentList = [
   {
     id: 1,
     avatar: 'https://via.placeholder.com/150x150',
     title: 'Need a quick support on setting',
-    description: [<span className="gx-link" key={1}>Joy Parish</span>, "  created ticket 15 mins ago"],
-    status: 2
-  }, {
+    description: [
+      <span className="gx-link" key={1}>
+        Joy Parish
+      </span>,
+      '  created ticket 15 mins ago',
+    ],
+    status: 2,
+  },
+  {
     id: 2,
     avatar: 'https://via.placeholder.com/150x150',
     title: 'Pre-sale query about the product',
-    description: [<span className="gx-link" key={2}>You</span>, " replied 2 days ago"],
-    status: 1
-  }, {
+    description: [
+      <span className="gx-link" key={2}>
+        You
+      </span>,
+      ' replied 2 days ago',
+    ],
+    status: 1,
+  },
+  {
     id: 3,
     avatar: 'https://via.placeholder.com/150x150',
     title: 'Regarding customization service',
-    description: [<span className="gx-link" key={3}>Joy Parish</span>, " replied 2 days ago"],
-    status: 4
-  }
-];
+    description: [
+      <span className="gx-link" key={3}>
+        Joy Parish
+      </span>,
+      ' replied 2 days ago',
+    ],
+    status: 4,
+  },
+]
 
 export const popularList = [
   {
@@ -67,8 +84,8 @@ export const popularList = [
     baths: 1,
     area: '1300 m2',
     more: 4,
-  }
-];
+  },
+]
 export const newJersy = [
   {
     id: 1,
@@ -114,8 +131,8 @@ export const newJersy = [
     baths: 1,
     area: '1300 m2',
     more: 4,
-  }
-];
+  },
+]
 export const colorado = [
   {
     id: 1,
@@ -161,8 +178,8 @@ export const colorado = [
     baths: 1,
     area: '1300 m2',
     more: 4,
-  }
-];
+  },
+]
 export const albama = [
   {
     id: 1,
@@ -208,5 +225,5 @@ export const albama = [
     baths: 1,
     area: '1300 m2',
     more: 4,
-  }
-];
+  },
+]

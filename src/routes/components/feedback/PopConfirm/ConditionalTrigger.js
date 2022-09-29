@@ -1,35 +1,35 @@
-import React from "react";
-import {Card, message, Popconfirm, Switch} from "antd";
+import React from 'react'
+import {Card, message, Popconfirm, Switch} from 'antd'
 
 class ConditionalTrigger extends React.Component {
   state = {
     visible: false,
     condition: true, // Whether meet the condition, if not show popconfirm.
-  };
+  }
   changeCondition = (value) => {
-    this.setState({condition: value});
-  };
+    this.setState({condition: value})
+  }
   confirm = () => {
-    this.setState({visible: false});
-    message.success('Next step.');
-  };
+    this.setState({visible: false})
+    message.success('Next step.')
+  }
   cancel = () => {
-    this.setState({visible: false});
-    message.error('Click on cancel.');
-  };
+    this.setState({visible: false})
+    message.error('Click on cancel.')
+  }
   handleVisibleChange = (visible) => {
     if (!visible) {
-      this.setState({visible});
-      return;
+      this.setState({visible})
+      return
     }
     // Determining condition before show the popconfirm.
-    console.log(this.state.condition);
+    console.log(this.state.condition)
     if (this.state.condition) {
-      this.confirm(); // next step
+      this.confirm() // next step
     } else {
-      this.setState({visible}); // show the popconfirm
+      this.setState({visible}) // show the popconfirm
     }
-  };
+  }
 
   render() {
     return (
@@ -43,13 +43,15 @@ class ConditionalTrigger extends React.Component {
           okText="Yes"
           cancelText="No"
         >
-          <a className="gx-mb-3 gx-d-block" href="/">Delete a task</a>
+          <a className="gx-mb-3 gx-d-block" href="/">
+            Delete a task
+          </a>
         </Popconfirm>
-
-        Whether directly execute：<Switch defaultChecked onChange={this.changeCondition}/>
+        Whether directly execute：
+        <Switch defaultChecked onChange={this.changeCondition} />
       </Card>
-    );
+    )
   }
 }
 
-export default ConditionalTrigger;
+export default ConditionalTrigger
