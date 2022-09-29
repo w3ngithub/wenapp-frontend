@@ -11,10 +11,11 @@ import {
 } from 'services/resources'
 import {Button, Card, Table} from 'antd'
 import {HOLIDAY_COLUMNS} from 'constants/Holidays'
-import {changeDate, handleResponse} from 'helpers/utils'
+import {changeDate, getLocalStorageData, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import AccessWrapper from 'components/Modules/AccessWrapper'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const localizer = momentLocalizer(moment)
 
@@ -33,6 +34,10 @@ function Holiday() {
   const [sort, setSort] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
+
+  const {
+    role: {key},
+  } = getLocalStorageData(LOCALSTORAGE_USER)
 
   const {data: Holidays, isLoading, isFetching} = useQuery(
     ['DashBoardHolidays'],
@@ -170,7 +175,8 @@ function Holiday() {
           columns={HOLIDAY_COLUMNS(
             sort,
             handleDeleteClick,
-            handleOpenEditModal
+            handleOpenEditModal,
+            key
           )}
           dataSource={formattedHoliday(
             Holidays?.data?.data?.data?.[0]?.holidays
