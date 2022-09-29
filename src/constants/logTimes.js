@@ -150,7 +150,6 @@ const LOGTIMES_COLUMNS = (
           key: 'action',
           // width: 360,
           render: (text, record) => {
-            console.log(record)
             return (
               <span>
                 <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}>
