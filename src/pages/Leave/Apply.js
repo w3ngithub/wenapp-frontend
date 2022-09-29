@@ -11,7 +11,7 @@ import {
   Radio,
   DatePicker,
 } from 'antd'
-import {convertDateToUTC, filterOptions, handleResponse} from 'helpers/utils'
+import {filterOptions, handleResponse, MuiFormatDate} from 'helpers/utils'
 import React, {useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {createLeave, getLeavesOfUser, getLeaveTypes} from 'services/leaves'
@@ -91,23 +91,26 @@ function Apply({user}) {
 
   const handleSubmit = () => {
     form.validateFields().then(values => {
+      const leaveTypeName = leaveTypeQuery?.data?.find(
+        type => type?.id === values?.leaveType
+      )?.value
       //calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
-        values?.leaveType === LEAVES_TYPES.Maternity ? 60 : 5 // 60 for maternity, 5 for other two
+        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(
         newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
       )
-      const appliedDateUTC = appliedDate ? convertDateToUTC(appliedDate) : ''
-      const endDateUTC = appliedDate ? convertDateToUTC(endDate) : ''
+      const appliedDateUTC = appliedDate ? MuiFormatDate(appliedDate) : ''
+      const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
 
       //calculation for sick, casual leaves
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
       const casualLeaveDaysUTC = casualLeaveDays.map(leave =>
-        convertDateToUTC(new Date(leave))
+        MuiFormatDate(new Date(leave))
       )
       form.validateFields().then(values =>
         leaveMutation.mutate({

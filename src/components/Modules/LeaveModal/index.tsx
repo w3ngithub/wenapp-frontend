@@ -8,7 +8,6 @@ import {
   Row,
   Col,
   Spin,
-  Checkbox,
   DatePicker,
   Radio,
 } from 'antd'
@@ -20,7 +19,7 @@ import {
   getLeaveTypes,
   updateLeave,
 } from 'services/leaves'
-import {convertDateToUTC, filterOptions, handleResponse} from 'helpers/utils'
+import {filterOptions, handleResponse, MuiFormatDate} from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
@@ -95,7 +94,11 @@ function LeaveModal({
         response,
         'Leave created successfully',
         'Leave creation failed',
-        [() => queryClient.invalidateQueries(['leaves']), () => onClose()]
+        [
+          () => queryClient.invalidateQueries(['leaves']),
+          () => queryClient.invalidateQueries(['leavesCalendar']),
+          () => onClose(),
+        ]
       ),
     onError: error => {
       notification({message: 'Leave creation failed!', type: 'error'})
@@ -117,25 +120,27 @@ function LeaveModal({
 
   const onFinish = (values: any) => {
     form.validateFields().then(values => {
+      const leaveTypeName = leaveTypeQuery?.data?.find(
+        type => type?.id === values?.leaveType
+      )?.value
       //calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
-        values?.leaveType.toLowerCase() === LEAVES_TYPES.Maternity ? 60 : 5 // 60 for maternity, 5 for other two
-      const appliedDate = values?.leaveDatesPeriod?._d
+        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
+      const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(
         newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
       )
-      const appliedDateUTC = appliedDate ? convertDateToUTC(appliedDate) : ''
-      const endDateUTC = appliedDate ? convertDateToUTC(endDate) : ''
+      const appliedDateUTC = appliedDate ? MuiFormatDate(appliedDate) : ''
+      const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
 
       //calculation for sick, casual leaves
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
       const casualLeaveDaysUTC = casualLeaveDays.map((leave: string) =>
-        convertDateToUTC(new Date(leave))
+        MuiFormatDate(new Date(leave))
       )
-
       const newLeave = {
         ...values,
         leaveDates: appliedDate
