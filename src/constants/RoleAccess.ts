@@ -87,4 +87,21 @@ export const NOTICEBOARD_ACTION_NO_ACCESS = [
 
 // Blogs
 export const BLOGS_ACTION_NO_ACCESS = [RoleAccess.Normal, RoleAccess.Subscriber]
+
+// Reports
+export const WEEKLY_REPORT_ACCESS = [RoleAccess.Admin]
+export const WORK_LOG_REPORT_ACESS = [
+  RoleAccess.Admin,
+  RoleAccess.ProjectManager,
+  RoleAccess.TeamLead,
+  RoleAccess.HumanResource,
+]
+export const LEAVE_REPORT_REPORT_ACESS = [
+  RoleAccess.Admin,
+  RoleAccess.ProjectManager,
+  RoleAccess.TeamLead,
+  RoleAccess.HumanResource,
+  RoleAccess.Finance,
+]
+
 export default RoleAccess

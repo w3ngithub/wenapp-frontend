@@ -19,7 +19,11 @@ import {
   WORK_LOG_REPORT,
 } from '../helpers/routePath'
 import sidebarItemsInterface from '../types/sideBar'
-import RoleAccess from './RoleAccess'
+import RoleAccess, {
+  LEAVE_REPORT_REPORT_ACESS,
+  WEEKLY_REPORT_ACCESS,
+  WORK_LOG_REPORT_ACESS,
+} from './RoleAccess'
 
 export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
   {
@@ -144,16 +148,19 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
         name: 'sidebar.reports.weeklyreport',
         url: WEEKLY_REPORT,
         id: 1,
+        roles: WEEKLY_REPORT_ACCESS,
       },
       {
         name: 'sidebar.reports.worklogreport',
         url: WORK_LOG_REPORT,
         id: 2,
+        roles: WORK_LOG_REPORT_ACESS,
       },
       {
         name: 'sidebar.reports.leavereport',
         url: LEAVE_REPORT,
         id: 3,
+        roles: LEAVE_REPORT_REPORT_ACESS,
       },
     ],
   },
@@ -169,16 +176,19 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
         name: 'sidebar.resources.faq',
         url: FAQS,
         id: 1,
+        roles: [],
       },
       {
         name: 'sidebar.resources.policy',
         url: POLICY,
         id: 2,
+        roles: [],
       },
       {
         name: 'sidebar.resources.holiday',
         url: HOLIDAY,
         id: 3,
+        roles: [],
       },
     ],
   },
