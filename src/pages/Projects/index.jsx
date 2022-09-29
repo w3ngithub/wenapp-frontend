@@ -171,7 +171,7 @@ function ProjectsPage() {
   useEffect(() => {
     const types = positionTypes?.data?.data?.data
 
-    if (types.length > 0) {
+    if (types?.length > 0) {
       setPositionTypeData({
         developer: types?.find(
           type => type.name.toLowerCase() === POSITION_TYPES.developer
