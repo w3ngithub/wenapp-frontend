@@ -20,6 +20,9 @@ import moment from 'moment'
 import {notification} from 'helpers/notification'
 import {getAllUsers, getUserPositionTypes} from 'services/users/userDetails'
 import useWindowsSize from 'hooks/useWindowsSize'
+import AccessWrapper from 'components/Modules/AccessWrapper'
+import {PROJECTS_ADD_NEW_NO_ACCESS} from 'constants/RoleAccess'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const Search = Input.Search
 const Option = Select.Option
@@ -57,6 +60,12 @@ function ProjectsPage() {
   const [positionTypeData, setPositionTypeData] = useState({})
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+
+  const {
+    user: {
+      role: {key},
+    },
+  } = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
 
   const {data: projectTypesData} = useQuery(['projectTypes'], getProjectTypes)
   const {data: projectStatusData} = useQuery(
@@ -108,6 +117,7 @@ function ProjectsPage() {
       }),
     {keepPreviousData: true}
   )
+
   const addProjectMutation = useMutation(project => addProject(project), {
     onSuccess: response =>
       handleResponse(
@@ -331,19 +341,21 @@ function ProjectsPage() {
               allowClear
               className="direct-form-item"
             />
-            <div
-              style={{
-                marginBottom: '1rem',
-                marginLeft: innerWidth >= 720 ? '1rem' : 0,
-              }}
-            >
-              <Button
-                className="gx-btn gx-btn-primary gx-text-white "
-                onClick={handleOpenAddModal}
+            <AccessWrapper noAccessRoles={PROJECTS_ADD_NEW_NO_ACCESS}>
+              <div
+                style={{
+                  marginBottom: '1rem',
+                  marginLeft: innerWidth >= 720 ? '1rem' : 0,
+                }}
               >
-                Add New Project
-              </Button>
-            </div>
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white "
+                  onClick={handleOpenAddModal}
+                >
+                  Add New Project
+                </Button>
+              </div>
+            </AccessWrapper>
           </div>
           <Form layout="inline" className="gx-d-flex gx-flex-row" form={form}>
             <FormItem className="direct-form-search">
@@ -458,7 +470,8 @@ function ProjectsPage() {
             sort,
             handleOpenEditModal,
             confirmDeleteProject,
-            navigateToProjectLogs
+            navigateToProjectLogs,
+            key
           )}
           dataSource={formattedProjects(data?.data?.data?.data)}
           onChange={handleTableChange}

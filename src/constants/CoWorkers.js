@@ -1,8 +1,9 @@
 import React from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
+import {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
 
-const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
+const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation, role) => [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -53,32 +54,31 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation) => [
           <span className="gx-link" onClick={() => openEditPopup(record, true)}>
             <CustomIcon name="view" />
           </span>
-          <Divider type="vertical" />
-          <Popconfirm
-            title={`Are you sure to make Co-worker ${
-              record.active ? 'inactive' : 'active'
-            } ?`}
-            onConfirm={() => {
-              mutation.mutate({
-                userId: record._id,
-                updatedData: {active: !record.active},
-              })
-            }}
-            okText="Yes"
-            cancelText="No"
-          >
-            <span className="gx-link">
-              {record.active ? (
-                <CustomIcon name="deactiveUser" />
-              ) : (
-                <CustomIcon name="activeUser" />
-              )}
-            </span>
-          </Popconfirm>
 
-          {record.isAdmin && (
+          {!CO_WORKERS_TABLE_ACTION_NO_ACCESS.includes(role) && (
             <>
-              {' '}
+              <Divider type="vertical" />
+              <Popconfirm
+                title={`Are you sure to make Co-worker ${
+                  record.active ? 'inactive' : 'active'
+                } ?`}
+                onConfirm={() => {
+                  mutation.mutate({
+                    userId: record._id,
+                    updatedData: {active: !record.active},
+                  })
+                }}
+                okText="Yes"
+                cancelText="No"
+              >
+                <span className="gx-link">
+                  {record.active ? (
+                    <CustomIcon name="deactiveUser" />
+                  ) : (
+                    <CustomIcon name="activeUser" />
+                  )}
+                </span>
+              </Popconfirm>
               <Divider type="vertical" />
               <span
                 className="gx-link"

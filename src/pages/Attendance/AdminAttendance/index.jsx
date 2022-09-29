@@ -24,12 +24,14 @@ import TmsAdminAttendanceForm from 'components/Modules/TmsAdminAttendanceForm'
 import TmsAdminAddAttendanceForm from 'components/Modules/TmsAdminAttendanceForm/Add'
 import CustomIcon from 'components/Elements/Icons'
 import {useLocation} from 'react-router-dom'
+import AccessWrapper from 'components/Modules/AccessWrapper'
+import {ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS} from 'constants/RoleAccess'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
 
-const formattedAttendances = (attendances) => {
-  return attendances?.map((att) => ({
+const formattedAttendances = attendances => {
+  return attendances?.map(att => ({
     ...att,
     key: att._id.attendanceDate + att._id.user,
     user: att._id.user,
@@ -41,7 +43,7 @@ const formattedAttendances = (attendances) => {
       : '',
     officeHour: milliSecondIntoHours(
       att?.data
-        ?.map((x) =>
+        ?.map(x =>
           x?.punchOutTime
             ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
             : ''
@@ -93,7 +95,7 @@ function AdminAttendance() {
       })
   )
 
-  const handleChangeDate = (date) => {
+  const handleChangeDate = date => {
     setDate(date ? date : intialDate)
     if (date === null) {
       setAttFilter(1)
@@ -104,15 +106,15 @@ function AdminAttendance() {
     setSort(sorter)
   }
 
-  const handlePageChange = (pageNumber) => {
-    setPage((prev) => ({...prev, page: pageNumber}))
+  const handlePageChange = pageNumber => {
+    setPage(prev => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage((prev) => ({...page, limit: pageSize}))
+    setPage(prev => ({...page, limit: pageSize}))
   }
 
-  const handleView = (record) => {
+  const handleView = record => {
     setOpenView(true)
     setAttToView({
       ...record,
@@ -124,12 +126,12 @@ function AdminAttendance() {
     })
   }
 
-  const handleEdit = (record) => {
+  const handleEdit = record => {
     setToggleEdit(true)
     setAttToEdit(record)
   }
 
-  const handleAttChnageChange = (val) => {
+  const handleAttChnageChange = val => {
     setAttFilter(val)
     switch (val) {
       case 1:
@@ -146,7 +148,7 @@ function AdminAttendance() {
         break
     }
   }
-  const handleUserChange = (id) => {
+  const handleUserChange = id => {
     setUser(id)
   }
 
@@ -162,7 +164,7 @@ function AdminAttendance() {
     }
   }, [isLoading, data?.status])
 
-  const expandedRowRender = (parentRow) => {
+  const expandedRowRender = parentRow => {
     const columns = [
       {
         title: 'Punch-in Time',
@@ -197,7 +199,7 @@ function AdminAttendance() {
         },
       },
     ]
-    const data = parentRow?.data?.map((att) => ({
+    const data = parentRow?.data?.map(att => ({
       ...att,
       key: att._id,
       punchInTime: moment(att?.punchInTime).format('LTS'),
@@ -213,7 +215,7 @@ function AdminAttendance() {
   }
 
   const sortedData = useMemo(() => {
-    return data?.data?.data?.attendances?.[0]?.data?.map((d) => ({
+    return data?.data?.data?.attendances?.[0]?.data?.map(d => ({
       ...d,
       data: sortFromDate(d?.data, 'punchInTime'),
     }))
@@ -266,7 +268,7 @@ function AdminAttendance() {
                 placeholder="Select Co-worker"
                 onChange={handleUserChange}
                 value={user}
-                options={users?.data?.data?.data?.map((x) => ({
+                options={users?.data?.data?.data?.map(x => ({
                   id: x._id,
                   value: x.name,
                 }))}
@@ -282,12 +284,16 @@ function AdminAttendance() {
               </Button>
             </FormItem>
           </Form>
-          <Button
-            className="gx-btn-form gx-btn-primary gx-text-white "
-            onClick={() => setToggleAdd(true)}
+          <AccessWrapper
+            noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
           >
-            Add
-          </Button>
+            <Button
+              className="gx-btn-form gx-btn-primary gx-text-white "
+              onClick={() => setToggleAdd(true)}
+            >
+              Add
+            </Button>
+          </AccessWrapper>
         </div>
       </div>
       <Table

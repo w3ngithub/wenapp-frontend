@@ -11,16 +11,22 @@ import Notification from 'components/Elements/Notification'
 import {getAllUsers} from 'services/users/userDetails'
 import moment from 'moment'
 import useWindowsSize from 'hooks/useWindowsSize'
+import AccessWrapper from 'components/Modules/AccessWrapper'
+import {
+  LEAVES_TAB_ACTIONS_NO_ACCESS,
+  LEAVE_TABS_NO_ACCESS,
+  LEAVE_TAB_ADD_LEAVE_NO_ACCESS,
+} from 'constants/RoleAccess'
 
 const FormItem = Form.Item
 
-const formattedLeaves = (leaves) => {
-  return leaves?.map((leave) => ({
+const formattedLeaves = leaves => {
+  return leaves?.map(leave => ({
     ...leave,
     key: leave._id,
     coWorker: leave?.user?.name,
     dates: leave?.leaveDates
-      ?.map((date) => changeDate(date))
+      ?.map(date => changeDate(date))
       .join(
         leave?.leaveType?.name === 'Maternity' ||
           leave?.leaveType?.name === 'Paternity' ||
@@ -33,7 +39,7 @@ const formattedLeaves = (leaves) => {
   }))
 }
 
-const formatToUtc = (date) => {
+const formatToUtc = date => {
   const m = moment(date._d)
   m.set({h: 5, m: 45, s: 0})
   return m
@@ -47,6 +53,7 @@ function Leaves({
   handleCancelLeave,
   rowSelection,
   isExportDisabled,
+  userRole,
 }) {
   const queryClient = useQueryClient()
 
@@ -84,15 +91,15 @@ function Leaves({
         page.limit
       ),
     {
-      onError: (err) => console.log(err),
+      onError: err => console.log(err),
     }
   )
   const usersQuery = useQuery(['users'], getAllUsers)
 
   const leaveApproveMutation = useMutation(
-    (payload) => changeLeaveStatus(payload.id, payload.type),
+    payload => changeLeaveStatus(payload.id, payload.type),
     {
-      onSuccess: (response) =>
+      onSuccess: response =>
         handleResponse(
           response,
           'Leave approved successfully',
@@ -103,20 +110,20 @@ function Leaves({
             () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
           ]
         ),
-      onError: (error) => {
+      onError: error => {
         Notification({message: 'Could not approve leave', type: 'error'})
       },
     }
   )
 
-  const handleApproveLeave = (leave) => {
+  const handleApproveLeave = leave => {
     leaveApproveMutation.mutate({id: leave._id, type: 'approve'})
   }
 
-  const handleStatusChange = (statusId) => {
+  const handleStatusChange = statusId => {
     setLeaveStatus(statusId)
   }
-  const handleUserChange = (user) => {
+  const handleUserChange = user => {
     setUser(user)
   }
 
@@ -143,20 +150,20 @@ function Leaves({
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage((prev) => ({...page, limit: pageSize}))
+    setPage(prev => ({...page, limit: pageSize}))
   }
 
-  const handlePageChange = (pageNumber) => {
-    setPage((prev) => ({...prev, page: pageNumber}))
+  const handlePageChange = pageNumber => {
+    setPage(prev => ({...prev, page: pageNumber}))
   }
 
-  const handleDateChange = (value) => {
+  const handleDateChange = value => {
     const m = moment(value._d)
     m.set({h: 5, m: 45, s: 0})
     setDate({moment: value, utc: moment.utc(m._d).format()})
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)
-  const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
+  const allUsers = usersQuery?.data?.data?.data?.data?.map(user => ({
     id: user._id,
     value: user.name,
   }))
@@ -207,40 +214,44 @@ function Leaves({
               </Button>
             </FormItem>
           </Form>
-          <div className="gx-btn-form">
-            <Button
-              className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-              onClick={handleOpenModal}
-            >
-              Add Leave
-            </Button>
-            <CSVLink
-              filename={'Leaves'}
-              data={
-                data?.length > 0
-                  ? [
-                      ['Dates', 'Type', 'Reason', 'Status'],
+          <AccessWrapper noAccessRoles={LEAVES_TAB_ACTIONS_NO_ACCESS}>
+            <div className="gx-btn-form">
+              <AccessWrapper noAccessRoles={LEAVE_TAB_ADD_LEAVE_NO_ACCESS}>
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                  onClick={handleOpenModal}
+                >
+                  Add Leave
+                </Button>
+              </AccessWrapper>
+              <CSVLink
+                filename={'Leaves'}
+                data={
+                  data?.length > 0
+                    ? [
+                        ['Dates', 'Type', 'Reason', 'Status'],
 
-                      ...data
-                        ?.filter((leave) => selectedRows.includes(leave?._id))
-                        ?.map((leave) => [
-                          leave?.dates,
-                          leave?.type,
-                          leave?.reason,
-                          leave?.status,
-                        ]),
-                    ]
-                  : []
-              }
-            >
-              <Button
-                className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                disabled={isExportDisabled}
+                        ...data
+                          ?.filter(leave => selectedRows.includes(leave?._id))
+                          ?.map(leave => [
+                            leave?.dates,
+                            leave?.type,
+                            leave?.reason,
+                            leave?.status,
+                          ]),
+                      ]
+                    : []
+                }
               >
-                Export
-              </Button>
-            </CSVLink>
-          </div>
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                  disabled={isExportDisabled}
+                >
+                  Export
+                </Button>
+              </CSVLink>
+            </div>
+          </AccessWrapper>
         </div>
       </div>
       <Table
@@ -249,7 +260,8 @@ function Leaves({
           handleCancelLeave,
           handleApproveLeave,
           handleOpenEditModal,
-          true
+          true,
+          userRole
         )}
         dataSource={data}
         // onChange={handleTableChange}
