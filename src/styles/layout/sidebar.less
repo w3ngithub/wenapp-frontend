@@ -9,7 +9,7 @@
   flex: 0 0 auto !important;
   max-width: none !important;
   min-width: 10px !important;
-  width: @sidebar-width  !important;
+  width: @sidebar-width !important;
   overflow: hidden;
 
   @media screen and (max-width: (@screen-xl-min + 166px)) {
@@ -17,7 +17,7 @@
   }
 
   &-collapsed {
-    width: @sidebar-mini-drawer-width  !important;
+    width: @sidebar-mini-drawer-width !important;
 
     &.@{class-prefix}-mini-custom-sidebar {
       @media screen and (max-width: @screen-md-max) {
@@ -44,7 +44,7 @@
 }
 
 .@{class-prefix}-layout-sider-header {
-  padding: 10px @sidebar-padding-lr 10px (2*@sidebar-padding-lr + 10px);
+  padding: 10px @sidebar-padding-lr 10px (2 * @sidebar-padding-lr + 10px);
   height: @layout-header-height;
   .box-shadow(@gx-card-shadow-lg);
   position: relative;
@@ -134,69 +134,73 @@
 }
 
 .@{class-prefix}-layout-sider-scrollbar {
-
-
   //height: calc(100vh~"-"@layout-header-height + 33) !important;
-  height: calc(100vh~"-"@layout-header-height + 33px) !important;
+  height: calc(100vh~ '-' @layout-header-height + 33px) !important;
   // height: 90%;
 
   .framed-layout & {
-    height: calc(100vh~"-"@layout-header-height + 2 * @framed-layout-base + 145px) !important;
+    height: calc(
+      100vh~ '-' @layout-header-height + 2 * @framed-layout-base + 145px
+    ) !important;
 
     @media screen and (max-width: @screen-md-max) {
-      height: calc(100vh ~"-"@layout-header-height) !important;
+      height: calc(100vh ~'-' @layout-header-height) !important;
     }
   }
 
   .ant-layout-sider-collapsed & {
-    height: calc(100vh~"-"@layout-header-height + 91px) !important;
+    height: calc(100vh~ '-' @layout-header-height + 91px) !important;
 
     .framed-layout & {
-      height: calc(100vh~"-"@layout-header-height + 2 * @framed-layout-base + 91px) !important;
+      height: calc(
+        100vh~ '-' @layout-header-height + 2 * @framed-layout-base + 91px
+      ) !important;
 
       @media screen and (max-width: @screen-md-max) {
-        height: calc(100vh ~"-"@layout-header-height) !important;
+        height: calc(100vh ~'-' @layout-header-height) !important;
       }
     }
 
     @media screen and (max-width: @screen-md-max) {
-      height: calc(100vh ~"-"@layout-header-height) !important;
+      height: calc(100vh ~'-' @layout-header-height) !important;
     }
 
     @media screen and (max-width: @screen-xs-max) {
-      height: calc(100vh ~"-"@layout-header-height-res) !important;
+      height: calc(100vh ~'-' @layout-header-height-res) !important;
     }
   }
 
   .@{class-prefix}-mini-custom-sidebar & {
-    height: calc(100vh~"-"@layout-header-height + 206px) !important;
+    height: calc(100vh~ '-' @layout-header-height + 206px) !important;
 
     .framed-layout & {
-      height: calc(100vh~"-"@layout-header-height + 2 * @framed-layout-base + 206px) !important;
+      height: calc(
+        100vh~ '-' @layout-header-height + 2 * @framed-layout-base + 206px
+      ) !important;
 
       @media screen and (max-width: @screen-md-max) {
-        height: calc(100vh ~"-"@layout-header-height) !important;
+        height: calc(100vh ~'-' @layout-header-height) !important;
       }
     }
   }
 
   @media screen and (max-width: @screen-md-max) {
-    height: calc(100vh ~"-"@layout-header-height) !important;
+    height: calc(100vh ~'-' @layout-header-height) !important;
   }
 
   @media screen and (max-width: @screen-xs-max) {
-    height: calc(100vh ~"-"@layout-header-height-res) !important;
+    height: calc(100vh ~'-' @layout-header-height-res) !important;
   }
 }
 
 .@{class-prefix}-no-header-notifications {
-  &+.@{class-prefix}-layout-sider-scrollbar {
+  & + .@{class-prefix}-layout-sider-scrollbar {
     @media screen and (max-width: @screen-md-max) {
-      height: calc(100vh~"-"@layout-header-height + 145px) !important;
+      height: calc(100vh~ '-' @layout-header-height + 145px) !important;
     }
 
     @media screen and (max-width: @screen-xs-max) {
-      height: calc(100vh~"-"@layout-header-height-res + 145px) !important;
+      height: calc(100vh~ '-' @layout-header-height-res + 145px) !important;
     }
   }
 }
@@ -286,8 +290,6 @@
 .@{class-prefix}-menu-group .ant-menu-item-group-title {
   font-size: 16px;
   padding-top: 30px !important;
-  ;
-
 }
 
 .@{class-prefix}-layouts-view {
@@ -302,7 +304,6 @@
     &.active {
       box-shadow: 0 0 10px 0 @primary-color;
       .border-radius(8px);
-
     }
   }
 }

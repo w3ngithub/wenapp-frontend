@@ -29,7 +29,7 @@ import {getAllHolidays} from 'services/resources'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import moment from 'moment'
-import { disabledDate } from 'util/antDatePickerDisabled'
+import {disabledDate} from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -38,7 +38,7 @@ const Option = Select.Option
 function Apply({user}) {
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
-  const {themeType} = useSelector(state => state.settings)
+  const {themeType} = useSelector((state) => state.settings)
   const {innerWidth} = useWindowsSize()
   const darkCalendar = themeType === THEME_TYPE_DARK
 
@@ -51,24 +51,24 @@ function Apply({user}) {
   )
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
-    select: res => [
-      ...res?.data?.data?.data?.map(type => ({
+    select: (res) => [
+      ...res?.data?.data?.data?.map((type) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
       })),
     ],
   })
   const teamLeadsQuery = useQuery(['teamLeads'], getTeamLeads, {
-    select: res => ({
+    select: (res) => ({
       ...res.data,
-      data: res?.data?.data?.data.map(lead =>
+      data: res?.data?.data?.data.map((lead) =>
         lead?.role?.key === 'hr' ? {...lead, name: 'Hr'} : lead
       ),
     }),
   })
 
-  const leaveMutation = useMutation(leave => createLeave(leave), {
-    onSuccess: response =>
+  const leaveMutation = useMutation((leave) => createLeave(leave), {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave submitted successfully',
@@ -80,13 +80,13 @@ function Apply({user}) {
           () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Leave submittion failed!', type: 'error'})
     },
   })
 
-  const handleTypesChange = value => {
-    setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value)
+  const handleTypesChange = (value) => {
+    setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value).value)
   }
 
   const handleFormReset = () => {
@@ -95,7 +95,7 @@ function Apply({user}) {
   }
 
   const handleSubmit = () => {
-    form.validateFields().then(values => {
+    form.validateFields().then((values) => {
       //calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
         values?.leaveType === '630ca23889efb2bce93aeb40' ? 60 : 5 // 60 for maternity, 5 for other two
@@ -111,11 +111,11 @@ function Apply({user}) {
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
-      const casualLeaveDaysUTC = casualLeaveDays.map(leave =>
+      const casualLeaveDaysUTC = casualLeaveDays.map((leave) =>
         convertDateToUTC(new Date(leave))
       )
 
-      form.validateFields().then(values =>
+      form.validateFields().then((values) =>
         leaveMutation.mutate({
           ...values,
           leaveDates: appliedDate
@@ -130,12 +130,12 @@ function Apply({user}) {
 
   let userLeaves = []
   const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays?.map(
-    holiday => ({
+    (holiday) => ({
       date: new DateObject(holiday?.date).format(),
       name: holiday?.title,
     })
   )
-  userLeavesQuery?.data?.data?.data?.data?.forEach(leave => {
+  userLeavesQuery?.data?.data?.data?.data?.forEach((leave) => {
     if (leave?.leaveDates > 1) {
       for (let i = 0; i < leave?.leaveDates.length; i++) {
         userLeaves.push({
@@ -190,11 +190,11 @@ function Apply({user}) {
                   mapDays={({date, today}) => {
                     let isWeekend = [0, 6].includes(date.weekDay.index)
                     let holidayList = holidaysThisYear?.filter(
-                      holiday => date.format() === holiday?.date
+                      (holiday) => date.format() === holiday?.date
                     )
                     let isHoliday = holidayList?.length > 0
                     let leaveDate = userLeaves?.filter(
-                      leave => leave.date === date.format()
+                      (leave) => leave.date === date.format()
                     )
                     let leaveAlreadyTakenDates =
                       leaveDate?.length > 0 &&
@@ -255,7 +255,7 @@ function Apply({user}) {
                     style={{width: '100%'}}
                     onChange={handleTypesChange}
                   >
-                    {leaveTypeQuery?.data?.map(type =>
+                    {leaveTypeQuery?.data?.map((type) =>
                       type.value !== 'Late Arrival' ? (
                         <Option value={type.id} key={type.id}>
                           {type.value}
@@ -290,7 +290,7 @@ function Apply({user}) {
                 >
                   <Checkbox.Group style={{width: '100%'}}>
                     <Row style={{flexDirection: 'row'}}>
-                      {teamLeadsQuery?.data?.data?.map(lead => (
+                      {teamLeadsQuery?.data?.data?.map((lead) => (
                         <Col
                           span={12}
                           key={lead._id}

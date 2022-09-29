@@ -28,8 +28,8 @@ import {LOCALSTORAGE_USER} from 'constants/Settings'
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
 
-const formattedAttendances = attendances => {
-  return attendances?.map(att => ({
+const formattedAttendances = (attendances) => {
+  return attendances?.map((att) => ({
     ...att,
     key: att._id.attendanceDate + att._id.user,
     attendanceDate: moment(att?._id.attendanceDate).format('LL'),
@@ -40,7 +40,7 @@ const formattedAttendances = attendances => {
       : '',
     officeHour: milliSecondIntoHours(
       att?.data
-        ?.map(x =>
+        ?.map((x) =>
           x?.punchOutTime
             ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
             : ''
@@ -67,7 +67,7 @@ function UserAttendance() {
 
   const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
 
-  const punchIn = useSelector(state => state.attendance.punchIn)
+  const punchIn = useSelector((state) => state.attendance.punchIn)
 
   // set inital date to date selected from my attendance calendar
   useEffect(() => {
@@ -88,7 +88,7 @@ function UserAttendance() {
       })
   )
 
-  const handleChangeDate = date => {
+  const handleChangeDate = (date) => {
     setDate(date ? date : intialDate)
 
     if (date === null) {
@@ -100,15 +100,15 @@ function UserAttendance() {
     setSort(sorter)
   }
 
-  const handlePageChange = pageNumber => {
-    setPage(prev => ({...prev, page: pageNumber}))
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
-  const handleView = record => {
+  const handleView = (record) => {
     setOpenView(true)
     setAttToView({
       ...record,
@@ -120,7 +120,7 @@ function UserAttendance() {
     })
   }
 
-  const handleAttChnageChange = val => {
+  const handleAttChnageChange = (val) => {
     setAttFilter(val)
     switch (val) {
       case 1:
@@ -144,7 +144,7 @@ function UserAttendance() {
     }
   }, [isLoading, data?.status])
 
-  const expandedRowRender = parentRow => {
+  const expandedRowRender = (parentRow) => {
     const columns = [
       {
         title: 'Punch-in Time',
@@ -175,7 +175,7 @@ function UserAttendance() {
         },
       },
     ]
-    const data = parentRow?.data?.map(att => ({
+    const data = parentRow?.data?.map((att) => ({
       ...att,
       key: att._id,
       punchInTime: moment(att?.punchInTime).format('LTS'),
@@ -191,7 +191,7 @@ function UserAttendance() {
   }
 
   const sortedData = useMemo(() => {
-    return data?.data?.data?.attendances?.[0]?.data?.map(d => ({
+    return data?.data?.data?.attendances?.[0]?.data?.map((d) => ({
       ...d,
       data: sortFromDate(d?.data, 'punchInTime'),
     }))

@@ -34,7 +34,7 @@ function TmsMyAttendanceForm({
 
   const {punchIn, latestAttendance} = reduxuserAttendance
 
-  const addAttendances: any = useMutation(payload => addAttendance(payload), {
+  const addAttendances: any = useMutation((payload) => addAttendance(payload), {
     onSuccess: (response: any) => {
       if (response.status) {
         closeModel()
@@ -51,7 +51,7 @@ function TmsMyAttendanceForm({
         () => queryClient.invalidateQueries(['adminAttendance']),
       ])
     },
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Punch  failed', type: 'error'})
     },
   })
@@ -75,7 +75,7 @@ function TmsMyAttendanceForm({
           () => queryClient.invalidateQueries(['adminAttendance']),
         ])
       },
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Punch  failed', type: 'error'})
       },
     }

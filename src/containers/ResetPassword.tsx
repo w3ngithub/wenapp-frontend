@@ -21,7 +21,7 @@ function ResetPassword() {
       data: {passwordConfirm: string; password: string}
     }) => resetPassword(payload.token, payload.data),
     {
-      onSuccess: response => {
+      onSuccess: (response) => {
         handleResponse(
           response,
           'Password Reset Successfully',
@@ -32,7 +32,7 @@ function ResetPassword() {
           navigate(`/${SIGNIN}`)
         }
       },
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Could not reset password', type: 'error'})
       },
     }

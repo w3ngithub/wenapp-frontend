@@ -1,8 +1,8 @@
-import React from "react";
-import {Card, Checkbox} from "antd";
+import React from 'react'
+import {Card, Checkbox} from 'antd'
 
 function onChange(e) {
-  console.log(`checked = ${e.target.checked}`);
+  console.log(`checked = ${e.target.checked}`)
 }
 
 const Basic = () => {
@@ -10,7 +10,7 @@ const Basic = () => {
     <Card className="gx-card" title="Basic">
       <Checkbox onChange={onChange}>Checkbox</Checkbox>
     </Card>
-  );
-};
+  )
+}
 
-export default Basic;
+export default Basic

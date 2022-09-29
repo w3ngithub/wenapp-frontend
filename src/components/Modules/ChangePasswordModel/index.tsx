@@ -11,9 +11,9 @@ function ChangePasswordModel({open, onClose}: {open: boolean; onClose: any}) {
   const [form] = Form.useForm()
 
   const updatePasswordMutation: any = useMutation(
-    payload => UpdateUserPassword(payload),
+    (payload) => UpdateUserPassword(payload),
     {
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.status) {
           localStorage.setItem('token', response.data.token)
           localStorage.setItem(
@@ -32,7 +32,7 @@ function ChangePasswordModel({open, onClose}: {open: boolean; onClose: any}) {
           [() => {}]
         )
       },
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Could not update password', type: 'error'})
       },
     }

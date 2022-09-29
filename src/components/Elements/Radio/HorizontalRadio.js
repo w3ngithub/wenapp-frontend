@@ -1,18 +1,18 @@
-import React from "react";
-import {Card, Radio} from "antd";
+import React from 'react'
+import {Card, Radio} from 'antd'
 
-const RadioGroup = Radio.Group;
+const RadioGroup = Radio.Group
 
 class HorizontalRadio extends React.Component {
   state = {
     value: 1,
-  };
+  }
   onChange = (e) => {
-    console.log('radio checked', e.target.value);
+    console.log('radio checked', e.target.value)
     this.setState({
       value: e.target.value,
-    });
-  };
+    })
+  }
 
   render() {
     return (
@@ -24,8 +24,8 @@ class HorizontalRadio extends React.Component {
           <Radio value={4}>D</Radio>
         </RadioGroup>
       </Card>
-    );
+    )
   }
 }
 
-export default HorizontalRadio;
+export default HorizontalRadio

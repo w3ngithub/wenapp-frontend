@@ -1,20 +1,19 @@
-import React from "react";
-import {Card, Collapse} from "antd";
+import React from 'react'
+import {Card, Collapse} from 'antd'
 
-import "./basic.less";
+import './basic.less'
 
-const Panel = Collapse.Panel;
-
+const Panel = Collapse.Panel
 
 const text = `
   A dog is a type of domesticated animal.
   Known for its loyalty and faithfulness,
   it can be found as a welcome guest in many households across the world.
-`;
+`
 
 const Basic = () => {
   function callback(key) {
-    console.log(key);
+    console.log(key)
   }
 
   return (
@@ -31,7 +30,7 @@ const Basic = () => {
         </Panel>
       </Collapse>
     </Card>
-  );
-};
+  )
+}
 
-export default Basic;
+export default Basic

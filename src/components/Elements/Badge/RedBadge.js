@@ -1,6 +1,6 @@
-import React from "react";
-import { NotificationOutlined } from '@ant-design/icons';
-import { Badge, Card } from "antd";
+import React from 'react'
+import {NotificationOutlined} from '@ant-design/icons'
+import {Badge, Card} from 'antd'
 
 const RedBadge = () => {
   return (
@@ -15,7 +15,7 @@ const RedBadge = () => {
         <a href="/">Link something</a>
       </Badge>
     </Card>
-  );
-};
+  )
+}
 
-export default RedBadge;
+export default RedBadge

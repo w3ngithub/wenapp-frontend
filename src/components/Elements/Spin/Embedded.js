@@ -1,11 +1,11 @@
-import React from "react";
-import {Alert, Card, Spin, Switch} from "antd";
+import React from 'react'
+import {Alert, Card, Spin, Switch} from 'antd'
 
 class Embedded extends React.Component {
-  state = {loading: false};
+  state = {loading: false}
   toggle = (value) => {
-    this.setState({loading: value});
-  };
+    this.setState({loading: value})
+  }
 
   render() {
     return (
@@ -18,11 +18,12 @@ class Embedded extends React.Component {
           />
         </Spin>
         <div className="gx-mt-3">
-          Loading state：<Switch checked={this.state.loading} onChange={this.toggle}/>
+          Loading state：
+          <Switch checked={this.state.loading} onChange={this.toggle} />
         </div>
       </Card>
-    );
+    )
   }
 }
 
-export default Embedded;
+export default Embedded

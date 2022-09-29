@@ -1,5 +1,5 @@
-import React from "react";
-import {Alert, Card, Spin} from "antd";
+import React from 'react'
+import {Alert, Card, Spin} from 'antd'
 
 const Customize = () => {
   return (
@@ -12,6 +12,6 @@ const Customize = () => {
         />
       </Spin>
     </Card>
-  );
+  )
 }
-export default Customize;
+export default Customize

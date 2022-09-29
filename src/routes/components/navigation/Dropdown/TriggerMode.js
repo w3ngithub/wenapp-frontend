@@ -1,6 +1,6 @@
-import React from "react";
-import { DownOutlined } from '@ant-design/icons';
-import { Card, Dropdown, Menu } from "antd";
+import React from 'react'
+import {DownOutlined} from '@ant-design/icons'
+import {Card, Dropdown, Menu} from 'antd'
 
 const menu = (
   <Menu>
@@ -10,10 +10,10 @@ const menu = (
     <Menu.Item key="1">
       <a href="http://www.taobao.com/">2nd menu item</a>
     </Menu.Item>
-    <Menu.Divider/>
+    <Menu.Divider />
     <Menu.Item key="3">3rd menu item</Menu.Item>
   </Menu>
-);
+)
 
 const TriggerMode = () => {
   return (
@@ -24,7 +24,7 @@ const TriggerMode = () => {
         </span>
       </Dropdown>
     </Card>
-  );
-};
+  )
+}
 
-export default TriggerMode;
+export default TriggerMode

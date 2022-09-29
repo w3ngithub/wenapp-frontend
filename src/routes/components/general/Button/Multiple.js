@@ -1,9 +1,9 @@
-import React, {Component} from "react";
-import { DownOutlined } from '@ant-design/icons';
-import { Button, Card, Dropdown, Menu } from "antd";
+import React, {Component} from 'react'
+import {DownOutlined} from '@ant-design/icons'
+import {Button, Card, Dropdown, Menu} from 'antd'
 
 function handleMenuClick(e) {
-  console.log('click', e);
+  console.log('click', e)
 }
 
 const menu = (
@@ -12,8 +12,7 @@ const menu = (
     <Menu.Item key="2">2nd item</Menu.Item>
     <Menu.Item key="3">3rd item</Menu.Item>
   </Menu>
-);
-
+)
 
 class Multiple extends Component {
   render() {
@@ -27,8 +26,8 @@ class Multiple extends Component {
           </Button>
         </Dropdown>
       </Card>
-    );
+    )
   }
 }
 
-export default Multiple;
+export default Multiple

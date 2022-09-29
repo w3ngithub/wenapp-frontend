@@ -29,15 +29,14 @@ function CommonResourceModal({
   const {TextArea} = Input
 
   const handleSubmit = () => {
-    form.validateFields().then(values => onSubmit(values))
+    form.validateFields().then((values) => onSubmit(values))
   }
 
   useEffect(() => {
     if (toggle) {
       if (isEditMode) {
-        form.setFieldValue('title', editData?.title);
+        form.setFieldValue('title', editData?.title)
         form.setFieldValue('content', editData?.content)
-
       }
     }
     if (!toggle) form.resetFields()
@@ -55,7 +54,7 @@ function CommonResourceModal({
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
           Submit
-        </Button>
+        </Button>,
       ]}
     >
       <Spin spinning={isLoading}>
@@ -74,12 +73,15 @@ function CommonResourceModal({
           <Form.Item
             name="content"
             label="Description"
-            rules={[{required: true, message: 'Required!'},{min:10, message:'At least 10 characters required'}]}
+            rules={[
+              {required: true, message: 'Required!'},
+              {min: 10, message: 'At least 10 characters required'},
+            ]}
           >
             <TextArea
               placeholder={`Enter ${type} Description`}
               rows={10}
-            //   value={editData?.content ?? ''}
+              //   value={editData?.content ?? ''}
             />
             {/* // value={input}
 							placeholder={type}

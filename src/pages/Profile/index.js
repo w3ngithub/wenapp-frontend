@@ -56,7 +56,7 @@ function Profile() {
   const [openModal, setOpenModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const mutation = useMutation(updateProfile, {
-    onSuccess: response => {
+    onSuccess: (response) => {
       handleResponse(
         response,
         'Update profile successfully',
@@ -84,7 +84,7 @@ function Profile() {
     },
   })
 
-  const aboutData = aboutList.map(about => ({
+  const aboutData = aboutList.map((about) => ({
     ...about,
     desc:
       about.name === 'dob' || about.name === 'joinDate'
@@ -117,16 +117,16 @@ function Profile() {
 
       uploadTask.on(
         'state_changed',
-        snapshot => {
+        (snapshot) => {
           // const pg = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           // setProgress(() => pg);
         },
-        error => {
+        (error) => {
           // Handle unsuccessful uploads
           setIsLoading(false)
         },
         () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             updatedUser = {
               ...updatedUser,
 

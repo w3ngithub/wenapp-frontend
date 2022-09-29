@@ -12,7 +12,7 @@ const LeavesCalendar = () => {
     ['leavesCalendar'],
     () => getFiscalYearLeaves(),
     {
-      onError: err => console.log(err),
+      onError: (err) => console.log(err),
     }
   )
 

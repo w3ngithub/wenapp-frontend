@@ -1,5 +1,5 @@
-import React from "react";
-import {Card, Timeline} from "antd";
+import React from 'react'
+import {Card, Timeline} from 'antd'
 
 const Basic = () => {
   return (
@@ -11,7 +11,7 @@ const Basic = () => {
         <Timeline.Item>Network problems being solved 2015-09-01</Timeline.Item>
       </Timeline>
     </Card>
-  );
-};
+  )
+}
 
-export default Basic;
+export default Basic

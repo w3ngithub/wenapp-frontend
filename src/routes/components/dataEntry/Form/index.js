@@ -1,65 +1,64 @@
-import React from "react";
-import {Col, Row} from "antd";
+import React from 'react'
+import {Col, Row} from 'antd'
 
-import Basic from "./Basic";
-import HorizontalLoginForm from "./HorizontalLoginForm";
-import Registration from "./Registration";
-import AdvancedSearch from "./AdvancedSearch";
-import DynamicFormItem from "./DynamicFormItem";
-import TimeRelatedControls from "./TimeRelatedControls";
-import CustomizedFormControls from "./CustomizedFormControls";
-import StoreFormData from "./StoreFormData";
-import CustomizedValidation from "./CustomizedValidation";
-import CoordinatedControls from "./CoordinatedControls";
-import FormLayout from "./FormLayout";
-import DynamicRules from "./DynamicRules";
-import OtherFormControls from "./OtherFormControls";
+import Basic from './Basic'
+import HorizontalLoginForm from './HorizontalLoginForm'
+import Registration from './Registration'
+import AdvancedSearch from './AdvancedSearch'
+import DynamicFormItem from './DynamicFormItem'
+import TimeRelatedControls from './TimeRelatedControls'
+import CustomizedFormControls from './CustomizedFormControls'
+import StoreFormData from './StoreFormData'
+import CustomizedValidation from './CustomizedValidation'
+import CoordinatedControls from './CoordinatedControls'
+import FormLayout from './FormLayout'
+import DynamicRules from './DynamicRules'
+import OtherFormControls from './OtherFormControls'
 
 const Form = () => {
-
   return (
     <Row>
       <Col span={24}>
-        <Basic/>
+        <Basic />
       </Col>
       <Col span={24}>
-        <HorizontalLoginForm/>
+        <HorizontalLoginForm />
       </Col>
       <Col span={24}>
-        <Registration/>
+        <Registration />
       </Col>
       <Col span={24}>
-        <AdvancedSearch/>
+        <AdvancedSearch />
       </Col>
       <Col span={24}>
-        <DynamicFormItem/>
+        <DynamicFormItem />
       </Col>
       <Col span={24}>
-        <TimeRelatedControls/>
+        <TimeRelatedControls />
       </Col>
       <Col span={24}>
-        <CustomizedFormControls/>
+        <CustomizedFormControls />
       </Col>
       <Col span={24}>
-        <StoreFormData/>
+        <StoreFormData />
       </Col>
       <Col span={24}>
-        <CustomizedValidation/>
+        <CustomizedValidation />
       </Col>
       <Col span={24}>
-        <CoordinatedControls/>
+        <CoordinatedControls />
       </Col>
       <Col span={24}>
-        <FormLayout/>
+        <FormLayout />
       </Col>
       <Col span={24}>
-        <DynamicRules/>
+        <DynamicRules />
       </Col>
       <Col span={24}>
-        <OtherFormControls/>
+        <OtherFormControls />
       </Col>
     </Row>
-  );
-};
+  )
+}
 
-export default (Form);
+export default Form

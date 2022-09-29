@@ -1,37 +1,36 @@
-import React from "react";
-import {Col, Row} from "antd";
+import React from 'react'
+import {Col, Row} from 'antd'
 
-import Basic from "./Basic";
-import Accordion from "./Accordion";
-import NestedPanel from "./NestedPanel";
-import Borderless from "./Borderless";
-import CustomPanel from "./CustomPanel";
-import NoArrow from "./NoArrow";
-
+import Basic from './Basic'
+import Accordion from './Accordion'
+import NestedPanel from './NestedPanel'
+import Borderless from './Borderless'
+import CustomPanel from './CustomPanel'
+import NoArrow from './NoArrow'
 
 const Collapse = () => {
   return (
     <Row>
       <Col span={24}>
-        <Basic/>
+        <Basic />
       </Col>
       <Col span={24}>
-        <Accordion/>
+        <Accordion />
       </Col>
       <Col span={24}>
-        <NestedPanel/>
+        <NestedPanel />
       </Col>
       <Col span={24}>
-        <Borderless/>
+        <Borderless />
       </Col>
       <Col span={24}>
-        <CustomPanel/>
+        <CustomPanel />
       </Col>
       <Col span={24}>
-        <NoArrow/>
+        <NoArrow />
       </Col>
     </Row>
-  );
-};
+  )
+}
 
-export default Collapse;
+export default Collapse

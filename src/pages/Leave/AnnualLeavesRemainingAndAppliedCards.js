@@ -10,8 +10,8 @@ function AnnualLeavesRemainingAndAppliedCards(props) {
           cardColor="cyan"
           icon="product-list"
           title={props.firstTitle}
-          firstTypeCount = {props.sickDayRemaining}
-          secondTypeCount = {props.casualDayRemaining}
+          firstTypeCount={props.sickDayRemaining}
+          secondTypeCount={props.casualDayRemaining}
           {...props}
         />
       </Col>
@@ -20,8 +20,8 @@ function AnnualLeavesRemainingAndAppliedCards(props) {
           cardColor="orange"
           icon="tasks"
           title={props.secondTitle}
-          firstTypeCount = {props.sickDayApplied}
-          secondTypeCount = {props.casualDayApplied}
+          firstTypeCount={props.sickDayApplied}
+          secondTypeCount={props.casualDayApplied}
           {...props}
         />
       </Col>

@@ -1,5 +1,5 @@
-import React from "react";
-import {Card} from "antd";
+import React from 'react'
+import {Card} from 'antd'
 
 const Grid = () => {
   return (
@@ -12,7 +12,7 @@ const Grid = () => {
       <Card.Grid>Content</Card.Grid>
       <Card.Grid>Content</Card.Grid>
     </Card>
-  );
-};
+  )
+}
 
-export default Grid;
+export default Grid

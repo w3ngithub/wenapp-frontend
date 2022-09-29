@@ -1,29 +1,28 @@
-import React from "react";
-import {Col, Row} from "antd";
+import React from 'react'
+import {Col, Row} from 'antd'
 
-import Basic from "./Basic";
-import NoticeCalendar from "./NoticeCalendar";
-import CalendarCard from "./CalendarCard";
-import SelectableCalendar from "./SelectableCalendar";
-
+import Basic from './Basic'
+import NoticeCalendar from './NoticeCalendar'
+import CalendarCard from './CalendarCard'
+import SelectableCalendar from './SelectableCalendar'
 
 const Calendar = () => {
   return (
     <Row>
       <Col span={24}>
-        <NoticeCalendar/>
+        <NoticeCalendar />
       </Col>
       <Col span={24}>
-        <Basic/>
+        <Basic />
       </Col>
       <Col span={24}>
-        <SelectableCalendar/>
+        <SelectableCalendar />
       </Col>
       <Col span={24}>
-        <CalendarCard/>
+        <CalendarCard />
       </Col>
     </Row>
-  );
-};
+  )
+}
 
-export default Calendar;
+export default Calendar

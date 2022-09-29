@@ -1,5 +1,5 @@
-import React from "react";
-import {Card, Timeline} from "antd";
+import React from 'react'
+import {Card, Timeline} from 'antd'
 
 const LastNode = () => {
   return (
@@ -10,7 +10,7 @@ const LastNode = () => {
         <Timeline.Item>Technical testing 2015-09-01</Timeline.Item>
       </Timeline>
     </Card>
-  );
-};
+  )
+}
 
-export default LastNode;
+export default LastNode

@@ -1,44 +1,44 @@
-import React from "react";
-import { Card, Tabs } from "antd";
-import Coworkers from "./Coworkers";
-import Projects from "./Projects";
-import Logtime from "./Logtime";
-import Leave from "./Leave";
-import Noticeboard from "./Noticeboard";
-import Blog from "./Blog";
-import Resources from "./Resources";
+import React from 'react'
+import {Card, Tabs} from 'antd'
+import Coworkers from './Coworkers'
+import Projects from './Projects'
+import Logtime from './Logtime'
+import Leave from './Leave'
+import Noticeboard from './Noticeboard'
+import Blog from './Blog'
+import Resources from './Resources'
 
-const TabPane = Tabs.TabPane;
+const TabPane = Tabs.TabPane
 
 function Settings() {
-	return (
-		<Card title="Settings">
-			<Tabs type="card">
-				<TabPane tab="Co-Workers" key="1">
-					<Coworkers />
-				</TabPane>
+  return (
+    <Card title="Settings">
+      <Tabs type="card">
+        <TabPane tab="Co-Workers" key="1">
+          <Coworkers />
+        </TabPane>
 
-				<TabPane tab="Projects" key="2">
-					<Projects />
-				</TabPane>
-				<TabPane tab="Log Time" key="3">
-					<Logtime />
-				</TabPane>
-				<TabPane tab="Leave Management" key="4">
-					<Leave />
-				</TabPane>
-				<TabPane tab="Notice Board" key="5">
-					<Noticeboard />
-				</TabPane>
-				<TabPane tab="Blog" key="6">
-					<Blog />
-				</TabPane>
-				<TabPane tab="Resources" key="7">
-					<Resources />
-				</TabPane>
-			</Tabs>
-		</Card>
-	);
+        <TabPane tab="Projects" key="2">
+          <Projects />
+        </TabPane>
+        <TabPane tab="Log Time" key="3">
+          <Logtime />
+        </TabPane>
+        <TabPane tab="Leave Management" key="4">
+          <Leave />
+        </TabPane>
+        <TabPane tab="Notice Board" key="5">
+          <Noticeboard />
+        </TabPane>
+        <TabPane tab="Blog" key="6">
+          <Blog />
+        </TabPane>
+        <TabPane tab="Resources" key="7">
+          <Resources />
+        </TabPane>
+      </Tabs>
+    </Card>
+  )
 }
 
-export default Settings;
+export default Settings

@@ -18,8 +18,8 @@ import {useLocation} from 'react-router-dom'
 const Search = Input.Search
 const FormItem = Form.Item
 
-const formattedNotices = notices => {
-  return notices?.map(notice => ({
+const formattedNotices = (notices) => {
+  return notices?.map((notice) => ({
     ...notice,
     key: notice._id,
     category: notice.noticeType.name,
@@ -56,8 +56,8 @@ function NoticeBoardPage() {
     {keepPreviousData: true}
   )
 
-  const addNoticeMutation = useMutation(notice => addNotice(notice), {
-    onSuccess: response =>
+  const addNoticeMutation = useMutation((notice) => addNotice(notice), {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Notice Added Successfully',
@@ -67,15 +67,15 @@ function NoticeBoardPage() {
           () => handleCloseModal(),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Notice addition failed!', type: 'error'})
     },
   })
 
   const updateNoticeMutation = useMutation(
-    notice => updateNotice(notice.id, notice.details),
+    (notice) => updateNotice(notice.id, notice.details),
     {
-      onSuccess: response =>
+      onSuccess: (response) =>
         handleResponse(
           response,
           'Notice Updated Successfully',
@@ -85,24 +85,27 @@ function NoticeBoardPage() {
             () => handleCloseModal(),
           ]
         ),
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Notice update failed', type: 'error'})
       },
     }
   )
 
-  const deleteNoticeMutation = useMutation(noticeId => deleteNotice(noticeId), {
-    onSuccess: response =>
-      handleResponse(
-        response,
-        'Notice removed Successfully',
-        'Notice deletion failed',
-        [() => queryClient.invalidateQueries(['notices'])]
-      ),
-    onError: error => {
-      notification({message: 'Notice deletion failed', type: 'error'})
-    },
-  })
+  const deleteNoticeMutation = useMutation(
+    (noticeId) => deleteNotice(noticeId),
+    {
+      onSuccess: (response) =>
+        handleResponse(
+          response,
+          'Notice removed Successfully',
+          'Notice deletion failed',
+          [() => queryClient.invalidateQueries(['notices'])]
+        ),
+      onError: (error) => {
+        notification({message: 'Notice deletion failed', type: 'error'})
+      },
+    }
+  )
 
   useEffect(() => {
     if (isError) {
@@ -148,12 +151,12 @@ function NoticeBoardPage() {
     setSort(sorter)
   }
 
-  const handlePageChange = pageNumber => {
-    setPage(prev => ({...prev, page: pageNumber}))
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
   const handleResetFilter = () => {
@@ -162,16 +165,16 @@ function NoticeBoardPage() {
     setTypedNotice('')
   }
 
-  const confirmDeleteProject = notice => {
+  const confirmDeleteProject = (notice) => {
     deleteNoticeMutation.mutate(notice._id)
   }
 
   const handleOpenEditModal = (notice, mode) => {
     const originalProject = data?.data?.data?.data?.find(
-      ntc => ntc._id === notice._id
+      (ntc) => ntc._id === notice._id
     )
 
-    setOpenUserDetailModal(prev => !prev)
+    setOpenUserDetailModal((prev) => !prev)
     setNoticeRecord({
       id: notice._id,
       project: {
@@ -187,14 +190,14 @@ function NoticeBoardPage() {
   }
 
   const handleCloseModal = () => {
-    setOpenUserDetailModal(prev => !prev)
+    setOpenUserDetailModal((prev) => !prev)
     setNoticeRecord({})
     setIsEditMode(false)
     setReadOnly(false)
   }
 
   const handleOpenAddModal = () => {
-    setOpenUserDetailModal(prev => !prev)
+    setOpenUserDetailModal((prev) => !prev)
   }
 
   if (isLoading) {
@@ -221,11 +224,11 @@ function NoticeBoardPage() {
                 <Search
                   allowClear
                   placeholder="Search Notices"
-                  onSearch={value => {
-                    setPage(prev => ({...prev, page: 1}))
+                  onSearch={(value) => {
+                    setPage((prev) => ({...prev, page: 1}))
                     setTitle(value)
                   }}
-                  onChange={e => setTypedNotice(e.target.value)}
+                  onChange={(e) => setTypedNotice(e.target.value)}
                   value={typedNotice}
                   style={{marginBottom: '16px'}}
                   enterButton

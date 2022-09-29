@@ -12,13 +12,13 @@ import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const signInUserWithEmailPasswordRequest = async (email, password) =>
   await loginInUsers({email, password})
-    .then(authUser => authUser)
-    .catch(error => error)
+    .then((authUser) => authUser)
+    .catch((error) => error)
 
 const signOutRequest = async () =>
   await logoutUser()
-    .then(authUser => authUser)
-    .catch(error => error)
+    .then((authUser) => authUser)
+    .catch((error) => error)
 
 function* signInUserWithEmailPassword({payload}) {
   const {email, password} = payload

@@ -1,12 +1,12 @@
-import { notification as antdNotification } from "antd";
+import {notification as antdNotification} from 'antd'
 
 export const notification = ({
-	type = "warning",
-	message = "",
-	description = ""
+  type = 'warning',
+  message = '',
+  description = '',
 }) => {
-	antdNotification[type]({
-		message,
-		description
-	});
-};
+  antdNotification[type]({
+    message,
+    description,
+  })
+}

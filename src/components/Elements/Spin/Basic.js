@@ -1,12 +1,12 @@
-import React from "react";
-import {Card, Spin} from "antd";
+import React from 'react'
+import {Card, Spin} from 'antd'
 
 const Basic = () => {
   return (
     <Card title="Basic" className="gx-card">
-      <Spin/>
+      <Spin />
     </Card>
-  );
-};
+  )
+}
 
-export default Basic;
+export default Basic

@@ -1,13 +1,13 @@
-import React from "react";
-import { DownOutlined } from '@ant-design/icons';
-import { Card, Divider, Table } from "antd";
+import React from 'react'
+import {DownOutlined} from '@ant-design/icons'
+import {Card, Divider, Table} from 'antd'
 
 const columns = [
   {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-    render: text => <span className="gx-link">{text}</span>,
+    render: (text) => <span className="gx-link">{text}</span>,
   },
   {
     title: 'Age',
@@ -24,17 +24,17 @@ const columns = [
     key: 'action',
     render: (text, record) => (
       <span>
-      <span className="gx-link">Action 一 {record.name}</span>
-      <Divider type="vertical"/>
-      <span className="gx-link">Delete</span>
-      <Divider type="vertical"/>
-      <span className="gx-link ant-dropdown-link">
-        More actions <DownOutlined />
+        <span className="gx-link">Action 一 {record.name}</span>
+        <Divider type="vertical" />
+        <span className="gx-link">Delete</span>
+        <Divider type="vertical" />
+        <span className="gx-link ant-dropdown-link">
+          More actions <DownOutlined />
+        </span>
       </span>
-    </span>
     ),
-  }
-];
+  },
+]
 
 const data = [
   {
@@ -54,15 +54,19 @@ const data = [
     name: 'Joe Black',
     age: 32,
     address: 'Sidney No. 1 Lake Park',
-  }
-];
+  },
+]
 
 const Simple = () => {
   return (
     <Card title="Simple Table">
-      <Table className="gx-table-responsive" columns={columns} dataSource={data}/>
+      <Table
+        className="gx-table-responsive"
+        columns={columns}
+        dataSource={data}
+      />
     </Card>
-  );
-};
+  )
+}
 
-export default Simple;
+export default Simple

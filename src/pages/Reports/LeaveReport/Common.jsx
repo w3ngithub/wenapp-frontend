@@ -7,7 +7,7 @@ import {INTERN, LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
 import {getLeaveDaysOfAllUsers} from 'services/leaves'
 
 const formattedLeaveReports = (reports, quarter, Intern) => {
-  return reports?.[quarter - 1]?.map(report => ({
+  return reports?.[quarter - 1]?.map((report) => ({
     key: report?._id._id?.[0],
     name: report?._id.name?.[0],
     leavesRemaining: accumulatedLeaveDaysRemaining(
@@ -49,8 +49,9 @@ const accumulatedLeaveDaysRemaining = (
       if (Intern._id === position)
         return allocatedLeaves?.secondQuarter - leavesTaken || 0
 
-      firstQuartLeave = reports[0].find(x => x?._id._id[0] === user)
-        ?.leavesTaken
+      firstQuartLeave = reports[0].find(
+        (x) => x?._id._id[0] === user
+      )?.leavesTaken
       firstQuarterLeavesTaken =
         allocatedLeaves?.firstQuarter - firstQuartLeave > 0
           ? allocatedLeaves?.firstQuarter - firstQuartLeave
@@ -65,10 +66,12 @@ const accumulatedLeaveDaysRemaining = (
       if (Intern._id === position)
         return allocatedLeaves?.thirdQuarter - leavesTaken || 0
 
-      firstQuartLeave = reports[0].find(x => x?._id._id[0] === user)
-        ?.leavesTaken
-      secondQuarteLeave = reports[1].find(x => x?._id._id[0] === user)
-        ?.leavesTaken
+      firstQuartLeave = reports[0].find(
+        (x) => x?._id._id[0] === user
+      )?.leavesTaken
+      secondQuarteLeave = reports[1].find(
+        (x) => x?._id._id[0] === user
+      )?.leavesTaken
 
       firstQuarterLeavesTaken =
         allocatedLeaves?.firstQuarter - firstQuartLeave > 0
@@ -91,12 +94,15 @@ const accumulatedLeaveDaysRemaining = (
       if (Intern._id === position)
         return allocatedLeaves?.fourthQuarter - leavesTaken || 0
 
-      firstQuartLeave = reports[0].find(x => x?._id._id[0] === user)
-        ?.leavesTaken
-      secondQuarteLeave = reports[1].find(x => x?._id._id[0] === user)
-        ?.leavesTaken
-      thirdQuarterLeave = reports[2].find(x => x?._id._id[0] === user)
-        ?.leavesTaken
+      firstQuartLeave = reports[0].find(
+        (x) => x?._id._id[0] === user
+      )?.leavesTaken
+      secondQuarteLeave = reports[1].find(
+        (x) => x?._id._id[0] === user
+      )?.leavesTaken
+      thirdQuarterLeave = reports[2].find(
+        (x) => x?._id._id[0] === user
+      )?.leavesTaken
 
       firstQuarterLeavesTaken =
         allocatedLeaves?.firstQuarter - firstQuartLeave > 0
@@ -134,7 +140,7 @@ function CommonQuarter({fromDate, toDate, quarter, positions}) {
     {keepPreviousData: true}
   )
 
-  const Intern = positions?.find(pos => pos?.name === INTERN)
+  const Intern = positions?.find((pos) => pos?.name === INTERN)
 
   useEffect(() => {
     if (isError) {
@@ -146,12 +152,12 @@ function CommonQuarter({fromDate, toDate, quarter, positions}) {
     setSort(sorter)
   }
 
-  const handlePageChange = pageNumber => {
-    setPage(prev => ({...prev, page: pageNumber}))
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
   if (isLoading) {

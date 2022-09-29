@@ -1,5 +1,5 @@
-import React from "react";
-import {Card, Tooltip} from "antd";
+import React from 'react'
+import {Card, Tooltip} from 'antd'
 
 const Basic = () => {
   return (
@@ -8,7 +8,7 @@ const Basic = () => {
         <span>Tooltip will show when mouse enter.</span>
       </Tooltip>
     </Card>
-  );
-};
+  )
+}
 
-export default Basic;
+export default Basic

@@ -103,7 +103,7 @@ const Dashboard = () => {
     ['DashBoardleaves'],
     () => getWeekRangeLeaves(),
     {
-      onError: err => console.log(err),
+      onError: (err) => console.log(err),
     }
   )
 
@@ -262,10 +262,7 @@ const Dashboard = () => {
       type: 'leave',
       date: x?.leaveDates,
       halfDay: x?.halfDay,
-      leaveType: x?.leaveType[0]
-        .split(' ')
-        .slice(0, 2)
-        .join(' '),
+      leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
       id: x?._id[0],
     })
   )
@@ -291,12 +288,14 @@ const Dashboard = () => {
     (x: any) => ({
       title: x.name,
       start: new Date(
-        `${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
-          1}/${new Date(x.dob).getDate()}`
+        `${new Date().getFullYear()}/${
+          new Date(x.dob).getMonth() + 1
+        }/${new Date(x.dob).getDate()}`
       ),
       end: new Date(
-        `${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
-          1}/${new Date(x.dob).getDate()}`
+        `${new Date().getFullYear()}/${
+          new Date(x.dob).getMonth() + 1
+        }/${new Date(x.dob).getDate()}`
       ),
       type: 'birthday',
     })

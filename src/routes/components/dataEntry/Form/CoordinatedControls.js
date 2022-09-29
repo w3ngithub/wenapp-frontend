@@ -1,30 +1,29 @@
-import React, {Component} from "react";
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Button, Card, Input, Select } from "antd";
+import React, {Component} from 'react'
+import {Form} from '@ant-design/compatible'
+import '@ant-design/compatible/assets/index.css'
+import {Button, Card, Input, Select} from 'antd'
 
-const FormItem = Form.Item;
-const Option = Select.Option;
+const FormItem = Form.Item
+const Option = Select.Option
 
 class CoordinatedControls extends Component {
-
   handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        console.log('Received values of form: ', values)
       }
-    });
+    })
   }
   handleSelectChange = (value) => {
-    console.log(value);
+    console.log(value)
     this.props.form.setFieldsValue({
       note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
-    });
+    })
   }
 
   render() {
-    const {getFieldDecorator} = this.props.form;
+    const {getFieldDecorator} = this.props.form
     return (
       <Card className="gx-card" title="Coordinated Controls">
         <Form onSubmit={this.handleSubmit}>
@@ -35,9 +34,7 @@ class CoordinatedControls extends Component {
           >
             {getFieldDecorator('note', {
               rules: [{required: true, message: 'Please input your note!'}],
-            })(
-              <Input/>
-            )}
+            })(<Input />)}
           </FormItem>
           <FormItem
             label="Gender"
@@ -56,27 +53,17 @@ class CoordinatedControls extends Component {
               </Select>
             )}
           </FormItem>
-          <FormItem
-            wrapperCol={{xs: 24, sm: {span: 12, offset: 5}}}
-          >
+          <FormItem wrapperCol={{xs: 24, sm: {span: 12, offset: 5}}}>
             <Button type="primary" htmlType="submit">
               Submit
             </Button>
           </FormItem>
         </Form>
       </Card>
-    );
+    )
   }
-
 }
 
-const WrappedApp = Form.create()(CoordinatedControls);
+const WrappedApp = Form.create()(CoordinatedControls)
 
-
-export default (WrappedApp);
-
-
-
-
-
-
+export default WrappedApp

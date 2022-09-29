@@ -67,9 +67,9 @@
 
 // Flexbox display
 .flex-display(@display: flex, @direction: row, @wrap: wrap) {
-  display:~"-webkit-@{display}";
-  display:~"-ms-@{display}box"; // IE10 uses -ms-flexbox
-  display:~"-ms-@{display}"; // IE11
+  display: ~'-webkit-@{display}';
+  display: ~'-ms-@{display}box'; // IE10 uses -ms-flexbox
+  display: ~'-ms-@{display}'; // IE11
   display: @display;
 
   -webkit-flex-direction: @direction;
@@ -142,7 +142,13 @@
 //Vertical Gradient
 .vertical-gradient (@vstartColor: @orange-6, @vendColor: @red-6) {
   background-color: @vstartColor;
-  background: -webkit-gradient(linear, left top, left bottom, from(@vstartColor), to(@vendColor));
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(@vstartColor),
+    to(@vendColor)
+  );
   background: -webkit-linear-gradient(top, @vstartColor, @vendColor);
   background: -moz-linear-gradient(top, @vstartColor, @vendColor);
   background: -ms-linear-gradient(top, @vstartColor, @vendColor);
@@ -151,8 +157,14 @@
 
 //Horizontal Gradient
 .horizontal-gradient (@hstartColor: @orange-6, @hendColor: @red-6) {
-  background-color: @hstartColor  !important;
-  background: -webkit-gradient(linear, left top, right top, from(@hstartColor), to(@hendColor));
+  background-color: @hstartColor !important;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(@hstartColor),
+    to(@hendColor)
+  );
   background: -webkit-linear-gradient(left, @hstartColor, @hendColor);
   background: -moz-linear-gradient(left, @hstartColor, @hendColor);
   background: -ms-linear-gradient(left, @hstartColor, @hendColor);
@@ -162,10 +174,20 @@
 //Corner Left Gradient
 .corner-left-gradient (@hstartColor: @cyan-6, @hendColor: @blue-8) {
   background: -moz-linear-gradient(125deg, @hstartColor 0%, @hendColor 100%);
-  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, @hstartColor), color-stop(100%, @hendColor));
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right bottom,
+    color-stop(0%, @hstartColor),
+    color-stop(100%, @hendColor)
+  );
   background: -webkit-linear-gradient(125deg, @hstartColor 0%, @hendColor 100%);
   background: -o-linear-gradient(125deg, @hstartColor 0%, @hendColor 100%);
   background: -ms-linear-gradient(125deg, @hstartColor 0%, @hendColor 100%);
-  background: linear-gradient(325deg, @hstartColor 0%, @hendColor 100%) !important;
+  background: linear-gradient(
+    325deg,
+    @hstartColor 0%,
+    @hendColor 100%
+  ) !important;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@hstartColor', endColorstr='@hendColor', GradientType=0);
 }

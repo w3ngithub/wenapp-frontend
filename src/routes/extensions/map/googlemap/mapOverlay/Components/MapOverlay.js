@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {Button} from "antd";
-import {GoogleMap, OverlayView, withGoogleMap} from "react-google-maps";
+import React, {Component} from 'react'
+import {Button} from 'antd'
+import {GoogleMap, OverlayView, withGoogleMap} from 'react-google-maps'
 
 const STYLES = {
   mapContainer: {
@@ -11,13 +11,13 @@ const STYLES = {
     border: '1px solid #ccc',
     padding: 15,
   },
-};
-
-function getPixelPositionOffset(width, height) {
-  return {x: -(width / 2), y: -(height / 2)};
 }
 
-const OverlayViewExampleGoogleMap = withGoogleMap(props => (
+function getPixelPositionOffset(width, height) {
+  return {x: -(width / 2), y: -(height / 2)}
+}
+
+const OverlayViewExampleGoogleMap = withGoogleMap((props) => (
   <GoogleMap
     defaultZoom={15}
     defaultCenter={{lat: 47.646935, lng: -122.303763}}
@@ -56,7 +56,7 @@ const OverlayViewExampleGoogleMap = withGoogleMap(props => (
       </div>
     </OverlayView>
   </GoogleMap>
-));
+))
 
 /*
  * Add <script src="https://maps.googleapis.com/maps/api/js"></script> to your HTML to provide google.maps reference
@@ -64,23 +64,23 @@ const OverlayViewExampleGoogleMap = withGoogleMap(props => (
 export default class MapOverlay extends Component {
   state = {
     count: 0,
-  };
+  }
 
-  handleClick = this.handleClick.bind(this);
+  handleClick = this.handleClick.bind(this)
 
   handleClick() {
-    this.setState({count: this.state.count + 1});
+    this.setState({count: this.state.count + 1})
   }
 
   render() {
     return (
       <OverlayViewExampleGoogleMap
-        loadingElement={<div style={{height: `100%`}}/>}
-        containerElement={<div style={{height: `550px`}}/>}
-        mapElement={<div style={{height: `100%`}}/>}
+        loadingElement={<div style={{height: `100%`}} />}
+        containerElement={<div style={{height: `550px`}} />}
+        mapElement={<div style={{height: `100%`}} />}
         count={this.state.count}
         onClick={this.handleClick}
       />
-    );
+    )
   }
 }

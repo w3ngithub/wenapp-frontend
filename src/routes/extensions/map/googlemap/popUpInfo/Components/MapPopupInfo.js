@@ -1,15 +1,12 @@
-import React, {Component} from "react";
-import {GoogleMap, InfoWindow, Marker, withGoogleMap} from "react-google-maps";
+import React, {Component} from 'react'
+import {GoogleMap, InfoWindow, Marker, withGoogleMap} from 'react-google-maps'
 
-const google = window.google;
-const PopUpInfoWindowExampleGoogleMap = withGoogleMap(props => (
-  <GoogleMap
-    defaultZoom={15}
-    center={props.center}
-  >
+const google = window.google
+const PopUpInfoWindowExampleGoogleMap = withGoogleMap((props) => (
+  <GoogleMap defaultZoom={15} center={props.center}>
     {props.markers.map((marker, index) => (
       <Marker
-        defaultIcon={require("assets/images/marker.png")}
+        defaultIcon={require('assets/images/marker.png')}
         key={index}
         position={marker.position}
         onClick={() => props.onMarkerClick(marker)}
@@ -21,14 +18,13 @@ const PopUpInfoWindowExampleGoogleMap = withGoogleMap(props => (
          */}
         {marker.showInfo && (
           <InfoWindow onCloseClick={() => props.onMarkerClose(marker)}>
-            <div>{marker.infoContent}
-            </div>
+            <div>{marker.infoContent}</div>
           </InfoWindow>
         )}
       </Marker>
     ))}
   </GoogleMap>
-));
+))
 
 /*
  *
@@ -38,10 +34,10 @@ const PopUpInfoWindowExampleGoogleMap = withGoogleMap(props => (
  *  @author: @chiwoojo
  */
 export default class MapPopupInfo extends Component {
-
   state = {
     center: {
-      lat: 47.646935, lng: -122.303763,
+      lat: 47.646935,
+      lng: -122.303763,
     },
 
     // array of objects of markers
@@ -73,7 +69,6 @@ export default class MapPopupInfo extends Component {
               <p>1959 NE Pacific St</p>
               <p>Seattle, WA 98195</p>
             </div>
-
           </div>
         ),
       },
@@ -100,60 +95,61 @@ export default class MapPopupInfo extends Component {
               </svg>
             </div>
             <div className="ml-1">
-              <p>University of Washington Intramural Activities (IMA) Building</p>
+              <p>
+                University of Washington Intramural Activities (IMA) Building
+              </p>
               <p>3924 Montlake Blvd NE</p>
               <p>Seattle, WA 98195</p>
             </div>
-
           </div>
         ),
       },
     ],
-  };
+  }
 
-  handleMarkerClick = this.handleMarkerClick.bind(this);
-  handleMarkerClose = this.handleMarkerClose.bind(this);
+  handleMarkerClick = this.handleMarkerClick.bind(this)
+  handleMarkerClose = this.handleMarkerClose.bind(this)
 
   // Toggle to 'true' to show InfoWindow and re-renders simple
   handleMarkerClick(targetMarker) {
     this.setState({
-      markers: this.state.markers.map(marker => {
+      markers: this.state.markers.map((marker) => {
         if (marker === targetMarker) {
           return {
             ...marker,
             showInfo: true,
-          };
+          }
         }
-        return marker;
+        return marker
       }),
-    });
+    })
   }
 
   handleMarkerClose(targetMarker) {
     this.setState({
-      markers: this.state.markers.map(marker => {
+      markers: this.state.markers.map((marker) => {
         if (marker === targetMarker) {
           return {
             ...marker,
             showInfo: false,
-          };
+          }
         }
-        return marker;
+        return marker
       }),
-    });
+    })
   }
 
   render() {
     return (
       <PopUpInfoWindowExampleGoogleMap
-        loadingElement={<div style={{height: `100%`}}/>}
-        containerElement={<div style={{height: `550px`}}/>}
-        mapElement={<div style={{height: `100%`}}/>}
+        loadingElement={<div style={{height: `100%`}} />}
+        containerElement={<div style={{height: `550px`}} />}
+        mapElement={<div style={{height: `100%`}} />}
         center={this.state.center}
         markers={this.state.markers}
         onMarkerClick={this.handleMarkerClick}
         onMarkerClose={this.handleMarkerClose}
       />
-    );
+    )
   }
 }

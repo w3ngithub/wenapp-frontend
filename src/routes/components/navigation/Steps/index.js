@@ -1,48 +1,48 @@
-import React from "react";
-import {Col, Row} from "antd";
+import React from 'react'
+import {Col, Row} from 'antd'
 
-import Basic from "./Basic";
-import SwitchStep from "./SwitchStep";
-import MiniVersion from "./MiniVersion";
-import WithIcon from "./WithIcon";
-import Vertical from "./Vertical";
-import VerticalVersion from "./VerticalVersion";
-import ErrorStatus from "./ErrorStatus";
-import DotStyle from "./DotStyle";
-import CustomizedDotStyle from "./CustomizedDotStyle";
+import Basic from './Basic'
+import SwitchStep from './SwitchStep'
+import MiniVersion from './MiniVersion'
+import WithIcon from './WithIcon'
+import Vertical from './Vertical'
+import VerticalVersion from './VerticalVersion'
+import ErrorStatus from './ErrorStatus'
+import DotStyle from './DotStyle'
+import CustomizedDotStyle from './CustomizedDotStyle'
 
 const Steps = () => {
   return (
     <Row>
       <Col span={24}>
-        <Basic/>
+        <Basic />
       </Col>
       <Col span={24}>
-        <MiniVersion/>
+        <MiniVersion />
       </Col>
       <Col span={24}>
-        <WithIcon/>
+        <WithIcon />
       </Col>
       <Col span={24}>
-        <SwitchStep/>
+        <SwitchStep />
       </Col>
       <Col span={24}>
-        <Vertical/>
+        <Vertical />
       </Col>
       <Col span={24}>
-        <VerticalVersion/>
+        <VerticalVersion />
       </Col>
       <Col span={24}>
-        <ErrorStatus/>
+        <ErrorStatus />
       </Col>
       <Col span={24}>
-        <DotStyle/>
+        <DotStyle />
       </Col>
       <Col span={24}>
-        <CustomizedDotStyle/>
+        <CustomizedDotStyle />
       </Col>
     </Row>
-  );
-};
+  )
+}
 
-export default Steps;
+export default Steps

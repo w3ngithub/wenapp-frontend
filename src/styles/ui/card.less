@@ -18,7 +18,7 @@
       width: 33.33%;
     }
 
-    @media screen and (max-width: @screen-xs-max ) {
+    @media screen and (max-width: @screen-xs-max) {
       width: 50%;
     }
   }
@@ -29,14 +29,14 @@
 
   &-type-inner {
     & .ant-card-head {
-      padding-left: @gx-card-padding-base  !important;
-      padding-right: @gx-card-padding-base  !important;
+      padding-left: @gx-card-padding-base !important;
+      padding-right: @gx-card-padding-base !important;
     }
   }
 }
 
 .ant-card-wider-padding .ant-card-body {
-  &> :last-child {
+  & > :last-child {
     margin-bottom: 0;
   }
 }
@@ -77,11 +77,10 @@
 }
 
 .@{class-prefix}-card-img-center {
-
   & .ant-card-cover {
     text-align: center;
 
-    &>* {
+    & > * {
       width: auto;
       display: inline-block;
     }
@@ -137,7 +136,7 @@
       margin-bottom: 0;
     }
 
-    &+.@{class-prefix}-card-body {
+    & + .@{class-prefix}-card-body {
       padding-top: 0;
     }
   }
@@ -256,11 +255,11 @@
   }
 
   &-equal-height {
-    height: calc(100% ~"-"@gx-card-margin-base);
+    height: calc(100% ~'-' @gx-card-margin-base);
     .flex-display(flex, column, nowrap);
 
     @media screen and (max-width: @screen-xs-max) {
-      height: calc(100% ~"-"@gx-card-margin-base-res);
+      height: calc(100% ~'-' @gx-card-margin-base-res);
     }
 
     & .ant-card-body {
@@ -450,7 +449,6 @@
 }
 
 .ant-divider-horizontal {
-
   &.ant-divider-with-text,
   &.ant-divider-with-text-left,
   &.ant-divider-with-text-right {

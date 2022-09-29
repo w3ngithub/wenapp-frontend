@@ -1,5 +1,5 @@
-import React from "react";
-import {Alert, Card} from "antd";
+import React from 'react'
+import {Alert, Card} from 'antd'
 
 const Description = () => {
   return (
@@ -25,7 +25,7 @@ const Description = () => {
         type="error"
       />
     </Card>
-  );
-};
+  )
+}
 
-export default Description;
+export default Description
