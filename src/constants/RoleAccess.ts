@@ -76,4 +76,13 @@ export const LEAVE_TABLE_ACTION_NO_ACESS = [
   RoleAccess.Finance,
 ]
 
+// Noticeboard
+export const NOTICEBOARD_ACTION_NO_ACCESS = [
+  RoleAccess.TeamLead,
+  RoleAccess.Editor,
+  RoleAccess.Normal,
+  RoleAccess.Finance,
+  RoleAccess.Subscriber,
+]
+
 export default RoleAccess
