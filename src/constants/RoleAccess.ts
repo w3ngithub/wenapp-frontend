@@ -36,4 +36,28 @@ export const PROJECTS_ADD_NEW_NO_ACCESS = [RoleAccess.Normal]
 export const PROJECTS_TABLE_ACTION_NO_ACCESS = [RoleAccess.Normal]
 export const PROJECTS_TABLE_ACTION_DELETE_NO_ACCESS = [RoleAccess.Editor]
 
+// Attendance
+export const ATTENDANCE_ALL_TAB_NO_ACCESS = [
+  RoleAccess.Editor,
+  RoleAccess.Normal,
+  RoleAccess.Subscriber,
+]
+
+export const ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS = [
+  RoleAccess.ProjectManager,
+  RoleAccess.TeamLead,
+]
+export const ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS = [
+  RoleAccess.ProjectManager,
+  RoleAccess.TeamLead,
+]
+
+// LogTime
+export const LOG_TIME_ADD_NO_ACCESS = [RoleAccess.TeamLead]
+export const LOG_TIME_DELETE_NO_ACCESS = [
+  RoleAccess.TeamLead,
+  RoleAccess.Editor,
+  RoleAccess.Normal,
+]
+
 export default RoleAccess

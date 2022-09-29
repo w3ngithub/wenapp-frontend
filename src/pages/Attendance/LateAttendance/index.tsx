@@ -44,7 +44,7 @@ const formattedAttendances = (attendances: any) => {
   }))
 }
 
-function LateAttendance() {
+function LateAttendance({userRole}: {userRole: string}) {
   const [sort, setSort] = useState({})
   const [form] = Form.useForm()
   const [date, setDate] = useState(intialDate)
@@ -78,7 +78,7 @@ function LateAttendance() {
   }
 
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
-    onSuccess: (response) => {
+    onSuccess: response => {
       if (response.status) {
         handleCutLeaveInAttendance()
       } else {
@@ -88,7 +88,7 @@ function LateAttendance() {
         })
       }
     },
-    onError: (error) => {
+    onError: error => {
       notification({message: 'Leave creation failed!', type: 'error'})
     },
   })
@@ -96,7 +96,7 @@ function LateAttendance() {
   const attendanceGroupMutation = useMutation(
     (lateAttendace: any) => updateLateAttendance(lateAttendace),
     {
-      onSuccess: (response) => {
+      onSuccess: response => {
         if (response.status) {
           recordRef = {}
         }
@@ -107,7 +107,7 @@ function LateAttendance() {
           [() => queryClient.invalidateQueries(['lateAttendaceAttendance'])]
         )
       },
-      onError: (error) => {
+      onError: error => {
         notification({message: 'Leave creation failed!', type: 'error'})
       },
     }
@@ -151,7 +151,9 @@ function LateAttendance() {
       id: record._id.userId,
       data: {
         leaveDates: [
-          moment(record.data.at(-1).attendanceDate).startOf('day').format(),
+          moment(record.data.at(-1).attendanceDate)
+            .startOf('day')
+            .format(),
         ],
         reason: 'Leave cut due to late attendance',
         leaveType: LATE_LEAVE_TYPE_ID,
@@ -214,7 +216,7 @@ function LateAttendance() {
     }, {})
 
     // sort  by earliest punchInTime
-    Object.keys(groupByAttendance)?.forEach((x) => {
+    Object.keys(groupByAttendance)?.forEach(x => {
       groupByAttendance[x] = sortFromDate(groupByAttendance[x], 'punchInTime')
     })
 
@@ -273,7 +275,7 @@ function LateAttendance() {
       </div>
       <Table
         className="gx-table-responsive"
-        columns={LATE_ATTENDANCE_COLUMNS(sort, handleCutLeave)}
+        columns={LATE_ATTENDANCE_COLUMNS(sort, handleCutLeave, userRole)}
         dataSource={formattedAttendances(formattedAttendaces)}
         expandable={{expandedRowRender}}
         onChange={handleTableChange}
