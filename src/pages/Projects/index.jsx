@@ -13,20 +13,20 @@ import {
   getProjectTypes,
   updateProject,
 } from 'services/projects'
-import {PROJECT_COLUMNS} from 'constants/Projects'
+import {POSITION_TYPES, PROJECT_COLUMNS} from 'constants/Projects'
 import ProjectModal from 'components/Modules/ProjectModal'
 import {useNavigate} from 'react-router-dom'
 import moment from 'moment'
 import {notification} from 'helpers/notification'
-import {getAllUsers} from 'services/users/userDetails'
+import {getAllUsers, getUserPositionTypes} from 'services/users/userDetails'
 import useWindowsSize from 'hooks/useWindowsSize'
 
 const Search = Input.Search
 const Option = Select.Option
 const FormItem = Form.Item
 
-const formattedProjects = (projects) => {
-  return projects?.map((project) => ({
+const formattedProjects = projects => {
+  return projects?.map(project => ({
     ...project,
     key: project._id,
     projectStatus: project.projectStatus?.name,
@@ -54,6 +54,7 @@ function ProjectsPage() {
   const [readOnly, setReadOnly] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [projectName, setProjectName] = useState('')
+  const [positionTypeData, setPositionTypeData] = useState({})
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
@@ -66,17 +67,21 @@ function ProjectsPage() {
     ['projectClients'],
     getProjectClients
   )
-  const {data: developers} = useQuery(['developers'], () =>
-    getAllUsers({positionType: '62ff3e6b7582860104c727f3'})
+  const {data: positionTypes} = useQuery(
+    ['userPositionTypes'],
+    getUserPositionTypes
   )
-  const {data: designers} = useQuery(['designers'], () =>
-    getAllUsers({positionType: '62ff3c816275a483c8e69048'})
+  const {data: developers} = useQuery(['developers', positionTypeData], () =>
+    getAllUsers({positionType: positionTypeData?.developer})
   )
-  const {data: QAs} = useQuery(['QA'], () =>
-    getAllUsers({positionType: '62ff3c796275a483c8e69042'})
+  const {data: designers} = useQuery(['designers', positionTypeData], () =>
+    getAllUsers({positionType: positionTypeData?.designer})
   )
-  const {data: devops} = useQuery(['DevOps'], () =>
-    getAllUsers({positionType: '62ff3cb46275a483c8e69050'})
+  const {data: QAs} = useQuery(['QA', positionTypeData], () =>
+    getAllUsers({positionType: positionTypeData?.qa})
+  )
+  const {data: devops} = useQuery(['DevOps', positionTypeData], () =>
+    getAllUsers({positionType: positionTypeData?.devops})
   )
   const {data, isLoading, isError, isFetching} = useQuery(
     [
@@ -103,9 +108,8 @@ function ProjectsPage() {
       }),
     {keepPreviousData: true}
   )
-
-  const addProjectMutation = useMutation((project) => addProject(project), {
-    onSuccess: (response) =>
+  const addProjectMutation = useMutation(project => addProject(project), {
+    onSuccess: response =>
       handleResponse(
         response,
         'Project Added Successfully',
@@ -115,14 +119,14 @@ function ProjectsPage() {
           () => handleCloseModal(),
         ]
       ),
-    onError: (error) => {
+    onError: error => {
       notification({message: 'Project addition failed!', type: 'error'})
     },
   })
   const updateProjectMutation = useMutation(
-    (project) => updateProject(project.id, project.details),
+    project => updateProject(project.id, project.details),
     {
-      onSuccess: (response) =>
+      onSuccess: response =>
         handleResponse(
           response,
           'Project Updated Successfully',
@@ -132,27 +136,47 @@ function ProjectsPage() {
             () => handleCloseModal(),
           ]
         ),
-      onError: (error) => {
+      onError: error => {
         notification({message: 'Project update failed', type: 'error'})
       },
     }
   )
 
   const deleteProjectMutation = useMutation(
-    (projectId) => deleteProject(projectId),
+    projectId => deleteProject(projectId),
     {
-      onSuccess: (response) =>
+      onSuccess: response =>
         handleResponse(
           response,
           'Project removed Successfully',
           'Project deletion failed',
           [() => queryClient.invalidateQueries(['projects'])]
         ),
-      onError: (error) => {
+      onError: error => {
         notification({message: 'Project deletion failed', type: 'error'})
       },
     }
   )
+
+  useEffect(() => {
+    const types = positionTypes?.data?.data?.data
+
+    if (types.length > 0) {
+      setPositionTypeData({
+        developer: types?.find(
+          type => type.name.toLowerCase() === POSITION_TYPES.developer
+        )?._id,
+        designer: types?.find(
+          type => type.name.toLowerCase() === POSITION_TYPES.designer
+        )?._id,
+        qa: types?.find(type => type.name.toLowerCase() === POSITION_TYPES.qa)
+          ?._id,
+        devops: types?.find(
+          type => type.name.toLowerCase() === POSITION_TYPES.devops
+        )?._id,
+      })
+    }
+  }, [positionTypes])
 
   useEffect(() => {
     if (isError) {
@@ -160,7 +184,7 @@ function ProjectsPage() {
     }
   }, [isError])
 
-  const handleUserDetailSubmit = (project) => {
+  const handleUserDetailSubmit = project => {
     try {
       const updatedProject = {
         ...project,
@@ -187,9 +211,9 @@ function ProjectsPage() {
 
   const handleOpenEditModal = (projectToUpdate, mode) => {
     const originalProject = data?.data?.data?.data?.find(
-      (project) => project.id === projectToUpdate.id
+      project => project.id === projectToUpdate.id
     )
-    setOpenUserDetailModal((prev) => !prev)
+    setOpenUserDetailModal(prev => !prev)
     setUserRecord({
       id: projectToUpdate.id,
       project: {
@@ -205,12 +229,12 @@ function ProjectsPage() {
   }
 
   const handleOpenAddModal = () => {
-    setOpenUserDetailModal((prev) => !prev)
+    setOpenUserDetailModal(prev => !prev)
     setReadOnly(false)
   }
 
   const handleCloseModal = () => {
-    setOpenUserDetailModal((prev) => !prev)
+    setOpenUserDetailModal(prev => !prev)
     setUserRecord({})
     setIsEditMode(false)
   }
@@ -219,32 +243,32 @@ function ProjectsPage() {
     setSort(sorter)
   }
 
-  const handlePageChange = (pageNumber) => {
-    setPage((prev) => ({...prev, page: pageNumber}))
+  const handlePageChange = pageNumber => {
+    setPage(prev => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage((prev) => ({...page, limit: pageSize}))
+    setPage(prev => ({...page, limit: pageSize}))
   }
 
-  const handleProjectTypeChange = (typeId) => {
+  const handleProjectTypeChange = typeId => {
     setProjectType(typeId)
   }
 
-  const handleProjectStatusChange = (statusId) => {
+  const handleProjectStatusChange = statusId => {
     setProjectStatus(statusId)
   }
 
-  const handleClientChange = (clientId) => {
+  const handleClientChange = clientId => {
     setprojectClient(clientId)
   }
-  const handleDeveloperChange = (developerId) => {
+  const handleDeveloperChange = developerId => {
     setDeveloper(developerId)
   }
-  const handleDesignerChange = (designerId) => {
+  const handleDesignerChange = designerId => {
     setDesigner(designerId)
   }
-  const handleQaChange = (qaId) => {
+  const handleQaChange = qaId => {
     setQa(qaId)
   }
 
@@ -259,11 +283,11 @@ function ProjectsPage() {
     setQa(undefined)
   }
 
-  const confirmDeleteProject = (project) => {
+  const confirmDeleteProject = project => {
     deleteProjectMutation.mutate(project._id)
   }
 
-  const navigateToProjectLogs = (projectSlug) => {
+  const navigateToProjectLogs = projectSlug => {
     navigate(`${projectSlug}`)
   }
 
@@ -297,12 +321,12 @@ function ProjectsPage() {
             {' '}
             <Search
               placeholder="Search Projects"
-              onSearch={(value) => {
-                setPage((prev) => ({...prev, page: 1}))
+              onSearch={value => {
+                setPage(prev => ({...prev, page: 1}))
                 setProject(value)
               }}
               value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
+              onChange={e => setProjectName(e.target.value)}
               enterButton
               allowClear
               className="direct-form-item"
@@ -331,7 +355,7 @@ function ProjectsPage() {
                 filterOption={filterOptions}
               >
                 {projectTypesData &&
-                  projectTypesData?.data?.data?.data?.map((type) => (
+                  projectTypesData?.data?.data?.data?.map(type => (
                     <Option value={type._id} key={type._id}>
                       {type?.name}
                     </Option>
@@ -347,7 +371,7 @@ function ProjectsPage() {
                 filterOption={filterOptions}
               >
                 {projectStatusData &&
-                  projectStatusData?.data?.data?.data?.map((status) => (
+                  projectStatusData?.data?.data?.data?.map(status => (
                     <Option value={status._id} key={status._id}>
                       {status?.name}
                     </Option>
@@ -363,7 +387,7 @@ function ProjectsPage() {
                 filterOption={filterOptions}
               >
                 {projectClientsData &&
-                  projectClientsData?.data?.data?.data?.map((client) => (
+                  projectClientsData?.data?.data?.data?.map(client => (
                     <Option value={client._id} key={client._id}>
                       {client?.name}
                     </Option>
@@ -379,7 +403,7 @@ function ProjectsPage() {
                 filterOption={filterOptions}
               >
                 {developers &&
-                  developers?.data?.data?.data?.map((developer) => (
+                  developers?.data?.data?.data?.map(developer => (
                     <Option value={developer._id} key={developer._id}>
                       {developer?.name}
                     </Option>
@@ -395,7 +419,7 @@ function ProjectsPage() {
                 filterOption={filterOptions}
               >
                 {designers &&
-                  designers?.data?.data?.data?.map((developer) => (
+                  designers?.data?.data?.data?.map(developer => (
                     <Option value={developer._id} key={developer._id}>
                       {developer?.name}
                     </Option>
@@ -411,7 +435,7 @@ function ProjectsPage() {
                 filterOption={filterOptions}
               >
                 {QAs &&
-                  QAs?.data?.data?.data?.map((developer) => (
+                  QAs?.data?.data?.data?.map(developer => (
                     <Option value={developer._id} key={developer._id}>
                       {developer?.name}
                     </Option>

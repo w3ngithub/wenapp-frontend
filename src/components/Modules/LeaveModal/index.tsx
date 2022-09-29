@@ -270,7 +270,9 @@ function LeaveModal({
                       disabled={readOnly}
                     >
                       {leaveTypeQuery?.data?.map(type =>
-                        type.value !== 'Late Arrival' ? (
+                        readOnly ||
+                        type.value.toLowerCase() !==
+                          LEAVES_TYPES?.LateArrival ? (
                           <Option value={type.id} key={type.id}>
                             {type.value}
                           </Option>
