@@ -60,4 +60,20 @@ export const LOG_TIME_DELETE_NO_ACCESS = [
   RoleAccess.Normal,
 ]
 
+// Leaves
+export const LEAVE_TABS_NO_ACCESS = [
+  RoleAccess.TeamLead,
+  RoleAccess.Editor,
+  RoleAccess.Normal,
+  RoleAccess.Subscriber,
+]
+
+export const LEAVES_TAB_ACTIONS_NO_ACCESS = [RoleAccess.ProjectManager]
+export const LEAVE_TAB_ADD_LEAVE_NO_ACCESS = [RoleAccess.Finance]
+
+export const LEAVE_TABLE_ACTION_NO_ACESS = [
+  RoleAccess.ProjectManager,
+  RoleAccess.Finance,
+]
+
 export default RoleAccess
