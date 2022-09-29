@@ -29,27 +29,31 @@ function LeaveQuarterModal({
   const [form] = Form.useForm()
 
   const handleSubmit = () => {
-    form.validateFields().then((values) => onSubmit(form.getFieldsValue()))
+    form.validateFields().then(values => onSubmit(form.getFieldsValue()))
   }
 
   useEffect(() => {
     if (toggle) {
       if (isEditMode) {
-        const {firstQuarter, secondQuarter, thirdQuarter, fourthQuarter} =
-          editData
+        const {
+          firstQuarter,
+          secondQuarter,
+          thirdQuarter,
+          fourthQuarter,
+        } = editData
         form.setFieldsValue({
-          firstendDate: moment(firstQuarter.toDate),
-          firststartDate: moment(firstQuarter.fromDate),
-          secondendDate: moment(secondQuarter.toDate),
-          secondstartDate: moment(secondQuarter.fromDate),
-          thirdstartDate: moment(thirdQuarter.fromDate),
-          thirdendDate: moment(thirdQuarter.toDate),
-          fourthstartDate: moment(fourthQuarter.fromDate),
-          fourthendDate: moment(fourthQuarter.toDate),
-          firstleaves: firstQuarter.leaves,
-          secondleaves: secondQuarter.leaves,
-          thirdleaves: thirdQuarter.leaves,
-          fourthleaves: fourthQuarter.leaves,
+          firstendDate: moment(firstQuarter?.toDate),
+          firststartDate: moment(firstQuarter?.fromDate),
+          secondendDate: moment(secondQuarter?.toDate),
+          secondstartDate: moment(secondQuarter?.fromDate),
+          thirdstartDate: moment(thirdQuarter?.fromDate),
+          thirdendDate: moment(thirdQuarter?.toDate),
+          fourthstartDate: moment(fourthQuarter?.fromDate),
+          fourthendDate: moment(fourthQuarter?.toDate),
+          firstleaves: firstQuarter?.leaves,
+          secondleaves: secondQuarter?.leaves,
+          thirdleaves: thirdQuarter?.leaves,
+          fourthleaves: fourthQuarter?.leaves,
         })
       }
     }

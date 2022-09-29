@@ -106,6 +106,6 @@ export {LEAVES_COLUMN, STATUS_TYPES}
 export const LATE_LEAVE_TYPE_ID = '631192ec8194d8f22afe6685'
 
 export const LEAVES_TYPES = {
-  'Casual Leave': 'Casual Leave',
-  'Sick L:eave': 'Sick Leave',
+  Maternity: 'maternity',
+  Paternity: 'paternity',
 }

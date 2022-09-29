@@ -41,6 +41,7 @@ const LeavesCalendar = () => {
           title: shortName,
           start: new Date(leaveDates[0]),
           end: new Date(leaveDates[1]),
+          fullWidth: true,
         }
       else
         return {
@@ -51,13 +52,11 @@ const LeavesCalendar = () => {
     }
   )
 
-  console.log(leaveUsers)
-
   const handleEventStyle = (event: any) => {
     let style: any = {
       color: 'white',
       padding: '1px 10px',
-      width: 'fit-content',
+      width: event.fullWidth ? '100%' : 'fit-content',
       margin: 'auto',
       marginBottom: '0.2rem',
       height: 'auto',

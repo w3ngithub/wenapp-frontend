@@ -30,6 +30,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
+import {LEAVES_TYPES} from 'constants/Leaves'
 
 const {Option} = Select
 
@@ -76,7 +77,7 @@ function LeaveModal({
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
-    select: (res) => [
+    select: res => [
       ...res?.data?.data?.data?.map((type: leaveTypeInterface) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
@@ -89,36 +90,36 @@ function LeaveModal({
   )
 
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
-    onSuccess: (response) =>
+    onSuccess: response =>
       handleResponse(
         response,
         'Leave created successfully',
         'Leave creation failed',
         [() => queryClient.invalidateQueries(['leaves']), () => onClose()]
       ),
-    onError: (error) => {
+    onError: error => {
       notification({message: 'Leave creation failed!', type: 'error'})
     },
   })
 
   const leaveUpdateMutation = useMutation((leave: any) => updateLeave(leave), {
-    onSuccess: (response) =>
+    onSuccess: response =>
       handleResponse(
         response,
         'Leave updated successfully',
         'Leave update failed',
         [() => queryClient.invalidateQueries(['leaves']), () => onClose()]
       ),
-    onError: (error) => {
+    onError: error => {
       notification({message: 'Leave update failed!', type: 'error'})
     },
   })
 
   const onFinish = (values: any) => {
-    form.validateFields().then((values) => {
+    form.validateFields().then(values => {
       //calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
-        values?.leaveType === '630ca23889efb2bce93aeb40' ? 60 : 5 // 60 for maternity, 5 for other two
+        values?.leaveType.toLowerCase() === LEAVES_TYPES.Maternity ? 60 : 5 // 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(
@@ -155,7 +156,7 @@ function LeaveModal({
   }
 
   const handleLeaveTypeChange = (value: string) => {
-    setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value).value)
+    setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value)
   }
 
   const handleUserChange = (user: string) => {
@@ -263,7 +264,7 @@ function LeaveModal({
                       onChange={handleLeaveTypeChange}
                       disabled={readOnly}
                     >
-                      {leaveTypeQuery?.data?.map((type) =>
+                      {leaveTypeQuery?.data?.map(type =>
                         type.value !== 'Late Arrival' ? (
                           <Option value={type.id} key={type.id}>
                             {type.value}
@@ -393,7 +394,7 @@ function LeaveModal({
                         )
                         let isHoliday = holidayList?.length > 0
                         let leaveDate = userLeaves?.filter(
-                          (leave) => leave.date === date.format()
+                          leave => leave.date === date.format()
                         )
                         let leaveAlreadyTakenDates =
                           leaveDate?.length > 0 &&
