@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {ReactComponent as LeaveIcon} from 'assets/images/Leave.svg'
 import {Button, Card, Col, Form, Row} from 'antd'
 import Auxiliary from 'util/Auxiliary'
@@ -38,13 +38,17 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import RoleAccess from 'constants/RoleAccess'
+import {DASHBOARD_PROJECT_LOG_NO_ACCESS} from 'constants/RoleAccess'
 
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
 
 const Dashboard = () => {
+  const {
+    role: {key},
+  } = getLocalStorageData(LOCALSTORAGE_USER)
+
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
@@ -103,18 +107,31 @@ const Dashboard = () => {
     ['DashBoardleaves'],
     () => getWeekRangeLeaves(),
     {
-      onError: (err) => console.log(err),
+      onError: err => console.log(err),
     }
   )
 
-  const {data} = useQuery(['DashBoardprojects'], () =>
-    getAllProjects({
-      fields:
-        '_id,name,-devOps,-createdBy,-designers,-developers,-projectStatus,-projectTags,-projectTypes,-qa,-updatedBy',
-    })
+  const {data, refetch: projectRefetch} = useQuery(
+    ['DashBoardprojects'],
+    () =>
+      getAllProjects({
+        fields:
+          '_id,name,-devOps,-createdBy,-designers,-developers,-projectStatus,-projectTags,-projectTypes,-qa,-updatedBy',
+      }),
+    {enabled: false}
   )
 
-  const {data: logTypes} = useQuery(['DashBoardlogTypes'], () => getLogTypes())
+  const {data: logTypes, refetch: logTypeRefetch} = useQuery(
+    ['DashBoardlogTypes'],
+    () => getLogTypes(),
+    {enabled: false}
+  )
+
+  useEffect(() => {
+    if (!DASHBOARD_PROJECT_LOG_NO_ACCESS.includes(key)) {
+      Promise.all([logTypeRefetch(), projectRefetch()])
+    }
+  }, [key, logTypeRefetch, projectRefetch])
 
   const generateChart = (values: any) => {
     if (project === '' || project === undefined) return
@@ -262,7 +279,10 @@ const Dashboard = () => {
       type: 'leave',
       date: x?.leaveDates,
       halfDay: x?.halfDay,
-      leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
+      leaveType: x?.leaveType[0]
+        .split(' ')
+        .slice(0, 2)
+        .join(' '),
       id: x?._id[0],
     })
   )
@@ -288,14 +308,12 @@ const Dashboard = () => {
     (x: any) => ({
       title: x.name,
       start: new Date(
-        `${new Date().getFullYear()}/${
-          new Date(x.dob).getMonth() + 1
-        }/${new Date(x.dob).getDate()}`
+        `${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
+          1}/${new Date(x.dob).getDate()}`
       ),
       end: new Date(
-        `${new Date().getFullYear()}/${
-          new Date(x.dob).getMonth() + 1
-        }/${new Date(x.dob).getDate()}`
+        `${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
+          1}/${new Date(x.dob).getDate()}`
       ),
       type: 'birthday',
     })
@@ -399,13 +417,7 @@ const Dashboard = () => {
               />
             </div>
           </Card>
-          <AccessWrapper
-            noAccessRoles={[
-              RoleAccess.HumanResource,
-              RoleAccess.Finance,
-              RoleAccess.Subscriber,
-            ]}
-          >
+          <AccessWrapper noAccessRoles={DASHBOARD_PROJECT_LOG_NO_ACCESS}>
             <Card className="gx-card" title="Project Time Log Report">
               <div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
                 <Form layout="inline" onFinish={generateChart} form={form}>
