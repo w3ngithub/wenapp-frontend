@@ -85,4 +85,6 @@ export const NOTICEBOARD_ACTION_NO_ACCESS = [
   RoleAccess.Subscriber,
 ]
 
+// Blogs
+export const BLOGS_ACTION_NO_ACCESS = [RoleAccess.Normal, RoleAccess.Subscriber]
 export default RoleAccess
