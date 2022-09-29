@@ -41,7 +41,7 @@ function Attendace() {
         {!ATTENDANCE_ALL_TAB_NO_ACCESS.includes(key) && (
           <>
             <Tabs.TabPane key="3" tab="Co-workers Attendance">
-              <AdminAttendance />
+              <AdminAttendance userRole={key} />
             </Tabs.TabPane>
             <Tabs.TabPane key="4" tab="Co-workers Late Attendance">
               <LateAttendance userRole={key} />

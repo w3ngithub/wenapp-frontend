@@ -46,10 +46,12 @@ export const ATTENDANCE_ALL_TAB_NO_ACCESS = [
 export const ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS = [
   RoleAccess.ProjectManager,
   RoleAccess.TeamLead,
+  RoleAccess.Finance,
 ]
 export const ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS = [
   RoleAccess.ProjectManager,
   RoleAccess.TeamLead,
+  RoleAccess.Finance,
 ]
 
 // LogTime

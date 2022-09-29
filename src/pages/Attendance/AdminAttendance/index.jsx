@@ -25,7 +25,9 @@ import TmsAdminAddAttendanceForm from 'components/Modules/TmsAdminAttendanceForm
 import CustomIcon from 'components/Elements/Icons'
 import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS} from 'constants/RoleAccess'
+import RoleAccess, {
+  ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS,
+} from 'constants/RoleAccess'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -56,7 +58,7 @@ const formattedAttendances = attendances => {
   }))
 }
 
-function AdminAttendance() {
+function AdminAttendance({userRole}) {
   //init hooks
   const {state} = useLocation()
   const [sort, setSort] = useState({})
@@ -189,11 +191,15 @@ function AdminAttendance() {
             <span>
               <span className="gx-link" onClick={() => handleView(record)}>
                 <CustomIcon name="view" />
-              </span>{' '}
-              <Divider type="vertical"></Divider>
-              <span className="gx-link" onClick={() => handleEdit(record)}>
-                <CustomIcon name="edit" />
               </span>
+              {userRole !== RoleAccess.Finance && (
+                <>
+                  <Divider type="vertical"></Divider>
+                  <span className="gx-link" onClick={() => handleEdit(record)}>
+                    <CustomIcon name="edit" />
+                  </span>
+                </>
+              )}
             </span>
           )
         },
