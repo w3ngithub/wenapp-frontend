@@ -31,14 +31,16 @@ function AttendanceCalendar() {
     ['userLeaves'],
     () => getLeavesOfAllUsers('approved', user._id),
     {
-      select: (res) => {
+      select: res => {
         return res?.data?.data?.data
       },
     }
   )
 
   const handleCalendarRangeChange = (calendarDate: any) => {
-    const mom = moment(moment(calendarDate[0]).add(1, 'days')).utc().format()
+    const mom = moment(moment(calendarDate[0]).add(1, 'days'))
+      .utc()
+      .format()
     const filterByWeek = calendarDate.length === 7
     const filterByDay = calendarDate.length === 1
     if (filterByWeek) {
@@ -58,6 +60,7 @@ function AttendanceCalendar() {
       fontWeight: '500',
       height: '27px',
       padding: '5px 10px',
+      color: 'white',
     }
     if (event.type === 'leave')
       style = {
