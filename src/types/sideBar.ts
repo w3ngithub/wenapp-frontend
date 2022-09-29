@@ -8,7 +8,7 @@ export default interface sidebarItemsInterface {
     name: string
     url: string
     id: any
-    roles: string[]
+    roles?: string[]
   }[]
   roles: string[]
 }

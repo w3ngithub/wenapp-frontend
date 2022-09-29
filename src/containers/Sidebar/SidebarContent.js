@@ -76,7 +76,12 @@ function SidebarContent(props) {
                   }
                 >
                   {item.subItems
-                    .filter(subitem => subitem.roles.includes(key))
+                    .filter(subitem => {
+                      if (subitem.roles) {
+                        return subitem.roles.includes(key)
+                      }
+                      return true
+                    })
                     .map(subItem => (
                       <Menu.Item key={subItem.url}>
                         <Link

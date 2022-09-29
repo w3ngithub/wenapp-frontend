@@ -13,11 +13,13 @@ import {Button, Card, Table} from 'antd'
 import {HOLIDAY_COLUMNS} from 'constants/Holidays'
 import {changeDate, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
+import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
+import AccessWrapper from 'components/Modules/AccessWrapper'
 
 const localizer = momentLocalizer(moment)
 
-const formattedHoliday = (holidays) => {
-  return holidays?.map((holiday) => ({
+const formattedHoliday = holidays => {
+  return holidays?.map(holiday => ({
     ...holiday,
     key: holiday._id,
     date: changeDate(holiday.date),
@@ -32,16 +34,13 @@ function Holiday() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
 
-  const {
-    data: Holidays,
-    isLoading,
-    isFetching,
-  } = useQuery(['DashBoardHolidays'], () =>
-    getAllHolidays({sort: '-createdAt', limit: '1'})
+  const {data: Holidays, isLoading, isFetching} = useQuery(
+    ['DashBoardHolidays'],
+    () => getAllHolidays({sort: '-createdAt', limit: '1'})
   )
 
   const createHolidaysMutation = useMutation(createHolidays, {
-    onSuccess: (response) =>
+    onSuccess: response =>
       handleResponse(
         response,
         'Holidays added successfully',
@@ -51,7 +50,7 @@ function Holiday() {
           () => queryClient.invalidateQueries(['DashBoardHolidays']),
         ]
       ),
-    onError: (error) => {
+    onError: error => {
       notification({
         message: 'Holidays add failed!',
         type: 'error',
@@ -60,7 +59,7 @@ function Holiday() {
   })
 
   const deleteHolidayMutation = useMutation(deleteHoliday, {
-    onSuccess: (response) =>
+    onSuccess: response =>
       handleResponse(
         response,
         'Holiday deleted successfully',
@@ -70,7 +69,7 @@ function Holiday() {
           () => queryClient.invalidateQueries(['DashBoardHolidays']),
         ]
       ),
-    onError: (error) => {
+    onError: error => {
       notification({
         message: 'Holiday deletion failed!',
         type: 'error',
@@ -79,7 +78,7 @@ function Holiday() {
   })
 
   const editHolidayMutation = useMutation(updateHoliday, {
-    onSuccess: (response) =>
+    onSuccess: response =>
       handleResponse(
         response,
         'Holiday updated successfully',
@@ -89,7 +88,7 @@ function Holiday() {
           () => queryClient.invalidateQueries(['DashBoardHolidays']),
         ]
       ),
-    onError: (error) => {
+    onError: error => {
       notification({
         message: 'Holiday update failed!',
         type: 'error',
@@ -97,25 +96,25 @@ function Holiday() {
     },
   })
 
-  const handleAddClick = (holiday) => {
+  const handleAddClick = holiday => {
     createHolidaysMutation.mutate(holiday)
   }
 
-  const handleEditClick = (holidays) => {
+  const handleEditClick = holidays => {
     editHolidayMutation.mutate({
       id: Holidays?.data?.data?.data?.[0]?._id,
       holidays,
     })
   }
 
-  const handleDeleteClick = (data) => {
+  const handleDeleteClick = data => {
     deleteHolidayMutation.mutate({
       holidayId: data._id,
       docId: Holidays?.data?.data?.data?.[0]?._id,
     })
   }
 
-  const handleOpenEditModal = (data) => {
+  const handleOpenEditModal = data => {
     setIsEditMode(true)
     setOpenAdd(true)
 
@@ -134,7 +133,7 @@ function Holiday() {
   }
 
   const holidaysCalendar = Holidays?.data?.data?.data?.[0]?.holidays?.map(
-    (x) => ({
+    x => ({
       title: x.title,
       start: new Date(x.date),
       end: new Date(x.date),
@@ -156,12 +155,14 @@ function Holiday() {
       <Card
         title="Holidays"
         extra={
-          <Button
-            className="gx-btn gx-btn-primary gx-text-white "
-            onClick={() => setOpenAdd(true)}
-          >
-            Add New Year Holidays
-          </Button>
+          <AccessWrapper noAccessRoles={HOLIDAY_ACTION_NO_ACCESS}>
+            <Button
+              className="gx-btn gx-btn-primary gx-text-white "
+              onClick={() => setOpenAdd(true)}
+            >
+              Add New Year Holidays
+            </Button>
+          </AccessWrapper>
         }
       >
         <Table

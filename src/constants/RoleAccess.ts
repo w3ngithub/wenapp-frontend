@@ -104,4 +104,14 @@ export const LEAVE_REPORT_REPORT_ACESS = [
   RoleAccess.Finance,
 ]
 
+// Resources
+export const HOLIDAY_ACTION_NO_ACCESS = [
+  RoleAccess.ProjectManager,
+  RoleAccess.TeamLead,
+  RoleAccess.Editor,
+  RoleAccess.Normal,
+  RoleAccess.Finance,
+  RoleAccess.Subscriber,
+]
+
 export default RoleAccess
