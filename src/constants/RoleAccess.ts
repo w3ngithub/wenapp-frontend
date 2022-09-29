@@ -114,4 +114,9 @@ export const HOLIDAY_ACTION_NO_ACCESS = [
   RoleAccess.Subscriber,
 ]
 
+// Settings
+export const SETTINGS_TABS_NO_ACCESS = [
+  RoleAccess.ProjectManager,
+  RoleAccess.TeamLead,
+]
 export default RoleAccess
