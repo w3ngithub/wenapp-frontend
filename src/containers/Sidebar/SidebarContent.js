@@ -15,6 +15,9 @@ import IntlMessages from 'util/IntlMessages'
 import {connect} from 'react-redux'
 import {SIDEBAR_ITEMS} from 'constants/sideBarItems'
 import {REPORTS, RESOURCES} from 'helpers/routePath'
+import {getLocalStorageData} from 'helpers/utils'
+import RoleAccess from 'constants/RoleAccess'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const SubMenu = Menu.SubMenu
 
@@ -22,6 +25,10 @@ function SidebarContent(props) {
   const {themeType, navStyle, collapse} = props
   const location = useLocation()
   const paths = location.pathname.split('/')
+  const {
+    role: {key},
+  } = getLocalStorageData(LOCALSTORAGE_USER)
+
   const selectedOpenKeys =
     paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1]
 
@@ -53,7 +60,10 @@ function SidebarContent(props) {
             theme={themeType === THEME_TYPE_LITE ? 'lite' : 'dark'}
             mode="inline"
           >
-            {SIDEBAR_ITEMS.map(item =>
+            {SIDEBAR_ITEMS.filter(
+              item =>
+                item.roles.includes(key) || item.roles.includes(RoleAccess.All)
+            ).map(item =>
               item.isExpandable ? (
                 <SubMenu
                   key={item.url}

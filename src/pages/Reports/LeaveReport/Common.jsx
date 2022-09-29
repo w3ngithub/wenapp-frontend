@@ -3,7 +3,7 @@ import {useQuery} from '@tanstack/react-query'
 import {Table} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {notification} from 'helpers/notification'
-import {LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
+import {INTERN, LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
 import {getLeaveDaysOfAllUsers} from 'services/leaves'
 
 const formattedLeaveReports = (reports, quarter, Intern) => {
@@ -134,7 +134,7 @@ function CommonQuarter({fromDate, toDate, quarter, positions}) {
     {keepPreviousData: true}
   )
 
-  const Intern = positions?.find(pos => pos?.name === 'Intern')
+  const Intern = positions?.find(pos => pos?.name === INTERN)
 
   useEffect(() => {
     if (isError) {

@@ -190,3 +190,5 @@ export const LEAVES_QUARTER_COLUMN = () => [
     // width: 315,
   },
 ]
+
+export const LOCALSTORAGE_USER = 'user_id'

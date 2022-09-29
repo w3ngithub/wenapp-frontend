@@ -18,7 +18,7 @@ const IconAndInfoCard = props => {
   // if (props.themeType === THEME_TYPE_DARK) {
   iconColor = 'white'
   // }
-  const {innerWidth} = useWindowsSize();
+  const {innerWidth} = useWindowsSize()
   return (
     <Widget styleName={`gx-bg-${cardColor}`}>
       <div style={{marginLeft: '1rem'}}>
@@ -41,15 +41,14 @@ const IconAndInfoCard = props => {
                 className="gx-d-flex"
                 style={{gap: '2rem', marginBottom: '0.2rem'}}
               >
-                <p className={`gx-mb-0 gx-text-${iconColor}`}>{firstType}</p>
+                <p className={`gx-mb-0 gx-text-${iconColor}`} style={{flex: 1}}>
+                  {firstType}
+                </p>
                 <p className={`gx-mb-0 gx-text-${iconColor}`}>
                   {firstTypeCount}
                 </p>
               </div>
-              <div
-                className="gx-d-flex"
-                style={{ gap: '0.9rem'}}
-              >
+              <div className="gx-d-flex" style={{gap: '0.9rem'}}>
                 <p className={`gx-mb-0 gx-text-${iconColor}`}>{secondType}</p>
                 <p className={`gx-mb-0 gx-text-${iconColor}`}>
                   {secondTypeCount}

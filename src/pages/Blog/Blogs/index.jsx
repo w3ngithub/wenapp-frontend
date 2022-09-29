@@ -11,6 +11,7 @@ import {useNavigate} from 'react-router-dom'
 import {ADDBLOG} from 'helpers/routePath'
 import {handleResponse} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -28,7 +29,7 @@ function Blogs() {
   const [form] = Form.useForm()
 
   const [typedTitle, setTypedTitle] = useState('')
-  const userData = JSON.parse(localStorage.getItem('user_id') || {})
+  const userData = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || {})
 
   const {data, isLoading, isError, isFetching} = useQuery(
     ['blogs', page, title, user],
@@ -197,7 +198,11 @@ function Blogs() {
                       access={userData?.user?._id === blog.createdBy._id}
                     />
                   )
-                } else if (innerWidth > 765 && innerWidth < 1200 && (index + 1) % 2 === 0) {
+                } else if (
+                  innerWidth > 765 &&
+                  innerWidth < 1200 &&
+                  (index + 1) % 2 === 0
+                ) {
                   return (
                     <BlogItem
                       key={blog._id}
@@ -214,7 +219,11 @@ function Blogs() {
             </Col>
             <Col xl={8} md={12} sm={24} xs={24}>
               {data?.data?.data?.data?.map((blog, index) => {
-                if (innerWidth > 765 && innerWidth > 1200 && (index + 1) % 3 === 0) {
+                if (
+                  innerWidth > 765 &&
+                  innerWidth > 1200 &&
+                  (index + 1) % 3 === 0
+                ) {
                   return (
                     <BlogItem
                       key={blog._id}
