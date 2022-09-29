@@ -44,7 +44,7 @@ function PunchInOut() {
   }, [latestAttendance, dispatch])
 
   const addAttendances = useMutation((payload: any) => addAttendance(payload), {
-    onSuccess: response => {
+    onSuccess: (response) => {
       handleResponse(response, 'Punched Successfully', 'Punch  failed', [
         () => queryClient.invalidateQueries(['adminAttendance']),
         () => queryClient.invalidateQueries(['userAttendance']),
@@ -56,7 +56,7 @@ function PunchInOut() {
         },
       ])
     },
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Punch  failed', type: 'error'})
     },
   })
@@ -65,7 +65,7 @@ function PunchInOut() {
     (payload: {userId: string; payload: any}) =>
       updatePunchout(payload?.userId, payload.payload),
     {
-      onSuccess: response => {
+      onSuccess: (response) => {
         handleResponse(response, 'Punched Successfully', 'Punch  failed', [
           () => {
             dispatch(fetchLoggedInUserAttendance(user._id))
@@ -77,7 +77,7 @@ function PunchInOut() {
           () => queryClient.invalidateQueries(['adminAttendance']),
         ])
       },
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Punch  failed', type: 'error'})
       },
     }

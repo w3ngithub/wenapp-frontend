@@ -1,5 +1,5 @@
-import React from "react";
-import {Affix, Button, Card} from "antd";
+import React from 'react'
+import {Affix, Button, Card} from 'antd'
 
 const Basic = () => {
   return (
@@ -7,12 +7,12 @@ const Basic = () => {
       <Affix>
         <Button type="primary">Affix top</Button>
       </Affix>
-      <br/>
+      <br />
       <Affix offsetBottom={0}>
         <Button type="primary">Affix bottom</Button>
       </Affix>
     </Card>
-  );
-};
+  )
+}
 
-export default Basic;
+export default Basic

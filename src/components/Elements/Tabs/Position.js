@@ -1,16 +1,16 @@
-import React from "react";
-import {Card, Select, Tabs} from "antd";
+import React from 'react'
+import {Card, Select, Tabs} from 'antd'
 
-const TabPane = Tabs.TabPane;
-const Option = Select.Option;
+const TabPane = Tabs.TabPane
+const Option = Select.Option
 
 class Position extends React.Component {
   state = {
     tabPosition: 'top',
-  };
+  }
   changeTabPosition = (tabPosition) => {
-    this.setState({tabPosition});
-  };
+    this.setState({tabPosition})
+  }
 
   render() {
     return (
@@ -29,13 +29,19 @@ class Position extends React.Component {
           </Select>
         </div>
         <Tabs tabPosition={this.state.tabPosition}>
-          <TabPane tab="Tab 1" key="1">Content of Tab 1</TabPane>
-          <TabPane tab="Tab 2" key="2">Content of Tab 2</TabPane>
-          <TabPane tab="Tab 3" key="3">Content of Tab 3</TabPane>
+          <TabPane tab="Tab 1" key="1">
+            Content of Tab 1
+          </TabPane>
+          <TabPane tab="Tab 2" key="2">
+            Content of Tab 2
+          </TabPane>
+          <TabPane tab="Tab 3" key="3">
+            Content of Tab 3
+          </TabPane>
         </Tabs>
       </Card>
-    );
+    )
   }
 }
 
-export default Position;
+export default Position

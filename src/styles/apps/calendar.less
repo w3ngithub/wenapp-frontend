@@ -1,79 +1,74 @@
 /* Calendar Apps Style */
 .@{class-prefix}-rbc-calendar {
-	overflow: hidden;
-	padding-bottom: @gx-card-margin-base;
-	.flex-display(flex, column, nowrap);
+  overflow: hidden;
+  padding-bottom: @gx-card-margin-base;
+  .flex-display(flex, column, nowrap);
 
-	@media screen and (max-width: @screen-xs-max) {
-		margin-bottom: @gx-card-margin-base-res;
-	}
+  @media screen and (max-width: @screen-xs-max) {
+    margin-bottom: @gx-card-margin-base-res;
+  }
 }
 
 .rbc-calendar {
-	.@{class-prefix}-rbc-calendar & {
-		.flex-display(flex, column, nowrap);
-		.flex(1);
-		height: 40rem;
-	}
+  .@{class-prefix}-rbc-calendar & {
+    .flex-display(flex, column, nowrap);
+    .flex(1);
+    height: 40rem;
+  }
 }
 
 .rbc-event {
-	color:  #342d2d;
-	background-color:#4EB4DE;
-	height: 17px;
-	margin-bottom: 0.3rem;
-	padding: 0px 3px;
-	text-align: center;
-
+  color: #342d2d;
+  background-color: #4eb4de;
+  height: 17px;
+  margin-bottom: 0.3rem;
+  padding: 0px 3px;
+  text-align: center;
 }
 
 .rbc-overlay {
-	max-height: 300px;
-	overflow: auto;
-	z-index: 10;
-
-
+  max-height: 300px;
+  overflow: auto;
+  z-index: 10;
 }
 
-
-
 .rbc-overlay-header {
-	border-bottom: 1px solid #e5e5e5;
-	margin: -10px -10px 5px -10px;
-	padding: 2px 10px;
-	color: #000;
+  border-bottom: 1px solid #e5e5e5;
+  margin: -10px -10px 5px -10px;
+  padding: 2px 10px;
+  color: #000;
 }
 
 .rbc-show-more {
-	background-color: rgba(255, 255, 255, 0.3);
-	z-index: 4;
-	font-weight: bold;
-	font-size: 85%;
-	height: auto;
-	line-height: normal;
-	color: #038fde;
+  background-color: rgba(255, 255, 255, 0.3);
+  z-index: 4;
+  font-weight: bold;
+  font-size: 85%;
+  height: auto;
+  line-height: normal;
+  color: #038fde;
 }
 
 .rbc-event.rbc-selected {
-	background-color: @primary-7;
+  background-color: @primary-7;
 }
 
 .rbc-slot-selection {
-	background-color: @primary-3;
+  background-color: @primary-3;
 }
 
 .rbc-toolbar {
-	gap: 15px;
-	margin-bottom: 15px;
+  gap: 15px;
+  margin-bottom: 15px;
 }
 
 .rbc-toolbar button:active,
 .rbc-toolbar button.rbc-active {
-	color: @white-color;
-	background-image: none;
-	.box-shadow(none);
-	background-color: @primary-4;
-	border-color: @primary-color;
+  color: @white-color;
+  background-image: none;
+  .box-shadow(none);
+  background-color: @primary-4;
+  border-color: @primary-color;
 }
 
 .rbc-toolbar button:active:hover,
@@ -82,64 +77,64 @@
 .rbc-toolbar button.rbc-active:focus,
 .rbc-toolbar button:focus,
 .rbc-toolbar button:hover {
-	color: @white-color;
-	background-color: @primary-4;
-	border-color: @primary-color;
+  color: @white-color;
+  background-color: @primary-4;
+  border-color: @primary-color;
 }
 
 .rbc-month-row {
-	min-height: 100px;
+  min-height: 100px;
 }
 
 .rbc-btn-group {
-	& button {
-		cursor: pointer;
-	}
+  & button {
+    cursor: pointer;
+  }
 }
 
 @media screen and (max-width: 867px) {
-	.rbc-toolbar {
-		.flex-display(flex, column, nowrap);
-		.align-items(flex-start);
-	}
+  .rbc-toolbar {
+    .flex-display(flex, column, nowrap);
+    .align-items(flex-start);
+  }
 
-	.rbc-toolbar .rbc-toolbar-label {
-		margin: 8px 0;
-	}
+  .rbc-toolbar .rbc-toolbar-label {
+    margin: 8px 0;
+  }
 }
 
 @media screen and (max-width: 467px) {
-	.rbc-toolbar {
-		font-size: 12px;
-	}
+  .rbc-toolbar {
+    font-size: 12px;
+  }
 
-	.rbc-toolbar button {
-		padding: 5px 10px;
-	}
+  .rbc-toolbar button {
+    padding: 5px 10px;
+  }
 }
 
 /* Calendar Components Style */
 .@{class-prefix}-com-calendar {
-	& .ant-fullcalendar-header {
-		& .ant-select {
-			margin-left: 8px;
-			margin-bottom: 8px;
-		}
-	}
+  & .ant-fullcalendar-header {
+    & .ant-select {
+      margin-left: 8px;
+      margin-bottom: 8px;
+    }
+  }
 
-	@media screen and (max-width: 349px) {
-		margin: 0 -20px;
-	}
+  @media screen and (max-width: 349px) {
+    margin: 0 -20px;
+  }
 }
 
 .@{class-prefix}-com-calendar-card {
-	border: @border-style-base @border-width-base @border-color;
-	max-width: 300px;
-	.border-radius(@border-radius-sm);
+  border: @border-style-base @border-width-base @border-color;
+  max-width: 300px;
+  .border-radius(@border-radius-sm);
 
-	.@{class-prefix}-com-calendar {
-		@media screen and (max-width: 349px) {
-			margin: 0;
-		}
-	}
+  .@{class-prefix}-com-calendar {
+    @media screen and (max-width: 349px) {
+      margin: 0;
+    }
+  }
 }

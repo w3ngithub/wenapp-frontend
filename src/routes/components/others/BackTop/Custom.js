@@ -1,9 +1,13 @@
-import React from "react";
-import {BackTop, Card} from "antd";
+import React from 'react'
+import {BackTop, Card} from 'antd'
 
 const Custom = () => {
   return (
-    <Card id="components-back-top-demo-custom" title="Custom" className="gx-card">
+    <Card
+      id="components-back-top-demo-custom"
+      title="Custom"
+      className="gx-card"
+    >
       <BackTop>
         <div className="ant-back-top-inner">UP</div>
       </BackTop>
@@ -11,7 +15,7 @@ const Custom = () => {
       <strong className="gx-text-primary"> blue </strong>
       button.
     </Card>
-  );
-};
+  )
+}
 
-export default Custom;
+export default Custom

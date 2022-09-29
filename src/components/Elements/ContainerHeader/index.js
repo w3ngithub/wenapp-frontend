@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 const ContainerHeader = ({title, match}) => {
   return (
@@ -6,7 +6,6 @@ const ContainerHeader = ({title, match}) => {
       <h2 className="gx-page-title">{title}</h2>
     </div>
   )
-};
+}
 
-export default ContainerHeader;
-
+export default ContainerHeader

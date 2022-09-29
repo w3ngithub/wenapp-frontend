@@ -30,7 +30,7 @@ const getLogTypes = async () => {
   }
 }
 
-const addLogTime = async payload => {
+const addLogTime = async (payload) => {
   try {
     let response = await API.post(
       `${Apis.Projects}/${payload.id}/timelogs`,
@@ -60,7 +60,7 @@ const getTodayTimeLogSummary = async () => {
   }
 }
 
-const deleteTimeLog = async logId => {
+const deleteTimeLog = async (logId) => {
   try {
     let response = await API.delete(`${Apis.TimeLogs}/${logId}`)
     return getAPIResponse(response)
@@ -69,7 +69,7 @@ const deleteTimeLog = async logId => {
   }
 }
 
-const updateTimeLog = async payload => {
+const updateTimeLog = async (payload) => {
   try {
     let response = await API.patch(
       `${Apis.TimeLogs}/${payload.id}`,
@@ -81,7 +81,7 @@ const updateTimeLog = async payload => {
   }
 }
 
-const addUserTimeLog = async payload => {
+const addUserTimeLog = async (payload) => {
   try {
     let response = await API.post(`${Apis.TimeLogs}`, payload)
     return getAPIResponse(response)

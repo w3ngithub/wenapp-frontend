@@ -1,8 +1,8 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import React from 'react'
+import {Outlet} from 'react-router-dom'
 
 function Resources() {
-	return <Outlet />;
+  return <Outlet />
 }
 
-export default Resources;
+export default Resources

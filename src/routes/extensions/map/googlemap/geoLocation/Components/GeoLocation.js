@@ -1,23 +1,19 @@
-import React, {Component} from "react";
-import {Circle, GoogleMap, InfoWindow, withGoogleMap} from "react-google-maps";
-import canUseDOM from "can-use-dom";
-import raf from "raf";
+import React, {Component} from 'react'
+import {Circle, GoogleMap, InfoWindow, withGoogleMap} from 'react-google-maps'
+import canUseDOM from 'can-use-dom'
+import raf from 'raf'
 
-const geolocation = (
-  canUseDOM && navigator.geolocation ?
-    navigator.geolocation :
-    ({
-      getCurrentPosition(success, failure) {
-        failure(`Your browser doesn't support geolocation.`);
-      },
-    })
-);
+const geolocation =
+  canUseDOM && navigator.geolocation
+    ? navigator.geolocation
+    : {
+        getCurrentPosition(success, failure) {
+          failure(`Your browser doesn't support geolocation.`)
+        },
+      }
 
-const GeolocationExampleGoogleMap = withGoogleMap(props => (
-  <GoogleMap
-    defaultZoom={10}
-    center={props.center}
-  >
+const GeolocationExampleGoogleMap = withGoogleMap((props) => (
+  <GoogleMap defaultZoom={10} center={props.center}>
     {props.center && (
       <InfoWindow position={props.center}>
         <div>{props.content}</div>
@@ -29,7 +25,7 @@ const GeolocationExampleGoogleMap = withGoogleMap(props => (
         radius={props.radius}
         options={{
           fillColor: 'red',
-          fillOpacity: 0.20,
+          fillOpacity: 0.2,
           strokeColor: 'red',
           strokeOpacity: 1,
           strokeWeight: 1,
@@ -37,7 +33,7 @@ const GeolocationExampleGoogleMap = withGoogleMap(props => (
       />
     )}
   </GoogleMap>
-));
+))
 
 /*
  * https://developers.google.com/maps/documentation/javascript/examples/map-geolocation
@@ -45,67 +41,69 @@ const GeolocationExampleGoogleMap = withGoogleMap(props => (
  * Add <script src="https://maps.googleapis.com/maps/api/js"></script> to your HTML to provide google.maps reference
  */
 export default class GeolocationExample extends Component {
-
   state = {
     center: null,
     content: null,
     radius: 6000,
-  };
+  }
 
-  isUnmounted = false;
+  isUnmounted = false
 
   componentDidMount() {
     const tick = () => {
       if (this.isUnmounted) {
-        return;
+        return
       }
-      this.setState({radius: Math.max(this.state.radius - 20, 0)});
+      this.setState({radius: Math.max(this.state.radius - 20, 0)})
 
       if (this.state.radius > 200) {
-        raf(tick);
+        raf(tick)
       }
-    };
-    geolocation.getCurrentPosition((position) => {
-      if (this.isUnmounted) {
-        return;
-      }
-      this.setState({
-        center: {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        },
-        content: `Location found using HTML5.`,
-      });
+    }
+    geolocation.getCurrentPosition(
+      (position) => {
+        if (this.isUnmounted) {
+          return
+        }
+        this.setState({
+          center: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+          content: `Location found using HTML5.`,
+        })
 
-      raf(tick);
-    }, (reason) => {
-      if (this.isUnmounted) {
-        return;
+        raf(tick)
+      },
+      (reason) => {
+        if (this.isUnmounted) {
+          return
+        }
+        this.setState({
+          center: {
+            lat: 60,
+            lng: 105,
+          },
+          content: `Error: The Geolocation service failed (${reason}).`,
+        })
       }
-      this.setState({
-        center: {
-          lat: 60,
-          lng: 105,
-        },
-        content: `Error: The Geolocation service failed (${reason}).`,
-      });
-    });
+    )
   }
 
   componentWillUnmount() {
-    this.isUnmounted = true;
+    this.isUnmounted = true
   }
 
   render() {
     return (
       <GeolocationExampleGoogleMap
-        loadingElement={<div style={{height: `100%`}}/>}
-        containerElement={<div style={{height: `550px`}}/>}
-        mapElement={<div style={{height: `100%`}}/>}
+        loadingElement={<div style={{height: `100%`}} />}
+        containerElement={<div style={{height: `550px`}} />}
+        mapElement={<div style={{height: `100%`}} />}
         center={this.state.center}
         content={this.state.content}
         radius={this.state.radius}
       />
-    );
+    )
   }
 }

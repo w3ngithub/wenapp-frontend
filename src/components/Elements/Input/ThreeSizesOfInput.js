@@ -1,23 +1,22 @@
-import React from "react";
-import {Card, Input} from "antd";
+import React from 'react'
+import {Card, Input} from 'antd'
 
-import "./threeSizesOfInput.less";
+import './threeSizesOfInput.less'
 
 const ThreeSizesOfInput = () => {
   return (
     <Card className="gx-card" title="Three Sizes Of Input">
       <div className="gx-mb-3">
-        <Input size="large" placeholder="large size"/>
+        <Input size="large" placeholder="large size" />
       </div>
       <div className="gx-mb-3">
-        <Input placeholder="default size"/>
+        <Input placeholder="default size" />
       </div>
       <div className="gx-mb-3">
-        <Input size="small" placeholder="small size"/>
+        <Input size="small" placeholder="small size" />
       </div>
     </Card>
+  )
+}
 
-  );
-};
-
-export default ThreeSizesOfInput;
+export default ThreeSizesOfInput

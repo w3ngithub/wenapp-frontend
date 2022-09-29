@@ -41,7 +41,7 @@ function NoticeModal({
   }
 
   const handleSubmit = () => {
-    form.validateFields().then(values => {
+    form.validateFields().then((values) => {
       onSubmit(values)
     })
   }
@@ -125,7 +125,7 @@ function NoticeModal({
                   disabled={readOnly}
                 >
                   {noticeTypesQuery.data &&
-                    noticeTypesQuery?.data?.data?.data?.data?.map(tag => (
+                    noticeTypesQuery?.data?.data?.data?.data?.map((tag) => (
                       <Select.Option value={tag._id} key={tag._id}>
                         {tag.name}
                       </Select.Option>

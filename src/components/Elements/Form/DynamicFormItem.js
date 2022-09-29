@@ -1,59 +1,55 @@
-import React, {Component} from "react";
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Button, Card, Input } from "antd";
+import React, {Component} from 'react'
+import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
+import {Form} from '@ant-design/compatible'
+import '@ant-design/compatible/assets/index.css'
+import {Button, Card, Input} from 'antd'
 
-import "./dynamicFormItem.less";
+import './dynamicFormItem.less'
 
-const FormItem = Form.Item;
+const FormItem = Form.Item
 
-let uuid = 0;
+let uuid = 0
 
 class DynamicFormItem extends Component {
-
-
   remove = (k) => {
-    const {form} = this.props;
+    const {form} = this.props
     // can use data-binding to get
-    const keys = form.getFieldValue('keys');
+    const keys = form.getFieldValue('keys')
     // We need at least one passenger
     if (keys.length === 1) {
-      return;
+      return
     }
 
     // can use data-binding to set
     form.setFieldsValue({
-      keys: keys.filter(key => key !== k),
-    });
-  };
+      keys: keys.filter((key) => key !== k),
+    })
+  }
 
   add = () => {
-    const {form} = this.props;
+    const {form} = this.props
     // can use data-binding to get
-    const keys = form.getFieldValue('keys');
-    const nextKeys = keys.concat(uuid);
-    uuid++;
+    const keys = form.getFieldValue('keys')
+    const nextKeys = keys.concat(uuid)
+    uuid++
     // can use data-binding to set
     // important! notify form to detect changes
     form.setFieldsValue({
       keys: nextKeys,
-    });
-  };
+    })
+  }
 
   handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        console.log('Received values of form: ', values)
       }
-    });
-  };
-
+    })
+  }
 
   render() {
-
-    const {getFieldDecorator, getFieldValue} = this.props.form;
+    const {getFieldDecorator, getFieldValue} = this.props.form
     const formItemLayout = {
       labelCol: {
         xs: {span: 24},
@@ -63,15 +59,15 @@ class DynamicFormItem extends Component {
         xs: {span: 24},
         sm: {span: 20},
       },
-    };
+    }
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: {span: 24, offset: 0},
         sm: {span: 20, offset: 4},
       },
-    };
-    getFieldDecorator('keys', {initialValue: []});
-    const keys = getFieldValue('keys');
+    }
+    getFieldDecorator('keys', {initialValue: []})
+    const keys = getFieldValue('keys')
     const formItems = keys.map((k, index) => {
       return (
         <FormItem
@@ -82,24 +78,29 @@ class DynamicFormItem extends Component {
         >
           {getFieldDecorator(`names[${k}]`, {
             validateTrigger: ['onChange', 'onBlur'],
-            rules: [{
-              required: true,
-              whitespace: true,
-              message: "Please input passenger's name or delete this field.",
-            }],
+            rules: [
+              {
+                required: true,
+                whitespace: true,
+                message: "Please input passenger's name or delete this field.",
+              },
+            ],
           })(
-            <Input placeholder="passenger name" style={{width: '60%', marginRight: 8}}/>
+            <Input
+              placeholder="passenger name"
+              style={{width: '60%', marginRight: 8}}
+            />
           )}
           {keys.length > 1 ? (
             <MinusCircleOutlined
               className="dynamic-delete-button"
               disabled={keys.length === 1}
-              onClick={() => this.remove(k)} />
+              onClick={() => this.remove(k)}
+            />
           ) : null}
         </FormItem>
-      );
-    });
-
+      )
+    })
 
     return (
       <Card className="gx-card" title="Dynamic Form Item">
@@ -111,22 +112,16 @@ class DynamicFormItem extends Component {
             </Button>
           </FormItem>
           <FormItem {...formItemLayoutWithOutLabel}>
-            <Button type="primary" htmlType="submit">Submit</Button>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
           </FormItem>
         </Form>
       </Card>
-    );
+    )
   }
-
 }
 
-const WrappedDynamicFieldSet = Form.create()(DynamicFormItem);
+const WrappedDynamicFieldSet = Form.create()(DynamicFormItem)
 
-
-export default WrappedDynamicFieldSet;
-
-
-
-
-
-
+export default WrappedDynamicFieldSet

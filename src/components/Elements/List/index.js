@@ -1,29 +1,26 @@
-import React, {Component} from "react";
-import {Col, Row} from "antd";
+import React, {Component} from 'react'
+import {Col, Row} from 'antd'
 
-import SimpleList from "./SimpleList";
-import BasicList from "./BasicList";
-import Vertical from "./Vertical";
-
+import SimpleList from './SimpleList'
+import BasicList from './BasicList'
+import Vertical from './Vertical'
 
 class List extends Component {
-
   render() {
     return (
       <Row>
         <Col span={24}>
-          <SimpleList/>
+          <SimpleList />
         </Col>
         <Col span={24}>
-          <BasicList/>
+          <BasicList />
         </Col>
         <Col span={24}>
-          <Vertical/>
+          <Vertical />
         </Col>
       </Row>
-    );
+    )
   }
 }
 
-
-export default (List);
+export default List

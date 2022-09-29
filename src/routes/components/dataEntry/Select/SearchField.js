@@ -1,20 +1,19 @@
-import React from "react";
-import {Card, Select} from "antd";
+import React from 'react'
+import {Card, Select} from 'antd'
 
-const Option = Select.Option;
-
+const Option = Select.Option
 
 const SearchField = () => {
   function handleChange(value) {
-    console.log(`selected ${value}`);
+    console.log(`selected ${value}`)
   }
 
   function handleBlur() {
-    console.log('blur');
+    console.log('blur')
   }
 
   function handleFocus() {
-    console.log('focus');
+    console.log('focus')
   }
 
   return (
@@ -27,14 +26,16 @@ const SearchField = () => {
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        filterOption={(input, option) =>
+          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        }
       >
         <Option value="jack">Jack</Option>
         <Option value="lucy">Lucy</Option>
         <Option value="tom">Tom</Option>
       </Select>
     </Card>
-  );
-};
+  )
+}
 
-export default SearchField;
+export default SearchField

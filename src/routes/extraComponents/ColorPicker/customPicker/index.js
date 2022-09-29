@@ -1,16 +1,11 @@
-import React from "react";
+import React from 'react'
 
-import MyPicker from "./MyPicker";
+import MyPicker from './MyPicker'
 
 export const CustomPicker = () => {
-  const handleColorChange = ({hex}) => console.log(hex);
+  const handleColorChange = ({hex}) => console.log(hex)
 
-  return (
-    <MyPicker
-      color="orange"
-      onChangeComplete={handleColorChange}
-    />
-  )
-};
+  return <MyPicker color="orange" onChangeComplete={handleColorChange} />
+}
 
 export default CustomPicker

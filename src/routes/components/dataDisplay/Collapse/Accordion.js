@@ -1,14 +1,13 @@
-import React from "react";
-import {Card, Collapse} from "antd";
+import React from 'react'
+import {Card, Collapse} from 'antd'
 
-const Panel = Collapse.Panel;
-
+const Panel = Collapse.Panel
 
 const text = `
   A dog is a type of domesticated animal.
   Known for its loyalty and faithfulness,
   it can be found as a welcome guest in many households across the world.
-`;
+`
 
 const Accordion = () => {
   return (
@@ -25,7 +24,7 @@ const Accordion = () => {
         </Panel>
       </Collapse>
     </Card>
-  );
-};
+  )
+}
 
-export default Accordion;
+export default Accordion

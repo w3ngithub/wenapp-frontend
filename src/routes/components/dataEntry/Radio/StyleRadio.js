@@ -1,12 +1,12 @@
-import React from "react";
-import {Card, Radio} from "antd";
+import React from 'react'
+import {Card, Radio} from 'antd'
 
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button
+const RadioGroup = Radio.Group
 
 const StyleRadio = () => {
   function onChange(e) {
-    console.log(`radio checked:${e.target.value}`);
+    console.log(`radio checked:${e.target.value}`)
   }
 
   return (
@@ -22,7 +22,9 @@ const StyleRadio = () => {
       <div className="gx-mb-3">
         <RadioGroup onChange={onChange} defaultValue="a">
           <RadioButton value="a">Hangzhou</RadioButton>
-          <RadioButton value="b" disabled>Shanghai</RadioButton>
+          <RadioButton value="b" disabled>
+            Shanghai
+          </RadioButton>
           <RadioButton value="c">Beijing</RadioButton>
           <RadioButton value="d">Chengdu</RadioButton>
         </RadioGroup>
@@ -36,7 +38,7 @@ const StyleRadio = () => {
         </RadioGroup>
       </div>
     </Card>
-  );
-};
+  )
+}
 
-export default StyleRadio;
+export default StyleRadio

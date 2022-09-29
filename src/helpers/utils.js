@@ -45,7 +45,7 @@ export const handleLocalValidate = (schema, checkField, checkData) => {
       // Passes validation
       return {valid: true}
     })
-    .catch(err => {
+    .catch((err) => {
       // Failed validation
       if (err.name === 'ValidationError') {
         return {valid: false, error: err.errors}
@@ -56,10 +56,10 @@ export const handleLocalValidate = (schema, checkField, checkData) => {
 }
 
 export const handleValidateObj = async (schema, inputObj) => {
-  const getValids = async items => {
+  const getValids = async (items) => {
     return Promise.all(
-      items.map(item => {
-        return handleLocalValidate(schema, item, inputObj[item]).then(res => {
+      items.map((item) => {
+        return handleLocalValidate(schema, item, inputObj[item]).then((res) => {
           return {...res, input: item}
         })
       })
@@ -69,10 +69,10 @@ export const handleValidateObj = async (schema, inputObj) => {
   return await getValids(Object.keys(inputObj))
 }
 
-export const generateErrorState = localValidationArr => {
+export const generateErrorState = (localValidationArr) => {
   let newErrors = {}
 
-  localValidationArr.forEach(validated => {
+  localValidationArr.forEach((validated) => {
     if (validated.valid) {
       newErrors[validated.input] = null
     } else {
@@ -83,14 +83,14 @@ export const generateErrorState = localValidationArr => {
   return newErrors
 }
 
-export const checkIsFileImageType = fileName => {
+export const checkIsFileImageType = (fileName) => {
   const splittedFile = fileName?.split('.')
   const fileType = splittedFile[splittedFile?.length - 1]
   const imageTypes = ['gif', 'jpeg', 'png', 'jpg']
   return imageTypes.includes(fileType)
 }
 
-export const changeDateFormat = date => {
+export const changeDateFormat = (date) => {
   const oldFormat = date.split('T')
   const newDate = oldFormat[0].split('-')
   const time = oldFormat[1].split('.')
@@ -109,7 +109,7 @@ export function formatAMPM(date) {
   return strTime
 }
 
-export const isoDateWithoutTimeZone = date => {
+export const isoDateWithoutTimeZone = (date) => {
   if (date == null) return date
   date = new Date(date)
 
@@ -117,7 +117,7 @@ export const isoDateWithoutTimeZone = date => {
   return localDateAndTime
 }
 
-export const checkIfVisibleInViewPort = el => {
+export const checkIfVisibleInViewPort = (el) => {
   const rect = el?.getBoundingClientRect()
   if (rect) {
     const viewHeight = Math.max(
@@ -129,7 +129,7 @@ export const checkIfVisibleInViewPort = el => {
   return false
 }
 
-export const getFormattedLink = link => {
+export const getFormattedLink = (link) => {
   let formattedlink = link?.trim()
   if (!/^https?:\/\//i.test(link)) {
     formattedlink = 'https://' + link
@@ -138,16 +138,16 @@ export const getFormattedLink = link => {
 }
 
 export const sortFromDate = (data = [], sortField) => {
-  return data?.sort(function(a, b) {
+  return data?.sort(function (a, b) {
     return new Date(a[sortField]) - new Date(b[sortField])
   })
 }
 
-export const csvFileToArray = string => {
+export const csvFileToArray = (string) => {
   const csvHeader = string?.slice(0, string?.indexOf('\n'))?.split(',')
   const csvRows = string?.slice(string?.indexOf('\n') + 1)?.split('\n')
 
-  const array = csvRows?.map(i => {
+  const array = csvRows?.map((i) => {
     const values = i?.split(',')
     const obj = csvHeader?.reduce((object, header, index) => {
       if (header && values[index]) {
@@ -161,13 +161,13 @@ export const csvFileToArray = string => {
   return array
 }
 
-export const convertDateToUTC = date => {
+export const convertDateToUTC = (date) => {
   return new Date(date.getTime()).toJSON()
 }
 
 export const debounce = (func, delay) => {
   let timer
-  return function() {
+  return function () {
     let self = this
     let args = arguments
     clearTimeout(timer)
@@ -204,7 +204,7 @@ export function MuiFormatDate(d) {
   return `${yyyy}-${mm}-${dd}`
 }
 
-export const getLocalStorageData = type => {
+export const getLocalStorageData = (type) => {
   let storage = sessionStorage.getItem(type) || localStorage.getItem(type)
 
   try {
@@ -244,7 +244,7 @@ export const dateDifference = (end, start) => {
   } `
 }
 
-export const milliSecondIntoHours = milliSec => {
+export const milliSecondIntoHours = (milliSec) => {
   let delta = Math.abs(milliSec) / 1000
 
   // calculate (and subtract)  days
@@ -304,7 +304,7 @@ export const handleResponse = (
   queries
 ) => {
   if (response.status) {
-    queries.forEach(query => {
+    queries.forEach((query) => {
       query()
     })
 
@@ -321,7 +321,7 @@ export const handleResponse = (
   }
 }
 
-export const formatToUtc = date => {
+export const formatToUtc = (date) => {
   const m = moment(date._d)
   m.set({h: 5, m: 45, s: 0})
   return m
@@ -340,7 +340,7 @@ export function dayCheck(date) {
   })
 }
 
-export const oneWeekFilterCheck = x => {
+export const oneWeekFilterCheck = (x) => {
   const todayStartDate = new Date()
   todayStartDate.setUTCHours(0, 0, 0, 0)
   return (

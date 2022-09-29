@@ -1,8 +1,8 @@
-import React from "react";
-import {Col, Row} from "antd";
-import ItemFirst from "../ItemFirst";
-import ItemSecond from "../ItemSecond";
-import ItemThird from "../ItemThird";
+import React from 'react'
+import {Col, Row} from 'antd'
+import ItemFirst from '../ItemFirst'
+import ItemSecond from '../ItemSecond'
+import ItemThird from '../ItemThird'
 
 const Basic = () => {
   return (
@@ -37,7 +37,6 @@ const Basic = () => {
       </Row>
     </div>
   )
-};
+}
 
-export default Basic;
-
+export default Basic

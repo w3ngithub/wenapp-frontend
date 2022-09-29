@@ -1,1 +1,1 @@
-export const NINE_HOURS = 9 * 3600 * 1000;
+export const NINE_HOURS = 9 * 3600 * 1000

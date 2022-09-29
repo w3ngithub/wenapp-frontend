@@ -1,60 +1,60 @@
 /*Tables Styles*/
 .ant-table-small {
-  >.ant-table-content {
-
-    >.ant-table-header>table,
-    >.ant-table-body>table,
-    >.ant-table-scroll>.ant-table-header>table,
-    >.ant-table-scroll>.ant-table-body>table,
-    >.ant-table-fixed-left>.ant-table-header>table,
-    >.ant-table-fixed-right>.ant-table-header>table,
-    >.ant-table-fixed-left>.ant-table-body-outer>.ant-table-body-inner>table,
-    >.ant-table-fixed-right>.ant-table-body-outer>.ant-table-body-inner>table {
+  > .ant-table-content {
+    > .ant-table-header > table,
+    > .ant-table-body > table,
+    > .ant-table-scroll > .ant-table-header > table,
+    > .ant-table-scroll > .ant-table-body > table,
+    > .ant-table-fixed-left > .ant-table-header > table,
+    > .ant-table-fixed-right > .ant-table-header > table,
+    > .ant-table-fixed-left
+      > .ant-table-body-outer
+      > .ant-table-body-inner
+      > table,
+    > .ant-table-fixed-right
+      > .ant-table-body-outer
+      > .ant-table-body-inner
+      > table {
       padding: 0;
     }
 
-    >.ant-table-body {
+    > .ant-table-body {
       margin: 0;
     }
   }
 }
 
 .ant-table {
-
-  &-thead>tr>th,
-  &-tbody>tr>td {
+  &-thead > tr > th,
+  &-tbody > tr > td {
     word-break: normal;
   }
 
-  &-thead>tr>th.ant-table-column-has-actions.ant-table-column-has-sorters {
+  &-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters {
     &:hover {
       background: none;
     }
   }
 
-  &-tbody>tr {
+  &-tbody > tr {
     transition: all 0.3s, height 0s;
 
     &:hover {
-      &:not(.ant-table-expanded-row):not(.ant-table-row-selected)>td {
+      &:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
         background: none;
       }
     }
-
   }
 
   &-placeholder {
     background: none;
     border-top: none;
     border-bottom: none;
-
   }
 }
 
-
-
 .@{class-prefix}-table-responsive .ant-table {
-  min-height: .01%;
+  min-height: 0.01%;
   overflow-x: auto;
 }
 
@@ -70,14 +70,13 @@
       border-bottom: @border-style-base @border-width-base @border-color;
     }
 
-    & .ant-table-tbody>tr:last-child>td {
+    & .ant-table-tbody > tr:last-child > td {
       border-bottom: 0 none;
     }
 
     &.ant-table-bordered {
-
-      & .ant-table-header>table,
-      & .ant-table-body>table,
+      & .ant-table-header > table,
+      & .ant-table-body > table,
       & .ant-table-fixed-left table,
       & .ant-table-fixed-right table {
         border-top: 0 none;
@@ -93,19 +92,19 @@
         border-top: @border-style-base @border-width-base @border-color;
       }
 
-      & .ant-table-thead>tr>th:last-child,
-      & .ant-table-tbody>tr>td:last-child {
+      & .ant-table-thead > tr > th:last-child,
+      & .ant-table-tbody > tr > td:last-child {
         border-right: 0 none;
       }
     }
   }
 
-  .@{class-prefix}-table-responsive .ant-table-body>table>thead>tr>th,
-  .@{class-prefix}-table-responsive .ant-table-body>table>tbody>tr>th,
-  .@{class-prefix}-table-responsive .ant-table-body>table>tfoot>tr>th,
-  .@{class-prefix}-table-responsive .ant-table-body>table>thead>tr>td,
-  .@{class-prefix}-table-responsive .ant-table-body>table>tbody>tr>td,
-  .@{class-prefix}-table-responsive .ant-table-body>table>tfoot>tr>td {
+  .@{class-prefix}-table-responsive .ant-table-body > table > thead > tr > th,
+  .@{class-prefix}-table-responsive .ant-table-body > table > tbody > tr > th,
+  .@{class-prefix}-table-responsive .ant-table-body > table > tfoot > tr > th,
+  .@{class-prefix}-table-responsive .ant-table-body > table > thead > tr > td,
+  .@{class-prefix}-table-responsive .ant-table-body > table > tbody > tr > td,
+  .@{class-prefix}-table-responsive .ant-table-body > table > tfoot > tr > td {
     white-space: nowrap;
   }
 }
@@ -128,7 +127,7 @@
     border-bottom: 2px @border-style-base @border-color;
   }
 
-  & tbody+tbody {
+  & tbody + tbody {
     border-top: 2px @border-style-base @border-color;
   }
 }
@@ -165,13 +164,13 @@
     .border-radius(0);
   }
 
-  & .ant-table-thead>tr>th {
+  & .ant-table-thead > tr > th {
     font-weight: @font-weight-light;
     text-transform: uppercase;
     font-size: @font-size-sm - 1px;
   }
 
-  & .ant-table-tbody>tr>td {
+  & .ant-table-tbody > tr > td {
     border-bottom: 0 none;
   }
 }
@@ -183,7 +182,6 @@
 }
 
 .@{class-prefix}-table-padding-lg {
-
   & thead th,
   & tbody td {
     padding: 20px 30px !important;

@@ -42,7 +42,7 @@ function Leave() {
   )
 
   const addLeaveQuarterMutation = useMutation(addLeaveQuarter, {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave Quarters added successfully',
@@ -52,7 +52,7 @@ function Leave() {
           () => queryClient.invalidateQueries(['leaveQuarter']),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({
         message: 'Leave Quarters add failed!',
         type: 'error',
@@ -61,7 +61,7 @@ function Leave() {
   })
 
   const editLeaveQuarterMutation = useMutation(editLeaveQuarter, {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave Quarters updated successfully',
@@ -71,7 +71,7 @@ function Leave() {
           () => queryClient.invalidateQueries(['leaveQuarter']),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({
         message: 'Leave Quarters update failed!',
         type: 'error',
@@ -85,14 +85,14 @@ function Leave() {
   )
 
   const addLeaveTypeMutation = useMutation(addLeaveType, {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave type added successfully',
         'Leave type add failed',
         [handleCloseModal, () => queryClient.invalidateQueries(['leaveTypes'])]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({
         message: 'Leave type add failed!',
         type: 'error',
@@ -101,14 +101,14 @@ function Leave() {
   })
 
   const deleteLeaveTypeMutation = useMutation(deleteLeaveType, {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave type deleted successfully',
         'Leave type deletion failed',
         [handleCloseModal, () => queryClient.invalidateQueries(['leaveTypes'])]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({
         message: 'Leave Type deletion failed!',
         type: 'error',
@@ -117,14 +117,14 @@ function Leave() {
   })
 
   const editLeaveTypeMutation = useMutation(editLeaveType, {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave type updated successfully',
         'Leave type update failed',
         [handleCloseModal, () => queryClient.invalidateQueries(['leaveTypes'])]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({
         message: 'Leave type update failed!',
         type: 'error',
@@ -133,7 +133,7 @@ function Leave() {
   })
 
   const deleteQuarterTypeMutation = useMutation(deleteLeaveQuarter, {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave Quarters deleted successfully',
@@ -143,7 +143,7 @@ function Leave() {
           () => queryClient.invalidateQueries(['leaveQuarter']),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({
         message: 'Leave Quarters deletion failed!',
         type: 'error',
@@ -352,8 +352,8 @@ function Leave() {
             <SettingTable
               data={leaveTypes?.data?.data?.data}
               columns={LEAVES_COLUMN(
-                value => handleDeleteClick(value),
-                value => handleOpenEditModal(value, 'Leave Type')
+                (value) => handleDeleteClick(value),
+                (value) => handleOpenEditModal(value, 'Leave Type')
               )}
               onAddClick={() => handleOpenModal('Leave Type')}
               isLoading={isLoading || deleteLeaveTypeMutation.isLoading}

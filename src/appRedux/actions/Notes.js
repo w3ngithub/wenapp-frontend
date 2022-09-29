@@ -2,36 +2,33 @@ import {
   FETCH_ALL_NOTES_SUCCESS,
   GET_STICKY,
   NOTES_UPDATE,
-  UPDATE_ALL_NOTES_SUCCESS
-} from "../../constants/ActionTypes";
-
+  UPDATE_ALL_NOTES_SUCCESS,
+} from '../../constants/ActionTypes'
 
 export const onGetSticky = (notesList) => {
   return {
     type: GET_STICKY,
-    notesList
-  };
-};
+    notesList,
+  }
+}
 
 export const fetchStickySuccess = (notesList) => {
   return {
     type: FETCH_ALL_NOTES_SUCCESS,
-    payload: notesList
+    payload: notesList,
   }
-};
+}
 
 export const onUpdateSticky = (notesList) => {
   return {
     type: NOTES_UPDATE,
-    notesList
-  };
-};
-
+    notesList,
+  }
+}
 
 export const updateStickySuccess = (notesList) => {
   return {
     type: UPDATE_ALL_NOTES_SUCCESS,
-    payload: notesList
+    payload: notesList,
   }
-};
-
+}

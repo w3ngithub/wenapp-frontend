@@ -1,9 +1,7 @@
-import React from "react";
+import React from 'react'
 
 export const MyPointer = () => {
-  return (
-    <i className="gx-dragdrop"/>
-  )
-};
+  return <i className="gx-dragdrop" />
+}
 
 export default MyPointer

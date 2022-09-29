@@ -1,8 +1,7 @@
-import React from "react";
-import {Card, Tag} from "antd";
+import React from 'react'
+import {Card, Tag} from 'antd'
 
 const ColorTag = () => {
-
   return (
     <Card title="Color Tag" className="gx-card">
       <h4 style={{marginBottom: 16}}>Presets:</h4>
@@ -27,7 +26,7 @@ const ColorTag = () => {
         <Tag color="#108ee9">#108ee9</Tag>
       </div>
     </Card>
-  );
-};
+  )
+}
 
-export default ColorTag;
+export default ColorTag

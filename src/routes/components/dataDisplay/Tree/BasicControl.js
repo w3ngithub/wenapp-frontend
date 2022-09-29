@@ -1,43 +1,51 @@
-import React from "react";
-import {Card, Tree} from "antd";
+import React from 'react'
+import {Card, Tree} from 'antd'
 
-const TreeNode = Tree.TreeNode;
+const TreeNode = Tree.TreeNode
 
-const treeData = [{
-  title: '0-0',
-  key: '0-0',
-  children: [{
-    title: '0-0-0',
-    key: '0-0-0',
+const treeData = [
+  {
+    title: '0-0',
+    key: '0-0',
     children: [
-      {title: '0-0-0-0', key: '0-0-0-0'},
-      {title: '0-0-0-1', key: '0-0-0-1'},
-      {title: '0-0-0-2', key: '0-0-0-2'},
+      {
+        title: '0-0-0',
+        key: '0-0-0',
+        children: [
+          {title: '0-0-0-0', key: '0-0-0-0'},
+          {title: '0-0-0-1', key: '0-0-0-1'},
+          {title: '0-0-0-2', key: '0-0-0-2'},
+        ],
+      },
+      {
+        title: '0-0-1',
+        key: '0-0-1',
+        children: [
+          {title: '0-0-1-0', key: '0-0-1-0'},
+          {title: '0-0-1-1', key: '0-0-1-1'},
+          {title: '0-0-1-2', key: '0-0-1-2'},
+        ],
+      },
+      {
+        title: '0-0-2',
+        key: '0-0-2',
+      },
     ],
-  }, {
-    title: '0-0-1',
-    key: '0-0-1',
+  },
+  {
+    title: '0-1',
+    key: '0-1',
     children: [
-      {title: '0-0-1-0', key: '0-0-1-0'},
-      {title: '0-0-1-1', key: '0-0-1-1'},
-      {title: '0-0-1-2', key: '0-0-1-2'},
+      {title: '0-1-0-0', key: '0-1-0-0'},
+      {title: '0-1-0-1', key: '0-1-0-1'},
+      {title: '0-1-0-2', key: '0-1-0-2'},
     ],
-  }, {
-    title: '0-0-2',
-    key: '0-0-2',
-  }],
-}, {
-  title: '0-1',
-  key: '0-1',
-  children: [
-    {title: '0-1-0-0', key: '0-1-0-0'},
-    {title: '0-1-0-1', key: '0-1-0-1'},
-    {title: '0-1-0-2', key: '0-1-0-2'},
-  ],
-}, {
-  title: '0-2',
-  key: '0-2',
-}];
+  },
+  {
+    title: '0-2',
+    key: '0-2',
+  },
+]
 
 class BasicControl extends React.Component {
   state = {
@@ -45,23 +53,23 @@ class BasicControl extends React.Component {
     autoExpandParent: true,
     checkedKeys: ['0-0-0'],
     selectedKeys: [],
-  };
+  }
   onExpand = (expandedKeys) => {
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
     // or, you can remove all expanded children keys.
     this.setState({
       expandedKeys,
       autoExpandParent: false,
-    });
-  };
+    })
+  }
   onCheck = (checkedKeys) => {
-    console.log('onCheck', checkedKeys);
-    this.setState({checkedKeys});
-  };
+    console.log('onCheck', checkedKeys)
+    this.setState({checkedKeys})
+  }
   onSelect = (selectedKeys, info) => {
-    console.log('onSelect', info);
-    this.setState({selectedKeys});
-  };
+    console.log('onSelect', info)
+    this.setState({selectedKeys})
+  }
   renderTreeNodes = (data) => {
     return data.map((item) => {
       if (item.children) {
@@ -69,11 +77,11 @@ class BasicControl extends React.Component {
           <TreeNode title={item.title} key={item.key} dataRef={item}>
             {this.renderTreeNodes(item.children)}
           </TreeNode>
-        );
+        )
       }
-      return <TreeNode {...item} />;
-    });
-  };
+      return <TreeNode {...item} />
+    })
+  }
 
   render() {
     return (
@@ -91,9 +99,8 @@ class BasicControl extends React.Component {
           {this.renderTreeNodes(treeData)}
         </Tree>
       </Card>
-    );
+    )
   }
 }
 
-
-export default BasicControl;
+export default BasicControl

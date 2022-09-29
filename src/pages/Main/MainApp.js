@@ -30,7 +30,7 @@ import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const {Content, Footer} = Layout
 
-export const MainApp = props => {
+export const MainApp = (props) => {
   const dispatch = useDispatch()
 
   const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
@@ -39,7 +39,7 @@ export const MainApp = props => {
     dispatch(fetchLoggedInUserAttendance(user._id))
   }, [dispatch, user._id])
 
-  const getContainerClass = navStyle => {
+  const getContainerClass = (navStyle) => {
     switch (navStyle) {
       case NAV_STYLE_DARK_HORIZONTAL:
         return 'gx-container-wrap'
@@ -55,7 +55,7 @@ export const MainApp = props => {
         return ''
     }
   }
-  const getNavStyles = navStyle => {
+  const getNavStyles = (navStyle) => {
     switch (navStyle) {
       case NAV_STYLE_DEFAULT_HORIZONTAL:
         return <HorizontalDefault />

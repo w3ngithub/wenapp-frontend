@@ -5,11 +5,13 @@ export default [
     thumb: 'https://via.placeholder.com/150x150',
     status: 'away',
     mood: 'English versions from the 1914 translation by H. Rackham',
-    lastMessage: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem',
+    lastMessage:
+      'Sed ut perspiciatis unde omnis iste natus error sit voluptatem',
     unreadMessage: '',
     lastMessageTime: '20 min ago',
-    recent: false
-  }, {
+    recent: false,
+  },
+  {
     id: 2,
     name: 'Domnic Brown',
     thumb: 'https://via.placeholder.com/150x150',
@@ -18,8 +20,9 @@ export default [
     lastMessage: 'It is a long established fact',
     unreadMessage: '4',
     lastMessageTime: 'Yesterday',
-    recent: true
-  }, {
+    recent: true,
+  },
+  {
     id: 3,
     name: 'Domnic Harris',
     thumb: 'https://via.placeholder.com/150x150',
@@ -28,8 +31,9 @@ export default [
     lastMessage: 'There are many variations of passages of ',
     unreadMessage: '',
     lastMessageTime: '20/11/17',
-    recent: false
-  }, {
+    recent: false,
+  },
+  {
     id: 4,
     name: 'Garry Sobars',
     thumb: 'https://via.placeholder.com/150x150',
@@ -38,8 +42,9 @@ export default [
     lastMessage: 'English versions from the 1914 translation by H. Rackham',
     unreadMessage: '3',
     lastMessageTime: 'Yesterday',
-    recent: true
-  }, {
+    recent: true,
+  },
+  {
     id: 5,
     name: 'Jeson Born',
     thumb: 'https://via.placeholder.com/150x150',
@@ -48,8 +53,9 @@ export default [
     lastMessage: 'It is a long established fact',
     unreadMessage: '',
     lastMessageTime: 'Monday',
-    recent: true
-  }, {
+    recent: true,
+  },
+  {
     id: 6,
     name: 'Jimmy Jo',
     thumb: 'https://via.placeholder.com/150x150',
@@ -58,28 +64,33 @@ export default [
     lastMessage: 'All the Lorem Ipsum generators on the',
     unreadMessage: '',
     lastMessageTime: 'Friday',
-    recent: false
-  }, {
+    recent: false,
+  },
+  {
     id: 7,
     name: 'John Smith',
     thumb: 'https://via.placeholder.com/150x150',
     status: 'away',
     mood: 'There are many variations of passages of ',
-    lastMessage: 'The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested',
+    lastMessage:
+      'The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested',
     unreadMessage: '',
     lastMessageTime: 'Tuesday',
-    recent: true
-  }, {
+    recent: true,
+  },
+  {
     id: 8,
     name: 'Kadir M',
     thumb: 'https://via.placeholder.com/150x150',
     status: 'online',
     mood: 'All the Lorem Ipsum generators on the',
-    lastMessage: 'I must explain to you how all this mistaken idea of denouncing ',
+    lastMessage:
+      'I must explain to you how all this mistaken idea of denouncing ',
     unreadMessage: '5',
     lastMessageTime: 'Monday',
-    recent: false
-  }, {
+    recent: false,
+  },
+  {
     id: 9,
     name: 'Jimmy Jon',
     thumb: 'https://via.placeholder.com/150x150',
@@ -88,8 +99,9 @@ export default [
     lastMessage: 'There are many variations of passages of ',
     unreadMessage: '',
     lastMessageTime: '30 Min ago',
-    recent: false
-  }, {
+    recent: false,
+  },
+  {
     id: 10,
     name: 'Stella Johnson',
     thumb: 'https://via.placeholder.com/150x150',
@@ -98,8 +110,9 @@ export default [
     lastMessage: 'English versions from the 1914 translation by H. Rackham',
     unreadMessage: '',
     lastMessageTime: 'Yesterday',
-    recent: false
-  }, {
+    recent: false,
+  },
+  {
     id: 11,
     name: 'Steve Smith',
     thumb: 'https://via.placeholder.com/150x150',
@@ -108,6 +121,6 @@ export default [
     lastMessage: 'The standard chunk of Lorem Ipsum used since the 1500s',
     unreadMessage: '2',
     lastMessageTime: 'Monday',
-    recent: false
-  }
+    recent: false,
+  },
 ]

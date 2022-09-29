@@ -1,25 +1,25 @@
-import React from "react";
-import { DatePicker } from "antd";
-import useWindowsSize from "hooks/useWindowsSize";
+import React from 'react'
+import {DatePicker} from 'antd'
+import useWindowsSize from 'hooks/useWindowsSize'
 
-const { RangePicker: DateRangePicker } = DatePicker;
+const {RangePicker: DateRangePicker} = DatePicker
 
 function RangePicker({
-	handleChangeDate,
-	date
+  handleChangeDate,
+  date,
 }: {
-	handleChangeDate: any;
-	date: any;
+  handleChangeDate: any
+  date: any
 }) {
-	const { innerWidth } = useWindowsSize();
+  const {innerWidth} = useWindowsSize()
 
-	return (
-		<DateRangePicker
-			onChange={handleChangeDate}
-			value={date}
-			style={{ width: innerWidth <= 640 ? "100%" : "240px" }}
-		/>
-	);
+  return (
+    <DateRangePicker
+      onChange={handleChangeDate}
+      value={date}
+      style={{width: innerWidth <= 640 ? '100%' : '240px'}}
+    />
+  )
 }
 
-export default RangePicker;
+export default RangePicker

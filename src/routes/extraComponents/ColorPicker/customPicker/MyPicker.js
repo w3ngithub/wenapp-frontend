@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
-import {CustomPicker} from "react-color";
-import {EditableInput, Hue} from "react-color/lib/components/common";
+import {CustomPicker} from 'react-color'
+import {EditableInput, Hue} from 'react-color/lib/components/common'
 
 export const MyPicker = ({hex, hsl, onChange}) => {
   const styles = {
@@ -12,7 +12,7 @@ export const MyPicker = ({hex, hsl, onChange}) => {
     },
     input: {
       height: 38,
-      border: `1px solid ${ hex }`,
+      border: `1px solid ${hex}`,
       paddingLeft: 10,
     },
     swatch: {
@@ -20,11 +20,11 @@ export const MyPicker = ({hex, hsl, onChange}) => {
       height: 38,
       background: hex,
     },
-  };
+  }
   return (
     <div>
       <div style={styles.hue}>
-        <Hue hsl={hsl} onChange={onChange}/>
+        <Hue hsl={hsl} onChange={onChange} />
       </div>
 
       <div style={{display: 'flex'}}>
@@ -33,10 +33,10 @@ export const MyPicker = ({hex, hsl, onChange}) => {
           value={hex}
           onChange={onChange}
         />
-        <div style={styles.swatch}/>
+        <div style={styles.swatch} />
       </div>
     </div>
   )
-};
+}
 
 export default CustomPicker(MyPicker)

@@ -1,8 +1,8 @@
-import React from "react";
-import {Col, Row} from "antd";
-import ItemFirst from "../ItemFirst";
-import ItemSecond from "../ItemSecond";
-import ItemThird from "../ItemThird";
+import React from 'react'
+import {Col, Row} from 'antd'
+import ItemFirst from '../ItemFirst'
+import ItemSecond from '../ItemSecond'
+import ItemThird from '../ItemThird'
 
 const Circle = () => {
   return (
@@ -37,6 +37,5 @@ const Circle = () => {
       </Row>
     </div>
   )
-};
-export default Circle;
-
+}
+export default Circle

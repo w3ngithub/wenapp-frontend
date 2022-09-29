@@ -1,34 +1,33 @@
-import React from "react";
-import { Icon as LegacyIcon } from '@ant-design/compatible';
-import { Avatar, Card, List } from "antd";
+import React from 'react'
+import {Icon as LegacyIcon} from '@ant-design/compatible'
+import {Avatar, Card, List} from 'antd'
 
-const listData = [];
+const listData = []
 for (let i = 0; i < 5; i++) {
   listData.push({
-    href: 'http://ant.design' +
-    '' +
-    '',
+    href: 'http://ant.design' + '' + '',
     title: `Ant design part ${i}`,
     avatar: 'https://via.placeholder.com/290x193',
-    description: 'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content: 'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
+    description:
+      'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+    content:
+      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+  })
 }
 
 const pagination = {
   pageSize: 10,
   current: 1,
   total: listData.length,
-  onChange: (() => {
-  }),
-};
+  onChange: () => {},
+}
 
 const IconText = ({type, text}) => (
   <span>
-    <LegacyIcon type={type} style={{marginRight: 8}}/>
+    <LegacyIcon type={type} style={{marginRight: 8}} />
     {text}
   </span>
-);
+)
 
 const Vertical = () => {
   return (
@@ -38,16 +37,25 @@ const Vertical = () => {
         size="large"
         pagination={pagination}
         dataSource={listData}
-        renderItem={item => (
+        renderItem={(item) => (
           <List.Item
             key={item.title}
-            actions={[<IconText type="star-o" text="156"/>, <IconText type="like-o" text="156"/>,
-              <IconText type="message" text="2"/>]}
-            extra={<img className="gx-img-fluid" width={272} alt="logo"
-                        src={item.avatar}/>}
+            actions={[
+              <IconText type="star-o" text="156" />,
+              <IconText type="like-o" text="156" />,
+              <IconText type="message" text="2" />,
+            ]}
+            extra={
+              <img
+                className="gx-img-fluid"
+                width={272}
+                alt="logo"
+                src={item.avatar}
+              />
+            }
           >
             <List.Item.Meta
-              avatar={<Avatar src={item.avatar}/>}
+              avatar={<Avatar src={item.avatar} />}
               title={<a href={item.href}>{item.title}</a>}
               description={item.description}
             />
@@ -56,7 +64,7 @@ const Vertical = () => {
         )}
       />
     </Card>
-  );
-};
+  )
+}
 
-export default Vertical;
+export default Vertical

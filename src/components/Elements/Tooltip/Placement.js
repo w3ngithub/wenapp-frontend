@@ -1,8 +1,8 @@
-import React from "react";
-import {Button, Card, Tooltip} from "antd";
+import React from 'react'
+import {Button, Card, Tooltip} from 'antd'
 
-const text = <span>prompt text</span>;
-const buttonWidth = 70;
+const text = <span>prompt text</span>
+const buttonWidth = 70
 
 const Placement = () => {
   return (
@@ -30,7 +30,7 @@ const Placement = () => {
             <Button>LB</Button>
           </Tooltip>
         </div>
-        <div style={{width: buttonWidth, marginLeft: (buttonWidth * 4) + 24}}>
+        <div style={{width: buttonWidth, marginLeft: buttonWidth * 4 + 24}}>
           <Tooltip placement="rightTop" title={text}>
             <Button>RT</Button>
           </Tooltip>
@@ -41,7 +41,9 @@ const Placement = () => {
             <Button>RB</Button>
           </Tooltip>
         </div>
-        <div style={{marginLeft: buttonWidth, clear: 'both', whiteSpace: 'nowrap'}}>
+        <div
+          style={{marginLeft: buttonWidth, clear: 'both', whiteSpace: 'nowrap'}}
+        >
           <Tooltip placement="bottomLeft" title={text}>
             <Button>BL</Button>
           </Tooltip>
@@ -54,7 +56,7 @@ const Placement = () => {
         </div>
       </div>
     </Card>
-  );
-};
+  )
+}
 
-export default Placement;
+export default Placement
