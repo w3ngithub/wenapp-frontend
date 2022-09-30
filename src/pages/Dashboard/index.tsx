@@ -134,7 +134,8 @@ const Dashboard = () => {
             const date = new Date(leave?.leaveDates)
 
             for (let i = 0; i < 7; i++) {
-              if (date < lastLeaveDate && date < weeksLastDate)
+              const isHoliday = date.getDay() === 0 || date.getDay() === 6
+              if (date < lastLeaveDate && date < weeksLastDate && !isHoliday)
                 updateLeaves = [
                   ...updateLeaves,
                   {
@@ -145,6 +146,7 @@ const Dashboard = () => {
                   },
                 ]
             }
+            console.log(updateLeaves)
           } else {
             updateLeaves = [...updateLeaves, leave]
           }
