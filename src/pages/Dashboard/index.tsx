@@ -153,7 +153,6 @@ const Dashboard = () => {
       },
     }
   )
-  console.log(leavesQuery?.data)
   const {data, refetch: projectRefetch} = useQuery(
     ['DashBoardprojects'],
     () =>
