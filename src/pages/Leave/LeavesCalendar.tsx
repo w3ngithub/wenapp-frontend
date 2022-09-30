@@ -12,27 +12,51 @@ const LeavesCalendar = () => {
     ['leavesCalendar'],
     () => getFiscalYearLeaves(),
     {
-      onError: (err) => console.log(err),
+      onError: err => console.log(err),
+      select: res => {
+        let allLeaves: any[] = []
+        res?.data?.data?.data.forEach((leave: any) => {
+          if (
+            leave?._id?.leaveType[0] !== 'Paternity' &&
+            leave?._id?.leaveType[0] !== 'Maternity'
+          )
+            leave.leaveDates.forEach((date: string) => {
+              allLeaves.push({...leave?._id, leaveDates: date})
+            })
+          else
+            allLeaves.push({...leave?._id, leaveDates: [...leave?.leaveDates]})
+        })
+        return allLeaves
+      },
     }
   )
+  const leaveUsers = leavesQuery?.data?.map(
+    ({user, leaveDates, leaveType}: any) => {
+      const nameSplitted = user[0].split(' ')
+      const lastName = `${nameSplitted.pop().substring(0, 1)}.`
+      const shortName = `${nameSplitted.join(' ')} ${lastName}`
 
-  const leaveUsers = leavesQuery?.data?.data?.data?.data?.map(({_id}: any) => {
-    const nameSplitted = _id?.user[0].split(' ')
-    const lastName = `${nameSplitted.pop().substring(0, 1)}.`
-    const shortName = `${nameSplitted.join(' ')} ${lastName}`
-
-    return {
-      title: shortName,
-      start: new Date(_id.leaveDates),
-      end: new Date(_id.leaveDates),
+      if (leaveType[0] === 'Paternity' || leaveType[0] === 'Maternity')
+        return {
+          title: shortName,
+          start: new Date(leaveDates[0]),
+          end: new Date(leaveDates[1]),
+          fullWidth: true,
+        }
+      else
+        return {
+          title: shortName,
+          start: new Date(leaveDates),
+          end: new Date(leaveDates),
+        }
     }
-  })
+  )
 
   const handleEventStyle = (event: any) => {
     let style: any = {
       color: 'white',
       padding: '1px 10px',
-      width: 'fit-content',
+      width: event.fullWidth ? '100%' : 'fit-content',
       margin: 'auto',
       marginBottom: '0.2rem',
       height: 'auto',

@@ -13,12 +13,12 @@ import {
   getProjectTypes,
   updateProject,
 } from 'services/projects'
-import {PROJECT_COLUMNS} from 'constants/Projects'
+import {POSITION_TYPES, PROJECT_COLUMNS} from 'constants/Projects'
 import ProjectModal from 'components/Modules/ProjectModal'
 import {useNavigate} from 'react-router-dom'
 import moment from 'moment'
 import {notification} from 'helpers/notification'
-import {getAllUsers} from 'services/users/userDetails'
+import {getAllUsers, getUserPositionTypes} from 'services/users/userDetails'
 import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {PROJECTS_ADD_NEW_NO_ACCESS} from 'constants/RoleAccess'
@@ -57,6 +57,7 @@ function ProjectsPage() {
   const [readOnly, setReadOnly] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [projectName, setProjectName] = useState('')
+  const [positionTypeData, setPositionTypeData] = useState({})
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
@@ -75,17 +76,21 @@ function ProjectsPage() {
     ['projectClients'],
     getProjectClients
   )
-  const {data: developers} = useQuery(['developers'], () =>
-    getAllUsers({positionType: '62ff3e6b7582860104c727f3'})
+  const {data: positionTypes} = useQuery(
+    ['userPositionTypes'],
+    getUserPositionTypes
   )
-  const {data: designers} = useQuery(['designers'], () =>
-    getAllUsers({positionType: '62ff3c816275a483c8e69048'})
+  const {data: developers} = useQuery(['developers', positionTypeData], () =>
+    getAllUsers({positionType: positionTypeData?.developer})
   )
-  const {data: QAs} = useQuery(['QA'], () =>
-    getAllUsers({positionType: '62ff3c796275a483c8e69042'})
+  const {data: designers} = useQuery(['designers', positionTypeData], () =>
+    getAllUsers({positionType: positionTypeData?.designer})
   )
-  const {data: devops} = useQuery(['DevOps'], () =>
-    getAllUsers({positionType: '62ff3cb46275a483c8e69050'})
+  const {data: QAs} = useQuery(['QA', positionTypeData], () =>
+    getAllUsers({positionType: positionTypeData?.qa})
+  )
+  const {data: devops} = useQuery(['DevOps', positionTypeData], () =>
+    getAllUsers({positionType: positionTypeData?.devops})
   )
   const {data, isLoading, isError, isFetching} = useQuery(
     [
@@ -162,6 +167,26 @@ function ProjectsPage() {
       },
     }
   )
+
+  useEffect(() => {
+    const types = positionTypes?.data?.data?.data
+
+    if (types?.length > 0) {
+      setPositionTypeData({
+        developer: types?.find(
+          type => type.name.toLowerCase() === POSITION_TYPES.developer
+        )?._id,
+        designer: types?.find(
+          type => type.name.toLowerCase() === POSITION_TYPES.designer
+        )?._id,
+        qa: types?.find(type => type.name.toLowerCase() === POSITION_TYPES.qa)
+          ?._id,
+        devops: types?.find(
+          type => type.name.toLowerCase() === POSITION_TYPES.devops
+        )?._id,
+      })
+    }
+  }, [positionTypes])
 
   useEffect(() => {
     if (isError) {

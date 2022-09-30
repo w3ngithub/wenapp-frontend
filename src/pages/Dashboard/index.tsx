@@ -39,6 +39,7 @@ import {useSelector} from 'react-redux'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {DASHBOARD_PROJECT_LOG_NO_ACCESS} from 'constants/RoleAccess'
+import {LEAVES_TYPES} from 'constants/Leaves'
 
 const FormItem = Form.Item
 
@@ -108,6 +109,35 @@ const Dashboard = () => {
     () => getWeekRangeLeaves(),
     {
       onError: err => console.log(err),
+      select: res => {
+        let updateLeaves: any[] = []
+
+        res?.data?.data?.users?.forEach((leave: any) => {
+          const isLeavePaternity =
+            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
+          const isLeaveMaternity =
+            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
+          if (isLeavePaternity || isLeaveMaternity) {
+            const days = isLeaveMaternity ? 60 : 5
+            for (let i = 0; i < days; i++) {
+              const date = new Date(leave?.leaveDates)
+
+              updateLeaves = [
+                ...updateLeaves,
+                {
+                  ...leave,
+                  leaveDates: new Date(
+                    date.setDate(date.getDate() + i)
+                  ).toJSON(),
+                },
+              ]
+            }
+          } else {
+            updateLeaves = [...updateLeaves, leave]
+          }
+        })
+        return updateLeaves
+      },
     }
   )
 
@@ -164,6 +194,7 @@ const Dashboard = () => {
         fontWeight: '400',
         marginTop: '-4px',
         marginBottom: '3px',
+        marginLeft: '11px',
         color: darkTheme ? darkThemeTextColor : '#038fde',
       }
     if (event.type === 'notice')
@@ -269,23 +300,19 @@ const Dashboard = () => {
   let components = {
     event: CustomEvent, // used by each view (Month, Day, Week)
   }
-  const leaveUsers = leavesQuery?.data?.data?.data?.users?.map(
-    (x: any, index: number) => ({
-      title: x?.user[0],
-      start: new Date(
-        new Date(x.leaveDates).toLocaleDateString().split('T')[0]
-      ),
-      end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
-      type: 'leave',
-      date: x?.leaveDates,
-      halfDay: x?.halfDay,
-      leaveType: x?.leaveType[0]
-        .split(' ')
-        .slice(0, 2)
-        .join(' '),
-      id: x?._id[0],
-    })
-  )
+  const leaveUsers = leavesQuery?.data?.map((x: any, index: number) => ({
+    title: x?.user[0],
+    start: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
+    end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
+    type: 'leave',
+    date: x?.leaveDates,
+    halfDay: x?.halfDay,
+    leaveType: x?.leaveType[0]
+      .split(' ')
+      .slice(0, 2)
+      .join(' '),
+    id: x?._id[0],
+  }))
 
   const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
     title: x?.noticeType?.name,

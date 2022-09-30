@@ -52,7 +52,7 @@ function ProjectModal({
   }
 
   const handleSubmit = () => {
-    form.validateFields().then((values) =>
+    form.validateFields().then(values =>
       onSubmit({
         ...values,
         maintenance: [
@@ -105,27 +105,27 @@ function ProjectModal({
             ? moment(initialValues.startDate)
             : null,
           endDate: initialValues.endDate ? moment(initialValues.endDate) : null,
-          projectTypes: initialValues.projectTypes?.map((type) => type._id),
+          projectTypes: initialValues.projectTypes?.map(type => type._id),
           projectStatus: initialValues.projectStatus?._id,
           projectTags:
             initialValues.projectTags?.length > 0
-              ? initialValues.projectTags?.map((tags) => tags._id)
+              ? initialValues.projectTags?.map(tags => tags._id)
               : undefined,
           developers:
             initialValues.developers?.length > 0
-              ? initialValues.developers?.map((developer) => developer._id)
+              ? initialValues.developers?.map(developer => developer._id)
               : undefined,
           designers:
             initialValues.designers?.length > 0
-              ? initialValues.designers?.map((designer) => designer._id)
+              ? initialValues.designers?.map(designer => designer._id)
               : undefined,
           devOps:
             initialValues.devOps?.length > 0
-              ? initialValues.devOps?.map((devop) => devop._id)
+              ? initialValues.devOps?.map(devop => devop._id)
               : undefined,
           qa:
             initialValues.qa?.length > 0
-              ? initialValues.qa?.map((q) => q._id)
+              ? initialValues.qa?.map(q => q._id)
               : undefined,
           stagingUrls:
             initialValues.stagingUrls?.length > 0
@@ -253,7 +253,7 @@ function ProjectModal({
                   placeholder="Select Type"
                   disabled={readOnly}
                 >
-                  {projectTypes.map((type) => (
+                  {projectTypes.map(type => (
                     <Option value={type._id} key={type._id}>
                       {type.name}
                     </Option>
@@ -279,7 +279,7 @@ function ProjectModal({
                   placeholder="Select Status"
                   disabled={readOnly}
                 >
-                  {projectStatuses.map((status) => (
+                  {projectStatuses.map(status => (
                     <Option value={status._id} key={status._id}>
                       {status.name}
                     </Option>
@@ -304,7 +304,7 @@ function ProjectModal({
                   size="large"
                 >
                   {data &&
-                    data.data.data.data.map((tag) => (
+                    data.data.data.data.map(tag => (
                       <Option value={tag._id} key={tag._id}>
                         {tag.name}
                       </Option>
@@ -325,7 +325,7 @@ function ProjectModal({
                   disabled={readOnly}
                   mode="tags"
                 >
-                  {developers?.data?.data?.data?.map((tag) => (
+                  {developers?.data?.data?.data?.map(tag => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
                     </Option>
@@ -349,7 +349,7 @@ function ProjectModal({
                   disabled={readOnly}
                   mode="tags"
                 >
-                  {designers?.data?.data?.data?.map((tag) => (
+                  {designers?.data?.data?.data?.map(tag => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
                     </Option>
@@ -370,7 +370,7 @@ function ProjectModal({
                   disabled={readOnly}
                   mode="tags"
                 >
-                  {qas?.data?.data?.data?.map((tag) => (
+                  {qas?.data?.data?.data?.map(tag => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
                     </Option>
@@ -393,7 +393,7 @@ function ProjectModal({
                   disabled={readOnly}
                   mode="tags"
                 >
-                  {devops?.data?.data?.data?.map((tag) => (
+                  {devops?.data?.data?.data?.map(tag => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
                     </Option>
@@ -414,7 +414,7 @@ function ProjectModal({
                   disabled={readOnly}
                   mode="tags"
                 >
-                  {[].map((item) => (
+                  {[].map(item => (
                     <Option key={item} value={item} />
                   ))}
                 </Select>

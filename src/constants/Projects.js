@@ -117,3 +117,11 @@ const PROJECT_COLUMNS = (
 ]
 
 export {PROJECT_COLUMNS}
+
+export const POSITION_TYPES = {
+  developer: 'developer',
+  designer: 'designer',
+  devops: 'devops',
+  qa: 'qa',
+  management: 'management',
+}

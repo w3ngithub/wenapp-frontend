@@ -8,7 +8,6 @@ import {
   Row,
   Col,
   Spin,
-  Checkbox,
   DatePicker,
   Radio,
 } from 'antd'
@@ -20,7 +19,7 @@ import {
   getLeaveTypes,
   updateLeave,
 } from 'services/leaves'
-import {convertDateToUTC, filterOptions, handleResponse} from 'helpers/utils'
+import {filterOptions, handleResponse, MuiFormatDate} from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
@@ -30,6 +29,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
+import {LEAVES_TYPES} from 'constants/Leaves'
 
 const {Option} = Select
 
@@ -76,7 +76,7 @@ function LeaveModal({
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
-    select: (res) => [
+    select: res => [
       ...res?.data?.data?.data?.map((type: leaveTypeInterface) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
@@ -89,52 +89,58 @@ function LeaveModal({
   )
 
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
-    onSuccess: (response) =>
+    onSuccess: response =>
       handleResponse(
         response,
         'Leave created successfully',
         'Leave creation failed',
-        [() => queryClient.invalidateQueries(['leaves']), () => onClose()]
+        [
+          () => queryClient.invalidateQueries(['leaves']),
+          () => queryClient.invalidateQueries(['leavesCalendar']),
+          () => onClose(),
+        ]
       ),
-    onError: (error) => {
+    onError: error => {
       notification({message: 'Leave creation failed!', type: 'error'})
     },
   })
 
   const leaveUpdateMutation = useMutation((leave: any) => updateLeave(leave), {
-    onSuccess: (response) =>
+    onSuccess: response =>
       handleResponse(
         response,
         'Leave updated successfully',
         'Leave update failed',
         [() => queryClient.invalidateQueries(['leaves']), () => onClose()]
       ),
-    onError: (error) => {
+    onError: error => {
       notification({message: 'Leave update failed!', type: 'error'})
     },
   })
 
   const onFinish = (values: any) => {
-    form.validateFields().then((values) => {
+    form.validateFields().then(values => {
+      const leaveTypeName = leaveTypeQuery?.data?.find(
+        type => type?.id === values?.leaveType
+      )?.value
       //calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
-        values?.leaveType === '630ca23889efb2bce93aeb40' ? 60 : 5 // 60 for maternity, 5 for other two
-      const appliedDate = values?.leaveDatesPeriod?._d
+        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
+      const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(
         newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
       )
-      const appliedDateUTC = appliedDate ? convertDateToUTC(appliedDate) : ''
-      const endDateUTC = appliedDate ? convertDateToUTC(endDate) : ''
+      const appliedDateUTC = appliedDate ? MuiFormatDate(appliedDate) : ''
+      const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
 
       //calculation for sick, casual leaves
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
       const casualLeaveDaysUTC = casualLeaveDays.map((leave: string) =>
-        convertDateToUTC(new Date(leave))
+        MuiFormatDate(new Date(leave))
       )
-
       const newLeave = {
         ...values,
         leaveDates: appliedDate
@@ -155,7 +161,7 @@ function LeaveModal({
   }
 
   const handleLeaveTypeChange = (value: string) => {
-    setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value).value)
+    setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value)
   }
 
   const handleUserChange = (user: string) => {
@@ -263,8 +269,10 @@ function LeaveModal({
                       onChange={handleLeaveTypeChange}
                       disabled={readOnly}
                     >
-                      {leaveTypeQuery?.data?.map((type) =>
-                        type.value !== 'Late Arrival' ? (
+                      {leaveTypeQuery?.data?.map(type =>
+                        readOnly ||
+                        type.value.toLowerCase() !==
+                          LEAVES_TYPES?.LateArrival ? (
                           <Option value={type.id} key={type.id}>
                             {type.value}
                           </Option>
@@ -393,7 +401,7 @@ function LeaveModal({
                         )
                         let isHoliday = holidayList?.length > 0
                         let leaveDate = userLeaves?.filter(
-                          (leave) => leave.date === date.format()
+                          leave => leave.date === date.format()
                         )
                         let leaveAlreadyTakenDates =
                           leaveDate?.length > 0 &&
