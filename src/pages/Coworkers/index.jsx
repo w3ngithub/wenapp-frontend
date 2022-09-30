@@ -19,15 +19,19 @@ import {
 } from 'services/users/userDetails'
 import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
-import useWindowsSize from 'hooks/useWindowsSize'
 import {getQuarters} from 'services/leaves'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import AccessWrapper from 'components/Modules/AccessWrapper'
+import {
+  CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS,
+  CO_WORKERS_SEARCH_IMPORT_NO_ACCESS,
+} from 'constants/RoleAccess'
 
 const Search = Input.Search
 const FormItem = Form.Item
 
 const formattedUsers = (users, isAdmin) => {
-  return users?.map((user) => ({
+  return users?.map(user => ({
     ...user,
     key: user._id,
     dob: changeDate(user.dob),
@@ -44,7 +48,6 @@ function CoworkersPage() {
   const [activeUser, setActiveUser] = useState('')
   const [defaultUser, setDefaultUser] = useState('')
   const [position, setPosition] = useState(undefined)
-  const {innerWidth} = useWindowsSize()
   const [role, setRole] = useState(undefined)
   const [name, setName] = useState('')
   const [typedName, setTypedName] = useState('')
@@ -73,9 +76,9 @@ function CoworkersPage() {
     }
   )
   const quarterQuery = useQuery(['quarters'], getQuarters, {
-    select: (res) => {
+    select: res => {
       const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
-        (quarter) =>
+        quarter =>
           new Date(quarter[1].fromDate) >
           moment.utc(moment(new Date()).startOf('day')).format() <
           new Date(quarter[1].toDate)
@@ -88,9 +91,9 @@ function CoworkersPage() {
   })
 
   const mutation = useMutation(
-    (updatedUser) => updateUser(updatedUser.userId, updatedUser.updatedData),
+    updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
     {
-      onSuccess: (response) =>
+      onSuccess: response =>
         handleResponse(
           response,
           'User Updated Successfully',
@@ -100,22 +103,22 @@ function CoworkersPage() {
             () => setOpenUserDetailModal(false),
           ]
         ),
-      onError: (error) => {
+      onError: error => {
         notification({message: 'Could not update User', type: 'error'})
       },
     }
   )
   const resetLeavesMutation = useMutation(
-    (payload) => resetAllocatedLeaves(payload),
+    payload => resetAllocatedLeaves(payload),
     {
-      onSuccess: (response) =>
+      onSuccess: response =>
         handleResponse(
           response,
           'Allocated leaves reset of all user Successfully',
           'Could not reset allocated leaves',
           [() => refetch()]
         ),
-      onError: (error) => {
+      onError: error => {
         notification({
           message: 'Could not reset allocated leaves',
           type: 'error',
@@ -131,14 +134,14 @@ function CoworkersPage() {
   }, [isError])
 
   const handleToggleModal = (userRecordToUpdate, mode) => {
-    setOpenUserDetailModal((prev) => !prev)
+    setOpenUserDetailModal(prev => !prev)
     setUserRecord(userRecordToUpdate)
     setReadOnly(mode)
   }
 
-  const handleUserDetailSubmit = (user) => {
+  const handleUserDetailSubmit = user => {
     try {
-      const userTofind = data.data.data.data.find((x) => x._id === user._id)
+      const userTofind = data.data.data.data.find(x => x._id === user._id)
       mutation.mutate({
         userId: user._id,
         updatedData: {
@@ -162,24 +165,24 @@ function CoworkersPage() {
     setSort(sorter)
   }
 
-  const handlePageChange = (pageNumber) => {
-    setPage((prev) => ({...prev, page: pageNumber}))
+  const handlePageChange = pageNumber => {
+    setPage(prev => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage((prev) => ({...page, limit: pageSize}))
+    setPage(prev => ({...page, limit: pageSize}))
   }
 
-  const setActiveInActiveUsers = (e) => {
+  const setActiveInActiveUsers = e => {
     setDefaultUser(e.target.value)
     setActiveUser(e.target.value === 'active' ? true : false)
   }
 
-  const handleRoleChange = (roleId) => {
+  const handleRoleChange = roleId => {
     setRole(roleId)
   }
 
-  const handlePositionChange = (positionId) => {
+  const handlePositionChange = positionId => {
     setPosition(positionId)
   }
 
@@ -197,7 +200,7 @@ function CoworkersPage() {
     resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data.name})
   }
 
-  const handleRowSelect = (rows) => {
+  const handleRowSelect = rows => {
     setSelectedRows(rows)
   }
 
@@ -225,125 +228,140 @@ function CoworkersPage() {
         currentQuarter={quarterQuery}
       />
       <Card title="Co-workers">
-        <div className="components-table-demo-control-bar">
-          <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
-            <Search
-              allowClear
-              placeholder="Search Co-workers"
-              onSearch={(value) => {
-                setPage((prev) => ({...prev, page: 1}))
-                setName(value)
-              }}
-              onChange={(e) => setTypedName(e.target.value)}
-              value={typedName}
-              enterButton
-              className="direct-form-item"
-            />
-            <Popconfirm
-              title={`Are you sure to reset allocated leaves?`}
-              onConfirm={handleResetAllocatedLeaves}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
-                Reset Allocated Leaves
-              </Button>
-            </Popconfirm>
-          </div>
-          <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
-            <Form layout="inline" form={form}>
-              <FormItem className="direct-form-search margin-1r">
-                <Select
-                  placeholder="Select Role"
-                  onChange={handleRoleChange}
-                  value={role}
-                  options={roleData?.data?.data?.data?.map((x) => ({
-                    ...x,
-                    id: x._id,
-                  }))}
-                />
-              </FormItem>
-              <FormItem className="direct-form-search">
-                <Select
-                  placeholder="Select Position"
-                  className="margin-1r"
-                  onChange={handlePositionChange}
-                  value={position}
-                  options={positionData?.data?.data?.data?.map((x) => ({
-                    id: x._id,
-                    value: x.name,
-                  }))}
-                />
-              </FormItem>
-              <FormItem style={{marginBottom: '10px'}}>
-                <Radio.Group
-                  buttonStyle="solid"
-                  value={defaultUser}
-                  onChange={setActiveInActiveUsers}
-                  id="radio"
-                >
-                  <Radio.Button value="active">Active</Radio.Button>
-                  <Radio.Button value="inactive">Inactive</Radio.Button>
-                </Radio.Group>
-              </FormItem>
-              <FormItem>
-                <Button
-                  className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                  onClick={handleResetFilter}
-                >
-                  Reset
-                </Button>
-              </FormItem>
-            </Form>
-            <div className="gx-btn-form">
-              <Button
-                className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => setOpenImport(true)}
+        <AccessWrapper noAccessRoles={CO_WORKERS_SEARCH_IMPORT_NO_ACCESS}>
+          <div className="components-table-demo-control-bar">
+            <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
+              <Search
+                allowClear
+                placeholder="Search Co-workers"
+                onSearch={value => {
+                  setPage(prev => ({...prev, page: 1}))
+                  setName(value)
+                }}
+                onChange={e => setTypedName(e.target.value)}
+                value={typedName}
+                enterButton
+                className="direct-form-item"
+              />
+              <AccessWrapper
+                noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
               >
-                Import
-              </Button>
-              {data?.status && (
-                <CSVLink
-                  filename={'co-workers'}
-                  data={[
-                    [
-                      'Name',
-                      'Email',
-                      'Role',
-                      'RoleId',
-                      'Position',
-                      'PositionId',
-                      'DOB',
-                      'Join Date',
-                    ],
-                    ...data?.data?.data?.data
-                      ?.filter((x) => selectedRows.includes(x?._id))
-                      ?.map((d) => [
-                        d?.name,
-                        d?.email,
-                        d?.role.value,
-                        d?.role._id,
-                        d?.position.name,
-                        d?.position._id,
-                        changeDate(d?.dob),
-                        changeDate(d?.joinDate),
-                      ]),
-                  ]}
+                <Popconfirm
+                  title={`Are you sure to reset allocated leaves?`}
+                  onConfirm={handleResetAllocatedLeaves}
+                  okText="Yes"
+                  cancelText="No"
                 >
+                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
+                    Reset Allocated Leaves
+                  </Button>
+                </Popconfirm>
+              </AccessWrapper>
+            </div>
+            <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
+              <Form layout="inline" form={form}>
+                <FormItem className="direct-form-search margin-1r">
+                  <Select
+                    placeholder="Select Role"
+                    onChange={handleRoleChange}
+                    value={role}
+                    options={roleData?.data?.data?.data?.map(x => ({
+                      ...x,
+                      id: x._id,
+                    }))}
+                  />
+                </FormItem>
+                <FormItem className="direct-form-search">
+                  <Select
+                    placeholder="Select Position"
+                    className="margin-1r"
+                    onChange={handlePositionChange}
+                    value={position}
+                    options={positionData?.data?.data?.data?.map(x => ({
+                      id: x._id,
+                      value: x.name,
+                    }))}
+                  />
+                </FormItem>
+                <FormItem style={{marginBottom: '10px'}}>
+                  <Radio.Group
+                    buttonStyle="solid"
+                    value={defaultUser}
+                    onChange={setActiveInActiveUsers}
+                    id="radio"
+                  >
+                    <Radio.Button value="active">Active</Radio.Button>
+                    <Radio.Button value="inactive">Inactive</Radio.Button>
+                  </Radio.Group>
+                </FormItem>
+                <FormItem>
                   <Button
                     className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                    disabled={selectedRows.length === 0}
+                    onClick={handleResetFilter}
                   >
-                    Export
+                    Reset
                   </Button>
-                </CSVLink>
-              )}
+                </FormItem>
+              </Form>
+              <AccessWrapper
+                noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
+              >
+                <div className="gx-btn-form">
+                  <Button
+                    className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                    onClick={() => setOpenImport(true)}
+                  >
+                    Import
+                  </Button>
+                  {data?.status && (
+                    <CSVLink
+                      filename={'co-workers'}
+                      data={[
+                        [
+                          'Name',
+                          'Email',
+                          'Role',
+                          'RoleId',
+                          'Position',
+                          'PositionId',
+                          'DOB',
+                          'Join Date',
+                        ],
+                        ...data?.data?.data?.data
+                          ?.filter(x => selectedRows.includes(x?._id))
+                          ?.map(d => [
+                            d?.name,
+                            d?.email,
+                            d?.role.value,
+                            d?.role._id,
+                            d?.position.name,
+                            d?.position._id,
+                            changeDate(d?.dob),
+                            changeDate(d?.joinDate),
+                          ]),
+                      ]}
+                    >
+                      <Button
+                        className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                        disabled={selectedRows.length === 0}
+                      >
+                        Export
+                      </Button>
+                    </CSVLink>
+                  )}
+                </div>
+              </AccessWrapper>
             </div>
           </div>
-        </div>
+        </AccessWrapper>
         <Table
           className="gx-table-responsive"
-          columns={CO_WORKERCOLUMNS(sort, handleToggleModal, mutation)}
+          columns={CO_WORKERCOLUMNS(
+            sort,
+            handleToggleModal,
+            mutation,
+            user.role.key
+          )}
           dataSource={formattedUsers(
             data?.data?.data?.data,
             user?.role?.key === 'admin'

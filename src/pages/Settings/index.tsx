@@ -7,16 +7,24 @@ import Leave from './Leave'
 import Noticeboard from './Noticeboard'
 import Blog from './Blog'
 import Resources from './Resources'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {getLocalStorageData} from 'helpers/utils'
+import RoleAccess, {SETTINGS_TABS_NO_ACCESS} from 'constants/RoleAccess'
 
 const TabPane = Tabs.TabPane
 
 function Settings() {
+  const {
+    role: {key},
+  } = getLocalStorageData(LOCALSTORAGE_USER)
   return (
     <Card title="Settings">
       <Tabs type="card">
-        <TabPane tab="Co-Workers" key="1">
-          <Coworkers />
-        </TabPane>
+        {![RoleAccess.TeamLead].includes(key) && (
+          <TabPane tab="Co-Workers" key="1">
+            <Coworkers />
+          </TabPane>
+        )}
 
         <TabPane tab="Projects" key="2">
           <Projects />
@@ -24,18 +32,27 @@ function Settings() {
         <TabPane tab="Log Time" key="3">
           <Logtime />
         </TabPane>
-        <TabPane tab="Leave Management" key="4">
-          <Leave />
-        </TabPane>
-        <TabPane tab="Notice Board" key="5">
-          <Noticeboard />
-        </TabPane>
+
+        {!SETTINGS_TABS_NO_ACCESS.includes(key) && (
+          <>
+            <TabPane tab="Leave Management" key="4">
+              <Leave />
+            </TabPane>
+            <TabPane tab="Notice Board" key="5">
+              <Noticeboard />
+            </TabPane>
+          </>
+        )}
+
         <TabPane tab="Blog" key="6">
           <Blog />
         </TabPane>
-        <TabPane tab="Resources" key="7">
-          <Resources />
-        </TabPane>
+
+        {!SETTINGS_TABS_NO_ACCESS.includes(key) && (
+          <TabPane tab="Resources" key="7">
+            <Resources />
+          </TabPane>
+        )}
       </Tabs>
     </Card>
   )

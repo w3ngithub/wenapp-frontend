@@ -1,12 +1,17 @@
 import React from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
+import {
+  PROJECTS_TABLE_ACTION_DELETE_NO_ACCESS,
+  PROJECTS_TABLE_ACTION_NO_ACCESS,
+} from './RoleAccess'
 
 const PROJECT_COLUMNS = (
   sortedInfo,
   openModal,
   confirmDelete,
-  navigateToProjectLogs
+  navigateToProjectLogs,
+  role
 ) => [
   {
     title: 'Name',
@@ -79,21 +84,32 @@ const PROJECT_COLUMNS = (
           <span className="gx-link" onClick={() => openModal(record, true)}>
             <CustomIcon name="view" />
           </span>
-          <Divider type="vertical" />
-          <span className="gx-link" onClick={() => openModal(record, false)}>
-            <CustomIcon name="edit" />
-          </span>
-          <Divider type="vertical" />
-          <Popconfirm
-            title="Are you sure to delete this project?"
-            onConfirm={() => confirmDelete(record)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <span className="gx-link gx-text-danger">
-              <CustomIcon name="delete" />
-            </span>
-          </Popconfirm>
+          {!PROJECTS_TABLE_ACTION_NO_ACCESS.includes(role) && (
+            <>
+              <Divider type="vertical" />
+              <span
+                className="gx-link"
+                onClick={() => openModal(record, false)}
+              >
+                <CustomIcon name="edit" />
+              </span>
+              {!PROJECTS_TABLE_ACTION_DELETE_NO_ACCESS.includes(role) && (
+                <>
+                  <Divider type="vertical" />
+                  <Popconfirm
+                    title="Are you sure to delete this project?"
+                    onConfirm={() => confirmDelete(record)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <span className="gx-link gx-text-danger">
+                      <CustomIcon name="delete" />
+                    </span>
+                  </Popconfirm>
+                </>
+              )}
+            </>
+          )}
         </div>
       )
     },

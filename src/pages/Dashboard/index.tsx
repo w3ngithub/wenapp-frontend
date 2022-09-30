@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {ReactComponent as LeaveIcon} from 'assets/images/Leave.svg'
 import {Button, Card, Col, Form, Row} from 'antd'
 import Auxiliary from 'util/Auxiliary'
@@ -37,12 +37,18 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import AccessWrapper from 'components/Modules/AccessWrapper'
+import {DASHBOARD_PROJECT_LOG_NO_ACCESS} from 'constants/RoleAccess'
 
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
 
 const Dashboard = () => {
+  const {
+    role: {key},
+  } = getLocalStorageData(LOCALSTORAGE_USER)
+
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
@@ -101,18 +107,31 @@ const Dashboard = () => {
     ['DashBoardleaves'],
     () => getWeekRangeLeaves(),
     {
-      onError: (err) => console.log(err),
+      onError: err => console.log(err),
     }
   )
 
-  const {data} = useQuery(['DashBoardprojects'], () =>
-    getAllProjects({
-      fields:
-        '_id,name,-devOps,-createdBy,-designers,-developers,-projectStatus,-projectTags,-projectTypes,-qa,-updatedBy',
-    })
+  const {data, refetch: projectRefetch} = useQuery(
+    ['DashBoardprojects'],
+    () =>
+      getAllProjects({
+        fields:
+          '_id,name,-devOps,-createdBy,-designers,-developers,-projectStatus,-projectTags,-projectTypes,-qa,-updatedBy',
+      }),
+    {enabled: false}
   )
 
-  const {data: logTypes} = useQuery(['DashBoardlogTypes'], () => getLogTypes())
+  const {data: logTypes, refetch: logTypeRefetch} = useQuery(
+    ['DashBoardlogTypes'],
+    () => getLogTypes(),
+    {enabled: false}
+  )
+
+  useEffect(() => {
+    if (!DASHBOARD_PROJECT_LOG_NO_ACCESS.includes(key)) {
+      Promise.all([logTypeRefetch(), projectRefetch()])
+    }
+  }, [key, logTypeRefetch, projectRefetch])
 
   const generateChart = (values: any) => {
     if (project === '' || project === undefined) return
@@ -260,7 +279,10 @@ const Dashboard = () => {
       type: 'leave',
       date: x?.leaveDates,
       halfDay: x?.halfDay,
-      leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
+      leaveType: x?.leaveType[0]
+        .split(' ')
+        .slice(0, 2)
+        .join(' '),
       id: x?._id[0],
     })
   )
@@ -286,14 +308,12 @@ const Dashboard = () => {
     (x: any) => ({
       title: x.name,
       start: new Date(
-        `${new Date().getFullYear()}/${
-          new Date(x.dob).getMonth() + 1
-        }/${new Date(x.dob).getDate()}`
+        `${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
+          1}/${new Date(x.dob).getDate()}`
       ),
       end: new Date(
-        `${new Date().getFullYear()}/${
-          new Date(x.dob).getMonth() + 1
-        }/${new Date(x.dob).getDate()}`
+        `${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
+          1}/${new Date(x.dob).getDate()}`
       ),
       type: 'birthday',
     })
@@ -397,85 +417,87 @@ const Dashboard = () => {
               />
             </div>
           </Card>
-          <Card className="gx-card" title="Project Time Log Report">
-            <div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
-              <Form layout="inline" onFinish={generateChart} form={form}>
-                <FormItem name="chart">
-                  <Select
-                    style={{width: innerWidth <= 504 ? '100%' : 115}}
-                    value={chart}
-                    onChange={(c: any) => setChart(c)}
-                    placeholder="Select Chart"
-                    options={[
-                      {_id: '1', name: 'Bar Chart'},
-                      {_id: '2', name: 'Pie Chart'},
-                    ]?.map((x: {_id: string; name: string}) => ({
-                      id: x._id,
-                      value: x.name,
-                    }))}
-                  />
-                </FormItem>
-                <FormItem name="project" className="direct-form-item">
-                  <Select
-                    value={project}
-                    onChange={(c: any) => setProject(c)}
-                    placeholder="Select Project"
-                    options={data?.data?.data?.data?.map(
-                      (x: {_id: string; name: string}) => ({
+          <AccessWrapper noAccessRoles={DASHBOARD_PROJECT_LOG_NO_ACCESS}>
+            <Card className="gx-card" title="Project Time Log Report">
+              <div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
+                <Form layout="inline" onFinish={generateChart} form={form}>
+                  <FormItem name="chart">
+                    <Select
+                      style={{width: innerWidth <= 504 ? '100%' : 115}}
+                      value={chart}
+                      onChange={(c: any) => setChart(c)}
+                      placeholder="Select Chart"
+                      options={[
+                        {_id: '1', name: 'Bar Chart'},
+                        {_id: '2', name: 'Pie Chart'},
+                      ]?.map((x: {_id: string; name: string}) => ({
                         id: x._id,
                         value: x.name,
-                      })
-                    )}
-                    inputSelect
-                  />
-                </FormItem>
-                <FormItem name="logType" className="direct-form-item">
-                  <Select
-                    value={logType}
-                    onChange={(c: any) => setlogType(c)}
-                    placeholder="Select Log Types"
-                    mode="tags"
-                    options={logTypes?.data?.data?.data?.map(
-                      (x: {_id: string; name: string}) => ({
-                        id: x._id,
-                        value: x.name,
-                      })
-                    )}
-                  />
-                </FormItem>
-                <FormItem>
-                  <Button type="primary" key="submit" htmlType="submit">
-                    Generate Chart
-                  </Button>
-                </FormItem>
-              </Form>
-            </div>
-            {project && (
-              <div>
-                {chartData && chartData.length ? (
-                  <div>
-                    {chart === '2' ? (
-                      <CustomActiveShapePieChart
-                        data={chartData?.map((x: any) => ({
-                          name: x.logType[0].name,
-                          value: +x.timeSpent.toFixed(),
-                        }))}
-                      />
-                    ) : (
-                      <TinyBarChart
-                        data={chartData?.map((x: any) => ({
-                          name: x.logType[0].name,
-                          time: x.timeSpent.toFixed(),
-                        }))}
-                      />
-                    )}
-                  </div>
-                ) : (
-                  'No Data'
-                )}
+                      }))}
+                    />
+                  </FormItem>
+                  <FormItem name="project" className="direct-form-item">
+                    <Select
+                      value={project}
+                      onChange={(c: any) => setProject(c)}
+                      placeholder="Select Project"
+                      options={data?.data?.data?.data?.map(
+                        (x: {_id: string; name: string}) => ({
+                          id: x._id,
+                          value: x.name,
+                        })
+                      )}
+                      inputSelect
+                    />
+                  </FormItem>
+                  <FormItem name="logType" className="direct-form-item">
+                    <Select
+                      value={logType}
+                      onChange={(c: any) => setlogType(c)}
+                      placeholder="Select Log Types"
+                      mode="tags"
+                      options={logTypes?.data?.data?.data?.map(
+                        (x: {_id: string; name: string}) => ({
+                          id: x._id,
+                          value: x.name,
+                        })
+                      )}
+                    />
+                  </FormItem>
+                  <FormItem>
+                    <Button type="primary" key="submit" htmlType="submit">
+                      Generate Chart
+                    </Button>
+                  </FormItem>
+                </Form>
               </div>
-            )}
-          </Card>
+              {project && (
+                <div>
+                  {chartData && chartData.length ? (
+                    <div>
+                      {chart === '2' ? (
+                        <CustomActiveShapePieChart
+                          data={chartData?.map((x: any) => ({
+                            name: x.logType[0].name,
+                            value: +x.timeSpent.toFixed(),
+                          }))}
+                        />
+                      ) : (
+                        <TinyBarChart
+                          data={chartData?.map((x: any) => ({
+                            name: x.logType[0].name,
+                            time: x.timeSpent.toFixed(),
+                          }))}
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    'No Data'
+                  )}
+                </div>
+              )}
+            </Card>
+          </AccessWrapper>
         </Col>
       </Row>
     </Auxiliary>

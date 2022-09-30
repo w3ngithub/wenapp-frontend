@@ -9,6 +9,7 @@ import BlogsBreadCumb from './BlogsBreadCumb'
 import CircularProgress from 'components/Elements/CircularProgress'
 import moment from 'moment'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 
 function Detail() {
   // init hooks
@@ -17,14 +18,16 @@ function Detail() {
 
   const [blogId] = blog.split('-')
 
-  const userData = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || {})
+  const {user: userData} = JSON.parse(
+    localStorage.getItem(LOCALSTORAGE_USER) || {}
+  )
 
   const {data, isLoading} = useQuery(['singleBlog', blogId], () =>
     getBlog(blogId)
   )
 
   const BLOG = data?.data?.data?.data?.[0]
-  const access = userData?.user?._id === BLOG?.createdBy._id
+  const access = !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
 
   const handleEdit = () => {
     navigate(`/blog/edit-blog/${blog}`)

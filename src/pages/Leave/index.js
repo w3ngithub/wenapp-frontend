@@ -18,6 +18,7 @@ import {getLeaveTypes} from 'services/settings/leaveType'
 import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
 import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingAndAppliedCards'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {LEAVE_TABS_NO_ACCESS} from 'constants/RoleAccess'
 
 const TabPane = Tabs.TabPane
 
@@ -41,9 +42,9 @@ function Leave() {
   )
 
   const leaveCancelMutation = useMutation(
-    (payload) => changeLeaveStatus(payload.id, payload.type),
+    payload => changeLeaveStatus(payload.id, payload.type),
     {
-      onSuccess: (response) =>
+      onSuccess: response =>
         handleResponse(
           response,
           'Leave cancelled successfully',
@@ -53,17 +54,17 @@ function Leave() {
             () => queryClient.invalidateQueries(['leaves']),
           ]
         ),
-      onError: (error) => {
+      onError: error => {
         notification({message: 'Could not cancel leave', type: 'error'})
       },
     }
   )
 
-  const handleCancelLeave = (leave) => {
+  const handleCancelLeave = leave => {
     leaveCancelMutation.mutate({id: leave._id, type: 'cancel'})
   }
 
-  const handleRowSelect = (rows) => {
+  const handleRowSelect = rows => {
     setSelectedRows(rows)
   }
 
@@ -142,7 +143,7 @@ function Leave() {
             handleCancelLeave={handleCancelLeave}
           />
         </TabPane>
-        {loggedInUser?.role?.value === 'Admin' && (
+        {!LEAVE_TABS_NO_ACCESS.includes(loggedInUser?.role?.key) && (
           <>
             <TabPane tab="Leaves" key="3">
               <Leaves
@@ -156,6 +157,7 @@ function Leave() {
                   selectedRowKeys: selectedRows,
                 }}
                 isExportDisabled={selectedRows.length === 0}
+                userRole={loggedInUser?.role?.key}
               />
             </TabPane>
             <TabPane tab="Leaves Calendar" key="4">

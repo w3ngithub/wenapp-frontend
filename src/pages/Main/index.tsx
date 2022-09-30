@@ -70,7 +70,11 @@ import ForgotPassword from 'containers/ForgotPassword'
 import ResetPassword from 'containers/ResetPassword'
 import CircularProgress from 'components/Elements/CircularProgress'
 import AccessRoute from 'components/Hoc/AccessRoute'
-import RoleAccess from 'constants/RoleAccess'
+import RoleAccess, {
+  LEAVE_REPORT_REPORT_ACESS,
+  WEEKLY_REPORT_ACCESS,
+  WORK_LOG_REPORT_ACESS,
+} from 'constants/RoleAccess'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -262,9 +266,30 @@ function App(props: any) {
                   </Suspense>
                 }
               >
-                <Route path={WEEKLY_REPORT} element={<WeeklyReport />} />
-                <Route path={WORK_LOG_REPORT} element={<WorkLogReport />} />
-                <Route path={LEAVE_REPORT} element={<LeaveReport />} />
+                <Route
+                  path={WEEKLY_REPORT}
+                  element={
+                    <AccessRoute roles={WEEKLY_REPORT_ACCESS}>
+                      <WeeklyReport />
+                    </AccessRoute>
+                  }
+                />
+                <Route
+                  path={WORK_LOG_REPORT}
+                  element={
+                    <AccessRoute roles={WORK_LOG_REPORT_ACESS}>
+                      <WorkLogReport />
+                    </AccessRoute>
+                  }
+                />
+                <Route
+                  path={LEAVE_REPORT}
+                  element={
+                    <AccessRoute roles={LEAVE_REPORT_REPORT_ACESS}>
+                      <LeaveReport />
+                    </AccessRoute>
+                  }
+                />
               </Route>
               <Route
                 path={RESOURCES}

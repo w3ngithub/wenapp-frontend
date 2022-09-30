@@ -1,6 +1,7 @@
 import React, {ReactElement} from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
+import {NOTICEBOARD_ACTION_NO_ACCESS} from './RoleAccess'
 
 interface notice {
   title: string
@@ -15,7 +16,8 @@ interface notice {
 const NOTICE_COLUMNS = (
   sortedInfo: any,
   openModal: Function,
-  confirmDelete: Function
+  confirmDelete: Function,
+  role: string
 ): notice[] => [
   {
     title: 'Title',
@@ -59,22 +61,29 @@ const NOTICE_COLUMNS = (
           <span className="gx-link" onClick={() => openModal(record, true)}>
             <CustomIcon name="view" />
           </span>
-          <Divider type="vertical" />
-          <span className="gx-link" onClick={() => openModal(record, false)}>
-            <CustomIcon name="edit" />
-          </span>
-          <Divider type="vertical" />
-          <Popconfirm
-            title="Are you sure to delete this notice?"
-            onConfirm={() => confirmDelete(record)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <span className="gx-link gx-text-danger">
-              {' '}
-              <CustomIcon name="delete" />
-            </span>
-          </Popconfirm>
+          {!NOTICEBOARD_ACTION_NO_ACCESS.includes(role) && (
+            <>
+              <Divider type="vertical" />
+              <span
+                className="gx-link"
+                onClick={() => openModal(record, false)}
+              >
+                <CustomIcon name="edit" />
+              </span>
+              <Divider type="vertical" />
+              <Popconfirm
+                title="Are you sure to delete this notice?"
+                onConfirm={() => confirmDelete(record)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <span className="gx-link gx-text-danger">
+                  {' '}
+                  <CustomIcon name="delete" />
+                </span>
+              </Popconfirm>
+            </>
+          )}
         </div>
       )
     },
