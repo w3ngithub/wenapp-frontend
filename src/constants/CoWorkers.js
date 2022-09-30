@@ -3,7 +3,13 @@ import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
 
-const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation, role) => [
+const CO_WORKERCOLUMNS = (
+  sortedInfo,
+  openEditPopup,
+  updatMutation,
+  disableMutation,
+  role
+) => [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -63,10 +69,14 @@ const CO_WORKERCOLUMNS = (sortedInfo, openEditPopup, mutation, role) => [
                   record.active ? 'inactive' : 'active'
                 } ?`}
                 onConfirm={() => {
-                  mutation.mutate({
-                    userId: record._id,
-                    updatedData: {active: !record.active},
-                  })
+                  if (record.active) {
+                    disableMutation.mutate(record._id)
+                  } else {
+                    updatMutation.mutate({
+                      userId: record._id,
+                      updatedData: {active: true},
+                    })
+                  }
                 }}
                 okText="Yes"
                 cancelText="No"
