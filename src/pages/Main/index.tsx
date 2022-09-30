@@ -99,7 +99,6 @@ function App(props: any) {
   const {locale, authUser, themeType} = props
 
   const currentAppLocale = AppLocale[locale.locale]
-  console.log('currentAppLocale', currentAppLocale)
 
   useEffect(() => {
     if (themeType === THEME_TYPE_DARK) {

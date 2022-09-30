@@ -112,18 +112,16 @@ function Apply({user}) {
       const casualLeaveDaysUTC = casualLeaveDays.map(leave =>
         MuiFormatDate(new Date(leave))
       )
-      form
-        .validateFields()
-        .then(values => 
-          leaveMutation.mutate({
-            ...values,
-            leaveDates: appliedDate
-              ? [appliedDateUTC, endDateUTC]
-              : casualLeaveDaysUTC,
-            halfDay: values.halfDay,
-            leaveStatus: appliedDate ? 'approved' : 'pending',
-          })
-        )
+      form.validateFields().then(values =>
+        leaveMutation.mutate({
+          ...values,
+          leaveDates: appliedDate
+            ? [appliedDateUTC, endDateUTC]
+            : casualLeaveDaysUTC,
+          halfDay: values.halfDay,
+          leaveStatus: appliedDate ? 'approved' : 'pending',
+        })
+      )
     })
   }
 
@@ -155,6 +153,13 @@ function Apply({user}) {
       <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
         <Row type="flex">
           {immediateApprovalLeaveTypes.includes(leaveType) ? (
+            <Col
+              xs={24}
+              lg={8}
+              sm={24}
+              md={6}
+              style={{marginTop: innerWidth < 974 ? '1.2rem' : 0}}
+            >
               <FormItem
                 style={{marginBottom: '0.5px'}}
                 label="Leave Starting Date"
@@ -167,6 +172,7 @@ function Apply({user}) {
                   disabledDate={disabledDate}
                 />
               </FormItem>
+            </Col>
           ) : (
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
               <FormItem
