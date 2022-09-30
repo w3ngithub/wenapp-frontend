@@ -23,7 +23,11 @@ import {
   getTodaysUserLeaveCount,
   getWeekRangeLeaves,
 } from 'services/leaves'
-import {getLocalStorageData, oneWeekFilterCheck} from 'helpers/utils'
+import {
+  getLocalStorageData,
+  MuiFormatDate,
+  oneWeekFilterCheck,
+} from 'helpers/utils'
 import {getWeeklyNotices} from 'services/noticeboard'
 import {getAllHolidays} from 'services/resources'
 import {
@@ -118,19 +122,28 @@ const Dashboard = () => {
           const isLeaveMaternity =
             leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
           if (isLeavePaternity || isLeaveMaternity) {
-            const days = isLeaveMaternity ? 60 : 5
-            for (let i = 0; i < days; i++) {
-              const date = new Date(leave?.leaveDates)
+            const days = isLeaveMaternity ? 59 : 4
+            const lastLeaveDate = new Date(
+              new Date(leave?.leaveDates).setDate(
+                new Date(leave?.leaveDates).getDate() + days
+              )
+            )
+            const weeksLastDate = new Date(
+              MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
+            )
+            const date = new Date(leave?.leaveDates)
 
-              updateLeaves = [
-                ...updateLeaves,
-                {
-                  ...leave,
-                  leaveDates: new Date(
-                    date.setDate(date.getDate() + i)
-                  ).toJSON(),
-                },
-              ]
+            for (let i = 0; i < 7; i++) {
+              if (date < lastLeaveDate && date < weeksLastDate)
+                updateLeaves = [
+                  ...updateLeaves,
+                  {
+                    ...leave,
+                    leaveDates: new Date(
+                      date.setDate(date.getDate() + 1)
+                    ).toJSON(),
+                  },
+                ]
             }
           } else {
             updateLeaves = [...updateLeaves, leave]
@@ -140,7 +153,7 @@ const Dashboard = () => {
       },
     }
   )
-
+  console.log(leavesQuery?.data)
   const {data, refetch: projectRefetch} = useQuery(
     ['DashBoardprojects'],
     () =>
