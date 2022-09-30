@@ -10,7 +10,11 @@ import {
   Form,
   Radio,
   DatePicker,
+  ConfigProvider,
 } from 'antd'
+import moment from 'moment'
+import en_GB from 'antd/lib/locale-provider/en_GB';
+import 'moment/locale/en-gb'
 import {filterOptions, handleResponse, MuiFormatDate} from 'helpers/utils'
 import React, {useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
@@ -29,6 +33,7 @@ import {LEAVES_TYPES} from 'constants/Leaves'
 const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
+moment.locale('en-gb');
 
 function Apply({user}) {
   const [form] = Form.useForm()
@@ -159,11 +164,13 @@ function Apply({user}) {
               name="leaveDatesPeriod"
               rules={[{required: true, message: 'Required!'}]}
             >
-              <DatePicker
-                className="gx-mb-3 "
-                style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
-                disabledDate={disabledDate}
-              />
+              <ConfigProvider locale={en_GB}>
+                <DatePicker
+                  className="gx-mb-3 "
+                  style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+                  disabledDate={disabledDate}
+                />
+              </ConfigProvider>
             </FormItem>
           ) : (
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
