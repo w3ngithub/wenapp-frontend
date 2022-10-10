@@ -7,9 +7,9 @@ const getAllAttendances = async ({
   sort = '',
   limit = '',
   fields = '',
-  userId,
-  fromDate,
-  toDate,
+  userId = '',
+  fromDate = '',
+  toDate = '',
 }) => {
   try {
     let response = await API.get(
@@ -21,7 +21,7 @@ const getAllAttendances = async ({
   }
 }
 
-const getAttendance = async (attendanceId) => {
+const getAttendance = async (attendanceId: any) => {
   try {
     let response = await API.get(`${Apis.Attendances}/${attendanceId}`)
     return getAPIResponse(response)
@@ -30,7 +30,7 @@ const getAttendance = async (attendanceId) => {
   }
 }
 
-const addAttendance = async (attendance) => {
+const addAttendance = async (attendance: any) => {
   try {
     let response = await API.post(`${Apis.Attendances}`, attendance)
     return getAPIResponse(response)
@@ -39,7 +39,7 @@ const addAttendance = async (attendance) => {
   }
 }
 
-const updateAttendance = async (id, attendance) => {
+const updateAttendance = async (id: any, attendance: any) => {
   try {
     let response = await API.patch(`${Apis.Attendances}/${id}`, attendance)
     return getAPIResponse(response)
@@ -48,7 +48,7 @@ const updateAttendance = async (id, attendance) => {
   }
 }
 
-const deleteAttendance = async (id) => {
+const deleteAttendance = async (id: any) => {
   try {
     let response = await API.delete(`${Apis.Attendances}/${id}`)
     return getAPIResponse(response)
@@ -57,7 +57,7 @@ const deleteAttendance = async (id) => {
   }
 }
 
-const updatePunchout = async (userId, payload) => {
+const updatePunchout = async (userId: any, payload: any) => {
   try {
     let response = await API.patch(
       `${Apis.Attendances}/${userId}/punchout`,
@@ -69,7 +69,7 @@ const updatePunchout = async (userId, payload) => {
   }
 }
 
-const addUserAttendance = async (userId, payload) => {
+const addUserAttendance = async (userId: any, payload: any) => {
   try {
     let response = await API.post(
       `${Apis.Users}/${userId}/attendances`,
@@ -81,7 +81,7 @@ const addUserAttendance = async (userId, payload) => {
   }
 }
 
-const getAttendacentOfUser = async (userId) => {
+const getAttendacentOfUser = async (userId: any) => {
   try {
     let response = await API.get(`${Apis.Attendances}?user=${userId}`)
     return getAPIResponse(response)
@@ -98,6 +98,14 @@ const searchAttendacentOfUser = async ({
   sort = '',
   limit = '',
   fields = '',
+}: {
+  userId?: any
+  fromDate?: any
+  toDate?: any
+  page?: number | any
+  sort?: any
+  limit?: number | any
+  fields?: any
 }) => {
   try {
     let response = await API.get(
@@ -128,7 +136,7 @@ const searchLateAttendacentOfUser = async ({
   }
 }
 
-const updatePunchReqestCount = async (userId) => {
+const updatePunchReqestCount = async (userId: any) => {
   try {
     let response = await API.patch(
       `${Apis.Attendances}/${userId}/updatepunchinrequestcount`
@@ -139,7 +147,7 @@ const updatePunchReqestCount = async (userId) => {
   }
 }
 
-const getTodaysUserAttendanceCount = async (userId) => {
+const getTodaysUserAttendanceCount = async (userId: any) => {
   try {
     let response = await API.get(`${Apis.Attendances}/today/count`)
     return getAPIResponse(response)
@@ -148,7 +156,7 @@ const getTodaysUserAttendanceCount = async (userId) => {
   }
 }
 
-const updateLateAttendance = async (attendance) => {
+const updateLateAttendance = async (attendance: any) => {
   try {
     let response = await API.post(
       `${Apis.Attendances}/updateLateAttendace`,

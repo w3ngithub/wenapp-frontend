@@ -6,7 +6,7 @@ import moment from 'moment'
 import LocationMap from './LocationMap'
 
 const formattedUsers = (users: any[]) => {
-  return users?.map((user) => {
+  return users?.map(user => {
     const punchInLocation = user?.data?.[0]?.punchInLocation
     const punchOutLocation = user?.data?.at(-1)?.punchOutLocation
     const checkIn = user?.data?.[0]?.punchInTime
@@ -28,7 +28,21 @@ const formattedUsers = (users: any[]) => {
   })
 }
 
-function CheckedInEmployee({checkIn}: {checkIn: any[]}) {
+function CheckedInEmployee({
+  checkIn,
+  page,
+  onPageChange,
+  onShowSizeChange,
+  count,
+  isLoading,
+}: {
+  checkIn: any[]
+  page: any
+  onPageChange: (pageNumber: number) => void
+  onShowSizeChange: (_: any, pageSize: number) => void
+  count: number
+  isLoading: boolean
+}) {
   const [openMap, setOpenMap] = useState(false)
   const [sort, setSort] = useState({})
   const [selectedCheckedInUser, setSelectedCheckedInUser] = useState([])
@@ -79,7 +93,17 @@ function CheckedInEmployee({checkIn}: {checkIn: any[]}) {
           columns={OVERVIEW_CHECKEDIN(sort, handleShowMap)}
           dataSource={formattedUsers(checkIn)}
           onChange={handleTableChange}
-          pagination={false}
+          pagination={{
+            current: page.page,
+            pageSize: page.limit,
+            pageSizeOptions: ['5', '10', '20', '50'],
+            showSizeChanger: true,
+            total: count || 1,
+            onShowSizeChange,
+            hideOnSinglePage: true,
+            onChange: onPageChange,
+          }}
+          loading={isLoading}
         />
       </Card>
     </>
