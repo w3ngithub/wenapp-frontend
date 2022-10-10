@@ -152,7 +152,7 @@ function Apply({user}) {
     <Spin spinning={leaveMutation.isLoading}>
       <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
         <Row type="flex">
-          {immediateApprovalLeaveTypes.includes(leaveType) ? (
+          {/* {immediateApprovalLeaveTypes.includes(leaveType) ? (
             <Col
               xs={24}
               lg={8}
@@ -173,7 +173,8 @@ function Apply({user}) {
                 />
               </FormItem>
             </Col>
-          ) : (
+          ) : */}
+          {!immediateApprovalLeaveTypes.includes(leaveType) && (
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
               <FormItem
                 label="Select Leave Dates"
@@ -234,8 +235,7 @@ function Apply({user}) {
             span={18}
             xs={24}
             sm={24}
-            md={15}
-            style={{marginTop: innerWidth < 974 ? '1.2rem' : 0}}
+            md={immediateApprovalLeaveTypes.includes(leaveType) ? 24 : 15}
           >
             <Row
               type="flex"
@@ -278,6 +278,32 @@ function Apply({user}) {
                   </FormItem>
                 )}
               </Col>
+              {immediateApprovalLeaveTypes.includes(leaveType) && (
+                <Col
+                  span={24}
+                  xs={24}
+                  lg={12}
+                  md={24}
+                  style={{
+                    paddingLeft: innerWidth < 981 ? '15px' : 0,
+                    paddingRight: innerWidth < 981 ? '15px' : 0,
+                  }}
+                >
+                  <FormItem
+                    style={{marginBottom: '0.5px'}}
+                    label="Leave Starting Date"
+                    name="leaveDatesPeriod"
+                    rules={[{required: true, message: 'Required!'}]}
+                  >
+                    <DatePicker
+                      className="gx-mb-3 "
+                      style={{width: innerWidth <= 1096 ? '100%' : '97%'}}
+                      disabledDate={disabledDate}
+                    />
+                  </FormItem>
+                </Col>
+              )}
+              {/* 
               <Col
                 span={24}
                 xs={24}
@@ -312,7 +338,7 @@ function Apply({user}) {
                     </Row>
                   </Checkbox.Group>
                 </FormItem>
-              </Col>
+              </Col> */}
             </Row>
             <Row style={{marginLeft: innerWidth < 764 ? '-15px' : 0}}>
               <Col span={24}>
