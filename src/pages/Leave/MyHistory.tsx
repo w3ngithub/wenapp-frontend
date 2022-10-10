@@ -1,5 +1,5 @@
 import {useQuery} from '@tanstack/react-query'
-import {Button, DatePicker, Form, Table} from 'antd'
+import {Button,  DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
 import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
 import {changeDate} from 'helpers/utils'
@@ -8,6 +8,7 @@ import moment, {Moment} from 'moment'
 import React, {useState} from 'react'
 import {useLocation} from 'react-router-dom'
 import {getLeavesOfUser} from 'services/leaves'
+import { disabledDate } from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 
@@ -58,11 +59,11 @@ function MyHistory({
   )
 
   const onShowSizeChange = (_: any, pageSize: number) => {
-    setPage((prev) => ({...page, limit: pageSize}))
+    setPage(prev => ({...page, limit: pageSize}))
   }
 
   const handlePageChange = (pageNumber: number) => {
-    setPage((prev) => ({...prev, page: pageNumber}))
+    setPage(prev => ({...prev, page: pageNumber}))
   }
 
   const handleStatusChange = (statusId: string) => {
@@ -76,7 +77,10 @@ function MyHistory({
 
     setDate({
       moment: value,
-      utc: moment.utc(value._d).startOf('day').format(),
+      utc: moment
+        .utc(value._d)
+        .startOf('day')
+        .format(),
     })
   }
 
@@ -102,12 +106,13 @@ function MyHistory({
           </FormItem>
 
           <FormItem style={{marginBottom: '0.5px'}}>
-            <DatePicker
-              className="gx-mb-3 "
-              style={{width: innerWidth <= 748 ? '100%' : '200px'}}
-              value={date?.moment}
-              onChange={handleDateChange}
-            />
+              <DatePicker
+                className="gx-mb-3 "
+                style={{width: innerWidth <= 748 ? '100%' : '200px'}}
+                value={date?.moment}
+                onChange={handleDateChange}
+                disabledDate={disabledDate}
+              />
           </FormItem>
 
           <FormItem style={{marginBottom: '3px'}}>

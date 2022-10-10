@@ -145,6 +145,21 @@ function Holiday() {
     })
   )
 
+  const handleEventStyle = event => {
+    let style = {
+      color: 'white',
+      padding: '1px 10px',
+      width: event.fullWidth ? '100%' : 'fit-content',
+      margin: 'auto',
+      marginBottom: '0.2rem',
+      height: 'auto',
+    }
+
+    return {
+      style,
+    }
+  }
+
   return (
     <div className="gx-main-content">
       <CommonModal
@@ -189,6 +204,7 @@ function Holiday() {
       <Card title="Holidays Calendar">
         <div className="gx-rbc-calendar">
           <Calendar
+            eventPropGetter={handleEventStyle}
             localizer={localizer}
             events={holidaysCalendar}
             startAccessor="start"

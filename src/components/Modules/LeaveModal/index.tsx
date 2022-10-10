@@ -10,7 +10,10 @@ import {
   Spin,
   DatePicker,
   Radio,
+  ConfigProvider,
 } from 'antd'
+import en_GB from 'antd/lib/locale-provider/en_GB'
+import 'moment/locale/en-gb'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {
@@ -48,6 +51,8 @@ const formItemLayout = {
     sm: {span: 24},
   },
 }
+
+moment.locale('en-gb')
 
 function LeaveModal({
   leaveData,
@@ -364,12 +369,14 @@ function LeaveModal({
                     name="leaveDatesPeriod"
                     rules={[{required: true, message: 'Required!'}]}
                   >
-                    <DatePicker
-                      className="gx-mb-3 "
-                      style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
-                      disabled={readOnly}
-                      disabledDate={disabledDate}
-                    />
+                    <ConfigProvider locale={en_GB}>
+                      <DatePicker
+                        className="gx-mb-3 "
+                        style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+                        disabled={readOnly}
+                        disabledDate={disabledDate}
+                      />
+                    </ConfigProvider>
                   </Form.Item>
                 </Col>
               ) : (

@@ -58,7 +58,7 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
         <div className="gx-product-image">
           <div className="gx-grid-thumb-equal">
             <span className="gx-link gx-grid-thumb-cover">
-              <img alt="Bob" src={imgSrc} width={300} height={200} />
+              <img alt="blogPicture" src={imgSrc} width={300} height={200} />
             </span>
           </div>
         </div>

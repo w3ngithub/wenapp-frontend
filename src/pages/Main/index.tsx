@@ -2,6 +2,9 @@ import React, {useEffect, lazy, Suspense} from 'react'
 import {connect} from 'react-redux'
 import {Navigate, Route, Routes} from 'react-router-dom'
 import {ConfigProvider} from 'antd'
+import moment from 'moment'
+import en_GB from 'antd/lib/locale-provider/en_GB'
+import 'moment/locale/en-gb'
 import {IntlProvider} from 'react-intl'
 
 import AppLocale from 'lngProvider'
@@ -90,6 +93,8 @@ const Resources = lazy(() => import('pages/Resources'))
 const Settings = lazy(() => import('pages/Settings'))
 const ProjectLogs = lazy(() => import('pages/ProjectLogs'))
 
+moment.locale('en-gb')
+
 function App(props: any) {
   const {locale, authUser, themeType} = props
 
@@ -105,6 +110,7 @@ function App(props: any) {
 
   return (
     <ConfigProvider locale={currentAppLocale.antd}>
+     {/* <ConfigProvider locale={en_GB}> */}
       <IntlProvider
         locale={currentAppLocale.locale}
         messages={currentAppLocale.messages}

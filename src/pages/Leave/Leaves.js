@@ -17,6 +17,7 @@ import {
   LEAVE_TABS_NO_ACCESS,
   LEAVE_TAB_ADD_LEAVE_NO_ACCESS,
 } from 'constants/RoleAccess'
+import {disabledDate} from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 
@@ -202,6 +203,7 @@ function Leaves({
                 style={{width: innerWidth <= 748 ? '100%' : '200px'}}
                 value={date?.moment}
                 onChange={handleDateChange}
+                disabledDate={disabledDate}
               />
             </FormItem>
 

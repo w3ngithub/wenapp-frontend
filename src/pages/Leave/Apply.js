@@ -153,18 +153,26 @@ function Apply({user}) {
       <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
         <Row type="flex">
           {immediateApprovalLeaveTypes.includes(leaveType) ? (
-            <FormItem
-              style={{marginBottom: '0.5px'}}
-              label="Leave Starting Date"
-              name="leaveDatesPeriod"
-              rules={[{required: true, message: 'Required!'}]}
+            <Col
+              xs={24}
+              lg={8}
+              sm={24}
+              md={6}
+              style={{marginTop: innerWidth < 974 ? '1.2rem' : 0}}
             >
-              <DatePicker
-                className="gx-mb-3 "
-                style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
-                disabledDate={disabledDate}
-              />
-            </FormItem>
+              <FormItem
+                style={{marginBottom: '0.5px'}}
+                label="Leave Starting Date"
+                name="leaveDatesPeriod"
+                rules={[{required: true, message: 'Required!'}]}
+              >
+                <DatePicker
+                  className="gx-mb-3 "
+                  style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+                  disabledDate={disabledDate}
+                />
+              </FormItem>
+            </Col>
           ) : (
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
               <FormItem
