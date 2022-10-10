@@ -5,6 +5,7 @@ import {
   changeLeaveStatus,
   getQuarterTakenAndRemainingLeaveDaysOfUser,
   getTakenAndRemainingLeaveDaysOfUser,
+  sendEmailforLeave,
 } from 'services/leaves'
 import {getLocalStorageData, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
@@ -50,6 +51,7 @@ function Leave() {
           'Leave cancelled successfully',
           'Could not cancel leave',
           [
+            () => sendEmailNotification(response),
             () => queryClient.invalidateQueries(['userLeaves']),
             () => queryClient.invalidateQueries(['leaves']),
           ]
@@ -62,6 +64,15 @@ function Leave() {
 
   const handleCancelLeave = leave => {
     leaveCancelMutation.mutate({id: leave._id, type: 'cancel'})
+  }
+  const emailMutation = useMutation(payload => sendEmailforLeave(payload))
+
+  const sendEmailNotification = res => {
+    emailMutation.mutate({
+      leaveStatus: res.data.data.data.leaveStatus,
+      leaveDates: res.data.data.data.leaveDates,
+      user: res.data.data.data.user,
+    })
   }
 
   const handleRowSelect = rows => {

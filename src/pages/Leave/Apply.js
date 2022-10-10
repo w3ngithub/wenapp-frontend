@@ -14,7 +14,12 @@ import {
 import {filterOptions, handleResponse, MuiFormatDate} from 'helpers/utils'
 import React, {useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
-import {createLeave, getLeavesOfUser, getLeaveTypes} from 'services/leaves'
+import {
+  createLeave,
+  getLeavesOfUser,
+  getLeaveTypes,
+  sendEmailforLeave,
+} from 'services/leaves'
 import {useSelector} from 'react-redux'
 import {getTeamLeads} from 'services/users/userDetails'
 import {notification} from 'helpers/notification'
@@ -69,7 +74,8 @@ function Apply({user}) {
         'Leave submitted successfully',
         'Leave submittion failed',
         [
-          () => handleFormReset(),
+          () => handleFormReset(response),
+          () => sendEmailNotification(response),
           () => queryClient.invalidateQueries(['userLeaves']),
           () => queryClient.invalidateQueries(['leaves']),
           () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
@@ -79,6 +85,16 @@ function Apply({user}) {
       notification({message: 'Leave submittion failed!', type: 'error'})
     },
   })
+
+  const emailMutation = useMutation(payload => sendEmailforLeave(payload))
+
+  const sendEmailNotification = res => {
+    emailMutation.mutate({
+      leaveStatus: res.data.data.data.leaveStatus,
+      leaveDates: res.data.data.data.leaveDates,
+      user: res.data.data.data.user,
+    })
+  }
 
   const handleTypesChange = value => {
     setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value)
