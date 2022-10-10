@@ -244,7 +244,7 @@ function Apply({user}) {
               <Col
                 span={12}
                 xs={24}
-                lg={12}
+                lg={6}
                 md={24}
                 style={{marginBottom: innerWidth < 974 ? '1.2rem' : 0}}
               >
@@ -257,6 +257,7 @@ function Apply({user}) {
                     showSearch
                     filterOption={filterOptions}
                     placeholder="Select Type"
+                    // style={{width: innerWidth <= 1096 ? '100%' : '80%'}}
                     style={{width: '100%'}}
                     onChange={handleTypesChange}
                   >
@@ -282,7 +283,7 @@ function Apply({user}) {
                 <Col
                   span={24}
                   xs={24}
-                  lg={12}
+                  lg={6}
                   md={24}
                   style={{
                     paddingLeft: innerWidth < 981 ? '15px' : 0,
@@ -297,7 +298,8 @@ function Apply({user}) {
                   >
                     <DatePicker
                       className="gx-mb-3 "
-                      style={{width: innerWidth <= 1096 ? '100%' : '97%'}}
+                      // style={{width: innerWidth <= 1096 ? '100%' : '75%'}}
+                      style={{width: '100%'}}
                       disabledDate={disabledDate}
                     />
                   </FormItem>
