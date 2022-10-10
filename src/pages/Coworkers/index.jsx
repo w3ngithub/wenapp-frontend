@@ -10,6 +10,7 @@ import moment from 'moment'
 import {useEffect, useState} from 'react'
 import {CSVLink} from 'react-csv'
 import {
+  disableUser,
   getAllUsers,
   getUserPosition,
   getUserPositionTypes,
@@ -108,6 +109,23 @@ function CoworkersPage() {
       },
     }
   )
+
+  const disableUserMmutation = useMutation(userId => disableUser(userId), {
+    onSuccess: response =>
+      handleResponse(
+        response,
+        'User Disabled Successfully',
+        'Could not disable User',
+        [
+          () => queryClient.invalidateQueries(['users']),
+          () => setOpenUserDetailModal(false),
+        ]
+      ),
+    onError: error => {
+      notification({message: 'Could not disable User', type: 'error'})
+    },
+  })
+
   const resetLeavesMutation = useMutation(
     payload => resetAllocatedLeaves(payload),
     {
@@ -360,6 +378,7 @@ function CoworkersPage() {
             sort,
             handleToggleModal,
             mutation,
+            disableUserMmutation,
             user.role.key
           )}
           dataSource={formattedUsers(
@@ -382,7 +401,10 @@ function CoworkersPage() {
             onChange: handlePageChange,
           }}
           loading={
-            mutation.isLoading || isFetching || resetLeavesMutation.isLoading
+            mutation.isLoading ||
+            isFetching ||
+            resetLeavesMutation.isLoading ||
+            disableUserMmutation.isLoading
           }
         />
       </Card>
