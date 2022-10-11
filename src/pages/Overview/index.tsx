@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {useQuery} from '@tanstack/react-query'
 import {getLeavesOfAllUsers} from 'services/leaves'
 import moment from 'moment'
@@ -20,6 +20,15 @@ const Overview = () => {
       keepPreviousData: true,
     }
   )
+  const [page, setPage] = useState({page: 1, limit: 10})
+
+  const onShowSizeChange = (_: any, pageSize: number) => {
+    setPage(prev => ({...page, limit: pageSize}))
+  }
+
+  const handlePageChange = (pageNumber: number) => {
+    setPage(prev => ({...prev, page: pageNumber}))
+  }
 
   const {data: leaves, isLoading: leaveLoading} = useQuery(
     ['leavesOverview'],
@@ -30,16 +39,17 @@ const Overview = () => {
         moment.utc(formatToUtc(moment().startOf('day'))).format()
       ),
     {
-      onError: (error) => {
+      onError: error => {
         notification({message: 'Could not approve leave', type: 'error'})
       },
     }
   )
 
   const {data: CheckedIn, isLoading: checkInLoading} = useQuery(
-    ['checkInOverview'],
+    ['checkInOverview', page],
     () =>
       searchAttendacentOfUser({
+        ...page,
         fromDate: moment.utc(intialDate[0]).format(),
         toDate: moment.utc(intialDate[1]).format(),
       })
@@ -58,14 +68,20 @@ const Overview = () => {
     (user: any) => !checkInUsers.includes(user.name)
   )
 
-  if (leaveLoading || checkInLoading) {
+  if (leaveLoading) {
     return <CircularProgress className="" />
   }
-
   return (
     <div>
       <LeaveEmployee leaves={leavesSection} />
-      <CheckedInEmployee checkIn={checkInSecition} />
+      <CheckedInEmployee
+        checkIn={checkInSecition}
+        page={page}
+        onPageChange={handlePageChange}
+        onShowSizeChange={onShowSizeChange}
+        count={CheckedIn?.data?.data?.attendances?.[0]?.metadata?.[0]?.total}
+        isLoading={checkInLoading}
+      />
       <UnCheckedInEmployee notCheckInSection={notCheckInSection} />
     </div>
   )

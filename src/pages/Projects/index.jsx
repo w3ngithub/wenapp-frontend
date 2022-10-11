@@ -304,7 +304,7 @@ function ProjectsPage() {
   if (isLoading) {
     return <CircularProgress />
   }
-
+  console.log(QAs?.data, userRecord.project)
   return (
     <div>
       <ProjectModal
