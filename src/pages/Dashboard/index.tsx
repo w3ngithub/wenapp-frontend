@@ -114,6 +114,7 @@ const Dashboard = () => {
     {
       onError: err => console.log(err),
       select: res => {
+        console.log(res?.data?.data?.users)
         let updateLeaves: any[] = []
 
         res?.data?.data?.users?.forEach((leave: any) => {
@@ -131,20 +132,57 @@ const Dashboard = () => {
             const weeksLastDate = new Date(
               MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
             )
-            const date = new Date(leave?.leaveDates)
+            const startLeaveDate = new Date(leave?.leaveDates[0])
+            const endLeaveDate = new Date(leave?.leaveDates[1])
 
             for (let i = 0; i < 7; i++) {
-              const isHoliday = date.getDay() === 0 || date.getDay() === 6
-              if (date < lastLeaveDate && date < weeksLastDate && !isHoliday)
+              const isHoliday =
+                startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
+              if (
+                startLeaveDate >= new Date(MuiFormatDate(new Date())) &&
+                startLeaveDate < weeksLastDate &&
+                startLeaveDate <= endLeaveDate &&
+                !isHoliday
+              ) {
                 updateLeaves = [
                   ...updateLeaves,
                   {
                     ...leave,
                     leaveDates: new Date(
-                      date.setDate(date.getDate() + 1)
+                      startLeaveDate.setDate(startLeaveDate.getDate())
                     ).toJSON(),
                   },
                 ]
+                startLeaveDate.setDate(startLeaveDate.getDate() + 1)
+              }
+
+              // if (
+              //   leaveDate < lastLeaveDate &&
+              //   leaveDate < weeksLastDate &&
+              //   !isHoliday
+              // ) {
+              //   if (i === 0) {
+              //     updateLeaves = [
+              //       ...updateLeaves,
+              //       {
+              //         ...leave,
+              //         leaveDates: new Date(
+              //           leaveDate.setDate(leaveDate.getDate())
+              //         ).toJSON(),
+              //       },
+              //     ]
+              //   }
+
+              //   updateLeaves = [
+              //     ...updateLeaves,
+              //     {
+              //       ...leave,
+              //       leaveDates: new Date(
+              //         leaveDate.setDate(leaveDate.getDate() + 1)
+              //       ).toJSON(),
+              //     },
+              //   ]
+              // }
             }
             console.log(updateLeaves)
           } else {
@@ -314,6 +352,7 @@ const Dashboard = () => {
   let components = {
     event: CustomEvent, // used by each view (Month, Day, Week)
   }
+
   const leaveUsers = leavesQuery?.data?.map((x: any, index: number) => ({
     title: x?.user[0],
     start: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
@@ -359,7 +398,6 @@ const Dashboard = () => {
       type: 'birthday',
     })
   )
-
   const calendarEvents = [
     ...(holidaysCalendar || []),
     ...(noticesCalendar || []),
