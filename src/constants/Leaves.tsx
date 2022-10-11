@@ -80,6 +80,17 @@ const LEAVES_COLUMN = (
                             </span>
                           </Popconfirm>
                           <Divider type="vertical" />
+                          <Popconfirm
+                            title="Are you sure you want to cancel?"
+                            onConfirm={() => onCancelClick(record)}
+                            okText="Yes"
+                            cancelText="No"
+                          >
+                            <span className="gx-link gx-text-danger">
+                              Cancel
+                            </span>
+                          </Popconfirm>
+                          <Divider type="vertical" />
 
                           <i
                             className="icon icon-edit gx-link"
