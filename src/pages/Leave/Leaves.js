@@ -275,7 +275,7 @@ function Leaves({
           showSizeChanger: true,
           total: leavesQuery?.data?.data?.data?.count || 1,
           onShowSizeChange,
-          hideOnSinglePage: true,
+          hideOnSinglePage: leavesQuery?.data?.data?.data?.count ? false : true,
           onChange: handlePageChange,
         }}
         loading={leavesQuery.isFetching || leaveApproveMutation.isLoading}

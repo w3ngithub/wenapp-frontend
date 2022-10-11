@@ -286,7 +286,7 @@ function NoticeBoardPage() {
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
-            hideOnSinglePage: false,
+            hideOnSinglePage: data?.data?.data?.count ? false : true,
             onChange: handlePageChange,
           }}
           loading={isLoading || isFetching || deleteNoticeMutation.isLoading}

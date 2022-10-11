@@ -138,7 +138,7 @@ function MyHistory({
           showSizeChanger: true,
           total: userLeavesQuery?.data?.data?.data?.count || 1,
           onShowSizeChange,
-          hideOnSinglePage: true,
+          hideOnSinglePage: userLeavesQuery?.data?.data?.data?.count ? false : true,
           onChange: handlePageChange,
         }}
         loading={userLeavesQuery.isFetching || isLoading}

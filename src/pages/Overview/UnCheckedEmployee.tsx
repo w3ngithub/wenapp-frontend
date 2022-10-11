@@ -48,7 +48,7 @@ function UnCheckedInEmployee({notCheckInSection}: {notCheckInSection: any[]}) {
           showSizeChanger: true,
           total: notCheckInSection?.length || 1,
           onShowSizeChange,
-          hideOnSinglePage: true,
+          hideOnSinglePage : notCheckInSection?.length ? false : true,
           onChange: handlePageChange,
         }}
       />

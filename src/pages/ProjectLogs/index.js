@@ -341,7 +341,7 @@ function ProjectLogs() {
             showSizeChanger: true,
             total: logTimeDetails?.data?.data?.count || 1,
             onShowSizeChange,
-            hideOnSinglePage: true,
+            hideOnSinglePage: logTimeDetails?.data?.data?.count ? false : true,
             onChange: handlePageChange,
           }}
           loading={timeLogFetching || deleteLogMutation.isLoading}

@@ -163,6 +163,7 @@ function CommonQuarter({fromDate, toDate, quarter, positions}) {
   if (isLoading) {
     return <CircularProgress className="" />
   }
+  console.log('count', data?.data?.data)
 
   return (
     <>
@@ -185,6 +186,7 @@ function CommonQuarter({fromDate, toDate, quarter, positions}) {
           showSizeChanger: true,
           total: data?.data?.data?.count || 1,
           onShowSizeChange,
+          // hideOnSinglePage: data?.data?.data?.count ? false : true,
           hideOnSinglePage: true,
           onChange: handlePageChange,
         }}
