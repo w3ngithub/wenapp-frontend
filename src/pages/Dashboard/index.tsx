@@ -114,7 +114,6 @@ const Dashboard = () => {
     {
       onError: err => console.log(err),
       select: res => {
-        console.log(res?.data?.data?.users)
         let updateLeaves: any[] = []
 
         res?.data?.data?.users?.forEach((leave: any) => {
@@ -122,24 +121,23 @@ const Dashboard = () => {
             leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
           const isLeaveMaternity =
             leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
-          if (isLeavePaternity || isLeaveMaternity) {
-            const days = isLeaveMaternity ? 59 : 4
-            const lastLeaveDate = new Date(
-              new Date(leave?.leaveDates).setDate(
-                new Date(leave?.leaveDates).getDate() + days
-              )
-            )
+          const isLeavePTO =
+            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
+
+          if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
             const weeksLastDate = new Date(
               MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
             )
             const startLeaveDate = new Date(leave?.leaveDates[0])
             const endLeaveDate = new Date(leave?.leaveDates[1])
+            const todayDate = new Date(MuiFormatDate(new Date()))
 
             for (let i = 0; i < 7; i++) {
               const isHoliday =
                 startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
+
               if (
-                startLeaveDate >= new Date(MuiFormatDate(new Date())) &&
+                startLeaveDate >= todayDate &&
                 startLeaveDate < weeksLastDate &&
                 startLeaveDate <= endLeaveDate &&
                 !isHoliday
@@ -148,45 +146,34 @@ const Dashboard = () => {
                   ...updateLeaves,
                   {
                     ...leave,
+                    date: leave?.leaveDates[0],
+
                     leaveDates: new Date(
                       startLeaveDate.setDate(startLeaveDate.getDate())
                     ).toJSON(),
                   },
                 ]
-                startLeaveDate.setDate(startLeaveDate.getDate() + 1)
               }
 
-              // if (
-              //   leaveDate < lastLeaveDate &&
-              //   leaveDate < weeksLastDate &&
-              //   !isHoliday
-              // ) {
-              //   if (i === 0) {
-              //     updateLeaves = [
-              //       ...updateLeaves,
-              //       {
-              //         ...leave,
-              //         leaveDates: new Date(
-              //           leaveDate.setDate(leaveDate.getDate())
-              //         ).toJSON(),
-              //       },
-              //     ]
-              //   }
-
-              //   updateLeaves = [
-              //     ...updateLeaves,
-              //     {
-              //       ...leave,
-              //       leaveDates: new Date(
-              //         leaveDate.setDate(leaveDate.getDate() + 1)
-              //       ).toJSON(),
-              //     },
-              //   ]
-              // }
+              if (startLeaveDate < todayDate) {
+                updateLeaves = [
+                  ...updateLeaves,
+                  {
+                    ...leave,
+                    date: leave?.leaveDates[0],
+                    leaveDates: new Date(
+                      startLeaveDate.setDate(todayDate.getDate())
+                    ).toJSON(),
+                  },
+                ]
+              }
+              startLeaveDate.setDate(startLeaveDate.getDate() + 1)
             }
-            console.log(updateLeaves)
           } else {
-            updateLeaves = [...updateLeaves, leave]
+            updateLeaves = [
+              ...updateLeaves,
+              {...leave, date: leave?.leaveDates[0]},
+            ]
           }
         })
         return updateLeaves
@@ -308,7 +295,7 @@ const Dashboard = () => {
                     state: {
                       tabKey: '3',
                       leaveStatus: 'approved',
-                      date: props.event.date,
+                      date: props.event.startDate,
                       user: props.event.id,
                     },
                   })
@@ -359,6 +346,7 @@ const Dashboard = () => {
     end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
     type: 'leave',
     date: x?.leaveDates,
+    startDate: x?.date,
     halfDay: x?.halfDay,
     leaveType: x?.leaveType[0]
       .split(' ')
