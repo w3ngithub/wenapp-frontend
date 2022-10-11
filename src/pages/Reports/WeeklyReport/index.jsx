@@ -24,7 +24,6 @@ const intialDate = [
 ]
 
 const formattedWeeklyReports = (reports, clients) => {
-  console.log(reports)
   return reports
     ?.filter((reportFil) => reportFil.project?.length !== 0)
     ?.map((report) => ({
