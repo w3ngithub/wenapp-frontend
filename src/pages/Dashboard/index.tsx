@@ -156,6 +156,8 @@ const Dashboard = () => {
               }
 
               if (startLeaveDate < todayDate) {
+                startLeaveDate.setMonth(todayDate.getMonth())
+                startLeaveDate.setFullYear(todayDate.getFullYear())
                 updateLeaves = [
                   ...updateLeaves,
                   {
