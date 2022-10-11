@@ -32,6 +32,9 @@ const BASE_API_PATH_ATTENDENTS = `${BASE_API_PATH}attendances`
 // User SignUp
 const BASE_API_PATH_SIGN_UP = `${BASE_API_PATH_USERS}/signup`
 
+// Email
+const BASE_API_PATH_EMAIL = `${BASE_API_PATH}emails`
+
 export const Apis = {
   // Users
   Users: `${BASE_API_PATH_USERS}`,
@@ -64,4 +67,7 @@ export const Apis = {
 
   // Sign up
   Signup: `${BASE_API_PATH_SIGN_UP}`,
+
+  // Email
+  Email: `${BASE_API_PATH_EMAIL}`,
 }
