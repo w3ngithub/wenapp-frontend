@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {ReactComponent as LeaveIcon} from 'assets/images/Leave.svg'
-import {Button, Card, Col, Form, Row} from 'antd'
+import {Button, Card, Col, Form, Row, Spin} from 'antd'
 import Auxiliary from 'util/Auxiliary'
 import Widget from 'components/Elements/Widget/index'
 import TotalCountCard from 'components/Elements/TotalCountCard'
@@ -483,18 +483,24 @@ const Dashboard = () => {
 
         <Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
           <Card className="gx-card dashboard-calendar" title="Calendar">
-            <div className="gx-rbc-calendar">
-              <Calendar
-                components={components}
-                localizer={localizer}
-                events={calendarEvents}
-                startAccessor="start"
-                endAccessor="end"
-                popup
-                eventPropGetter={handleEventStyle}
-                views={['month', 'week', 'day']}
-              />
-            </div>
+            {leavesQuery?.isLoading ? (
+              <div className="gx-d-flex gx-justify-content-around">
+                <Spin />
+              </div>
+            ) : (
+              <div className="gx-rbc-calendar">
+                <Calendar
+                  components={components}
+                  localizer={localizer}
+                  events={calendarEvents}
+                  startAccessor="start"
+                  endAccessor="end"
+                  popup
+                  eventPropGetter={handleEventStyle}
+                  views={['month', 'week', 'day']}
+                />
+              </div>
+            )}
           </Card>
           <AccessWrapper noAccessRoles={DASHBOARD_PROJECT_LOG_NO_ACCESS}>
             <Card className="gx-card" title="Project Time Log Report">

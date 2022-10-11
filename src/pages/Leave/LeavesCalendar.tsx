@@ -3,6 +3,7 @@ import React from 'react'
 import {useQuery} from '@tanstack/react-query'
 import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
+import {Spin} from 'antd'
 import {getFiscalYearLeaves} from 'services/leaves'
 
 const localizer = momentLocalizer(moment)
@@ -69,16 +70,24 @@ const LeavesCalendar = () => {
 
   return (
     <Card className="gx-card" title="Calendar">
-      <div className="gx-rbc-calendar">
-        <Calendar
-          eventPropGetter={handleEventStyle}
-          localizer={localizer}
-          events={leaveUsers}
-          startAccessor="start"
-          endAccessor="end"
-          popup
-        />
-      </div>
+      {leavesQuery?.isLoading ? (
+        <div 
+        className='gx-d-flex gx-justify-content-around'
+        >
+          <Spin />
+        </div>
+      ) : (
+        <div className="gx-rbc-calendar">
+          <Calendar
+            eventPropGetter={handleEventStyle}
+            localizer={localizer}
+            events={leaveUsers}
+            startAccessor="start"
+            endAccessor="end"
+            popup
+          />
+        </div>
+      )}
     </Card>
   )
 }

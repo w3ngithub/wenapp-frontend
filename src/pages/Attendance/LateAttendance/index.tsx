@@ -164,7 +164,14 @@ function LateAttendance({userRole}: {userRole: string}) {
 
   const handleCutLeaveInAttendance = () => {
     const payload = recordRef.data.map((x: any) => x._id) || []
-    attendanceGroupMutation.mutate(payload)
+
+    attendanceGroupMutation.mutate({
+      attendance: payload,
+      userId: recordRef.data[0].userId,
+      leaveCutdate: moment(recordRef.data.at(-1).attendanceDate)
+        .startOf('day')
+        .format(),
+    })
   }
 
   const expandedRowRender = (parentRow: any) => {

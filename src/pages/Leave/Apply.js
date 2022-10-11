@@ -14,7 +14,12 @@ import {
 import {filterOptions, handleResponse, MuiFormatDate} from 'helpers/utils'
 import React, {useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
-import {createLeave, getLeavesOfUser, getLeaveTypes} from 'services/leaves'
+import {
+  createLeave,
+  getLeavesOfUser,
+  getLeaveTypes,
+  sendEmailforLeave,
+} from 'services/leaves'
 import {useSelector} from 'react-redux'
 import {getTeamLeads} from 'services/users/userDetails'
 import {notification} from 'helpers/notification'
@@ -69,7 +74,8 @@ function Apply({user}) {
         'Leave submitted successfully',
         'Leave submittion failed',
         [
-          () => handleFormReset(),
+          () => handleFormReset(response),
+          () => sendEmailNotification(response),
           () => queryClient.invalidateQueries(['userLeaves']),
           () => queryClient.invalidateQueries(['leaves']),
           () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
@@ -79,6 +85,16 @@ function Apply({user}) {
       notification({message: 'Leave submittion failed!', type: 'error'})
     },
   })
+
+  const emailMutation = useMutation(payload => sendEmailforLeave(payload))
+
+  const sendEmailNotification = res => {
+    emailMutation.mutate({
+      leaveStatus: res.data.data.data.leaveStatus,
+      leaveDates: res.data.data.data.leaveDates,
+      user: res.data.data.data.user,
+    })
+  }
 
   const handleTypesChange = value => {
     setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value)
@@ -152,28 +168,7 @@ function Apply({user}) {
     <Spin spinning={leaveMutation.isLoading}>
       <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
         <Row type="flex">
-          {immediateApprovalLeaveTypes.includes(leaveType) ? (
-            <Col
-              xs={24}
-              lg={8}
-              sm={24}
-              md={6}
-              style={{marginTop: innerWidth < 974 ? '1.2rem' : 0}}
-            >
-              <FormItem
-                style={{marginBottom: '0.5px'}}
-                label="Leave Starting Date"
-                name="leaveDatesPeriod"
-                rules={[{required: true, message: 'Required!'}]}
-              >
-                <DatePicker
-                  className="gx-mb-3 "
-                  style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
-                  disabledDate={disabledDate}
-                />
-              </FormItem>
-            </Col>
-          ) : (
+          {!immediateApprovalLeaveTypes.includes(leaveType) && (
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
               <FormItem
                 label="Select Leave Dates"
@@ -234,8 +229,7 @@ function Apply({user}) {
             span={18}
             xs={24}
             sm={24}
-            md={15}
-            style={{marginTop: innerWidth < 974 ? '1.2rem' : 0}}
+            md={immediateApprovalLeaveTypes.includes(leaveType) ? 24 : 15}
           >
             <Row
               type="flex"
@@ -244,9 +238,9 @@ function Apply({user}) {
               <Col
                 span={12}
                 xs={24}
-                lg={12}
+                lg={immediateApprovalLeaveTypes.includes(leaveType) ? 6 : 10}
                 md={24}
-                style={{marginBottom: innerWidth < 974 ? '1.2rem' : 0}}
+                // style={{marginBottom: innerWidth < 974 ? '1.2rem' : 0}}
               >
                 <FormItem
                   label="Leave Type"
@@ -278,41 +272,31 @@ function Apply({user}) {
                   </FormItem>
                 )}
               </Col>
-              <Col
-                span={24}
-                xs={24}
-                lg={12}
-                md={24}
-                style={{
-                  paddingLeft: innerWidth < 981 ? '15px' : 0,
-                  paddingRight: 0,
-                }}
-              >
-                <FormItem
-                  label="Select Team Leads"
-                  name="assignTo"
-                  rules={[{required: true, message: 'Required!'}]}
+              {immediateApprovalLeaveTypes.includes(leaveType) && (
+                <Col
+                  span={24}
+                  xs={24}
+                  lg={6}
+                  md={24}
+                  style={{
+                    paddingLeft: innerWidth < 981 ? '15px' : 0,
+                    paddingRight: innerWidth < 981 ? '15px' : 0,
+                  }}
                 >
-                  <Checkbox.Group style={{width: '100%'}}>
-                    <Row style={{flexDirection: 'row'}}>
-                      {teamLeadsQuery?.data?.data?.map(lead => (
-                        <Col
-                          span={12}
-                          key={lead._id}
-                          style={{paddingLeft: 0, paddingRight: 0}}
-                        >
-                          <Checkbox
-                            className="gx-mb-3 team-leads"
-                            value={lead._id}
-                          >
-                            {lead.name}
-                          </Checkbox>
-                        </Col>
-                      ))}
-                    </Row>
-                  </Checkbox.Group>
-                </FormItem>
-              </Col>
+                  <FormItem
+                    style={{marginBottom: '0.5px'}}
+                    label="Leave Starting Date"
+                    name="leaveDatesPeriod"
+                    rules={[{required: true, message: 'Required!'}]}
+                  >
+                    <DatePicker
+                      className="gx-mb-3 "
+                      style={{width: '100%'}}
+                      disabledDate={disabledDate}
+                    />
+                  </FormItem>
+                </Col>
+              )}
             </Row>
             <Row style={{marginLeft: innerWidth < 764 ? '-15px' : 0}}>
               <Col span={24}>

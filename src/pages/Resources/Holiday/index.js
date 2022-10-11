@@ -9,7 +9,7 @@ import {
   getAllHolidays,
   updateHoliday,
 } from 'services/resources'
-import {Button, Card, Table} from 'antd'
+import {Button, Card, Spin, Table} from 'antd'
 import {HOLIDAY_COLUMNS} from 'constants/Holidays'
 import {changeDate, getLocalStorageData, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
@@ -202,16 +202,22 @@ function Holiday() {
         />
       </Card>
       <Card title="Holidays Calendar">
-        <div className="gx-rbc-calendar">
-          <Calendar
-            eventPropGetter={handleEventStyle}
-            localizer={localizer}
-            events={holidaysCalendar}
-            startAccessor="start"
-            endAccessor="end"
-            popup
-          />
-        </div>
+        {isLoading ? (
+          <div className="gx-d-flex gx-justify-content-around">
+            <Spin />
+          </div>
+        ) : (
+          <div className="gx-rbc-calendar">
+            <Calendar
+              eventPropGetter={handleEventStyle}
+              localizer={localizer}
+              events={holidaysCalendar}
+              startAccessor="start"
+              endAccessor="end"
+              popup
+            />
+          </div>
+        )}
       </Card>
     </div>
   )
