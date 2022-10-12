@@ -34,11 +34,12 @@ const formattedLeaves = (leaves: any) => {
 
 function MyHistory({
   userId,
-  handleCancelLeave,
+  handleOpenCancelLeaveModal,
   isLoading,
 }: {
   userId: string
   handleCancelLeave: (leave: any) => void
+  handleOpenCancelLeaveModal: (param : any) => void
   isLoading: boolean
 }) {
   const [form] = Form.useForm()
@@ -127,7 +128,7 @@ function MyHistory({
       </div>
       <Table
         className="gx-table-responsive"
-        columns={LEAVES_COLUMN(handleCancelLeave).filter(
+        columns={LEAVES_COLUMN(handleOpenCancelLeaveModal).filter(
           (item, index) => index !== 0
         )}
         dataSource={formattedLeaves(userLeavesQuery?.data?.data?.data?.data)}

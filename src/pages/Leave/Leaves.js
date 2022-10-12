@@ -49,8 +49,8 @@ function Leaves({
   selectedDate,
   selectedUser,
   status,
+  handleOpenCancelLeaveModal,
   selectedRows,
-  handleCancelLeave,
   rowSelection,
   isExportDisabled,
   userRole,
@@ -137,6 +137,7 @@ function Leaves({
     setOpenModal(false)
     setIsEditMode(false)
   }
+
   const handleOpenModal = () => {
     setOpenModal(true)
     setReadOnly(false)
@@ -258,7 +259,7 @@ function Leaves({
       <Table
         className="gx-table-responsive"
         columns={LEAVES_COLUMN(
-          handleCancelLeave,
+          handleOpenCancelLeaveModal,
           handleApproveLeave,
           handleOpenEditModal,
           true,
