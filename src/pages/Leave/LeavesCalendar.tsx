@@ -35,10 +35,12 @@ const LeavesCalendar = () => {
     ({user, leaveDates, leaveType}: any) => {
       const nameSplitted = user[0].split(' ')
       let lastName
-      if (nameSplitted.length === 1) lastName = ''
-      else lastName = `${nameSplitted.pop().substring(0, 1)}.`
+      if (nameSplitted.length === 1) {
+        lastName = ''
+      } else {
+        lastName = `${nameSplitted.pop().substring(0, 1)}.`
+      }
 
-      lastName = `${nameSplitted.pop().substring(0, 1)}.`
       const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
       if (leaveType[0] === 'Paternity' || leaveType[0] === 'Maternity')
