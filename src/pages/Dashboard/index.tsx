@@ -255,10 +255,9 @@ const Dashboard = () => {
 
   const CustomEvent = (props: any) => {
     const nameSplitted = props?.event?.title.split(' ')
-    let lastName;
-    if (nameSplitted.length === 1) {
-      lastName = ''
-    } else lastName = `${nameSplitted.pop().substring(0, 1)}.`
+    let lastName
+    if (nameSplitted.length === 1) lastName = ''
+    else lastName = `${nameSplitted.pop().substring(0, 1)}.`
     const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
     const style = {
