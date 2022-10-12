@@ -10,6 +10,7 @@ import Resources from './Resources'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {getLocalStorageData} from 'helpers/utils'
 import RoleAccess, {SETTINGS_TABS_NO_ACCESS} from 'constants/RoleAccess'
+import Email from './Email'
 
 const TabPane = Tabs.TabPane
 
@@ -51,6 +52,12 @@ function Settings() {
         {!SETTINGS_TABS_NO_ACCESS.includes(key) && (
           <TabPane tab="Resources" key="7">
             <Resources />
+          </TabPane>
+        )}
+
+        {!SETTINGS_TABS_NO_ACCESS.includes(key) && (
+          <TabPane tab="Emails" key="8">
+            <Email />
           </TabPane>
         )}
       </Tabs>
