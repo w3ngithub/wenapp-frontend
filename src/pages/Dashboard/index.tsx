@@ -121,34 +121,61 @@ const Dashboard = () => {
             leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
           const isLeaveMaternity =
             leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
-          if (isLeavePaternity || isLeaveMaternity) {
-            const days = isLeaveMaternity ? 59 : 4
-            const lastLeaveDate = new Date(
-              new Date(leave?.leaveDates).setDate(
-                new Date(leave?.leaveDates).getDate() + days
-              )
-            )
+          const isLeavePTO =
+            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
+
+          if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
             const weeksLastDate = new Date(
               MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
             )
-            const date = new Date(leave?.leaveDates)
+            const startLeaveDate = new Date(leave?.leaveDates[0])
+            const endLeaveDate = new Date(leave?.leaveDates[1])
+            const todayDate = new Date(MuiFormatDate(new Date()))
 
             for (let i = 0; i < 7; i++) {
-              const isHoliday = date.getDay() === 0 || date.getDay() === 6
-              if (date < lastLeaveDate && date < weeksLastDate && !isHoliday)
+              const isHoliday =
+                startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
+
+              if (
+                startLeaveDate >= todayDate &&
+                startLeaveDate < weeksLastDate &&
+                startLeaveDate <= endLeaveDate &&
+                !isHoliday
+              ) {
                 updateLeaves = [
                   ...updateLeaves,
                   {
                     ...leave,
+                    date: leave?.leaveDates[0],
+
                     leaveDates: new Date(
-                      date.setDate(date.getDate() + 1)
+                      startLeaveDate.setDate(startLeaveDate.getDate())
                     ).toJSON(),
                   },
                 ]
+              }
+
+              if (startLeaveDate < todayDate) {
+                startLeaveDate.setMonth(todayDate.getMonth())
+                startLeaveDate.setFullYear(todayDate.getFullYear())
+                updateLeaves = [
+                  ...updateLeaves,
+                  {
+                    ...leave,
+                    date: leave?.leaveDates[0],
+                    leaveDates: new Date(
+                      startLeaveDate.setDate(todayDate.getDate())
+                    ).toJSON(),
+                  },
+                ]
+              }
+              startLeaveDate.setDate(startLeaveDate.getDate() + 1)
             }
-            console.log(updateLeaves)
           } else {
-            updateLeaves = [...updateLeaves, leave]
+            updateLeaves = [
+              ...updateLeaves,
+              {...leave, date: leave?.leaveDates[0]},
+            ]
           }
         })
         return updateLeaves
@@ -270,7 +297,7 @@ const Dashboard = () => {
                     state: {
                       tabKey: '3',
                       leaveStatus: 'approved',
-                      date: props.event.date,
+                      date: props.event.startDate,
                       user: props.event.id,
                     },
                   })
@@ -314,12 +341,14 @@ const Dashboard = () => {
   let components = {
     event: CustomEvent, // used by each view (Month, Day, Week)
   }
+
   const leaveUsers = leavesQuery?.data?.map((x: any, index: number) => ({
     title: x?.user[0],
     start: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
     end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
     type: 'leave',
     date: x?.leaveDates,
+    startDate: x?.date,
     halfDay: x?.halfDay,
     leaveType: x?.leaveType[0]
       .split(' ')
@@ -359,7 +388,6 @@ const Dashboard = () => {
       type: 'birthday',
     })
   )
-
   const calendarEvents = [
     ...(holidaysCalendar || []),
     ...(noticesCalendar || []),

@@ -14,7 +14,6 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {
   LEAVES_TAB_ACTIONS_NO_ACCESS,
-  LEAVE_TABS_NO_ACCESS,
   LEAVE_TAB_ADD_LEAVE_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {disabledDate} from 'util/antDatePickerDisabled'
