@@ -173,6 +173,15 @@ const sendEmailforLeave = async payload => {
   }
 }
 
+const getTodayLeaves = async () => {
+  try {
+    let response = await API.get(`${Apis.Leaves}/today`)
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err?.response)
+  }
+}
+
 export {
   getLeaveDaysOfAllUsers,
   getLeavesOfUser,
@@ -190,4 +199,5 @@ export {
   getWeekRangeLeaves,
   getQuarters,
   sendEmailforLeave,
+  getTodayLeaves,
 }

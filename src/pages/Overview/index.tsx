@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import {useQuery} from '@tanstack/react-query'
-import {getLeavesOfAllUsers} from 'services/leaves'
+import {getTodayLeaves} from 'services/leaves'
 import moment from 'moment'
-import {formatToUtc, sortFromDate} from 'helpers/utils'
+import {sortFromDate} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import LeaveEmployee from './LeaveEmployee'
 import CheckedInEmployee from './CheckInEmployee'
@@ -13,7 +13,7 @@ import {getAllUsers} from 'services/users/userDetails'
 import UnCheckedInEmployee from './UnCheckedEmployee'
 
 const Overview = () => {
-  const {data, isLoading} = useQuery(
+  const {data} = useQuery(
     ['users'],
     () => getAllUsers({active: 'true', fields: 'name,-role,-position,_id'}),
     {
@@ -32,12 +32,7 @@ const Overview = () => {
 
   const {data: leaves, isLoading: leaveLoading} = useQuery(
     ['leavesOverview'],
-    () =>
-      getLeavesOfAllUsers(
-        'approved',
-        '',
-        moment.utc(formatToUtc(moment().startOf('day'))).format()
-      ),
+    () => getTodayLeaves(),
     {
       onError: error => {
         notification({message: 'Could not approve leave', type: 'error'})
@@ -54,8 +49,7 @@ const Overview = () => {
         toDate: moment.utc(intialDate[1]).format(),
       })
   )
-
-  const leavesSection = leaves?.data?.data?.data || []
+  const leavesSection = leaves?.data?.data?.users || []
   const checkInSecition =
     CheckedIn?.data?.data?.attendances?.[0]?.data?.map((d: any) => ({
       ...d,
