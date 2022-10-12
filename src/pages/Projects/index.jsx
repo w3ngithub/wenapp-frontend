@@ -304,7 +304,8 @@ function ProjectsPage() {
   if (isLoading) {
     return <CircularProgress />
   }
-  console.log(QAs?.data, userRecord.project)
+  console.log('count', data?.data?.data)
+
   return (
     <div>
       <ProjectModal
@@ -482,7 +483,7 @@ function ProjectsPage() {
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
-            hideOnSinglePage: true,
+            hideOnSinglePage: data?.data?.data?.count ? false : true,
             onChange: handlePageChange,
           }}
           loading={isLoading || isFetching || deleteProjectMutation.isLoading}

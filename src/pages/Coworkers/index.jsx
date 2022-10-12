@@ -397,7 +397,7 @@ function CoworkersPage() {
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
-            hideOnSinglePage: true,
+            hideOnSinglePage :  data?.data?.data?.count ? false : true,
             onChange: handlePageChange,
           }}
           loading={

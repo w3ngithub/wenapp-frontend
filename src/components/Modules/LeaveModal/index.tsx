@@ -363,21 +363,21 @@ function LeaveModal({
             {user &&
               (immediateApprovalLeaveTypes.includes(leaveType) ? (
                 <Col xs={24} sm={8}>
-                  <Form.Item
-                    style={{marginBottom: '0.5px'}}
-                    label="Leave Start Date"
-                    name="leaveDatesPeriod"
-                    rules={[{required: true, message: 'Required!'}]}
-                  >
-                    <ConfigProvider locale={en_GB}>
+                  <ConfigProvider locale={en_GB}>
+                    <Form.Item
+                      style={{marginBottom: '0.5px'}}
+                      label="Leave Start Date"
+                      name="leaveDatesPeriod"
+                      rules={[{required: true, message: 'Required!'}]}
+                    >
                       <DatePicker
                         className="gx-mb-3 "
                         style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
                         disabled={readOnly}
                         disabledDate={disabledDate}
                       />
-                    </ConfigProvider>
-                  </Form.Item>
+                    </Form.Item>
+                  </ConfigProvider>
                 </Col>
               ) : (
                 <Col span={6} xs={24} sm={8}>

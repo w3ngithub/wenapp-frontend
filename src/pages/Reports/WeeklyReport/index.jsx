@@ -24,7 +24,6 @@ const intialDate = [
 ]
 
 const formattedWeeklyReports = (reports, clients) => {
-  console.log(reports)
   return reports
     ?.filter((reportFil) => reportFil.project?.length !== 0)
     ?.map((report) => ({
@@ -199,7 +198,7 @@ function WeeklyReport() {
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
-            hideOnSinglePage: true,
+            hideOnSinglePage: data?.data?.data?.count ? false : true,
             onChange: handlePageChange,
           }}
           loading={isLoading || isFetching}
