@@ -5,7 +5,7 @@ import React from 'react'
 import {LEAVE_TABLE_ACTION_NO_ACESS} from './RoleAccess'
 
 const LEAVES_COLUMN = (
-  onCancelClick: (param: any) => void,
+  onCancelLeave?: (param: any) => void,
   onApproveClick?: (param: any) => void,
   onEditClick?: (param: any, param2: any) => void,
   isAdmin: boolean = false,
@@ -80,16 +80,14 @@ const LEAVES_COLUMN = (
                             </span>
                           </Popconfirm>
                           <Divider type="vertical" />
-                          <Popconfirm
-                            title="Are you sure you want to cancel?"
-                            onConfirm={() => onCancelClick(record)}
-                            okText="Yes"
-                            cancelText="No"
+                          <span
+                            className="gx-link gx-text-danger"
+                            onClick={() =>
+                              onCancelLeave ? onCancelLeave(record) : () => {}
+                            }
                           >
-                            <span className="gx-link gx-text-danger">
-                              Cancel
-                            </span>
-                          </Popconfirm>
+                            Cancel
+                          </span>
                           <Divider type="vertical" />
 
                           <i
@@ -103,15 +101,16 @@ const LEAVES_COLUMN = (
                 </div>
               )
             return record.status === 'pending' ? (
-              <Popconfirm
-                title="Are you sure you want to cancel?"
-                onConfirm={() => onCancelClick(record)}
-                okText="Yes"
-                cancelText="No"
+              <span
+                className="gx-link gx-text-danger"
+                onClick={() =>
+                  onCancelLeave ? onCancelLeave(record) : () => {}
+                }
               >
-                <span className="gx-link gx-text-danger">Cancel</span>
-              </Popconfirm>
-            ) : null
+                Cancel
+              </span>
+            ) :
+            null
           },
         },
       ]
@@ -190,15 +189,16 @@ const LEAVES_COLUMN = (
                 </div>
               )
             return record.status === 'pending' ? (
-              <Popconfirm
-                title="Are you sure you want to cancel?"
-                onConfirm={() => onCancelClick(record)}
-                okText="Yes"
-                cancelText="No"
+              <span
+                className="gx-link gx-text-danger"
+                onClick={() =>
+                  onCancelLeave ? onCancelLeave(record) : () => {}
+                }
               >
-                <span className="gx-link gx-text-danger">Cancel</span>
-              </Popconfirm>
-            ) : null
+                Cancel
+              </span>
+            ) : 
+            null
           },
         },
       ]

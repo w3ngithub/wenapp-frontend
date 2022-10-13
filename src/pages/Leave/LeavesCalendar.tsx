@@ -34,8 +34,14 @@ const LeavesCalendar = () => {
   const leaveUsers = leavesQuery?.data?.map(
     ({user, leaveDates, leaveType}: any) => {
       const nameSplitted = user[0].split(' ')
-      const lastName = `${nameSplitted.pop().substring(0, 1)}.`
-      const shortName = `${nameSplitted.join(' ')} ${lastName}`
+      let lastName
+      if (nameSplitted.length === 1) {
+        lastName = ''
+      } else {
+        lastName = `${nameSplitted.pop().substring(0, 1)}.`
+      }
+
+      const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
       if (leaveType[0] === 'Paternity' || leaveType[0] === 'Maternity')
         return {
@@ -71,9 +77,7 @@ const LeavesCalendar = () => {
   return (
     <Card className="gx-card" title="Calendar">
       {leavesQuery?.isLoading ? (
-        <div 
-        className='gx-d-flex gx-justify-content-around'
-        >
+        <div className="gx-d-flex gx-justify-content-around">
           <Spin />
         </div>
       ) : (
