@@ -110,7 +110,6 @@ function AdminAttendanceCalendar() {
       id: leave?._id,
       title: leave?.leaveType?.name,
       start: new Date(leave?.leaveDates?.[0]),
-      // end: new Date(leave?.leaveDates?.[0]),
       end: new Date(
         leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
           LEAVES_TYPES.Casual ||
@@ -118,7 +117,6 @@ function AdminAttendanceCalendar() {
           ? leave?.leaveDates?.[0]
           : leave?.leaveDates?.[1]
       ),
-      // type: 'leave',
       type:
         leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
           LEAVES_TYPES.Casual ||
