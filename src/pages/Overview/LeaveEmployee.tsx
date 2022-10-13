@@ -3,19 +3,30 @@ import {Card, Table} from 'antd'
 import {WalletOutlined} from '@ant-design/icons'
 import {OVERVIEW_LEAVES} from 'constants/Overview'
 import {changeDate} from 'helpers/utils'
+import {LEAVES_TYPES} from 'constants/Leaves'
 
-const formattedUsers = (users: any[]) => {
-  return users?.map((user) => ({
-    ...user,
-    key: user._id,
-    name: user.user.name,
-    absentFrom: changeDate(user.leaveDates[0]),
-    till: changeDate(user.leaveDates.at(-1)),
-    fullHalf: user.halfDay ? 'Half' : 'Full',
+const formattedLeaves = (leaves: any[]) => {
+  return leaves?.map(leave => ({
+    ...leave,
+    key: leave?._id,
+    name: leave?.user[0]?.name,
+    absentFrom: changeDate(leave?.leaveDates[0]),
+    till: changeDate(leave.leaveDates.at(-1)),
+    fullHalf: leave.halfDay ? 'Half' : 'Full',
     period:
-      user.leaveDates.length > 1
-        ? user.leaveDates.length + ' Days'
-        : user.halfDay
+      leave?.leaveType[0]?.name.split(' ')[0].toLowerCase() !==
+        LEAVES_TYPES.Casual &&
+      leave?.leaveType[0]?.name.split(' ')[0].toLowerCase() !==
+        LEAVES_TYPES.Sick
+        ? `${(
+            (new Date(leave?.leaveDates[1]).getTime() -
+              new Date(leave?.leaveDates[0]).getTime()) /
+              (1000 * 3600 * 24) +
+            1
+          ).toFixed()} days`
+        : leave.leaveDates.length > 1
+        ? leave.leaveDates.length + ' Days'
+        : leave.halfDay
         ? 'Half Day'
         : '1 Day',
   }))
@@ -39,7 +50,7 @@ function LeaveEmployee({leaves}: {leaves: any[]}) {
       <Table
         className="gx-table-responsive"
         columns={OVERVIEW_LEAVES(sort)}
-        dataSource={formattedUsers(leaves)}
+        dataSource={formattedLeaves(leaves)}
         onChange={handleTableChange}
         pagination={false}
       />
