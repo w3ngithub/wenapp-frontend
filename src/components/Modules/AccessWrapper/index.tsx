@@ -1,5 +1,6 @@
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {getLocalStorageData} from 'helpers/utils'
+import RoleAccess from 'constants/RoleAccess'
 
 interface AccessWrapperInterface {
   noAccessRoles: string[]
@@ -11,7 +12,8 @@ function AccessWrapper({noAccessRoles, children}: AccessWrapperInterface) {
     role: {key},
   } = getLocalStorageData(LOCALSTORAGE_USER)
 
-  if (!noAccessRoles.includes(key)) return children
+  if (!noAccessRoles.includes(key) && Object.values(RoleAccess).includes(key))
+    return children
   return null
 }
 
