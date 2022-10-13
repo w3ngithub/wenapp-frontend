@@ -35,8 +35,8 @@ const getLeavesOfAllUsers = async (
   status = '',
   user = '',
   date = '',
-  page = 1,
-  limit = 10
+  page = '',
+  limit = ''
 ) => {
   try {
     let response = await API.get(
