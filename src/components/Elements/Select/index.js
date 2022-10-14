@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {Select as Dropdown} from 'antd'
 import {filterOptions} from 'helpers/utils'
+import './selectLabel.less' 
 const Option = Dropdown.Option
 
 const Select = ({
@@ -12,13 +13,16 @@ const Select = ({
   mode,
   inputSelect = false,
   width = 200,
+  placeholderClass
 }) => {
   const [searchValue, setSearchValue] = useState('')
   return (
+    <div>
     <Dropdown
+    className={placeholderClass}
       allowClear
       showSearch
-      placeholder={placeholder}
+      placeholder={placeholderClass?null:placeholder}
       style={style}
       onChange={onChange}
       onSearch={(e) => {
@@ -27,7 +31,6 @@ const Select = ({
       value={value}
       filterOption={filterOptions}
       mode={mode}
-      showArrow={false}
       open={!inputSelect ? undefined : searchValue.length ? true : false}
       onSelect={() => {
         inputSelect && setSearchValue('')
@@ -40,6 +43,8 @@ const Select = ({
           </Option>
         ))}
     </Dropdown>
+    {placeholderClass?<span className={value?'floating-label-fixed':'floating-label'}>{placeholder}</span>:null}
+    </div>
   )
 }
 
