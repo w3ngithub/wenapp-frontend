@@ -11,6 +11,7 @@ import {getLeavesOfAllUsers} from 'services/leaves'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {ATTENDANCE} from 'helpers/routePath'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {LEAVES_TYPES} from 'constants/Leaves'
 
 const localizer = momentLocalizer(moment)
 
@@ -67,13 +68,23 @@ function AttendanceCalendar() {
         ...style,
         backgroundColor: '#FC6BAB',
       }
+    if (event.type === 'longLeaves')
+      style = {
+        ...style,
+        width: 'auto',
+        backgroundColor: '#FC6BAB',
+      }
 
     if (event.isLessHourWorked)
       style = {
         ...style,
         backgroundColor: '#E14B4B',
       }
-    if (!event.isLessHourWorked && event.type !== 'leave')
+    if (
+      !event.isLessHourWorked &&
+      event.type !== 'leave' &&
+      event.type !== 'longLeaves'
+    )
       style = {
         ...style,
         backgroundColor: '#038fde',
@@ -92,12 +103,22 @@ function AttendanceCalendar() {
       id: leave?._id,
       title: leave?.leaveType?.name,
       start: new Date(leave?.leaveDates?.[0]),
-      end: new Date(leave?.leaveDates?.[0]),
-      type: 'leave',
+      end: new Date(
+        leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
+          LEAVES_TYPES.Casual ||
+        leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
+          ? leave?.leaveDates?.[0]
+          : leave?.leaveDates?.[1]
+      ),
+      type:
+        leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
+          LEAVES_TYPES.Casual ||
+        leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
+          ? 'leave'
+          : 'longLeaves',
       allDay: true,
     })
   })
-
   data?.data?.data?.attendances[0]?.data?.forEach((attendance: any) => {
     const sortedAttendance = sortFromDate(
       attendance?.data,
@@ -123,7 +144,7 @@ function AttendanceCalendar() {
   })
 
   const handleSelectEvent = (data: any) => {
-    if (data.type === 'leave')
+    if (data.type === 'leave' || data.type === 'longLeaves')
       navigate(`/leave`, {
         state: {tabKey: '2', date: new Date(data?.start).toJSON()},
       })

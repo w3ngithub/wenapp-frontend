@@ -11,6 +11,7 @@ import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
 import {useNavigate} from 'react-router-dom'
 import {ATTENDANCE} from 'helpers/routePath'
+import {LEAVES_TYPES} from 'constants/Leaves'
 
 const localizer = momentLocalizer(moment)
 const FormItem = Form.Item
@@ -83,6 +84,13 @@ function AdminAttendanceCalendar() {
         backgroundColor: '#FC6BAB',
       }
 
+    if (event.type === 'longLeaves')
+      style = {
+        ...style,
+        width: 'auto',
+        backgroundColor: '#FC6BAB',
+      }
+
     if (event.isLessHourWorked)
       style = {
         ...style,
@@ -102,8 +110,19 @@ function AdminAttendanceCalendar() {
       id: leave?._id,
       title: leave?.leaveType?.name,
       start: new Date(leave?.leaveDates?.[0]),
-      end: new Date(leave?.leaveDates?.[0]),
-      type: 'leave',
+      end: new Date(
+        leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
+          LEAVES_TYPES.Casual ||
+        leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
+          ? leave?.leaveDates?.[0]
+          : leave?.leaveDates?.[1]
+      ),
+      type:
+        leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
+          LEAVES_TYPES.Casual ||
+        leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
+          ? 'leave'
+          : 'longLeaves',
       allDay: true,
     })
   })
@@ -133,7 +152,7 @@ function AdminAttendanceCalendar() {
   })
 
   const handleSelectEvent = (data: any) => {
-    if (data.type === 'leave')
+    if (data.type === 'leave' || data.type === 'longLeaves')
       navigate(`/leave`, {
         state: {
           tabKey: '3',
