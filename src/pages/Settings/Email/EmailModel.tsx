@@ -1,5 +1,11 @@
+import React, {useEffect, useState} from 'react'
 import {Button, Form, Input, Modal, Spin} from 'antd'
-import React, {useEffect} from 'react'
+import {Editor} from 'react-draft-wysiwyg'
+import {convertToRaw, EditorState, ContentState} from 'draft-js'
+import draftToHtml from 'draftjs-to-html'
+import htmlToDraft from 'html-to-draftjs'
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
+import {useSelector} from 'react-redux'
 
 interface modalInterface {
   isEditMode: boolean
@@ -23,23 +29,51 @@ function EmailModal({
   isLoading,
   editData,
 }: modalInterface) {
+  const [editorState, seteditorState] = useState(EditorState.createEmpty())
+
   const [form] = Form.useForm()
-  const {TextArea} = Input
+
+  const {themeType} = useSelector((state: any) => state.settings)
+  const darkMode = themeType === THEME_TYPE_DARK
+
+  // const {TextArea} = Input
 
   const handleSubmit = () => {
-    form.validateFields().then(values => onSubmit(values))
+    form.validateFields().then((values) =>
+      onSubmit({
+        ...values,
+        body: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+      })
+    )
   }
 
   useEffect(() => {
     if (toggle) {
       if (isEditMode) {
         form.setFieldValue('title', editData?.title)
-        form.setFieldValue('body', editData?.body)
         form.setFieldValue('module', editData?.module)
+        const blocksFromHTML = htmlToDraft(editData?.body)
+        const state = ContentState.createFromBlockArray(
+          blocksFromHTML.contentBlocks,
+          blocksFromHTML.entityMap
+        )
+
+        const initialState = blocksFromHTML
+          ? EditorState.createWithContent(state)
+          : EditorState.createEmpty()
+        seteditorState(initialState)
       }
     }
-    if (!toggle) form.resetFields()
+    if (!toggle) {
+      form.resetFields()
+      seteditorState(EditorState.createEmpty())
+    }
   }, [toggle])
+
+  const onEditorStateChange = (editorStates: any) => {
+    seteditorState(editorStates)
+  }
+
   return (
     <Modal
       title={isEditMode ? `Update Email` : `Add Email`}
@@ -80,23 +114,21 @@ function EmailModal({
               // onChange={handleInputChange}
             />
           </Form.Item>
-          <Form.Item
-            name="body"
-            label="Description"
-            rules={[
-              {required: true, message: 'Required!'},
-              {min: 10, message: 'At least 10 characters required'},
-            ]}
-          >
-            <TextArea
-              placeholder={`Enter Email Description`}
-              rows={10}
-              //   value={editData?.content ?? ''}
+          <Form.Item name="body" label="Description">
+            <Editor
+              editorStyle={{
+                width: '100%',
+                minHeight: 500,
+                borderWidth: 1,
+                borderStyle: 'solid',
+                borderColor: 'lightgray',
+                background: darkMode ? '#434f5a' : 'white',
+                color: darkMode ? '#e0e0e0' : 'black',
+              }}
+              editorState={editorState}
+              wrapperClassName="demo-wrapper"
+              onEditorStateChange={onEditorStateChange}
             />
-            {/* // value={input}
-							placeholder={type}
-							// onChange={handleInputChange}
-						/> */}
           </Form.Item>
         </Form>
       </Spin>
