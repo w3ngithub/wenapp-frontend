@@ -51,9 +51,8 @@ function LogtimeModal({
       return true
     }
     return false;
-  }
-  )
-  console.log(designersName)
+  })
+  
   const handleCancel = () => {
     form.resetFields()
     onClose()
