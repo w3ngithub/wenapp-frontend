@@ -131,14 +131,14 @@ const Dashboard = () => {
             const startLeaveDate = new Date(leave?.leaveDates[0])
             const endLeaveDate = new Date(leave?.leaveDates[1])
             const todayDate = new Date(MuiFormatDate(new Date()))
+            for (let i = 0; i < 8; i++) {
 
-            for (let i = 0; i < 7; i++) {
               const isHoliday =
                 startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
 
               if (
                 startLeaveDate >= todayDate &&
-                startLeaveDate < weeksLastDate &&
+                startLeaveDate <= weeksLastDate &&
                 startLeaveDate <= endLeaveDate &&
                 !isHoliday
               ) {
