@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import '@ant-design/compatible/assets/index.css'
-import {Card, Table, Select, Input, Button, Form} from 'antd'
+import {Card, Table, Input, Button, Form} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
-import {changeDate, filterOptions, handleResponse} from 'helpers/utils'
+import {changeDate,  handleResponse} from 'helpers/utils'
 import {
   addProject,
   deleteProject,
@@ -23,9 +23,10 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {PROJECTS_ADD_NEW_NO_ACCESS} from 'constants/RoleAccess'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import Select from 'components/Elements/Select'
+import { PLACE_HOLDER_CLASS } from 'constants/Common'
 
 const Search = Input.Search
-const Option = Select.Option
 const FormItem = Form.Item
 
 const formattedProjects = projects => {
@@ -304,7 +305,6 @@ function ProjectsPage() {
   if (isLoading) {
     return <CircularProgress />
   }
-  console.log('count', data?.data?.data)
 
   return (
     <div>
@@ -361,99 +361,75 @@ function ProjectsPage() {
           <Form layout="inline" className="gx-d-flex gx-flex-row" form={form}>
             <FormItem className="direct-form-search">
               <Select
+              placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select Project Type"
                 onChange={handleProjectTypeChange}
                 value={projectType}
-                showSearch
-                filterOption={filterOptions}
-              >
-                {projectTypesData &&
-                  projectTypesData?.data?.data?.data?.map(type => (
-                    <Option value={type._id} key={type._id}>
-                      {type?.name}
-                    </Option>
-                  ))}
-              </Select>
+                options= {projectTypesData?.data?.data?.data?.map(x => ({
+                  id:x?._id,
+                  value:x?.name
+                }))}
+              />
             </FormItem>
             <FormItem className="direct-form-search">
               <Select
+              placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select Project Status"
                 onChange={handleProjectStatusChange}
                 value={projectStatus}
-                showSearch
-                filterOption={filterOptions}
-              >
-                {projectStatusData &&
-                  projectStatusData?.data?.data?.data?.map(status => (
-                    <Option value={status._id} key={status._id}>
-                      {status?.name}
-                    </Option>
-                  ))}
-              </Select>
+                options= {projectStatusData?.data?.data?.data?.map(x => ({
+                  id:x?._id,
+                  value:x?.name
+                }))}
+              />
             </FormItem>
             <FormItem className="direct-form-search">
               <Select
+              placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select Client"
                 onChange={handleClientChange}
                 value={projectClient}
-                showSearch
-                filterOption={filterOptions}
-              >
-                {projectClientsData &&
-                  projectClientsData?.data?.data?.data?.map(client => (
-                    <Option value={client._id} key={client._id}>
-                      {client?.name}
-                    </Option>
-                  ))}
-              </Select>
+                options= {projectClientsData?.data?.data?.data?.map(x => ({
+                  id:x?._id,
+                  value:x?.name
+                }))}
+              />
             </FormItem>
             <FormItem className="direct-form-search">
               <Select
+              placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select Developer"
                 onChange={handleDeveloperChange}
                 value={developer}
-                showSearch
-                filterOption={filterOptions}
-              >
-                {developers &&
-                  developers?.data?.data?.data?.map(developer => (
-                    <Option value={developer._id} key={developer._id}>
-                      {developer?.name}
-                    </Option>
-                  ))}
-              </Select>
+                options= {developers?.data?.data?.data?.map(x => ({
+                  id:x?._id,
+                  value:x?.name
+                }))}
+              />
             </FormItem>
             <FormItem className="direct-form-search">
               <Select
+              placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select Designer"
                 onChange={handleDesignerChange}
                 value={designer}
-                showSearch
-                filterOption={filterOptions}
-              >
-                {designers &&
-                  designers?.data?.data?.data?.map(developer => (
-                    <Option value={developer._id} key={developer._id}>
-                      {developer?.name}
-                    </Option>
-                  ))}
-              </Select>
+                options= {designers?.data?.data?.data?.map(x => ({
+                  id:x?._id,
+                  value:x?.name
+                }))}
+              />
             </FormItem>
             <FormItem className="direct-form-search">
               <Select
+              placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select QA"
                 onChange={handleQaChange}
                 value={qa}
-                showSearch
-                filterOption={filterOptions}
-              >
-                {QAs &&
-                  QAs?.data?.data?.data?.map(developer => (
-                    <Option value={developer._id} key={developer._id}>
-                      {developer?.name}
-                    </Option>
-                  ))}
-              </Select>
+                options= {QAs?.data?.data?.data?.map(x => ({
+                  id:x?._id,
+                  value:x?.name
+                }))}
+              />
             </FormItem>
             <FormItem>
               <Button

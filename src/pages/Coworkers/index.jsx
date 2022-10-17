@@ -27,6 +27,7 @@ import {
   CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS,
   CO_WORKERS_SEARCH_IMPORT_NO_ACCESS,
 } from 'constants/RoleAccess'
+import { PLACE_HOLDER_CLASS } from 'constants/Common'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -280,6 +281,7 @@ function CoworkersPage() {
               <Form layout="inline" form={form}>
                 <FormItem className="direct-form-search margin-1r">
                   <Select
+                  placeholderClass={PLACE_HOLDER_CLASS}
                     placeholder="Select Role"
                     onChange={handleRoleChange}
                     value={role}
@@ -291,6 +293,7 @@ function CoworkersPage() {
                 </FormItem>
                 <FormItem className="direct-form-search">
                   <Select
+                  placeholderClass={PLACE_HOLDER_CLASS}
                     placeholder="Select Position"
                     className="margin-1r"
                     onChange={handlePositionChange}
