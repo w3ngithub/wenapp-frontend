@@ -336,9 +336,9 @@ function LeaveModal({
                             if (!value) throw new Error('Required!')
 
                             const trimmedValue = value && value.trim()
-                            if (trimmedValue?.length < 10) {
+                            if (trimmedValue?.length < 10 || trimmedValue?.length > 250) {
                               throw new Error(
-                                'Reason should be at least 10 letters!'
+                                'Reason should be between 10 and 250 letters!'
                               )
                             }
                           } catch (err) {
