@@ -31,7 +31,7 @@ const formattedWorkLogReport: any = (logs: any) => {
                 <span className="gx-mr-5" style={{width:'100px'}}>
                   {item.project?.[0]?.name || 'Other'}
                 </span>
-                <span style={{maxWidth:'52rem'}}>
+                <span style={{maxWidth:'74rem'}}>
                   -{item.remarks}
                   <Tag color="cyan" className="gx-ml-1">
                     {' '}
