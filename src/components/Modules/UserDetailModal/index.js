@@ -65,6 +65,10 @@ function UserDetailForm({
     else form.setFieldValue('allocatedLeaves', currentQuarter?.data.leaves)
   }
 
+  const disableDate = (current) =>{
+    return current && current>moment().endOf("day")
+  }
+
   const handlePositionChange = value => {
     const isIntern =
       form.getFieldValue('position') ===
@@ -276,7 +280,7 @@ function UserDetailForm({
               },
             ]}
           >
-            <DatePicker className=" gx-w-100" disabled={readOnly} />
+            <DatePicker disabledDate={disableDate} className=" gx-w-100" disabled={readOnly} />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -291,7 +295,7 @@ function UserDetailForm({
               },
             ]}
           >
-            <DatePicker className=" gx-w-100" disabled={readOnly} />
+            <DatePicker disabledDate={disableDate} className=" gx-w-100" disabled={readOnly} />
           </FormItem>
           <FormItem
             {...formItemLayout}
