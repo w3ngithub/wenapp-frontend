@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Button, Card, Divider, Form, Table, Tag} from 'antd'
+import {Button, Card, Divider , Form, Table, Tag} from 'antd'
 import RangePicker from 'components/Elements/RangePicker'
 import {intialDate} from 'constants/Attendance'
 import Select from 'components/Elements/Select'
@@ -28,10 +28,10 @@ const formattedWorkLogReport: any = (logs: any) => {
             </span>
             {x.map((item: any) => (
               <div className=" gx-d-flex" key={item.remarks + item.totalHours}>
-                <span className="gx-mr-5">
+                <span className="gx-mr-5" style={{width:'100px'}}>
                   {item.project?.[0]?.name || 'Other'}
                 </span>
-                <span>
+                <span style={{maxWidth:'52rem'}}>
                   -{item.remarks}
                   <Tag color="cyan" className="gx-ml-1">
                     {' '}
@@ -41,6 +41,8 @@ const formattedWorkLogReport: any = (logs: any) => {
               </div>
             ))}
           </div>
+          <Divider type='horizontal' />
+
         </>
       )
     ),
