@@ -57,6 +57,10 @@ function LogtimeModal({
     if (toggle) {
       setTypes(logTypes.data?.data?.data)
       projectsQuery.refetch()
+      form.setFieldsValue({
+        hours:0,
+        minutes:0
+      })
       if (isEditMode) {
         form.setFieldsValue(
           isUserLogtime
@@ -153,7 +157,7 @@ function LogtimeModal({
               },
             ]}
           >
-            <Input placeholder="Enter Hours" type="number" value={0} min={0} max={9}/>
+            <Input placeholder="Enter Hours" type="number" min={0} max={9}/>
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -168,7 +172,7 @@ function LogtimeModal({
                   try {
                     if (!value) throw new Error('Required!')
 
-                    if (value !== '0' && value !== '15'  && value !== '30' && value !== '45' ) {
+                    if (value !== '0' && value !== '15' && value !== '30' && value !== '45' ) {
                       throw new Error(
                         'Minutes should be either 0, 15, 30 or 45.'
                       )
@@ -182,7 +186,7 @@ function LogtimeModal({
               },
             ]}
           >
-            <Input placeholder="Enter Minutes" type="number" defaultValue={0} step={15} min={0} max={45} />
+            <Input placeholder="Enter Minutes" type="number" step={15} min={0} max={45} />
           </FormItem>
           <FormItem
             {...formItemLayout}
