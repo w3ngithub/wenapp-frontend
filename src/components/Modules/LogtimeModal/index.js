@@ -41,7 +41,7 @@ function LogtimeModal({
 
   const userName = getLocalStorageData(LOCALSTORAGE_USER) 
 
-  const designersName = projectsQuery?.data?.data?.data?.data?.filter((name)=>{
+  const projects = projectsQuery?.data?.data?.data?.data?.filter((name)=>{
     let designArr = name?.designers?.map((x)=>x.name)
     let devopArr = name?.devOps?.map((x)=>x.name)
     let qarArr = name?.qa?.map((x)=>x.name)
@@ -52,7 +52,7 @@ function LogtimeModal({
     }
     return false;
   })
-  
+
   const handleCancel = () => {
     form.resetFields()
     onClose()
@@ -200,7 +200,7 @@ function LogtimeModal({
               >
                 {[
                   // ...(projectsQuery?.data?.data?.data?.data || []),
-                  ...(designersName || []),
+                  ...(projects || []),
                   {_id: process.env.REACT_APP_OTHER_PROJECT_ID, name: 'Other'},
                 ].map((project) => (
                   <Option value={project._id} key={project._id}>
