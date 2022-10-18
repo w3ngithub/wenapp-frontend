@@ -42,6 +42,8 @@ function ProjectModal({
   const [projectTypes, setProjectTypes] = useState([])
   const [projectStatuses, setProjectStatuses] = useState([])
   const [maintenance, setMaintenance] = useState([])
+  const [startDate,setStartDate] = useState(undefined)
+  const [endDate,setEndDate] = useState(undefined)
   const {data, refetch} = useQuery(['tags'], getProjectTags, {
     enabled: false,
   })
@@ -136,12 +138,26 @@ function ProjectModal({
         })
       }
     }
-
+    
     if (!toggle) {
       setMaintenance([])
+      setStartDate(undefined)
+      setEndDate(undefined)
       form.resetFields()
     }
   }, [toggle])
+  
+  const handleDateChange=(e,time)=>{
+    if(time==="start") setStartDate(e)
+    else setEndDate(e)
+  }
+
+  const disableDate=(current,date,time)=>{
+    if(time==="start" && date) {
+      return current && current >date;    }
+    else if(time==="end" && date){
+      return current && current <date }
+  }
   return (
     <Modal
       width={900}
@@ -227,7 +243,7 @@ function ProjectModal({
                 name="startDate"
                 rules={[{required: true, message: 'Required!'}]}
               >
-                <DatePicker className=" gx-w-100" disabled={readOnly} />
+                <DatePicker onChange={(e)=>handleDateChange(e,"start")} disabledDate={(current)=>disableDate(current,endDate,"start")} className=" gx-w-100" disabled={readOnly} />
               </FormItem>
             </Col>
             <Col span={24} sm={12}>
@@ -236,7 +252,7 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="endDate"
               >
-                <DatePicker className=" gx-w-100" disabled={readOnly} />
+                <DatePicker onChange={(e)=>handleDateChange(e,"end")} disabledDate={(current)=>disableDate(current,startDate,"end")} className=" gx-w-100" disabled={readOnly} />
               </FormItem>
             </Col>
           </Row>
