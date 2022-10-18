@@ -165,16 +165,32 @@ const OVERVIEW_NOTCHECKEDIN = (sortedInfo: any): tableCol[] => [
     sortOrder: sortedInfo.columnKey === 'checkOut' && sortedInfo.order,
   },]
 
-const DEADLINE_PROJECTS = (sortedInfo: any): tableCol[] => [
+const DEADLINE_PROJECTS = (sortedInfo: any,navigateToProjectLogs:(a:string)=>void): tableCol[] => [
   {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-    width: 50,
+    width: 250,
     sorter: (a, b) => {
       return a.name.toString().localeCompare(b.name.toString())
     },
     sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    width: 250,
+    render: (text, record) => {
+      return (<span
+            className="gx-link"
+            onClick={() =>
+              navigateToProjectLogs(`${record._id}-${record.slug}`)
+            }
+          >
+            Log Time
+          </span>         
+      )
+    },
   },
   
 ]
