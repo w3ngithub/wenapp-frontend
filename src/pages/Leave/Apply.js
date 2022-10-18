@@ -149,7 +149,7 @@ function Apply({user}) {
     })
   )
   userLeavesQuery?.data?.data?.data?.data?.forEach(leave => {
-    if (leave?.leaveDates > 1) {
+    if (leave?.leaveDates?.length > 1) {
       for (let i = 0; i < leave?.leaveDates.length; i++) {
         userLeaves.push({
           leaveStatus: leave?.leaveStatus,
