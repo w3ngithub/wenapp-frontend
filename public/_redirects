@@ -4,5 +4,12 @@
 
 # Redirect users from US to blocked page
 /*  /blocked  301  Country=us
+# Redirect users from US to blocked page
+/  /blocked  301  Country=us
 
+# Redirect users from NP to index page
+/*  /index.html 200  Country=np
+
+# Redirect users from NP to index page
+/  /index.html 200  Country=np
 
