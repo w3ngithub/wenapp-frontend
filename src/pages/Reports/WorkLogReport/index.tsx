@@ -34,7 +34,7 @@ const formattedWorkLogReport: any = (logs: any) => {
                   {item.project?.[0]?.name || 'Other'}
                 </span>
                 <span style={{maxWidth: screenWidth < 1808 ? '54rem':'74rem'}}>
-                  -{item.remarks}
+                  {item.remarks}
                   <Tag color="cyan" className="gx-ml-1">
                     {' '}
                     {toRoundoff(item.totalHours)}hrs
