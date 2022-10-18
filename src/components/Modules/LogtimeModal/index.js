@@ -4,7 +4,8 @@ import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
 import {getAllProjects} from 'services/projects'
-import {filterOptions} from 'helpers/utils'
+import {filterOptions, getLocalStorageData} from 'helpers/utils'
+import { LOCALSTORAGE_USER } from 'constants/Settings'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -36,6 +37,20 @@ function LogtimeModal({
   const [types, setTypes] = useState([])
   const projectsQuery = useQuery(['projects'], getAllProjects, {
     enabled: false,
+  })
+
+  const userName = getLocalStorageData(LOCALSTORAGE_USER) 
+
+  const projects = projectsQuery?.data?.data?.data?.data?.filter((name)=>{
+    let designArr = name?.designers?.map((x)=>x.name)
+    let devopArr = name?.devOps?.map((x)=>x.name)
+    let qarArr = name?.qa?.map((x)=>x.name)
+    let developerArr = name?.developers?.map((x)=>x.name)
+    let involvers = [...designArr,...developerArr,...devopArr,...qarArr]
+    if(involvers.includes(userName?.name)){
+      return true
+    }
+    return false;
   })
 
   const handleCancel = () => {
@@ -221,7 +236,8 @@ function LogtimeModal({
                 placeholder="Select Project"
               >
                 {[
-                  ...(projectsQuery?.data?.data?.data?.data || []),
+                  // ...(projectsQuery?.data?.data?.data?.data || []),
+                  ...(projects || []),
                   {_id: process.env.REACT_APP_OTHER_PROJECT_ID, name: 'Other'},
                 ].map((project) => (
                   <Option value={project._id} key={project._id}>
