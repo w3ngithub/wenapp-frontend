@@ -13,7 +13,7 @@ const Select = ({
   mode,
   inputSelect = false,
   width = 200,
-  placeholderClass=''
+  placeholderClass=false
 }) => {
   const [searchValue, setSearchValue] = useState('')
   return (
