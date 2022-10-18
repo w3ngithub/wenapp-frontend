@@ -183,7 +183,6 @@ function LogtimeModal({
               {
                 required: true,
                 validator: async (rule, value) => {
-                  console.log('minute value', value)
                   try {
                     if (!value) throw new Error('Required!')
 

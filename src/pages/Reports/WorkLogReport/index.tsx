@@ -10,8 +10,10 @@ import {getAllUsers} from 'services/users/userDetails'
 import {WORK_LOG_REPORT_COLUMNS} from 'constants/WorkLogReport'
 import moment from 'moment'
 import {changeDate, toRoundoff} from 'helpers/utils'
+import useWindowsSize from 'hooks/useWindowsSize'
 
 const FormItem = Form.Item
+let screenWidth:number;
 
 const formattedWorkLogReport: any = (logs: any) => {
   return logs?.map((log: any) => ({
@@ -31,7 +33,7 @@ const formattedWorkLogReport: any = (logs: any) => {
                 <span className="gx-mr-5" style={{width:'100px'}}>
                   {item.project?.[0]?.name || 'Other'}
                 </span>
-                <span style={{maxWidth:'74rem'}}>
+                <span style={{maxWidth: screenWidth < 1808 ? '54rem':'74rem'}}>
                   -{item.remarks}
                   <Tag color="cyan" className="gx-ml-1">
                     {' '}
@@ -54,10 +56,12 @@ function WorkLogReport() {
   const [sort, setSort] = useState({})
   const [form] = Form.useForm()
   const [date, setDate] = useState(intialDate)
+  const{innerWidth} = useWindowsSize();
   const [logType, setLogType] = useState<string | undefined>(undefined)
   const [project, setProject] = useState<string | undefined>(undefined)
   const [user, setUser] = useState<string | undefined>(undefined)
 
+  screenWidth = innerWidth;
   //init hooks
 
   const {data, isFetching} = useQuery(
