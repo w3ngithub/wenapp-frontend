@@ -41,6 +41,10 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
     )
   }
 
+  const disableDate = (current) =>{
+    return current && current>moment().endOf("day")
+  }
+
   useEffect(() => {
     if (toggle) {
       form.setFieldsValue({
@@ -116,7 +120,7 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
               },
             ]}
           >
-            <DatePicker className=" gx-w-100" />
+            <DatePicker disabledDate={disableDate} className=" gx-w-100" />
           </FormItem>
 
           <FormItem
