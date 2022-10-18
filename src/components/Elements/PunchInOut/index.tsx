@@ -18,6 +18,7 @@ import {Dispatch} from 'redux'
 import TmsMyAttendanceForm from 'components/Modules/TmsMyAttendanceForm'
 import getLocation, {checkLocationPermission} from 'helpers/getLocation'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {punchLimit} from 'constants/PunchLimit'
 
 function PunchInOut() {
   const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
@@ -124,7 +125,17 @@ function PunchInOut() {
         handleCancel={() => setToogle(false)}
       />
       <Button
-        onClick={handlePunch}
+        onClick={
+          latestAttendance?.[punchLimit - 1]?.hasOwnProperty('punchOutTime')
+            ? () => {
+                notification({
+                  message:
+                  'Punch Limit Exceeded(Maximum 3 punches allowed)',
+                  type: 'error',
+                })
+              }
+            : handlePunch
+        }
         className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
         icon={<ScheduleOutlined />}
         disabled={addAttendances.isLoading || punchOutAttendances.isLoading}
