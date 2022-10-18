@@ -5,6 +5,8 @@
 # Redirect users from US to blocked page
 /*  /blocked  301  Country=us
 *  /blocked  301  Country=us
+/  /blocked  301  Country=us
+
 http://wenapp.netlify.app/* http://wenapp.netlify.app/blocked 301  Country=us
 https://wenapp.netlify.app/* https://wenapp.netlify.app/blocked 301  Country=us
 
