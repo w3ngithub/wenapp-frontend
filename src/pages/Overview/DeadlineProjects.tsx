@@ -30,7 +30,7 @@ const DeadlineProjects = ({projects}:{projects:any[]}) => {
       title={
         <h3>
           <WalletOutlined />
-          <span className="gx-ml-3">Deadline Projects</span>
+          <span className="gx-ml-3">Projects With Deadline Today</span>
         </h3>
       }
     >
