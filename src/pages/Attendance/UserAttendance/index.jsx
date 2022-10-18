@@ -231,12 +231,15 @@ function UserAttendance() {
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white "
               onClick={
-                data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.[
-                  punchLimit - 1
-                ]?.hasOwnProperty('punchOutTime')
+                data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.length >=
+                punchLimit &&
+                !data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.map(
+                  (item) => item?.hasOwnProperty('punchOutTime')
+                ).includes(false)
                   ? () => {
                       notification({
-                        message: 'Punch Limit Exceeded(Maximum 3 punches allowed)',
+                        message:
+                          'Punch Limit Exceeded',
                         type: 'error',
                       })
                     }

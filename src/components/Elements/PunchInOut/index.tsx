@@ -115,8 +115,8 @@ function PunchInOut() {
         message: 'Please allow Location Access to Punch for Attendance',
         type: 'error',
       })
-    }
-  }
+    }}
+
   return (
     <>
       <TmsMyAttendanceForm
@@ -126,11 +126,13 @@ function PunchInOut() {
       />
       <Button
         onClick={
-          latestAttendance?.[punchLimit - 1]?.hasOwnProperty('punchOutTime')
+          latestAttendance?.length >= punchLimit &&
+          !latestAttendance?.map((item: object) =>
+            item?.hasOwnProperty('punchOutTime')
+          ).includes(false)
             ? () => {
                 notification({
-                  message:
-                  'Punch Limit Exceeded(Maximum 3 punches allowed)',
+                  message: 'Punch Limit Exceeded',
                   type: 'error',
                 })
               }
