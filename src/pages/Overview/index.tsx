@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {useQuery} from '@tanstack/react-query'
 import {getTodayLeaves} from 'services/leaves'
 import moment from 'moment'
-import {sortFromDate} from 'helpers/utils'
+import {MuiFormatDate, sortFromDate} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import LeaveEmployee from './LeaveEmployee'
 import CheckedInEmployee from './CheckInEmployee'
@@ -11,6 +11,10 @@ import {searchAttendacentOfUser} from 'services/attendances'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {getAllUsers} from 'services/users/userDetails'
 import UnCheckedInEmployee from './UnCheckedEmployee'
+import DeadlineProjects from './DeadlineProjects'
+import { getAllProjects } from 'services/projects'
+
+const endDate = `${MuiFormatDate(new Date())}`
 
 const Overview = () => {
   const {data} = useQuery(
@@ -21,6 +25,18 @@ const Overview = () => {
     }
   )
   const [page, setPage] = useState({page: 1, limit: 10})
+
+  const {data:projects} = useQuery(
+    [
+      'projects',
+      endDate
+    ],
+    () =>
+      getAllProjects({
+       endDate,
+      }),
+    {keepPreviousData: true}
+  )
 
   const onShowSizeChange = (_: any, pageSize: number) => {
     setPage(prev => ({...page, limit: pageSize}))
@@ -62,6 +78,8 @@ const Overview = () => {
     (user: any) => !checkInUsers.includes(user.name)
   )
 
+  const deadlineProject = projects?.data?.data?.data
+
   if (leaveLoading) {
     return <CircularProgress className="" />
   }
@@ -77,6 +95,7 @@ const Overview = () => {
         isLoading={checkInLoading}
       />
       <UnCheckedInEmployee notCheckInSection={notCheckInSection} />
+      <DeadlineProjects projects={deadlineProject}/>
     </div>
   )
 }
