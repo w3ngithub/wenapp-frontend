@@ -24,6 +24,7 @@ import {useSelector} from 'react-redux'
 import CustomIcon from 'components/Elements/Icons'
 import {useLocation} from 'react-router-dom'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {punchLimit} from 'constants/PunchLimit'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -229,9 +230,23 @@ function UserAttendance() {
           <div className="form-buttons">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white "
-              onClick={() => {
-                setToogle(true)
-              }}
+              onClick={
+                data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.length >=
+                punchLimit &&
+                !data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.map(
+                  (item) => item?.hasOwnProperty('punchOutTime')
+                ).includes(false)
+                  ? () => {
+                      notification({
+                        message:
+                          'Punch Limit Exceeded',
+                        type: 'error',
+                      })
+                    }
+                  : () => {
+                      setToogle(true)
+                    }
+              }
             >
               {punchIn ? 'Punch In' : 'Punch Out'}
             </Button>

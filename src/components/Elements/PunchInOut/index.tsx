@@ -18,6 +18,7 @@ import {Dispatch} from 'redux'
 import TmsMyAttendanceForm from 'components/Modules/TmsMyAttendanceForm'
 import getLocation, {checkLocationPermission} from 'helpers/getLocation'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {punchLimit} from 'constants/PunchLimit'
 
 function PunchInOut() {
   const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
@@ -114,8 +115,8 @@ function PunchInOut() {
         message: 'Please allow Location Access to Punch for Attendance',
         type: 'error',
       })
-    }
-  }
+    }}
+
   return (
     <>
       <TmsMyAttendanceForm
@@ -124,7 +125,19 @@ function PunchInOut() {
         handleCancel={() => setToogle(false)}
       />
       <Button
-        onClick={handlePunch}
+        onClick={
+          latestAttendance?.length >= punchLimit &&
+          !latestAttendance?.map((item: object) =>
+            item?.hasOwnProperty('punchOutTime')
+          ).includes(false)
+            ? () => {
+                notification({
+                  message: 'Punch Limit Exceeded',
+                  type: 'error',
+                })
+              }
+            : handlePunch
+        }
         className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
         icon={<ScheduleOutlined />}
         disabled={addAttendances.isLoading || punchOutAttendances.isLoading}
