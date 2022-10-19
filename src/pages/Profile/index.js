@@ -94,7 +94,6 @@ function Profile() {
 
   const handleProfileUpdate = async (user, removedFile) => {
     setIsLoading(true)
-    console.log(user)
     let updatedUser = {
       ...user,
       dob: moment.utc(user.dob._d).format(),
@@ -105,11 +104,11 @@ function Profile() {
     if (removedFile) {
       const imageRef = ref(storage, removedFile)
       await deleteObject(imageRef)
+      updatedUser={...updatedUser,photoURL:null}
     }
 
     if (user?.photoURL?.originFileObj) {
       const storageRef = ref(storage, `profile/${user?.photoURL?.name}`)
-
       const uploadTask = uploadBytesResumable(
         storageRef,
         user?.photoURL?.originFileObj
@@ -137,7 +136,7 @@ function Profile() {
         }
       )
     } else {
-      mutation.mutate({...updatedUser, photoURL: updatedUser?.photoURL?.url})
+      mutation.mutate(updatedUser)
     }
   }
 
