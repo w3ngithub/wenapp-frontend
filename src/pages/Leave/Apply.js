@@ -209,11 +209,11 @@ function Apply({user}) {
                               : 'rgb(237 45 45)',
                         },
                         onClick: () => {
-                          if (isWeekend) alert('weekends are disabled')
-                          if (isHoliday)
-                            alert(`${holidayList[0]?.name} holiday`)
-                          if (leaveAlreadyTakenDates)
-                            alert(`Leave already taken`)
+                          if (isWeekend) notification({message: 'weekends are disabled'})
+                          else if (isHoliday)
+                            notification({message: `${holidayList[0]?.name} holiday`})
+                          else if (leaveAlreadyTakenDates)
+                            notification({message: `Leave already taken`})
                         },
                       }
                   }}
