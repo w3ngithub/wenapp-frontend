@@ -149,7 +149,7 @@ function Apply({user}) {
     })
   )
   userLeavesQuery?.data?.data?.data?.data?.forEach(leave => {
-    if (leave?.leaveDates > 1) {
+    if (leave?.leaveDates?.length > 1) {
       for (let i = 0; i < leave?.leaveDates.length; i++) {
         userLeaves.push({
           leaveStatus: leave?.leaveStatus,
@@ -209,11 +209,11 @@ function Apply({user}) {
                               : 'rgb(237 45 45)',
                         },
                         onClick: () => {
-                          if (isWeekend) alert('weekends are disabled')
-                          if (isHoliday)
-                            alert(`${holidayList[0]?.name} holiday`)
-                          if (leaveAlreadyTakenDates)
-                            alert(`Leave already taken`)
+                          if (isWeekend) notification({message: 'weekends are disabled'})
+                          else if (isHoliday)
+                            notification({message: `${holidayList[0]?.name} holiday`})
+                          else if (leaveAlreadyTakenDates)
+                            notification({message: `Leave already taken`})
                         },
                       }
                   }}

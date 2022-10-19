@@ -163,7 +163,36 @@ const OVERVIEW_NOTCHECKEDIN = (sortedInfo: any): tableCol[] => [
       a.checkOut.toString().localeCompare(b.checkOut.toString()),
 
     sortOrder: sortedInfo.columnKey === 'checkOut' && sortedInfo.order,
+  },]
+
+const DEADLINE_PROJECTS = (sortedInfo: any,navigateToProjectLogs:(a:string)=>void): tableCol[] => [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    width: 250,
+    sorter: (a, b) => {
+      return a.name.toString().localeCompare(b.name.toString())
+    },
+    sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
   },
+  {
+    title: 'Action',
+    key: 'action',
+    width: 250,
+    render: (text, record) => {
+      return (<span
+            className="gx-link"
+            onClick={() =>
+              navigateToProjectLogs(`${record._id}-${record.slug}`)
+            }
+          >
+            Log Time
+          </span>         
+      )
+    },
+  },
+  
 ]
 
-export {OVERVIEW_LEAVES, OVERVIEW_CHECKEDIN, OVERVIEW_NOTCHECKEDIN}
+export {OVERVIEW_LEAVES, OVERVIEW_CHECKEDIN, OVERVIEW_NOTCHECKEDIN,DEADLINE_PROJECTS}
