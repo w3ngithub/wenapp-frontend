@@ -3,7 +3,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import '@ant-design/compatible/assets/index.css'
 import {Card, Table, Input, Button, Form} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
-import {changeDate,  handleResponse} from 'helpers/utils'
+import {changeDate,  handleResponse, MuiFormatDate} from 'helpers/utils'
 import {
   addProject,
   deleteProject,
@@ -203,10 +203,10 @@ function ProjectsPage() {
           ? +project.estimatedHours
           : undefined,
         startDate: project.startDate
-          ? moment.utc(project.startDate).format()
+          ? MuiFormatDate(new Date( moment.utc(project.startDate).format()))
           : undefined,
         endDate: project.endDate
-          ? moment.utc(project.endDate).format()
+          ? MuiFormatDate(new Date(moment.utc(project.endDate).format()))
           : undefined,
       }
       if (isEditMode)
