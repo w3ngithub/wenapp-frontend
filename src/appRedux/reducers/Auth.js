@@ -82,7 +82,7 @@ const reducer = (state = INIT_STATE, action) => {
     case SET_PROFILE_PHOTO: {
       return {
         ...state,
-        authUser: {user: {...state.authUser, photoURL: action.payload}},
+        authUser: {...state.authUser,user: {...state.authUser.user, photoURL: action.payload}},
       }
     }
     default:
