@@ -1,12 +1,10 @@
 import React, {useEffect, lazy, Suspense} from 'react'
 import {connect} from 'react-redux'
-import {Navigate, Route, Routes} from 'react-router-dom'
+import {Navigate, Route, Routes, useNavigate} from 'react-router-dom'
 import {ConfigProvider} from 'antd'
 import moment from 'moment'
-import en_GB from 'antd/lib/locale-provider/en_GB'
 import 'moment/locale/en-gb'
 import {IntlProvider} from 'react-intl'
-
 import AppLocale from 'lngProvider'
 import MainApp from './MainApp'
 import SignIn from 'containers/SignIn'
@@ -44,19 +42,6 @@ import {
   WORK_LOG_REPORT,
 } from 'helpers/routePath'
 import {ProtectedRoute} from 'components/Elements/ProtectedRoute'
-// import Coworkers from "pages/Coworkers";
-// import Projects from "pages/Projects";
-// import LogTime from "pages/LogTime";
-// import Leave from "pages/Leave";
-// import Noticeboard from "pages/Noticeboard";
-// import Blog from "pages/Blog";
-// import Reports from "pages/Reports";
-// import Resources from "pages/Resources";
-// import Settings from "pages/Settings";
-// import Attendace from "pages/Attendance";
-// import Dashboard from "pages/Dashboard";
-// import Overview from "pages/Overview";
-// import ProjectLogs from "pages/ProjectLogs";
 import Profile from 'pages/Profile'
 import InviteUserSignup from 'pages/InviteUserSignup'
 import WeeklyReport from 'pages/Reports/WeeklyReport'
@@ -78,6 +63,7 @@ import RoleAccess, {
   WEEKLY_REPORT_ACCESS,
   WORK_LOG_REPORT_ACESS,
 } from 'constants/RoleAccess'
+import Error404 from 'components/Modules/404'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -99,6 +85,7 @@ function App(props: any) {
   const {locale, authUser, themeType} = props
 
   const currentAppLocale = AppLocale[locale.locale]
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (themeType === THEME_TYPE_DARK) {
@@ -108,9 +95,17 @@ function App(props: any) {
     }
   }, [themeType])
 
+  useEffect(() => {
+    if (
+      Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
+      'Katmandu'
+    )
+      navigate('notAllowed')
+  }, [])
+
   return (
     <ConfigProvider locale={currentAppLocale.antd}>
-     {/* <ConfigProvider locale={en_GB}> */}
+      {/* <ConfigProvider locale={en_GB}> */}
       <IntlProvider
         locale={currentAppLocale.locale}
         messages={currentAppLocale.messages}
@@ -347,6 +342,11 @@ function App(props: any) {
               <Route path={PROFILE} element={<Profile />} />
             </Route>
           </Route>
+          <Route path="*" element={<Error404 />} />
+          <Route
+            path="notAllowed"
+            element={<Error404 message="You are not allowed!" />}
+          />
         </Routes>
       </IntlProvider>
     </ConfigProvider>

@@ -7,7 +7,9 @@ const Pages = ({match}) => (
     <Redirect exact from={`${match.url}/`} to={`${match.url}/error-404`} />
     <Route
       path={`${match.url}/error-404`}
-      component={asyncComponent(() => import('./404'))}
+      component={asyncComponent(() =>
+        import('../../../components/Modules/404')
+      )}
     />
     <Route
       path={`${match.url}/error-500`}
