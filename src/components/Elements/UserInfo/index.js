@@ -1,15 +1,25 @@
-import React, {useState} from 'react'
+import React, {useState,useEffect} from 'react'
 import {connect} from 'react-redux'
 import {Avatar, Popover} from 'antd'
 import {userSignOut} from 'appRedux/actions/Auth'
 import {useNavigate} from 'react-router-dom'
 import {PROFILE} from 'helpers/routePath'
 import ChangePasswordModel from 'components/Modules/ChangePasswordModel'
+import { LOCALSTORAGE_USER } from 'constants/Settings'
 
 function UserInfo(props) {
   const navigate = useNavigate()
   const [visible, setVisible] = useState(false)
   const [openPasswordModel, setOpenPasswordChangeModel] = useState(false)
+  const user = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
+
+  let nameInitials = ''
+  if(!props?.authUser?.user?.photoURL){
+    const initials = user?.user?.name?.split(' ')
+    initials?.forEach((a)=>{
+      nameInitials = nameInitials+a[0].toUpperCase()
+    })
+  }
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible)
@@ -47,6 +57,7 @@ function UserInfo(props) {
       </li>
     </ul>
   )
+  
   return (
     <>
       <ChangePasswordModel
@@ -64,10 +75,17 @@ function UserInfo(props) {
         onVisibleChange={handleVisibleChange}
       >
         <Avatar
-          src={props.authUser?.user?.photoURL}
-          className="gx-avatar gx-pointer"
-          alt=""
-        />
+                className="gx-avatar gx-pointer"
+                alt="..."
+                style={
+                  props?.authUser?.user?.photoURL
+                    ? {}
+                    : {color: '#f56a00', backgroundColor: '#fde3cf'}
+                }
+                src={props?.authUser?.user?.photoURL}
+              >
+                {nameInitials}
+              </Avatar>
       </Popover>
     </>
   )
