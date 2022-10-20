@@ -45,7 +45,6 @@ function DragAndDropFile({
   }
 
   const handleChange = (info) => {
-    console.log(info)
     let fileList = [...info.fileList]
     if (allowMultiple) setFiles(fileList)
     else {

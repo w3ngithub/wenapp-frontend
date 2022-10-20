@@ -5,17 +5,15 @@ import {userSignOut} from 'appRedux/actions/Auth'
 import {useNavigate} from 'react-router-dom'
 import {PROFILE} from 'helpers/routePath'
 import ChangePasswordModel from 'components/Modules/ChangePasswordModel'
-import { LOCALSTORAGE_USER } from 'constants/Settings'
 
 function UserInfo(props) {
   const navigate = useNavigate()
   const [visible, setVisible] = useState(false)
   const [openPasswordModel, setOpenPasswordChangeModel] = useState(false)
-  const user = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
 
   let nameInitials = ''
   if(!props?.authUser?.user?.photoURL){
-    const initials = user?.user?.name?.split(' ')
+    const initials = props?.authUser?.user?.name?.split(' ')
     initials?.forEach((a)=>{
       nameInitials = nameInitials+a[0].toUpperCase()
     })
