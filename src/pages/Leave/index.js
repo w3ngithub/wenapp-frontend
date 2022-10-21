@@ -44,8 +44,8 @@ function Leave() {
   const handleCloseCancelLeaveModal = () => {
     setOpenCancelLeaveModal(false)
   }
-  
-  const handleOpenCancelLeaveModal = leaveDetails => {
+
+  const handleOpenCancelLeaveModal = (leaveDetails) => {
     setOpenCancelLeaveModal(true)
     setLeaveData(leaveDetails)
   }
@@ -56,9 +56,9 @@ function Leave() {
   )
 
   const leaveCancelMutation = useMutation(
-    payload => changeLeaveStatus(payload.id, payload.type),
+    (payload) => changeLeaveStatus(payload.id, payload.type),
     {
-      onSuccess: response =>
+      onSuccess: (response) =>
         handleResponse(
           response,
           'Leave cancelled successfully',
@@ -69,30 +69,30 @@ function Leave() {
             () => queryClient.invalidateQueries(['leaves']),
           ]
         ),
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Could not cancel leave', type: 'error'})
       },
     }
   )
 
-  const handleCancelLeave = leave => {
+  const handleCancelLeave = (leave) => {
     leaveCancelReason = leave?.leaveCancelReason
     leaveCancelMutation.mutate({id: leave._id, type: 'cancel'})
   }
-  const emailMutation = useMutation(payload => sendEmailforLeave(payload))
+  const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
 
-  const sendEmailNotification = res => {
+  const sendEmailNotification = (res) => {
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
       user: res.data.data.data.user,
       leaveCancelReason,
     })
-    setSubmittingCancelReason(false);
-    handleCloseCancelLeaveModal();
+    setSubmittingCancelReason(false)
+    handleCloseCancelLeaveModal()
   }
 
-  const handleRowSelect = rows => {
+  const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
 
@@ -120,8 +120,8 @@ function Leave() {
         onClose={handleCloseCancelLeaveModal}
         onSubmit={handleCancelLeave}
         leaveData={leaveData}
-        loader = {submittingCancelReason}
-        setLoader = {setSubmittingCancelReason}
+        loader={submittingCancelReason}
+        setLoader={setSubmittingCancelReason}
       />
       <Card title="Leave Management System">
         <Row>
@@ -154,17 +154,17 @@ function Leave() {
                 firstType="Sick"
                 secondType="Casual"
                 sickDayRemaining={
-                  allocatedYealryLeaves['Sick Leave'] -
-                    yearlyLeavesTakn['Sick Leave'] ||
-                  allocatedYealryLeaves['Sick Leave']
+                  allocatedYealryLeaves?.['Sick Leave'] -
+                    yearlyLeavesTakn?.['Sick Leave'] ||
+                  allocatedYealryLeaves?.['Sick Leave']
                 }
                 casualDayRemaining={
-                  allocatedYealryLeaves['Casual Leave'] -
-                    yearlyLeavesTakn['Casual Leave'] ||
-                  allocatedYealryLeaves['Casual Leave']
+                  allocatedYealryLeaves?.['Casual Leave'] -
+                    yearlyLeavesTakn?.['Casual Leave'] ||
+                  allocatedYealryLeaves?.['Casual Leave']
                 }
-                sickDayApplied={yearlyLeavesTakn['Sick Leave'] || 0}
-                casualDayApplied={yearlyLeavesTakn['Casual Leave'] || 0}
+                sickDayApplied={yearlyLeavesTakn?.['Sick Leave'] || 0}
+                casualDayApplied={yearlyLeavesTakn?.['Casual Leave'] || 0}
               />
             </Card>
           </Col>

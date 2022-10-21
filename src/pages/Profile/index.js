@@ -88,7 +88,7 @@ function Profile() {
     ...about,
     desc:
       about.name === 'dob' || about.name === 'joinDate'
-        ? user.user[about.name].split('T')[0]
+        ? user.user[about.name]?.split('T')[0]
         : user.user[about.name],
   }))
 
@@ -104,7 +104,7 @@ function Profile() {
     if (removedFile) {
       const imageRef = ref(storage, removedFile)
       await deleteObject(imageRef)
-      updatedUser={...updatedUser,photoURL:null}
+      updatedUser = {...updatedUser, photoURL: null}
     }
 
     if (user?.photoURL?.originFileObj) {
