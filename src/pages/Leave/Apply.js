@@ -198,7 +198,7 @@ function Apply({user}) {
                     )
                     let leaveAlreadyTakenDates =
                       leaveDate?.length > 0 &&
-                      leaveDate?.[0]?.leaveStatus !== 'cancelled'
+                      leaveDate?.[0]?.leaveStatus === 'approved'
                     if (isWeekend || isHoliday || leaveAlreadyTakenDates)
                       return {
                         disabled: true,
