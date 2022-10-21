@@ -60,8 +60,8 @@ function LogtimeModal({
       setTypes(logTypes.data?.data?.data)
       projectsQuery.refetch()
       form.setFieldsValue({
-        hours: 0,
-        minutes: 0,
+        hours: '0',
+        minutes: '0',
       })
       if (isEditMode) {
         form.setFieldsValue(
