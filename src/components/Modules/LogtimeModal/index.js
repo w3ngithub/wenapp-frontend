@@ -181,12 +181,13 @@ function LogtimeModal({
             name="minutes"
             rules={[
               {
-                required: true,
+                // required: true,
                 validator: async (rule, value) => {
+                  let stringValue = value+''
                   try {
-                    if (!value) throw new Error('Required!')
+                    if (!stringValue) throw new Error('Required!')
 
-                    if (value !== '0' && value !== '15' && value !== '30' && value !== '45' ) {
+                    if (stringValue !== '0' && stringValue !== '15' && stringValue !== '30' && stringValue !== '45' ) {
                       throw new Error(
                         'Minutes should be either 0, 15, 30 or 45.'
                       )
