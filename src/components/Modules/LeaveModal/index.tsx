@@ -412,7 +412,7 @@ function LeaveModal({
                         )
                         let leaveAlreadyTakenDates =
                           leaveDate?.length > 0 &&
-                          leaveDate?.[0]?.leaveStatus !== 'cancelled' &&
+                          leaveDate?.[0]?.leaveStatus === 'approved' &&
                           !isEditMode
                         if (isWeekend || isHoliday || leaveAlreadyTakenDates)
                           return {
