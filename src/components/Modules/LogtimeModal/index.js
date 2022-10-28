@@ -164,8 +164,9 @@ function LogtimeModal({
             name="minutes"
             rules={[
               {
-                required: true,
-                validator: async (rule, value) => {
+                // required: true,
+                validator: async (rule, val) => {
+                  let value = val+''
                   try {
                     if (!value) throw new Error('Required!')
 
