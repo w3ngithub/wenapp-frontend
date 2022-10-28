@@ -690,6 +690,29 @@ body.dark-theme {
     border-right-color: darken(@dark-theme-border-color, 30%);
   }
 
+& .select-without-label:focus-within ~ .floating-label,
+.select-without-label:not(:focus-within):valid ~ .floating-label
+{
+        background: @dark-theme-secondary-color;
+}
+
+& .floating-label-fixed {
+    position: absolute;
+    top: -7px;
+    bottom: 10px;
+    left: 14px;
+    opacity: 1;
+    font-size: 11px;
+    background:#fff;
+    padding:0 5px;
+    height:14px;
+}
+
+    & .ant-select-clear {
+    background: @dark-theme-secondary-color;
+  }
+
+
   & .ant-layout-sider,
   & .@{class-prefix}-layout-sider-dark {
     background-color: @dark-theme-sidebar-dark-bg !important;
