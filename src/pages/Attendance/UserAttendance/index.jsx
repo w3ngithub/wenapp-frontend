@@ -230,6 +230,7 @@ function UserAttendance() {
           <div className="form-buttons">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white "
+              disabled={isLoading}
               onClick={
                 data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.length >=
                 punchLimit &&

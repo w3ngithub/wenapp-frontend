@@ -140,7 +140,7 @@ function PunchInOut() {
         }
         className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
         icon={<ScheduleOutlined />}
-        disabled={addAttendances.isLoading || punchOutAttendances.isLoading}
+        disabled={addAttendances.isLoading || punchOutAttendances.isLoading ||latestAttendance?.length===0}
         style={{width: '200px'}}
       >
         {punchIn ? 'Punch In' : 'Punch Out'}
