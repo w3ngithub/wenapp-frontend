@@ -362,7 +362,7 @@ function Coworkers() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white "
-                onClick={() => handleOpenModal('Position Type')}
+                onClick={() => handleOpenModal('Position')}
               >
                 Add
               </Button>
