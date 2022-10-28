@@ -39,6 +39,19 @@ export const MainApp = (props) => {
     dispatch(fetchLoggedInUserAttendance(user._id))
   }, [dispatch, user._id])
 
+  useEffect(() => {
+    const timeout = setInterval(() => {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {},
+          () => {},
+          {maximumAge: 60000, timeout: 15000, enableHighAccuracy: true}
+        )
+      }
+    }, 1000 * 60 * 15)
+    return () => clearInterval(timeout)
+  }, [])
+
   const getContainerClass = (navStyle) => {
     switch (navStyle) {
       case NAV_STYLE_DARK_HORIZONTAL:

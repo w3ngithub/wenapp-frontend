@@ -4,8 +4,7 @@ import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
 import {getAllProjects} from 'services/projects'
-import {filterOptions, getLocalStorageData} from 'helpers/utils'
-import { LOCALSTORAGE_USER } from 'constants/Settings'
+import {filterOptions} from 'helpers/utils'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -33,24 +32,12 @@ function LogtimeModal({
   isUserLogtime = false,
 }) {
   // const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
+  const [searchValue, setSearchValue] = useState('')
+
   const [form] = Form.useForm()
   const [types, setTypes] = useState([])
   const projectsQuery = useQuery(['projects'], getAllProjects, {
     enabled: false,
-  })
-
-  const userName = getLocalStorageData(LOCALSTORAGE_USER) 
-
-  const projects = projectsQuery?.data?.data?.data?.data?.filter((name)=>{
-    let designArr = name?.designers?.map((x)=>x.name)
-    let devopArr = name?.devOps?.map((x)=>x.name)
-    let qarArr = name?.qa?.map((x)=>x.name)
-    let developerArr = name?.developers?.map((x)=>x.name)
-    let involvers = [...designArr,...developerArr,...devopArr,...qarArr]
-    if(involvers.includes(userName?.name)){
-      return true
-    }
-    return false;
   })
 
   const handleCancel = () => {
@@ -73,8 +60,8 @@ function LogtimeModal({
       setTypes(logTypes.data?.data?.data)
       projectsQuery.refetch()
       form.setFieldsValue({
-        hours:0,
-        minutes:0
+        hours: '0',
+        minutes: '0',
       })
       if (isEditMode) {
         form.setFieldsValue(
@@ -155,15 +142,11 @@ function LogtimeModal({
                     if (!value) throw new Error('Required!')
 
                     if (value < 0) {
-                      throw new Error(
-                        'Log Hours cannot be below 0.'
-                      )
+                      throw new Error('Log Hours cannot be below 0.')
                     }
-                    
+
                     if (value > 9) {
-                      throw new Error(
-                        'Log Hours cannot exceed 9'
-                      )
+                      throw new Error('Log Hours cannot exceed 9')
                     }
                   } catch (err) {
                     throw new Error(err.message)
@@ -172,7 +155,7 @@ function LogtimeModal({
               },
             ]}
           >
-            <Input placeholder="Enter Hours" type="number" min={0} max={9}/>
+            <Input placeholder="Enter Hours" type="number" min={0} max={9} />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -186,21 +169,30 @@ function LogtimeModal({
                   try {
                     if (!value) throw new Error('Required!')
 
-                    if (value !== '0' && value !== '15' && value !== '30' && value !== '45' ) {
+                    if (
+                      value !== '0' &&
+                      value !== '15' &&
+                      value !== '30' &&
+                      value !== '45'
+                    ) {
                       throw new Error(
                         'Minutes should be either 0, 15, 30 or 45.'
                       )
                     }
-                    
                   } catch (err) {
                     throw new Error(err.message)
                   }
                 },
-                
               },
             ]}
           >
-            <Input placeholder="Enter Minutes" type="number" step={15} min={0} max={45} />
+            <Input
+              placeholder="Enter Minutes"
+              type="number"
+              step={15}
+              min={0}
+              max={45}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -233,10 +225,16 @@ function LogtimeModal({
                 showSearch
                 filterOption={filterOptions}
                 placeholder="Select Project"
+                onSearch={(e) => {
+                  setSearchValue(e)
+                }}
+                open={searchValue.length ? true : false}
+                onSelect={() => {
+                  setSearchValue('')
+                }}
               >
                 {[
-                  // ...(projectsQuery?.data?.data?.data?.data || []),
-                  ...(projects || []),
+                  ...(projectsQuery?.data?.data?.data?.data || []),
                   {_id: process.env.REACT_APP_OTHER_PROJECT_ID, name: 'Other'},
                 ].map((project) => (
                   <Option value={project._id} key={project._id}>

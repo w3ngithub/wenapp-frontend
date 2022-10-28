@@ -35,32 +35,32 @@ function LeaveReport() {
           <Tabs.TabPane tab="First Quarter" key="1">
             <First
               positions={positionData?.data?.data?.data}
-              fromDate={firstQuarter.fromDate}
-              toDate={firstQuarter.toDate}
+              fromDate={firstQuarter?.fromDate}
+              toDate={firstQuarter?.toDate}
               quarter={1}
             ></First>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Second Quarter" key="2">
             <Second
               positions={positionData?.data?.data?.data}
-              fromDate={secondQuarter.fromDate}
-              toDate={secondQuarter.toDate}
+              fromDate={secondQuarter?.fromDate}
+              toDate={secondQuarter?.toDate}
               quarter={2}
             />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Third Quarter" key="3">
             <Third
               positions={positionData?.data?.data?.data}
-              fromDate={thirdQuarter.fromDate}
-              toDate={thirdQuarter.toDate}
+              fromDate={thirdQuarter?.fromDate}
+              toDate={thirdQuarter?.toDate}
               quarter={3}
             />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Fourth Quarter" key="4">
             <Fourth
               positions={positionData?.data?.data?.data}
-              fromDate={fourthQuarter.fromDate}
-              toDate={fourthQuarter.toDate}
+              fromDate={fourthQuarter?.fromDate}
+              toDate={fourthQuarter?.toDate}
               quarter={4}
             />
           </Tabs.TabPane>

@@ -41,19 +41,19 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
     )
   }
 
-  const disableDate = (current) =>{
-    return current && current>moment().endOf("day")
+  const disableDate = (current) => {
+    return current && current > moment().endOf('day')
   }
 
   useEffect(() => {
     if (toggle) {
       form.setFieldsValue({
         name: user.name,
-        dob: moment(user.dob),
+        dob: moment(user?.dob),
         gender: user.gender,
         primaryPhone: String(user.primaryPhone),
         secondaryPhone: String(user.secondaryPhone || ''),
-        joinDate: moment(user.joinDate),
+        joinDate: moment(user?.joinDate),
         maritalStatus: user.maritalStatus,
       })
       setFiles(
