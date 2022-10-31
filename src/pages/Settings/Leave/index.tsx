@@ -365,9 +365,9 @@ function Leave() {
             title="Leave Quarter"
             extra={
               new Date() >
-              new Date(
-                leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.toDate
-              ) ? (
+                new Date(
+                  leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.toDate
+                ) || leaveQuarter?.data?.data?.data.length === 0 ? (
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                   onClick={() => handleOpenModal('Leave Quarter')}
