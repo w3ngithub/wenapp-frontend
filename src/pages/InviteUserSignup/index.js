@@ -37,6 +37,7 @@ function InviteUserSignup(props) {
       .then(async (values) => {
         setIsLoading(true)
         let userNameArr = values?.email?.split('@')[0].split('.')
+        let userName = userNameArr?.[1]+userNameArr?.[0]
         const updatedUser = {
           ...values,
           dob: moment.utc(values.dob._d).format(),
@@ -44,12 +45,10 @@ function InviteUserSignup(props) {
           primaryPhone: +values.primaryPhone,
           secondaryPhone: values.secondaryPhone && +values.secondaryPhone,
           photo: files[0],
-          userName:userNameArr?.[1]+userNameArr?.[0]
+          userName
         }
 
         const response = await signUp(updatedUser, params?.token)
-
-        console.log(updatedUser)
 
         handleResponse(response, 'Sign up successfull', 'Could not sign up', [
           () => navigate(`/${SIGNIN}`),
