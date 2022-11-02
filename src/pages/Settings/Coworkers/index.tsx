@@ -28,6 +28,7 @@ import {
   getRoles,
   updateRole,
 } from 'services/settings/coworkers/roles'
+import { officeDomain } from 'constants/OfficeDomain'
 
 const layout = {
   // labelCol: { span: 8 },
@@ -325,8 +326,25 @@ function Coworkers() {
                   <Form.Item
                     name="email"
                     label="Email"
-                    rules={[{required: true, message: 'Required!'}]}
-                    help="To invite multiple email, separate the emails using comma."
+                    rules={[
+                      {
+                        required: true,
+                        validator: async (rule, value) => {
+                          try {
+                            if (!value) throw new Error('Required!')
+                            value.split(',').forEach((item: any) => {
+                              if (
+                                item.split('@')[1] !== officeDomain
+                              ) {
+                                throw new Error('Please use email provided by the organization.')
+                              }
+                            })
+                          } catch (err) {
+                            throw new Error(err.message)
+                          }
+                        },
+                      },
+                    ]}
                     className="email-input"
                   >
                     <Input
@@ -347,6 +365,7 @@ function Coworkers() {
                 </Form.Item>
               </div>
             </Form>
+            <p style={{marginTop:'4px'}}>To invite multiple email, separate the emails using comma.</p>
             <SettingTable
               data={invitedUsers?.data?.data?.data}
               isLoading={isLoading || isInviteUsersFetching}

@@ -9,6 +9,7 @@ import {handleResponse} from 'helpers/utils'
 import {useNavigate, useParams} from 'react-router-dom'
 import {SIGNIN} from 'helpers/routePath'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
+import { officeDomain } from 'constants/OfficeDomain'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -86,7 +87,7 @@ function InviteUserSignup(props) {
                       try {
                         if (!value) throw new Error('Required!')
 
-                        if (value.split('@')[1] !== 'webexpertsnepal.com') {
+                        if (value.split('@')[1] !== officeDomain) {
                           throw new Error('Please use your office email.')
                         }
 
