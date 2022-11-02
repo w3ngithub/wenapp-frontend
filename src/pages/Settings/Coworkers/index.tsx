@@ -335,7 +335,6 @@ function Coworkers() {
                             if (!value) throw new Error('Required!')
                             value.split(',').forEach((item: any) => {
                               if(!emailRegex.test(item.trim())){
-                                console.log('item', item);
                                 throw new Error('Please enter a valid email.')
                               }
                               if (
