@@ -79,7 +79,23 @@ function InviteUserSignup(props) {
                 label="Email"
                 hasFeedback
                 name="email"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) throw new Error('Required!')
+
+                        if (value.split('@')[1] !== 'webexpertsnepal.com') {
+                          throw new Error('Please use your office email.')
+                        }
+
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <Input placeholder="Enter Email" />
               </FormItem>
