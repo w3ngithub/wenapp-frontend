@@ -16,10 +16,11 @@ const FormItem = Form.Item
 let screenWidth:number;
 
 const formattedWorkLogReport: any = (logs: any) => {
+  console.log('logs', logs);
   return logs?.map((log: any) => ({
     ...log,
     user: log?._id?.[0]?.name,
-    timeSpent: toRoundoff(log?.totalTimeSpent),
+    timeSpent: +log?.totalTimeSpent,
     details: Object.values(log?.timeLogs)?.map(
       (x: any, i: number, totalTimeLogs: any) => (
         <>
@@ -37,7 +38,7 @@ const formattedWorkLogReport: any = (logs: any) => {
                   {item.remarks}
                   <Tag color="cyan" className="gx-ml-1">
                     {' '}
-                    {toRoundoff(item.totalHours)}hrs
+                    {+item.totalHours}hrs
                   </Tag>
                 </span>
               </div>
