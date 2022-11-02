@@ -92,7 +92,7 @@ function InviteUserSignup(props) {
                         }
 
                         if (value.split('@')[1] !== officeDomain) {
-                          throw new Error('Please use your office email.')
+                          throw new Error('Please use the email provided by office.')
                         }
 
                       } catch (err) {
