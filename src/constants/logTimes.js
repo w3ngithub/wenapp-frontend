@@ -46,7 +46,7 @@ const LOGTIMES_COLUMNS = (
           sorter: (a, b) =>
             a.totalHours?.toString().localeCompare(b.totalHours?.toString()),
           sortOrder: sortedInfo.columnKey === 'totalHours' && sortedInfo.order,
-          render: value => roundedToFixed(value || 0, 2),
+          render: (value) => roundedToFixed(value || 0, 2),
         },
 
         {
@@ -114,7 +114,7 @@ const LOGTIMES_COLUMNS = (
           sorter: (a, b) =>
             a.totalHours?.toString().localeCompare(b.totalHours?.toString()),
           sortOrder: sortedInfo.columnKey === 'totalHours' && sortedInfo.order,
-          render: value => roundedToFixed(value || 0, 2),
+          render: (value) => roundedToFixed(value || 0, 2),
         },
 
         {
@@ -153,32 +153,34 @@ const LOGTIMES_COLUMNS = (
             return (
               <span>
                 <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}>
-                  {record.user === user ||
-                  [RoleAccess.Admin, RoleAccess.ProjectManager].includes(
-                    role
-                  ) ? (
-                    <span
-                      className="gx-link"
-                      onClick={() => onOpenEditModal(record)}
-                    >
-                      <CustomIcon name="edit" />
-                    </span>
-                  ) : (
-                    ''
-                  )}
-                  <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
-                    <Divider type="vertical" />
-                    <Popconfirm
-                      title="Are you sure to delete this Log?"
-                      onConfirm={() => confirmDelete(record)}
-                      okText="Yes"
-                      cancelText="No"
-                    >
-                      <span className="gx-link gx-text-danger">
-                        <CustomIcon name="delete" />
+                  <div style={{display: 'flex'}}>
+                    {record.user === user ||
+                    [RoleAccess.Admin, RoleAccess.ProjectManager].includes(
+                      role
+                    ) ? (
+                      <span
+                        className="gx-link"
+                        onClick={() => onOpenEditModal(record)}
+                      >
+                        <CustomIcon name="edit" />
                       </span>
-                    </Popconfirm>
-                  </AccessWrapper>
+                    ) : (
+                      ''
+                    )}
+                    <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
+                      <Divider type="vertical" />
+                      <Popconfirm
+                        title="Are you sure to delete this Log?"
+                        onConfirm={() => confirmDelete(record)}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <span className="gx-link gx-text-danger">
+                          <CustomIcon name="delete" />
+                        </span>
+                      </Popconfirm>
+                    </AccessWrapper>
+                  </div>
                 </AccessWrapper>
               </span>
             )
