@@ -80,6 +80,8 @@ function EventsAndAnnouncements({
     return {...birthday, monthDay : monthAndDay[1] + monthAndDay[2]}
   })?.sort((a, b) => a?.monthDay > b?.monthDay ? 1 : -1  )
 
+  console.log('birth', birthdays);
+
   const birthdayData = sortedBirthdays?.map((x: any) => ({
     id: x._id,
     name: x.name,
