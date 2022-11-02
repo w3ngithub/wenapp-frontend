@@ -98,7 +98,9 @@ function App(props: any) {
   useEffect(() => {
     if (
       Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
-      'Katmandu'
+        'Katmandu' &&
+      Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
+        'Kathmandu'
     )
       navigate('notAllowed')
   }, [])
