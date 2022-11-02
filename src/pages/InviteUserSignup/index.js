@@ -36,6 +36,8 @@ function InviteUserSignup(props) {
       .validateFields()
       .then(async (values) => {
         setIsLoading(true)
+        let usernameArr = values?.email?.split('@')[0].split('.')
+        let username = usernameArr?.[1]+usernameArr?.[0]
         const updatedUser = {
           ...values,
           dob: moment.utc(values.dob._d).format(),
@@ -43,6 +45,7 @@ function InviteUserSignup(props) {
           primaryPhone: +values.primaryPhone,
           secondaryPhone: values.secondaryPhone && +values.secondaryPhone,
           photo: files[0],
+          username
         }
 
         const response = await signUp(updatedUser, params?.token)

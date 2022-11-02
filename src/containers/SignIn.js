@@ -65,7 +65,7 @@ function SignIn(props) {
               autoComplete="off"
             >
               <FormItem
-                label="Email"
+                label="Username or Email Address"
                 hasFeedback
                 name="email"
                 rules={[

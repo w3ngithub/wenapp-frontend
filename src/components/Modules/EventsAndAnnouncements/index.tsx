@@ -75,7 +75,12 @@ function EventsAndAnnouncements({
     Icon: 'important-o',
   }))
 
-  const birthdayData = birthdays?.map((x: any) => ({
+  const sortedBirthdays = birthdays?.map((birthday: any) => {
+    const monthAndDay = birthday.dob.split('T')[0].split('-');
+    return {...birthday, monthDay : monthAndDay[1] + monthAndDay[2]}
+  })?.sort((a, b) => a?.monthDay > b?.monthDay ? 1 : -1  )
+
+  const birthdayData = sortedBirthdays?.map((x: any) => ({
     id: x._id,
     name: x.name,
     title: [
@@ -107,7 +112,11 @@ function EventsAndAnnouncements({
       if (task?.name.split(' ').length === 1) {
         const initials = nameSplit[0].charAt(0).toUpperCase()
         return (
-          <Avatar shape={shape} className="gx-size-24 gx-bg-primary">
+          <Avatar
+            shape={shape}
+            size="large"
+            className="gx-size-30 gx-bg-primary"
+          >
             {initials}
           </Avatar>
         )
@@ -116,7 +125,11 @@ function EventsAndAnnouncements({
           nameSplit[0].charAt(0).toUpperCase() +
           nameSplit[1].charAt(0).toUpperCase()
         return (
-          <Avatar shape={shape} className="gx-size-30 gx-bg-primary">
+          <Avatar
+            shape={shape}
+            size="large"
+            className="gx-size-30 gx-bg-primary"
+          >
             {initials}
           </Avatar>
         )
@@ -128,6 +141,7 @@ function EventsAndAnnouncements({
       return (
         <Avatar
           shape={shape}
+          size="large"
           className="gx-size-30 gx-bg-primary"
           src={task.avatar}
         />
