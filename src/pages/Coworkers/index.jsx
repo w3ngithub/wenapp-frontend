@@ -27,13 +27,13 @@ import {
   CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS,
   CO_WORKERS_SEARCH_IMPORT_NO_ACCESS,
 } from 'constants/RoleAccess'
-import { PLACE_HOLDER_CLASS } from 'constants/Common'
+import {PLACE_HOLDER_CLASS} from 'constants/Common'
 
 const Search = Input.Search
 const FormItem = Form.Item
 
 const formattedUsers = (users, isAdmin) => {
-  return users?.map(user => ({
+  return users?.map((user) => ({
     ...user,
     key: user._id,
     dob: changeDate(user.dob),
@@ -78,24 +78,25 @@ function CoworkersPage() {
     }
   )
   const quarterQuery = useQuery(['quarters'], getQuarters, {
-    select: res => {
+    select: (res) => {
       const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
-        quarter =>
-          new Date(quarter[1].fromDate) >
-          moment.utc(moment(new Date()).startOf('day')).format() <
-          new Date(quarter[1].toDate)
+        (quarter) =>
+          new Date(quarter[1].fromDate) <
+            new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
+          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <
+            new Date(quarter[1].toDate)
       )
+
       return {
         name: ongoingQuarter[0],
         ...ongoingQuarter[1],
       }
     },
   })
-
   const mutation = useMutation(
-    updatedUser => updateUser(updatedUser.userId, updatedUser.updatedData),
+    (updatedUser) => updateUser(updatedUser.userId, updatedUser.updatedData),
     {
-      onSuccess: response =>
+      onSuccess: (response) =>
         handleResponse(
           response,
           'User Updated Successfully',
@@ -105,14 +106,14 @@ function CoworkersPage() {
             () => setOpenUserDetailModal(false),
           ]
         ),
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Could not update User', type: 'error'})
       },
     }
   )
 
-  const disableUserMmutation = useMutation(userId => disableUser(userId), {
-    onSuccess: response =>
+  const disableUserMmutation = useMutation((userId) => disableUser(userId), {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'User Disabled Successfully',
@@ -122,22 +123,22 @@ function CoworkersPage() {
           () => setOpenUserDetailModal(false),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Could not disable User', type: 'error'})
     },
   })
 
   const resetLeavesMutation = useMutation(
-    payload => resetAllocatedLeaves(payload),
+    (payload) => resetAllocatedLeaves(payload),
     {
-      onSuccess: response =>
+      onSuccess: (response) =>
         handleResponse(
           response,
           'Allocated leaves reset of all user Successfully',
           'Could not reset allocated leaves',
           [() => refetch()]
         ),
-      onError: error => {
+      onError: (error) => {
         notification({
           message: 'Could not reset allocated leaves',
           type: 'error',
@@ -153,14 +154,14 @@ function CoworkersPage() {
   }, [isError])
 
   const handleToggleModal = (userRecordToUpdate, mode) => {
-    setOpenUserDetailModal(prev => !prev)
+    setOpenUserDetailModal((prev) => !prev)
     setUserRecord(userRecordToUpdate)
     setReadOnly(mode)
   }
 
-  const handleUserDetailSubmit = user => {
+  const handleUserDetailSubmit = (user) => {
     try {
-      const userTofind = data.data.data.data.find(x => x._id === user._id)
+      const userTofind = data.data.data.data.find((x) => x._id === user._id)
       mutation.mutate({
         userId: user._id,
         updatedData: {
@@ -184,24 +185,24 @@ function CoworkersPage() {
     setSort(sorter)
   }
 
-  const handlePageChange = pageNumber => {
-    setPage(prev => ({...prev, page: pageNumber}))
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
-  const setActiveInActiveUsers = e => {
+  const setActiveInActiveUsers = (e) => {
     setDefaultUser(e.target.value)
     setActiveUser(e.target.value === 'active' ? true : false)
   }
 
-  const handleRoleChange = roleId => {
+  const handleRoleChange = (roleId) => {
     setRole(roleId)
   }
 
-  const handlePositionChange = positionId => {
+  const handlePositionChange = (positionId) => {
     setPosition(positionId)
   }
 
@@ -219,7 +220,7 @@ function CoworkersPage() {
     resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data.name})
   }
 
-  const handleRowSelect = rows => {
+  const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
 
@@ -253,11 +254,11 @@ function CoworkersPage() {
               <Search
                 allowClear
                 placeholder="Search Co-workers"
-                onSearch={value => {
-                  setPage(prev => ({...prev, page: 1}))
+                onSearch={(value) => {
+                  setPage((prev) => ({...prev, page: 1}))
                   setName(value)
                 }}
-                onChange={e => setTypedName(e.target.value)}
+                onChange={(e) => setTypedName(e.target.value)}
                 value={typedName}
                 enterButton
                 className="direct-form-item"
@@ -281,11 +282,11 @@ function CoworkersPage() {
               <Form layout="inline" form={form}>
                 <FormItem className="direct-form-search margin-1r">
                   <Select
-                  placeholderClass={PLACE_HOLDER_CLASS}
+                    placeholderClass={PLACE_HOLDER_CLASS}
                     placeholder="Select Role"
                     onChange={handleRoleChange}
                     value={role}
-                    options={roleData?.data?.data?.data?.map(x => ({
+                    options={roleData?.data?.data?.data?.map((x) => ({
                       ...x,
                       id: x._id,
                     }))}
@@ -293,12 +294,12 @@ function CoworkersPage() {
                 </FormItem>
                 <FormItem className="direct-form-search">
                   <Select
-                  placeholderClass={PLACE_HOLDER_CLASS}
+                    placeholderClass={PLACE_HOLDER_CLASS}
                     placeholder="Select Position"
                     className="margin-1r"
                     onChange={handlePositionChange}
                     value={position}
-                    options={positionData?.data?.data?.data?.map(x => ({
+                    options={positionData?.data?.data?.data?.map((x) => ({
                       id: x._id,
                       value: x.name,
                     }))}
@@ -349,8 +350,8 @@ function CoworkersPage() {
                           'Join Date',
                         ],
                         ...data?.data?.data?.data
-                          ?.filter(x => selectedRows.includes(x?._id))
-                          ?.map(d => [
+                          ?.filter((x) => selectedRows.includes(x?._id))
+                          ?.map((d) => [
                             d?.name,
                             d?.email,
                             d?.role?.value,
@@ -400,7 +401,7 @@ function CoworkersPage() {
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
-            hideOnSinglePage :  data?.data?.data?.count ? false : true,
+            hideOnSinglePage: data?.data?.data?.count ? false : true,
             onChange: handlePageChange,
           }}
           loading={
