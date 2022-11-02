@@ -29,6 +29,7 @@ import {
   updateRole,
 } from 'services/settings/coworkers/roles'
 import { officeDomain } from 'constants/OfficeDomain'
+import { emailRegex } from 'constants/EmailTest'
 
 const layout = {
   // labelCol: { span: 8 },
@@ -333,6 +334,10 @@ function Coworkers() {
                           try {
                             if (!value) throw new Error('Required!')
                             value.split(',').forEach((item: any) => {
+                              if(!emailRegex.test(item.trim())){
+                                console.log('item', item);
+                                throw new Error('Please enter a valid email.')
+                              }
                               if (
                                 item.split('@')[1] !== officeDomain
                               ) {

@@ -114,6 +114,9 @@ function ProjectModal({
             initialValues.projectTags?.length > 0
               ? initialValues.projectTags?.map((tags) => tags._id)
               : undefined,
+          client:  initialValues.client.hasOwnProperty('_id')
+          ? initialValues.client?._id
+          : undefined,
           developers:
             initialValues.developers?.length > 0
               ? initialValues.developers?.map((developer) => developer._id)
@@ -346,6 +349,7 @@ function ProjectModal({
               >
                 <Select
                   placeholder="Select Client"
+                  disabled={readOnly}
                 >
                   {client?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>

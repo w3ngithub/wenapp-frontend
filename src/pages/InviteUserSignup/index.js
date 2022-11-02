@@ -10,6 +10,7 @@ import {useNavigate, useParams} from 'react-router-dom'
 import {SIGNIN} from 'helpers/routePath'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
 import { officeDomain } from 'constants/OfficeDomain'
+import { emailRegex } from 'constants/EmailTest'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -86,6 +87,9 @@ function InviteUserSignup(props) {
                     validator: async (rule, value) => {
                       try {
                         if (!value) throw new Error('Required!')
+                        if(!emailRegex.test(value.trim())){
+                          throw new Error('Please enter a valid email.')
+                        }
 
                         if (value.split('@')[1] !== officeDomain) {
                           throw new Error('Please use your office email.')
