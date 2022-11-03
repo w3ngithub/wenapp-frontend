@@ -114,7 +114,7 @@ function ProjectModal({
             initialValues.projectTags?.length > 0
               ? initialValues.projectTags?.map((tags) => tags._id)
               : undefined,
-          client:  initialValues.client.hasOwnProperty('_id')
+          client:  initialValues?.client?.hasOwnProperty('_id')
           ? initialValues.client?._id
           : undefined,
           developers:
