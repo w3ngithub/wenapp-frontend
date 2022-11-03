@@ -429,6 +429,9 @@ function ProjectModal({
                   placeholder="Select Staging Urls"
                   disabled={readOnly}
                   mode="tags"
+                  tagRender={(props)=>{
+                    return <a href={props.value} target='_blank'><span className='staging-urls'>{props.value}</span></a>
+                  }}
                 >
                   {[].map(item => (
                     <Option key={item} value={item} />
