@@ -114,7 +114,7 @@ function ProjectModal({
             initialValues.projectTags?.length > 0
               ? initialValues.projectTags?.map((tags) => tags._id)
               : undefined,
-          client:  initialValues.client.hasOwnProperty('_id')
+          client:  initialValues?.client?.hasOwnProperty('_id')
           ? initialValues.client?._id
           : undefined,
           developers:
@@ -189,7 +189,7 @@ function ProjectModal({
       }
     >
       <Spin spinning={loading}>
-        <Form layout="vertical" form={form}>
+        <Form layout="vertical" form={form} disabled={true}>
           <Row type="flex">
             <Col span={24} sm={12}>
               <FormItem
@@ -215,7 +215,7 @@ function ProjectModal({
               <FormItem
                 label="Path"
                 hasFeedback={readOnly ? false : true}
-                name="path"
+                name="path"                
               >
                 <Input placeholder="Enter Path" disabled={readOnly} />
               </FormItem>
@@ -478,7 +478,15 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="liveUrl"
               >
-                <Input placeholder="Enter Live URL" disabled={readOnly} />
+                {/* <Input placeholder="Enter Live URL" disabled={readOnly} /> */}
+                <Select 
+                disabled={readOnly}
+                mode="tags"
+                open={false}
+                tagRender={(props)=>{
+                  return <a href={props.value} target='_blank'>{props.value}</a>
+                }}
+                />
               </FormItem>
             </Col>
           </Row>
