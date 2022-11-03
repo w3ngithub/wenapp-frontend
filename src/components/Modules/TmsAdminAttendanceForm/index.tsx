@@ -80,12 +80,12 @@ function TmsAdminAttendanceForm({
     const payload =
       user === AttToEdit?.user
         ? {
-            attendanceDate: moment(date).startOf('day').format(),
+            attendanceDate: moment(date).startOf('day').format().split('T')[0],
             punchInTime: punchInTime,
             punchInNote: values.punchInNote,
           }
         : {
-            attendanceDate: moment(date).startOf('day').format(),
+            attendanceDate: moment(date).startOf('day').format().split('T')[0],
             punchInTime: punchInTime,
             punchInNote: values.punchInNote,
             punchInLocation: await getLocation(),
@@ -103,13 +103,13 @@ function TmsAdminAttendanceForm({
     const payload =
       user === AttToEdit?.user
         ? {
-            attendanceDate: moment(date).startOf('day').format(),
+            attendanceDate: moment(date).startOf('day').format().split('T')[0],
             punchOutTime: punchOutTime,
             punchOutNote: values.punchOutNote,
             midDayExit: values.midDayExit ? true : false,
           }
         : {
-            attendanceDate: moment(date).startOf('day').format(),
+            attendanceDate: moment(date).startOf('day').format().split('T')[0],
             punchOutTime: punchOutTime,
             punchOutNote: values.punchOutNote,
             midDayExit: values.midDayExit ? true : false,
