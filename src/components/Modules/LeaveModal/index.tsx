@@ -81,7 +81,7 @@ function LeaveModal({
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
-    select: res => [
+    select: (res) => [
       ...res?.data?.data?.data?.map((type: leaveTypeInterface) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
@@ -89,12 +89,13 @@ function LeaveModal({
     ],
   })
 
+
   const userLeavesQuery = useQuery(['userLeaves', user], () =>
     getLeavesOfUser(user)
   )
 
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave created successfully',
@@ -105,28 +106,28 @@ function LeaveModal({
           () => onClose(),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Leave creation failed!', type: 'error'})
     },
   })
 
   const leaveUpdateMutation = useMutation((leave: any) => updateLeave(leave), {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave updated successfully',
         'Leave update failed',
         [() => queryClient.invalidateQueries(['leaves']), () => onClose()]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Leave update failed!', type: 'error'})
     },
   })
 
   const onFinish = (values: any) => {
-    form.validateFields().then(values => {
+    form.validateFields().then((values) => {
       const leaveTypeName = leaveTypeQuery?.data?.find(
-        type => type?.id === values?.leaveType
+        (type) => type?.id === values?.leaveType
       )?.value
       //calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
@@ -166,7 +167,7 @@ function LeaveModal({
   }
 
   const handleLeaveTypeChange = (value: string) => {
-    setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value)
+    setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value).value)
   }
 
   const handleUserChange = (user: string) => {
@@ -274,7 +275,7 @@ function LeaveModal({
                       onChange={handleLeaveTypeChange}
                       disabled={readOnly}
                     >
-                      {leaveTypeQuery?.data?.map(type =>
+                      {leaveTypeQuery?.data?.map((type) =>
                         readOnly ||
                         type.value.toLowerCase() !==
                           LEAVES_TYPES?.LateArrival ? (
@@ -285,7 +286,10 @@ function LeaveModal({
                       )}
                     </Select>
                   </Form.Item>
-                  {(leaveType === 'Casual' || leaveType === 'Sick') && (
+                  {(leaveType === 'Casual' ||
+                    leaveType === 'Sick' ||
+                    leaveType === 'Casual Leave' ||
+                    leaveType === 'Sick Leave') && (
                     <Form.Item
                       {...formItemLayout}
                       label="Half Leave"
@@ -336,7 +340,10 @@ function LeaveModal({
                             if (!value) throw new Error('Required!')
 
                             const trimmedValue = value && value.trim()
-                            if (trimmedValue?.length < 10 || trimmedValue?.length > 250) {
+                            if (
+                              trimmedValue?.length < 10 ||
+                              trimmedValue?.length > 250
+                            ) {
                               throw new Error(
                                 'Reason should be between 10 and 250 letters!'
                               )
@@ -408,7 +415,7 @@ function LeaveModal({
                         )
                         let isHoliday = holidayList?.length > 0
                         let leaveDate = userLeaves?.filter(
-                          leave => leave.date === date.format()
+                          (leave) => leave.date === date.format()
                         )
                         let leaveAlreadyTakenDates =
                           leaveDate?.length > 0 &&
@@ -424,9 +431,12 @@ function LeaveModal({
                                   : 'rgb(237 45 45)',
                             },
                             onClick: () => {
-                              if (isWeekend) notification({message: 'Weekends are disabled'})
+                              if (isWeekend)
+                                notification({message: 'Weekends are disabled'})
                               else if (isHoliday)
-                                notification({message: `${holidayList[0]?.name} holiday`})
+                                notification({
+                                  message: `${holidayList[0]?.name} holiday`,
+                                })
                               else if (leaveAlreadyTakenDates)
                                 notification({message: `Leave already taken`})
                             },

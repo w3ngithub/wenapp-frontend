@@ -294,6 +294,10 @@ export function changeDate(d) {
   return `${dd}/${mm}/${yyyy}`
 }
 
+export function removeDash(param) {
+  return param.split('-').map(item => item.charAt(0).toUpperCase() + item.slice(1)).join(' ');
+}
+
 export const filterOptions = (input, option) =>
   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
@@ -325,6 +329,24 @@ export const formatToUtc = (date) => {
   const m = moment(date._d)
   m.set({h: 5, m: 45, s: 0})
   return m
+}
+
+export const filterHalfDayLeaves = (leaves) => {
+  const approvedLeaves = leaves.filter(leave=> leave.leaveStatus === 'approved' );
+  if(approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay === ''){
+    return true
+  }
+  if(approvedLeaves.length === 2 ){
+    return true
+  }
+  return false;
+}
+
+export const specifyParticularHalf = (leaves) => {
+  const approvedLeaves = leaves.filter(leave=> leave.leaveStatus === 'approved' );
+  if(approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay !== '' ){
+    return approvedLeaves[0]?.isHalfDay
+  }
 }
 
 export function dayCheck(date) {
