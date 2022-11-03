@@ -8,6 +8,9 @@ import {signUp} from 'services/users/userDetails'
 import {handleResponse} from 'helpers/utils'
 import {useNavigate, useParams} from 'react-router-dom'
 import {SIGNIN} from 'helpers/routePath'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
+import { officeDomain } from 'constants/OfficeDomain'
+import { emailRegex } from 'constants/EmailTest'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -37,7 +40,7 @@ function InviteUserSignup(props) {
       .then(async (values) => {
         setIsLoading(true)
         let usernameArr = values?.email?.split('@')[0].split('.')
-        let username = usernameArr?.[1]+usernameArr?.[0]
+        let username = usernameArr?.[1] + usernameArr?.[0]
         const updatedUser = {
           ...values,
           dob: moment.utc(values.dob._d).format(),
@@ -45,7 +48,7 @@ function InviteUserSignup(props) {
           primaryPhone: +values.primaryPhone,
           secondaryPhone: values.secondaryPhone && +values.secondaryPhone,
           photo: files[0],
-          username
+          username,
         }
 
         const response = await signUp(updatedUser, params?.token)
@@ -78,7 +81,26 @@ function InviteUserSignup(props) {
                 label="Email"
                 hasFeedback
                 name="email"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) throw new Error('Required!')
+                        if(!emailRegex.test(value.trim())){
+                          throw new Error('Please enter a valid email.')
+                        }
+
+                        if (value.split('@')[1] !== officeDomain) {
+                          throw new Error('Please use the email provided by office.')
+                        }
+
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <Input placeholder="Enter Email" />
               </FormItem>
@@ -105,7 +127,10 @@ function InviteUserSignup(props) {
                   },
                 ]}
               >
-                <DatePicker className=" gx-w-100" />
+                <DatePicker
+                  className=" gx-w-100"
+                  disabledDate={disabledAfterToday}
+                />
               </FormItem>
 
               <FormItem
@@ -169,7 +194,10 @@ function InviteUserSignup(props) {
                   },
                 ]}
               >
-                <DatePicker className=" gx-w-100" />
+                <DatePicker
+                  className=" gx-w-100"
+                  disabledDate={disabledAfterToday}
+                />
               </FormItem>
               <FormItem
                 {...formItemLayout}

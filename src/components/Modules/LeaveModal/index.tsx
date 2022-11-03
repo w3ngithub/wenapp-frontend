@@ -424,7 +424,7 @@ function LeaveModal({
                                   : 'rgb(237 45 45)',
                             },
                             onClick: () => {
-                              if (isWeekend) notification({message: 'weekends are disabled'})
+                              if (isWeekend) notification({message: 'Weekends are disabled'})
                               else if (isHoliday)
                                 notification({message: `${holidayList[0]?.name} holiday`})
                               else if (leaveAlreadyTakenDates)
