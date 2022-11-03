@@ -484,10 +484,9 @@ function ProjectModal({
               <FormItem label="Notes" name="notes">
                 <TextArea
                   placeholder="Enter Notes"
-                  rows={1}
+                  rows={6}
                   disabled={readOnly}
                   size="middle"
-                  style={{height: 125}}
                 />
               </FormItem>
             </Col>

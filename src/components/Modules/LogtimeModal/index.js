@@ -269,7 +269,7 @@ function LogtimeModal({
               },
             ]}
           >
-            <TextArea placeholder="Enter Remarks" rows={2} style={{height:125}}/>
+            <TextArea placeholder="Enter Remarks" rows={6}/>
           </FormItem>
         </Form>
       </Spin>
