@@ -1,14 +1,6 @@
 import React, {useEffect} from 'react'
 import '@ant-design/compatible/assets/index.css'
-import {
-  Button,
-  DatePicker,
-  Input,
-  Modal,
-  Select,
-  Spin,
-  Form,
-} from 'antd'
+import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
 import moment from 'moment'
 import {filterOptions} from 'helpers/utils'
 
@@ -48,40 +40,40 @@ function UserDetailForm({
   const handleSubmit = () => {
     const data = intialValues?.allocatedLeaves
 
-    form.validateFields().then(values =>
+    form.validateFields().then((values) =>
       onSubmit({
         ...intialValues,
         ...values,
         allocatedLeaves: {
           ...data,
-          [currentQuarter?.data.name]: values.allocatedLeaves,
+          [currentQuarter?.data?.name]: values?.allocatedLeaves,
         },
       })
     )
   }
 
-  const handleStatusChange = value => {
+  const handleStatusChange = (value) => {
     if (value === 'Probation') form.setFieldValue('allocatedLeaves', 3)
-    else form.setFieldValue('allocatedLeaves', currentQuarter?.data.leaves)
+    else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
   }
 
-  const disableDate = (current) =>{
-    return current && current>moment().endOf("day")
+  const disableDate = (current) => {
+    return current && current > moment().endOf('day')
   }
 
-  const handlePositionChange = value => {
+  const handlePositionChange = (value) => {
     const isIntern =
       form.getFieldValue('position') ===
-      position?.data?.data?.data?.find(pos => pos.name === 'Intern')._id
+      position?.data?.data?.data?.find((pos) => pos?.name === 'Intern')._id
     const isTrainee =
       form.getFieldValue('position') ===
-      position?.data?.data?.data?.find(pos => pos.name === 'Trainee')._id
+      position?.data?.data?.data?.find((pos) => pos?.name === 'Trainee')._id
 
     const isOnProbation = form.getFieldValue('status') === 'Probation'
 
     if (isIntern || isTrainee || isOnProbation)
       form.setFieldValue('allocatedLeaves', 3)
-    else form.setFieldValue('allocatedLeaves', currentQuarter?.data.leaves)
+    else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
   }
   useEffect(() => {
     if (toggle) {
@@ -164,7 +156,7 @@ function UserDetailForm({
               filterOption={filterOptions}
             >
               {roles &&
-                roles?.data?.data?.data?.map(role => (
+                roles?.data?.data?.data?.map((role) => (
                   <Option value={role._id} key={role._id}>
                     {role.value}
                   </Option>
@@ -192,7 +184,7 @@ function UserDetailForm({
               onChange={handlePositionChange}
             >
               {position &&
-                position?.data?.data?.data?.map(position => (
+                position?.data?.data?.data?.map((position) => (
                   <Option value={position._id} key={position._id}>
                     {position.name}
                   </Option>
@@ -219,7 +211,7 @@ function UserDetailForm({
               filterOption={filterOptions}
             >
               {positionTypes &&
-                positionTypes?.data?.data?.data?.map(positionType => (
+                positionTypes?.data?.data?.data?.map((positionType) => (
                   <Option value={positionType._id} key={positionType._id}>
                     {positionType.name}
                   </Option>
@@ -246,7 +238,7 @@ function UserDetailForm({
               filterOption={filterOptions}
               onChange={handleStatusChange}
             >
-              {['Permanent', 'Probation'].map(status => (
+              {['Permanent', 'Probation'].map((status) => (
                 <Option value={status} key={status}>
                   {status}
                 </Option>
@@ -280,7 +272,11 @@ function UserDetailForm({
               },
             ]}
           >
-            <DatePicker disabledDate={disableDate} className=" gx-w-100" disabled={readOnly} />
+            <DatePicker
+              disabledDate={disableDate}
+              className=" gx-w-100"
+              disabled={readOnly}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -295,7 +291,11 @@ function UserDetailForm({
               },
             ]}
           >
-            <DatePicker disabledDate={disableDate} className=" gx-w-100" disabled={readOnly} />
+            <DatePicker
+              disabledDate={disableDate}
+              className=" gx-w-100"
+              disabled={readOnly}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}
