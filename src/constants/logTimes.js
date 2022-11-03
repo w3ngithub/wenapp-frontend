@@ -90,6 +90,19 @@ const LOGTIMES_COLUMNS = (
                 >
                   <CustomIcon name="edit" />
                 </span>
+                <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
+                      <Divider type="vertical" />
+                      <Popconfirm
+                        title="Are you sure to delete this Log?"
+                        onConfirm={() => confirmDelete(record)}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <span className="gx-link gx-text-danger">
+                          <CustomIcon name="delete" />
+                        </span>
+                      </Popconfirm>
+                    </AccessWrapper>
               </span>
             )
           },

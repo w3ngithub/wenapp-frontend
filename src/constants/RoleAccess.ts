@@ -57,7 +57,6 @@ export const ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS = [
 // LogTime
 export const LOG_TIME_ADD_NO_ACCESS = [RoleAccess.TeamLead]
 export const LOG_TIME_DELETE_NO_ACCESS = [
-  RoleAccess.TeamLead,
   RoleAccess.Editor,
   RoleAccess.Normal,
 ]
