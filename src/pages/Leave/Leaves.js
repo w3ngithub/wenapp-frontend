@@ -94,6 +94,7 @@ function Leaves({
       onError: err => console.log(err),
     }
   )
+
   const usersQuery = useQuery(['users'], getAllUsers)
 
   const leaveApproveMutation = useMutation(

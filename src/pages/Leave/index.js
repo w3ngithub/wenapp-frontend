@@ -56,7 +56,7 @@ function Leave() {
   )
 
   const leaveCancelMutation = useMutation(
-    (payload) => changeLeaveStatus(payload.id, payload.type),
+    (payload) => changeLeaveStatus(payload.id, payload.type,payload.reason),
     {
       onSuccess: (response) =>
         handleResponse(
@@ -77,7 +77,7 @@ function Leave() {
 
   const handleCancelLeave = (leave) => {
     leaveCancelReason = leave?.leaveCancelReason
-    leaveCancelMutation.mutate({id: leave._id, type: 'cancel'})
+    leaveCancelMutation.mutate({id: leave._id, type: 'cancel',reason:leaveCancelReason})
   }
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
 
