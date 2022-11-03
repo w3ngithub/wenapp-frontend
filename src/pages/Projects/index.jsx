@@ -317,6 +317,7 @@ function ProjectsPage() {
         }
         types={projectTypesData}
         statuses={projectStatusData}
+        client={projectClientsData}
         developers={developers}
         designers={designers}
         qas={QAs}

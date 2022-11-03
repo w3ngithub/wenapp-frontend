@@ -33,6 +33,7 @@ function ProjectModal({
   readOnly = false,
   loading = false,
   isEditMode = false,
+  client,
   developers,
   designers,
   qas,
@@ -42,8 +43,8 @@ function ProjectModal({
   const [projectTypes, setProjectTypes] = useState([])
   const [projectStatuses, setProjectStatuses] = useState([])
   const [maintenance, setMaintenance] = useState([])
-  const [startDate,setStartDate] = useState(undefined)
-  const [endDate,setEndDate] = useState(undefined)
+  const [startDate, setStartDate] = useState(undefined)
+  const [endDate, setEndDate] = useState(undefined)
   const {data, refetch} = useQuery(['tags'], getProjectTags, {
     enabled: false,
   })
@@ -54,16 +55,16 @@ function ProjectModal({
   }
 
   const handleSubmit = () => {
-    form.validateFields().then(values =>
+    form.validateFields().then((values) =>
       onSubmit({
         ...values,
         maintenance: [
           {
             ...maintenance[0],
             selectMonths:
-              maintenance[0].selectMonths.length === 13
-                ? [...maintenance[0].selectMonths.slice(1)]
-                : maintenance[0].selectMonths,
+              maintenance[0]?.selectMonths.length === 13
+                ? [...maintenance[0]?.selectMonths.slice(1)]
+                : maintenance[0]?.selectMonths,
           },
         ],
       })
@@ -107,27 +108,30 @@ function ProjectModal({
             ? moment(initialValues.startDate)
             : null,
           endDate: initialValues.endDate ? moment(initialValues.endDate) : null,
-          projectTypes: initialValues.projectTypes?.map(type => type._id),
+          projectTypes: initialValues.projectTypes?.map((type) => type._id),
           projectStatus: initialValues.projectStatus?._id,
           projectTags:
             initialValues.projectTags?.length > 0
-              ? initialValues.projectTags?.map(tags => tags._id)
+              ? initialValues.projectTags?.map((tags) => tags._id)
               : undefined,
+          client:  initialValues.client.hasOwnProperty('_id')
+          ? initialValues.client?._id
+          : undefined,
           developers:
             initialValues.developers?.length > 0
-              ? initialValues.developers?.map(developer => developer._id)
+              ? initialValues.developers?.map((developer) => developer._id)
               : undefined,
           designers:
             initialValues.designers?.length > 0
-              ? initialValues.designers?.map(designer => designer._id)
+              ? initialValues.designers?.map((designer) => designer._id)
               : undefined,
           devOps:
             initialValues.devOps?.length > 0
-              ? initialValues.devOps?.map(devop => devop._id)
+              ? initialValues.devOps?.map((devop) => devop._id)
               : undefined,
           qa:
             initialValues.qa?.length > 0
-              ? initialValues.qa?.map(q => q._id)
+              ? initialValues.qa?.map((q) => q._id)
               : undefined,
           stagingUrls:
             initialValues.stagingUrls?.length > 0
@@ -138,7 +142,7 @@ function ProjectModal({
         })
       }
     }
-    
+
     if (!toggle) {
       setMaintenance([])
       setStartDate(undefined)
@@ -146,17 +150,18 @@ function ProjectModal({
       form.resetFields()
     }
   }, [toggle])
-  
-  const handleDateChange=(e,time)=>{
-    if(time==="start") setStartDate(e)
+
+  const handleDateChange = (e, time) => {
+    if (time === 'start') setStartDate(e)
     else setEndDate(e)
   }
 
-  const disableDate=(current,date,time)=>{
-    if(time==="start" && date) {
-      return current && current >date;    }
-    else if(time==="end" && date){
-      return current && current <date }
+  const disableDate = (current, date, time) => {
+    if (time === 'start' && date) {
+      return current && current > date
+    } else if (time === 'end' && date) {
+      return current && current < date
+    }
   }
   return (
     <Modal
@@ -220,12 +225,6 @@ function ProjectModal({
                 label="Estimated Hours"
                 hasFeedback={readOnly ? false : true}
                 name="estimatedHours"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Required!',
-                  },
-                ]}
               >
                 <Input
                   placeholder="Enter Estimated Hours"
@@ -243,7 +242,14 @@ function ProjectModal({
                 name="startDate"
                 rules={[{required: true, message: 'Required!'}]}
               >
-                <DatePicker onChange={(e)=>handleDateChange(e,"start")} disabledDate={(current)=>disableDate(current,endDate,"start")} className=" gx-w-100" disabled={readOnly} />
+                <DatePicker
+                  onChange={(e) => handleDateChange(e, 'start')}
+                  disabledDate={(current) =>
+                    disableDate(current, endDate, 'start')
+                  }
+                  className=" gx-w-100"
+                  disabled={readOnly}
+                />
               </FormItem>
             </Col>
             <Col span={24} sm={12}>
@@ -252,7 +258,14 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="endDate"
               >
-                <DatePicker onChange={(e)=>handleDateChange(e,"end")} disabledDate={(current)=>disableDate(current,startDate,"end")} className=" gx-w-100" disabled={readOnly} />
+                <DatePicker
+                  onChange={(e) => handleDateChange(e, 'end')}
+                  disabledDate={(current) =>
+                    disableDate(current, startDate, 'end')
+                  }
+                  className=" gx-w-100"
+                  disabled={readOnly}
+                />
               </FormItem>
             </Col>
           </Row>
@@ -269,7 +282,7 @@ function ProjectModal({
                   placeholder="Select Type"
                   disabled={readOnly}
                 >
-                  {projectTypes.map(type => (
+                  {projectTypes.map((type) => (
                     <Option value={type._id} key={type._id}>
                       {type.name}
                     </Option>
@@ -295,7 +308,7 @@ function ProjectModal({
                   placeholder="Select Status"
                   disabled={readOnly}
                 >
-                  {projectStatuses.map(status => (
+                  {projectStatuses.map((status) => (
                     <Option value={status._id} key={status._id}>
                       {status.name}
                     </Option>
@@ -320,7 +333,7 @@ function ProjectModal({
                   size="large"
                 >
                   {data &&
-                    data.data.data.data.map(tag => (
+                    data.data.data.data.map((tag) => (
                       <Option value={tag._id} key={tag._id}>
                         {tag.name}
                       </Option>
@@ -328,6 +341,27 @@ function ProjectModal({
                 </Select>
               </FormItem>
             </Col>
+            <Col span={24} sm={12}>
+              <FormItem
+                label="Client"
+                hasFeedback={readOnly ? false : true}
+                name="client"
+              >
+                <Select
+                  placeholder="Select Client"
+                  disabled={readOnly}
+                >
+                  {client?.data?.data?.data?.map((tag) => (
+                    <Option value={tag._id} key={tag._id}>
+                      {tag.name}
+                    </Option>
+                  ))}
+                </Select>
+              </FormItem>
+            </Col>
+          </Row>
+
+          <Row type="flex">
             <Col span={24} sm={12}>
               <FormItem
                 label="Developers"
@@ -341,7 +375,7 @@ function ProjectModal({
                   disabled={readOnly}
                   mode="tags"
                 >
-                  {developers?.data?.data?.data?.map(tag => (
+                  {developers?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
                     </Option>
@@ -349,9 +383,6 @@ function ProjectModal({
                 </Select>
               </FormItem>
             </Col>
-          </Row>
-
-          <Row type="flex">
             <Col span={24} sm={12}>
               <FormItem
                 label="Designers"
@@ -365,7 +396,7 @@ function ProjectModal({
                   disabled={readOnly}
                   mode="tags"
                 >
-                  {designers?.data?.data?.data?.map(tag => (
+                  {designers?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
                     </Option>
@@ -373,6 +404,8 @@ function ProjectModal({
                 </Select>
               </FormItem>
             </Col>
+          </Row>
+          <Row type="flex">
             <Col span={24} sm={12}>
               <FormItem
                 label="QA"
@@ -386,7 +419,7 @@ function ProjectModal({
                   disabled={readOnly}
                   mode="tags"
                 >
-                  {qas?.data?.data?.data?.map(tag => (
+                  {qas?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
                     </Option>
@@ -394,8 +427,6 @@ function ProjectModal({
                 </Select>
               </FormItem>
             </Col>
-          </Row>
-          <Row type="flex">
             <Col span={24} sm={12}>
               <FormItem
                 label="DevOps"
@@ -409,7 +440,7 @@ function ProjectModal({
                   disabled={readOnly}
                   mode="tags"
                 >
-                  {devops?.data?.data?.data?.map(tag => (
+                  {devops?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
                     </Option>
@@ -417,6 +448,8 @@ function ProjectModal({
                 </Select>
               </FormItem>
             </Col>
+          </Row>
+          <Row type="flex">
             <Col span={24} sm={12}>
               <FormItem
                 label="Staging URL"
@@ -430,14 +463,12 @@ function ProjectModal({
                   disabled={readOnly}
                   mode="tags"
                 >
-                  {[].map(item => (
+                  {[].map((item) => (
                     <Option key={item} value={item} />
                   ))}
                 </Select>
               </FormItem>
             </Col>
-          </Row>
-          <Row type="flex">
             <Col span={24} sm={12}>
               <FormItem
                 label="Live URL"
@@ -447,12 +478,15 @@ function ProjectModal({
                 <Input placeholder="Enter Live URL" disabled={readOnly} />
               </FormItem>
             </Col>
-            <Col span={24} sm={12}>
+          </Row>
+          <Row type="flex">
+            <Col span={24} sm={24}>
               <FormItem label="Notes" name="notes">
                 <TextArea
                   placeholder="Enter Notes"
-                  rows={1}
+                  rows={6}
                   disabled={readOnly}
+                  size="middle"
                 />
               </FormItem>
             </Col>
