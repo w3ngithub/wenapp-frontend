@@ -114,9 +114,9 @@ function ProjectModal({
             initialValues.projectTags?.length > 0
               ? initialValues.projectTags?.map((tags) => tags._id)
               : undefined,
-          client:  initialValues?.client?.hasOwnProperty('_id')
-          ? initialValues.client?._id
-          : undefined,
+          client: initialValues?.client?.hasOwnProperty('_id')
+            ? initialValues.client?._id
+            : undefined,
           developers:
             initialValues.developers?.length > 0
               ? initialValues.developers?.map((developer) => developer._id)
@@ -215,9 +215,15 @@ function ProjectModal({
               <FormItem
                 label="Path"
                 hasFeedback={readOnly ? false : true}
-                name="path"                
+                name="path"
               >
-                <Input placeholder="Enter Path" disabled={readOnly} />
+                  <Input
+                    className={`${readOnly?"path-disabled":''}`}
+                    placeholder="Enter Path"
+                    onFocus={readOnly?(e) => e.target.select():false}
+                    readOnly={readOnly}
+                  />
+       
               </FormItem>
             </Col>
             <Col span={24} sm={12}>
@@ -347,10 +353,7 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="client"
               >
-                <Select
-                  placeholder="Select Client"
-                  disabled={readOnly}
-                >
+                <Select placeholder="Select Client" disabled={readOnly}>
                   {client?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
@@ -462,8 +465,12 @@ function ProjectModal({
                   placeholder="Select Staging Urls"
                   disabled={readOnly}
                   mode="tags"
-                  tagRender={(props)=>{
-                    return <a href={props.value} target='_blank'><span className='staging-urls'>{props.value}</span></a>
+                  tagRender={(props) => {
+                    return (
+                      <a href={props.value} target="_blank">
+                        <span className="staging-urls">{props.value}</span>
+                      </a>
+                    )
                   }}
                 >
                   {[].map((item) => (
@@ -478,13 +485,17 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="liveUrl"
               >
-                <Select 
-                disabled={readOnly}
-                mode="tags"
-                open={false}
-                tagRender={(props)=>{
-                  return <a href={props.value} target='_blank'>{props.value}</a>
-                }}
+                <Select
+                  disabled={readOnly}
+                  mode="tags"
+                  open={false}
+                  tagRender={(props) => {
+                    return (
+                      <a href={props.value} target="_blank">
+                        {props.value}
+                      </a>
+                    )
+                  }}
                 />
               </FormItem>
             </Col>
