@@ -49,6 +49,7 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
     if (toggle) {
       form.setFieldsValue({
         name: user.name,
+        username:user.username,
         dob: moment(user?.dob),
         gender: user.gender,
         primaryPhone: String(user.primaryPhone),
@@ -94,6 +95,14 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
             rules={[{required: true, message: 'Required!'}]}
           >
             <Input placeholder="Enter Name" />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="Username"
+            hasFeedback
+            name="username"
+          >
+            <Input disabled={true} placeholder="Enter Username" />
           </FormItem>
           <FormItem {...formItemLayout} label="Profile Photo">
             <DragAndDropFile
