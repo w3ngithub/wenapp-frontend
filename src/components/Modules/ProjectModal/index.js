@@ -76,6 +76,8 @@ function ProjectModal({
       setProjectTypes(types.data.data.data)
       refetch()
       if (isEditMode) {
+        setStartDate(moment(initialValues.startDate))
+        setEndDate(moment(initialValues.endDate))
         setMaintenance([
           {
             selectMonths:
@@ -217,13 +219,12 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="path"
               >
-                  <Input
-                    className={`${readOnly?"path-disabled":''}`}
-                    placeholder="Enter Path"
-                    onFocus={readOnly?(e) => e.target.select():false}
-                    readOnly={readOnly}
-                  />
-       
+                <Input
+                  className={`${readOnly ? 'path-disabled' : ''}`}
+                  placeholder="Enter Path"
+                  onFocus={readOnly ? (e) => e.target.select() : false}
+                  readOnly={readOnly}
+                />
               </FormItem>
             </Col>
             <Col span={24} sm={12}>
