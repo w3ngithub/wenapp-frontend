@@ -5,6 +5,7 @@ import {
   PROJECTS_TABLE_ACTION_DELETE_NO_ACCESS,
   PROJECTS_TABLE_ACTION_NO_ACCESS,
 } from './RoleAccess'
+import {Input} from 'antd'
 
 const PROJECT_COLUMNS = (
   sortedInfo,
@@ -22,15 +23,31 @@ const PROJECT_COLUMNS = (
       return a.name.toString().localeCompare(b.name.toString())
     },
     sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
+    render:(text,record)=>{
+      return (
+        <div>
+
+          <p className="project-name" onClick={()=>openModal(record,true)}>{record.name}</p>
+        </div>
+      )
+    }
   },
   {
     title: 'Path',
     dataIndex: 'path',
     key: 'path',
-    width: 150,
+    width: 180,
     sorter: (a, b) => a.path?.toString().localeCompare(b.path?.toString()),
     sortOrder: sortedInfo.columnKey === 'path' && sortedInfo.order,
-  },
+    render:(text,record)=>{
+      return(
+        <div>
+          <Input className="pathinput"  onFocus={(e)=>e.target.select()} value={record.path || ''} />
+        </div>
+      )
+    }
+      
+    },
   {
     title: 'Start Date',
     dataIndex: 'startDate',

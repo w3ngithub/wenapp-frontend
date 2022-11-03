@@ -6,6 +6,8 @@ import {useNavigate} from 'react-router-dom'
 import {hideMessage, showAuthLoader, userSignIn} from 'appRedux/actions/Auth'
 import IntlMessages from 'util/IntlMessages'
 import {FORGOT_PASSWORD} from 'helpers/routePath'
+import { emailRegex } from 'constants/EmailTest'
+import { officeDomain } from 'constants/OfficeDomain'
 
 const FormItem = Form.Item
 
@@ -71,8 +73,21 @@ function SignIn(props) {
                 rules={[
                   {
                     required: true,
-                    type: 'email',
-                    message: 'The input is not valid E-mail!',
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) throw new Error('Required!')
+                        if(!emailRegex.test(value.trim())){
+                          throw new Error('Please enter a valid email.')
+                        }
+
+                        if (value.split('@')[1] !== officeDomain) {
+                          throw new Error('Please use the email provided by office.')
+                        }
+
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
                   },
                 ]}
               >
@@ -83,7 +98,7 @@ function SignIn(props) {
                 hasFeedback
                 name="password"
                 rules={[
-                  {required: true, message: 'Please input your Password!'},
+                  {required: true, message: 'Please enter your Password!'},
                 ]}
               >
                 <Input.Password />

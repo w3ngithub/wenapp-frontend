@@ -38,7 +38,7 @@ class SignUp extends React.Component {
       }, 100)
     }
     if (this.props.authUser !== null) {
-      this.props.history.push('/')
+      this?.props?.history?.push('/')
     }
   }
 

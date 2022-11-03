@@ -25,7 +25,10 @@ instance.interceptors.response.use(
     return response
   },
   async (error) => {
-    if (error.config.url.split('/').at(-1) === 'login') {
+    if (
+      error.config.url.split('/').at(-1) === 'login' ||
+      error.config.url.split('/').at(-1) === 'updateMyPassword'
+    ) {
       return Promise.reject(error)
     }
     if (error.response.status === 401) {
