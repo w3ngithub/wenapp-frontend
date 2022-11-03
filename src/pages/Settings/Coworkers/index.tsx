@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useState} from 'react'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {Button, Card, Form, Input, Col, Row, Divider} from 'antd'
+import {Button, Card, Form, Input, Col, Row, Divider, Spin} from 'antd'
 import SettingTable from '../CommonTable'
 import {
   getInvitedUsers,
@@ -28,8 +28,8 @@ import {
   getRoles,
   updateRole,
 } from 'services/settings/coworkers/roles'
-import { officeDomain } from 'constants/OfficeDomain'
-import { emailRegex } from 'constants/EmailTest'
+import {officeDomain} from 'constants/OfficeDomain'
+import {emailRegex} from 'constants/EmailTest'
 
 const layout = {
   // labelCol: { span: 8 },
@@ -51,6 +51,12 @@ function Coworkers() {
   const [openModal, setOpenModal] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState<any>({})
+  const [sendingInvitation, setSendingInvitation] = useState(false);
+
+  const handleUserInviteSuccess = () => {
+    form.resetFields()
+    queryClient.invalidateQueries(['inviteUsers'])
+  }
 
   const {
     data: positions,
@@ -77,13 +83,13 @@ function Coworkers() {
       ),
   })
 
-  const inviteUserMutation = useMutation(inviteUsers, {
+  const inviteUserMutation = useMutation(inviteUsers,{
     onSuccess: (response) =>
       handleResponse(
         response,
         'User invited successfully',
         'User invite failed',
-        [() => setEmail('')]
+        [handleUserInviteSuccess]
       ),
     onError: (error) => {
       notification({message: 'User invite failed!', type: 'error'})
@@ -334,13 +340,13 @@ function Coworkers() {
                           try {
                             if (!value) throw new Error('Required!')
                             value.split(',').forEach((item: any) => {
-                              if(!emailRegex.test(item.trim())){
+                              if (!emailRegex.test(item.trim())) {
                                 throw new Error('Please enter a valid email.')
                               }
-                              if (
-                                item.split('@')[1] !== officeDomain
-                              ) {
-                                throw new Error('Please use email provided by the organization.')
+                              if (item.split('@')[1] !== officeDomain) {
+                                throw new Error(
+                                  'Please use email provided by the organization.'
+                                )
                               }
                             })
                           } catch (err) {
@@ -357,7 +363,21 @@ function Coworkers() {
                     />
                   </Form.Item>
                 </div>
-                <Form.Item>
+                { inviteUserMutation?.isLoading ? (
+                    <Spin style={{marginTop:'2rem'}}/>
+                ) : (
+                  <Form.Item>
+                    <Button
+                      key="submit"
+                      type="primary"
+                      className=" gx-btn gx-btn-primary gx-text-white email-invite"
+                      onClick={handleInviteSubmit}
+                    >
+                      Invite
+                    </Button>
+                  </Form.Item>
+                )}
+                {/* <Form.Item>
                   <Button
                     key="submit"
                     type="primary"
@@ -366,10 +386,12 @@ function Coworkers() {
                   >
                     Invite
                   </Button>
-                </Form.Item>
+                </Form.Item> */}
               </div>
             </Form>
-            <p style={{marginTop:'4px'}}>To invite multiple email, separate the emails using comma.</p>
+            <p style={{marginTop: '4px'}}>
+              To invite multiple email, separate the emails using comma.
+            </p>
             <SettingTable
               data={invitedUsers?.data?.data?.data}
               isLoading={isLoading || isInviteUsersFetching}
