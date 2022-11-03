@@ -29,8 +29,6 @@ function* signInUserWithEmailPassword({payload}) {
       password
     )
 
-    console.log(signInUser)
-
     if (!signInUser.status) {
       yield put(showAuthMessage(signInUser.data.message))
     } else {

@@ -189,7 +189,7 @@ function ProjectModal({
       }
     >
       <Spin spinning={loading}>
-        <Form layout="vertical" form={form} disabled={true}>
+        <Form layout="vertical" form={form}>
           <Row type="flex">
             <Col span={24} sm={12}>
               <FormItem
