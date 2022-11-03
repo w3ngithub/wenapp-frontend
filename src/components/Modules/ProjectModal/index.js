@@ -478,7 +478,6 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="liveUrl"
               >
-                {/* <Input placeholder="Enter Live URL" disabled={readOnly} /> */}
                 <Select 
                 disabled={readOnly}
                 mode="tags"
