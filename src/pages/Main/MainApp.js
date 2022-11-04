@@ -48,7 +48,7 @@ export const MainApp = (props) => {
           {maximumAge: 60000, timeout: 15000, enableHighAccuracy: true}
         )
       }
-    }, 1000 * 60 * 15)
+    }, 1000 * 60 * 5)
     return () => clearInterval(timeout)
   }, [])
 
