@@ -42,6 +42,7 @@ function NoticeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
+      console.log(values);
       onSubmit(values)
     })
   }
@@ -140,6 +141,23 @@ function NoticeModal({
                 label="Start Date"
                 hasFeedback={readOnly ? false : true}
                 name="startDate"
+                
+                rules={[ 
+                  {required: true, message: 'Required!'},
+
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+            
+                      if (!value.isBefore(getFieldValue('endDate')) && getFieldValue('endDate')) {
+                        return Promise.reject(new Error('The Start Date should be before End Time')); 
+                      }
+
+                      return Promise.resolve()
+                      
+                    },
+                  }),
+                ]}
+
               >
                 <DatePicker className=" gx-w-100" disabled={readOnly} />
               </FormItem>
@@ -149,6 +167,20 @@ function NoticeModal({
                 label="End Date"
                 hasFeedback={readOnly ? false : true}
                 name="endDate"
+
+                rules={[ 
+                  {required: true, message: 'Required!'},
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+
+                     if(value.isBefore(getFieldValue('startDate') && getFieldValue('startDate'))){
+                      return Promise.reject(new Error('End Date should not be before startDate'))
+                     }
+                     return Promise.resolve()
+
+                    },
+                  }),
+                ]}
               >
                 <DatePicker className=" gx-w-100" disabled={readOnly} />
               </FormItem>
@@ -160,6 +192,25 @@ function NoticeModal({
                 label="Start Time"
                 hasFeedback={readOnly ? false : true}
                 name="startTime"
+
+                rules={[ 
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                     if(getFieldValue('startDate').isSame(getFieldValue('endDate') && value && getFieldValue('startTime'))){
+                      if(!value.isBefore(getFieldValue('startTime'))){
+                        return Promise.reject(new Error('End Time should not exceed startTime'))
+                      }
+                     }
+                     if(!value && getFieldValue('endTime')){
+                      return Promise.reject(new Error('Only endTime is not allowed'))
+                     }
+
+                     return Promise.resolve()
+
+                    },
+                  }),
+                ]}
+
               >
                 <TimePicker className=" gx-w-100" disabled={readOnly} />
               </FormItem>
@@ -169,6 +220,25 @@ function NoticeModal({
                 label="End Time"
                 hasFeedback={readOnly ? false : true}
                 name="endTime"
+
+                rules={[ 
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                     if(getFieldValue('startDate').isSame(getFieldValue('endDate') && value && getFieldValue('startTime'))){
+                      if(value.isBefore(getFieldValue('startTime'))){
+                        return Promise.reject(new Error('End Time should not exceed startTime'))
+                      }
+                     }
+                    if(getFieldValue('startTime') && !value){
+                      return Promise.reject(new Error('Only startTime is not allowed'))
+                    }
+
+                     return Promise.resolve()
+
+                    },
+                  }),
+                ]}
+
               >
                 <TimePicker className=" gx-w-100" disabled={readOnly} />
               </FormItem>
