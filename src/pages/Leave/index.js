@@ -56,7 +56,7 @@ function Leave() {
   )
 
   const leaveCancelMutation = useMutation(
-    (payload) => changeLeaveStatus(payload.id, payload.type),
+    (payload) => changeLeaveStatus(payload.id, payload.type,payload.reason),
     {
       onSuccess: (response) =>
         handleResponse(
@@ -77,7 +77,7 @@ function Leave() {
 
   const handleCancelLeave = (leave) => {
     leaveCancelReason = leave?.leaveCancelReason
-    leaveCancelMutation.mutate({id: leave._id, type: 'cancel'})
+    leaveCancelMutation.mutate({id: leave._id, type: 'cancel',reason:leaveCancelReason})
   }
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
 
@@ -132,7 +132,7 @@ function Leave() {
             >
               <QuarterlyLeavesRemainingAndAppliedCards
                 firstType="Days Remaining"
-                secondType="Days Applied"
+                secondType="Days Approved"
                 firstNumber={
                   quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves || 0
                 }
@@ -150,7 +150,7 @@ function Leave() {
             >
               <AnnualLeavesRemainingAndAppliedCards
                 firstTitle="Days Remaining"
-                secondTitle="Days Applied"
+                secondTitle="Days Approved"
                 firstType="Sick"
                 secondType="Casual"
                 sickDayRemaining={
