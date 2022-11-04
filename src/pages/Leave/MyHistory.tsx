@@ -9,6 +9,8 @@ import React, {useState} from 'react'
 import {useLocation} from 'react-router-dom'
 import {getLeavesOfUser} from 'services/leaves'
 import { disabledDate } from 'util/antDatePickerDisabled'
+import LeaveModal from 'components/Modules/LeaveModal'
+import { getAllUsers } from 'services/users/userDetails'
 
 const FormItem = Form.Item
 
@@ -46,6 +48,8 @@ function MyHistory({
   const location: any = useLocation()
   let selectedDate = location.state?.date
   const {innerWidth} = useWindowsSize()
+  const [datatoShow,setdatatoShow] = useState({})
+  const [openModal,setModal] = useState<boolean>(false)
   const [leaveStatus, setLeaveStatus] = useState<string | undefined>(undefined)
   const [date, setDate] = useState<{moment: Moment | undefined; utc: string}>({
     utc: selectedDate ? selectedDate : undefined,
@@ -85,6 +89,11 @@ function MyHistory({
     })
   }
 
+  const handleShow = (data:any,mode:boolean) =>{
+    setdatatoShow(data)
+    setModal(true)
+  }
+
   const handleResetFilter = () => {
     setLeaveStatus('')
     setPage(defaultPage)
@@ -95,6 +104,16 @@ function MyHistory({
   }
   return (
     <div>
+        <LeaveModal
+        open={openModal}
+        leaveData={datatoShow}
+        onClose={()=>setModal(false)}
+        isEditMode={true}
+        users={[]}
+        readOnly={true}
+        showWorker={false}
+      />
+
       <div className="gx-d-flex gx-justify-content-between gx-flex-row">
         <Form layout="inline" form={form}>
           <FormItem className="direct-form-item">
@@ -128,7 +147,7 @@ function MyHistory({
       </div>
       <Table
         className="gx-table-responsive"
-        columns={LEAVES_COLUMN(handleOpenCancelLeaveModal).filter(
+        columns={LEAVES_COLUMN(handleOpenCancelLeaveModal,()=>{},handleShow).filter(
           (item, index) => index !== 0
         )}
         dataSource={formattedLeaves(userLeavesQuery?.data?.data?.data?.data)}

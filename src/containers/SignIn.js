@@ -15,6 +15,7 @@ function SignIn(props) {
   const navigate = useNavigate()
 
   const handleSubmit = (values) => {
+    values = {...values,email:values.email.trim()}
     props.showAuthLoader()
     props.userSignIn(values)
   }
@@ -76,13 +77,13 @@ function SignIn(props) {
                     validator: async (rule, value) => {
                       try {
                         if (!value) throw new Error('Required!')
-                        if(!emailRegex.test(value.trim())){
-                          throw new Error('Please enter a valid email.')
-                        }
+                        // if(!emailRegex.test(value.trim())){
+                        //   throw new Error('Please enter a valid email.')
+                        // }
 
-                        if (value.split('@')[1] !== officeDomain) {
-                          throw new Error('Please use the email provided by office.')
-                        }
+                        // if (value.split('@')[1] !== officeDomain) {
+                        //   throw new Error('Please use the email provided by office.')
+                        // }
 
                       } catch (err) {
                         throw new Error(err.message)

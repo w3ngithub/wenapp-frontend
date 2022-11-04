@@ -61,6 +61,7 @@ function LeaveModal({
   readOnly = false,
   onClose,
   users,
+  showWorker = true
 }: {
   leaveData: any
   isEditMode: boolean
@@ -68,6 +69,7 @@ function LeaveModal({
   onClose: () => void
   users: any
   readOnly: boolean
+  showWorker : boolean
 }) {
   const queryClient = useQueryClient()
 
@@ -184,6 +186,7 @@ function LeaveModal({
           reason: leaveData.reason,
           user: leaveData.user._id,
           halfDay: leaveData.halfDay,
+          cancelReason : leaveData?.cancelReason
         })
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
@@ -303,7 +306,7 @@ function LeaveModal({
                   )}
                 </Col>
                 <Col span={6} xs={24} sm={12}>
-                  <Form.Item
+                  {showWorker && <Form.Item
                     {...formItemLayout}
                     name="user"
                     label="Co-worker"
@@ -317,13 +320,13 @@ function LeaveModal({
                       disabled={readOnly}
                       allowClear
                     >
-                      {users?.map((user: any) => (
+                       {users?.map((user: any) => (
                         <Option value={user._id} key={user._id}>
                           {user?.name}
                         </Option>
                       ))}
                     </Select>
-                  </Form.Item>
+                  </Form.Item>}
                 </Col>
               </Row>
               <Row>
@@ -366,6 +369,28 @@ function LeaveModal({
                   </Form.Item>
                 </Col>
               </Row>
+
+              
+              {(!showWorker && leaveData?.cancelReason) && <Row>
+                <Col span={6} xs={24} sm={24} xl={24}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="cancelReason"
+                    label="Cancel Leave Reason"
+                  >
+                    <Input.TextArea
+                      allowClear
+                      rows={10}
+                      disabled={readOnly}
+                      style={{
+                        background: darkCalendar ? '#434f5a' : '',
+                      }}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>}
+
+
             </Col>
             {user &&
               (immediateApprovalLeaveTypes.includes(leaveType) ? (
