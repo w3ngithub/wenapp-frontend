@@ -36,17 +36,25 @@ function LogtimeModal({
 
   const [form] = Form.useForm()
   const [types, setTypes] = useState([])
+  const [zeroHourMinutes, setZeroHourMinutes] = useState(false);
   const projectsQuery = useQuery(['projects'], getAllProjects, {
     enabled: false,
   })
 
   const handleCancel = () => {
+    setZeroHourMinutes(false)
     form.resetFields()
     onClose()
   }
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
+      if(values?.hours === '0' && values?.minutes === '0'){
+        setZeroHourMinutes(true);
+        return;
+      }else {
+        setZeroHourMinutes(false);
+      }
       onSubmit(
         isEditMode
           ? {...initialValues, ...values, user: initialValues?.user._id}
@@ -68,8 +76,8 @@ function LogtimeModal({
           isUserLogtime
             ? {
                 logDate: moment(initialValues?.logDate),
-                hours: initialValues?.hours,
-                minutes: initialValues?.minutes,
+                hours: initialValues?.hours || '0',
+                minutes: initialValues?.minutes || '0',
                 logType: initialValues?.logType._id,
                 remarks: initialValues?.remarks,
                 project:
@@ -78,8 +86,8 @@ function LogtimeModal({
               }
             : {
                 logDate: moment(initialValues?.logDate),
-                hours: initialValues?.hours,
-                minutes: initialValues?.minutes,
+                hours: initialValues?.hours || '0',
+                minutes: initialValues?.minutes || '0',
                 logType: initialValues?.logType._id,
                 remarks: initialValues?.remarks,
               }
@@ -136,7 +144,6 @@ function LogtimeModal({
             name="hours"
             rules={[
               {
-                required: true,
                 validator: async (rule, value) => {
                   try {
                     if (!value) throw new Error('Required!')
@@ -149,7 +156,7 @@ function LogtimeModal({
                       throw new Error('Log Hours cannot exceed 9')
                     }
                     if(value - Math.floor(value) !== 0){
-                      throw new Error('Log hours cannot contain decimal value')
+                      throw new Error('Log Hours cannot contain decimal value')
                     }
                   } catch (err) {
                     throw new Error(err.message)
@@ -167,7 +174,6 @@ function LogtimeModal({
             name="minutes"
             rules={[
               {
-                // required: true,
                 validator: async (rule, val) => {
                   let value = val+''
                   try {
@@ -274,6 +280,7 @@ function LogtimeModal({
           >
             <TextArea placeholder="Enter Remarks" rows={6}/>
           </FormItem>
+          {zeroHourMinutes && <p style={{color:'red'}}>Hours and minutes cannot be 0 simultaneously.</p> }
         </Form>
       </Spin>
     </Modal>
