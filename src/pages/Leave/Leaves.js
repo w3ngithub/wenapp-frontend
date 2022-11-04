@@ -109,6 +109,8 @@ function Leaves({
             () => queryClient.invalidateQueries(['userLeaves']),
             () => queryClient.invalidateQueries(['leaves']),
             () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
+            () => queryClient.invalidateQueries(['quartertakenAndRemainingLeaveDays']),
+
           ]
         ),
       onError: error => {
