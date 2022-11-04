@@ -46,10 +46,10 @@ function Apply({user}) {
   const queryClient = useQueryClient()
   const {themeType} = useSelector((state) => state.settings)
   const {innerWidth} = useWindowsSize()
-  const darkCalendar = themeType === THEME_TYPE_DARK
+  const [firstHalfSelected, setFirstHalfSelected] = useState(false)
+  const [secondHalfSelected, setSecondHalfSelected] = useState(false)
 
-  let firstHalfSelected = false
-  let secondHalfSelected = false
+  const darkCalendar = themeType === THEME_TYPE_DARK
 
   const [leaveType, setLeaveType] = useState('')
 
@@ -175,8 +175,6 @@ function Apply({user}) {
     }
   })
 
-  console.log({firstHalfSelected, secondHalfSelected})
-
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
@@ -220,10 +218,6 @@ function Apply({user}) {
                               : 'rgb(237 45 45)',
                         },
                         onClick: () => {
-                          firstHalfSelected =
-                            specifyParticularHalf(leaveDate) === 'first-half'
-                          secondHalfSelected =
-                            specifyParticularHalf(leaveDate) === 'second-half'
                           if (isWeekend)
                             notification({message: 'Weekends are disabled'})
                           else if (isHoliday)
@@ -234,6 +228,19 @@ function Apply({user}) {
                             notification({message: `Leave already taken`})
                         },
                       }
+                    else {
+                      return {
+                        onClick: () => {
+                          setFirstHalfSelected(
+                            specifyParticularHalf(leaveDate) === 'first-half'
+                          )
+
+                          setSecondHalfSelected(
+                            specifyParticularHalf(leaveDate) === 'second-half'
+                          )
+                        },
+                      }
+                    }
                   }}
                 />
               </FormItem>
