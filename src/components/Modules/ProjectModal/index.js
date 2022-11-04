@@ -71,8 +71,6 @@ function ProjectModal({
     )
   }
 
-  console.log(moment().diff(moment(startDate), 'days'))
-
   useEffect(() => {
     if (toggle) {
       // setProjectStatuses(statuses.data.data.data)
