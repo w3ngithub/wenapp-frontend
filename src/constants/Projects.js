@@ -19,9 +19,7 @@ const PROJECT_COLUMNS = (
     dataIndex: 'name',
     key: 'name',
     width: 250,
-    sorter: (a, b) => {
-      return a.name.toString().localeCompare(b.name.toString())
-    },
+    sorter: true,
     sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
     render: (text, record) => {
       return (
@@ -38,7 +36,8 @@ const PROJECT_COLUMNS = (
     dataIndex: 'path',
     key: 'path',
     width: 180,
-    sorter: (a, b) => a.path?.toString().localeCompare(b.path?.toString()),
+    sorter: true,
+
     sortOrder: sortedInfo.columnKey === 'path' && sortedInfo.order,
     render: (text, record) => {
       return (
@@ -57,7 +56,8 @@ const PROJECT_COLUMNS = (
     dataIndex: 'startDate',
     width: 150,
     key: 'startDate',
-    sorter: (a, b) => new Date(a.startDate) - new Date(b.startDate),
+    sorter: true,
+
     sortOrder: sortedInfo.columnKey === 'startDate' && sortedInfo.order,
   },
   {
@@ -65,7 +65,8 @@ const PROJECT_COLUMNS = (
     dataIndex: 'endDate',
     width: 150,
     key: 'endDate',
-    sorter: (a, b) => new Date(a.endDate) - new Date(b.endDate),
+    sorter: true,
+
     sortOrder: sortedInfo.columnKey === 'endDate' && sortedInfo.order,
   },
   {
@@ -73,8 +74,8 @@ const PROJECT_COLUMNS = (
     dataIndex: 'projectTypes',
     width: 150,
     key: 'projectTypes',
-    sorter: (a, b) =>
-      a.projectTypes?.toString().localeCompare(b.projectTypes?.toString()),
+    sorter: true,
+
     sortOrder: sortedInfo.columnKey === 'projectTypes' && sortedInfo.order,
   },
   {
@@ -82,8 +83,8 @@ const PROJECT_COLUMNS = (
     dataIndex: 'projectStatus',
     width: 150,
     key: 'projectStatus',
-    sorter: (a, b) =>
-      a.projectStatus?.toString().localeCompare(b.projectStatus?.toString()),
+    sorter: true,
+
     sortOrder: sortedInfo.columnKey === 'projectStatus' && sortedInfo.order,
   },
   {
