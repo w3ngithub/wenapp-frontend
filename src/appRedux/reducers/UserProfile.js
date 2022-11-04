@@ -11,7 +11,6 @@ const INIT_STATE = {
 const UserProfile = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_USER_PROFILE:
-      console.log('state', state)
       return {
         ...state,
         name: action.payload.name,
