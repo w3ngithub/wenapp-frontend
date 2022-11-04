@@ -148,6 +148,9 @@ function LogtimeModal({
                     if (value > 9) {
                       throw new Error('Log Hours cannot exceed 9')
                     }
+                    if(value - Math.floor(value) !== 0){
+                      throw new Error('Log hours cannot contain decimal value')
+                    }
                   } catch (err) {
                     throw new Error(err.message)
                   }
