@@ -22,7 +22,13 @@ import {
   getLeaveTypes,
   updateLeave,
 } from 'services/leaves'
-import {filterOptions, handleResponse, MuiFormatDate} from 'helpers/utils'
+import {
+  filterHalfDayLeaves,
+  filterOptions,
+  handleResponse,
+  MuiFormatDate,
+  specifyParticularHalf,
+} from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
@@ -61,7 +67,7 @@ function LeaveModal({
   readOnly = false,
   onClose,
   users,
-  showWorker = true
+  showWorker = true,
 }: {
   leaveData: any
   isEditMode: boolean
@@ -69,7 +75,7 @@ function LeaveModal({
   onClose: () => void
   users: any
   readOnly: boolean
-  showWorker : boolean
+  showWorker: boolean
 }) {
   const queryClient = useQueryClient()
 
@@ -80,6 +86,8 @@ function LeaveModal({
   const {innerWidth} = useWindowsSize()
   const {themeType} = useSelector((state: any) => state.settings)
   const [holidays, setHolidays] = useState([])
+  const [firstHalfSelected, setFirstHalfSelected] = useState(false)
+  const [secondHalfSelected, setSecondHalfSelected] = useState(false)
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
@@ -90,7 +98,6 @@ function LeaveModal({
       })),
     ],
   })
-
 
   const userLeavesQuery = useQuery(['userLeaves', user], () =>
     getLeavesOfUser(user)
@@ -186,7 +193,7 @@ function LeaveModal({
           reason: leaveData.reason,
           user: leaveData.user._id,
           halfDay: leaveData.halfDay,
-          cancelReason : leaveData?.cancelReason
+          cancelReason: leaveData?.cancelReason,
         })
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
@@ -217,12 +224,14 @@ function LeaveModal({
         userLeaves.push({
           leaveStatus: leave?.leaveStatus,
           date: new DateObject(leave?.leaveDates[i]).format(),
+          isHalfDay: leave?.halfDay,
         })
       }
     } else {
       userLeaves.push({
         leaveStatus: leave?.leaveStatus,
         date: new DateObject(leave?.leaveDates[0]).format(),
+        isHalfDay: leave?.halfDay,
       })
     }
   })
@@ -299,34 +308,43 @@ function LeaveModal({
                       name="halfDay"
                     >
                       <Radio.Group disabled={readOnly}>
-                        <Radio value="first-half">First-Half</Radio>
-                        <Radio value="second-half">Second-Half</Radio>
+                        <Radio value="first-half" disabled={firstHalfSelected}>
+                          First-Half
+                        </Radio>
+                        <Radio
+                          value="second-half"
+                          disabled={secondHalfSelected}
+                        >
+                          Second-Half
+                        </Radio>
                       </Radio.Group>
                     </Form.Item>
                   )}
                 </Col>
                 <Col span={6} xs={24} sm={12}>
-                  {showWorker && <Form.Item
-                    {...formItemLayout}
-                    name="user"
-                    label="Co-worker"
-                    rules={[{required: true, message: 'Required!'}]}
-                  >
-                    <Select
-                      showSearch
-                      filterOption={filterOptions}
-                      placeholder="Select Co-worker"
-                      onChange={handleUserChange}
-                      disabled={readOnly}
-                      allowClear
+                  {showWorker && (
+                    <Form.Item
+                      {...formItemLayout}
+                      name="user"
+                      label="Co-worker"
+                      rules={[{required: true, message: 'Required!'}]}
                     >
-                       {users?.map((user: any) => (
-                        <Option value={user._id} key={user._id}>
-                          {user?.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>}
+                      <Select
+                        showSearch
+                        filterOption={filterOptions}
+                        placeholder="Select Co-worker"
+                        onChange={handleUserChange}
+                        disabled={readOnly}
+                        allowClear
+                      >
+                        {users?.map((user: any) => (
+                          <Option value={user._id} key={user._id}>
+                            {user?.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  )}
                 </Col>
               </Row>
               <Row>
@@ -370,27 +388,26 @@ function LeaveModal({
                 </Col>
               </Row>
 
-              
-              {(!showWorker && leaveData?.cancelReason) && <Row>
-                <Col span={6} xs={24} sm={24} xl={24}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="cancelReason"
-                    label="Cancel Leave Reason"
-                  >
-                    <Input.TextArea
-                      allowClear
-                      rows={10}
-                      disabled={readOnly}
-                      style={{
-                        background: darkCalendar ? '#434f5a' : '',
-                      }}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>}
-
-
+              {!showWorker && leaveData?.cancelReason && (
+                <Row>
+                  <Col span={6} xs={24} sm={24} xl={24}>
+                    <Form.Item
+                      {...formItemLayout}
+                      name="cancelReason"
+                      label="Cancel Leave Reason"
+                    >
+                      <Input.TextArea
+                        allowClear
+                        rows={10}
+                        disabled={readOnly}
+                        style={{
+                          background: darkCalendar ? '#434f5a' : '',
+                        }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              )}
             </Col>
             {user &&
               (immediateApprovalLeaveTypes.includes(leaveType) ? (
@@ -443,9 +460,7 @@ function LeaveModal({
                           (leave) => leave.date === date.format()
                         )
                         let leaveAlreadyTakenDates =
-                          leaveDate?.length > 0 &&
-                          leaveDate?.[0]?.leaveStatus === 'approved' &&
-                          !isEditMode
+                          filterHalfDayLeaves(leaveDate)
                         if (isWeekend || isHoliday || leaveAlreadyTakenDates)
                           return {
                             disabled: true,
@@ -466,6 +481,21 @@ function LeaveModal({
                                 notification({message: `Leave already taken`})
                             },
                           }
+                        else {
+                          return {
+                            onClick: () => {
+                              setFirstHalfSelected(
+                                specifyParticularHalf(leaveDate) ===
+                                  'first-half'
+                              )
+
+                              setSecondHalfSelected(
+                                specifyParticularHalf(leaveDate) ===
+                                  'second-half'
+                              )
+                            },
+                          }
+                        }
                       }}
                       // disabled={readOnly}
                     />
