@@ -154,6 +154,11 @@ function AddBlog() {
 
   const handleInsertMedia = (files) => {
     if (!files.length) return
+
+    if (files.every((file) => file.type.split('/')[0] !== 'image')) {
+      notification({message: 'Please add images only', type: 'info'})
+      return
+    }
     setLoading(true)
 
     const storageRef = ref(storage, `blogs/${files[0].originFileObj.name}`)
