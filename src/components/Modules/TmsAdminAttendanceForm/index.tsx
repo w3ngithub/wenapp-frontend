@@ -21,6 +21,7 @@ import {notification} from 'helpers/notification'
 import Select from 'components/Elements/Select'
 import getLocation from 'helpers/getLocation'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
 
 function TmsAdminAttendanceForm({
   toogle,
@@ -81,12 +82,19 @@ function TmsAdminAttendanceForm({
       user === AttToEdit?.user
         ? {
             attendanceDate: moment(date).startOf('day').format().split('T')[0],
-            punchInTime: punchInTime,
+            punchInTime:
+              moment(date).startOf('day').format().split('T')[0] +
+              'T' +
+              punchInTime.split('T')[1],
             punchInNote: values.punchInNote,
           }
         : {
             attendanceDate: moment(date).startOf('day').format().split('T')[0],
-            punchInTime: punchInTime,
+            punchInTime:
+              moment(date).startOf('day').format().split('T')[0] +
+              'T' +
+              punchInTime.split('T')[1],
+
             punchInNote: values.punchInNote,
             punchInLocation: await getLocation(),
             user: user,
@@ -104,13 +112,13 @@ function TmsAdminAttendanceForm({
       user === AttToEdit?.user
         ? {
             attendanceDate: moment(date).startOf('day').format().split('T')[0],
-            punchOutTime: punchOutTime,
+            punchOutTime:  moment(date).startOf('day').format().split('T')[0] + 'T' + punchOutTime.split('T')[1],
             punchOutNote: values.punchOutNote,
             midDayExit: values.midDayExit ? true : false,
           }
         : {
             attendanceDate: moment(date).startOf('day').format().split('T')[0],
-            punchOutTime: punchOutTime,
+            punchOutTime:  moment(date).startOf('day').format().split('T')[0] + 'T' + punchOutTime.split('T')[1],
             punchOutNote: values.punchOutNote,
             midDayExit: values.midDayExit ? true : false,
             punchOutLocation: await getLocation(),
@@ -164,6 +172,8 @@ function TmsAdminAttendanceForm({
             }}
           />
           <DatePicker
+            disabled={AttToEdit}
+            disabledDate={disabledAfterToday}
             placeholder="Select Date"
             value={date}
             onChange={(d) => setDate(d)}

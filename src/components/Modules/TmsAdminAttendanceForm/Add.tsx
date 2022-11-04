@@ -21,6 +21,7 @@ import {filterOptions, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 import getLocation from 'helpers/getLocation'
+import { disabledAfterToday } from 'util/antDatePickerDisabled'
 
 function TmsAdminAddAttendanceForm({
   toogle,
@@ -150,6 +151,7 @@ function TmsAdminAddAttendanceForm({
                 >
                   <DatePicker
                     style={{width: innerWidth <= 748 ? '100%' : '200px'}}
+                    disabledDate={disabledAfterToday}
                   />
                 </Form.Item>
               </Row>

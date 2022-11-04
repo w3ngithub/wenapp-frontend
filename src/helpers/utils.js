@@ -295,7 +295,10 @@ export function changeDate(d) {
 }
 
 export function removeDash(param) {
-  return param.split('-').map(item => item.charAt(0).toUpperCase() + item.slice(1)).join(' ');
+  return param
+    .split('-')
+    .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
+    .join(' ')
 }
 
 export const filterOptions = (input, option) =>
@@ -332,20 +335,26 @@ export const formatToUtc = (date) => {
 }
 
 export const filterHalfDayLeaves = (leaves) => {
-  const approvedLeaves = leaves.filter(leave=> leave.leaveStatus === 'approved' );
-  if(approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay === ''){
+  const approvedLeaves = leaves.filter(
+    (leave) => leave.leaveStatus === 'approved'
+  )
+  if (approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay === '') {
     return true
   }
-  if(approvedLeaves.length === 2 ){
+  if (approvedLeaves.length === 2) {
     return true
   }
-  return false;
+  return false
 }
 
 export const specifyParticularHalf = (leaves) => {
-  const approvedLeaves = leaves.filter(leave=> leave.leaveStatus === 'approved' );
-  if(approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay !== '' ){
-    return approvedLeaves[0]?.isHalfDay
+  console.log('leaves', leaves);
+  const approvedLeaves = leaves.filter(
+    (leave) => leave.leaveStatus === 'approved'
+  )
+  console.log('approved', approvedLeaves)
+  if (approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay !== '') {
+    return {specificHalf: approvedLeaves[0]?.isHalfDay, halfLeaveApproved: true}
   }
 }
 
