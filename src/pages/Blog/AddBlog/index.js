@@ -270,7 +270,7 @@ function AddBlog() {
               </>
             </Form.Item>
 
-            <Form.Item name="blogCategories" label="Catogories">
+            <Form.Item name="blogCategories" label="Categories">
               <Select
                 showSearch
                 filterOption={filterOptions}
