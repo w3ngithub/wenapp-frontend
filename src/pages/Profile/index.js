@@ -20,6 +20,7 @@ import {handleResponse} from 'helpers/utils'
 import {useDispatch} from 'react-redux'
 import {setProfilePhoto} from 'appRedux/actions'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {connect} from 'react-redux'
 
 export const aboutList = [
   {
@@ -54,7 +55,7 @@ export const aboutList = [
   },
 ]
 
-function Profile() {
+function Profile(props) {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
   )
@@ -159,8 +160,8 @@ function Profile() {
       <Auxiliary>
         <ProfileHeader
           user={{
-            name: user?.user?.name,
-            position: user.user?.position?.name,
+            name: props?.name,
+            position: props?.position,
             photoURL: user?.user?.photoURL,
           }}
           onMoreDetailsClick={setOpenModal}
@@ -180,4 +181,9 @@ function Profile() {
   )
 }
 
-export default Profile
+const mapStateToProps = ({userProfile}) => {
+  const {name, position} = userProfile
+  return {name, position}
+}
+
+export default connect(mapStateToProps, null)(Profile)

@@ -29,6 +29,7 @@ import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {useQuery} from '@tanstack/react-query'
 import {getMyProfile} from 'services/users/userDetails'
+import {getUserProfile} from 'appRedux/actions/UserPofile'
 
 const {Content, Footer} = Layout
 
@@ -44,6 +45,12 @@ export const MainApp = (props) => {
         localStorage.setItem(
           LOCALSTORAGE_USER,
           JSON.stringify({user: data.data.data.data[0]})
+        )
+        dispatch(
+          getUserProfile({
+            name: data.data.data.data[0].name,
+            position: data.data.data.data[0].position.name,
+          })
         )
       },
     }
