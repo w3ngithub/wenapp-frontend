@@ -131,7 +131,7 @@ const LEAVES_COLUMN = (
           title: 'Type',
           dataIndex: 'type',
           key: 'type',
-          width: 10,
+          width: 30,
         },
         {
           title: 'Reason',

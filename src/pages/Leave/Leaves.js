@@ -6,7 +6,7 @@ import {CSVLink} from 'react-csv'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {changeLeaveStatus, getLeavesOfAllUsers} from 'services/leaves'
-import {changeDate, handleResponse} from 'helpers/utils'
+import {changeDate, handleResponse, removeDash} from 'helpers/utils'
 import Notification from 'components/Elements/Notification'
 import {getAllUsers} from 'services/users/userDetails'
 import moment from 'moment'
@@ -34,7 +34,7 @@ const formattedLeaves = leaves => {
           ? ' - '
           : ' , '
       ),
-    type: leave?.leaveType?.name,
+    type: `${leave?.leaveType?.name} ${leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half' ? '- ' + removeDash(leave?.halfDay) : ''}`,
     status: leave?.leaveStatus,
   }))
 }

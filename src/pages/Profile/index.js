@@ -46,6 +46,12 @@ export const aboutList = [
     icon: 'signup',
     name: 'joinDate',
   },
+  {
+    id: 5,
+    title: 'Username',
+    icon: 'avatar',
+    name: 'username',
+  },
 ]
 
 function Profile() {

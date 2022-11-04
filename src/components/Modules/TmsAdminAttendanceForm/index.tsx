@@ -155,6 +155,7 @@ function TmsAdminAttendanceForm({
       <Spin spinning={updateAttendances.isLoading}>
         <div className="gx-d-flex gx-mb-4 gx-flex-row" style={{gap: 4}}>
           <Select
+            disabled={AttToEdit}
             placeholder="Select Co-worker"
             onChange={handleUserChange}
             value={user}
