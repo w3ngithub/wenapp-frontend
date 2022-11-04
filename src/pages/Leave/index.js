@@ -132,7 +132,7 @@ function Leave() {
             >
               <QuarterlyLeavesRemainingAndAppliedCards
                 firstType="Days Remaining"
-                secondType="Days Applied"
+                secondType="Days Approved"
                 firstNumber={
                   quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves || 0
                 }
@@ -150,7 +150,7 @@ function Leave() {
             >
               <AnnualLeavesRemainingAndAppliedCards
                 firstTitle="Days Remaining"
-                secondTitle="Days Applied"
+                secondTitle="Days Approved"
                 firstType="Sick"
                 secondType="Casual"
                 sickDayRemaining={
