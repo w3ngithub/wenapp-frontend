@@ -79,9 +79,9 @@ const getLeaveTypes = async id => {
   }
 }
 
-const changeLeaveStatus = async (id, statusType) => {
+const changeLeaveStatus = async (id, statusType,reason) => {
   try {
-    let response = await API.patch(`${Apis.Leaves}/${id}/status/${statusType}`)
+    let response = await API.patch(`${Apis.Leaves}/${id}/status/${statusType}`,{reason})
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)

@@ -5,6 +5,7 @@ import './selectLabel.less'
 const Option = Dropdown.Option
 
 const Select = ({
+  disabled=false,
   onChange,
   value,
   options,
@@ -19,6 +20,7 @@ const Select = ({
   return (
     <div>
     <Dropdown
+    disabled={disabled}
     className={placeholderClass}
       allowClear
       showSearch

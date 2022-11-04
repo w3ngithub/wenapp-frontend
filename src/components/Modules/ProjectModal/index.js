@@ -76,6 +76,8 @@ function ProjectModal({
       setProjectTypes(types.data.data.data)
       refetch()
       if (isEditMode) {
+        setStartDate(moment(initialValues.startDate))
+        setEndDate(moment(initialValues.endDate))
         setMaintenance([
           {
             selectMonths:
@@ -217,7 +219,12 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="path"
               >
-                <Input placeholder="Enter Path" disabled={readOnly} />
+                <Input
+                  className={`${readOnly ? 'path-disabled' : ''}`}
+                  placeholder="Enter Path"
+                  onFocus={readOnly ? (e) => e.target.select() : false}
+                  readOnly={readOnly}
+                />
               </FormItem>
             </Col>
             <Col span={24} sm={12}>
@@ -347,10 +354,7 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="client"
               >
-                <Select
-                  placeholder="Select Client"
-                  disabled={readOnly}
-                >
+                <Select placeholder="Select Client" disabled={readOnly}>
                   {client?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
@@ -462,6 +466,13 @@ function ProjectModal({
                   placeholder="Select Staging Urls"
                   disabled={readOnly}
                   mode="tags"
+                  tagRender={(props) => {
+                    return (
+                      <a href={props.value} target="_blank">
+                        <span className="staging-urls">{props.value}</span>
+                      </a>
+                    )
+                  }}
                 >
                   {[].map((item) => (
                     <Option key={item} value={item} />
@@ -475,7 +486,18 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="liveUrl"
               >
-                <Input placeholder="Enter Live URL" disabled={readOnly} />
+                <Select
+                  disabled={readOnly}
+                  mode="tags"
+                  open={false}
+                  tagRender={(props) => {
+                    return (
+                      <a href={props.value} target="_blank">
+                        {props.value}
+                      </a>
+                    )
+                  }}
+                />
               </FormItem>
             </Col>
           </Row>
