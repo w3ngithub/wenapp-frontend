@@ -71,7 +71,6 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
       RoleAccess.Admin,
       RoleAccess.ProjectManager,
       RoleAccess.TeamLead,
-      RoleAccess.Finance,
       RoleAccess.Editor,
       RoleAccess.Normal,
     ],

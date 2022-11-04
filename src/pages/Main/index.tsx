@@ -174,7 +174,6 @@ function App(props: any) {
                         RoleAccess.Admin,
                         RoleAccess.ProjectManager,
                         RoleAccess.TeamLead,
-                        RoleAccess.Finance,
                         RoleAccess.Editor,
                         RoleAccess.Normal,
                       ]}
