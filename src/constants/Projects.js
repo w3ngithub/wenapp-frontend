@@ -23,14 +23,15 @@ const PROJECT_COLUMNS = (
       return a.name.toString().localeCompare(b.name.toString())
     },
     sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
-    render:(text,record)=>{
+    render: (text, record) => {
       return (
         <div>
-
-          <p className="project-name" onClick={()=>openModal(record,true)}>{record.name}</p>
+          <p className="project-name" onClick={() => openModal(record, true)}>
+            {record.name}
+          </p>
         </div>
       )
-    }
+    },
   },
   {
     title: 'Path',
@@ -39,15 +40,18 @@ const PROJECT_COLUMNS = (
     width: 180,
     sorter: (a, b) => a.path?.toString().localeCompare(b.path?.toString()),
     sortOrder: sortedInfo.columnKey === 'path' && sortedInfo.order,
-    render:(text,record)=>{
-      return(
+    render: (text, record) => {
+      return (
         <div>
-          <Input className="pathinput"  onFocus={(e)=>e.target.select()} value={record.path || ''} />
+          <Input
+            className="pathinput"
+            onFocus={(e) => e.target.select()}
+            value={record.path || ''}
+          />
         </div>
       )
-    }
-      
     },
+  },
   {
     title: 'Start Date',
     dataIndex: 'startDate',
