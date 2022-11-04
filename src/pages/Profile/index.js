@@ -21,6 +21,7 @@ import {useDispatch} from 'react-redux'
 import {setProfilePhoto} from 'appRedux/actions'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {connect} from 'react-redux'
+import {getUserProfile} from 'appRedux/actions/UserPofile'
 
 export const aboutList = [
   {
@@ -71,6 +72,13 @@ function Profile(props) {
         [
           () => setUser(response.data.data),
           () =>
+            dispatch(
+              getUserProfile({
+                name: response.data.data.user.name,
+                position: props.position,
+              })
+            ),
+          () =>
             localStorage.setItem(
               LOCALSTORAGE_USER,
               JSON.stringify({user: response.data.data.user})
@@ -107,6 +115,7 @@ function Profile(props) {
       joinDate: moment.utc(user.joinDate._d).format(),
       primaryPhone: +user.primaryPhone,
       secondaryPhone: +user.secondaryPhone || null,
+      photoURL: user?.photoURL?.url,
     }
     if (removedFile) {
       const imageRef = ref(storage, removedFile)
@@ -135,7 +144,6 @@ function Profile(props) {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             updatedUser = {
               ...updatedUser,
-
               photoURL: downloadURL,
             }
             mutation.mutate(updatedUser)
