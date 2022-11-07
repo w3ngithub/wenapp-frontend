@@ -167,7 +167,7 @@ function LogTime() {
     setIsEditMode(false)
   }
 
-  const alertOrOpen=()=>{
+  const checkTimeLog=()=>{
     let time  = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
     if(time>9.5){
       notification({message: 'Log Time Excedeed',type:'info'})
@@ -236,7 +236,7 @@ function LogTime() {
           <div className="gx-d-flex gx-justify-content-between gx-flex-row">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
-              onClick={alertOrOpen}
+              onClick={checkTimeLog}
             >
               Add New Log Time
             </Button>

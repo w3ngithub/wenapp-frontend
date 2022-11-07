@@ -242,8 +242,6 @@ function ProjectLogs() {
     ...(qa ?? []),
   ]
 
-  console.log(todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday)
-
   const checkTimeLog = () => {
     let time = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
     if (time > 9.5) {
