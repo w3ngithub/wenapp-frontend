@@ -131,7 +131,7 @@ const LEAVES_COLUMN = (
           title: 'Type',
           dataIndex: 'type',
           key: 'type',
-          width: 10,
+          width: 30,
         },
         {
           title: 'Reason',
@@ -188,17 +188,26 @@ const LEAVES_COLUMN = (
                   )}
                 </div>
               )
-            return record.status === 'pending' ? (
-              <span
+            return (
+              <div style={{display:'flex'}}>
+                  <span
+                    className="gx-link gx-text-primary"
+                   onClick={() => onEditClick ? onEditClick(record, true) : ()=>{}}
+                  >
+                    <CustomIcon name="view" />
+                  </span>
+              
+              {record.status === 'pending' &&  <> <Divider type='vertical'/> <span
                 className="gx-link gx-text-danger"
                 onClick={() =>
                   onCancelLeave ? onCancelLeave(record) : () => {}
                 }
               >
                 Cancel
-              </span>
-            ) : 
-            null
+              </span> </>}
+             
+           </div>
+            )
           },
         },
       ]

@@ -1,0 +1,1 @@
+export const leaveInterval = [{name:'Full Day', value:'full-day'}, {name:'First Half', value:'first-half'}, {name:'Second Half', value:'second-half'}];

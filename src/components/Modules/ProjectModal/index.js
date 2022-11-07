@@ -70,12 +70,15 @@ function ProjectModal({
       })
     )
   }
+
   useEffect(() => {
     if (toggle) {
-      setProjectStatuses(statuses.data.data.data)
+      // setProjectStatuses(statuses.data.data.data)
       setProjectTypes(types.data.data.data)
       refetch()
       if (isEditMode) {
+        setStartDate(moment(initialValues.startDate))
+        setEndDate(moment(initialValues.endDate))
         setMaintenance([
           {
             selectMonths:
@@ -114,9 +117,9 @@ function ProjectModal({
             initialValues.projectTags?.length > 0
               ? initialValues.projectTags?.map((tags) => tags._id)
               : undefined,
-          client:  initialValues.client.hasOwnProperty('_id')
-          ? initialValues.client?._id
-          : undefined,
+          client: initialValues?.client?.hasOwnProperty('_id')
+            ? initialValues.client?._id
+            : undefined,
           developers:
             initialValues.developers?.length > 0
               ? initialValues.developers?.map((developer) => developer._id)
@@ -150,6 +153,23 @@ function ProjectModal({
       form.resetFields()
     }
   }, [toggle])
+
+  useEffect(() => {
+    if (moment() < moment(startDate) || startDate === undefined) {
+      let removeCompleted = statuses.data.data.data.filter(
+        (data) => data.name !== 'Completed'
+      )
+      let selectedStatus = statuses.data.data.data.filter(
+        (status) => status._id === form.getFieldValue('projectStatus')
+      )
+      setProjectStatuses(removeCompleted)
+      if (selectedStatus[0]?.name === 'Completed') {
+        form.setFieldValue('projectStatus', null)
+      }
+    } else {
+      setProjectStatuses(statuses.data.data.data)
+    }
+  }, [startDate])
 
   const handleDateChange = (e, time) => {
     if (time === 'start') setStartDate(e)
@@ -217,7 +237,12 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="path"
               >
-                <Input placeholder="Enter Path" disabled={readOnly} />
+                <Input
+                  className={`${readOnly ? 'path-disabled' : ''}`}
+                  placeholder="Enter Path"
+                  onFocus={readOnly ? (e) => e.target.select() : false}
+                  readOnly={readOnly}
+                />
               </FormItem>
             </Col>
             <Col span={24} sm={12}>
@@ -329,7 +354,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select Tags"
                   disabled={readOnly}
-                  mode="tags"
+                  mode="multiple"
                   size="large"
                 >
                   {data &&
@@ -347,10 +372,7 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="client"
               >
-                <Select
-                  placeholder="Select Client"
-                  disabled={readOnly}
-                >
+                <Select placeholder="Select Client" disabled={readOnly}>
                   {client?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
@@ -373,7 +395,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select Developers"
                   disabled={readOnly}
-                  mode="tags"
+                  mode="multiple"
                 >
                   {developers?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
@@ -394,7 +416,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select Designers"
                   disabled={readOnly}
-                  mode="tags"
+                  mode="multiple"
                 >
                   {designers?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
@@ -417,7 +439,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select QA"
                   disabled={readOnly}
-                  mode="tags"
+                  mode="multiple"
                 >
                   {qas?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
@@ -438,7 +460,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select DevOps"
                   disabled={readOnly}
-                  mode="tags"
+                  mode="multiple"
                 >
                   {devops?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
@@ -462,6 +484,13 @@ function ProjectModal({
                   placeholder="Select Staging Urls"
                   disabled={readOnly}
                   mode="tags"
+                  tagRender={(props) => {
+                    return (
+                      <a href={props.value} target="_blank">
+                        <span className="staging-urls">{props.value}</span>
+                      </a>
+                    )
+                  }}
                 >
                   {[].map((item) => (
                     <Option key={item} value={item} />
@@ -475,7 +504,18 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="liveUrl"
               >
-                <Input placeholder="Enter Live URL" disabled={readOnly} />
+                <Select
+                  disabled={readOnly}
+                  mode="tags"
+                  open={false}
+                  tagRender={(props) => {
+                    return (
+                      <a href={props.value} target="_blank">
+                        {props.value}
+                      </a>
+                    )
+                  }}
+                />
               </FormItem>
             </Col>
           </Row>

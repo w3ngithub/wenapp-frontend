@@ -11,7 +11,13 @@ import {
   Radio,
   DatePicker,
 } from 'antd'
-import {filterOptions, handleResponse, MuiFormatDate} from 'helpers/utils'
+import {
+  filterHalfDayLeaves,
+  filterOptions,
+  handleResponse,
+  MuiFormatDate,
+  specifyParticularHalf,
+} from 'helpers/utils'
 import React, {useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {
@@ -30,6 +36,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
+import {leaveDuration, leaveInterval} from 'constants/LeaveDuration'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -37,9 +44,16 @@ const Option = Select.Option
 
 function Apply({user}) {
   const [form] = Form.useForm()
+
   const queryClient = useQueryClient()
-  const {themeType} = useSelector(state => state.settings)
+  const {themeType} = useSelector((state) => state.settings)
   const {innerWidth} = useWindowsSize()
+  const [specificHalf, setSpecificHalf] = useState(false)
+  const [halfLeaveApproved, setHalfLeaveApproved] = useState(false)
+  const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
+  const [selectedDates, setSelectedDates] = useState('')
+  const [particularDay, setParticularDay] = useState({})
+
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const [leaveType, setLeaveType] = useState('')
@@ -51,24 +65,24 @@ function Apply({user}) {
   )
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
-    select: res => [
-      ...res?.data?.data?.data?.map(type => ({
+    select: (res) => [
+      ...res?.data?.data?.data?.map((type) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
       })),
     ],
   })
   const teamLeadsQuery = useQuery(['teamLeads'], getTeamLeads, {
-    select: res => ({
+    select: (res) => ({
       ...res.data,
-      data: res?.data?.data?.data.map(lead =>
+      data: res?.data?.data?.data.map((lead) =>
         lead?.role?.key === 'hr' ? {...lead, name: 'Hr'} : lead
       ),
     }),
   })
 
-  const leaveMutation = useMutation(leave => createLeave(leave), {
-    onSuccess: response =>
+  const leaveMutation = useMutation((leave) => createLeave(leave), {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave submitted successfully',
@@ -81,14 +95,14 @@ function Apply({user}) {
           () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Leave submittion failed!', type: 'error'})
     },
   })
 
-  const emailMutation = useMutation(payload => sendEmailforLeave(payload))
+  const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
 
-  const sendEmailNotification = res => {
+  const sendEmailNotification = (res) => {
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
@@ -96,8 +110,8 @@ function Apply({user}) {
     })
   }
 
-  const handleTypesChange = value => {
-    setLeaveType(leaveTypeQuery?.data?.find(type => type.id === value).value)
+  const handleTypesChange = (value) => {
+    setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value).value)
   }
 
   const handleFormReset = () => {
@@ -106,11 +120,11 @@ function Apply({user}) {
   }
 
   const handleSubmit = () => {
-    form.validateFields().then(values => {
+    form.validateFields().then((values) => {
       const leaveTypeName = leaveTypeQuery?.data?.find(
-        type => type?.id === values?.leaveType
+        (type) => type?.id === values?.leaveType
       )?.value
-      //calculation for maternity, paternity, pto leaves
+      // calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
         leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
@@ -125,48 +139,95 @@ function Apply({user}) {
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
-      const casualLeaveDaysUTC = casualLeaveDays.map(leave =>
+      const casualLeaveDaysUTC = casualLeaveDays.map((leave) =>
         MuiFormatDate(new Date(leave))
       )
-      form.validateFields().then(values =>
+      form.validateFields().then((values) =>
         leaveMutation.mutate({
           ...values,
           leaveDates: appliedDate
             ? [appliedDateUTC, endDateUTC]
             : casualLeaveDaysUTC,
-          halfDay: values.halfDay,
+          halfDay: values?.halfDay === 'full-day' ? '' : values?.halfDay,
           leaveStatus: appliedDate ? 'approved' : 'pending',
         })
       )
     })
   }
-
   let userLeaves = []
   const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays?.map(
-    holiday => ({
+    (holiday) => ({
       date: new DateObject(holiday?.date).format(),
       name: holiday?.title,
     })
   )
-  userLeavesQuery?.data?.data?.data?.data?.forEach(leave => {
+  userLeavesQuery?.data?.data?.data?.data?.forEach((leave) => {
     if (leave?.leaveDates?.length > 1) {
       for (let i = 0; i < leave?.leaveDates.length; i++) {
         userLeaves.push({
           leaveStatus: leave?.leaveStatus,
           date: new DateObject(leave?.leaveDates[i]).format(),
+          isHalfDay: leave?.halfDay,
         })
       }
     } else {
       userLeaves.push({
         leaveStatus: leave?.leaveStatus,
         date: new DateObject(leave?.leaveDates[0]).format(),
+        isHalfDay: leave?.halfDay,
       })
     }
   })
 
+  const disableInterval = (index) => {
+    if (multipleDatesSelected && index !== 0) {
+      return true
+    } else {
+      if (index === 0 && halfLeaveApproved) {
+        return true
+      }
+      if (index === 1 && specificHalf === 'first-half') {
+        return true
+      }
+      if (index === 2 && specificHalf === 'second-half') {
+        return true
+      }
+      return false
+    }
+  }
+
+  const checkNumberOfDays = (values) => {
+    if (values?.hasOwnProperty('leaveDatesCasual')) {
+      if (values?.leaveDatesCasual?.length === 1) {
+        setMultipleDatesSelected(false)
+        const formattedDate = values?.leaveDatesCasual?.map((d) =>
+          MuiFormatDate(new Date(d))
+        )
+        const newDate = formattedDate?.[0]?.split('-')?.join('/')
+        let leaveDate = userLeaves?.filter((leave) => leave.date === newDate)
+        setHalfLeaveApproved(specifyParticularHalf(leaveDate)?.halfLeaveApproved)
+        setSpecificHalf(specifyParticularHalf(leaveDate)?.specificHalf)
+      } 
+      else if (values?.leaveDatesCasual?.length === 0){
+        setHalfLeaveApproved(false)
+        setSpecificHalf(false)
+        setMultipleDatesSelected(false)
+      }
+      else {
+        setMultipleDatesSelected(true)
+        setHalfLeaveApproved(false)
+      }
+    }
+  }
+
   return (
     <Spin spinning={leaveMutation.isLoading}>
-      <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
+      <Form
+        layout="vertical"
+        style={{padding: '15px 0'}}
+        form={form}
+        onValuesChange={(allValues) => checkNumberOfDays(allValues)}
+      >
         <Row type="flex">
           {!immediateApprovalLeaveTypes.includes(leaveType) && (
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
@@ -187,18 +248,16 @@ function Apply({user}) {
                       ? new DateObject().subtract(2, 'months')
                       : new Date()
                   }
-                  mapDays={({date, today}) => {
+                  mapDays={({date, today, selectedDate}) => {
                     let isWeekend = [0, 6].includes(date.weekDay.index)
                     let holidayList = holidaysThisYear?.filter(
-                      holiday => date.format() === holiday?.date
+                      (holiday) => date.format() === holiday?.date
                     )
                     let isHoliday = holidayList?.length > 0
                     let leaveDate = userLeaves?.filter(
-                      leave => leave.date === date.format()
+                      (leave) => leave.date === date.format()
                     )
-                    let leaveAlreadyTakenDates =
-                      leaveDate?.length > 0 &&
-                      leaveDate?.[0]?.leaveStatus === 'approved'
+                    let leaveAlreadyTakenDates = filterHalfDayLeaves(leaveDate)
                     if (isWeekend || isHoliday || leaveAlreadyTakenDates)
                       return {
                         disabled: true,
@@ -209,9 +268,12 @@ function Apply({user}) {
                               : 'rgb(237 45 45)',
                         },
                         onClick: () => {
-                          if (isWeekend) notification({message: 'Weekends are disabled'})
+                          if (isWeekend)
+                            notification({message: 'Weekends are disabled'})
                           else if (isHoliday)
-                            notification({message: `${holidayList[0]?.name} holiday`})
+                            notification({
+                              message: `${holidayList[0]?.name} holiday`,
+                            })
                           else if (leaveAlreadyTakenDates)
                             notification({message: `Leave already taken`})
                         },
@@ -254,7 +316,7 @@ function Apply({user}) {
                     style={{width: '100%'}}
                     onChange={handleTypesChange}
                   >
-                    {leaveTypeQuery?.data?.map(type =>
+                    {leaveTypeQuery?.data?.map((type) =>
                       type.value !== 'Late Arrival' ? (
                         <Option value={type.id} key={type.id}>
                           {type.value}
@@ -263,12 +325,40 @@ function Apply({user}) {
                     )}
                   </Select>
                 </FormItem>
-                {(leaveType === 'Casual' || leaveType === 'Sick') && (
+                {/* {(leaveType === 'Casual' || leaveType === 'Sick') && (
                   <FormItem label="Half Leave" name="halfDay">
                     <Radio.Group>
-                      <Radio value="first-half">First-Half</Radio>
-                      <Radio value="second-half">Second-Half</Radio>
+                      <Radio value="first-half" disabled={firstHalfSelected}>
+                        First-Half
+                      </Radio>
+                      <Radio value="second-half" disabled={secondHalfSelected}>
+                        Second-Half
+                      </Radio>
                     </Radio.Group>
+                  </FormItem>
+                )} */}
+                {(leaveType === 'Casual' || leaveType === 'Sick') && (
+                  <FormItem
+                    label="Leave Interval"
+                    name="halfDay"
+                    rules={[{required: true, message: 'Required!'}]}
+                  >
+                    <Select
+                      showSearch
+                      filterOption={filterOptions}
+                      placeholder="Select Duration"
+                      style={{width: '100%'}}
+                    >
+                      {leaveInterval?.map((type, index) => (
+                        <Option
+                          value={type?.value}
+                          key={index}
+                          disabled={disableInterval(index)}
+                        >
+                          {type?.name}
+                        </Option>
+                      ))}
+                    </Select>
                   </FormItem>
                 )}
               </Col>
@@ -311,7 +401,10 @@ function Apply({user}) {
                           if (!value) throw new Error('Required!')
 
                           const trimmedValue = value && value.trim()
-                          if (trimmedValue?.length < 10 || trimmedValue?.length > 250) {
+                          if (
+                            trimmedValue?.length < 10 ||
+                            trimmedValue?.length > 250
+                          ) {
                             throw new Error(
                               'Reason should be between 10 and 250 letters!'
                             )
