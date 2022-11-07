@@ -70,9 +70,10 @@ function ProjectModal({
       })
     )
   }
+
   useEffect(() => {
     if (toggle) {
-      setProjectStatuses(statuses.data.data.data)
+      // setProjectStatuses(statuses.data.data.data)
       setProjectTypes(types.data.data.data)
       refetch()
       if (isEditMode) {
@@ -152,6 +153,23 @@ function ProjectModal({
       form.resetFields()
     }
   }, [toggle])
+
+  useEffect(() => {
+    if (moment() < moment(startDate) || startDate === undefined) {
+      let removeCompleted = statuses.data.data.data.filter(
+        (data) => data.name !== 'Completed'
+      )
+      let selectedStatus = statuses.data.data.data.filter(
+        (status) => status._id === form.getFieldValue('projectStatus')
+      )
+      setProjectStatuses(removeCompleted)
+      if (selectedStatus[0]?.name === 'Completed') {
+        form.setFieldValue('projectStatus', null)
+      }
+    } else {
+      setProjectStatuses(statuses.data.data.data)
+    }
+  }, [startDate])
 
   const handleDateChange = (e, time) => {
     if (time === 'start') setStartDate(e)
