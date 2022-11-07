@@ -51,10 +51,9 @@ function Apply({user}) {
   const [specificHalf, setSpecificHalf] = useState(false)
   const [halfLeaveApproved, setHalfLeaveApproved] = useState(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
-  const [selectedDates, setSelectedDates] = useState('')
-  const [particularDay, setParticularDay] = useState({})
+  const [calendarClicked, setCalendarClicked] = useState(false)
+  
 
-  const {getFieldDecorator} = form
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const [leaveType, setLeaveType] = useState('')
@@ -118,6 +117,9 @@ function Apply({user}) {
   const handleFormReset = () => {
     form.resetFields()
     setLeaveType('')
+    setMultipleDatesSelected(false)
+    setHalfLeaveApproved(false)
+    setSpecificHalf(false)
   }
 
   const handleSubmit = () => {
@@ -149,7 +151,10 @@ function Apply({user}) {
           leaveDates: appliedDate
             ? [appliedDateUTC, endDateUTC]
             : casualLeaveDaysUTC,
-          halfDay: (values?.halfDay === 'full-day' || values?.halfDay === 'Full Day') ? '' : values?.halfDay,
+          halfDay:
+            values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
+              ? ''
+              : values?.halfDay,
           leaveStatus: appliedDate ? 'approved' : 'pending',
         })
       )
@@ -197,7 +202,8 @@ function Apply({user}) {
     }
   }
 
-  const checkNumberOfDays = (values) => {
+  const formFieldChanges = (values) => {
+    console.log('values', values)
     if (values?.hasOwnProperty('leaveDatesCasual')) {
       if (values?.leaveDatesCasual?.length === 1) {
         setMultipleDatesSelected(false)
@@ -221,13 +227,40 @@ function Apply({user}) {
     }
   }
 
+  const calendarClickHandler = () => {
+    const selectedDates = form?.getFieldValue('leaveDatesCasual')
+    if (selectedDates?.length > 0) {
+      setCalendarClicked(true)
+      if (selectedDates?.length > 1) {
+        form.setFieldValue('halfDay', 'full-day')
+      }
+      if (selectedDates?.length === 1) {
+        const formattedDate = selectedDates?.map((d) =>
+          MuiFormatDate(new Date(d))
+        )
+        let leaveDate = userLeaves?.filter(
+          (leave) => leave.date === formattedDate?.[0]?.split('-')?.join('/')
+        )
+        let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
+        if (specificHalf === 'first-half') {
+          form.setFieldValue('halfDay', 'second-half')
+        }else if(specificHalf === 'second-half'){
+          form.setFieldValue('halfDay', 'first-half')
+        }else {
+          form.setFieldValue('halfDay', 'full-day')
+        }
+      }
+    } else {
+      setCalendarClicked(false)
+    }
+  }
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Form
         layout="vertical"
         style={{padding: '15px 0'}}
         form={form}
-        onValuesChange={(allValues) => checkNumberOfDays(allValues)}
+        onValuesChange={(allValues) => formFieldChanges(allValues)}
       >
         <Row type="flex">
           {!immediateApprovalLeaveTypes.includes(leaveType) && (
@@ -239,6 +272,7 @@ function Apply({user}) {
               >
                 <Calendar
                   className={darkCalendar ? 'bg-dark' : 'null'}
+                  onChange={calendarClickHandler}
                   numberOfMonths={1}
                   disableMonthPicker
                   disableYearPicker
@@ -258,7 +292,6 @@ function Apply({user}) {
                     let leaveDate = userLeaves?.filter(
                       (leave) => leave.date === date.format()
                     )
-                    console.log(leaveDate);
                     let leaveAlreadyTakenDates = filterHalfDayLeaves(leaveDate)
                     if (isWeekend || isHoliday || leaveAlreadyTakenDates)
                       return {
@@ -327,43 +360,32 @@ function Apply({user}) {
                     )}
                   </Select>
                 </FormItem>
-                {/* {(leaveType === 'Casual' || leaveType === 'Sick') && (
-                  <FormItem label="Half Leave" name="halfDay">
-                    <Radio.Group>
-                      <Radio value="first-half" disabled={firstHalfSelected}>
-                        First-Half
-                      </Radio>
-                      <Radio value="second-half" disabled={secondHalfSelected}>
-                        Second-Half
-                      </Radio>
-                    </Radio.Group>
-                  </FormItem>
-                )} */}
-                {(leaveType === 'Casual' || leaveType === 'Sick') && (
-                  <FormItem
-                    label="Leave Interval"
-                    name="halfDay"
-                    rules={[{required: true, message: 'Required!'}]}
-                    initialValue="Full Day"
-                  >
-                    <Select
-                      showSearch
-                      filterOption={filterOptions}
-                      placeholder="Select Duration"
-                      style={{width: '100%'}}
+                {(leaveType === 'Casual' || leaveType === 'Sick') &&
+                  calendarClicked && (
+                    <FormItem
+                      label="Leave Interval"
+                      name="halfDay"
+                      rules={[{required: true, message: 'Required!'}]}
                     >
-                      {leaveInterval?.map((type, index) => (
-                        <Option
-                          value={type?.value}
-                          key={index}
-                          disabled={disableInterval(index)}
-                        >
-                          {type?.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </FormItem>
-                )}
+                      <Select
+                        showSearch
+                        filterOption={filterOptions}
+                        placeholder="Select Duration"
+                        // placeholder={defaultInterval}
+                        style={{width: '100%'}}
+                      >
+                        {leaveInterval?.map((type, index) => (
+                          <Option
+                            value={type?.value}
+                            key={index}
+                            disabled={disableInterval(index)}
+                          >
+                            {type?.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </FormItem>
+                  )}
               </Col>
               {immediateApprovalLeaveTypes.includes(leaveType) && (
                 <Col

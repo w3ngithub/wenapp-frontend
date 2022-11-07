@@ -462,9 +462,9 @@ function LeaveModal({
                         let leaveDate = userLeaves?.filter(
                           (leave) => leave.date === date.format()
                         )
-                        const isLeaveTaken = readOnly && form?.getFieldValue('leaveDatesCasual')?.[0]?.split('-')?.join('/')?.split('T')?.[0] === leaveDate?.[0]?.date
                         let leaveAlreadyTakenDates =
-                          filterHalfDayLeaves(leaveDate)
+                        filterHalfDayLeaves(leaveDate)
+                        const isLeaveTaken = readOnly && form?.getFieldValue('leaveDatesCasual')?.[0]?.split('-')?.join('/')?.split('T')?.[0] === leaveDate?.[0]?.date
                         if (readOnly && !isLeaveTaken) {
                           return {
                             disabled: true,
