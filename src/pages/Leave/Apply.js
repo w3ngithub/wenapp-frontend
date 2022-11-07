@@ -149,7 +149,7 @@ function Apply({user}) {
           leaveDates: appliedDate
             ? [appliedDateUTC, endDateUTC]
             : casualLeaveDaysUTC,
-          halfDay: values?.halfDay === 'full-day' ? '' : values?.halfDay,
+          halfDay: (values?.halfDay === 'full-day' || values?.halfDay === 'Full Day') ? '' : values?.halfDay,
           leaveStatus: appliedDate ? 'approved' : 'pending',
         })
       )
@@ -258,6 +258,7 @@ function Apply({user}) {
                     let leaveDate = userLeaves?.filter(
                       (leave) => leave.date === date.format()
                     )
+                    console.log(leaveDate);
                     let leaveAlreadyTakenDates = filterHalfDayLeaves(leaveDate)
                     if (isWeekend || isHoliday || leaveAlreadyTakenDates)
                       return {
@@ -343,15 +344,13 @@ function Apply({user}) {
                     label="Leave Interval"
                     name="halfDay"
                     rules={[{required: true, message: 'Required!'}]}
+                    initialValue="Full Day"
                   >
                     <Select
                       showSearch
                       filterOption={filterOptions}
                       placeholder="Select Duration"
                       style={{width: '100%'}}
-                      defaultActiveFirstOption={true}
-                      defaultValue="Full Day"
-                      value=""
                     >
                       {leaveInterval?.map((type, index) => (
                         <Option
