@@ -12,6 +12,7 @@ import {
   TimePicker,
 } from 'antd'
 import moment, {Moment} from 'moment'
+import type { Moment as Moments } from 'moment';
 import {FieldTimeOutlined} from '@ant-design/icons'
 import LiveTime from 'components/Elements/LiveTime'
 import {useMutation, useQueryClient} from '@tanstack/react-query'
@@ -40,10 +41,13 @@ function TmsAdminAttendanceForm({
   const [user, setUser] = useState(undefined)
   const [date, setDate] = useState<null | Moment>(null)
 
+
   useEffect(() => {
     if (AttToEdit) {
       setDate(moment(AttToEdit.attendanceDate))
       setUser(AttToEdit.user)
+
+      
       PUnchInform.resetFields()
       PUnchOutform.resetFields()
     }
@@ -191,14 +195,35 @@ function TmsAdminAttendanceForm({
                 punchInNote: AttToEdit?.punchInNote,
               }}
             >
+  
               <Form.Item
                 name="punchInTime"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[ 
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if(!value){
+                      return Promise.reject('Required!')
+                    }
+                    if(value && !PUnchOutform.getFieldValue('punchOutTime')){
+                      return Promise.resolve()
+                    }
+
+                    if (value.isBefore(PUnchOutform.getFieldValue('punchOutTime'))) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Punch In Time should be before Punch Out Time'));
+                  },
+                }),
+              ]}
+             
+
                 hasFeedback
               >
                 <TimePicker use12Hours format="h:mm:ss A" />
               </Form.Item>
-              <Form.Item label="Punch In Note" name="punchInNote" hasFeedback>
+              <Form.Item label="Punch In Note" name="punchInNote" hasFeedback
+          >
+
                 <Input.TextArea rows={5} />
               </Form.Item>
               <Form.Item>
@@ -224,7 +249,21 @@ function TmsAdminAttendanceForm({
               <div className="gx-d-flex" style={{gap: 20}}>
                 <Form.Item
                   name="punchOutTime"
-                  rules={[{required: true, message: 'Required!'}]}
+                  
+                  rules={[ 
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if(!value){
+                         return Promise.reject(new Error('Required!'))
+                        }
+                        if (value.isBefore(PUnchInform.getFieldValue('punchInTime'))) {
+                          return Promise.reject(new Error('Punch Out Time should not be before Punch In Time'));
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
+                    ]}  
+                  
                   hasFeedback
                 >
                   <TimePicker use12Hours format="h:mm:ss A" />
