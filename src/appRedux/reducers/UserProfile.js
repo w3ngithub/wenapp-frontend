@@ -14,7 +14,7 @@ const UserProfile = (state = INIT_STATE, action) => {
       return {
         ...state,
         name: action.payload.name,
-        position: action.payload.position,
+        position: action.payload.position || state.position,
       }
 
     default:

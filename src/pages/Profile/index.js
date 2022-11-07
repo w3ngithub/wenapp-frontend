@@ -75,7 +75,6 @@ function Profile(props) {
             dispatch(
               getUserProfile({
                 name: response.data.data.user.name,
-                position: props.position,
               })
             ),
           () =>
