@@ -444,6 +444,7 @@ function LeaveModal({
                       disableYearPicker
                       weekStartDayIndex={1}
                       multiple
+                      disabled={readOnly}
                       minDate={
                         leaveType === 'Sick' ||
                         leaveType === 'Casual' ||
@@ -461,7 +462,7 @@ function LeaveModal({
                         let leaveDate = userLeaves?.filter(
                           (leave) => leave.date === date.format()
                         )
-                        const isLeaveTaken = form.getFieldValue('leaveDatesCasual')?.[0]?.split('-')?.join('/')?.split('T')?.[0] === leaveDate?.[0]?.date
+                        const isLeaveTaken = readOnly && form?.getFieldValue('leaveDatesCasual')?.[0]?.split('-')?.join('/')?.split('T')?.[0] === leaveDate?.[0]?.date
                         let leaveAlreadyTakenDates =
                           filterHalfDayLeaves(leaveDate)
                         if (readOnly && !isLeaveTaken) {

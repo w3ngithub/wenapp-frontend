@@ -54,6 +54,7 @@ function Apply({user}) {
   const [selectedDates, setSelectedDates] = useState('')
   const [particularDay, setParticularDay] = useState({})
 
+  const {getFieldDecorator} = form
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const [leaveType, setLeaveType] = useState('')
@@ -205,15 +206,15 @@ function Apply({user}) {
         )
         const newDate = formattedDate?.[0]?.split('-')?.join('/')
         let leaveDate = userLeaves?.filter((leave) => leave.date === newDate)
-        setHalfLeaveApproved(specifyParticularHalf(leaveDate)?.halfLeaveApproved)
+        setHalfLeaveApproved(
+          specifyParticularHalf(leaveDate)?.halfLeaveApproved
+        )
         setSpecificHalf(specifyParticularHalf(leaveDate)?.specificHalf)
-      } 
-      else if (values?.leaveDatesCasual?.length === 0){
+      } else if (values?.leaveDatesCasual?.length === 0) {
         setHalfLeaveApproved(false)
         setSpecificHalf(false)
         setMultipleDatesSelected(false)
-      }
-      else {
+      } else {
         setMultipleDatesSelected(true)
         setHalfLeaveApproved(false)
       }
@@ -348,6 +349,9 @@ function Apply({user}) {
                       filterOption={filterOptions}
                       placeholder="Select Duration"
                       style={{width: '100%'}}
+                      defaultActiveFirstOption={true}
+                      defaultValue="Full Day"
+                      value=""
                     >
                       {leaveInterval?.map((type, index) => (
                         <Option
