@@ -3,7 +3,7 @@ import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
 
 // login user api
-const loginInUsers = async loginDetail => {
+const loginInUsers = async (loginDetail) => {
   try {
     let response = await API.post(`${Apis.Users}/login`, loginDetail)
     return getAPIResponse(response)
@@ -37,6 +37,15 @@ const getAllUsers = async ({
     let response = await API.get(
       `${Apis.Users}?search=${name}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&role=${role}&position=${position}&positionType=${positionType}&active=${active}`
     )
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err?.response)
+  }
+}
+
+const getMyProfile = async (payload) => {
+  try {
+    let response = await API.get(`${Apis.Users}?_id=${payload}`)
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)
@@ -81,7 +90,7 @@ const getUserPosition = async () => {
   }
 }
 
-const updateProfile = async payload => {
+const updateProfile = async (payload) => {
   try {
     let response = await API.patch(`${Apis.Profile}`, payload)
     return getAPIResponse(response)
@@ -99,7 +108,7 @@ const updateUser = async (userId, payload) => {
   }
 }
 
-const disableUser = async userId => {
+const disableUser = async (userId) => {
   try {
     let response = await API.post(`${Apis.Users}/${userId}/disable`)
     return getAPIResponse(response)
@@ -108,7 +117,7 @@ const disableUser = async userId => {
   }
 }
 
-const importUsers = async payload => {
+const importUsers = async (payload) => {
   try {
     let response = await API.post(`${Apis.Users}/import`, payload)
     return getAPIResponse(response)
@@ -144,7 +153,7 @@ const getSalaryReviewUsers = async () => {
   }
 }
 
-const UpdateUserPassword = async payload => {
+const UpdateUserPassword = async (payload) => {
   try {
     let response = await API.patch(`${Apis.Users}/updateMyPassword`, payload)
     return getAPIResponse(response)
@@ -153,7 +162,7 @@ const UpdateUserPassword = async payload => {
   }
 }
 
-const forgotPassword = async payload => {
+const forgotPassword = async (payload) => {
   try {
     let response = await API.post(`${Apis.Users}/forgotPassword`, payload)
     return getAPIResponse(response)
@@ -174,7 +183,7 @@ const resetPassword = async (token, payload) => {
   }
 }
 
-const resetAllocatedLeaves = async payload => {
+const resetAllocatedLeaves = async (payload) => {
   try {
     let response = await API.patch(
       `${Apis.Users}/resetAllocatedLeaves`,
@@ -215,4 +224,5 @@ export {
   resetPassword,
   resetAllocatedLeaves,
   disableUser,
+  getMyProfile,
 }

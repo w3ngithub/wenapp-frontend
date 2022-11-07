@@ -32,8 +32,8 @@ import RoleAccess, {
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
 
-const formattedAttendances = attendances => {
-  return attendances?.map(att => ({
+const formattedAttendances = (attendances) => {
+  return attendances?.map((att) => ({
     ...att,
     key: att._id.attendanceDate + att._id.user,
     user: att._id.user,
@@ -45,7 +45,7 @@ const formattedAttendances = attendances => {
       : '',
     officeHour: milliSecondIntoHours(
       att?.data
-        ?.map(x =>
+        ?.map((x) =>
           x?.punchOutTime
             ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
             : ''
@@ -97,7 +97,7 @@ function AdminAttendance({userRole}) {
       })
   )
 
-  const handleChangeDate = date => {
+  const handleChangeDate = (date) => {
     setDate(date ? date : intialDate)
     if (date === null) {
       setAttFilter(1)
@@ -108,15 +108,15 @@ function AdminAttendance({userRole}) {
     setSort(sorter)
   }
 
-  const handlePageChange = pageNumber => {
-    setPage(prev => ({...prev, page: pageNumber}))
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
-  const handleView = record => {
+  const handleView = (record) => {
     setOpenView(true)
     setAttToView({
       ...record,
@@ -128,12 +128,12 @@ function AdminAttendance({userRole}) {
     })
   }
 
-  const handleEdit = record => {
+  const handleEdit = (record) => {
     setToggleEdit(true)
     setAttToEdit(record)
   }
 
-  const handleAttChnageChange = val => {
+  const handleAttChnageChange = (val) => {
     setAttFilter(val)
     switch (val) {
       case 1:
@@ -150,7 +150,7 @@ function AdminAttendance({userRole}) {
         break
     }
   }
-  const handleUserChange = id => {
+  const handleUserChange = (id) => {
     setUser(id)
   }
 
@@ -166,7 +166,7 @@ function AdminAttendance({userRole}) {
     }
   }, [isLoading, data?.status])
 
-  const expandedRowRender = parentRow => {
+  const expandedRowRender = (parentRow) => {
     const columns = [
       {
         title: 'Punch-in Time',
@@ -192,7 +192,9 @@ function AdminAttendance({userRole}) {
               <span className="gx-link" onClick={() => handleView(record)}>
                 <CustomIcon name="view" />
               </span>
-              {userRole !== RoleAccess.Finance && (
+              {![RoleAccess.Finance, RoleAccess.TeamLead].includes(
+                userRole
+              ) && (
                 <>
                   <Divider type="vertical"></Divider>
                   <span className="gx-link" onClick={() => handleEdit(record)}>
@@ -205,7 +207,7 @@ function AdminAttendance({userRole}) {
         },
       },
     ]
-    const data = parentRow?.data?.map(att => ({
+    const data = parentRow?.data?.map((att) => ({
       ...att,
       key: att._id,
       punchInTime: moment(att?.punchInTime).format('LTS'),
@@ -221,7 +223,7 @@ function AdminAttendance({userRole}) {
   }
 
   const sortedData = useMemo(() => {
-    return data?.data?.data?.attendances?.[0]?.data?.map(d => ({
+    return data?.data?.data?.attendances?.[0]?.data?.map((d) => ({
       ...d,
       data: sortFromDate(d?.data, 'punchInTime'),
     }))
@@ -274,7 +276,7 @@ function AdminAttendance({userRole}) {
                 placeholder="Select Co-worker"
                 onChange={handleUserChange}
                 value={user}
-                options={users?.data?.data?.data?.map(x => ({
+                options={users?.data?.data?.data?.map((x) => ({
                   id: x._id,
                   value: x.name,
                 }))}

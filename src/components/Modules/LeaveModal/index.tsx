@@ -481,21 +481,21 @@ function LeaveModal({
                                 notification({message: `Leave already taken`})
                             },
                           }
-                        else {
-                          return {
-                            onClick: () => {
-                              setFirstHalfSelected(
-                                specifyParticularHalf(leaveDate) ===
-                                  'first-half'
-                              )
+                        // else {
+                        //   return {
+                        //     onClick: () => {
+                        //       setFirstHalfSelected(
+                        //         specifyParticularHalf(leaveDate) ===
+                        //           'first-half'
+                        //       )
 
-                              setSecondHalfSelected(
-                                specifyParticularHalf(leaveDate) ===
-                                  'second-half'
-                              )
-                            },
-                          }
-                        }
+                        //       setSecondHalfSelected(
+                        //         specifyParticularHalf(leaveDate) ===
+                        //           'second-half'
+                        //       )
+                        //     },
+                        //   }
+                        // }
                       }}
                       // disabled={readOnly}
                     />

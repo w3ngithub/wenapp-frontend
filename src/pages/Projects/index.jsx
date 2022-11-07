@@ -3,7 +3,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import '@ant-design/compatible/assets/index.css'
 import {Card, Table, Input, Button, Form} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
-import {changeDate,  handleResponse, MuiFormatDate} from 'helpers/utils'
+import {changeDate, handleResponse, MuiFormatDate} from 'helpers/utils'
 import {
   addProject,
   deleteProject,
@@ -24,13 +24,13 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import {PROJECTS_ADD_NEW_NO_ACCESS} from 'constants/RoleAccess'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import Select from 'components/Elements/Select'
-import { PLACE_HOLDER_CLASS } from 'constants/Common'
+import {PLACE_HOLDER_CLASS} from 'constants/Common'
 
 const Search = Input.Search
 const FormItem = Form.Item
 
-const formattedProjects = projects => {
-  return projects?.map(project => ({
+const formattedProjects = (projects) => {
+  return projects?.map((project) => ({
     ...project,
     key: project._id,
     projectStatus: project.projectStatus?.name,
@@ -97,6 +97,7 @@ function ProjectsPage() {
     [
       'projects',
       page,
+      sort,
       projectType,
       projectStatus,
       projectClient,
@@ -115,12 +116,18 @@ function ProjectsPage() {
         developer,
         designer,
         qa,
+        sort:
+          sort.order === undefined
+            ? ''
+            : sort.order === 'ascend'
+            ? sort.field
+            : `-${sort.field}`,
       }),
     {keepPreviousData: true}
   )
 
-  const addProjectMutation = useMutation(project => addProject(project), {
-    onSuccess: response =>
+  const addProjectMutation = useMutation((project) => addProject(project), {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Project Added Successfully',
@@ -130,14 +137,14 @@ function ProjectsPage() {
           () => handleCloseModal(),
         ]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Project addition failed!', type: 'error'})
     },
   })
   const updateProjectMutation = useMutation(
-    project => updateProject(project.id, project.details),
+    (project) => updateProject(project.id, project.details),
     {
-      onSuccess: response =>
+      onSuccess: (response) =>
         handleResponse(
           response,
           'Project Updated Successfully',
@@ -147,23 +154,23 @@ function ProjectsPage() {
             () => handleCloseModal(),
           ]
         ),
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Project update failed', type: 'error'})
       },
     }
   )
 
   const deleteProjectMutation = useMutation(
-    projectId => deleteProject(projectId),
+    (projectId) => deleteProject(projectId),
     {
-      onSuccess: response =>
+      onSuccess: (response) =>
         handleResponse(
           response,
           'Project removed Successfully',
           'Project deletion failed',
           [() => queryClient.invalidateQueries(['projects'])]
         ),
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Project deletion failed', type: 'error'})
       },
     }
@@ -175,15 +182,15 @@ function ProjectsPage() {
     if (types?.length > 0) {
       setPositionTypeData({
         developer: types?.find(
-          type => type.name.toLowerCase() === POSITION_TYPES.developer
+          (type) => type.name.toLowerCase() === POSITION_TYPES.developer
         )?._id,
         designer: types?.find(
-          type => type.name.toLowerCase() === POSITION_TYPES.designer
+          (type) => type.name.toLowerCase() === POSITION_TYPES.designer
         )?._id,
-        qa: types?.find(type => type.name.toLowerCase() === POSITION_TYPES.qa)
+        qa: types?.find((type) => type.name.toLowerCase() === POSITION_TYPES.qa)
           ?._id,
         devops: types?.find(
-          type => type.name.toLowerCase() === POSITION_TYPES.devops
+          (type) => type.name.toLowerCase() === POSITION_TYPES.devops
         )?._id,
       })
     }
@@ -195,7 +202,7 @@ function ProjectsPage() {
     }
   }, [isError])
 
-  const handleUserDetailSubmit = project => {
+  const handleUserDetailSubmit = (project) => {
     try {
       const updatedProject = {
         ...project,
@@ -203,7 +210,7 @@ function ProjectsPage() {
           ? +project.estimatedHours
           : undefined,
         startDate: project.startDate
-          ? MuiFormatDate(new Date( moment.utc(project.startDate).format()))
+          ? MuiFormatDate(new Date(moment.utc(project.startDate).format()))
           : undefined,
         endDate: project.endDate
           ? MuiFormatDate(new Date(moment.utc(project.endDate).format()))
@@ -222,9 +229,9 @@ function ProjectsPage() {
 
   const handleOpenEditModal = (projectToUpdate, mode) => {
     const originalProject = data?.data?.data?.data?.find(
-      project => project.id === projectToUpdate.id
+      (project) => project.id === projectToUpdate.id
     )
-    setOpenUserDetailModal(prev => !prev)
+    setOpenUserDetailModal((prev) => !prev)
     setUserRecord({
       id: projectToUpdate.id,
       project: {
@@ -240,46 +247,48 @@ function ProjectsPage() {
   }
 
   const handleOpenAddModal = () => {
-    setOpenUserDetailModal(prev => !prev)
+    setOpenUserDetailModal((prev) => !prev)
     setReadOnly(false)
   }
 
   const handleCloseModal = () => {
-    setOpenUserDetailModal(prev => !prev)
+    setOpenUserDetailModal((prev) => !prev)
     setUserRecord({})
     setIsEditMode(false)
   }
 
   const handleTableChange = (pagination, filters, sorter) => {
     setSort(sorter)
+
+    console.log(sorter)
   }
 
-  const handlePageChange = pageNumber => {
-    setPage(prev => ({...prev, page: pageNumber}))
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
-  const handleProjectTypeChange = typeId => {
+  const handleProjectTypeChange = (typeId) => {
     setProjectType(typeId)
   }
 
-  const handleProjectStatusChange = statusId => {
+  const handleProjectStatusChange = (statusId) => {
     setProjectStatus(statusId)
   }
 
-  const handleClientChange = clientId => {
+  const handleClientChange = (clientId) => {
     setprojectClient(clientId)
   }
-  const handleDeveloperChange = developerId => {
+  const handleDeveloperChange = (developerId) => {
     setDeveloper(developerId)
   }
-  const handleDesignerChange = designerId => {
+  const handleDesignerChange = (designerId) => {
     setDesigner(designerId)
   }
-  const handleQaChange = qaId => {
+  const handleQaChange = (qaId) => {
     setQa(qaId)
   }
 
@@ -294,11 +303,11 @@ function ProjectsPage() {
     setQa(undefined)
   }
 
-  const confirmDeleteProject = project => {
+  const confirmDeleteProject = (project) => {
     deleteProjectMutation.mutate(project._id)
   }
 
-  const navigateToProjectLogs = projectSlug => {
+  const navigateToProjectLogs = (projectSlug) => {
     navigate(`${projectSlug}`)
   }
 
@@ -333,12 +342,12 @@ function ProjectsPage() {
             {' '}
             <Search
               placeholder="Search Projects"
-              onSearch={value => {
-                setPage(prev => ({...prev, page: 1}))
+              onSearch={(value) => {
+                setPage((prev) => ({...prev, page: 1}))
                 setProject(value)
               }}
               value={projectName}
-              onChange={e => setProjectName(e.target.value)}
+              onChange={(e) => setProjectName(e.target.value)}
               enterButton
               allowClear
               className="direct-form-item"
@@ -362,73 +371,73 @@ function ProjectsPage() {
           <Form layout="inline" className="gx-d-flex gx-flex-row" form={form}>
             <FormItem className="direct-form-search">
               <Select
-              placeholderClass={PLACE_HOLDER_CLASS}
+                placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select Project Type"
                 onChange={handleProjectTypeChange}
                 value={projectType}
-                options= {projectTypesData?.data?.data?.data?.map(x => ({
-                  id:x?._id,
-                  value:x?.name
+                options={projectTypesData?.data?.data?.data?.map((x) => ({
+                  id: x?._id,
+                  value: x?.name,
                 }))}
               />
             </FormItem>
             <FormItem className="direct-form-search">
               <Select
-              placeholderClass={PLACE_HOLDER_CLASS}
+                placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select Project Status"
                 onChange={handleProjectStatusChange}
                 value={projectStatus}
-                options= {projectStatusData?.data?.data?.data?.map(x => ({
-                  id:x?._id,
-                  value:x?.name
+                options={projectStatusData?.data?.data?.data?.map((x) => ({
+                  id: x?._id,
+                  value: x?.name,
                 }))}
               />
             </FormItem>
             <FormItem className="direct-form-search">
               <Select
-              placeholderClass={PLACE_HOLDER_CLASS}
+                placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select Client"
                 onChange={handleClientChange}
                 value={projectClient}
-                options= {projectClientsData?.data?.data?.data?.map(x => ({
-                  id:x?._id,
-                  value:x?.name
+                options={projectClientsData?.data?.data?.data?.map((x) => ({
+                  id: x?._id,
+                  value: x?.name,
                 }))}
               />
             </FormItem>
             <FormItem className="direct-form-search">
               <Select
-              placeholderClass={PLACE_HOLDER_CLASS}
+                placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select Developer"
                 onChange={handleDeveloperChange}
                 value={developer}
-                options= {developers?.data?.data?.data?.map(x => ({
-                  id:x?._id,
-                  value:x?.name
+                options={developers?.data?.data?.data?.map((x) => ({
+                  id: x?._id,
+                  value: x?.name,
                 }))}
               />
             </FormItem>
             <FormItem className="direct-form-search">
               <Select
-              placeholderClass={PLACE_HOLDER_CLASS}
+                placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select Designer"
                 onChange={handleDesignerChange}
                 value={designer}
-                options= {designers?.data?.data?.data?.map(x => ({
-                  id:x?._id,
-                  value:x?.name
+                options={designers?.data?.data?.data?.map((x) => ({
+                  id: x?._id,
+                  value: x?.name,
                 }))}
               />
             </FormItem>
             <FormItem className="direct-form-search">
               <Select
-              placeholderClass={PLACE_HOLDER_CLASS}
+                placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Select QA"
                 onChange={handleQaChange}
                 value={qa}
-                options= {QAs?.data?.data?.data?.map(x => ({
-                  id:x?._id,
-                  value:x?.name
+                options={QAs?.data?.data?.data?.map((x) => ({
+                  id: x?._id,
+                  value: x?.name,
                 }))}
               />
             </FormItem>

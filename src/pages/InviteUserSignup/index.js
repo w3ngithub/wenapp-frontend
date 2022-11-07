@@ -41,8 +41,10 @@ function InviteUserSignup(props) {
         setIsLoading(true)
         let usernameArr = values?.email?.split('@')[0].split('.')
         let username = usernameArr?.[1] + usernameArr?.[0]
+
         const updatedUser = {
           ...values,
+          email:values?.email?.trim(),
           dob: moment.utc(values.dob._d).format(),
           joinDate: moment.utc(values.joinDate._d).format(),
           primaryPhone: +values.primaryPhone,
