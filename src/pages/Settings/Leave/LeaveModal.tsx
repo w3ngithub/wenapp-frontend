@@ -70,11 +70,32 @@ function LeaveModal({
           <Form.Item
             name="leaveDays"
             label="Leave Days"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[
+              {
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) throw new Error('Required!')
+                    if (value < 0) {
+                      throw new Error('Leave Days cannot be negative.')
+                    }
+                    if (value < 1) {
+                      throw new Error('At least 1 leave day is required.')
+                    }
+                    if(value - Math.floor(value) !== 0){
+                      throw new Error('Leave Days cannot be decimal.')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
           >
             <Input
               // value={input}
               placeholder="Leave days"
+              type='number'
+              min={1}
               // onChange={handleInputChange}
             />
           </Form.Item>
