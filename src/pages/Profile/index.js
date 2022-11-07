@@ -20,6 +20,8 @@ import {handleResponse} from 'helpers/utils'
 import {useDispatch} from 'react-redux'
 import {setProfilePhoto} from 'appRedux/actions'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {connect} from 'react-redux'
+import {getUserProfile} from 'appRedux/actions/UserProfile'
 
 export const aboutList = [
   {
@@ -54,7 +56,7 @@ export const aboutList = [
   },
 ]
 
-function Profile() {
+function Profile(props) {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
   )
@@ -69,6 +71,12 @@ function Profile() {
         'Could not update profile',
         [
           () => setUser(response.data.data),
+          () =>
+            dispatch(
+              getUserProfile({
+                name: response.data.data.user.name,
+              })
+            ),
           () =>
             localStorage.setItem(
               LOCALSTORAGE_USER,
@@ -106,6 +114,7 @@ function Profile() {
       joinDate: moment.utc(user.joinDate._d).format(),
       primaryPhone: +user.primaryPhone,
       secondaryPhone: +user.secondaryPhone || null,
+      photoURL: user?.photoURL?.url,
     }
     if (removedFile) {
       const imageRef = ref(storage, removedFile)
@@ -134,7 +143,6 @@ function Profile() {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             updatedUser = {
               ...updatedUser,
-
               photoURL: downloadURL,
             }
             mutation.mutate(updatedUser)
@@ -159,8 +167,8 @@ function Profile() {
       <Auxiliary>
         <ProfileHeader
           user={{
-            name: user?.user?.name,
-            position: user.user?.position?.name,
+            name: props?.name,
+            position: props?.position,
             photoURL: user?.user?.photoURL,
           }}
           onMoreDetailsClick={setOpenModal}
@@ -180,4 +188,9 @@ function Profile() {
   )
 }
 
-export default Profile
+const mapStateToProps = ({userProfile}) => {
+  const {name, position} = userProfile
+  return {name, position}
+}
+
+export default connect(mapStateToProps, null)(Profile)
