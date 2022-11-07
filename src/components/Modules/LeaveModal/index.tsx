@@ -182,7 +182,7 @@ function LeaveModal({
   const handleUserChange = (user: string) => {
     setUser(user)
   }
-
+  
   useEffect(() => {
     if (open) {
       if (isEditMode) {
@@ -433,11 +433,12 @@ function LeaveModal({
                   <Form.Item
                     {...formItemLayout}
                     name="leaveDatesCasual"
-                    label="Select Leave Date"
+                    label={!readOnly && 'Select Leave Date'}
                     rules={[{required: true, message: 'Required!'}]}
                   >
                     <Calendar
                       className={darkCalendar ? 'bg-dark' : 'null'}
+                      buttons={readOnly ? false : true}
                       numberOfMonths={1}
                       disableMonthPicker
                       disableYearPicker
@@ -450,6 +451,7 @@ function LeaveModal({
                           ? new DateObject().subtract(2, 'months')
                           : new Date()
                       }
+                      
                       mapDays={({date}) => {
                         let isWeekend = [0, 6].includes(date.weekDay.index)
                         let holidayList: any[] = holidays?.filter(
@@ -459,8 +461,17 @@ function LeaveModal({
                         let leaveDate = userLeaves?.filter(
                           (leave) => leave.date === date.format()
                         )
+                        const isLeaveTaken = form.getFieldValue('leaveDatesCasual')?.[0]?.split('-')?.join('/')?.split('T')?.[0] === leaveDate?.[0]?.date
                         let leaveAlreadyTakenDates =
                           filterHalfDayLeaves(leaveDate)
+                        if (readOnly && !isLeaveTaken) {
+                          return {
+                            disabled: true,
+                            style: {
+                              color: '#ccc',
+                            },
+                          }
+                        }
                         if (isWeekend || isHoliday || leaveAlreadyTakenDates)
                           return {
                             disabled: true,
@@ -481,21 +492,6 @@ function LeaveModal({
                                 notification({message: `Leave already taken`})
                             },
                           }
-                        // else {
-                        //   return {
-                        //     onClick: () => {
-                        //       setFirstHalfSelected(
-                        //         specifyParticularHalf(leaveDate) ===
-                        //           'first-half'
-                        //       )
-
-                        //       setSecondHalfSelected(
-                        //         specifyParticularHalf(leaveDate) ===
-                        //           'second-half'
-                        //       )
-                        //     },
-                        //   }
-                        // }
                       }}
                       // disabled={readOnly}
                     />
