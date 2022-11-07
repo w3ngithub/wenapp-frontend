@@ -19,41 +19,45 @@ const PROJECT_COLUMNS = (
     dataIndex: 'name',
     key: 'name',
     width: 250,
-    sorter: (a, b) => {
-      return a.name.toString().localeCompare(b.name.toString())
-    },
+    sorter: true,
     sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
-    render:(text,record)=>{
+    render: (text, record) => {
       return (
         <div>
-
-          <p className="project-name" onClick={()=>openModal(record,true)}>{record.name}</p>
+          <p className="project-name" onClick={() => openModal(record, true)}>
+            {record.name}
+          </p>
         </div>
       )
-    }
+    },
   },
   {
     title: 'Path',
     dataIndex: 'path',
     key: 'path',
     width: 180,
-    sorter: (a, b) => a.path?.toString().localeCompare(b.path?.toString()),
+    sorter: true,
+
     sortOrder: sortedInfo.columnKey === 'path' && sortedInfo.order,
-    render:(text,record)=>{
-      return(
+    render: (text, record) => {
+      return (
         <div>
-          <Input className="pathinput"  onFocus={(e)=>e.target.select()} value={record.path || ''} />
+          <Input
+            className="pathinput"
+            onFocus={(e) => e.target.select()}
+            value={record.path || ''}
+          />
         </div>
       )
-    }
-      
     },
+  },
   {
     title: 'Start Date',
     dataIndex: 'startDate',
     width: 150,
     key: 'startDate',
-    sorter: (a, b) => new Date(a.startDate) - new Date(b.startDate),
+    sorter: true,
+
     sortOrder: sortedInfo.columnKey === 'startDate' && sortedInfo.order,
   },
   {
@@ -61,7 +65,8 @@ const PROJECT_COLUMNS = (
     dataIndex: 'endDate',
     width: 150,
     key: 'endDate',
-    sorter: (a, b) => new Date(a.endDate) - new Date(b.endDate),
+    sorter: true,
+
     sortOrder: sortedInfo.columnKey === 'endDate' && sortedInfo.order,
   },
   {
@@ -69,8 +74,8 @@ const PROJECT_COLUMNS = (
     dataIndex: 'projectTypes',
     width: 150,
     key: 'projectTypes',
-    sorter: (a, b) =>
-      a.projectTypes?.toString().localeCompare(b.projectTypes?.toString()),
+    sorter: true,
+
     sortOrder: sortedInfo.columnKey === 'projectTypes' && sortedInfo.order,
   },
   {
@@ -78,8 +83,8 @@ const PROJECT_COLUMNS = (
     dataIndex: 'projectStatus',
     width: 150,
     key: 'projectStatus',
-    sorter: (a, b) =>
-      a.projectStatus?.toString().localeCompare(b.projectStatus?.toString()),
+    sorter: true,
+
     sortOrder: sortedInfo.columnKey === 'projectStatus' && sortedInfo.order,
   },
   {

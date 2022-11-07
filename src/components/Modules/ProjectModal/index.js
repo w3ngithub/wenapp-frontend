@@ -116,9 +116,9 @@ function ProjectModal({
             initialValues.projectTags?.length > 0
               ? initialValues.projectTags?.map((tags) => tags._id)
               : undefined,
-          client:  initialValues?.client?.hasOwnProperty('_id')
-          ? initialValues.client?._id
-          : undefined,
+          client: initialValues?.client?.hasOwnProperty('_id')
+            ? initialValues.client?._id
+            : undefined,
           developers:
             initialValues.developers?.length > 0
               ? initialValues.developers?.map((developer) => developer._id)
@@ -336,7 +336,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select Tags"
                   disabled={readOnly}
-                  mode="tags"
+                  mode="multiple"
                   size="large"
                 >
                   {data &&
@@ -377,7 +377,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select Developers"
                   disabled={readOnly}
-                  mode="tags"
+                  mode="multiple"
                 >
                   {developers?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
@@ -398,7 +398,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select Designers"
                   disabled={readOnly}
-                  mode="tags"
+                  mode="multiple"
                 >
                   {designers?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
@@ -421,7 +421,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select QA"
                   disabled={readOnly}
-                  mode="tags"
+                  mode="multiple"
                 >
                   {qas?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
@@ -442,7 +442,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select DevOps"
                   disabled={readOnly}
-                  mode="tags"
+                  mode="multiple"
                 >
                   {devops?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
