@@ -146,10 +146,6 @@ function LogTime() {
     deleteLogMutation.mutate(log._id)
   }
 
-  const handleOpenAddModal = () => {
-    setOpenModal(true)
-  }
-
   const handleOpenEditModal = (log) => {
     const originalTimelog = logTimeDetails?.data?.data?.data.find(
       (project) => project.id === log.id
@@ -169,6 +165,16 @@ function LogTime() {
     setOpenModal(false)
     setTimelogToUpdate({})
     setIsEditMode(false)
+  }
+
+  const alertOrOpen=()=>{
+    let time  = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
+    if(time>9.5){
+      notification({message: 'Log Time Excedeed',type:'info'})
+    }
+    else{
+      setOpenModal(true)
+    }
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
@@ -194,6 +200,7 @@ function LogTime() {
   if (timelogLoading) {
     return <CircularProgress />
   }
+
 
   return (
     <div>
@@ -229,7 +236,7 @@ function LogTime() {
           <div className="gx-d-flex gx-justify-content-between gx-flex-row">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
-              onClick={handleOpenAddModal}
+              onClick={alertOrOpen}
             >
               Add New Log Time
             </Button>
