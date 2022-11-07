@@ -21,7 +21,7 @@ import {useDispatch} from 'react-redux'
 import {setProfilePhoto} from 'appRedux/actions'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {connect} from 'react-redux'
-import {getUserProfile} from 'appRedux/actions/UserPofile'
+import {getUserProfile} from 'appRedux/actions/UserProfile'
 
 export const aboutList = [
   {

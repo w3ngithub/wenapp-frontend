@@ -29,7 +29,7 @@ import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {useQuery} from '@tanstack/react-query'
 import {getMyProfile} from 'services/users/userDetails'
-import {getUserProfile} from 'appRedux/actions/UserPofile'
+import {getUserProfile} from 'appRedux/actions/UserProfile'
 
 const {Content, Footer} = Layout
 
