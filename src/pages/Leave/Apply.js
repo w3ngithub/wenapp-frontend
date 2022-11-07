@@ -278,39 +278,6 @@ function Apply({user}) {
                             notification({message: `Leave already taken`})
                         },
                       }
-                    else {
-                      return {
-                        onClick: () => {
-                          // if (
-                          //   !multipleDatesSelected
-                          //   // (selectedDates === '' ||
-                          //   //   leaveDate?.[0]?.date === selectedDates)
-                          // ) {
-                          //   setHalfLeaveApproved((prev) => {
-                          //     if (!prev) {
-                          //       return specifyParticularHalf(leaveDate)
-                          //         ?.halfLeaveApproved
-                          //     }
-                          //     if (prev) {
-                          //       return false
-                          //     }
-                          //   })
-                          //   setSpecificHalf((prev) => {
-                          //     if (
-                          //       prev === 'first-half' ||
-                          //       prev === 'second-half'
-                          //     ) {
-                          //       return false
-                          //     } else {
-                          //       return specifyParticularHalf(leaveDate)
-                          //         ?.specificHalf
-                          //     }
-                          //   })
-                          // }
-          
-                        },
-                      }
-                    }
                   }}
                 />
               </FormItem>
