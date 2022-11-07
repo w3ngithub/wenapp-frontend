@@ -348,11 +348,9 @@ export const filterHalfDayLeaves = (leaves) => {
 }
 
 export const specifyParticularHalf = (leaves) => {
-  console.log('leaves', leaves);
   const approvedLeaves = leaves.filter(
     (leave) => leave.leaveStatus === 'approved'
   )
-  console.log('approved', approvedLeaves)
   if (approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay !== '') {
     return {specificHalf: approvedLeaves[0]?.isHalfDay, halfLeaveApproved: true}
   }

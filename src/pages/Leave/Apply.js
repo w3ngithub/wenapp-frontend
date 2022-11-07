@@ -51,7 +51,7 @@ function Apply({user}) {
   const [specificHalf, setSpecificHalf] = useState(false)
   const [halfLeaveApproved, setHalfLeaveApproved] = useState(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
-  const [selectedDatesArray, setSelectedDatesArray] = useState([])
+  const [selectedDates, setSelectedDates] = useState('')
   const [particularDay, setParticularDay] = useState({})
 
   const darkCalendar = themeType === THEME_TYPE_DARK
@@ -154,7 +154,6 @@ function Apply({user}) {
       )
     })
   }
-
   let userLeaves = []
   const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays?.map(
     (holiday) => ({
@@ -198,19 +197,26 @@ function Apply({user}) {
   }
 
   const checkNumberOfDays = (values) => {
-    // console.log(typeof form.getFieldValue('leaveDatesCasual')?.map(d=> MuiFormatDate(new Date(d))));
-    if (values?.leaveDatesCasual?.length > 1) {
-      setMultipleDatesSelected(true)
-    } else {
-      setMultipleDatesSelected(false)
-      // setSelectedDatesArray(() => {
-      //   const formattedDate = values?.leaveDatesCasual?.map((d) =>
-      //     MuiFormatDate(new Date(d))
-      //   )
-      //   const newDate = formattedDate?.[0]?.split('-')?.join('/')
-      //   setParticularDay(userLeaves?.filter((leave) => leave.date === newDate))
-      //   return newDate
-      // })
+    if (values?.hasOwnProperty('leaveDatesCasual')) {
+      if (values?.leaveDatesCasual?.length === 1) {
+        setMultipleDatesSelected(false)
+        const formattedDate = values?.leaveDatesCasual?.map((d) =>
+          MuiFormatDate(new Date(d))
+        )
+        const newDate = formattedDate?.[0]?.split('-')?.join('/')
+        let leaveDate = userLeaves?.filter((leave) => leave.date === newDate)
+        setHalfLeaveApproved(specifyParticularHalf(leaveDate)?.halfLeaveApproved)
+        setSpecificHalf(specifyParticularHalf(leaveDate)?.specificHalf)
+      } 
+      else if (values?.leaveDatesCasual?.length === 0){
+        setHalfLeaveApproved(false)
+        setSpecificHalf(false)
+        setMultipleDatesSelected(false)
+      }
+      else {
+        setMultipleDatesSelected(true)
+        setHalfLeaveApproved(false)
+      }
     }
   }
 
@@ -242,7 +248,7 @@ function Apply({user}) {
                       ? new DateObject().subtract(2, 'months')
                       : new Date()
                   }
-                  mapDays={({date, today}) => {
+                  mapDays={({date, today, selectedDate}) => {
                     let isWeekend = [0, 6].includes(date.weekDay.index)
                     let holidayList = holidaysThisYear?.filter(
                       (holiday) => date.format() === holiday?.date
@@ -272,30 +278,6 @@ function Apply({user}) {
                             notification({message: `Leave already taken`})
                         },
                       }
-                    else {
-                      if (!multipleDatesSelected) {
-                        return {
-                          onClick: () => {
-                            setHalfLeaveApproved(
-                              specifyParticularHalf(leaveDate)
-                                ?.halfLeaveApproved
-                            )
-                            setSpecificHalf(
-                              specifyParticularHalf(leaveDate)?.specificHalf
-                            )
-
-                            // setHalfLeaveApproved(
-                            //   specifyParticularHalf(particularDay)
-                            //     ?.halfLeaveApproved
-                            // )
-                            // setSpecificHalf(
-                            //   specifyParticularHalf(particularDay)
-                            //     ?.halfLeaveApproved
-                            // )
-                          },
-                        }
-                      }
-                    }
                   }}
                 />
               </FormItem>
