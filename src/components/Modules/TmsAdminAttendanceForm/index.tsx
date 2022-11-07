@@ -46,8 +46,7 @@ function TmsAdminAttendanceForm({
       setDate(moment(AttToEdit.attendanceDate))
       setUser(AttToEdit.user)
 
-
-
+      
       PUnchInform.resetFields()
       PUnchOutform.resetFields()
     }
@@ -202,7 +201,7 @@ function TmsAdminAttendanceForm({
                     if (value.isBefore(PUnchOutform.getFieldValue('punchOutTime'))) {
                       return Promise.resolve();
                     }
-                    return Promise.reject(new Error('The punchIn Time should be before punchOut Time'));
+                    return Promise.reject(new Error('Punch In Time should be before Punch Out Time'));
                   },
                 }),
               ]}
@@ -248,7 +247,7 @@ function TmsAdminAttendanceForm({
                          return Promise.reject(new Error('Required!'))
                         }
                         if (value.isBefore(PUnchInform.getFieldValue('punchInTime'))) {
-                          return Promise.reject(new Error('The punchout Time should not be before punchIn Time'));
+                          return Promise.reject(new Error('Punch Out Time should not be before Punch In Time'));
                         }
                         return Promise.resolve();
                       },

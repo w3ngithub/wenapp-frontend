@@ -46,6 +46,7 @@ function NoticeModal({
       onSubmit(values)
     })
   }
+  const dateFormat = 'YYYY/MM/DD';
 
   useEffect(() => {
     if (toggle) {
@@ -148,7 +149,7 @@ function NoticeModal({
                   ({ getFieldValue }) => ({
                     validator(_, value) {
             
-                      if (!value.isBefore(getFieldValue('endDate')) && getFieldValue('endDate')) {
+                      if (!value.isSameOrBefore(getFieldValue('endDate')) && getFieldValue('endDate')) {
                         return Promise.reject(new Error('The Start Date should be before End Time')); 
                       }
 
@@ -159,7 +160,7 @@ function NoticeModal({
                 ]}
 
               >
-                <DatePicker className=" gx-w-100" disabled={readOnly} />
+                <DatePicker className=" gx-w-100" disabled={readOnly} format={dateFormat}/>
               </FormItem>
             </Col>
             <Col span={24} sm={12}>
@@ -173,7 +174,7 @@ function NoticeModal({
                   ({ getFieldValue }) => ({
                     validator(_, value) {
 
-                     if(value.isBefore(getFieldValue('startDate') && getFieldValue('startDate'))){
+                     if(value.isBefore(getFieldValue('startDate')) && getFieldValue('startDate')){
                       return Promise.reject(new Error('End Date should not be before startDate'))
                      }
                      return Promise.resolve()
@@ -182,7 +183,7 @@ function NoticeModal({
                   }),
                 ]}
               >
-                <DatePicker className=" gx-w-100" disabled={readOnly} />
+                <DatePicker className=" gx-w-100" disabled={readOnly}  format={dateFormat}/>
               </FormItem>
             </Col>
           </Row>
@@ -196,8 +197,8 @@ function NoticeModal({
                 rules={[ 
                   ({ getFieldValue }) => ({
                     validator(_, value) {
-                     if(getFieldValue('startDate').isSame(getFieldValue('endDate') && value && getFieldValue('startTime'))){
-                      if(!value.isBefore(getFieldValue('startTime'))){
+                     if(getFieldValue('startDate').isSame(getFieldValue('endDate')) && value && getFieldValue('endTime')){
+                      if(!value.isBefore(getFieldValue('endTime'))){
                         return Promise.reject(new Error('End Time should not exceed startTime'))
                       }
                      }
@@ -224,7 +225,7 @@ function NoticeModal({
                 rules={[ 
                   ({ getFieldValue }) => ({
                     validator(_, value) {
-                     if(getFieldValue('startDate').isSame(getFieldValue('endDate') && value && getFieldValue('startTime'))){
+                     if(getFieldValue('startDate').isSame(getFieldValue('endDate')) && value && getFieldValue('startTime')){
                       if(value.isBefore(getFieldValue('startTime'))){
                         return Promise.reject(new Error('End Time should not exceed startTime'))
                       }
