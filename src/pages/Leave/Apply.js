@@ -36,6 +36,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
+import {leaveDuration, leaveInterval} from 'constants/LeaveDuration'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -43,11 +44,15 @@ const Option = Select.Option
 
 function Apply({user}) {
   const [form] = Form.useForm()
+
   const queryClient = useQueryClient()
   const {themeType} = useSelector((state) => state.settings)
   const {innerWidth} = useWindowsSize()
-  const [firstHalfSelected, setFirstHalfSelected] = useState(false)
-  const [secondHalfSelected, setSecondHalfSelected] = useState(false)
+  const [specificHalf, setSpecificHalf] = useState(false)
+  const [halfLeaveApproved, setHalfLeaveApproved] = useState(false)
+  const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
+  const [selectedDatesArray, setSelectedDatesArray] = useState([])
+  const [particularDay, setParticularDay] = useState({})
 
   const darkCalendar = themeType === THEME_TYPE_DARK
 
@@ -119,7 +124,7 @@ function Apply({user}) {
       const leaveTypeName = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
       )?.value
-      //calculation for maternity, paternity, pto leaves
+      // calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
         leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
@@ -143,7 +148,7 @@ function Apply({user}) {
           leaveDates: appliedDate
             ? [appliedDateUTC, endDateUTC]
             : casualLeaveDaysUTC,
-          halfDay: values.halfDay,
+          halfDay: values?.halfDay === 'full-day' ? '' : values?.halfDay,
           leaveStatus: appliedDate ? 'approved' : 'pending',
         })
       )
@@ -175,9 +180,48 @@ function Apply({user}) {
     }
   })
 
+  const disableInterval = (index) => {
+    if (multipleDatesSelected && index !== 0) {
+      return true
+    } else {
+      if (index === 0 && halfLeaveApproved) {
+        return true
+      }
+      if (index === 1 && specificHalf === 'first-half') {
+        return true
+      }
+      if (index === 2 && specificHalf === 'second-half') {
+        return true
+      }
+      return false
+    }
+  }
+
+  const checkNumberOfDays = (values) => {
+    // console.log(typeof form.getFieldValue('leaveDatesCasual')?.map(d=> MuiFormatDate(new Date(d))));
+    if (values?.leaveDatesCasual?.length > 1) {
+      setMultipleDatesSelected(true)
+    } else {
+      setMultipleDatesSelected(false)
+      // setSelectedDatesArray(() => {
+      //   const formattedDate = values?.leaveDatesCasual?.map((d) =>
+      //     MuiFormatDate(new Date(d))
+      //   )
+      //   const newDate = formattedDate?.[0]?.split('-')?.join('/')
+      //   setParticularDay(userLeaves?.filter((leave) => leave.date === newDate))
+      //   return newDate
+      // })
+    }
+  }
+
   return (
     <Spin spinning={leaveMutation.isLoading}>
-      <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
+      <Form
+        layout="vertical"
+        style={{padding: '15px 0'}}
+        form={form}
+        onValuesChange={(allValues) => checkNumberOfDays(allValues)}
+      >
         <Row type="flex">
           {!immediateApprovalLeaveTypes.includes(leaveType) && (
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
@@ -229,16 +273,27 @@ function Apply({user}) {
                         },
                       }
                     else {
-                      return {
-                        onClick: () => {
-                          setFirstHalfSelected(
-                            specifyParticularHalf(leaveDate) === 'first-half'
-                          )
+                      if (!multipleDatesSelected) {
+                        return {
+                          onClick: () => {
+                            setHalfLeaveApproved(
+                              specifyParticularHalf(leaveDate)
+                                ?.halfLeaveApproved
+                            )
+                            setSpecificHalf(
+                              specifyParticularHalf(leaveDate)?.specificHalf
+                            )
 
-                          setSecondHalfSelected(
-                            specifyParticularHalf(leaveDate) === 'second-half'
-                          )
-                        },
+                            // setHalfLeaveApproved(
+                            //   specifyParticularHalf(particularDay)
+                            //     ?.halfLeaveApproved
+                            // )
+                            // setSpecificHalf(
+                            //   specifyParticularHalf(particularDay)
+                            //     ?.halfLeaveApproved
+                            // )
+                          },
+                        }
                       }
                     }
                   }}
@@ -288,7 +343,7 @@ function Apply({user}) {
                     )}
                   </Select>
                 </FormItem>
-                {(leaveType === 'Casual' || leaveType === 'Sick') && (
+                {/* {(leaveType === 'Casual' || leaveType === 'Sick') && (
                   <FormItem label="Half Leave" name="halfDay">
                     <Radio.Group>
                       <Radio value="first-half" disabled={firstHalfSelected}>
@@ -298,6 +353,30 @@ function Apply({user}) {
                         Second-Half
                       </Radio>
                     </Radio.Group>
+                  </FormItem>
+                )} */}
+                {(leaveType === 'Casual' || leaveType === 'Sick') && (
+                  <FormItem
+                    label="Leave Interval"
+                    name="halfDay"
+                    rules={[{required: true, message: 'Required!'}]}
+                  >
+                    <Select
+                      showSearch
+                      filterOption={filterOptions}
+                      placeholder="Select Duration"
+                      style={{width: '100%'}}
+                    >
+                      {leaveInterval?.map((type, index) => (
+                        <Option
+                          value={type?.value}
+                          key={index}
+                          disabled={disableInterval(index)}
+                        >
+                          {type?.name}
+                        </Option>
+                      ))}
+                    </Select>
                   </FormItem>
                 )}
               </Col>
