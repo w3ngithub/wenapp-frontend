@@ -77,8 +77,6 @@ function MyHistory({
     setLeaveStatus(statusId)
   }
 
-  console.log("leaveStatus",leaveStatus)
-
   const handleDateChange = (value: any) => {
     if (page?.page > 1) setPage(defaultPage)
 
