@@ -77,6 +77,8 @@ function MyHistory({
     setLeaveStatus(statusId)
   }
 
+  console.log("leaveStatus",leaveStatus)
+
   const handleDateChange = (value: any) => {
     if (page?.page > 1) setPage(defaultPage)
 
@@ -95,7 +97,7 @@ function MyHistory({
   }
 
   const handleResetFilter = () => {
-    setLeaveStatus('')
+    setLeaveStatus(undefined)
     setPage(defaultPage)
     setDate({
       utc: '',
