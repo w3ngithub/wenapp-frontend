@@ -43,7 +43,7 @@ class LockScreen extends Component {
             <FormItem>
               {getFieldDecorator('password', {
                 rules: [
-                  {required: true, message: 'Please input your Password!'},
+                  {required: true, message: 'Please enter your Password!'},
                 ],
               })(<Input type="password" placeholder="Password" />)}
             </FormItem>

@@ -69,11 +69,11 @@ function ForgotPassword() {
               rules={[
                 {
                   type: 'email',
-                  message: 'The input is not valid E-mail!',
+                  message: 'Please enter a valid E-mail!',
                 },
                 {
                   required: true,
-                  message: 'Please input your E-mail!',
+                  message: 'Please enter your E-mail!',
                 },
               ]}
             >

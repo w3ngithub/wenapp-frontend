@@ -227,7 +227,7 @@ function InviteUserSignup(props) {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your password!',
+                    message: 'Please enter your password!',
                   },
                   {min: 8, message: 'Must be atleast 8 characters'},
                 ]}
