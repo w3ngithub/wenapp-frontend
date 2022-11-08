@@ -1,5 +1,6 @@
 import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
 import {Button, Col, DatePicker, Form, Input, Modal, Row, Spin} from 'antd'
+import {notification} from 'helpers/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import React, {useEffect, useState} from 'react'
@@ -43,6 +44,9 @@ const CommonModal = (props: modalType) => {
         } else return false
       }
     )
+    if (holidays.length === 0) {
+      return notification({type: 'info', message: 'Please Add Holiday Field'})
+    }
     if (!holidays.includes(true)) {
       holidays[0] = true
     }
