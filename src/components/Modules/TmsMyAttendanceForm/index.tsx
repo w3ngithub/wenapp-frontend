@@ -156,7 +156,7 @@ function TmsMyAttendanceForm({
                 style={{fontSize: '24px', marginTop: '-2px'}}
               />
               <LiveTime />
-              <span>{moment().format('dddd, MMMM D, YYYY')}</span>
+              <span style={{marginLeft:'0.5rem'}}>{moment().format('dddd, MMMM D, YYYY')}</span>
             </div>
           </Col>
           {punchIn ? (

@@ -96,7 +96,7 @@ function TmsAdminAddAttendanceForm({
         <div className="gx-d-flex gx-flex-row">
           <FieldTimeOutlined style={{fontSize: '24px'}} />
           <LiveTime />
-          <span>{moment().format('dddd, MMMM D, YYYY')}</span>
+          <span style={{marginLeft:'0.5rem'}}>{moment().format('dddd, MMMM D, YYYY')}</span>
         </div>
       }
       mask={false}
