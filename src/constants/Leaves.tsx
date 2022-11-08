@@ -109,8 +109,7 @@ const LEAVES_COLUMN = (
               >
                 Cancel
               </span>
-            ) :
-            null
+            ) : null
           },
         },
       ]
@@ -189,24 +188,31 @@ const LEAVES_COLUMN = (
                 </div>
               )
             return (
-              <div style={{display:'flex'}}>
-                  <span
-                    className="gx-link gx-text-primary"
-                   onClick={() => onEditClick ? onEditClick(record, true) : ()=>{}}
-                  >
-                    <CustomIcon name="view" />
-                  </span>
-              
-              {record.status === 'pending' &&  <> <Divider type='vertical'/> <span
-                className="gx-link gx-text-danger"
-                onClick={() =>
-                  onCancelLeave ? onCancelLeave(record) : () => {}
-                }
-              >
-                Cancel
-              </span> </>}
-             
-           </div>
+              <div style={{display: 'flex'}}>
+                <span
+                  className="gx-link gx-text-primary"
+                  onClick={() =>
+                    onEditClick ? onEditClick(record, true) : () => {}
+                  }
+                >
+                  <CustomIcon name="view" />
+                </span>
+
+                {record.status === 'pending' && (
+                  <>
+                    {' '}
+                    <Divider type="vertical" />{' '}
+                    <span
+                      className="gx-link gx-text-danger"
+                      onClick={() =>
+                        onCancelLeave ? onCancelLeave(record) : () => {}
+                      }
+                    >
+                      Cancel
+                    </span>{' '}
+                  </>
+                )}
+              </div>
             )
           },
         },
@@ -221,6 +227,7 @@ const STATUS_TYPES = [
 export {LEAVES_COLUMN, STATUS_TYPES}
 
 export const LATE_LEAVE_TYPE_ID = '631192ec8194d8f22afe6685'
+export const LATE_ARRIVAL = 'Late Arrival'
 
 export const LEAVES_TYPES = {
   Casual: 'casual',
