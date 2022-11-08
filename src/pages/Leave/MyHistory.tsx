@@ -95,7 +95,7 @@ function MyHistory({
   }
 
   const handleResetFilter = () => {
-    setLeaveStatus('')
+    setLeaveStatus(undefined)
     setPage(defaultPage)
     setDate({
       utc: '',
