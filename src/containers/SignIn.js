@@ -92,7 +92,7 @@ function SignIn(props) {
                   },
                 ]}
               >
-                <Input />
+                <Input/>
               </FormItem>
               <FormItem
                 label="Password"
