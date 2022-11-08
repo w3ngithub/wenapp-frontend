@@ -203,7 +203,6 @@ function Apply({user}) {
   }
 
   const formFieldChanges = (values) => {
-    console.log('values', values)
     if (values?.hasOwnProperty('leaveDatesCasual')) {
       if (values?.leaveDatesCasual?.length === 1) {
         setMultipleDatesSelected(false)
@@ -371,7 +370,6 @@ function Apply({user}) {
                         showSearch
                         filterOption={filterOptions}
                         placeholder="Select Duration"
-                        // placeholder={defaultInterval}
                         style={{width: '100%'}}
                       >
                         {leaveInterval?.map((type, index) => (
