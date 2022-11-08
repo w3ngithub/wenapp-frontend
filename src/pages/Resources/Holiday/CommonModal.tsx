@@ -46,7 +46,6 @@ const CommonModal = (props: modalType) => {
     if (!holidays.includes(true)) {
       holidays[0] = true
     }
-    console.log(holidays)
     setIndexes(holidays)
     form
       .validateFields()
