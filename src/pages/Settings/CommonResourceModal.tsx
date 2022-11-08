@@ -76,6 +76,7 @@ function CommonResourceModal({
             rules={[
               {required: true, message: 'Required!'},
               {min: 10, message: 'At least 10 characters required'},
+              {max:1000, message:'Cannot exceed more than 1000 characters'}
             ]}
           >
             <TextArea
