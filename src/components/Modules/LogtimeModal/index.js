@@ -49,7 +49,7 @@ function LogtimeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      if(values?.hours === '0' && values?.minutes === '0'){
+      if(!parseInt(values?.hours)  && !parseInt(values?.minutes)){
         setZeroHourMinutes(true);
         return;
       }else {
@@ -146,8 +146,8 @@ function LogtimeModal({
               {
                 validator: async (rule, value) => {
                   try {
-                    if (!value) throw new Error('Required!')
-
+                    if(form.getFieldValue('minutes') && !value) return 
+            
                     if (value < 0) {
                       throw new Error('Log Hours cannot be below 0.')
                     }
@@ -177,7 +177,7 @@ function LogtimeModal({
                 validator: async (rule, val) => {
                   let value = val+''
                   try {
-                    if (!value) throw new Error('Required!')
+                    if(form.getFieldValue('hours') && !parseInt(value)) return
 
                     if (
                       value !== '0' &&
