@@ -148,6 +148,9 @@ function NoticeModal({
 
                   ({ getFieldValue }) => ({
                     validator(_, value) {
+                      if(!value){
+                      return Promise.resolve()
+                      }
             
                       if (!value.isSameOrBefore(getFieldValue('endDate')) && getFieldValue('endDate')) {
                         return Promise.reject(new Error('The Start Date should be before End Time')); 
@@ -173,6 +176,9 @@ function NoticeModal({
                   {required: true, message: 'Required!'},
                   ({ getFieldValue }) => ({
                     validator(_, value) {
+                      if(!value){
+                        return Promise.resolve()
+                      }
 
                      if(value.isBefore(getFieldValue('startDate')) && getFieldValue('startDate')){
                       return Promise.reject(new Error('End Date should not be before startDate'))
@@ -197,11 +203,19 @@ function NoticeModal({
                 rules={[ 
                   ({ getFieldValue }) => ({
                     validator(_, value) {
+
+
+                     if(!value && !getFieldValue('endTime')){
+                      return Promise.resolve()
+                     }
+
                      if(getFieldValue('startDate').isSame(getFieldValue('endDate')) && value && getFieldValue('endTime')){
                       if(!value.isBefore(getFieldValue('endTime'))){
                         return Promise.reject(new Error('End Time should not exceed startTime'))
                       }
                      }
+
+
                      if(!value && getFieldValue('endTime')){
                       return Promise.reject(new Error('Only endTime is not allowed'))
                      }
@@ -225,6 +239,10 @@ function NoticeModal({
                 rules={[ 
                   ({ getFieldValue }) => ({
                     validator(_, value) {
+                      if(!value && !getFieldValue('startTime')){
+                        return Promise.resolve()
+                       }
+
                      if(getFieldValue('startDate').isSame(getFieldValue('endDate')) && value && getFieldValue('startTime')){
                       if(value.isBefore(getFieldValue('startTime'))){
                         return Promise.reject(new Error('End Time should not exceed startTime'))
