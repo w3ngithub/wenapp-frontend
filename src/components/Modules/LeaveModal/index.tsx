@@ -9,7 +9,6 @@ import {
   Col,
   Spin,
   DatePicker,
-  Radio,
   ConfigProvider,
 } from 'antd'
 import en_GB from 'antd/lib/locale-provider/en_GB'
@@ -219,7 +218,7 @@ function LeaveModal({
           leaveDatesPeriod: moment(leaveData),
           reason: leaveData.reason,
           user: leaveData.user._id,
-          halfDay: leaveData.halfDay,
+          halfDay:leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
           cancelReason: leaveData?.cancelReason,
         })
         setUser(leaveData.user._id)
