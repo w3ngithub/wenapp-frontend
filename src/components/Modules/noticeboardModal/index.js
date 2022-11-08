@@ -181,7 +181,7 @@ function NoticeModal({
                       }
 
                      if(value.isBefore(getFieldValue('startDate')) && getFieldValue('startDate')){
-                      return Promise.reject(new Error('End Date should not be before startDate'))
+                      return Promise.reject(new Error('End Date should not be before Start Date'))
                      }
                      return Promise.resolve()
 
@@ -211,13 +211,13 @@ function NoticeModal({
 
                      if(getFieldValue('startDate').isSame(getFieldValue('endDate')) && value && getFieldValue('endTime')){
                       if(!value.isBefore(getFieldValue('endTime'))){
-                        return Promise.reject(new Error('End Time should not exceed startTime'))
+                        return Promise.reject(new Error('End Time should not exceed Start Time'))
                       }
                      }
 
 
                      if(!value && getFieldValue('endTime')){
-                      return Promise.reject(new Error('Only endTime is not allowed'))
+                      return Promise.reject(new Error('Only End Time is not allowed'))
                      }
 
                      return Promise.resolve()
@@ -245,11 +245,11 @@ function NoticeModal({
 
                      if(getFieldValue('startDate').isSame(getFieldValue('endDate')) && value && getFieldValue('startTime')){
                       if(value.isBefore(getFieldValue('startTime'))){
-                        return Promise.reject(new Error('End Time should not exceed startTime'))
+                        return Promise.reject(new Error('End Time should not exceed Start Time'))
                       }
                      }
                     if(getFieldValue('startTime') && !value){
-                      return Promise.reject(new Error('Only startTime is not allowed'))
+                      return Promise.reject(new Error('Only Start Time is not allowed'))
                     }
 
                      return Promise.resolve()
