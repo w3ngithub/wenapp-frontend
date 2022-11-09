@@ -7,13 +7,13 @@ const getAllNotices = async ({
   sort = '',
   limit = '',
   fields = '',
-  title = '',
+  search = '',
   endDate = '',
   startDate = '',
 }) => {
   try {
     let response = await API.get(
-      `${Apis.NoticeBoard}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&title=${title}&startDate=${startDate}&endDate=${endDate}`
+      `${Apis.NoticeBoard}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&search=${search}&startDate=${startDate}&endDate=${endDate}`
     )
     return getAPIResponse(response)
   } catch (err) {

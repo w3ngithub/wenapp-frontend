@@ -21,9 +21,9 @@ import {
 } from 'helpers/utils'
 import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
-import {createLeaveOfUser} from 'services/leaves'
+import {createLeaveOfUser, getLeaveTypes} from 'services/leaves'
 import {notification} from 'helpers/notification'
-import {LATE_LEAVE_TYPE_ID} from 'constants/Leaves'
+import {LATE_ARRIVAL, LATE_LEAVE_TYPE_ID} from 'constants/Leaves'
 import RangePicker from 'components/Elements/RangePicker'
 
 const FormItem = Form.Item
@@ -60,6 +60,8 @@ function LateAttendance({userRole}: {userRole: string}) {
     getAllUsers({fields: 'name'})
   )
 
+  const {data: leaveTypes} = useQuery(['leaveTypes'], getLeaveTypes)
+
   const {data, isFetching} = useQuery(
     ['lateAttendaceAttendance', user, date, user],
     () =>
@@ -78,7 +80,7 @@ function LateAttendance({userRole}: {userRole: string}) {
   }
 
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.status) {
         handleCutLeaveInAttendance()
       } else {
@@ -88,7 +90,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         })
       }
     },
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Leave creation failed!', type: 'error'})
     },
   })
@@ -96,7 +98,7 @@ function LateAttendance({userRole}: {userRole: string}) {
   const attendanceGroupMutation = useMutation(
     (lateAttendace: any) => updateLateAttendance(lateAttendace),
     {
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.status) {
           recordRef = {}
         }
@@ -107,7 +109,7 @@ function LateAttendance({userRole}: {userRole: string}) {
           [() => queryClient.invalidateQueries(['lateAttendaceAttendance'])]
         )
       },
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Leave creation failed!', type: 'error'})
       },
     }
@@ -151,12 +153,13 @@ function LateAttendance({userRole}: {userRole: string}) {
       id: record._id.userId,
       data: {
         leaveDates: [
-          moment(record.data.at(-1).attendanceDate)
-            .startOf('day')
-            .format(),
+          moment(record.data.at(-1).attendanceDate).startOf('day').format(),
         ],
         reason: 'Leave cut due to late attendance',
-        leaveType: LATE_LEAVE_TYPE_ID,
+        leaveType:
+          leaveTypes?.data?.data?.data?.find(
+            (type: any) => type?.name === LATE_ARRIVAL
+          )?._id || LATE_ARRIVAL,
         leaveStatus: 'approved',
       },
     })
@@ -223,7 +226,7 @@ function LateAttendance({userRole}: {userRole: string}) {
     }, {})
 
     // sort  by earliest punchInTime
-    Object.keys(groupByAttendance)?.forEach(x => {
+    Object.keys(groupByAttendance)?.forEach((x) => {
       groupByAttendance[x] = sortFromDate(groupByAttendance[x], 'punchInTime')
     })
 
