@@ -6,8 +6,8 @@ import {changeDate} from 'helpers/utils'
 import {LEAVES_TYPES} from 'constants/Leaves'
 
 const formattedLeaves = (leaves: any[]) => {
-  console.log('leaves', leaves);
-  return leaves?.map(leave => ({
+  // console.log(leaves)
+  return leaves?.map((leave) => ({
     ...leave,
     key: leave?._id,
     name: leave?.user[0]?.name,
@@ -28,7 +28,9 @@ const formattedLeaves = (leaves: any[]) => {
         : leave.leaveDates.length > 1
         ? leave.leaveDates.length + ' Days'
         : leave.halfDay
-        ? (leave.halfDay === 'first-half' ? 'First Half' : 'Second Half')
+        ? leave.halfDay === 'first-half'
+          ? 'First Half'
+          : 'Second Half'
         : '1 Day',
   }))
 }

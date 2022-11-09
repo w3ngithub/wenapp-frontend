@@ -1,3 +1,4 @@
+import moment from 'moment'
 import React, {ReactElement} from 'react'
 
 interface tableCol {
@@ -27,7 +28,7 @@ const OVERVIEW_LEAVES = (sortedInfo: any): tableCol[] => [
     key: 'absentFrom',
     width: 150,
     sorter: (a, b) =>
-      a.absentFrom.toString().localeCompare(b.absentFrom.toString()),
+      +moment(a.absentFrom, 'DD-MM-YYYY') - +moment(b.absentFrom, 'DD-MM-YYYY'),
     sortOrder: sortedInfo.columnKey === 'absentFrom' && sortedInfo.order,
   },
   {
@@ -35,7 +36,8 @@ const OVERVIEW_LEAVES = (sortedInfo: any): tableCol[] => [
     dataIndex: 'till',
     key: 'till',
     width: 150,
-    sorter: (a, b) => a.till.toString().localeCompare(b.till.toString()),
+    sorter: (a, b) =>
+      +moment(a.till, 'DD-MM-YYYY') - +moment(b.till, 'DD-MM-YYYY'),
     sortOrder: sortedInfo.columnKey === 'till' && sortedInfo.order,
   },
   {
@@ -163,9 +165,13 @@ const OVERVIEW_NOTCHECKEDIN = (sortedInfo: any): tableCol[] => [
       a.checkOut.toString().localeCompare(b.checkOut.toString()),
 
     sortOrder: sortedInfo.columnKey === 'checkOut' && sortedInfo.order,
-  },]
+  },
+]
 
-const DEADLINE_PROJECTS = (sortedInfo: any,navigateToProjectLogs:(a:string)=>void): tableCol[] => [
+const DEADLINE_PROJECTS = (
+  sortedInfo: any,
+  navigateToProjectLogs: (a: string) => void
+): tableCol[] => [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -181,18 +187,21 @@ const DEADLINE_PROJECTS = (sortedInfo: any,navigateToProjectLogs:(a:string)=>voi
     key: 'action',
     width: 250,
     render: (text, record) => {
-      return (<span
-            className="gx-link"
-            onClick={() =>
-              navigateToProjectLogs(`${record._id}-${record.slug}`)
-            }
-          >
-            Log Time
-          </span>         
+      return (
+        <span
+          className="gx-link"
+          onClick={() => navigateToProjectLogs(`${record._id}-${record.slug}`)}
+        >
+          Log Time
+        </span>
       )
     },
   },
-  
 ]
 
-export {OVERVIEW_LEAVES, OVERVIEW_CHECKEDIN, OVERVIEW_NOTCHECKEDIN,DEADLINE_PROJECTS}
+export {
+  OVERVIEW_LEAVES,
+  OVERVIEW_CHECKEDIN,
+  OVERVIEW_NOTCHECKEDIN,
+  DEADLINE_PROJECTS,
+}
