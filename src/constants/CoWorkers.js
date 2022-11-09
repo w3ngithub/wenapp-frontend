@@ -2,6 +2,7 @@ import React from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
+import moment from 'moment'
 
 const CO_WORKERCOLUMNS = (
   sortedInfo,
@@ -39,7 +40,7 @@ const CO_WORKERCOLUMNS = (
     dataIndex: 'dob',
     width: 150,
     key: 'dob',
-    sorter: (a, b) => new Date(a.dob) - new Date(b.dob),
+    sorter: (a, b) => moment(a.dob, 'DD-MM-YYYY') - moment(b.dob, 'DD-MM-YYYY'),
     sortOrder: sortedInfo.columnKey === 'dob' && sortedInfo.order,
   },
   {
@@ -47,7 +48,8 @@ const CO_WORKERCOLUMNS = (
     dataIndex: 'joinDate',
     width: 150,
     key: 'joinDate',
-    sorter: (a, b) => new Date(a.joinDate) - new Date(b.joinDate),
+    sorter: (a, b) =>
+      moment(a.joinDate, 'DD-MM-YYYY') - moment(b.joinDate, 'DD-MM-YYYY'),
     sortOrder: sortedInfo.columnKey === 'joinDate' && sortedInfo.order,
   },
   {
