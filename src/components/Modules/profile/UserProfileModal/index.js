@@ -156,7 +156,7 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
             hasFeedback
             name="primaryPhone"
             rules={[
-              {
+              { required:true,
                 whitespace: true,
                 validator: async (rule, value) => {
                   try {
@@ -184,10 +184,13 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
             label="Secondary Phone"
             name="secondaryPhone"
             rules={[
-              {
+              { 
                 whitespace: true,
                 validator: async (rule, value) => {
                   try {
+                    if(!value){
+                      return
+                    }
                     if (value < 0) {
                       throw new Error('Please do not enter negative numbers.')
                     }

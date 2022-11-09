@@ -59,7 +59,7 @@ function Apply({user}) {
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const [leaveType, setLeaveType] = useState('')
-
+  
   const userLeavesQuery = useQuery(['userLeaves'], () => getLeavesOfUser(user))
 
   const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
