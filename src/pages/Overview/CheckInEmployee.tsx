@@ -92,7 +92,7 @@ function CheckedInEmployee({
             showSizeChanger: true,
             total: count || 1,
             onShowSizeChange,
-            hideOnSinglePage: count ? false : true,
+            hideOnSinglePage: true,
             onChange: onPageChange,
           }}
           loading={isLoading}

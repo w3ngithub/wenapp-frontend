@@ -36,7 +36,7 @@ const DeadlineProjects = ({projects}: {projects: any[]}) => {
           showSizeChanger: true,
           total: projects?.length || 1,
           onShowSizeChange,
-          hideOnSinglePage: projects?.length ? false : true,
+          hideOnSinglePage: true,
           onChange: handlePageChange,
         }}
       />

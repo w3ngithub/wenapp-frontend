@@ -79,7 +79,7 @@ const Overview = () => {
     (user: any) => !checkInUsers.includes(user.name)
   )
 
-  const deadlineProject = projects?.data?.data?.data
+  const deadlineProject = projects?.data?.data?.data || []
 
   if (leaveLoading) {
     return <CircularProgress className="" />
@@ -131,17 +131,19 @@ const Overview = () => {
         >
           <UnCheckedInEmployee notCheckInSection={notCheckInSection} />
         </Panel>
-        <Panel
-          header={
-            <h3>
-              <WalletOutlined />
-              <span className="gx-ml-3">Projects With Deadline Today</span>
-            </h3>
-          }
-          key="4"
-        >
-          <DeadlineProjects projects={deadlineProject} />
-        </Panel>
+        {deadlineProject.length && (
+          <Panel
+            header={
+              <h3>
+                <WalletOutlined />
+                <span className="gx-ml-3">Projects With Deadline Today</span>
+              </h3>
+            }
+            key="4"
+          >
+            <DeadlineProjects projects={deadlineProject} />
+          </Panel>
+        )}
       </Collapse>
     </div>
   )
