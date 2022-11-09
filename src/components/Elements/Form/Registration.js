@@ -145,11 +145,11 @@ class Registration extends Component {
               rules: [
                 {
                   type: 'email',
-                  message: 'The input is not valid E-mail!',
+                  message: 'Please enter a valid E-mail!',
                 },
                 {
                   required: true,
-                  message: 'Please input your E-mail!',
+                  message: 'Please enter your E-mail!',
                 },
               ],
             })(<Input id="email1" />)}
@@ -159,7 +159,7 @@ class Registration extends Component {
               rules: [
                 {
                   required: true,
-                  message: 'Please input your password!',
+                  message: 'Please enter your password!',
                 },
                 {
                   validator: this.validateToNextPassword,
@@ -195,7 +195,7 @@ class Registration extends Component {
               rules: [
                 {
                   required: true,
-                  message: 'Please input your nickname!',
+                  message: 'Please enter your nickname!',
                   whitespace: true,
                 },
               ],
@@ -216,13 +216,13 @@ class Registration extends Component {
           <FormItem {...formItemLayout} label="Phone Number">
             {getFieldDecorator('phone', {
               rules: [
-                {required: true, message: 'Please input your phone number!'},
+                {required: true, message: 'Please enter your phone number!'},
               ],
             })(<Input addonBefore={prefixSelector} style={{width: '100%'}} />)}
           </FormItem>
           <FormItem {...formItemLayout} label="Website">
             {getFieldDecorator('website', {
-              rules: [{required: true, message: 'Please input website!'}],
+              rules: [{required: true, message: 'Please enter website!'}],
             })(
               <AutoComplete
                 dataSource={websiteOptions}
@@ -244,7 +244,7 @@ class Registration extends Component {
                   rules: [
                     {
                       required: true,
-                      message: 'Please input the captcha you got!',
+                      message: 'Please enter the captcha you got!',
                     },
                   ],
                 })(<Input />)}

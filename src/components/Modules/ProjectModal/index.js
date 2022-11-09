@@ -250,6 +250,21 @@ function ProjectModal({
                 label="Estimated Hours"
                 hasFeedback={readOnly ? false : true}
                 name="estimatedHours"
+                rules={[
+                  {
+                    whitespace: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (value < 0) {
+                          throw new Error('Please do not enter negative numbers.')
+                        }
+    
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <Input
                   placeholder="Enter Estimated Hours"

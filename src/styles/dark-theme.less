@@ -420,6 +420,15 @@ body.dark-theme {
     }
   }
 
+  & input#email:-webkit-autofill,
+   input#password:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 50px #403e3e8c inset; /* Change the color to your own background color */
+  box-shadow: 0 0 0 50px #403e3e8c inset;
+  &:focus {
+    box-shadow: 0 0 0 50px #403e3e8c inset !important;
+  }
+}
+
   & .@{class-prefix}-menu-horizontal {
     & .ant-menu-submenu:hover > .ant-menu-submenu-title,
     & .ant-menu-item-active > .ant-menu-submenu-title,
@@ -1604,9 +1613,14 @@ body.dark-theme {
     }
   }
 
-  &.dark-theme .ant-menu-submenu-title:hover {
-    color: #fff;
+  & #email {
+    color: #000
   }
+
+  &.dark-theme .ant-menu-submenu-title:hover {
+    color: #000;
+  }
+  
 
   & .ant-input,
   & .ant-picker,

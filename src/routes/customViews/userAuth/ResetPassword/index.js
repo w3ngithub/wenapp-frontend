@@ -62,7 +62,7 @@ class ResetPassword extends Component {
                 rules: [
                   {
                     required: true,
-                    message: 'Please input your password!',
+                    message: 'Please enter your password!',
                   },
                   {
                     validator: this.validateToNextPassword,

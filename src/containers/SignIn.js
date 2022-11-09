@@ -76,14 +76,14 @@ function SignIn(props) {
                     required: true,
                     validator: async (rule, value) => {
                       try {
-                        if (!value) throw new Error('Required!')
-                        // if(!emailRegex.test(value.trim())){
-                        //   throw new Error('Please enter a valid email.')
-                        // }
+                        if (!value) throw new Error('Please enter your email!')
+                        if(!emailRegex.test(value?.trim())){
+                          throw new Error('Please enter a valid email.')
+                        }
 
-                        // if (value.split('@')[1] !== officeDomain) {
-                        //   throw new Error('Please use the email provided by office.')
-                        // }
+                        if (value?.split('@')?.[1]?.trim() !== officeDomain) {
+                          throw new Error('Please use the email provided by office.')
+                        }
 
                       } catch (err) {
                         throw new Error(err.message)
@@ -92,7 +92,7 @@ function SignIn(props) {
                   },
                 ]}
               >
-                <Input />
+                <Input/>
               </FormItem>
               <FormItem
                 label="Password"

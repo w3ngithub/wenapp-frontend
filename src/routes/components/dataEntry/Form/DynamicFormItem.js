@@ -82,7 +82,7 @@ class DynamicFormItem extends Component {
               {
                 required: true,
                 whitespace: true,
-                message: "Please input passenger's name or delete this field.",
+                message: "Please enter passenger's name or delete this field.",
               },
             ],
           })(

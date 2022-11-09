@@ -160,9 +160,23 @@ function InviteUserSignup(props) {
                 name="primaryPhone"
                 rules={[
                   {
-                    required: true,
-                    message: 'Required!',
-                    whitespace: true,
+                    whitespace:true,
+                    validator: async (rule, value) => {
+                      try {
+                        if(!value){
+                          throw new Error('Phone number is required.')
+                        }
+                        if (value < 0) {
+                          throw new Error('Please do not enter negative numbers.')
+                        }
+    
+                        if(value - Math.floor(value) !== 0){
+                          throw new Error('Please do not enter decimal values.')
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
                   },
                 ]}
               >
@@ -173,9 +187,20 @@ function InviteUserSignup(props) {
                 label="Secondary Phone"
                 name="secondaryPhone"
                 rules={[
-                  {
-                    message: 'field must be a number!',
-                    whitespace: true,
+                  { whitespace:true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (value < 0) {
+                          throw new Error('Please do not enter negative numbers.')
+                        }
+    
+                        if(value - Math.floor(value) !== 0){
+                          throw new Error('Please do not enter decimal values.')
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
                   },
                 ]}
               >
@@ -227,7 +252,7 @@ function InviteUserSignup(props) {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your password!',
+                    message: 'Please enter your password!',
                   },
                   {min: 8, message: 'Must be atleast 8 characters'},
                 ]}

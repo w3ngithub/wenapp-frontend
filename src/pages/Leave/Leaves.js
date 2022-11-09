@@ -20,13 +20,13 @@ import {disabledDate} from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 
-const formattedLeaves = leaves => {
-  return leaves?.map(leave => ({
+const formattedLeaves = (leaves) => {
+  return leaves?.map((leave) => ({
     ...leave,
     key: leave._id,
     coWorker: leave?.user?.name,
     dates: leave?.leaveDates
-      ?.map(date => changeDate(date))
+      ?.map((date) => changeDate(date))
       .join(
         leave?.leaveType?.name === 'Maternity' ||
           leave?.leaveType?.name === 'Paternity' ||
@@ -34,12 +34,16 @@ const formattedLeaves = leaves => {
           ? ' - '
           : ' , '
       ),
-    type: `${leave?.leaveType?.name} ${leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half' ? '- ' + removeDash(leave?.halfDay) : ''}`,
+    type: `${leave?.leaveType?.name} ${
+      leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
+        ? '- ' + removeDash(leave?.halfDay)
+        : ''
+    }`,
     status: leave?.leaveStatus,
   }))
 }
 
-const formatToUtc = date => {
+const formatToUtc = (date) => {
   const m = moment(date._d)
   m.set({h: 5, m: 45, s: 0})
   return m
@@ -91,16 +95,16 @@ function Leaves({
         page.limit
       ),
     {
-      onError: err => console.log(err),
+      onError: (err) => console.log(err),
     }
   )
 
   const usersQuery = useQuery(['users'], getAllUsers)
 
   const leaveApproveMutation = useMutation(
-    payload => changeLeaveStatus(payload.id, payload.type),
+    (payload) => changeLeaveStatus(payload.id, payload.type),
     {
-      onSuccess: response =>
+      onSuccess: (response) =>
         handleResponse(
           response,
           'Leave approved successfully',
@@ -109,24 +113,26 @@ function Leaves({
             () => queryClient.invalidateQueries(['userLeaves']),
             () => queryClient.invalidateQueries(['leaves']),
             () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
-            () => queryClient.invalidateQueries(['quartertakenAndRemainingLeaveDays']),
-
+            () =>
+              queryClient.invalidateQueries([
+                'quartertakenAndRemainingLeaveDays',
+              ]),
           ]
         ),
-      onError: error => {
+      onError: (error) => {
         Notification({message: 'Could not approve leave', type: 'error'})
       },
     }
   )
 
-  const handleApproveLeave = leave => {
+  const handleApproveLeave = (leave) => {
     leaveApproveMutation.mutate({id: leave._id, type: 'approve'})
   }
 
-  const handleStatusChange = statusId => {
+  const handleStatusChange = (statusId) => {
     setLeaveStatus(statusId)
   }
-  const handleUserChange = user => {
+  const handleUserChange = (user) => {
     setUser(user)
   }
 
@@ -136,9 +142,18 @@ function Leaves({
     setDate(undefined)
   }
 
-  const handleCloseModal = () => {
+  const handleCloseModal = (
+    setSpecificHalf,
+    setHalfLeaveApproved,
+    setMultipleDatesSelected,
+    setCalendarClicked
+  ) => {
     setOpenModal(false)
     setIsEditMode(false)
+    setSpecificHalf(false)
+    setHalfLeaveApproved(false)
+    setMultipleDatesSelected(false)
+    setCalendarClicked(false)
   }
 
   const handleOpenModal = () => {
@@ -154,20 +169,20 @@ function Leaves({
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
-  const handlePageChange = pageNumber => {
-    setPage(prev => ({...prev, page: pageNumber}))
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
-  const handleDateChange = value => {
+  const handleDateChange = (value) => {
     const m = moment(value._d)
     m.set({h: 5, m: 45, s: 0})
     setDate({moment: value, utc: moment.utc(m._d).format()})
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)
-  const allUsers = usersQuery?.data?.data?.data?.data?.map(user => ({
+  const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
     id: user._id,
     value: user.name,
   }))
@@ -237,8 +252,8 @@ function Leaves({
                         ['Dates', 'Type', 'Reason', 'Status'],
 
                         ...data
-                          ?.filter(leave => selectedRows.includes(leave?._id))
-                          ?.map(leave => [
+                          ?.filter((leave) => selectedRows.includes(leave?._id))
+                          ?.map((leave) => [
                             leave?.dates,
                             leave?.type,
                             leave?.reason,

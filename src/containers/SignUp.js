@@ -80,7 +80,7 @@ class SignUp extends React.Component {
                 <FormItem>
                   {getFieldDecorator('userName', {
                     rules: [
-                      {required: true, message: 'Please input your username!'},
+                      {required: true, message: 'Please enter your username!'},
                     ],
                   })(<Input placeholder="Username" />)}
                 </FormItem>
@@ -91,7 +91,7 @@ class SignUp extends React.Component {
                       {
                         required: true,
                         type: 'email',
-                        message: 'The input is not valid E-mail!',
+                        message: 'Please enter a valid E-mail!',
                       },
                     ],
                   })(<Input placeholder="Email" />)}
@@ -99,7 +99,7 @@ class SignUp extends React.Component {
                 <FormItem>
                   {getFieldDecorator('password', {
                     rules: [
-                      {required: true, message: 'Please input your Password!'},
+                      {required: true, message: 'Please enter your Password!'},
                     ],
                   })(<Input type="password" placeholder="Password" />)}
                 </FormItem>
