@@ -60,8 +60,8 @@ function LogTime() {
       getWeeklyTimeLogs({
         ...page,
         user: _id,
-        sort: '-logDate',
-      }),
+        sort: sort.order === 'ascend'?sort.field:'-logDate'
+        }),
     {keepPreviousData: true}
   )
 
