@@ -1,12 +1,11 @@
 import React, {useState} from 'react'
 import {Card, Table} from 'antd'
-import {WalletOutlined} from '@ant-design/icons'
 import {OVERVIEW_CHECKEDIN} from 'constants/Overview'
 import moment from 'moment'
 import LocationMap from './LocationMap'
 
 const formattedUsers = (users: any[]) => {
-  return users?.map(user => {
+  return users?.map((user) => {
     const punchInLocation = user?.data?.[0]?.punchInLocation
     const punchOutLocation = user?.data?.at(-1)?.punchOutLocation
     const checkIn = user?.data?.[0]?.punchInTime
@@ -80,14 +79,7 @@ function CheckedInEmployee({
         }}
         location={selectedCheckedInUser}
       />
-      <Card
-        title={
-          <h3>
-            <WalletOutlined />
-            <span className="gx-ml-3">Co-workers who already punched in</span>
-          </h3>
-        }
-      >
+      <Card title={''}>
         <Table
           className="gx-table-responsive"
           columns={OVERVIEW_CHECKEDIN(sort, handleShowMap)}

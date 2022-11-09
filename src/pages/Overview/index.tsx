@@ -12,7 +12,11 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import {getAllUsers} from 'services/users/userDetails'
 import UnCheckedInEmployee from './UnCheckedEmployee'
 import DeadlineProjects from './DeadlineProjects'
-import { getAllProjects } from 'services/projects'
+import {getAllProjects} from 'services/projects'
+import {Collapse} from 'antd'
+import {WalletOutlined} from '@ant-design/icons'
+
+const {Panel} = Collapse
 
 const endDate = `${MuiFormatDate(new Date())}`
 
@@ -26,31 +30,28 @@ const Overview = () => {
   )
   const [page, setPage] = useState({page: 1, limit: 10})
 
-  const {data:projects} = useQuery(
-    [
-      'projects',
-      endDate
-    ],
+  const {data: projects} = useQuery(
+    ['projects', endDate],
     () =>
       getAllProjects({
-       endDate,
+        endDate,
       }),
     {keepPreviousData: true}
   )
 
   const onShowSizeChange = (_: any, pageSize: number) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
   const handlePageChange = (pageNumber: number) => {
-    setPage(prev => ({...prev, page: pageNumber}))
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const {data: leaves, isLoading: leaveLoading} = useQuery(
     ['leavesOverview'],
     () => getTodayLeaves(),
     {
-      onError: error => {
+      onError: (error) => {
         notification({message: 'Could not approve leave', type: 'error'})
       },
     }
@@ -85,17 +86,63 @@ const Overview = () => {
   }
   return (
     <div>
-      <LeaveEmployee leaves={leavesSection} />
-      <CheckedInEmployee
-        checkIn={checkInSecition}
-        page={page}
-        onPageChange={handlePageChange}
-        onShowSizeChange={onShowSizeChange}
-        count={CheckedIn?.data?.data?.attendances?.[0]?.metadata?.[0]?.total}
-        isLoading={checkInLoading}
-      />
-      <UnCheckedInEmployee notCheckInSection={notCheckInSection} />
-      <DeadlineProjects projects={deadlineProject}/>
+      <Collapse defaultActiveKey={['1']}>
+        <Panel
+          header={
+            <h3>
+              <WalletOutlined />
+              <span className="gx-ml-3">Co-workers on leave</span>
+            </h3>
+          }
+          key="1"
+        >
+          <LeaveEmployee leaves={leavesSection} />
+        </Panel>
+        <Panel
+          header={
+            <h3>
+              <WalletOutlined />
+              <span className="gx-ml-3">Co-workers who already punched in</span>
+            </h3>
+          }
+          key="2"
+        >
+          <CheckedInEmployee
+            checkIn={checkInSecition}
+            page={page}
+            onPageChange={handlePageChange}
+            onShowSizeChange={onShowSizeChange}
+            count={
+              CheckedIn?.data?.data?.attendances?.[0]?.metadata?.[0]?.total
+            }
+            isLoading={checkInLoading}
+          />
+        </Panel>
+        <Panel
+          header={
+            <h3>
+              <WalletOutlined />
+              <span className="gx-ml-3">
+                Co-workers who have not punched in
+              </span>
+            </h3>
+          }
+          key="3"
+        >
+          <UnCheckedInEmployee notCheckInSection={notCheckInSection} />
+        </Panel>
+        <Panel
+          header={
+            <h3>
+              <WalletOutlined />
+              <span className="gx-ml-3">Projects With Deadline Today</span>
+            </h3>
+          }
+          key="4"
+        >
+          <DeadlineProjects projects={deadlineProject} />
+        </Panel>
+      </Collapse>
     </div>
   )
 }
