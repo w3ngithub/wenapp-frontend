@@ -125,10 +125,11 @@ const searchLateAttendacentOfUser = async ({
   sort = '',
   limit = '',
   fields = '',
+  lateArrivalLeaveCut = '',
 }) => {
   try {
     let response = await API.get(
-      `${Apis.Attendances}/lateArrival?user=${userId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+      `${Apis.Attendances}/lateArrival?user=${userId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&lateArrivalLeaveCut=${lateArrivalLeaveCut}`
     )
     return getAPIResponse(response)
   } catch (err) {
