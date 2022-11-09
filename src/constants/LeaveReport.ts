@@ -21,7 +21,7 @@ const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
     dataIndex: 'leavesTaken',
     key: 'leavesTaken',
     sorter: (a, b) =>
-      a.leavesTaken?.toString().localeCompare(b.leavesTaken?.toString()),
+      a.leavesTaken-b.leavesTaken,
     sortOrder: sortedInfo.columnKey === 'leavesTaken' && sortedInfo.order,
   },
   {
@@ -29,9 +29,7 @@ const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
     dataIndex: 'leavesRemaining',
     key: 'leavesRemaining',
     sorter: (a, b) =>
-      a.leavesRemaining
-        ?.toString()
-        .localeCompare(b.leavesRemaining?.toString()),
+      a.leavesRemaining-b.leavesRemaining,
 
     sortOrder: sortedInfo.columnKey === 'leavesRemaining' && sortedInfo.order,
   },
