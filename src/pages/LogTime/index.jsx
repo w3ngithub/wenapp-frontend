@@ -167,34 +167,17 @@ function LogTime() {
     setIsEditMode(false)
   }
 
-  const checkTimeLog = () => {
-    let time = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
-    if (time >= 9.5) {
-      notification({message: 'Log Time Exceeded', type: 'info'})
-    } else {
+  const handleOpenModal = () => {
       setOpenModal(true)
-    }
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
-    let time = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
     const formattedNewLogtime = {
       ...newLogtime,
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
       user: getLocalStorageData(LOCALSTORAGE_USER)._id,
-    }
-
-    let timeLogModalOpen = isEditMode
-      ? time +
-        formattedNewLogtime?.hours +
-        formattedNewLogtime?.minutes / 60 -
-        timeLogToUpdate?.hours -
-        timeLogToUpdate?.minutes / 60
-      : time + formattedNewLogtime?.hours + formattedNewLogtime?.minutes / 60
-    if (timeLogModalOpen > 9.5) {
-      return notification({message: 'Log Time Exceeded', type: 'info'})
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
@@ -245,7 +228,7 @@ function LogTime() {
           <div className="gx-d-flex gx-justify-content-between gx-flex-row">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
-              onClick={checkTimeLog}
+              onClick={handleOpenModal}
             >
               Add New Log Time
             </Button>
