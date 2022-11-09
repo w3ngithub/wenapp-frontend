@@ -58,7 +58,6 @@ function EventsAndAnnouncements({
   const {
     role: {key},
   } = getLocalStorageData(LOCALSTORAGE_USER)
-  console.log(key)
   const announcementsData = announcements?.map((x: any) => ({
     id: x._id,
     name: x.title,
