@@ -47,13 +47,13 @@ function PunchInOut() {
   const addAttendances = useMutation((payload: any) => addAttendance(payload), {
     onSuccess: (response) => {
       handleResponse(response, 'Punched Successfully', 'Punch  failed', [
+        () => {
+          dispatch({type: PUNCH_OUT})
+        },
         () => queryClient.invalidateQueries(['adminAttendance']),
         () => queryClient.invalidateQueries(['userAttendance']),
         () => {
           dispatch(fetchLoggedInUserAttendance(user._id))
-        },
-        () => {
-          dispatch({type: PUNCH_OUT})
         },
       ])
     },
@@ -95,6 +95,7 @@ function PunchInOut() {
         const lastattendace = sortFromDate(latestAttendance, 'punchInTime').at(
           -1
         )
+
         punchOutAttendances.mutate({
           userId: lastattendace?._id,
           payload: {
@@ -105,6 +106,8 @@ function PunchInOut() {
           },
         })
       } else {
+        console.log('punched')
+
         addAttendances.mutate({
           punchInTime: moment.utc().format(),
           punchInLocation: location,
@@ -115,7 +118,8 @@ function PunchInOut() {
         message: 'Please allow Location Access to Punch for Attendance',
         type: 'error',
       })
-    }}
+    }
+  }
 
   return (
     <>
@@ -127,9 +131,9 @@ function PunchInOut() {
       <Button
         onClick={
           latestAttendance?.length >= punchLimit &&
-          !latestAttendance?.map((item: object) =>
-            item?.hasOwnProperty('punchOutTime')
-          ).includes(false)
+          !latestAttendance
+            ?.map((item: object) => item?.hasOwnProperty('punchOutTime'))
+            .includes(false)
             ? () => {
                 notification({
                   message: 'Punch Limit Exceeded',
@@ -140,7 +144,11 @@ function PunchInOut() {
         }
         className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
         icon={<ScheduleOutlined />}
-        disabled={addAttendances.isLoading || punchOutAttendances.isLoading ||latestAttendance?.length===0}
+        disabled={
+          addAttendances.isLoading ||
+          punchOutAttendances.isLoading ||
+          latestAttendance?.length === 0
+        }
         style={{width: '200px'}}
       >
         {punchIn ? 'Punch In' : 'Punch Out'}
