@@ -49,7 +49,7 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
     if (toggle) {
       form.setFieldsValue({
         name: user.name,
-        username:user.username,
+        username: user.username,
         dob: moment(user?.dob),
         gender: user.gender,
         primaryPhone: String(user.primaryPhone),
@@ -157,13 +157,27 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
             name="primaryPhone"
             rules={[
               {
-                required: true,
-                message: 'Required!',
                 whitespace: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Phone number is required.')
+                    }
+                    if (value < 0) {
+                      throw new Error('Please do not enter negative numbers.')
+                    }
+
+                    if (value - Math.floor(value) !== 0) {
+                      throw new Error('Please do not enter decimal values.')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
               },
             ]}
           >
-            <Input placeholder="Enter Primary Phone" />
+            <Input placeholder="Enter Primary Phone" type="number" />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -171,12 +185,24 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
             name="secondaryPhone"
             rules={[
               {
-                message: 'field must be a number!',
                 whitespace: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (value < 0) {
+                      throw new Error('Please do not enter negative numbers.')
+                    }
+
+                    if (value - Math.floor(value) !== 0) {
+                      throw new Error('Please do not enter decimal values.')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
               },
             ]}
           >
-            <Input placeholder="Enter Secondary Phone" />
+            <Input placeholder="Enter Secondary Phone" type="number" />
           </FormItem>
 
           <FormItem

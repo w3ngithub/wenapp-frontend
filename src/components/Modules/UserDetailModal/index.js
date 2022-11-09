@@ -37,6 +37,10 @@ function UserDetailForm({
     onToggleModal({})
   }
 
+
+  const {role:storageRole} = localStorage.getItem('user_id') ? JSON.parse(localStorage.getItem('user_id')).user : {}
+
+
   const handleSubmit = () => {
     const data = intialValues?.allocatedLeaves
 
@@ -131,6 +135,9 @@ function UserDetailForm({
             ]
       }
     >
+
+
+
       <Spin spinning={loading}>
         <Form form={form}>
           <FormItem
@@ -156,7 +163,10 @@ function UserDetailForm({
               filterOption={filterOptions}
             >
               {roles &&
-                roles?.data?.data?.data?.map((role) => (
+                roles?.data?.data?.data?.filter((role)=>{
+                  return !(storageRole?.key!=='admin' && role?.key==='admin')
+               
+                }).map((role) => (
                   <Option value={role._id} key={role._id}>
                     {role.value}
                   </Option>

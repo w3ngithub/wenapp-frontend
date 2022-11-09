@@ -91,18 +91,18 @@ const LOGTIMES_COLUMNS = (
                   <CustomIcon name="edit" />
                 </span>
                 <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
-                      <Divider type="vertical" />
-                      <Popconfirm
-                        title="Are you sure to delete this Log?"
-                        onConfirm={() => confirmDelete(record)}
-                        okText="Yes"
-                        cancelText="No"
-                      >
-                        <span className="gx-link gx-text-danger">
-                          <CustomIcon name="delete" />
-                        </span>
-                      </Popconfirm>
-                    </AccessWrapper>
+                  <Divider type="vertical" />
+                  <Popconfirm
+                    title="Are you sure to delete this Log?"
+                    onConfirm={() => confirmDelete(record)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <span className="gx-link gx-text-danger">
+                      <CustomIcon name="delete" />
+                    </span>
+                  </Popconfirm>
+                </AccessWrapper>
               </span>
             )
           },
@@ -164,36 +164,37 @@ const LOGTIMES_COLUMNS = (
           // width: 360,
           render: (text, record) => {
             return (
-              <span>
+              <span style={{display: 'flex'}}>
                 <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}>
-                  <div style={{display: 'flex'}}>
-                    {record.user === user ||
-                    [RoleAccess.Admin, RoleAccess.ProjectManager].includes(
-                      role
-                    ) ? (
-                      <span
-                        className="gx-link"
-                        onClick={() => onOpenEditModal(record)}
-                      >
-                        <CustomIcon name="edit" />
-                      </span>
-                    ) : (
-                      ''
-                    )}
-                    <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
-                      <Divider type="vertical" />
-                      <Popconfirm
-                        title="Are you sure to delete this Log?"
-                        onConfirm={() => confirmDelete(record)}
-                        okText="Yes"
-                        cancelText="No"
-                      >
-                        <span className="gx-link gx-text-danger">
-                          <CustomIcon name="delete" />
-                        </span>
-                      </Popconfirm>
-                    </AccessWrapper>
-                  </div>
+                  {record.user === user ||
+                  [RoleAccess.Admin, RoleAccess.ProjectManager].includes(
+                    role
+                  ) ? (
+                    <span
+                      className="gx-link"
+                      onClick={() => onOpenEditModal(record)}
+                    >
+                      <CustomIcon name="edit" />
+                    </span>
+                  ) : (
+                    ''
+                  )}
+                </AccessWrapper>
+                <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
+                  {(role === RoleAccess.Admin ||
+                    role === RoleAccess.ProjectManager) && (
+                    <Divider type="vertical" />
+                  )}
+                  <Popconfirm
+                    title="Are you sure to delete this Log?"
+                    onConfirm={() => confirmDelete(record)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <span className="gx-link gx-text-danger">
+                      <CustomIcon name="delete" />
+                    </span>
+                  </Popconfirm>
                 </AccessWrapper>
               </span>
             )

@@ -7,12 +7,12 @@ const getAllBlogs = async ({
   sort = '',
   limit = '',
   fields = '',
-  title = '',
   createdBy = '',
+  search = '',
 }) => {
   try {
     let response = await API.get(
-      `${Apis.Blog}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&title=${title}&createdBy=${createdBy}`
+      `${Apis.Blog}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&search=${search}&createdBy=${createdBy}`
     )
     return getAPIResponse(response)
   } catch (err) {

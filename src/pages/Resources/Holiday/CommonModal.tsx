@@ -1,5 +1,6 @@
 import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
 import {Button, Col, DatePicker, Form, Input, Modal, Row, Spin} from 'antd'
+import {notification} from 'helpers/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import React, {useEffect, useState} from 'react'
@@ -29,13 +30,27 @@ const CommonModal = (props: modalType) => {
     isLoading,
     editData,
   } = props
-  const [error, setError] = useState<{
-    index: number
-  }>({index: 0})
+
+  const [indexes, setIndexes] = useState<boolean[]>([])
 
   const {innerWidth} = useWindowsSize()
 
   const handleSubmit = () => {
+    let values = form.getFieldsValue()
+    let holidays = values?.holidays?.map(
+      (data: {date: any; title: string; remarks: string}, index: number) => {
+        if (data?.date || data?.title || data?.remarks) {
+          return true
+        } else return false
+      }
+    )
+    if (holidays.length === 0) {
+      return notification({type: 'info', message: 'Please Add Holiday Field'})
+    }
+    if (!holidays.includes(true)) {
+      holidays[0] = true
+    }
+    setIndexes(holidays)
     form
       .validateFields()
       .then((values) => {
@@ -50,14 +65,6 @@ const CommonModal = (props: modalType) => {
         })
       })
       .catch((err) => console.log(err))
-  }
-
-  const handleInputChange = (event: any, index: any, name: string) => {
-    if (name === 'title') {
-      setError({index})
-    } else {
-      setError({index})
-    }
   }
 
   useEffect(() => {
@@ -136,18 +143,11 @@ const CommonModal = (props: modalType) => {
                           label="Date"
                           name={[field.name, 'date']}
                           required={false}
-                          rules={
-                            error?.index === index
-                              ? [{required: true, message: 'required!'}]
-                              : undefined
-                          }
+                          rules={[
+                            {required: indexes[index], message: 'Required!'},
+                          ]}
                         >
-                          <DatePicker
-                            className=" gx-w-100"
-                            onChange={(e) =>
-                              handleInputChange(e, index, 'date')
-                            }
-                          />
+                          <DatePicker className=" gx-w-100" />
                         </Form.Item>
                       </Form.Item>
                     </Col>
@@ -164,17 +164,11 @@ const CommonModal = (props: modalType) => {
                           label="Title"
                           name={[field.name, 'title']}
                           required={false}
-                          rules={
-                            error?.index === index
-                              ? [{required: true, message: 'required!'}]
-                              : [{}]
-                          }
+                          rules={[
+                            {required: indexes[index], message: 'Required!'},
+                          ]}
                         >
-                          <Input
-                            onChange={(e) =>
-                              handleInputChange(e, index, 'title')
-                            }
-                          />
+                          <Input />
                         </Form.Item>
                       </Form.Item>
                     </Col>

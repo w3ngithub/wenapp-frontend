@@ -19,7 +19,7 @@ import {getLeaveTypes} from 'services/settings/leaveType'
 import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
 import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingAndAppliedCards'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
-import {LEAVE_TABS_NO_ACCESS} from 'constants/RoleAccess'
+import RoleAccess, {LEAVE_TABS_NO_ACCESS} from 'constants/RoleAccess'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 
 const TabPane = Tabs.TabPane
@@ -56,7 +56,7 @@ function Leave() {
   )
 
   const leaveCancelMutation = useMutation(
-    (payload) => changeLeaveStatus(payload.id, payload.type,payload.reason),
+    (payload) => changeLeaveStatus(payload.id, payload.type, payload.reason),
     {
       onSuccess: (response) =>
         handleResponse(
@@ -77,7 +77,11 @@ function Leave() {
 
   const handleCancelLeave = (leave) => {
     leaveCancelReason = leave?.leaveCancelReason
-    leaveCancelMutation.mutate({id: leave._id, type: 'cancel',reason:leaveCancelReason})
+    leaveCancelMutation.mutate({
+      id: leave._id,
+      type: 'cancel',
+      reason: leaveCancelReason,
+    })
   }
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
 
@@ -171,15 +175,19 @@ function Leave() {
         </Row>
 
         <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
-          <TabPane tab="Apply" key="1">
-            <LeavesApply user={loggedInUser?._id} />
-          </TabPane>
-          <TabPane tab="My History" key="2">
-            <MyHistory
-              userId={loggedInUser?._id}
-              handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
-            />
-          </TabPane>
+          {loggedInUser?.role?.key !== RoleAccess.Finance && (
+            <>
+              <TabPane tab="Apply" key="1">
+                <LeavesApply user={loggedInUser?._id} />
+              </TabPane>
+              <TabPane tab="My History" key="2">
+                <MyHistory
+                  userId={loggedInUser?._id}
+                  handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
+                />
+              </TabPane>
+            </>
+          )}
           {!LEAVE_TABS_NO_ACCESS.includes(loggedInUser?.role?.key) && (
             <>
               <TabPane tab="Leaves" key="3">

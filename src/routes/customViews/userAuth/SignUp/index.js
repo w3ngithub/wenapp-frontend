@@ -42,7 +42,7 @@ class SignUP extends Component {
             <FormItem>
               {getFieldDecorator('uaername', {
                 rules: [
-                  {required: true, message: 'Please input your username!'},
+                  {required: true, message: 'Please enter your username!'},
                 ],
               })(
                 <Input
@@ -54,7 +54,7 @@ class SignUP extends Component {
             <FormItem>
               {getFieldDecorator('email', {
                 rules: [
-                  {required: true, message: 'Please input your username!'},
+                  {required: true, message: 'Please enter your username!'},
                 ],
               })(
                 <Input
@@ -66,7 +66,7 @@ class SignUP extends Component {
             <FormItem>
               {getFieldDecorator('password', {
                 rules: [
-                  {required: true, message: 'Please input your Password!'},
+                  {required: true, message: 'Please enter your Password!'},
                 ],
               })(
                 <Input
@@ -79,7 +79,7 @@ class SignUP extends Component {
             <FormItem>
               {getFieldDecorator('confirm-password', {
                 rules: [
-                  {required: true, message: 'Please input your Password!'},
+                  {required: true, message: 'Please enter your Password!'},
                 ],
               })(
                 <Input

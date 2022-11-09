@@ -36,7 +36,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
-import {leaveDuration, leaveInterval} from 'constants/LeaveDuration'
+import {leaveInterval} from 'constants/LeaveDuration'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -49,6 +49,8 @@ function Apply({user}) {
   const {themeType} = useSelector((state) => state.settings)
   const {innerWidth} = useWindowsSize()
   const [specificHalf, setSpecificHalf] = useState(false)
+  const [formDate, setFromDate] = useState('')
+  const [toDate, setToDate] = useState('');
   const [halfLeaveApproved, setHalfLeaveApproved] = useState(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
@@ -203,7 +205,6 @@ function Apply({user}) {
   }
 
   const formFieldChanges = (values) => {
-    console.log('values', values)
     if (values?.hasOwnProperty('leaveDatesCasual')) {
       if (values?.leaveDatesCasual?.length === 1) {
         setMultipleDatesSelected(false)
@@ -371,7 +372,6 @@ function Apply({user}) {
                         showSearch
                         filterOption={filterOptions}
                         placeholder="Select Duration"
-                        // placeholder={defaultInterval}
                         style={{width: '100%'}}
                       >
                         {leaveInterval?.map((type, index) => (

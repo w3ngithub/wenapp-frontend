@@ -167,17 +167,17 @@ function LogTime() {
     setIsEditMode(false)
   }
 
-  const checkTimeLog=()=>{
-    let time  = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
-    if(time>9.5){
-      notification({message: 'Log Time Excedeed',type:'info'})
-    }
-    else{
+  const checkTimeLog = () => {
+    let time = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
+    if (time >= 9.5) {
+      notification({message: 'Log Time Exceeded', type: 'info'})
+    } else {
       setOpenModal(true)
     }
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
+    let time = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
     const formattedNewLogtime = {
       ...newLogtime,
       hours: +newLogtime.hours,
@@ -186,6 +186,16 @@ function LogTime() {
       user: getLocalStorageData(LOCALSTORAGE_USER)._id,
     }
 
+    let timeLogModalOpen = isEditMode
+      ? time +
+        formattedNewLogtime?.hours +
+        formattedNewLogtime?.minutes / 60 -
+        timeLogToUpdate?.hours -
+        timeLogToUpdate?.minutes / 60
+      : time + formattedNewLogtime?.hours + formattedNewLogtime?.minutes / 60
+    if (timeLogModalOpen > 9.5) {
+      return notification({message: 'Log Time Exceeded', type: 'info'})
+    }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
         id: formattedNewLogtime.id,
@@ -200,7 +210,6 @@ function LogTime() {
   if (timelogLoading) {
     return <CircularProgress />
   }
-
 
   return (
     <div>
@@ -259,7 +268,7 @@ function LogTime() {
             showSizeChanger: true,
             total: logTimeDetails?.data?.data?.count || 1,
             onShowSizeChange,
-            hideOnSinglePage : logTimeDetails?.data?.data?.count ? false : true,
+            hideOnSinglePage: logTimeDetails?.data?.data?.count ? false : true,
             onChange: handlePageChange,
           }}
           loading={

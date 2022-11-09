@@ -147,7 +147,7 @@ function TmsAdminAttendanceForm({
         <div className="gx-d-flex gx-flex-row">
           <FieldTimeOutlined style={{fontSize: '24px'}} />
           <LiveTime />
-          <span>{moment().format('dddd, MMMM D, YYYY')}</span>
+          <span style={{marginLeft:'0.5rem'}}>{moment().format('dddd, MMMM D, YYYY')}</span>
         </div>
       }
       mask={false}
@@ -221,7 +221,7 @@ function TmsAdminAttendanceForm({
               >
                 <TimePicker use12Hours format="h:mm:ss A" />
               </Form.Item>
-              <Form.Item label="Punch In Note" name="punchInNote" hasFeedback
+              <Form.Item label="Punch In Note bob" name="punchInNote" hasFeedback
           >
 
                 <Input.TextArea rows={5} />
