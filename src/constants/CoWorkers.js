@@ -2,7 +2,6 @@ import React from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
-import moment from 'moment'
 
 const CO_WORKERCOLUMNS = (
   sortedInfo,
