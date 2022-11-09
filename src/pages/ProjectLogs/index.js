@@ -204,11 +204,23 @@ function ProjectLogs() {
   }
 
   const handleLogTypeSubmit = (newLogtime, reset) => {
+    let time = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
     const formattedNewLogtime = {
       ...newLogtime,
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
+    }
+    let timeLogModalOpen = isEditMode
+      ? time +
+        formattedNewLogtime?.hours +
+        formattedNewLogtime?.minutes / 60 -
+        timeLogToUpdate?.hours -
+        timeLogToUpdate?.minutes / 60
+      : time + formattedNewLogtime?.hours + formattedNewLogtime?.minutes / 60
+
+    if (timeLogModalOpen > 9.5) {
+      return notification({message: 'Log Time Exceeded', type: 'info'})
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
@@ -244,8 +256,8 @@ function ProjectLogs() {
 
   const checkTimeLog = () => {
     let time = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
-    if (time > 9.5) {
-      notification({message: 'Log Time Excedeed', type: 'info'})
+    if (time >= 9.5) {
+      notification({message: 'Log Time Exceeded', type: 'info'})
     } else {
       setOpenModal(true)
     }
