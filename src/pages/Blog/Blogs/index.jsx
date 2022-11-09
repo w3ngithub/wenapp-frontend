@@ -40,7 +40,7 @@ function Blogs() {
     () =>
       getAllBlogs({
         ...page,
-        title,
+        search: title,
         createdBy: user,
       }),
     {keepPreviousData: true}
@@ -54,15 +54,15 @@ function Blogs() {
     }
   )
 
-  const deleteBlogMutation = useMutation(blog => deleteBlog(blog), {
-    onSuccess: response =>
+  const deleteBlogMutation = useMutation((blog) => deleteBlog(blog), {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Blog removed Successfully',
         'Blog deletion failed',
         [() => queryClient.invalidateQueries(['blogs'])]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({message: 'Project deletion failed', type: 'error'})
     },
   })
@@ -73,12 +73,12 @@ function Blogs() {
     }
   }, [isError])
 
-  const handlePageChange = pageNumber => {
-    setPage(prev => ({...prev, page: pageNumber}))
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
   const handleResetFilter = () => {
@@ -87,11 +87,11 @@ function Blogs() {
     setUser(undefined)
   }
 
-  const handleUserChange = user => {
+  const handleUserChange = (user) => {
     setUser(user)
   }
 
-  const removeBlog = blog => {
+  const removeBlog = (blog) => {
     deleteBlogMutation.mutate(blog)
   }
 
@@ -108,13 +108,13 @@ function Blogs() {
               <FormItem>
                 <Search
                   placeholder="Search Blogs"
-                  onSearch={value => {
-                    setPage(prev => ({...prev, page: 1}))
+                  onSearch={(value) => {
+                    setPage((prev) => ({...prev, page: 1}))
                     setTitle(value)
                   }}
                   value={typedTitle}
                   allowClear
-                  onChange={e => setTypedTitle(e.target.value)}
+                  onChange={(e) => setTypedTitle(e.target.value)}
                   enterButton
                   style={{marginBottom: 0}}
                 />
@@ -124,7 +124,7 @@ function Blogs() {
                   placeholder="Select Author"
                   onChange={handleUserChange}
                   value={user}
-                  options={users?.data?.data?.data.map(x => ({
+                  options={users?.data?.data?.data.map((x) => ({
                     id: x._id,
                     value: x.name,
                   }))}
