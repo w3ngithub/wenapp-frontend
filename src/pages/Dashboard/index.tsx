@@ -435,7 +435,7 @@ const Dashboard = () => {
             />
           </Col>
         )}
-        {isAdmin && (
+        {DASHBOARD_ICON_ACCESS.includes(key) && (
           <Col xl={6} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
               isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
