@@ -164,7 +164,7 @@ function InviteUserSignup(props) {
                     validator: async (rule, value) => {
                       try {
                         if(!value){
-                          throw new Error('Phone number is required.')
+                          throw new Error('Phone number is required.(Enter numbers only)')
                         }
                         if (value < 0) {
                           throw new Error('Please do not enter negative numbers.')
