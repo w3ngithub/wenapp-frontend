@@ -1,11 +1,11 @@
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
-import React, {Component, useState} from 'react'
+import React, {useState} from 'react'
 import {useSelector} from 'react-redux'
 import {Pie, PieChart, ResponsiveContainer, Sector} from 'recharts'
 
 // import data from "./data";
 
-const renderActiveShape = (props) => {
+const RenderActiveShape = (props) => {
   const RADIAN = Math.PI / 180
   const {
     cx,
@@ -19,7 +19,6 @@ const renderActiveShape = (props) => {
     payload,
     percent,
     value,
-    darkTheme
   } = props
   const sin = Math.sin(-RADIAN * midAngle)
   const cos = Math.cos(-RADIAN * midAngle)
@@ -30,11 +29,13 @@ const renderActiveShape = (props) => {
   const ex = mx + (cos >= 0 ? 1 : -1) * 22
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'
+  const {themeType} = useSelector((state) => state.settings)
+  const darkTheme = themeType === THEME_TYPE_DARK
 
   return (
     <g>
       <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-        {payload.name}
+        {payload?.name}
       </text>
       <Sector
         cx={cx}
@@ -71,7 +72,7 @@ const renderActiveShape = (props) => {
         y={ey}
         dy={18}
         textAnchor={textAnchor}
-        fill={darkTheme ? '#ccc' : '#999'}
+        fill={darkTheme ? '#fff' : '#999'}
 
       >
         {`(${(percent * 100).toFixed(2)}%)`}
@@ -84,7 +85,6 @@ const CustomActiveShapePieChart = ({data}) => {
   const [activeIndex, setactiveIndex] = useState(0)
   const {themeType} = useSelector((state) => state.settings)
   const darkTheme = themeType === THEME_TYPE_DARK
-  console.log('darkTheme', darkTheme);
 
   const onPieEnter = (data, index) => {
     setactiveIndex(index)
@@ -96,13 +96,12 @@ const CustomActiveShapePieChart = ({data}) => {
         <Pie
           dataKey="value"
           activeIndex={activeIndex}
-          activeShape={renderActiveShape}
+          activeShape={<RenderActiveShape />}
           onMouseEnter={onPieEnter}
           data={data}
           innerRadius={70}
           outerRadius={150}
-          fill="#003366"
-          darkTheme={darkTheme}
+          fill={darkTheme ? '#13c2c2': "#003366"}
         />
       </PieChart>
     </ResponsiveContainer>

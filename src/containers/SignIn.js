@@ -15,7 +15,6 @@ function SignIn(props) {
   const navigate = useNavigate()
 
   const handleSubmit = (values) => {
-    console.log('values', values);
     values = {
       ...values,
       email: values.emails.trim(),
