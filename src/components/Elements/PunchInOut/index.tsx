@@ -106,8 +106,6 @@ function PunchInOut() {
           },
         })
       } else {
-        console.log('punched')
-
         addAttendances.mutate({
           punchInTime: moment.utc().format(),
           punchInLocation: location,
