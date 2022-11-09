@@ -335,7 +335,7 @@ function ProjectLogs() {
                 </Button>
               </FormItem>
             </Form>
-            <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}>
+            <AccessWrapper noAccessRoles={[]}>
               {' '}
               <Button
                 className="gx-btn gx-btn-primary gx-text-white "
