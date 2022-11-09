@@ -57,8 +57,6 @@ const getLeavesOfUser = async (
   fromDate = '',
   toDate = ''
 ) => {
-  // const newDate = new Date();
-  // console.log('date', newDate);
   try {
     let response = await API.get(
       `${

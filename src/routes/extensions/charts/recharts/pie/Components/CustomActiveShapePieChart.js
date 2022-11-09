@@ -1,4 +1,6 @@
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import React, {Component, useState} from 'react'
+import {useSelector} from 'react-redux'
 import {Pie, PieChart, ResponsiveContainer, Sector} from 'recharts'
 
 // import data from "./data";
@@ -17,6 +19,7 @@ const renderActiveShape = (props) => {
     payload,
     percent,
     value,
+    darkTheme
   } = props
   const sin = Math.sin(-RADIAN * midAngle)
   const cos = Math.cos(-RADIAN * midAngle)
@@ -61,14 +64,15 @@ const renderActiveShape = (props) => {
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         textAnchor={textAnchor}
-        fill="#333"
+        fill={darkTheme ? '#fff' : '#333'}
       >{`Hours Spent: ${value}`}</text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         dy={18}
         textAnchor={textAnchor}
-        fill="#999"
+        fill={darkTheme ? '#ccc' : '#999'}
+
       >
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>
@@ -78,6 +82,9 @@ const renderActiveShape = (props) => {
 
 const CustomActiveShapePieChart = ({data}) => {
   const [activeIndex, setactiveIndex] = useState(0)
+  const {themeType} = useSelector((state) => state.settings)
+  const darkTheme = themeType === THEME_TYPE_DARK
+  console.log('darkTheme', darkTheme);
 
   const onPieEnter = (data, index) => {
     setactiveIndex(index)
@@ -95,6 +102,7 @@ const CustomActiveShapePieChart = ({data}) => {
           innerRadius={70}
           outerRadius={150}
           fill="#003366"
+          darkTheme={darkTheme}
         />
       </PieChart>
     </ResponsiveContainer>
