@@ -343,7 +343,7 @@ function Coworkers() {
                               if (!emailRegex.test(item.trim())) {
                                 throw new Error('Please enter a valid email.')
                               }
-                              if (item.split('@')[1] !== officeDomain) {
+                              if (item.split('@')[1].trim() !== officeDomain) {
                                 throw new Error(
                                   'Please use email provided by the organization.'
                                 )

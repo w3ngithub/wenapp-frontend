@@ -46,20 +46,20 @@ class DynamicRules extends Component {
               rules: [
                 {
                   required: true,
-                  message: 'Please input your name',
+                  message: 'Please enter your name',
                 },
               ],
-            })(<Input placeholder="Please input your name" />)}
+            })(<Input placeholder="Please enter your name" />)}
           </FormItem>
           <FormItem {...formItemLayout} label="Nickname">
             {getFieldDecorator('nickname-1', {
               rules: [
                 {
                   required: this.state.checkNick,
-                  message: 'Please input your nickname',
+                  message: 'Please enter your nickname',
                 },
               ],
-            })(<Input placeholder="Please input your nickname" />)}
+            })(<Input placeholder="Please enter your nickname" />)}
           </FormItem>
           <FormItem {...formTailLayout}>
             <Checkbox value={this.state.checkNick} onChange={this.handleChange}>

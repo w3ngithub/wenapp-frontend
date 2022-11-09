@@ -275,7 +275,7 @@ function AddBlog() {
                 showSearch
                 filterOption={filterOptions}
                 placeholder="Select Tags"
-                mode="tags"
+                mode="multiple"
                 size="large"
               >
                 {catogories?.data?.data?.data?.map((tag) => (
