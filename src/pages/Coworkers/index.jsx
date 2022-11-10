@@ -80,7 +80,7 @@ function CoworkersPage() {
         position,
         name,
         sort:
-          sort.order === undefined
+          sort.order === undefined || sort.column === undefined
             ? ''
             : sort.order === 'ascend'
             ? sort.field
