@@ -304,6 +304,7 @@ function AddBlog() {
         toogle={openMedia}
         handleCancel={handleCanelMedia}
         handleSubmit={handleInsertMedia}
+        maxSize={6}
       />
     </div>
   )

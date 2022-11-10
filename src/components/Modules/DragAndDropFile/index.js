@@ -28,6 +28,7 @@ function DragAndDropFile({
   displayType = 'text',
   allowMultiple = true,
   accept = '',
+  maxSize = 3
 }) {
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
@@ -46,7 +47,15 @@ function DragAndDropFile({
   }
 
   const handleChange = (info) => {
-    let fileList = [...info.fileList]
+    const file = info.file
+    const isLt3M = file.size/1024/1024 < maxSize
+    let fileList = [...info.fileList];
+
+    if(!isLt3M){
+      notification({message:`Cannot Upload size of above ${maxSize}MB `})
+      fileList = info.fileList.filter((i)=>i.uid!==file.uid)
+    }
+
     if (allowMultiple) setFiles(fileList)
     else {
       const list = fileList[fileList.length - 1]
@@ -58,7 +67,7 @@ function DragAndDropFile({
 
   const handleRemove = (removed) => {
     if (!removed.url) return
-
+ 
     if (allowMultiple) {
       onRemove((prev) => [...prev, removed.url])
     } else onRemove(removed.url)
@@ -67,12 +76,8 @@ function DragAndDropFile({
   return (
     <>
       <Dragger
-        beforeUpload={(file) => {
-          const isLt3M = file.size /1024/1024 < 3
-          if(!isLt3M){
-            notification({message:'Cannot Upload size of above 3MB '})
-          }
-          return isLt3M || Upload.LIST_IGNORE
+        beforeUpload={() => {
+          return false
         }}
         listType={displayType}
         onPreview={
