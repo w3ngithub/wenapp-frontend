@@ -8,7 +8,6 @@ import {
   Select,
   Spin,
   Form,
-  Radio,
   DatePicker,
 } from 'antd'
 import {
@@ -49,17 +48,32 @@ function Apply({user}) {
   const {themeType} = useSelector((state) => state.settings)
   const {innerWidth} = useWindowsSize()
   const [specificHalf, setSpecificHalf] = useState(false)
-  const [formDate, setFromDate] = useState('')
-  const [toDate, setToDate] = useState('')
   const [halfLeaveApproved, setHalfLeaveApproved] = useState(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
+
+  const date = new Date()
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
+  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+
+  const [fromDate, setFromDate] = useState(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+  const [toDate, setToDate] = useState(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+
+  const monthChangeHandler = (date) => {
+    const newMonthDate = new Date(date)
+    const firstDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth(), 1)
+    const lastDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth() + 1, 0)
+    setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`);
+    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`);
+  }
 
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const [leaveType, setLeaveType] = useState('')
 
-  const userLeavesQuery = useQuery(['userLeaves'], () => getLeavesOfUser(user))
+  const userLeavesQuery = useQuery(['userLeaves',fromDate,toDate], () =>
+    getLeavesOfUser(user, '', undefined, 1, 30,fromDate,toDate)
+  )
 
   const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
     getAllHolidays({sort: '-createdAt', limit: '1'})
@@ -255,6 +269,8 @@ function Apply({user}) {
       setCalendarClicked(false)
     }
   }
+
+
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Form
@@ -277,6 +293,7 @@ function Apply({user}) {
                   numberOfMonths={1}
                   disableMonthPicker
                   disableYearPicker
+                  onMonthChange={(date)=>monthChangeHandler(date)}
                   weekStartDayIndex={1}
                   multiple
                   minDate={
