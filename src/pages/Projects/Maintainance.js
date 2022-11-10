@@ -110,7 +110,6 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
           {...formItemLayout}
           label="Send Mail On"
           name="emailDay"
-          // help="Select the day of the month e.g. if you input 12 - the field mail will be sent on the 12th of every month."
           rules={[
             {
               validator: async (rule, value) => {
@@ -139,6 +138,8 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
             onChange={handleMailDayChange}
             disabled={readOnly}
             type="number"
+            min={1}
+            max={31}
           />
         </FormItem>
         <p
