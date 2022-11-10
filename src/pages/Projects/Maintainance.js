@@ -110,7 +110,6 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
           {...formItemLayout}
           label="Send Mail On"
           name="emailDay"
-          placeholder="sdfjsdkfjlksdjfksd"
           // help="Select the day of the month e.g. if you input 12 - the field mail will be sent on the 12th of every month."
           rules={[
             {
