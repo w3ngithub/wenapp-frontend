@@ -359,7 +359,7 @@ function Apply({user}) {
                             })
                           else if (leavePending)
                             notification({
-                              message: `Leave for the day is pending. Please cancel the previous applied leave to apply again`,
+                              message: `Leave request for the day is pending. Please cancel the previous applied leave to apply again`,
                             })
                         },
                       }
