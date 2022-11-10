@@ -39,7 +39,7 @@ function InviteUserSignup(props) {
       .validateFields()
       .then(async (values) => {
         setIsLoading(true)
-        let usernameArr = values?.email?.split('@')[0].split('.')
+        let usernameArr = values?.emails?.split('@')[0].split('.')
         let username = usernameArr?.[1] + usernameArr?.[0]
 
         const updatedUser = {
