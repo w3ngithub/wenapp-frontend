@@ -204,23 +204,11 @@ function ProjectLogs() {
   }
 
   const handleLogTypeSubmit = (newLogtime, reset) => {
-    let time = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
     const formattedNewLogtime = {
       ...newLogtime,
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
-    }
-    let timeLogModalOpen = isEditMode
-      ? time +
-        formattedNewLogtime?.hours +
-        formattedNewLogtime?.minutes / 60 -
-        timeLogToUpdate?.hours -
-        timeLogToUpdate?.minutes / 60
-      : time + formattedNewLogtime?.hours + formattedNewLogtime?.minutes / 60
-
-    if (timeLogModalOpen > 9.5) {
-      return notification({message: 'Log Time Exceeded', type: 'info'})
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
@@ -254,13 +242,8 @@ function ProjectLogs() {
     ...(qa ?? []),
   ]
 
-  const checkTimeLog = () => {
-    let time = todayTimeSpent?.data?.data?.timeSpentToday?.[0]?.timeSpentToday
-    if (time >= 9.5) {
-      notification({message: 'Log Time Exceeded', type: 'info'})
-    } else {
-      setOpenModal(true)
-    }
+  const handleOpenModal = () => {
+    setOpenModal(true)
   }
 
   if (timelogLoading) {
@@ -335,11 +318,11 @@ function ProjectLogs() {
                 </Button>
               </FormItem>
             </Form>
-            <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}>
+            <AccessWrapper noAccessRoles={[]}>
               {' '}
               <Button
                 className="gx-btn gx-btn-primary gx-text-white "
-                onClick={checkTimeLog}
+                onClick={handleOpenModal}
                 style={{marginBottom: '16px'}}
               >
                 Add New TimeLog
