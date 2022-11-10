@@ -8,6 +8,7 @@ function AddMediaModel({
   handleCancel,
   loading,
   progress,
+  maxSize
 }) {
   const [files, setFiles] = useState([])
 
@@ -40,6 +41,7 @@ function AddMediaModel({
           handleSubmit={handleSubmit}
           files={files}
           setFiles={setFiles}
+          maxSize={maxSize}
         />
       </Spin>
     </Modal>
