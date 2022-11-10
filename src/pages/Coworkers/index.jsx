@@ -71,8 +71,21 @@ function CoworkersPage() {
     getUserPositionTypes
   )
   const {data, isLoading, isFetching, isError, refetch} = useQuery(
-    ['users', page, activeUser, role, position, name],
-    () => getAllUsers({...page, active: activeUser, role, position, name}),
+    ['users', page, activeUser, role, position, name,sort],
+    () =>
+      getAllUsers({
+        ...page,
+        active: activeUser,
+        role,
+        position,
+        name,
+        sort:
+          sort.order === undefined
+            ? ''
+            : sort.order === 'ascend'
+            ? sort.field
+            : `-${sort.field}`
+      }),
     {
       keepPreviousData: true,
     }
