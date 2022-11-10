@@ -261,7 +261,7 @@ function InviteUserSignup(props) {
                 {...formItemLayout}
                 label="Password"
                 hasFeedback
-                name="password"
+                name="passwords"
                 rules={[
                   {
                     required: true,
@@ -286,7 +286,7 @@ function InviteUserSignup(props) {
                   {
                     message: 'Must match Password',
                     validator: (_, val) => {
-                      if (form.getFieldValue('password') === val || !val) {
+                      if (form.getFieldValue('passwords') === val || !val) {
                         return Promise.resolve()
                       } else {
                         return Promise.reject('Must match Password')
