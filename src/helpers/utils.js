@@ -144,8 +144,8 @@ export const sortFromDate = (data = [], sortField) => {
 }
 
 export const csvFileToArray = (string) => {
-  const csvHeader = string?.slice(0, string?.indexOf('\n'))?.split(',')
-  const csvRows = string?.slice(string?.indexOf('\n') + 1)?.split('\n')
+  const csvHeader = string?.slice(0, string?.indexOf('\r\n'))?.split(',')
+  const csvRows = string?.slice(string?.indexOf('\r\n') + 1)?.split('\r\n')
 
   const array = csvRows?.map((i) => {
     const values = i?.split(',')
@@ -295,7 +295,10 @@ export function changeDate(d) {
 }
 
 export function removeDash(param) {
-  return param.split('-').map(item => item.charAt(0).toUpperCase() + item.slice(1)).join(' ');
+  return param
+    .split('-')
+    .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
+    .join(' ')
 }
 
 export const filterOptions = (input, option) =>
@@ -332,20 +335,24 @@ export const formatToUtc = (date) => {
 }
 
 export const filterHalfDayLeaves = (leaves) => {
-  const approvedLeaves = leaves.filter(leave=> leave.leaveStatus === 'approved' );
-  if(approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay === ''){
+  const approvedLeaves = leaves.filter(
+    (leave) => leave.leaveStatus === 'approved'
+  )
+  if (approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay === '') {
     return true
   }
-  if(approvedLeaves.length === 2 ){
+  if (approvedLeaves.length === 2) {
     return true
   }
-  return false;
+  return false
 }
 
 export const specifyParticularHalf = (leaves) => {
-  const approvedLeaves = leaves.filter(leave=> leave.leaveStatus === 'approved' );
-  if(approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay !== '' ){
-    return approvedLeaves[0]?.isHalfDay
+  const approvedLeaves = leaves.filter(
+    (leave) => leave.leaveStatus === 'approved'
+  )
+  if (approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay !== '') {
+    return {specificHalf: approvedLeaves[0]?.isHalfDay, halfLeaveApproved: true}
   }
 }
 
@@ -399,4 +406,11 @@ export const checkIfTimeISBetweenOfficeHour = () => {
     parseInt(e[2])
   )
   return now > startTime1 && now < endTime2
+}
+
+
+export function capitalizeInput(input){
+    input = input.toLowerCase().split(" ").map((s)=>s.charAt(0).toUpperCase() + s.slice(1))
+    input = input.join(" ")
+    return input
 }

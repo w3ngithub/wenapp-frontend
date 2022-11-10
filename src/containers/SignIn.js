@@ -6,8 +6,8 @@ import {useNavigate} from 'react-router-dom'
 import {hideMessage, showAuthLoader, userSignIn} from 'appRedux/actions/Auth'
 import IntlMessages from 'util/IntlMessages'
 import {FORGOT_PASSWORD} from 'helpers/routePath'
-import { emailRegex } from 'constants/EmailTest'
-import { officeDomain } from 'constants/OfficeDomain'
+import {emailRegex} from 'constants/EmailTest'
+import {officeDomain} from 'constants/OfficeDomain'
 
 const FormItem = Form.Item
 
@@ -15,7 +15,11 @@ function SignIn(props) {
   const navigate = useNavigate()
 
   const handleSubmit = (values) => {
-    values = {...values,email:values.email.trim()}
+    values = {
+      ...values,
+      email: values.emails.trim(),
+      password: values?.passwords,
+    }
     props.showAuthLoader()
     props.userSignIn(values)
   }
@@ -70,21 +74,13 @@ function SignIn(props) {
               <FormItem
                 label="Username or Email Address"
                 hasFeedback
-                name="email"
+                name="emails"
                 rules={[
                   {
                     required: true,
                     validator: async (rule, value) => {
                       try {
-                        if (!value) throw new Error('Required!')
-                        // if(!emailRegex.test(value.trim())){
-                        //   throw new Error('Please enter a valid email.')
-                        // }
-
-                        // if (value.split('@')[1] !== officeDomain) {
-                        //   throw new Error('Please use the email provided by office.')
-                        // }
-
+                        if (!value) throw new Error('Please enter your email or username!')
                       } catch (err) {
                         throw new Error(err.message)
                       }
@@ -97,7 +93,7 @@ function SignIn(props) {
               <FormItem
                 label="Password"
                 hasFeedback
-                name="password"
+                name="passwords"
                 rules={[
                   {required: true, message: 'Please enter your Password!'},
                 ]}

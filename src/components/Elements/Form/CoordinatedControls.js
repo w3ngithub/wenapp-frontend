@@ -33,7 +33,7 @@ class CoordinatedControls extends Component {
             wrapperCol={{xs: 24, sm: 12}}
           >
             {getFieldDecorator('note', {
-              rules: [{required: true, message: 'Please input your note!'}],
+              rules: [{required: true, message: 'Please enter your note!'}],
             })(<Input />)}
           </FormItem>
           <FormItem

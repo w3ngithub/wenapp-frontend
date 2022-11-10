@@ -9,7 +9,6 @@ import {
   Col,
   Spin,
   DatePicker,
-  Radio,
   ConfigProvider,
 } from 'antd'
 import en_GB from 'antd/lib/locale-provider/en_GB'
@@ -39,6 +38,7 @@ import moment from 'moment'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
+import {leaveInterval} from 'constants/LeaveDuration'
 
 const {Option} = Select
 
@@ -72,7 +72,12 @@ function LeaveModal({
   leaveData: any
   isEditMode: boolean
   open: boolean
-  onClose: () => void
+  onClose: (
+    setSpecificHalf: any,
+    setHalfLeaveApproved: any,
+    setMultipleDatesSelected: any,
+    setCalendarClicked: any
+  ) => void
   users: any
   readOnly: boolean
   showWorker: boolean
@@ -86,8 +91,11 @@ function LeaveModal({
   const {innerWidth} = useWindowsSize()
   const {themeType} = useSelector((state: any) => state.settings)
   const [holidays, setHolidays] = useState([])
-  const [firstHalfSelected, setFirstHalfSelected] = useState(false)
-  const [secondHalfSelected, setSecondHalfSelected] = useState(false)
+  const [specificHalf, setSpecificHalf] = useState<any>(false)
+  const [halfLeaveApproved, setHalfLeaveApproved] = useState<any>(false)
+  const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
+  const [calendarClicked, setCalendarClicked] = useState(false)
+
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
@@ -112,7 +120,13 @@ function LeaveModal({
         [
           () => queryClient.invalidateQueries(['leaves']),
           () => queryClient.invalidateQueries(['leavesCalendar']),
-          () => onClose(),
+          () =>
+            onClose(
+              setSpecificHalf,
+              setHalfLeaveApproved,
+              setMultipleDatesSelected,
+              setCalendarClicked
+            ),
         ]
       ),
     onError: (error) => {
@@ -126,7 +140,16 @@ function LeaveModal({
         response,
         'Leave updated successfully',
         'Leave update failed',
-        [() => queryClient.invalidateQueries(['leaves']), () => onClose()]
+        [
+          () => queryClient.invalidateQueries(['leaves']),
+          () =>
+            onClose(
+              setSpecificHalf,
+              setHalfLeaveApproved,
+              setMultipleDatesSelected,
+              setCalendarClicked
+            ),
+        ]
       ),
     onError: (error) => {
       notification({message: 'Leave update failed!', type: 'error'})
@@ -163,7 +186,10 @@ function LeaveModal({
           : casualLeaveDaysUTC,
         reason: values.reason,
         leaveType: values.leaveType,
-        halfDay: values.halfDay,
+        halfDay:
+          values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
+            ? ''
+            : values?.halfDay,
         leaveStatus: appliedDate ? 'approved' : 'pending',
       }
       if (isEditMode) leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
@@ -192,7 +218,7 @@ function LeaveModal({
           leaveDatesPeriod: moment(leaveData),
           reason: leaveData.reason,
           user: leaveData.user._id,
-          halfDay: leaveData.halfDay,
+          halfDay:leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
           cancelReason: leaveData?.cancelReason,
         })
         setUser(leaveData.user._id)
@@ -235,6 +261,73 @@ function LeaveModal({
       })
     }
   })
+
+  const disableInterval = (index: number) => {
+    if (multipleDatesSelected && index !== 0) {
+      return true
+    } else {
+      if (index === 0 && halfLeaveApproved) {
+        return true
+      }
+      if (index === 1 && specificHalf === 'first-half') {
+        return true
+      }
+      if (index === 2 && specificHalf === 'second-half') {
+        return true
+      }
+      return false
+    }
+  }
+  const formFieldChanges = (values: {leaveDatesCasual: Array<string>}) => {
+    if (values?.hasOwnProperty('leaveDatesCasual')) {
+      if (values?.leaveDatesCasual?.length === 1) {
+        setMultipleDatesSelected(false)
+        const formattedDate = values?.leaveDatesCasual?.map((d) =>
+          MuiFormatDate(new Date(d))
+        )
+        const newDate = formattedDate?.[0]?.split('-')?.join('/')
+        let leaveDate = userLeaves?.filter((leave) => leave.date === newDate)
+        setHalfLeaveApproved(
+          specifyParticularHalf(leaveDate)?.halfLeaveApproved
+        )
+        setSpecificHalf(specifyParticularHalf(leaveDate)?.specificHalf)
+      } else if (values?.leaveDatesCasual?.length === 0) {
+        setHalfLeaveApproved(false)
+        setSpecificHalf(false)
+        setMultipleDatesSelected(false)
+      } else {
+        setMultipleDatesSelected(true)
+        setHalfLeaveApproved(false)
+      }
+    }
+  }
+  const calendarClickHandler = () => {
+    const selectedDates = form?.getFieldValue('leaveDatesCasual')
+    if (selectedDates?.length > 0) {
+      setCalendarClicked(true)
+      if (selectedDates?.length > 1) {
+        form.setFieldValue('halfDay', 'full-day')
+      }
+      if (selectedDates?.length === 1) {
+        const formattedDate = selectedDates?.map((d: any) =>
+          MuiFormatDate(new Date(d))
+        )
+        let leaveDate = userLeaves?.filter(
+          (leave) => leave.date === formattedDate?.[0]?.split('-')?.join('/')
+        )
+        let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
+        if (specificHalf === 'first-half') {
+          form.setFieldValue('halfDay', 'second-half')
+        } else if (specificHalf === 'second-half') {
+          form.setFieldValue('halfDay', 'first-half')
+        } else {
+          form.setFieldValue('halfDay', 'full-day')
+        }
+      }
+    } else {
+      setCalendarClicked(false)
+    }
+  }
   return (
     <Modal
       width={1100}
@@ -243,16 +336,43 @@ function LeaveModal({
       visible={open}
       mask={false}
       onOk={onFinish}
-      onCancel={onClose}
+      onCancel={() =>
+        onClose(
+          setSpecificHalf,
+          setHalfLeaveApproved,
+          setMultipleDatesSelected,
+          setCalendarClicked
+        )
+      }
       footer={
         readOnly
           ? [
-              <Button key="back" onClick={onClose}>
+              <Button
+                key="back"
+                onClick={() =>
+                  onClose(
+                    setSpecificHalf,
+                    setHalfLeaveApproved,
+                    setMultipleDatesSelected,
+                    setCalendarClicked
+                  )
+                }
+              >
                 Cancel
               </Button>,
             ]
           : [
-              <Button key="back" onClick={onClose}>
+              <Button
+                key="back"
+                onClick={() =>
+                  onClose(
+                    setSpecificHalf,
+                    setHalfLeaveApproved,
+                    setMultipleDatesSelected,
+                    setCalendarClicked
+                  )
+                }
+              >
                 Cancel
               </Button>,
               <Button key="submit" type="primary" onClick={onFinish}>
@@ -268,6 +388,7 @@ function LeaveModal({
           name="control-hooks"
           layout="vertical"
           className="padding-lt-0"
+          onValuesChange={(allValues) => formFieldChanges(allValues)}
         >
           <Row>
             <Col span={6} xs={24} sm={16}>
@@ -298,28 +419,36 @@ function LeaveModal({
                       )}
                     </Select>
                   </Form.Item>
-                  {(leaveType === 'Casual' ||
+                  {((leaveType === 'Casual' ||
                     leaveType === 'Sick' ||
                     leaveType === 'Casual Leave' ||
-                    leaveType === 'Sick Leave') && (
-                    <Form.Item
-                      {...formItemLayout}
-                      label="Half Leave"
-                      name="halfDay"
-                    >
-                      <Radio.Group disabled={readOnly}>
-                        <Radio value="first-half" disabled={firstHalfSelected}>
-                          First-Half
-                        </Radio>
-                        <Radio
-                          value="second-half"
-                          disabled={secondHalfSelected}
+                    leaveType === 'Sick Leave') &&
+                    calendarClicked || readOnly) && (
+                      <Form.Item
+                        {...formItemLayout}
+                        label="Leave Interval"
+                        name="halfDay"
+                        rules={[{required: true, message: 'Required!'}]}
+                      >
+                        <Select
+                          showSearch
+                          filterOption={filterOptions}
+                          placeholder="Select Duration"
+                          style={{width: '100%'}}
+                          disabled={readOnly}
                         >
-                          Second-Half
-                        </Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                  )}
+                          {leaveInterval?.map((type, index) => (
+                            <Option
+                              value={type?.value}
+                              key={index}
+                              disabled={disableInterval(index)}
+                            >
+                              {type?.name}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    )}
                 </Col>
                 <Col span={6} xs={24} sm={12}>
                   {showWorker && (
@@ -433,16 +562,19 @@ function LeaveModal({
                   <Form.Item
                     {...formItemLayout}
                     name="leaveDatesCasual"
-                    label="Select Leave Date"
+                    label={!readOnly && 'Select Leave Date'}
                     rules={[{required: true, message: 'Required!'}]}
                   >
                     <Calendar
                       className={darkCalendar ? 'bg-dark' : 'null'}
+                      buttons={readOnly ? false : true}
+                      onChange={calendarClickHandler}
                       numberOfMonths={1}
                       disableMonthPicker
                       disableYearPicker
                       weekStartDayIndex={1}
                       multiple
+                      disabled={readOnly}
                       minDate={
                         leaveType === 'Sick' ||
                         leaveType === 'Casual' ||
@@ -461,6 +593,21 @@ function LeaveModal({
                         )
                         let leaveAlreadyTakenDates =
                           filterHalfDayLeaves(leaveDate)
+                        const isLeaveTaken =
+                          readOnly &&
+                          form
+                            ?.getFieldValue('leaveDatesCasual')?.[0]
+                            ?.split('-')
+                            ?.join('/')
+                            ?.split('T')?.[0] === leaveDate?.[0]?.date
+                        if (readOnly && !isLeaveTaken) {
+                          return {
+                            disabled: true,
+                            style: {
+                              color: '#ccc',
+                            },
+                          }
+                        }
                         if (isWeekend || isHoliday || leaveAlreadyTakenDates)
                           return {
                             disabled: true,
@@ -481,21 +628,6 @@ function LeaveModal({
                                 notification({message: `Leave already taken`})
                             },
                           }
-                        else {
-                          return {
-                            onClick: () => {
-                              setFirstHalfSelected(
-                                specifyParticularHalf(leaveDate) ===
-                                  'first-half'
-                              )
-
-                              setSecondHalfSelected(
-                                specifyParticularHalf(leaveDate) ===
-                                  'second-half'
-                              )
-                            },
-                          }
-                        }
                       }}
                       // disabled={readOnly}
                     />

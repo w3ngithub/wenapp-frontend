@@ -21,6 +21,7 @@ import {
   deleteTimeLog,
   getAllTimeLogs,
   getLogTypes,
+  getTodayTimeLogSummary,
   updateTimeLog,
 } from 'services/timeLogs'
 import LogsBreadCumb from './LogsBreadCumb'
@@ -32,8 +33,8 @@ import {LOCALSTORAGE_USER} from 'constants/Settings'
 const Option = Select.Option
 const FormItem = Form.Item
 
-const formattedLogs = logs => {
-  return logs?.map(log => ({
+const formattedLogs = (logs) => {
+  return logs?.map((log) => ({
     ...log,
     key: log?._id,
     logType: log?.logType?.name,
@@ -86,9 +87,13 @@ function ProjectLogs() {
       }),
     {keepPreviousData: true}
   )
+  const {data: todayTimeSpent, isLoading: todayLoading} = useQuery(
+    ['userTodayTimeSpent'],
+    getTodayTimeLogSummary
+  )
 
-  const addLogTimeMutation = useMutation(details => addLogTime(details), {
-    onSuccess: response =>
+  const addLogTimeMutation = useMutation((details) => addLogTime(details), {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Added time log successfully',
@@ -107,28 +112,31 @@ function ProjectLogs() {
       }),
   })
 
-  const UpdateLogTimeMutation = useMutation(details => updateTimeLog(details), {
-    onSuccess: response =>
-      handleResponse(
-        response,
-        'Updated time log successfully',
-        'Could not update time log',
-        [
-          () => queryClient.invalidateQueries(['timeLogs']),
-          () => queryClient.invalidateQueries(['singleProject']),
-          () => handleCloseTimelogModal(),
-        ]
-      ),
+  const UpdateLogTimeMutation = useMutation(
+    (details) => updateTimeLog(details),
+    {
+      onSuccess: (response) =>
+        handleResponse(
+          response,
+          'Updated time log successfully',
+          'Could not update time log',
+          [
+            () => queryClient.invalidateQueries(['timeLogs']),
+            () => queryClient.invalidateQueries(['singleProject']),
+            () => handleCloseTimelogModal(),
+          ]
+        ),
 
-    onError: () =>
-      notification({
-        message: 'Could not update time log!',
-        type: 'error',
-      }),
-  })
+      onError: () =>
+        notification({
+          message: 'Could not update time log!',
+          type: 'error',
+        }),
+    }
+  )
 
-  const deleteLogMutation = useMutation(logId => deleteTimeLog(logId), {
-    onSuccess: response =>
+  const deleteLogMutation = useMutation((logId) => deleteTimeLog(logId), {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Deleted successfully',
@@ -150,19 +158,19 @@ function ProjectLogs() {
     setSort(sorter)
   }
 
-  const handlePageChange = pageNumber => {
-    setPage(prev => ({...prev, page: pageNumber}))
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage(prev => ({...page, limit: pageSize}))
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
-  const handlelogTypeChange = log => {
+  const handlelogTypeChange = (log) => {
     setLogType(log)
   }
 
-  const handleAuthorChange = logAuthor => {
+  const handleAuthorChange = (logAuthor) => {
     setAuthor(logAuthor)
   }
 
@@ -171,13 +179,9 @@ function ProjectLogs() {
     setAuthor(undefined)
   }
 
-  const handleOpenAddModal = () => {
-    setOpenModal(true)
-  }
-
-  const handleOpenEditModal = log => {
+  const handleOpenEditModal = (log) => {
     const originalTimelog = logTimeDetails?.data?.data?.data.find(
-      project => project.id === log.id
+      (project) => project.id === log.id
     )
     setTimelogToUpdate({
       ...log,
@@ -195,7 +199,7 @@ function ProjectLogs() {
     setIsEditMode(false)
   }
 
-  const confirmDelete = log => {
+  const confirmDelete = (log) => {
     deleteLogMutation.mutate(log._id)
   }
 
@@ -238,6 +242,10 @@ function ProjectLogs() {
     ...(qa ?? []),
   ]
 
+  const handleOpenModal = () => {
+    setOpenModal(true)
+  }
+
   if (timelogLoading) {
     return <CircularProgress />
   }
@@ -277,7 +285,7 @@ function ProjectLogs() {
                   value={logType}
                 >
                   {logTypes &&
-                    logTypes.data?.data?.data?.map(type => (
+                    logTypes.data?.data?.data?.map((type) => (
                       <Option value={type._id} key={type._id}>
                         {type.name}
                       </Option>
@@ -293,7 +301,7 @@ function ProjectLogs() {
                   value={author}
                 >
                   {LogAuthors &&
-                    LogAuthors?.map(status => (
+                    LogAuthors?.map((status) => (
                       <Option value={status._id} key={status._id}>
                         {status.name}
                       </Option>
@@ -310,11 +318,11 @@ function ProjectLogs() {
                 </Button>
               </FormItem>
             </Form>
-            <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}>
+            <AccessWrapper noAccessRoles={[]}>
               {' '}
               <Button
                 className="gx-btn gx-btn-primary gx-text-white "
-                onClick={handleOpenAddModal}
+                onClick={handleOpenModal}
                 style={{marginBottom: '16px'}}
               >
                 Add New TimeLog

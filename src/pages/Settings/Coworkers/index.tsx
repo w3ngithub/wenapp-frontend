@@ -7,7 +7,7 @@ import {
   inviteUsers,
 } from 'services/settings/coworkers/inviteUser'
 import {INVITED_EMPLOYEES_COLUMN, POSITION_COLUMN} from 'constants/Settings'
-import {handleResponse} from 'helpers/utils'
+import {capitalizeInput, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonModal from '../CommonModal'
 import {
@@ -247,6 +247,8 @@ function Coworkers() {
   }
 
   const handleAddClick = (input: string) => {
+    input = capitalizeInput(input)
+
     if (type === types.POSITION) addPositionMutation.mutate({name: input})
 
     if (type === types.POSITION_TYPE)
@@ -257,6 +259,7 @@ function Coworkers() {
   }
 
   const handleEditClick = (input: any) => {
+    input = capitalizeInput(input)
     if (type === types.POSITION)
       editPositionMutation.mutate({id: dataToEdit?._id, name: input})
 
@@ -343,7 +346,7 @@ function Coworkers() {
                               if (!emailRegex.test(item.trim())) {
                                 throw new Error('Please enter a valid email.')
                               }
-                              if (item.split('@')[1] !== officeDomain) {
+                              if (item.split('@')[1].trim() !== officeDomain) {
                                 throw new Error(
                                   'Please use email provided by the organization.'
                                 )

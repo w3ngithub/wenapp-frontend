@@ -284,3 +284,8 @@ export const weeklyState = [moment().startOf('week'), moment().endOf('day')]
 export const monthlyState = [moment().startOf('month'), moment().endOf('month')]
 
 export {ATTENDANCE_COLUMNS, attendanceFilter, LATE_ATTENDANCE_COLUMNS}
+
+export const leaveCutStatus = [
+  {id: '1', value: 'Leave Not Cut '},
+  {id: '2', value: 'Leave Cut '},
+]

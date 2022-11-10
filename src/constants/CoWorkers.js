@@ -15,9 +15,7 @@ const CO_WORKERCOLUMNS = (
     dataIndex: 'name',
     key: 'name',
     width: 150,
-    sorter: (a, b) => {
-      return a.name.toString().localeCompare(b.name.toString())
-    },
+    sorter: true,
     sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
   },
   {
@@ -25,7 +23,7 @@ const CO_WORKERCOLUMNS = (
     dataIndex: 'email',
     key: 'email',
     width: 250,
-    sorter: (a, b) => a.email.toString().localeCompare(b.email.toString()),
+    sorter: true,
     sortOrder: sortedInfo.columnKey === 'email' && sortedInfo.order,
   },
   {
@@ -39,7 +37,7 @@ const CO_WORKERCOLUMNS = (
     dataIndex: 'dob',
     width: 150,
     key: 'dob',
-    sorter: (a, b) => new Date(a.dob) - new Date(b.dob),
+    sorter: true,
     sortOrder: sortedInfo.columnKey === 'dob' && sortedInfo.order,
   },
   {
@@ -47,7 +45,7 @@ const CO_WORKERCOLUMNS = (
     dataIndex: 'joinDate',
     width: 150,
     key: 'joinDate',
-    sorter: (a, b) => new Date(a.joinDate) - new Date(b.joinDate),
+    sorter: true,
     sortOrder: sortedInfo.columnKey === 'joinDate' && sortedInfo.order,
   },
   {

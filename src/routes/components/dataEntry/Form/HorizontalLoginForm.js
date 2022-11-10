@@ -43,7 +43,7 @@ class HorizontalLoginForm extends Component {
         >
           <FormItem>
             {getFieldDecorator('email', {
-              rules: [{required: true, message: 'Please input your email!'}],
+              rules: [{required: true, message: 'Please enter your email!'}],
             })(
               <Input
                 prefix={<UserOutlined style={{color: 'rgba(0,0,0,.25)'}} />}
@@ -53,7 +53,7 @@ class HorizontalLoginForm extends Component {
           </FormItem>
           <FormItem>
             {getFieldDecorator('password', {
-              rules: [{required: true, message: 'Please input your Password!'}],
+              rules: [{required: true, message: 'Please enter your Password!'}],
             })(
               <Input
                 prefix={<LockOutlined style={{color: 'rgba(0,0,0,.25)'}} />}

@@ -39,3 +39,6 @@ export const GET_USER_ATTENDANCE = 'GET_USER_ATTENDACE'
 export const GET_USER_ATTENDANCE_ERROR = 'GET_USER_ATTENDACE_ERROR'
 export const PUNCH_IN = 'Punch In'
 export const PUNCH_OUT = 'Punch Out'
+
+//User Profile
+export const GET_USER_PROFILE = 'GET_USER_PROFILE'

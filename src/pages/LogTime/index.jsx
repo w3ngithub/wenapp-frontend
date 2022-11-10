@@ -55,12 +55,17 @@ function LogTime() {
     isLoading: timelogLoading,
     isFetching: timeLogFetching,
   } = useQuery(
-    ['UsertimeLogs', page, _id],
+    ['UsertimeLogs', page, _id,sort],
     () =>
       getWeeklyTimeLogs({
         ...page,
         user: _id,
-        sort: '-logDate',
+        sort: 
+        sort.order === undefined
+            ? '-logDate'
+            : sort.order === 'ascend'
+            ? sort.field
+            : `-${sort.field}`
       }),
     {keepPreviousData: true}
   )
@@ -146,10 +151,6 @@ function LogTime() {
     deleteLogMutation.mutate(log._id)
   }
 
-  const handleOpenAddModal = () => {
-    setOpenModal(true)
-  }
-
   const handleOpenEditModal = (log) => {
     const originalTimelog = logTimeDetails?.data?.data?.data.find(
       (project) => project.id === log.id
@@ -171,6 +172,10 @@ function LogTime() {
     setIsEditMode(false)
   }
 
+  const handleOpenModal = () => {
+      setOpenModal(true)
+  }
+
   const handleLogTypeSubmit = (newLogtime) => {
     const formattedNewLogtime = {
       ...newLogtime,
@@ -179,7 +184,6 @@ function LogTime() {
       minutes: +newLogtime.minutes,
       user: getLocalStorageData(LOCALSTORAGE_USER)._id,
     }
-
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
         id: formattedNewLogtime.id,
@@ -229,7 +233,7 @@ function LogTime() {
           <div className="gx-d-flex gx-justify-content-between gx-flex-row">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
-              onClick={handleOpenAddModal}
+              onClick={handleOpenModal}
             >
               Add New Log Time
             </Button>
@@ -252,7 +256,7 @@ function LogTime() {
             showSizeChanger: true,
             total: logTimeDetails?.data?.data?.count || 1,
             onShowSizeChange,
-            hideOnSinglePage : logTimeDetails?.data?.data?.count ? false : true,
+            hideOnSinglePage: logTimeDetails?.data?.data?.count ? false : true,
             onChange: handlePageChange,
           }}
           loading={

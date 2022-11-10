@@ -16,7 +16,6 @@ const FormItem = Form.Item
 let screenWidth:number;
 
 const formattedWorkLogReport: any = (logs: any) => {
-  console.log('logs', logs);
   return logs?.map((log: any) => ({
     ...log,
     user: log?._id?.[0]?.name,
@@ -72,8 +71,8 @@ function WorkLogReport() {
         user,
         project,
         logType,
-        fromDate: date?.[0] ? moment.utc(date[0]).format() : '',
-        toDate: date?.[1] ? moment.utc(date[1]).format() : '',
+        fromDate: date?.[0] ? moment.utc(date[0]).format(): '',
+        toDate: date?.[1] ?  moment.utc(date[1]).format(): '',
       })
   )
 
@@ -94,7 +93,7 @@ function WorkLogReport() {
   )
 
   const handleChangeDate = (date: any[]) => {
-    setDate(date)
+    setDate([date[0],date[1].endOf('day')])
   }
 
   const handleLogTypeChange = (typeId: string) => {
@@ -136,7 +135,7 @@ function WorkLogReport() {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
             <FormItem>
-              <RangePicker handleChangeDate={handleChangeDate} date={date} />
+              <RangePicker handleChangeDate={handleChangeDate} date={date}/>
             </FormItem>
             <FormItem className="direct-form-item">
               <Select

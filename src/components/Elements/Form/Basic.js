@@ -43,7 +43,7 @@ class Basic extends Component {
             help={userNameError || ''}
           >
             {getFieldDecorator('userName', {
-              rules: [{required: true, message: 'Please input your username!'}],
+              rules: [{required: true, message: 'Please enter your username!'}],
             })(
               <Input
                 prefix={<UserOutlined style={{color: 'rgba(0,0,0,.25)'}} />}
@@ -56,7 +56,7 @@ class Basic extends Component {
             help={passwordError || ''}
           >
             {getFieldDecorator('password', {
-              rules: [{required: true, message: 'Please input your Password!'}],
+              rules: [{required: true, message: 'Please enter your Password!'}],
             })(
               <Input
                 prefix={<LockOutlined style={{color: 'rgba(0,0,0,.25)'}} />}

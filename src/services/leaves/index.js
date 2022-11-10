@@ -53,7 +53,7 @@ const getLeavesOfUser = async (
   status = '',
   date,
   page = 1,
-  limit = 10,
+  limit = 30,
   fromDate = '',
   toDate = ''
 ) => {

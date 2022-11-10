@@ -420,6 +420,15 @@ body.dark-theme {
     }
   }
 
+  & input#email:-webkit-autofill,
+   input#password:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 10px #5b656e inset; /* Change the color to your own background color */
+  box-shadow: 0 0 0 10px #5b656e inset;
+  &:focus {
+    box-shadow: 0 0 0 10px #5b656e inset !important;
+  }
+}
+
   & .@{class-prefix}-menu-horizontal {
     & .ant-menu-submenu:hover > .ant-menu-submenu-title,
     & .ant-menu-item-active > .ant-menu-submenu-title,
@@ -696,6 +705,12 @@ body.dark-theme {
         background: @dark-theme-secondary-color;
 }
 
+& .ant-breadcrumb-link{
+  color: @dark-theme-text-color;
+}
+& .ant-upload-list-item-name{
+  color: @dark-theme-text-color;
+}
 & .floating-label-fixed {
     position: absolute;
     top: -7px;
@@ -703,7 +718,7 @@ body.dark-theme {
     left: 14px;
     opacity: 1;
     font-size: 11px;
-    background:#fff;
+    background:@dark-theme-secondary-color;
     padding:0 5px;
     height:14px;
 }
@@ -1598,9 +1613,14 @@ body.dark-theme {
     }
   }
 
-  &.dark-theme .ant-menu-submenu-title:hover {
-    color: #fff;
+  & #email {
+    color: #000
   }
+
+  &.dark-theme .ant-menu-submenu-title:hover {
+    color: #000;
+  }
+  
 
   & .ant-input,
   & .ant-picker,
@@ -1694,11 +1714,11 @@ body.dark-theme {
     background: @dark-theme-component-background;
   }
 
-  .gx-app-login-wrap {
-    .ant-input-affix-wrapper {
-      background-color: white !important;
-    }
-  }
+  // .gx-app-login-wrap {
+  //   .ant-input-affix-wrapper {
+  //     background-color: white !important;
+  //   }
+  // }
 
   & .ant-input.@{class-prefix}-chat-textarea,
   & .ant-picker.@{class-prefix}-chat-textarea {
@@ -1723,7 +1743,8 @@ body.dark-theme {
   // }
 
   & .ant-modal .ant-upload-list-item-info .anticon-paper-clip {
-    color: @grey-8;
+    // color: @grey-8;
+    color: white
   }
 
   & .ant-mention {
@@ -2385,8 +2406,10 @@ body.dark-theme {
     }
 
     &-primary {
-      background-color: darken(@dark-theme-component-background, 8%) !important;
-      border-color: darken(@dark-theme-component-background, 8%) !important;
+      // background-color: darken(@dark-theme-component-background, 8%) !important;
+      // border-color: darken(@dark-theme-component-background, 8%) !important;
+      background-color: #13c2c2 !important;
+      border-color: #13c2c2 !important;
 
       &:hover,
       &:focus {

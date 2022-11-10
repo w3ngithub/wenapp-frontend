@@ -8,7 +8,6 @@ import {
   Select,
   Spin,
   Form,
-  Radio,
   DatePicker,
 } from 'antd'
 import {
@@ -36,6 +35,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
+import {leaveInterval} from 'constants/LeaveDuration'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -43,17 +43,37 @@ const Option = Select.Option
 
 function Apply({user}) {
   const [form] = Form.useForm()
+
   const queryClient = useQueryClient()
   const {themeType} = useSelector((state) => state.settings)
   const {innerWidth} = useWindowsSize()
-  const [firstHalfSelected, setFirstHalfSelected] = useState(false)
-  const [secondHalfSelected, setSecondHalfSelected] = useState(false)
+  const [specificHalf, setSpecificHalf] = useState(false)
+  const [halfLeaveApproved, setHalfLeaveApproved] = useState(false)
+  const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
+  const [calendarClicked, setCalendarClicked] = useState(false)
+
+  const date = new Date()
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
+  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+
+  const [fromDate, setFromDate] = useState(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+  const [toDate, setToDate] = useState(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+
+  const monthChangeHandler = (date) => {
+    const newMonthDate = new Date(date)
+    const firstDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth(), 1)
+    const lastDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth() + 1, 0)
+    setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`);
+    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`);
+  }
 
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const [leaveType, setLeaveType] = useState('')
 
-  const userLeavesQuery = useQuery(['userLeaves'], () => getLeavesOfUser(user))
+  const userLeavesQuery = useQuery(['userLeaves',fromDate,toDate], () =>
+    getLeavesOfUser(user, '', undefined, 1, 30,fromDate,toDate)
+  )
 
   const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
     getAllHolidays({sort: '-createdAt', limit: '1'})
@@ -102,6 +122,7 @@ function Apply({user}) {
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
       user: res.data.data.data.user,
+      leaveReason: res.data.data.data.reason,
     })
   }
 
@@ -112,6 +133,9 @@ function Apply({user}) {
   const handleFormReset = () => {
     form.resetFields()
     setLeaveType('')
+    setMultipleDatesSelected(false)
+    setHalfLeaveApproved(false)
+    setSpecificHalf(false)
   }
 
   const handleSubmit = () => {
@@ -119,7 +143,7 @@ function Apply({user}) {
       const leaveTypeName = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
       )?.value
-      //calculation for maternity, paternity, pto leaves
+      // calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
         leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
@@ -143,13 +167,15 @@ function Apply({user}) {
           leaveDates: appliedDate
             ? [appliedDateUTC, endDateUTC]
             : casualLeaveDaysUTC,
-          halfDay: values.halfDay,
+          halfDay:
+            values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
+              ? ''
+              : values?.halfDay,
           leaveStatus: appliedDate ? 'approved' : 'pending',
         })
       )
     })
   }
-
   let userLeaves = []
   const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays?.map(
     (holiday) => ({
@@ -175,9 +201,84 @@ function Apply({user}) {
     }
   })
 
+  const disableInterval = (index) => {
+    if (multipleDatesSelected && index !== 0) {
+      return true
+    } else {
+      if (index === 0 && halfLeaveApproved) {
+        return true
+      }
+      if (index === 1 && specificHalf === 'first-half') {
+        return true
+      }
+      if (index === 2 && specificHalf === 'second-half') {
+        return true
+      }
+      return false
+    }
+  }
+
+  const formFieldChanges = (values) => {
+    if (values?.hasOwnProperty('leaveDatesCasual')) {
+      if (values?.leaveDatesCasual?.length === 1) {
+        setMultipleDatesSelected(false)
+        const formattedDate = values?.leaveDatesCasual?.map((d) =>
+          MuiFormatDate(new Date(d))
+        )
+        const newDate = formattedDate?.[0]?.split('-')?.join('/')
+        let leaveDate = userLeaves?.filter((leave) => leave.date === newDate)
+        setHalfLeaveApproved(
+          specifyParticularHalf(leaveDate)?.halfLeaveApproved
+        )
+        setSpecificHalf(specifyParticularHalf(leaveDate)?.specificHalf)
+      } else if (values?.leaveDatesCasual?.length === 0) {
+        setHalfLeaveApproved(false)
+        setSpecificHalf(false)
+        setMultipleDatesSelected(false)
+      } else {
+        setMultipleDatesSelected(true)
+        setHalfLeaveApproved(false)
+      }
+    }
+  }
+
+  const calendarClickHandler = () => {
+    const selectedDates = form?.getFieldValue('leaveDatesCasual')
+    if (selectedDates?.length > 0) {
+      setCalendarClicked(true)
+      if (selectedDates?.length > 1) {
+        form.setFieldValue('halfDay', 'full-day')
+      }
+      if (selectedDates?.length === 1) {
+        const formattedDate = selectedDates?.map((d) =>
+          MuiFormatDate(new Date(d))
+        )
+        let leaveDate = userLeaves?.filter(
+          (leave) => leave.date === formattedDate?.[0]?.split('-')?.join('/')
+        )
+        let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
+        if (specificHalf === 'first-half') {
+          form.setFieldValue('halfDay', 'second-half')
+        } else if (specificHalf === 'second-half') {
+          form.setFieldValue('halfDay', 'first-half')
+        } else {
+          form.setFieldValue('halfDay', 'full-day')
+        }
+      }
+    } else {
+      setCalendarClicked(false)
+    }
+  }
+
+
   return (
     <Spin spinning={leaveMutation.isLoading}>
-      <Form layout="vertical" style={{padding: '15px 0'}} form={form}>
+      <Form
+        layout="vertical"
+        style={{padding: '15px 0'}}
+        form={form}
+        onValuesChange={(allValues) => formFieldChanges(allValues)}
+      >
         <Row type="flex">
           {!immediateApprovalLeaveTypes.includes(leaveType) && (
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
@@ -188,9 +289,11 @@ function Apply({user}) {
               >
                 <Calendar
                   className={darkCalendar ? 'bg-dark' : 'null'}
+                  onChange={calendarClickHandler}
                   numberOfMonths={1}
                   disableMonthPicker
                   disableYearPicker
+                  onMonthChange={(date)=>monthChangeHandler(date)}
                   weekStartDayIndex={1}
                   multiple
                   minDate={
@@ -198,7 +301,7 @@ function Apply({user}) {
                       ? new DateObject().subtract(2, 'months')
                       : new Date()
                   }
-                  mapDays={({date, today}) => {
+                  mapDays={({date, today, selectedDate}) => {
                     let isWeekend = [0, 6].includes(date.weekDay.index)
                     let holidayList = holidaysThisYear?.filter(
                       (holiday) => date.format() === holiday?.date
@@ -228,19 +331,6 @@ function Apply({user}) {
                             notification({message: `Leave already taken`})
                         },
                       }
-                    else {
-                      return {
-                        onClick: () => {
-                          setFirstHalfSelected(
-                            specifyParticularHalf(leaveDate) === 'first-half'
-                          )
-
-                          setSecondHalfSelected(
-                            specifyParticularHalf(leaveDate) === 'second-half'
-                          )
-                        },
-                      }
-                    }
                   }}
                 />
               </FormItem>
@@ -288,18 +378,31 @@ function Apply({user}) {
                     )}
                   </Select>
                 </FormItem>
-                {(leaveType === 'Casual' || leaveType === 'Sick') && (
-                  <FormItem label="Half Leave" name="halfDay">
-                    <Radio.Group>
-                      <Radio value="first-half" disabled={firstHalfSelected}>
-                        First-Half
-                      </Radio>
-                      <Radio value="second-half" disabled={secondHalfSelected}>
-                        Second-Half
-                      </Radio>
-                    </Radio.Group>
-                  </FormItem>
-                )}
+                {(leaveType === 'Casual' || leaveType === 'Sick') &&
+                  calendarClicked && (
+                    <FormItem
+                      label="Leave Interval"
+                      name="halfDay"
+                      rules={[{required: true, message: 'Required!'}]}
+                    >
+                      <Select
+                        showSearch
+                        filterOption={filterOptions}
+                        placeholder="Select Duration"
+                        style={{width: '100%'}}
+                      >
+                        {leaveInterval?.map((type, index) => (
+                          <Option
+                            value={type?.value}
+                            key={index}
+                            disabled={disableInterval(index)}
+                          >
+                            {type?.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </FormItem>
+                  )}
               </Col>
               {immediateApprovalLeaveTypes.includes(leaveType) && (
                 <Col
