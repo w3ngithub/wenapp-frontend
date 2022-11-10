@@ -347,12 +347,31 @@ export const filterHalfDayLeaves = (leaves) => {
   return false
 }
 
+export const pendingLeaves = (leaves) => {
+  const pendingLeaves = leaves.filter(
+    (leave) => leave.leaveStatus === 'pending'
+  )
+  if (pendingLeaves.length === 1 && pendingLeaves[0]?.isHalfDay === '') {
+    return true
+  }
+  if (pendingLeaves.length === 2) {
+    return true
+  }
+}
+
 export const specifyParticularHalf = (leaves) => {
+  // console.log('to disable halves', leaves);
   const approvedLeaves = leaves.filter(
     (leave) => leave.leaveStatus === 'approved'
   )
   if (approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay !== '') {
     return {specificHalf: approvedLeaves[0]?.isHalfDay, halfLeaveApproved: true}
+  }
+  const pendingLeaves = leaves.filter(
+    (leave) => leave.leaveStatus === 'pending'
+  )
+  if (pendingLeaves.length === 1 && pendingLeaves[0]?.isHalfDay !== '') {
+    return {specificHalf: pendingLeaves[0]?.isHalfDay, halfLeavePending: true}
   }
 }
 
@@ -408,9 +427,11 @@ export const checkIfTimeISBetweenOfficeHour = () => {
   return now > startTime1 && now < endTime2
 }
 
-
-export function capitalizeInput(input){
-    input = input.toLowerCase().split(" ").map((s)=>s.charAt(0).toUpperCase() + s.slice(1))
-    input = input.join(" ")
-    return input
+export function capitalizeInput(input) {
+  input = input
+    .toLowerCase()
+    .split(' ')
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+  input = input.join(' ')
+  return input
 }
