@@ -66,7 +66,7 @@ function NoticeBoardPage() {
         startDate: date?.[0] ? moment.utc(date[0]).format() : '',
         endDate: date?.[1] ? moment.utc(date[1]).format() : '',
         sort:
-          sort.order === undefined
+          sort.order === undefined || sort.column === undefined
             ? ''
             : sort.order === 'ascend'
             ? sort.field

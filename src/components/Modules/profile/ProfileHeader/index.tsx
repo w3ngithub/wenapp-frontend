@@ -11,8 +11,8 @@ const ProfileHeader = ({
 }) => {
   const initials = user?.name?.split(' ')
   let finalInitials = ''
-  initials.forEach((a)=>{
-    finalInitials = finalInitials+a[0].toUpperCase()
+  initials?.forEach((a) => {
+    finalInitials = finalInitials + a[0].toUpperCase()
   })
   return (
     <div className="gx-profile-banner">
@@ -26,7 +26,11 @@ const ProfileHeader = ({
                 style={
                   user?.photoURL
                     ? {}
-                    : { color: '#f56a00', backgroundColor: '#fde3cf',fontSize:"30px"}
+                    : {
+                        color: '#f56a00',
+                        backgroundColor: '#fde3cf',
+                        fontSize: '30px',
+                      }
                 }
                 src={user?.photoURL}
               >

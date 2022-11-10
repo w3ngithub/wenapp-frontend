@@ -61,7 +61,7 @@ function LogTime() {
         ...page,
         user: _id,
         sort: 
-        sort.order === undefined
+        sort.order === undefined || sort.column === undefined
             ? '-logDate'
             : sort.order === 'ascend'
             ? sort.field
