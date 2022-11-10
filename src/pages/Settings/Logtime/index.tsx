@@ -9,7 +9,7 @@ import {
   editLogType,
   getLogtypes,
 } from 'services/settings/logTime'
-import {handleResponse} from 'helpers/utils'
+import {capitalizeInput, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonModal from '../CommonModal'
 
@@ -71,10 +71,12 @@ function Logtime() {
   })
 
   const handleAddClick = (input: string) => {
+    input = capitalizeInput(input)
     addLogTypeMutation.mutate({name: input})
   }
 
   const handleEditClick = (input: any) => {
+    input = capitalizeInput(input)
     editLogTypeMutation.mutate({id: dataToEdit?._id, name: input})
   }
 

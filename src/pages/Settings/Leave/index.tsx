@@ -9,7 +9,7 @@ import {
   editLeaveType,
   getLeaveTypes,
 } from 'services/settings/leaveType'
-import {changeDate, handleResponse} from 'helpers/utils'
+import {capitalizeInput, changeDate, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import LeaveModal from './LeaveModal'
 import {
@@ -152,10 +152,12 @@ function Leave() {
   })
 
   const handleAddClick = (leave: leaveType) => {
+    leave = {...leave,name:capitalizeInput(leave?.name)}
     addLeaveTypeMutation.mutate(leave)
   }
 
   const handleEditClick = (leave: leaveType) => {
+    leave = {...leave,name:capitalizeInput(leave?.name)}
     editLeaveTypeMutation.mutate({id: dataToEdit?._id, leave})
   }
 

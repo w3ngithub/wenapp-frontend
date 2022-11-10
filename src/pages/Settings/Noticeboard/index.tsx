@@ -9,7 +9,7 @@ import {
   editNoticeboardType,
   getNoticeboardTypes,
 } from 'services/settings/noticeBoard'
-import {handleResponse} from 'helpers/utils'
+import {capitalizeInput, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonModal from '../CommonModal'
 
@@ -82,11 +82,11 @@ function Noticeboard() {
   })
 
   const handleAddClick = (input: string) => {
-    addNoticeboardTypeMutation.mutate({name: input})
+    addNoticeboardTypeMutation.mutate({name: capitalizeInput(input)})
   }
 
   const handleEditClick = (input: any) => {
-    editNoticeboardTypeMutation.mutate({id: dataToEdit?._id, name: input})
+    editNoticeboardTypeMutation.mutate({id: dataToEdit?._id, name: capitalizeInput(input)})
   }
 
   const handleDeleteClick = (data: any, type: string) => {

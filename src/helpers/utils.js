@@ -407,3 +407,10 @@ export const checkIfTimeISBetweenOfficeHour = () => {
   )
   return now > startTime1 && now < endTime2
 }
+
+
+export function capitalizeInput(input){
+    input = input.toLowerCase().split(" ").map((s)=>s.charAt(0).toUpperCase() + s.slice(1))
+    input = input.join(" ")
+    return input
+}
