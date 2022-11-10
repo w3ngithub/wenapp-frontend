@@ -24,6 +24,7 @@ function PunchInOut() {
   const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
 
   const [toogle, setToogle] = useState(false)
+  const [disableButton,setdisableButton] = useState(false)
   const queryClient = useQueryClient()
   const dispatch: Dispatch<any> = useDispatch()
   const reduxuserAttendance = useSelector((state: any) => state.attendance)
@@ -89,6 +90,7 @@ function PunchInOut() {
       setToogle(true)
       return
     }
+    setdisableButton(true)
     const location = await getLocation()
     if (await checkLocationPermission()) {
       if (!punchIn) {
@@ -117,6 +119,7 @@ function PunchInOut() {
         type: 'error',
       })
     }
+    setdisableButton(false)
   }
 
   return (
@@ -145,7 +148,7 @@ function PunchInOut() {
         disabled={
           addAttendances.isLoading ||
           punchOutAttendances.isLoading ||
-          latestAttendance?.length === 0
+          latestAttendance?.length === 0 || disableButton
         }
         style={{width: '200px'}}
       >
