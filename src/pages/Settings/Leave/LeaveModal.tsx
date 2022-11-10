@@ -26,6 +26,7 @@ function LeaveModal({
   const [form] = Form.useForm()
 
   const handleSubmit = () => {
+    console.log("Submitting");
     form.validateFields().then((values) => onSubmit(form.getFieldsValue()))
   }
 

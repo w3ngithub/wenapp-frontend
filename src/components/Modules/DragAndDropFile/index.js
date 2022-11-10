@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {InboxOutlined} from '@ant-design/icons'
 import {Upload, Modal} from 'antd'
+import { notification } from 'helpers/notification'
 
 const Dragger = Upload.Dragger
 
@@ -66,7 +67,13 @@ function DragAndDropFile({
   return (
     <>
       <Dragger
-        beforeUpload={(file) => false}
+        beforeUpload={(file) => {
+          const isLt3M = file.size /1024/1024 < 3
+          if(!isLt3M){
+            notification({message:'Cannot Upload size of above 3MB '})
+          }
+          return isLt3M || Upload.LIST_IGNORE
+        }}
         listType={displayType}
         onPreview={
           (displayType === 'picture-card' || displayType === 'picture') &&

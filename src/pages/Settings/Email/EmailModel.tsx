@@ -103,17 +103,19 @@ function EmailModal({
               // onChange={handleInputChange}
             />
           </Form.Item>
-          <Form.Item
-            name="module"
-            label="Module"
-            rules={[{required: true, message: 'Required!'}]}
-          >
-            <Input
-              // value={editData?.title ?? ""}
-              placeholder={`Enter Email Module`}
-              // onChange={handleInputChange}
-            />
-          </Form.Item>
+          {!isEditMode && (
+            <Form.Item
+              name="module"
+              label="Module"
+              rules={[{required: true, message: 'Required!'}]}
+            >
+              <Input
+                // value={editData?.title ?? ""}
+                placeholder={`Enter Email Module`}
+                // onChange={handleInputChange}
+              />
+            </Form.Item>
+          )}
           <Form.Item name="body" label="Description">
             <Editor
               editorStyle={{

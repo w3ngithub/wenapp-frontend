@@ -1,13 +1,11 @@
 import React, {useState} from 'react'
 import {Card, Table} from 'antd'
-import {WalletOutlined} from '@ant-design/icons'
 import {OVERVIEW_LEAVES} from 'constants/Overview'
 import {changeDate} from 'helpers/utils'
 import {LEAVES_TYPES} from 'constants/Leaves'
 
 const formattedLeaves = (leaves: any[]) => {
-  console.log('leaves', leaves);
-  return leaves?.map(leave => ({
+  return leaves?.map((leave) => ({
     ...leave,
     key: leave?._id,
     name: leave?.user[0]?.name,
@@ -28,7 +26,9 @@ const formattedLeaves = (leaves: any[]) => {
         : leave.leaveDates.length > 1
         ? leave.leaveDates.length + ' Days'
         : leave.halfDay
-        ? (leave.halfDay === 'first-half' ? 'First Half' : 'Second Half')
+        ? leave.halfDay === 'first-half'
+          ? 'First Half'
+          : 'Second Half'
         : '1 Day',
   }))
 }
@@ -40,14 +40,7 @@ function LeaveEmployee({leaves}: {leaves: any[]}) {
     setSort(sorter)
   }
   return (
-    <Card
-      title={
-        <h3>
-          <WalletOutlined />
-          <span className="gx-ml-3">Co-workers on leave</span>
-        </h3>
-      }
-    >
+    <Card title={''}>
       <Table
         className="gx-table-responsive"
         columns={OVERVIEW_LEAVES(sort)}

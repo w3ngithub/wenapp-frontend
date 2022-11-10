@@ -44,7 +44,8 @@ function InviteUserSignup(props) {
 
         const updatedUser = {
           ...values,
-          email:values?.email?.trim(),
+          email:values?.emails?.trim(),
+          password:values?.passwords,
           dob: moment.utc(values.dob._d).format(),
           joinDate: moment.utc(values.joinDate._d).format(),
           primaryPhone: +values.primaryPhone,
@@ -82,7 +83,7 @@ function InviteUserSignup(props) {
                 {...formItemLayout}
                 label="Email"
                 hasFeedback
-                name="email"
+                name="emails"
                 rules={[
                   {
                     required: true,
@@ -93,7 +94,7 @@ function InviteUserSignup(props) {
                           throw new Error('Please enter a valid email.')
                         }
 
-                        if (value.split('@')[1] !== officeDomain) {
+                        if (value.split('@')[1]?.trim() !== officeDomain) {
                           throw new Error('Please use the email provided by office.')
                         }
 
@@ -105,6 +106,7 @@ function InviteUserSignup(props) {
                 ]}
               >
                 <Input placeholder="Enter Email" />
+
               </FormItem>
               <FormItem {...formItemLayout} label="Profile Photo">
                 <DragAndDropFile
@@ -159,12 +161,12 @@ function InviteUserSignup(props) {
                 hasFeedback
                 name="primaryPhone"
                 rules={[
-                  {
+                  { required:true,
                     whitespace:true,
                     validator: async (rule, value) => {
                       try {
                         if(!value){
-                          throw new Error('Phone number is required.')
+                          throw new Error('Phone number is required.(Enter numbers only)')
                         }
                         if (value < 0) {
                           throw new Error('Please do not enter negative numbers.')
@@ -190,6 +192,9 @@ function InviteUserSignup(props) {
                   { whitespace:true,
                     validator: async (rule, value) => {
                       try {
+                        if(!value){
+                          return
+                        }
                         if (value < 0) {
                           throw new Error('Please do not enter negative numbers.')
                         }
@@ -248,7 +253,7 @@ function InviteUserSignup(props) {
                 {...formItemLayout}
                 label="Password"
                 hasFeedback
-                name="password"
+                name="passwords"
                 rules={[
                   {
                     required: true,

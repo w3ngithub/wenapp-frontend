@@ -221,7 +221,7 @@ function TmsAdminAttendanceForm({
               >
                 <TimePicker use12Hours format="h:mm:ss A" />
               </Form.Item>
-              <Form.Item label="Punch In Note bob" name="punchInNote" hasFeedback
+              <Form.Item label="Punch In Note" name="punchInNote" hasFeedback
           >
 
                 <Input.TextArea rows={5} />

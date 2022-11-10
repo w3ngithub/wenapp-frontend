@@ -42,7 +42,10 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {DASHBOARD_PROJECT_LOG_NO_ACCESS} from 'constants/RoleAccess'
+import {
+  DASHBOARD_ICON_ACCESS,
+  DASHBOARD_PROJECT_LOG_NO_ACCESS,
+} from 'constants/RoleAccess'
 import {LEAVES_TYPES} from 'constants/Leaves'
 
 const FormItem = Form.Item
@@ -112,8 +115,8 @@ const Dashboard = () => {
     ['DashBoardleaves'],
     () => getWeekRangeLeaves(),
     {
-      onError: err => console.log(err),
-      select: res => {
+      onError: (err) => console.log(err),
+      select: (res) => {
         let updateLeaves: any[] = []
 
         res?.data?.data?.users?.forEach((leave: any) => {
@@ -132,7 +135,6 @@ const Dashboard = () => {
             const endLeaveDate = new Date(leave?.leaveDates[1])
             const todayDate = new Date(MuiFormatDate(new Date()))
             for (let i = 0; i < 8; i++) {
-
               const isHoliday =
                 startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
 
@@ -352,10 +354,7 @@ const Dashboard = () => {
     date: x?.leaveDates,
     startDate: x?.date,
     halfDay: x?.halfDay,
-    leaveType: x?.leaveType[0]
-      .split(' ')
-      .slice(0, 2)
-      .join(' '),
+    leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
     id: x?._id[0],
   }))
 
@@ -380,12 +379,14 @@ const Dashboard = () => {
     (x: any) => ({
       title: x.name,
       start: new Date(
-        `${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
-          1}/${new Date(x.dob).getDate()}`
+        `${new Date().getFullYear()}/${
+          new Date(x.dob).getMonth() + 1
+        }/${new Date(x.dob).getDate()}`
       ),
       end: new Date(
-        `${new Date().getFullYear()}/${new Date(x.dob).getMonth() +
-          1}/${new Date(x.dob).getDate()}`
+        `${new Date().getFullYear()}/${
+          new Date(x.dob).getMonth() + 1
+        }/${new Date(x.dob).getDate()}`
       ),
       type: 'birthday',
     })
@@ -398,8 +399,8 @@ const Dashboard = () => {
   ]
 
   const chartData = chartQuery?.data?.data?.data?.chart
-  const isAdmin = loggedInUser?.role?.value === 'Admin'
-  const width = isAdmin ? 6 : 8
+  const isAdmin = DASHBOARD_ICON_ACCESS.includes(key)
+  const width = isAdmin ? 6 : 12
 
   return (
     <Auxiliary>
@@ -418,21 +419,23 @@ const Dashboard = () => {
           />
         </Col>
 
-        <Col xl={width} lg={12} md={12} sm={12} xs={24}>
-          <TotalCountCard
-            isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
-            icon={LoginOutlined}
-            className="gx-bg-pink-purple-corner-gradient"
-            totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
-            label="Co-workers Punched In Today"
-            onClick={
-              loggedInUser?.role?.value !== 'Admin'
-                ? null
-                : () => navigate('/todays-overview')
-            }
-          />
-        </Col>
-        {isAdmin && (
+        {DASHBOARD_ICON_ACCESS.includes(key) && (
+          <Col xl={width} lg={12} md={12} sm={12} xs={24}>
+            <TotalCountCard
+              isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+              icon={LoginOutlined}
+              className="gx-bg-pink-purple-corner-gradient"
+              totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
+              label="Co-workers Punched In Today"
+              onClick={
+                loggedInUser?.role?.value !== 'Admin'
+                  ? null
+                  : () => navigate('/todays-overview')
+              }
+            />
+          </Col>
+        )}
+        {DASHBOARD_ICON_ACCESS.includes(key) && (
           <Col xl={6} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
               isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
@@ -556,14 +559,14 @@ const Dashboard = () => {
                         <CustomActiveShapePieChart
                           data={chartData?.map((x: any) => ({
                             name: x.logType[0].name,
-                            value: +x.timeSpent.toFixed(),
+                            value: +x.timeSpent,
                           }))}
                         />
                       ) : (
                         <TinyBarChart
                           data={chartData?.map((x: any) => ({
                             name: x.logType[0].name,
-                            time: x.timeSpent.toFixed(),
+                            time: x.timeSpent,
                           }))}
                         />
                       )}
