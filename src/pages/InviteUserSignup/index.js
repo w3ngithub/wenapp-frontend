@@ -9,8 +9,8 @@ import {handleResponse} from 'helpers/utils'
 import {useNavigate, useParams} from 'react-router-dom'
 import {SIGNIN} from 'helpers/routePath'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
-import { officeDomain } from 'constants/OfficeDomain'
-import { emailRegex } from 'constants/EmailTest'
+import {officeDomain} from 'constants/OfficeDomain'
+import {emailRegex} from 'constants/EmailTest'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -44,8 +44,8 @@ function InviteUserSignup(props) {
 
         const updatedUser = {
           ...values,
-          email:values?.emails?.trim(),
-          password:values?.passwords,
+          email: values?.emails?.trim(),
+          password: values?.passwords,
           dob: moment.utc(values.dob._d).format(),
           joinDate: moment.utc(values.joinDate._d).format(),
           primaryPhone: +values.primaryPhone,
@@ -90,14 +90,15 @@ function InviteUserSignup(props) {
                     validator: async (rule, value) => {
                       try {
                         if (!value) throw new Error('Required!')
-                        if(!emailRegex.test(value.trim())){
+                        if (!emailRegex.test(value.trim())) {
                           throw new Error('Please enter a valid email.')
                         }
 
                         if (value.split('@')[1]?.trim() !== officeDomain) {
-                          throw new Error('Please use the email provided by office.')
+                          throw new Error(
+                            'Please use the email provided by office.'
+                          )
                         }
-
                       } catch (err) {
                         throw new Error(err.message)
                       }
@@ -106,7 +107,6 @@ function InviteUserSignup(props) {
                 ]}
               >
                 <Input placeholder="Enter Email" />
-
               </FormItem>
               <FormItem {...formItemLayout} label="Profile Photo">
                 <DragAndDropFile
@@ -161,18 +161,23 @@ function InviteUserSignup(props) {
                 hasFeedback
                 name="primaryPhone"
                 rules={[
-                  { required:true,
-                    whitespace:true,
+                  {
+                    required: true,
+                    whitespace: true,
                     validator: async (rule, value) => {
                       try {
-                        if(!value){
-                          throw new Error('Phone number is required.(Enter numbers only)')
+                        if (!value) {
+                          throw new Error(
+                            'Phone number is required.(Enter numbers only)'
+                          )
                         }
                         if (value < 0) {
-                          throw new Error('Please do not enter negative numbers.')
+                          throw new Error(
+                            'Please do not enter negative numbers.'
+                          )
                         }
-    
-                        if(value - Math.floor(value) !== 0){
+
+                        if (value - Math.floor(value) !== 0) {
                           throw new Error('Please do not enter decimal values.')
                         }
                       } catch (err) {
@@ -189,17 +194,20 @@ function InviteUserSignup(props) {
                 label="Secondary Phone"
                 name="secondaryPhone"
                 rules={[
-                  { whitespace:true,
+                  {
+                    whitespace: true,
                     validator: async (rule, value) => {
                       try {
-                        if(!value){
+                        if (!value) {
                           return
                         }
                         if (value < 0) {
-                          throw new Error('Please do not enter negative numbers.')
+                          throw new Error(
+                            'Please do not enter negative numbers.'
+                          )
                         }
-    
-                        if(value - Math.floor(value) !== 0){
+
+                        if (value - Math.floor(value) !== 0) {
                           throw new Error('Please do not enter decimal values.')
                         }
                       } catch (err) {
@@ -278,7 +286,7 @@ function InviteUserSignup(props) {
                   {
                     message: 'Must match Password',
                     validator: (_, val) => {
-                      if (form.getFieldValue('password') === val || !val) {
+                      if (form.getFieldValue('passwords') === val || !val) {
                         return Promise.resolve()
                       } else {
                         return Promise.reject('Must match Password')
