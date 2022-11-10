@@ -117,7 +117,7 @@ function ProjectsPage() {
         designer,
         qa,
         sort:
-          sort.order === undefined
+          sort.order === undefined || sort.column === undefined
             ? ''
             : sort.order === 'ascend'
             ? sort.field
