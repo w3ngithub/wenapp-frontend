@@ -55,12 +55,17 @@ function LogTime() {
     isLoading: timelogLoading,
     isFetching: timeLogFetching,
   } = useQuery(
-    ['UsertimeLogs', page, _id],
+    ['UsertimeLogs', page, _id,sort],
     () =>
       getWeeklyTimeLogs({
         ...page,
         user: _id,
-        sort: '-logDate',
+        sort: 
+        sort.order === undefined
+            ? '-logDate'
+            : sort.order === 'ascend'
+            ? sort.field
+            : `-${sort.field}`
       }),
     {keepPreviousData: true}
   )

@@ -122,6 +122,7 @@ function Apply({user}) {
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
       user: res.data.data.data.user,
+      leaveReason: res.data.data.data.reason,
     })
   }
 
