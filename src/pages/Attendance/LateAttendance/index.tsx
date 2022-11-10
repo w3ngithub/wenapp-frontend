@@ -6,6 +6,7 @@ import {
   attendanceFilter,
   intialDate,
   LATE_ATTENDANCE_COLUMNS,
+  leaveCutStatus,
   monthlyState,
   weeklyState,
 } from 'constants/Attendance'
@@ -50,6 +51,7 @@ function LateAttendance({userRole}: {userRole: string}) {
   const [date, setDate] = useState(intialDate)
   const [user, setUser] = useState<undefined | string>(undefined)
   const [attFilter, setAttFilter] = useState({id: '1', value: 'Daily'})
+  const [leaveCut, setLeaveCut] = useState(leaveCutStatus[0].id)
 
   //init hooks
   const queryClient = useQueryClient()
@@ -63,10 +65,11 @@ function LateAttendance({userRole}: {userRole: string}) {
   const {data: leaveTypes} = useQuery(['leaveTypes'], getLeaveTypes)
 
   const {data, isFetching} = useQuery(
-    ['lateAttendaceAttendance', user, date, user],
+    ['lateAttendaceAttendance', user, date, user, leaveCut],
     () =>
       searchLateAttendacentOfUser({
         userId: user || '',
+        lateArrivalLeaveCut: leaveCut,
         fromDate: date?.[0] ? moment.utc(date[0]).format() : '',
         toDate: date?.[1] ? moment.utc(date[1]).format() : '',
       })
@@ -141,10 +144,15 @@ function LateAttendance({userRole}: {userRole: string}) {
     setUser(id)
   }
 
+  const handleLeaveCutStatusChange = (val: any) => {
+    setLeaveCut(val)
+  }
+
   const handleReset = () => {
     setUser(undefined)
     setAttFilter({id: '1', value: 'Daily'})
     setDate(intialDate)
+    setLeaveCut(leaveCutStatus[0].id)
   }
 
   const handleCutLeave = (record: any) => {
@@ -269,6 +277,14 @@ function LateAttendance({userRole}: {userRole: string}) {
                   id: x._id,
                   value: x.name,
                 }))}
+              />
+            </FormItem>
+            <FormItem className="direct-form-item">
+              <Select
+                placeholder="Select Leave Cut  Status"
+                onChange={handleLeaveCutStatusChange}
+                value={leaveCut}
+                options={leaveCutStatus}
               />
             </FormItem>
 

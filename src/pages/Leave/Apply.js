@@ -50,11 +50,10 @@ function Apply({user}) {
   const {innerWidth} = useWindowsSize()
   const [specificHalf, setSpecificHalf] = useState(false)
   const [formDate, setFromDate] = useState('')
-  const [toDate, setToDate] = useState('');
+  const [toDate, setToDate] = useState('')
   const [halfLeaveApproved, setHalfLeaveApproved] = useState(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
-  
 
   const darkCalendar = themeType === THEME_TYPE_DARK
 
@@ -109,6 +108,7 @@ function Apply({user}) {
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
       user: res.data.data.data.user,
+      leaveReason: res.data.data.data.reason,
     })
   }
 
@@ -245,9 +245,9 @@ function Apply({user}) {
         let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
         if (specificHalf === 'first-half') {
           form.setFieldValue('halfDay', 'second-half')
-        }else if(specificHalf === 'second-half'){
+        } else if (specificHalf === 'second-half') {
           form.setFieldValue('halfDay', 'first-half')
-        }else {
+        } else {
           form.setFieldValue('halfDay', 'full-day')
         }
       }
