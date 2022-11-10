@@ -30,7 +30,7 @@ const formattedNotices = (notices) => {
   return notices?.map((notice) => ({
     ...notice,
     key: notice._id,
-    category: notice.noticeType.name,
+    noticeType: notice.noticeType.name,
     startDate: notice.startDate ? changeDate(notice.startDate) : '',
     endDate: notice.endDate ? changeDate(notice.endDate) : '',
   }))
@@ -40,6 +40,7 @@ function NoticeBoardPage() {
   const location = useLocation()
   // init hooks
   const [sort, setSort] = useState({})
+  console.log(sort)
   const [title, setTitle] = useState('')
   const [typedNotice, setTypedNotice] = useState('')
   const [date, setDate] = useState(undefined)
@@ -57,13 +58,19 @@ function NoticeBoardPage() {
   } = getLocalStorageData(LOCALSTORAGE_USER)
 
   const {data, isLoading, isError, isFetching} = useQuery(
-    ['notices', page, title, date],
+    ['notices', page, title, date,sort],
     () =>
       getAllNotices({
         ...page,
         search: title,
         startDate: date?.[0] ? moment.utc(date[0]).format() : '',
         endDate: date?.[1] ? moment.utc(date[1]).format() : '',
+        sort:
+          sort.order === undefined || sort.column === undefined
+            ? ''
+            : sort.order === 'ascend'
+            ? sort.field
+            : `-${sort.field}`
       }),
     {keepPreviousData: true}
   )

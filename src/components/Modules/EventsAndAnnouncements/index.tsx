@@ -1,7 +1,14 @@
 import {Avatar, Timeline} from 'antd'
 import React from 'react'
 import ActivityItem from '../dashboard/CRM/ActivityItem'
-import {changeDate, dayCheck, oneWeekFilterCheck} from 'helpers/utils'
+import {
+  changeDate,
+  dayCheck,
+  getLocalStorageData,
+  oneWeekFilterCheck,
+} from 'helpers/utils'
+import {SALARY_REVIEW_ACCESS} from 'constants/RoleAccess'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const TimeLineItem = Timeline.Item
 
@@ -48,6 +55,9 @@ function EventsAndAnnouncements({
   birthdays: any[]
   salaryReview: any[]
 }) {
+  const {
+    role: {key},
+  } = getLocalStorageData(LOCALSTORAGE_USER)
   const announcementsData = announcements?.map((x: any) => ({
     id: x._id,
     name: x.title,
@@ -75,10 +85,12 @@ function EventsAndAnnouncements({
     Icon: 'important-o',
   }))
 
-  const sortedBirthdays = birthdays?.map((birthday: any) => {
-    const monthAndDay = birthday.dob.split('T')[0].split('-');
-    return {...birthday, monthDay : monthAndDay[1] + monthAndDay[2]}
-  })?.sort((a, b) => a?.monthDay > b?.monthDay ? 1 : -1  )
+  const sortedBirthdays = birthdays
+    ?.map((birthday: any) => {
+      const monthAndDay = birthday.dob.split('T')[0].split('-')
+      return {...birthday, monthDay: monthAndDay[1] + monthAndDay[2]}
+    })
+    ?.sort((a, b) => (a?.monthDay > b?.monthDay ? 1 : -1))
 
   const birthdayData = sortedBirthdays?.map((x: any) => ({
     id: x._id,
@@ -156,24 +168,34 @@ function EventsAndAnnouncements({
         holidaysData,
         birthdayData,
         SalaryReviewData,
-      })?.map((activity: any, index: number) => (
-        <div className="gx-timeline-info" key={'activity' + index}>
-          <div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3 gx-border-bottom gx-pb-2 ">
-            {/* <activity.Icon className="gx-fs-xxl" /> */}
-            {activity.Icon}
-            <h3 className=" gx-mb-1 ">{activity?.day}</h3>
+      })
+        ?.filter((data: any) => {
+          if (data?.day === 'Salary Review') {
+            if (SALARY_REVIEW_ACCESS.includes(key)) return true
+            else return false
+          } else return true
+        })
+        .map((activity: any, index: number) => (
+          <div className="gx-timeline-info" key={'activity' + index}>
+            <div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3 gx-border-bottom gx-pb-2 ">
+              {/* <activity.Icon className="gx-fs-xxl" /> */}
+              {activity.Icon}
+              <h3 className=" gx-mb-1 ">{activity?.day}</h3>
+            </div>
+            <Timeline>
+              {activity?.tasks?.map((task: any, index: number) => {
+                return (
+                  <TimeLineItem
+                    key={'timeline' + index}
+                    dot={getName(task, '')}
+                  >
+                    <ActivityItem task={task} />
+                  </TimeLineItem>
+                )
+              })}
+            </Timeline>
           </div>
-          <Timeline>
-            {activity?.tasks?.map((task: any, index: number) => {
-              return (
-                <TimeLineItem key={'timeline' + index} dot={getName(task, '')}>
-                  <ActivityItem task={task} />
-                </TimeLineItem>
-              )
-            })}
-          </Timeline>
-        </div>
-      ))}
+        ))}
     </div>
   )
 }

@@ -2,7 +2,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Card, Row, Col, Button} from 'antd'
 import {POSITION_COLUMN} from 'constants/Settings'
 import {notification} from 'helpers/notification'
-import {handleResponse} from 'helpers/utils'
+import {capitalizeInput, handleResponse} from 'helpers/utils'
 import React, {useState} from 'react'
 import {
   addClient,
@@ -257,6 +257,7 @@ function Projects() {
   })
 
   const handleAddClick = (input: string) => {
+    input = capitalizeInput(input)
     if (type === types.PROJECT_TYPE)
       addProjectTypeMutation.mutate({name: input})
 
@@ -267,6 +268,8 @@ function Projects() {
   }
 
   const handleEditClick = (input: any) => {
+    input = capitalizeInput(input)
+  
     if (type === types.PROJECT_TYPE)
       editProjectTypeMutation.mutate({id: dataToEdit?._id, name: input})
 

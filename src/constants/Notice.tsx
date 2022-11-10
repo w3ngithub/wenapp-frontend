@@ -8,7 +8,7 @@ interface notice {
   dataIndex?: string
   key: any
   width?: number
-  sorter?: (a: any, b: any) => any
+  sorter?: boolean
   sortOrder?: any
   render?: (text: any, record: any) => ReactElement | null
 }
@@ -23,33 +23,28 @@ const NOTICE_COLUMNS = (
     title: 'Title',
     dataIndex: 'title',
     key: 'title',
-    sorter: (a, b) => {
-      return a.title.toString().localeCompare(b.title.toString())
-    },
+    sorter: true,
     sortOrder: sortedInfo.columnKey === 'title' && sortedInfo.order,
   },
   {
     title: 'Category',
-    dataIndex: 'category',
-    key: 'category',
-    sorter: (a, b) =>
-      a.category?.toString().localeCompare(b.category?.toString()),
-    sortOrder: sortedInfo.columnKey === 'category' && sortedInfo.order,
+    dataIndex: 'noticeType',
+    key: 'noticeType',
+    sorter: true,
+    sortOrder: sortedInfo.columnKey === 'noticeType' && sortedInfo.order,
   },
   {
     title: 'Start Date',
     dataIndex: 'startDate',
     key: 'startDate',
-    sorter: (a, b) =>
-      a.startDate?.toString().localeCompare(b.startDate?.toString()),
+    sorter: true,
     sortOrder: sortedInfo.columnKey === 'startDate' && sortedInfo.order,
   },
   {
     title: 'End Date',
     dataIndex: 'endDate',
     key: 'endDate',
-    sorter: (a, b) =>
-      a.endDate?.toString().localeCompare(b.endDate?.toString()),
+    sorter: true,
     sortOrder: sortedInfo.columnKey === 'endDate' && sortedInfo.order,
   },
   {

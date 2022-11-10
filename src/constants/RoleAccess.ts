@@ -17,6 +17,15 @@ export const DASHBOARD_PROJECT_LOG_NO_ACCESS = [
   RoleAccess.Subscriber,
 ]
 
+export const SALARY_REVIEW_ACCESS = [RoleAccess.HumanResource, RoleAccess.Admin]
+
+export const DASHBOARD_ICON_ACCESS = [
+  RoleAccess.Admin,
+  RoleAccess.TeamLead,
+  RoleAccess.ProjectManager,
+  RoleAccess.HumanResource,
+]
+
 // Co-workers
 export const CO_WORKERS_TABLE_ACTION_NO_ACCESS = [
   RoleAccess.ProjectManager,
@@ -56,10 +65,7 @@ export const ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS = [
 
 // LogTime
 export const LOG_TIME_ADD_NO_ACCESS = [RoleAccess.TeamLead]
-export const LOG_TIME_DELETE_NO_ACCESS = [
-  RoleAccess.Editor,
-  RoleAccess.Normal,
-]
+export const LOG_TIME_DELETE_NO_ACCESS = [RoleAccess.Editor, RoleAccess.Normal]
 
 // Leaves
 export const LEAVE_TABS_NO_ACCESS = [
