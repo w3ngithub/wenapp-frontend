@@ -380,10 +380,12 @@ export const oneWeekFilterCheck = (x) => {
       )
   )
 }
-export const checkIfTimeISBetweenOfficeHour = () => {
+export const checkIfTimeISBetweenOfficeHour = (
+  officeStartTime = '09:10:00'
+) => {
   const now = new Date()
 
-  const startTime = '09:10:00'
+  const startTime = officeStartTime
   const endTime = '17:30:00'
 
   const s = startTime.split(':')
@@ -408,9 +410,11 @@ export const checkIfTimeISBetweenOfficeHour = () => {
   return now > startTime1 && now < endTime2
 }
 
-
-export function capitalizeInput(input){
-    input = input.toLowerCase().split(" ").map((s)=>s.charAt(0).toUpperCase() + s.slice(1))
-    input = input.join(" ")
-    return input
+export function capitalizeInput(input) {
+  input = input
+    .toLowerCase()
+    .split(' ')
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+  input = input.join(' ')
+  return input
 }

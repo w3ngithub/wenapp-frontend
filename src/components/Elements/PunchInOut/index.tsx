@@ -85,7 +85,11 @@ function PunchInOut() {
   )
 
   const handlePunch = async () => {
-    if (checkIfTimeISBetweenOfficeHour()) {
+    if (
+      checkIfTimeISBetweenOfficeHour(
+        moment(new Date(user?.officeTime)).format('h:mm:ss')
+      )
+    ) {
       setToogle(true)
       return
     }
