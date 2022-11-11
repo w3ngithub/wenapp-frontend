@@ -96,7 +96,7 @@ function PunchInOut() {
     }
     if (
       checkIfTimeISBetweenOfficeHour(
-        moment(new Date(user?.officeTime)).format('h:mm:ss')
+        moment(new Date(user?.officeTime?.utcDate)).format('h:mm:ss')
       )
     ) {
       setToogle(true)

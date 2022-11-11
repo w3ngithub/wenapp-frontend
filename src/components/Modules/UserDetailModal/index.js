@@ -198,6 +198,7 @@ function UserDetailForm({
             hasFeedback={readOnly ? false : true}
           >
             <TimePicker
+              style={{width: '100%'}}
               format="h:mm:ss A"
               defaultValue={moment('09:00:00 AM', 'HH:mm:ss a')}
             />
