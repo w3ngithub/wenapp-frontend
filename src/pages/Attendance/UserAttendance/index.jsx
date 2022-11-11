@@ -57,7 +57,7 @@ const formattedAttendances = (attendances) => {
 function UserAttendance() {
   //init hooks
   const {state} = useLocation()
-  const [sort, setSort] = useState({})
+  const [sort, setSort] = useState({order: 'ascend',field:'attendanceDate',columnKey: 'attendanceDate'})
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
   const [openView, setOpenView] = useState(false)
@@ -78,11 +78,11 @@ function UserAttendance() {
   }, [state?.date])
 
   const {data, isLoading, isFetching} = useQuery(
-    ['userAttendance', user, date, page],
+    ['userAttendance', user, date],
     () =>
       searchAttendacentOfUser({
-        page: page.page + '',
-        limit: page.limit + '',
+        // page: page.page + ',
+        // limit: page.limit + '','
         userId: user._id,
         fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
         toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',

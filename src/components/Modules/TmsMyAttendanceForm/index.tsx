@@ -1,11 +1,11 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Button, Col, Form, Input, Modal, Row, Checkbox, Spin} from 'antd'
 import moment from 'moment'
 import {FieldTimeOutlined} from '@ant-design/icons'
 import LiveTime from 'components/Elements/LiveTime'
 import {useMutation, useQueryClient} from '@tanstack/react-query'
 import {addAttendance, updatePunchout} from 'services/attendances'
-import {handleResponse, sortFromDate} from 'helpers/utils'
+import {handleResponse, isNotValidTimeZone, sortFromDate} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {useDispatch, useSelector} from 'react-redux'
 import {PUNCH_IN, PUNCH_OUT} from 'constants/ActionTypes'
@@ -28,6 +28,7 @@ function TmsMyAttendanceForm({
   const [PUnchInform] = Form.useForm()
   const [PUnchOutform] = Form.useForm()
 
+  const [disableButton, setdisableButton] = useState(false)
   const queryClient = useQueryClient()
   const dispatch: Dispatch<any> = useDispatch()
   const reduxuserAttendance = useSelector((state: any) => state.attendance)
@@ -82,6 +83,15 @@ function TmsMyAttendanceForm({
   )
 
   const handlePunchIn = async (values: any) => {
+    if (isNotValidTimeZone()) {
+      notification({
+        message: 'Your timezone is not a valid timezone',
+        type: 'error',
+      })
+      return
+    }
+
+    setdisableButton(true)
     const location = await getLocation()
 
     if (await checkLocationPermission()) {
@@ -96,9 +106,19 @@ function TmsMyAttendanceForm({
         type: 'error',
       })
     }
+    setdisableButton(false)
   }
 
   const handlePunchOut = async (values: any) => {
+    if (isNotValidTimeZone()) {
+      notification({
+        message: 'Your timezone is not valid timezone',
+        type: 'error',
+      })
+      return
+    }
+
+    setdisableButton(true)
     const location = await getLocation()
     const lastattendace = sortFromDate(latestAttendance, 'punchInTime').at(-1)
 
@@ -118,6 +138,7 @@ function TmsMyAttendanceForm({
         type: 'error',
       })
     }
+    setdisableButton(false)
   }
 
   const closeModel = () => {
@@ -156,7 +177,9 @@ function TmsMyAttendanceForm({
                 style={{fontSize: '24px', marginTop: '-2px'}}
               />
               <LiveTime />
-              <span style={{marginLeft:'0.5rem'}}>{moment().format('dddd, MMMM D, YYYY')}</span>
+              <span style={{marginLeft: '0.5rem'}}>
+                {moment().format('dddd, MMMM D, YYYY')}
+              </span>
             </div>
           </Col>
           {punchIn ? (
@@ -175,7 +198,11 @@ function TmsMyAttendanceForm({
                   <Input.TextArea rows={5} />
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary" htmlType="submit" disabled={!punchIn}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={!punchIn || disableButton}
+                  >
                     Punch In
                   </Button>
                 </Form.Item>
@@ -200,7 +227,11 @@ function TmsMyAttendanceForm({
                   <Checkbox>Mid-day Exit</Checkbox>
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary" htmlType="submit" disabled={punchIn}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={punchIn || disableButton}
+                  >
                     Punch Out
                   </Button>
                 </Form.Item>

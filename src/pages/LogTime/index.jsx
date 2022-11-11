@@ -47,7 +47,7 @@ function LogTime() {
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const {
-    user: {_id},
+    user: {_id,role:{key}},
   } = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
 
   const {
@@ -245,7 +245,9 @@ function LogTime() {
             sort,
             handleOpenEditModal,
             confirmDelete,
-            true
+            true,
+            undefined,
+            key
           )}
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}
