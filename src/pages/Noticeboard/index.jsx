@@ -33,6 +33,7 @@ const formattedNotices = (notices) => {
     noticeType: notice.noticeType.name,
     startDate: notice.startDate ? changeDate(notice.startDate) : '',
     endDate: notice.endDate ? changeDate(notice.endDate) : '',
+    categoryId:notice?.noticeType._id
   }))
 }
 
@@ -40,7 +41,6 @@ function NoticeBoardPage() {
   const location = useLocation()
   // init hooks
   const [sort, setSort] = useState({})
-  console.log(sort)
   const [title, setTitle] = useState('')
   const [typedNotice, setTypedNotice] = useState('')
   const [date, setDate] = useState(undefined)
@@ -202,6 +202,7 @@ function NoticeBoardPage() {
         endDate: originalProject?.endDate ?? null,
         startTime: originalProject?.startTime ?? null,
         endTime: originalProject?.endTime ?? null,
+        categoryId:notice?.categoryId
       },
     })
     setReadOnly(mode)

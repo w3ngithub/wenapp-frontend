@@ -46,7 +46,7 @@ function ProjectsPage() {
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const [project, setProject] = useState('')
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState({page: 1, limit: 20})
   const [projectStatus, setProjectStatus] = useState(undefined)
   const [projectType, setProjectType] = useState(undefined)
   const [projectClient, setprojectClient] = useState(undefined)
@@ -463,9 +463,9 @@ function ProjectsPage() {
           dataSource={formattedProjects(data?.data?.data?.data)}
           onChange={handleTableChange}
           pagination={{
-            current: page?.page,
-            pageSize: page?.limit,
-            pageSizeOptions: ['5', '10', '20', '50'],
+            current: page.page,
+            pageSize: page.limit,
+            pageSizeOptions: ['20', '50','80'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
