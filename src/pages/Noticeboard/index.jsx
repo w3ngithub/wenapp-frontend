@@ -41,7 +41,6 @@ function NoticeBoardPage() {
   const location = useLocation()
   // init hooks
   const [sort, setSort] = useState({})
-  console.log(sort)
   const [title, setTitle] = useState('')
   const [typedNotice, setTypedNotice] = useState('')
   const [date, setDate] = useState(undefined)

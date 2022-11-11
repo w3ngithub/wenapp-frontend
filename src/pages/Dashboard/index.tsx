@@ -284,7 +284,23 @@ const Dashboard = () => {
         </p>
       )
 
-    if (props.event.type === 'leave')
+    if (props.event.type === 'leave') {
+      let specificHalf = ''
+      if (
+        props?.event?.leaveType === 'Maternity' ||
+        props?.event?.leaveType === 'Paternity' ||
+        props?.event?.leaveType === 'Paid Time Off' ||
+        props?.event?.halfDay === ''
+      ) {
+        specificHalf = ''
+      } else {
+        if (props?.event?.halfDay === 'first-half') {
+          specificHalf = '1st'
+        }
+        if (props?.event?.halfDay === 'second-half') {
+          specificHalf = '2nd'
+        }
+      }
       return (
         <div
           style={{
@@ -313,10 +329,12 @@ const Dashboard = () => {
               width="18px"
               fill={darkTheme ? darkThemeTextColor : '#038fde'}
             />
-            {shortName}
+            {`${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`}
+            {/* {`${shortName} ${specificHalf}`} */}
           </p>
         </div>
       )
+    }
 
     if (props.event.type === 'notice') {
       return (
@@ -518,9 +536,10 @@ const Dashboard = () => {
                   </FormItem>
                   <FormItem name="project" className="direct-form-item">
                     <Select
+                      showSearchIcon={true}
                       value={project}
                       onChange={(c: any) => setProject(c)}
-                      placeholder="Select Project"
+                      placeholder="Search Project"
                       options={data?.data?.data?.data?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,
