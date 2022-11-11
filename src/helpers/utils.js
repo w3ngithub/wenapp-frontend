@@ -435,3 +435,12 @@ export function capitalizeInput(input) {
   input = input.join(' ')
   return input
 }
+
+export const isNotValidTimeZone = () => {
+  return (
+    Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
+      'Katmandu' &&
+    Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
+      'Kathmandu'
+  )
+}
