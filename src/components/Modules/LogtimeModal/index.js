@@ -5,6 +5,7 @@ import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
 import {getAllProjects} from 'services/projects'
 import {filterOptions} from 'helpers/utils'
+import {LOG_TIME_OLD_EDIT} from 'constants/RoleAccess'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -30,13 +31,14 @@ function LogtimeModal({
   loading = false,
   isEditMode,
   isUserLogtime = false,
+  role,
 }) {
   // const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
   const [searchValue, setSearchValue] = useState('')
 
   const [form] = Form.useForm()
   const [types, setTypes] = useState([])
-  const [zeroHourMinutes, setZeroHourMinutes] = useState(false);
+  const [zeroHourMinutes, setZeroHourMinutes] = useState(false)
   const projectsQuery = useQuery(['projects'], getAllProjects, {
     enabled: false,
   })
@@ -49,11 +51,11 @@ function LogtimeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      if(!parseInt(values?.hours)  && !parseInt(values?.minutes)){
-        setZeroHourMinutes(true);
-        return;
-      }else {
-        setZeroHourMinutes(false);
+      if (!parseInt(values?.hours) && !parseInt(values?.minutes)) {
+        setZeroHourMinutes(true)
+        return
+      } else {
+        setZeroHourMinutes(false)
       }
       onSubmit(
         isEditMode
@@ -130,10 +132,14 @@ function LogtimeModal({
             <DatePicker
               className=" gx-w-100"
               placeholder="Select Date"
-              disabledDate={(current) =>
-                (current &&
-                  current < moment().subtract(1, 'days').startOf('day')) ||
-                current > moment().endOf('day')
+              disabledDate={
+                LOG_TIME_OLD_EDIT.includes(role)
+                  ? false
+                  : (current) =>
+                      (current &&
+                        current <
+                          moment().subtract(1, 'days').startOf('day')) ||
+                      current > moment().endOf('day')
               }
             />
           </FormItem>
@@ -146,8 +152,8 @@ function LogtimeModal({
               {
                 validator: async (rule, value) => {
                   try {
-                    if(form.getFieldValue('minutes') && !value) return 
-            
+                    if (form.getFieldValue('minutes') && !value) return
+
                     if (value < 0) {
                       throw new Error('Log Hours cannot be below 0.')
                     }
@@ -155,7 +161,7 @@ function LogtimeModal({
                     if (value > 9) {
                       throw new Error('Log Hours cannot exceed 9')
                     }
-                    if(value - Math.floor(value) !== 0){
+                    if (value - Math.floor(value) !== 0) {
                       throw new Error('Log Hours cannot contain decimal value')
                     }
                   } catch (err) {
@@ -175,9 +181,9 @@ function LogtimeModal({
             rules={[
               {
                 validator: async (rule, val) => {
-                  let value = val+''
+                  let value = val + ''
                   try {
-                    if(form.getFieldValue('hours') && !parseInt(value)) return
+                    if (form.getFieldValue('hours') && !parseInt(value)) return
 
                     if (
                       value !== '0' &&
@@ -278,9 +284,13 @@ function LogtimeModal({
               },
             ]}
           >
-            <TextArea placeholder="Enter Remarks" rows={6}/>
+            <TextArea placeholder="Enter Remarks" rows={6} />
           </FormItem>
-          {zeroHourMinutes && <p style={{color:'red'}}>Hours and minutes cannot be 0 simultaneously.</p> }
+          {zeroHourMinutes && (
+            <p style={{color: 'red'}}>
+              Hours and minutes cannot be 0 simultaneously.
+            </p>
+          )}
         </Form>
       </Spin>
     </Modal>
