@@ -69,16 +69,9 @@ const LEAVES_COLUMN = (
                       <Divider type="vertical" />
                       {!['approved', 'cancelled'].includes(record.status) && (
                         <>
-                          <Popconfirm
-                            title="Are you sure you want to approve?"
-                            onConfirm={() => onApproveClick(record)}
-                            okText="Yes"
-                            cancelText="No"
-                          >
-                            <span className="gx-link gx-text-green">
+                            <span onClick={()=>onApproveClick(record)} className="gx-link gx-text-green">
                               Approve
                             </span>
-                          </Popconfirm>
                           <Divider type="vertical" />
                           <span
                             className="gx-link gx-text-danger"
