@@ -256,7 +256,6 @@ const Dashboard = () => {
   }
 
   const CustomEvent = (props: any) => {
-    console.log('event', props?.event)
     const nameSplitted = props?.event?.title.split(' ')
     let lastName
     if (nameSplitted.length === 1) lastName = ''
@@ -376,8 +375,6 @@ const Dashboard = () => {
     leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
     id: x?._id[0],
   }))
-
-  console.log('leaveUsers', leaveUsers)
 
   const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
     title: x?.noticeType?.name,
