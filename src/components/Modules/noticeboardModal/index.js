@@ -54,7 +54,7 @@ function NoticeModal({
         form.setFieldsValue({
           title: initialValues?.title,
           details: initialValues?.details,
-          noticeType: initialValues?.noticeType?._id,
+          noticeType: initialValues?.categoryId,
           startDate: initialValues?.startDate
             ? moment(initialValues?.startDate)
             : null,
