@@ -58,10 +58,9 @@ const Overview = () => {
   )
 
   const {data: CheckedIn, isLoading: checkInLoading} = useQuery(
-    ['checkInOverview', page],
+    ['checkInOverview'],
     () =>
       searchAttendacentOfUser({
-        ...page,
         fromDate: moment.utc(intialDate[0]).format(),
         toDate: moment.utc(intialDate[1]).format(),
       })
@@ -109,12 +108,6 @@ const Overview = () => {
         >
           <CheckedInEmployee
             checkIn={checkInSecition}
-            page={page}
-            onPageChange={handlePageChange}
-            onShowSizeChange={onShowSizeChange}
-            count={
-              CheckedIn?.data?.data?.attendances?.[0]?.metadata?.[0]?.total
-            }
             isLoading={checkInLoading}
           />
         </Panel>
