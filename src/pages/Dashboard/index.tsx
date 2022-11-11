@@ -518,9 +518,10 @@ const Dashboard = () => {
                   </FormItem>
                   <FormItem name="project" className="direct-form-item">
                     <Select
+                      showSearchIcon={true}
                       value={project}
                       onChange={(c: any) => setProject(c)}
-                      placeholder="Select Project"
+                      placeholder="Search Project"
                       options={data?.data?.data?.data?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,

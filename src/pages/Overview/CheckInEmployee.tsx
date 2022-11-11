@@ -29,26 +29,28 @@ const formattedUsers = (users: any[]) => {
 
 function CheckedInEmployee({
   checkIn,
-  page,
-  onPageChange,
-  onShowSizeChange,
-  count,
   isLoading,
 }: {
   checkIn: any[]
-  page: any
-  onPageChange: (pageNumber: number) => void
-  onShowSizeChange: (_: any, pageSize: number) => void
-  count: number
   isLoading: boolean
 }) {
   const [openMap, setOpenMap] = useState(false)
   const [sort, setSort] = useState({})
+  const [page, setPage] = useState({page: 1, limit: 20})
+
   const [selectedCheckedInUser, setSelectedCheckedInUser] = useState([])
   const [selectedUsername, setSelectedUserName] = useState('')
 
   const handleTableChange = (pagination: any, filters: any, sorter: any) => {
     setSort(sorter)
+  }
+
+  const onShowSizeChange = (_: any, pageSize: number) => {
+    setPage((prev) => ({...page, limit: pageSize}))
+  }
+
+  const handlePageChange = (pageNumber: number) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
   }
 
   const handleShowMap = (record: any, PunchOut: string | undefined) => {
@@ -88,12 +90,12 @@ function CheckedInEmployee({
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['5', '10', '20', '50'],
+            pageSizeOptions: ['20', '50'],
             showSizeChanger: true,
-            total: count || 1,
+            total: checkIn.length || 1,
             onShowSizeChange,
             hideOnSinglePage: true,
-            onChange: onPageChange,
+            onChange: handlePageChange,
           }}
           loading={isLoading}
         />

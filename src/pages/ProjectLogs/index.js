@@ -54,7 +54,7 @@ function ProjectLogs() {
   const [logType, setLogType] = useState(undefined)
   const [author, setAuthor] = useState(undefined)
   const [openModal, setOpenModal] = useState(false)
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState({page: 1, limit: 50})
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
 
@@ -345,7 +345,7 @@ function ProjectLogs() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['5', '10', '20', '50'],
+            pageSizeOptions: ['50', '80', '100'],
             showSizeChanger: true,
             total: logTimeDetails?.data?.data?.count || 1,
             onShowSizeChange,
