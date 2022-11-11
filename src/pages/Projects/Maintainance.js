@@ -80,8 +80,6 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
           {...formItemLayout}
           style={{marginBottom: '30px', display: 'block'}}
           label="Enable Maintenance"
-          help="Check this box to enable recurring monthly maintenance on this
-                        project."
         >
           <CheckboxGroup
             options={[{label: 'Yes', value: true}]}

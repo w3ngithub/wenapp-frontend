@@ -186,6 +186,11 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
         url: HOLIDAY,
         id: 3,
       },
+      {
+        name: 'sidebar.resources.ir',
+        url: 'ir',
+        id: 4,
+      },
     ],
   },
   {
