@@ -4,8 +4,11 @@ import React, {useEffect} from 'react'
 interface modalInterface {
   isEditMode: boolean
   toggle: boolean
+  currentData: any
+  duplicateValue: boolean
+  setDuplicateValue: (a: boolean) => void
   onSubmit: (leave: {name: string; leaveDays: string}) => void
-  onCancel: React.MouseEventHandler<HTMLElement>
+  onCancel: (setDuplicateValue: any) => void
   isLoading: boolean
   editData: any
 }
@@ -18,7 +21,10 @@ const layout = {
 function LeaveModal({
   isEditMode,
   toggle,
+  currentData,
   onSubmit,
+  duplicateValue,
+  setDuplicateValue,
   onCancel,
   isLoading,
   editData,
@@ -26,7 +32,13 @@ function LeaveModal({
   const [form] = Form.useForm()
 
   const handleSubmit = () => {
-    console.log("Submitting");
+    const availableData = currentData?.data?.data?.data?.map(
+      (item: {id: any; name: any}) => item?.name?.toLowerCase()
+    )
+    if (availableData?.includes(form.getFieldValue('name').toLowerCase())) {
+      setDuplicateValue(true)
+      return
+    }
     form.validateFields().then((values) => onSubmit(form.getFieldsValue()))
   }
 
@@ -45,9 +57,9 @@ function LeaveModal({
       title={isEditMode ? `Update Leave Type` : `Add Leave Type`}
       visible={toggle}
       onOk={handleSubmit}
-      onCancel={onCancel}
+      onCancel={() => onCancel(setDuplicateValue)}
       footer={[
-        <Button key="back" onClick={onCancel}>
+        <Button key="back" onClick={() => onCancel(setDuplicateValue)}>
           Cancel
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
@@ -72,7 +84,7 @@ function LeaveModal({
             name="leaveDays"
             label="Leave Days"
             rules={[
-              {
+              { required: true,
                 validator: async (rule, value) => {
                   try {
                     if (!value) throw new Error('Required!')
@@ -82,7 +94,7 @@ function LeaveModal({
                     if (value < 1) {
                       throw new Error('At least 1 leave day is required.')
                     }
-                    if(value - Math.floor(value) !== 0){
+                    if (value - Math.floor(value) !== 0) {
                       throw new Error('Leave Days cannot be decimal.')
                     }
                   } catch (err) {
@@ -95,11 +107,14 @@ function LeaveModal({
             <Input
               // value={input}
               placeholder="Leave days"
-              type='number'
+              type="number"
               min={1}
               // onChange={handleInputChange}
             />
           </Form.Item>
+          {duplicateValue && (
+            <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>
+          )}
         </Form>
       </Spin>
     </Modal>

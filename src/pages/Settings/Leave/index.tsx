@@ -34,8 +34,9 @@ function Leave() {
   const [openQuarterModel, setQuarterModel] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [isQuarterEditMode, setQuarterIsEditMode] = useState(false)
-
+  const [arrayDataToSend, setArrayDataToSend] = useState<any>([])
   const [dataToEdit, setDataToEdit] = useState<any>({})
+  const [duplicateValue, setDuplicateValue] = useState<boolean>(false)
   const {data: leaveTypes, isLoading}: any = useQuery(
     ['leaveTypes'],
     getLeaveTypes
@@ -165,20 +166,22 @@ function Leave() {
     deleteLeaveTypeMutation.mutate({id: data._id})
   }
 
-  const handleOpenEditModal = (data: any, type: string) => {
+  const handleOpenEditModal = (data: any, type: string, currentData: any) => {
     setIsEditMode(true)
     setOpenModal(true)
     setDataToEdit(data)
+    setArrayDataToSend(currentData)
   }
 
   const handleCloseModal = () => {
     setIsEditMode(false)
-
+    setDuplicateValue(false)
     setDataToEdit({})
     setOpenModal(false)
   }
-  const handleOpenModal = (type: string) => {
+  const handleOpenModal = (type: string, data:any) => {
     type === 'Leave Type' ? setOpenModal(true) : setQuarterModel(true)
+    setArrayDataToSend(data)
   }
 
   const onDeleteClickQuarter = (id: string) => {
@@ -320,6 +323,9 @@ function Leave() {
       <LeaveModal
         toggle={openModal}
         isEditMode={isEditMode}
+        duplicateValue={duplicateValue}
+        setDuplicateValue={setDuplicateValue}
+        currentData = {arrayDataToSend}
         editData={dataToEdit}
         isLoading={
           addLeaveTypeMutation.isLoading || editLeaveTypeMutation.isLoading
@@ -345,7 +351,7 @@ function Leave() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal('Leave Type')}
+                onClick={() => handleOpenModal('Leave Type', leaveTypes)}
               >
                 Add
               </Button>
@@ -355,9 +361,9 @@ function Leave() {
               data={leaveTypes?.data?.data?.data}
               columns={LEAVES_COLUMN(
                 (value) => handleDeleteClick(value),
-                (value) => handleOpenEditModal(value, 'Leave Type')
+                (value) => handleOpenEditModal(value, 'Leave Type', leaveTypes)
               )}
-              onAddClick={() => handleOpenModal('Leave Type')}
+              onAddClick={() => handleOpenModal('Leave Type', leaveTypes)}
               isLoading={isLoading || deleteLeaveTypeMutation.isLoading}
             />
           </Card>
@@ -372,7 +378,7 @@ function Leave() {
                 ) || leaveQuarter?.data?.data?.data.length === 0 ? (
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                  onClick={() => handleOpenModal('Leave Quarter')}
+                  onClick={() => handleOpenModal('Leave Quarter', '')}
                 >
                   Add
                 </Button>
