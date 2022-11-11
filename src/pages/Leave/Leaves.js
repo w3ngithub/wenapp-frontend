@@ -18,8 +18,7 @@ import {
   LEAVE_TAB_ADD_LEAVE_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {disabledDate} from 'util/antDatePickerDisabled'
-import { sendEmailforLeave } from 'services/leaves'
-
+import {sendEmailforLeave} from 'services/leaves'
 
 const FormItem = Form.Item
 
@@ -65,8 +64,8 @@ function Leaves({
   const queryClient = useQueryClient()
   let approveReason
   const [openModal, setOpenModal] = useState(false)
-  const [openApproveLeaveModal,setopenApproveLeaveModal] = useState(false)
-  const [loader,setLoader] = useState(false)
+  const [openApproveLeaveModal, setopenApproveLeaveModal] = useState(false)
+  const [loader, setLoader] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
@@ -86,10 +85,9 @@ function Leaves({
       : undefined
   )
   const [page, setPage] = useState({page: 1, limit: 10})
-  const [leaveDetails,setleaveDetails] = useState({})
+  const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
-  
   const leavesQuery = useQuery(
     ['leaves', leaveStatus, user, date, page],
     () =>
@@ -104,7 +102,6 @@ function Leaves({
       onError: (err) => console.log(err),
     }
   )
-
 
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
   const usersQuery = useQuery(['users'], getAllUsers)
@@ -140,26 +137,28 @@ function Leaves({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
       user: res.data.data.data.user,
-      leaveApproveReason:approveReason,
+      leaveApproveReason: approveReason || '',
     })
     setLoader(false)
-   handleCloseApproveModal()
+    handleCloseApproveModal()
   }
 
-  const handleCloseApproveModal = () =>{
+  const handleCloseApproveModal = () => {
     setopenApproveLeaveModal(false)
   }
 
-  const handleOpenApproveModal = (leaveDetails)=>{
+  const handleOpenApproveModal = (leaveDetails) => {
     setleaveDetails(leaveDetails)
     setopenApproveLeaveModal(true)
   }
 
   const handleApproveLeave = (leave) => {
     approveReason = leave?.leaveApproveReason
-    leaveApproveMutation.mutate({id: leave._id, type: 'approve', reason:approveReason })
-
-
+    leaveApproveMutation.mutate({
+      id: leave._id,
+      type: 'approve',
+      reason: approveReason,
+    })
   }
 
   const handleStatusChange = (statusId) => {
@@ -232,19 +231,18 @@ function Leaves({
         readOnly={readOnly}
       />
 
-    <CancelLeaveModal
-    open={openApproveLeaveModal}
-    onClose={handleCloseApproveModal}
-    onSubmit={handleApproveLeave}
-    leaveData={leaveDetails}
-    loader={loader}
-    setLoader={setLoader}
-    title={"Approve Leave"}
-    isRequired={false}
-    label = {"Approve Leave Description"}
-    name={"leaveApproveReason"}
+      <CancelLeaveModal
+        open={openApproveLeaveModal}
+        onClose={handleCloseApproveModal}
+        onSubmit={handleApproveLeave}
+        leaveData={leaveDetails}
+        loader={loader}
+        setLoader={setLoader}
+        title={'Approve Leave'}
+        isRequired={false}
+        label={'Approve Leave Description'}
+        name={'leaveApproveReason'}
       />
-
 
       <div className="components-table-demo-control-bar">
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
