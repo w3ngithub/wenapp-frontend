@@ -65,7 +65,7 @@ function WeeklyReport() {
         projectStatus,
         client: projectClient,
         fromDate: moment.utc(date[0]).format(),
-        toDate: moment.utc(date[1]).endOf('day').format(),
+        toDate: moment.utc(date[1]).format(),
       }),
     {keepPreviousData: true}
   )
@@ -112,7 +112,7 @@ function WeeklyReport() {
   }
 
   const handleChangeDate = (date) => {
-    setDate(date)
+    setDate([date[0],date[1].endOf('day')])
   }
 
   const clients = useMemo(() => {
