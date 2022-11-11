@@ -6,6 +6,8 @@ import {useQuery} from '@tanstack/react-query'
 import {getAllProjects} from 'services/projects'
 import {filterOptions} from 'helpers/utils'
 import {LOG_TIME_OLD_EDIT} from 'constants/RoleAccess'
+import {SearchOutlined} from '@ant-design/icons'
+
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -239,8 +241,9 @@ function LogtimeModal({
             >
               <Select
                 showSearch
+                suffixIcon={<SearchOutlined />}
                 filterOption={filterOptions}
-                placeholder="Select Project"
+                placeholder="Search Project"
                 onSearch={(e) => {
                   setSearchValue(e)
                 }}

@@ -41,7 +41,7 @@ function LogTime() {
 
   // init states
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState({page: 1, limit: 20})
   const [openModal, setOpenModal] = useState(false)
 
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
@@ -255,7 +255,7 @@ function LogTime() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['5', '10', '20', '50'],
+            pageSizeOptions: ['20', '50','80'],
             showSizeChanger: true,
             total: logTimeDetails?.data?.data?.count || 1,
             onShowSizeChange,
