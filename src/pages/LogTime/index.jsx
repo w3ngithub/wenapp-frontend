@@ -212,6 +212,7 @@ function LogTime() {
         initialValues={timeLogToUpdate}
         isEditMode={isEditMode}
         isUserLogtime={true}
+        role={key}
       />
       <div style={{marginTop: 20}}></div>
       <Card title={' Time Summary'}>

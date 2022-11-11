@@ -5,7 +5,9 @@ import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
 import {getAllProjects} from 'services/projects'
 import {filterOptions} from 'helpers/utils'
+import {LOG_TIME_OLD_EDIT} from 'constants/RoleAccess'
 import {SearchOutlined} from '@ant-design/icons'
+
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -31,6 +33,7 @@ function LogtimeModal({
   loading = false,
   isEditMode,
   isUserLogtime = false,
+  role,
 }) {
   // const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
   const [searchValue, setSearchValue] = useState('')
@@ -131,10 +134,14 @@ function LogtimeModal({
             <DatePicker
               className=" gx-w-100"
               placeholder="Select Date"
-              disabledDate={(current) =>
-                (current &&
-                  current < moment().subtract(1, 'days').startOf('day')) ||
-                current > moment().endOf('day')
+              disabledDate={
+                LOG_TIME_OLD_EDIT.includes(role)
+                  ? false
+                  : (current) =>
+                      (current &&
+                        current <
+                          moment().subtract(1, 'days').startOf('day')) ||
+                      current > moment().endOf('day')
               }
             />
           </FormItem>
