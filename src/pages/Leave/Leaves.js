@@ -12,11 +12,14 @@ import {getAllUsers} from 'services/users/userDetails'
 import moment from 'moment'
 import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
+import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {
   LEAVES_TAB_ACTIONS_NO_ACCESS,
   LEAVE_TAB_ADD_LEAVE_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {disabledDate} from 'util/antDatePickerDisabled'
+import { sendEmailforLeave } from 'services/leaves'
+
 
 const FormItem = Form.Item
 
@@ -60,8 +63,10 @@ function Leaves({
   userRole,
 }) {
   const queryClient = useQueryClient()
-
+  let approveReason
   const [openModal, setOpenModal] = useState(false)
+  const [openApproveLeaveModal,setopenApproveLeaveModal] = useState(false)
+  const [loader,setLoader] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
@@ -81,9 +86,10 @@ function Leaves({
       : undefined
   )
   const [page, setPage] = useState({page: 1, limit: 10})
-
+  const [leaveDetails,setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
+  
   const leavesQuery = useQuery(
     ['leaves', leaveStatus, user, date, page],
     () =>
@@ -99,6 +105,8 @@ function Leaves({
     }
   )
 
+
+  const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
   const usersQuery = useQuery(['users'], getAllUsers)
 
   const leaveApproveMutation = useMutation(
@@ -110,6 +118,7 @@ function Leaves({
           'Leave approved successfully',
           'Could not approve leave',
           [
+            () => sendEmailNotification(response),
             () => queryClient.invalidateQueries(['userLeaves']),
             () => queryClient.invalidateQueries(['leaves']),
             () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
@@ -125,8 +134,32 @@ function Leaves({
     }
   )
 
+  const sendEmailNotification = (res) => {
+    console.log(res)
+    emailMutation.mutate({
+      leaveStatus: res.data.data.data.leaveStatus,
+      leaveDates: res.data.data.data.leaveDates,
+      user: res.data.data.data.user,
+      leaveApproveReason:approveReason,
+    })
+    setLoader(false)
+   handleCloseApproveModal()
+  }
+
+  const handleCloseApproveModal = () =>{
+    setopenApproveLeaveModal(false)
+  }
+
+  const handleOpenApproveModal = (leaveDetails)=>{
+    setleaveDetails(leaveDetails)
+    setopenApproveLeaveModal(true)
+  }
+
   const handleApproveLeave = (leave) => {
-    leaveApproveMutation.mutate({id: leave._id, type: 'approve'})
+    approveReason = leave?.leaveApproveReason
+    leaveApproveMutation.mutate({id: leave._id, type: 'approve', reason:approveReason })
+
+
   }
 
   const handleStatusChange = (statusId) => {
@@ -198,6 +231,21 @@ function Leaves({
         users={usersQuery?.data?.data?.data?.data}
         readOnly={readOnly}
       />
+
+    <CancelLeaveModal
+    open={openApproveLeaveModal}
+    onClose={handleCloseApproveModal}
+    onSubmit={handleApproveLeave}
+    leaveData={leaveDetails}
+    loader={loader}
+    setLoader={setLoader}
+    title={"Approve Leave"}
+    isRequired={false}
+    label = {"Approve Leave Description"}
+    name={"leaveApproveReason"}
+      />
+
+
       <div className="components-table-demo-control-bar">
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
@@ -280,7 +328,7 @@ function Leaves({
         className="gx-table-responsive"
         columns={LEAVES_COLUMN(
           handleOpenCancelLeaveModal,
-          handleApproveLeave,
+          handleOpenApproveModal,
           handleOpenEditModal,
           true,
           userRole
