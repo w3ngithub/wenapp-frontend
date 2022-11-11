@@ -145,6 +145,7 @@ function Leaves({
   const handleCloseModal = (
     setSpecificHalf,
     setHalfLeaveApproved,
+    setHalfLeavePending,
     setMultipleDatesSelected,
     setCalendarClicked
   ) => {
@@ -152,6 +153,7 @@ function Leaves({
     setIsEditMode(false)
     setSpecificHalf(false)
     setHalfLeaveApproved(false)
+    setHalfLeavePending(false)
     setMultipleDatesSelected(false)
     setCalendarClicked(false)
   }

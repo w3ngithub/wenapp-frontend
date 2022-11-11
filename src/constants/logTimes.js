@@ -76,12 +76,14 @@ const LOGTIMES_COLUMNS = (
           render: (text, record) => {
             return (
               <span>
-                <span
-                  className="gx-link"
-                  onClick={() => onOpenEditModal(record)}
-                >
-                  <CustomIcon name="edit" />
-                </span>
+                {!(role === RoleAccess.TeamLead) && (
+                  <span
+                    className="gx-link"
+                    onClick={() => onOpenEditModal(record)}
+                  >
+                    <CustomIcon name="edit" />
+                  </span>
+                )}
                 <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
                   <Divider type="vertical" />
                   <Popconfirm

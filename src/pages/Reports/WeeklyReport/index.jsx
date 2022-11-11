@@ -65,7 +65,7 @@ function WeeklyReport() {
         projectStatus,
         client: projectClient,
         fromDate: moment.utc(date[0]).format(),
-        toDate: moment.utc(date[1]).format(),
+        toDate: moment.utc(date[1]).endOf('day').format(),
       }),
     {keepPreviousData: true}
   )

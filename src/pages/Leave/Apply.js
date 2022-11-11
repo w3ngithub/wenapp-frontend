@@ -15,6 +15,7 @@ import {
   filterOptions,
   handleResponse,
   MuiFormatDate,
+  pendingLeaves,
   specifyParticularHalf,
 } from 'helpers/utils'
 import React, {useState} from 'react'
@@ -49,6 +50,7 @@ function Apply({user}) {
   const {innerWidth} = useWindowsSize()
   const [specificHalf, setSpecificHalf] = useState(false)
   const [halfLeaveApproved, setHalfLeaveApproved] = useState(false)
+  const [halfLeavePending, setHalfLeavePending] = useState(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
 
@@ -56,23 +58,33 @@ function Apply({user}) {
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
 
-  const [fromDate, setFromDate] = useState(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+  const [fromDate, setFromDate] = useState(
+    `${MuiFormatDate(firstDay)}T00:00:00Z`
+  )
   const [toDate, setToDate] = useState(`${MuiFormatDate(lastDay)}T00:00:00Z`)
 
   const monthChangeHandler = (date) => {
     const newMonthDate = new Date(date)
-    const firstDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth(), 1)
-    const lastDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth() + 1, 0)
-    setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`);
-    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`);
+    const firstDay = new Date(
+      newMonthDate.getFullYear(),
+      newMonthDate.getMonth(),
+      1
+    )
+    const lastDay = new Date(
+      newMonthDate.getFullYear(),
+      newMonthDate.getMonth() + 1,
+      0
+    )
+    setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
   }
 
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const [leaveType, setLeaveType] = useState('')
 
-  const userLeavesQuery = useQuery(['userLeaves',fromDate,toDate], () =>
-    getLeavesOfUser(user, '', undefined, 1, 30,fromDate,toDate)
+  const userLeavesQuery = useQuery(['userLeaves', fromDate, toDate], () =>
+    getLeavesOfUser(user, '', undefined, 1, 30, fromDate, toDate)
   )
 
   const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
@@ -135,7 +147,9 @@ function Apply({user}) {
     setLeaveType('')
     setMultipleDatesSelected(false)
     setHalfLeaveApproved(false)
+    setHalfLeavePending(false)
     setSpecificHalf(false)
+    setCalendarClicked(false)
   }
 
   const handleSubmit = () => {
@@ -161,6 +175,8 @@ function Apply({user}) {
       const casualLeaveDaysUTC = casualLeaveDays.map((leave) =>
         MuiFormatDate(new Date(leave))
       )
+      setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`);
       form.validateFields().then((values) =>
         leaveMutation.mutate({
           ...values,
@@ -202,10 +218,12 @@ function Apply({user}) {
   })
 
   const disableInterval = (index) => {
-    if (multipleDatesSelected && index !== 0) {
-      return true
+    if (multipleDatesSelected) {
+      if (index !== 0) {
+        return true
+      }
     } else {
-      if (index === 0 && halfLeaveApproved) {
+      if (index === 0 && (halfLeaveApproved || halfLeavePending)) {
         return true
       }
       if (index === 1 && specificHalf === 'first-half') {
@@ -230,14 +248,17 @@ function Apply({user}) {
         setHalfLeaveApproved(
           specifyParticularHalf(leaveDate)?.halfLeaveApproved
         )
+        setHalfLeavePending(specifyParticularHalf(leaveDate)?.halfLeavePending)
         setSpecificHalf(specifyParticularHalf(leaveDate)?.specificHalf)
       } else if (values?.leaveDatesCasual?.length === 0) {
         setHalfLeaveApproved(false)
+        setHalfLeavePending(false)
         setSpecificHalf(false)
         setMultipleDatesSelected(false)
       } else {
         setMultipleDatesSelected(true)
         setHalfLeaveApproved(false)
+        setHalfLeavePending(false)
       }
     }
   }
@@ -270,7 +291,6 @@ function Apply({user}) {
     }
   }
 
-
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Form
@@ -293,7 +313,7 @@ function Apply({user}) {
                   numberOfMonths={1}
                   disableMonthPicker
                   disableYearPicker
-                  onMonthChange={(date)=>monthChangeHandler(date)}
+                  onMonthChange={(date) => monthChangeHandler(date)}
                   weekStartDayIndex={1}
                   multiple
                   minDate={
@@ -310,25 +330,37 @@ function Apply({user}) {
                     let leaveDate = userLeaves?.filter(
                       (leave) => leave.date === date.format()
                     )
+                    const leavePending = pendingLeaves(leaveDate)
                     let leaveAlreadyTakenDates = filterHalfDayLeaves(leaveDate)
-                    if (isWeekend || isHoliday || leaveAlreadyTakenDates)
+                    if (
+                      isWeekend ||
+                      isHoliday ||
+                      leaveAlreadyTakenDates ||
+                      leavePending
+                    )
                       return {
                         disabled: true,
                         style: {
                           color:
-                            isWeekend || leaveAlreadyTakenDates
+                            isWeekend || leaveAlreadyTakenDates || leavePending
                               ? '#ccc'
                               : 'rgb(237 45 45)',
                         },
                         onClick: () => {
                           if (isWeekend)
-                            notification({message: 'Weekends are disabled'})
+                            notification({message: 'Weekends are disabled.'})
                           else if (isHoliday)
                             notification({
-                              message: `${holidayList[0]?.name} holiday`,
+                              message: `${holidayList[0]?.name} Holiday`,
                             })
                           else if (leaveAlreadyTakenDates)
-                            notification({message: `Leave already taken`})
+                            notification({
+                              message: `Leave already registered for the day.`,
+                            })
+                          else if (leavePending)
+                            notification({
+                              message: `Leave request for the day is pending. Please cancel the previous applied leave to apply again`,
+                            })
                         },
                       }
                   }}

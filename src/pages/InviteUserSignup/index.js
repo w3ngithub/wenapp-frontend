@@ -11,6 +11,13 @@ import {SIGNIN} from 'helpers/routePath'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
 import {officeDomain} from 'constants/OfficeDomain'
 import {emailRegex} from 'constants/EmailTest'
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from 'firebase/storage'
+import {storage} from 'firebase'
+
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -39,10 +46,10 @@ function InviteUserSignup(props) {
       .validateFields()
       .then(async (values) => {
         setIsLoading(true)
-        let usernameArr = values?.email?.split('@')[0].split('.')
+        let usernameArr = values?.emails?.split('@')[0].split('.')
         let username = usernameArr?.[1] + usernameArr?.[0]
-
-        const updatedUser = {
+        
+        let updatedUser = {
           ...values,
           email: values?.emails?.trim(),
           password: values?.passwords,
@@ -50,18 +57,61 @@ function InviteUserSignup(props) {
           joinDate: moment.utc(values.joinDate._d).format(),
           primaryPhone: +values.primaryPhone,
           secondaryPhone: values.secondaryPhone && +values.secondaryPhone,
-          photo: files[0],
           username,
         }
 
-        const response = await signUp(updatedUser, params?.token)
+      //upload image 
+      if(files[0]?.originFileObj){
+        const storageRef = ref(storage, `profile/${files[0]?.originFileObj?.name}`)
+        let uploadTask = uploadBytesResumable(
+          storageRef,
+          files[0]?.originFileObj
+        )
 
-        handleResponse(response, 'Sign up successfull', 'Could not sign up', [
-          () => navigate(`/${SIGNIN}`),
-          () => setIsLoading(false),
-        ])
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            // const pg = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            // setProgress(() => pg);
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            setIsLoading(false)
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              updatedUser = {
+                ...updatedUser,
+                photoURL: downloadURL,
+              }
+
+           signUp(updatedUser, params?.token).then((response)=>{
+            handleResponse(response, 'Sign up successfull', 'Could not sign up', [
+              () => navigate(`/${SIGNIN}`),
+              () => setIsLoading(false),
+            ])
+           })
+           .catch(error=>{
+            setIsLoading(false)
+            console.log(error)
+           })
+            })
+          }
+        )
+      }
+      else {
+       const response = await  signUp(updatedUser,params?.token)
+
+       handleResponse(response, 'Sign up successfull', 'Could not sign up', [
+        () => navigate(`/${SIGNIN}`),
+        () => setIsLoading(false),
+      ])
+      }
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        setIsLoading(false)
+        console.log(err)
+      })
   }
 
   return (

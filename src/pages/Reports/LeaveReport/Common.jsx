@@ -163,7 +163,6 @@ function CommonQuarter({fromDate, toDate, quarter, positions}) {
   if (isLoading) {
     return <CircularProgress className="" />
   }
-  console.log(data?.data?.data?.data, quarter)
 
   return (
     <>

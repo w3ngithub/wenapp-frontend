@@ -7,6 +7,7 @@ import LiveTime from '../LiveTime/index'
 import {
   checkIfTimeISBetweenOfficeHour,
   handleResponse,
+  isNotValidTimeZone,
   sortFromDate,
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
@@ -24,6 +25,7 @@ function PunchInOut() {
   const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
 
   const [toogle, setToogle] = useState(false)
+  const [disableButton, setdisableButton] = useState(false)
   const queryClient = useQueryClient()
   const dispatch: Dispatch<any> = useDispatch()
   const reduxuserAttendance = useSelector((state: any) => state.attendance)
@@ -85,10 +87,18 @@ function PunchInOut() {
   )
 
   const handlePunch = async () => {
+    if (isNotValidTimeZone()) {
+      notification({
+        message: 'Your timezone is not a valid timezone',
+        type: 'error',
+      })
+      return
+    }
     if (checkIfTimeISBetweenOfficeHour()) {
       setToogle(true)
       return
     }
+    setdisableButton(true)
     const location = await getLocation()
     if (await checkLocationPermission()) {
       if (!punchIn) {
@@ -117,6 +127,7 @@ function PunchInOut() {
         type: 'error',
       })
     }
+    setdisableButton(false)
   }
 
   return (
@@ -145,7 +156,8 @@ function PunchInOut() {
         disabled={
           addAttendances.isLoading ||
           punchOutAttendances.isLoading ||
-          latestAttendance?.length === 0
+          latestAttendance?.length === 0 ||
+          disableButton
         }
         style={{width: '200px'}}
       >
