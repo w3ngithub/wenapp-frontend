@@ -86,6 +86,7 @@ function LeaveModal({
 }) {
   const queryClient = useQueryClient()
 
+  const [colorState, setColorState] = useState(true)
   const [form] = Form.useForm()
   const [leaveType, setLeaveType] = useState('')
   const [user, setUser] = useState('')
@@ -629,6 +630,8 @@ function LeaveModal({
                       }
                       mapDays={({date}) => {
                         let isWeekend = [0, 6].includes(date.weekDay.index)
+                        let dates = `${date.year}/${date.month}/${date.day}`
+                        let calenderDate = MuiFormatDate(dates)
                         let holidayList: any[] = holidays?.filter(
                           (holiday: any) => date.format() === holiday?.date
                         )
@@ -640,19 +643,49 @@ function LeaveModal({
 
                         let leaveAlreadyTakenDates =
                           filterHalfDayLeaves(leaveDate)
-                        const isLeaveTaken =
-                          readOnly &&
-                          form
-                            ?.getFieldValue('leaveDatesCasual')?.[0]
-                            ?.split('-')
-                            ?.join('/')
-                            ?.split('T')?.[0] === leaveDate?.[0]?.date
-                        if (readOnly && !isLeaveTaken) {
-                          return {
-                            disabled: true,
-                            style: {
-                              color: '#ccc',
-                            },
+
+                        let selectedDates =
+                          form?.getFieldValue('leaveDatesCasual')
+
+                        let checkDataLeave = leaveData?.leaveDates?.map(
+                          (date: string) => date && date?.split('T')?.[0]
+                        )
+                        let editLeave = checkDataLeave.includes(calenderDate)
+                        let filteredDate = selectedDates?.map(
+                          (date: string) =>
+                            date?.length > 0 && date?.split('T')?.[0]
+                        )
+
+                        let disableSelectedDate =
+                          filteredDate && filteredDate.includes(calenderDate)
+
+                        if (readOnly) {
+                          if (disableSelectedDate) {
+                            return {
+                              style: {
+                                color: 'white',
+                                backgroundColor: '#0074d9',
+                              },
+                            }
+                          } else
+                            return {
+                              disabled: true,
+                              style: {
+                                color: '#ccc',
+                              },
+                            }
+                        } else {
+                          if (disableSelectedDate || editLeave) {
+                            return {
+                              onClick: () => setColorState(false),
+                              disabled: false,
+                              style: {
+                                color: colorState ? 'white' : 'null',
+                                backgroundColor: colorState
+                                  ? '#0074d9'
+                                  : 'null',
+                              },
+                            }
                           }
                         }
                         if (
