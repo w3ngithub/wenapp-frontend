@@ -24,7 +24,7 @@ import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
 import {createLeaveOfUser, getLeaveTypes} from 'services/leaves'
 import {notification} from 'helpers/notification'
-import {LATE_ARRIVAL, LATE_LEAVE_TYPE_ID} from 'constants/Leaves'
+import {CASUAL_LEAVE, LATE_ARRIVAL, LATE_LEAVE_TYPE_ID} from 'constants/Leaves'
 import RangePicker from 'components/Elements/RangePicker'
 
 const FormItem = Form.Item
@@ -166,7 +166,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         reason: 'Leave cut due to late attendance',
         leaveType:
           leaveTypes?.data?.data?.data?.find(
-            (type: any) => type?.name === LATE_ARRIVAL
+            (type: any) => type?.name === CASUAL_LEAVE
           )?._id || LATE_ARRIVAL,
         leaveStatus: 'approved',
       },
