@@ -130,11 +130,18 @@ function Apply({user}) {
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
 
   const sendEmailNotification = (res) => {
+    const leaveType = leaveTypeQuery?.data?.find(
+      (type) => type.id === res.data.data.data.leaveType
+    )?.value
+    const halfLeave = res.data.data.data.halfDay
+      ? res.data.data.data.halfDay
+      : 'Full Day'
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
       user: res.data.data.data.user,
       leaveReason: res.data.data.data.reason,
+      leaveType: `${leaveType} ${halfLeave}`,
     })
   }
 
@@ -359,7 +366,7 @@ function Apply({user}) {
                             })
                           else if (leavePending)
                             notification({
-                              message: `Leave request for the day is pending. Please cancel the previous applied leave to apply again`,
+                              message: `Leave request for the day is pending. Please cancel the previously applied leave requests to apply again`,
                             })
                         },
                       }
