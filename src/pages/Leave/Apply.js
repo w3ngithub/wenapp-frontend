@@ -61,7 +61,7 @@ function Apply({user}) {
   const [fromDate, setFromDate] = useState(
     `${MuiFormatDate(firstDay)}T00:00:00Z`
   )
-  const [toDate, setToDate] = useState(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+  const [toDate, setToDate] = useState(`${MuiFormatDate(lastDay)}T23:59:59Z`)
 
   const monthChangeHandler = (date) => {
     const newMonthDate = new Date(date)
@@ -76,7 +76,7 @@ function Apply({user}) {
       0
     )
     setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+    setToDate(`${MuiFormatDate(lastDay)}T23:59:59Z`)
   }
 
   const darkCalendar = themeType === THEME_TYPE_DARK
@@ -172,11 +172,11 @@ function Apply({user}) {
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
-      const casualLeaveDaysUTC = casualLeaveDays.map((leave) =>
-        MuiFormatDate(new Date(leave))
+      const casualLeaveDaysUTC = casualLeaveDays.map(
+        (leave) => `${MuiFormatDate(new Date(leave))}T00:01:00Z`
       )
       setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`);
+      setToDate(`${MuiFormatDate(lastDay)}T23:59:59Z`)
       form.validateFields().then((values) =>
         leaveMutation.mutate({
           ...values,
