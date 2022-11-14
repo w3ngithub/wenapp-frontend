@@ -108,7 +108,7 @@ function LeaveModal({
   )
 
   const [toDate, setToDate] = useState<any>(
-    `${MuiFormatDate(lastDay)}T23:59:59Z`
+    `${MuiFormatDate(lastDay)}T00:00:00Z`
   )
 
   const monthChangeHandler = (date: any) => {
@@ -124,7 +124,7 @@ function LeaveModal({
       0
     )
     setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-    setToDate(`${MuiFormatDate(lastDay)}T23:59:59Z`)
+    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
   }
 
   const darkCalendar = themeType === THEME_TYPE_DARK
@@ -210,7 +210,7 @@ function LeaveModal({
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
       const casualLeaveDaysUTC = casualLeaveDays.map(
-        (leave: string) => `${MuiFormatDate(new Date(leave))}T00:01:00Z`
+        (leave: string) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
       )
       const newLeave = {
         ...values,
@@ -226,7 +226,7 @@ function LeaveModal({
         leaveStatus: appliedDate ? 'approved' : 'pending',
       }
       setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-      setToDate(`${MuiFormatDate(lastDay)}T23:59:59Z`)
+      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
       if (isEditMode) leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
       else
         leaveMutation.mutate({
