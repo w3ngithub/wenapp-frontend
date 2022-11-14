@@ -1,6 +1,15 @@
 import React, {useEffect} from 'react'
 import '@ant-design/compatible/assets/index.css'
-import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
+import {
+  Button,
+  DatePicker,
+  Input,
+  Modal,
+  Select,
+  Spin,
+  Form,
+  TimePicker,
+} from 'antd'
 import moment from 'moment'
 import {filterOptions} from 'helpers/utils'
 
@@ -37,23 +46,28 @@ function UserDetailForm({
     onToggleModal({})
   }
 
-
-  const {role:storageRole} = localStorage.getItem('user_id') ? JSON.parse(localStorage.getItem('user_id')).user : {}
-
+  const {role: storageRole} = localStorage.getItem('user_id')
+    ? JSON.parse(localStorage.getItem('user_id')).user
+    : {}
 
   const handleSubmit = () => {
     const data = intialValues?.allocatedLeaves
 
-    form.validateFields().then((values) =>
+    form.validateFields().then((values) => {
       onSubmit({
         ...intialValues,
         ...values,
+        officeTime: {
+          utcDate: moment(values.officeTime._d).utc().format(),
+          hour: moment(values.officeTime._d).add(10, 'm').utc().format('h'),
+          minute: moment(values.officeTime._d).add(10, 'm').utc().format('m'),
+        },
         allocatedLeaves: {
           ...data,
           [currentQuarter?.data?.name]: values?.allocatedLeaves,
         },
       })
-    )
+    })
   }
 
   const handleStatusChange = (value) => {
@@ -106,6 +120,9 @@ function UserDetailForm({
         lastReviewDate:
           intialValues.lastReviewDate && moment(intialValues.lastReviewDate),
         exitDate: intialValues.exitDate && moment(intialValues.exitDate),
+        officeTime: intialValues?.officeTime?.utcDate
+          ? moment(new Date(intialValues?.officeTime?.utcDate), 'h:mm:ss a')
+          : moment('09:00:00 AM', 'HH:mm:ss a'),
       })
     }
 
@@ -135,9 +152,6 @@ function UserDetailForm({
             ]
       }
     >
-
-
-
       <Spin spinning={loading}>
         <Form form={form}>
           <FormItem
@@ -163,15 +177,31 @@ function UserDetailForm({
               filterOption={filterOptions}
             >
               {roles &&
-                roles?.data?.data?.data?.filter((role)=>{
-                  return !(storageRole?.key!=='admin' && role?.key==='admin')
-               
-                }).map((role) => (
-                  <Option value={role._id} key={role._id}>
-                    {role.value}
-                  </Option>
-                ))}
+                roles?.data?.data?.data
+                  ?.filter((role) => {
+                    return !(
+                      storageRole?.key !== 'admin' && role?.key === 'admin'
+                    )
+                  })
+                  .map((role) => (
+                    <Option value={role._id} key={role._id}>
+                      {role.value}
+                    </Option>
+                  ))}
             </Select>
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="Office Start Time"
+            name="officeTime"
+            rules={[{required: true, message: 'Required!'}]}
+            hasFeedback={readOnly ? false : true}
+          >
+            <TimePicker
+              style={{width: '100%'}}
+              format="h:mm:ss A"
+              defaultValue={moment('09:00:00 AM', 'HH:mm:ss a')}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}

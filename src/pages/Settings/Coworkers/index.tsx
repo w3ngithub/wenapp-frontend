@@ -141,7 +141,6 @@ function Coworkers() {
       )
     },
     onError: (error) => {
-      console.log('in error', error)
       notification({
         message: 'Position type add failed!',
         type: 'error',
