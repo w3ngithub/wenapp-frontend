@@ -631,7 +631,7 @@ function LeaveModal({
                       mapDays={({date}) => {
                         let isWeekend = [0, 6].includes(date.weekDay.index)
                         let dates = `${date.year}/${date.month}/${date.day}`
-                        let dis = MuiFormatDate(dates)
+                        let calenderDate = MuiFormatDate(dates)
                         let holidayList: any[] = holidays?.filter(
                           (holiday: any) => date.format() === holiday?.date
                         )
@@ -650,14 +650,14 @@ function LeaveModal({
                         let checkDataLeave = leaveData?.leaveDates?.map(
                           (date: string) => date && date?.split('T')?.[0]
                         )
-                        let editLeave = checkDataLeave.includes(dis)
+                        let editLeave = checkDataLeave.includes(calenderDate)
                         let filteredDate = selectedDates?.map(
                           (date: string) =>
                             date?.length > 0 && date?.split('T')?.[0]
                         )
 
                         let disableSelectedDate =
-                          filteredDate && filteredDate.includes(dis)
+                          filteredDate && filteredDate.includes(calenderDate)
 
                         if (readOnly) {
                           if (disableSelectedDate) {
