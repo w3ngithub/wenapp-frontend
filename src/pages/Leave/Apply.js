@@ -1,4 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import { STATUS_TYPES } from 'constants/Leaves'
 import {
   Button,
   Checkbox,
@@ -38,6 +39,7 @@ import {disableDateRanges, disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import moment from 'moment'
+import { LOCALSTORAGE_USER } from 'constants/Settings'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -55,6 +57,7 @@ function Apply({user}) {
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
 
+  const {name,email} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)).user ||{}
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -62,7 +65,7 @@ function Apply({user}) {
   const [fromDate, setFromDate] = useState(
     `${MuiFormatDate(firstDay)}T00:00:00Z`
   )
-  const [toDate, setToDate] = useState(`${MuiFormatDate(lastDay)}T23:59:59Z`)
+  const [toDate, setToDate] = useState(`${MuiFormatDate(lastDay)}T00:00:00Z`)
 
   const monthChangeHandler = (date) => {
     const newMonthDate = new Date(date)
@@ -77,7 +80,7 @@ function Apply({user}) {
       0
     )
     setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-    setToDate(`${MuiFormatDate(lastDay)}T23:59:59Z`)
+    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
   }
 
   const darkCalendar = themeType === THEME_TYPE_DARK
@@ -131,11 +134,18 @@ function Apply({user}) {
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
 
   const sendEmailNotification = (res) => {
+    const leaveType = leaveTypeQuery?.data?.find(
+      (type) => type.id === res.data.data.data.leaveType
+    )?.value
+    const halfLeave = res.data.data.data.halfDay
+      ? res.data.data.data.halfDay
+      : 'Full Day'
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
-      user: res.data.data.data.user,
+      user: res.data.data.data.leaveStatus=== STATUS_TYPES[0].id ?{name,email} :res.data.data.data.user,
       leaveReason: res.data.data.data.reason,
+      leaveType: `${leaveType} ${halfLeave}`,
     })
   }
 
@@ -174,10 +184,10 @@ function Apply({user}) {
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
       const casualLeaveDaysUTC = casualLeaveDays.map(
-        (leave) => `${MuiFormatDate(new Date(leave))}T00:01:00Z`
+        (leave) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
       )
       setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-      setToDate(`${MuiFormatDate(lastDay)}T23:59:59Z`)
+      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
       form.validateFields().then((values) =>
         leaveMutation.mutate({
           ...values,

@@ -86,6 +86,7 @@ function LeaveModal({
 }) {
   const queryClient = useQueryClient()
 
+  const [colorState, setColorState] = useState(true)
   const [form] = Form.useForm()
   const [leaveType, setLeaveType] = useState('')
   const [user, setUser] = useState('')
@@ -108,7 +109,7 @@ function LeaveModal({
   )
 
   const [toDate, setToDate] = useState<any>(
-    `${MuiFormatDate(lastDay)}T23:59:59Z`
+    `${MuiFormatDate(lastDay)}T00:00:00Z`
   )
 
   const monthChangeHandler = (date: any) => {
@@ -124,7 +125,7 @@ function LeaveModal({
       0
     )
     setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-    setToDate(`${MuiFormatDate(lastDay)}T23:59:59Z`)
+    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
   }
 
   const darkCalendar = themeType === THEME_TYPE_DARK
@@ -210,7 +211,7 @@ function LeaveModal({
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
       const casualLeaveDaysUTC = casualLeaveDays.map(
-        (leave: string) => `${MuiFormatDate(new Date(leave))}T00:01:00Z`
+        (leave: string) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
       )
       const newLeave = {
         ...values,
@@ -226,7 +227,7 @@ function LeaveModal({
         leaveStatus: appliedDate ? 'approved' : 'pending',
       }
       setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-      setToDate(`${MuiFormatDate(lastDay)}T23:59:59Z`)
+      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
       if (isEditMode) leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
       else
         leaveMutation.mutate({
@@ -629,6 +630,8 @@ function LeaveModal({
                       }
                       mapDays={({date}) => {
                         let isWeekend = [0, 6].includes(date.weekDay.index)
+                        let dates = `${date.year}/${date.month}/${date.day}`
+                        let calenderDate = MuiFormatDate(dates)
                         let holidayList: any[] = holidays?.filter(
                           (holiday: any) => date.format() === holiday?.date
                         )
@@ -640,19 +643,49 @@ function LeaveModal({
 
                         let leaveAlreadyTakenDates =
                           filterHalfDayLeaves(leaveDate)
-                        const isLeaveTaken =
-                          readOnly &&
-                          form
-                            ?.getFieldValue('leaveDatesCasual')?.[0]
-                            ?.split('-')
-                            ?.join('/')
-                            ?.split('T')?.[0] === leaveDate?.[0]?.date
-                        if (readOnly && !isLeaveTaken) {
-                          return {
-                            disabled: true,
-                            style: {
-                              color: '#ccc',
-                            },
+
+                        let selectedDates =
+                          form?.getFieldValue('leaveDatesCasual')
+
+                        let checkDataLeave = leaveData?.leaveDates?.map(
+                          (date: string) => date && date?.split('T')?.[0]
+                        )
+                        let editLeave = checkDataLeave.includes(calenderDate)
+                        let filteredDate = selectedDates?.map(
+                          (date: string) =>
+                            date?.length > 0 && date?.split('T')?.[0]
+                        )
+
+                        let disableSelectedDate =
+                          filteredDate && filteredDate.includes(calenderDate)
+
+                        if (readOnly) {
+                          if (disableSelectedDate) {
+                            return {
+                              style: {
+                                color: 'white',
+                                backgroundColor: '#0074d9',
+                              },
+                            }
+                          } else
+                            return {
+                              disabled: true,
+                              style: {
+                                color: '#ccc',
+                              },
+                            }
+                        } else {
+                          if (disableSelectedDate || editLeave) {
+                            return {
+                              onClick: () => setColorState(false),
+                              disabled: false,
+                              style: {
+                                color: colorState ? 'white' : 'null',
+                                backgroundColor: colorState
+                                  ? '#0074d9'
+                                  : 'null',
+                              },
+                            }
                           }
                         }
                         if (
