@@ -1,4 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import { STATUS_TYPES } from 'constants/Leaves'
 import {
   Button,
   Checkbox,
@@ -37,6 +38,7 @@ import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
+import { LOCALSTORAGE_USER } from 'constants/Settings'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -54,6 +56,7 @@ function Apply({user}) {
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
 
+  const {name,email} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)).user ||{}
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -130,11 +133,18 @@ function Apply({user}) {
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
 
   const sendEmailNotification = (res) => {
+    const leaveType = leaveTypeQuery?.data?.find(
+      (type) => type.id === res.data.data.data.leaveType
+    )?.value
+    const halfLeave = res.data.data.data.halfDay
+      ? res.data.data.data.halfDay
+      : 'Full Day'
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
-      user: res.data.data.data.user,
+      user: res.data.data.data.leaveStatus=== STATUS_TYPES[0].id ?{name,email} :res.data.data.data.user,
       leaveReason: res.data.data.data.reason,
+      leaveType: `${leaveType} ${halfLeave}`,
     })
   }
 
@@ -359,7 +369,7 @@ function Apply({user}) {
                             })
                           else if (leavePending)
                             notification({
-                              message: `Leave request for the day is pending. Please cancel the previous applied leave to apply again`,
+                              message: `Leave request for the day is pending. Please cancel the previously applied leave requests to apply again`,
                             })
                         },
                       }
