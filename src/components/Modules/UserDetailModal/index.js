@@ -59,7 +59,7 @@ function UserDetailForm({
         ...values,
         officeTime: {
           utcDate: moment(values.officeTime._d).utc().format(),
-          hour: moment(values.officeTime._d).utc().format('h'),
+          hour: moment(values.officeTime._d).add(10, 'm').utc().format('h'),
           minute: moment(values.officeTime._d).add(10, 'm').utc().format('m'),
         },
         allocatedLeaves: {
