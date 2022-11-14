@@ -95,9 +95,9 @@ function ProjectModal({
               initialValues.maintenance?.length > 0
                 ? initialValues.maintenance[0].sendEmailTo
                 : undefined,
-            monthly:
+            enabled:
               initialValues.maintenance?.length > 0
-                ? initialValues.maintenance[0].monthly
+                ? initialValues.maintenance[0].enabled
                 : undefined,
           },
         ])
