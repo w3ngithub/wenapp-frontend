@@ -107,9 +107,11 @@ function LeaveModal({
     `${MuiFormatDate(firstDay)}T00:00:00Z`
   )
 
-  const [toDate, setToDate] = useState<any>(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+  const [toDate, setToDate] = useState<any>(
+    `${MuiFormatDate(lastDay)}T23:59:59Z`
+  )
 
-  const monthChangeHandler = (date:any) => {
+  const monthChangeHandler = (date: any) => {
     const newMonthDate = new Date(date)
     const firstDay = new Date(
       newMonthDate.getFullYear(),
@@ -122,12 +124,10 @@ function LeaveModal({
       0
     )
     setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+    setToDate(`${MuiFormatDate(lastDay)}T23:59:59Z`)
   }
 
-
   const darkCalendar = themeType === THEME_TYPE_DARK
-
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => [
@@ -139,7 +139,7 @@ function LeaveModal({
   })
 
   const userLeavesQuery = useQuery(['userLeaves', fromDate, toDate, user], () =>
-    getLeavesOfUser(user,'', undefined, 1, 30, fromDate, toDate)
+    getLeavesOfUser(user, '', undefined, 1, 30, fromDate, toDate)
   )
 
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
@@ -209,8 +209,8 @@ function LeaveModal({
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
-      const casualLeaveDaysUTC = casualLeaveDays.map((leave: string) =>
-        MuiFormatDate(new Date(leave))
+      const casualLeaveDaysUTC = casualLeaveDays.map(
+        (leave: string) => `${MuiFormatDate(new Date(leave))}T00:01:00Z`
       )
       const newLeave = {
         ...values,
@@ -226,7 +226,7 @@ function LeaveModal({
         leaveStatus: appliedDate ? 'approved' : 'pending',
       }
       setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`);
+      setToDate(`${MuiFormatDate(lastDay)}T23:59:59Z`)
       if (isEditMode) leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
       else
         leaveMutation.mutate({
