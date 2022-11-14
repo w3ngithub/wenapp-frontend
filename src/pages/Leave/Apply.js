@@ -34,9 +34,10 @@ import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import {getAllHolidays} from 'services/resources'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
-import {disabledDate} from 'util/antDatePickerDisabled'
+import {disableDateRanges, disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
+import moment from 'moment'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -206,6 +207,7 @@ function Apply({user}) {
           leaveStatus: leave?.leaveStatus,
           date: new DateObject(leave?.leaveDates[i]).format(),
           isHalfDay: leave?.halfDay,
+          leaveType: leave?.leaveType?.name,
         })
       }
     } else {
@@ -213,9 +215,17 @@ function Apply({user}) {
         leaveStatus: leave?.leaveStatus,
         date: new DateObject(leave?.leaveDates[0]).format(),
         isHalfDay: leave?.halfDay,
+        leaveType: leave?.leaveType?.name,
       })
     }
   })
+
+  let immediateApprovalLeaves = userLeaves?.filter(
+    (leave) =>
+      leave?.leaveType === 'Paternity' ||
+      leave?.leaveType === 'Maternity' ||
+      leave?.leaveType === 'Paid Time Off'
+  )
 
   const disableInterval = (index) => {
     if (multipleDatesSelected) {
@@ -290,6 +300,10 @@ function Apply({user}) {
       setCalendarClicked(false)
     }
   }
+  const paternityStartDate = moment(immediateApprovalLeaves?.[0]?.date)
+  const startTime = paternityStartDate?.startOf('day')?._d
+  const newDate = new Date(paternityStartDate?._d)
+  const paternityEndDate = new Date(newDate.setDate(startTime?.getDate() + 4))
 
   return (
     <Spin spinning={leaveMutation.isLoading}>
@@ -456,7 +470,11 @@ function Apply({user}) {
                     <DatePicker
                       className="gx-mb-3 "
                       style={{width: '100%'}}
-                      disabledDate={disabledDate}
+                      // disabledDate={disableDateRanges({
+                      //   startDate: new Date(MuiFormatDate(paternityStartDate)),
+                      //   endDate: new Date(MuiFormatDate(paternityEndDate)),
+                      // })}
+                      disabledDate = {disableDateRanges(immediateApprovalLeaves)} 
                     />
                   </FormItem>
                 </Col>
