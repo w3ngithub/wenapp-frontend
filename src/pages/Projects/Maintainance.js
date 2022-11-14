@@ -63,7 +63,7 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
   }
 
   const handleMonthlyChange = (value) => {
-    setMaintenance((prev) => [{...prev[0], monthly: Boolean(value.length)}])
+    setMaintenance((prev) => [{...prev[0], enabled: Boolean(value.length)}])
   }
 
   const handleMailDayChange = (event) => {
@@ -84,7 +84,7 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
           <CheckboxGroup
             options={[{label: 'Yes', value: true}]}
             onChange={handleMonthlyChange}
-            value={[maintenance[0]?.monthly]}
+            value={[maintenance[0]?.enabled]}
             disabled={readOnly}
           />
         </FormItem>
