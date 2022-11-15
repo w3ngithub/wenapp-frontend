@@ -45,6 +45,7 @@ function LogtimeModal({
     enabled: false,
   })
 
+  const dateFormat = 'YYYY-MM-DD';
   const handleCancel = () => {
     setZeroHourMinutes(false)
     form.resetFields()
@@ -96,6 +97,8 @@ function LogtimeModal({
                 remarks: initialValues?.remarks,
               }
         )
+      }else{
+        form.setFieldValue('logDate',moment())
       }
     }
 
@@ -134,6 +137,7 @@ function LogtimeModal({
             <DatePicker
               className=" gx-w-100"
               placeholder="Select Date"
+              format={dateFormat}
               disabledDate={
                 LOG_TIME_OLD_EDIT.includes(role)
                   ? false
