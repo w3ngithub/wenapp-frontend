@@ -33,8 +33,8 @@ const WORK_LOG_REPORT_COLUMNS = (sortedInfo: any): report[] => [
     dataIndex: 'timeSpent',
     key: 'timeSpent',
     sorter: (a, b) =>
-      a.timeSpent?.toString().localeCompare(b.timeSpent?.toString()),
-
+      a.timeSpent - b.timeSpent,
+      
     sortOrder: sortedInfo.columnKey === 'timeSpent' && sortedInfo.order,
   },
 ]
