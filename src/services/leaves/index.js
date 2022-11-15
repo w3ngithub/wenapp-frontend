@@ -13,7 +13,7 @@ const getLeaveDaysOfAllUsers = async (fromDate, toDate, quarter) => {
   }
 }
 
-const getTakenAndRemainingLeaveDaysOfUser = async id => {
+const getTakenAndRemainingLeaveDaysOfUser = async (id) => {
   try {
     let response = await API.get(`${Apis.Leaves}/${id}/leavedays`)
     return getAPIResponse(response)
@@ -22,7 +22,7 @@ const getTakenAndRemainingLeaveDaysOfUser = async id => {
   }
 }
 
-const getQuarterTakenAndRemainingLeaveDaysOfUser = async id => {
+const getQuarterTakenAndRemainingLeaveDaysOfUser = async (id) => {
   try {
     let response = await API.get(`${Apis.Leaves}/${id}/quarterleavedays`)
     return getAPIResponse(response)
@@ -36,11 +36,12 @@ const getLeavesOfAllUsers = async (
   user = '',
   date = '',
   page = '',
-  limit = ''
+  limit = '',
+  sort = '-leaveDates'
 ) => {
   try {
     let response = await API.get(
-      `${Apis.Leaves}?leaveStatus=${status}&user=${user}&leaveDates=${date}&page=${page}&limit=${limit}`
+      `${Apis.Leaves}?leaveStatus=${status}&sort=${sort}&user=${user}&leaveDates=${date}&page=${page}&limit=${limit}`
     )
     return getAPIResponse(response)
   } catch (err) {
@@ -55,14 +56,16 @@ const getLeavesOfUser = async (
   page = 1,
   limit = 30,
   fromDate = '',
-  toDate = ''
+  toDate = '',
+  sort = '-leaveDates'
 ) => {
   try {
     let response = await API.get(
       `${
         Apis.Leaves
-      }?user=${id}&page=${page}&limit=${limit}&leaveStatus=${status}&leaveDates=${date ??
-        ''}&fromDate=${fromDate}&toDate=${toDate}`
+      }?user=${id}&page=${page}&sort=${sort}&limit=${limit}&leaveStatus=${status}&leaveDates=${
+        date ?? ''
+      }&fromDate=${fromDate}&toDate=${toDate}`
     )
     return getAPIResponse(response)
   } catch (err) {
@@ -70,7 +73,7 @@ const getLeavesOfUser = async (
   }
 }
 
-const getLeaveTypes = async id => {
+const getLeaveTypes = async (id) => {
   try {
     let response = await API.get(`${Apis.Leaves}/types`)
     return getAPIResponse(response)
@@ -79,16 +82,19 @@ const getLeaveTypes = async id => {
   }
 }
 
-const changeLeaveStatus = async (id, statusType,reason) => {
+const changeLeaveStatus = async (id, statusType, reason) => {
   try {
-    let response = await API.patch(`${Apis.Leaves}/${id}/status/${statusType}`,{reason})
+    let response = await API.patch(
+      `${Apis.Leaves}/${id}/status/${statusType}`,
+      {reason}
+    )
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)
   }
 }
 
-const createLeave = async payload => {
+const createLeave = async (payload) => {
   try {
     let response = await API.post(`${Apis.Leaves}`, payload)
     return getAPIResponse(response)
@@ -97,7 +103,7 @@ const createLeave = async payload => {
   }
 }
 
-const createLeaveOfUser = async payload => {
+const createLeaveOfUser = async (payload) => {
   try {
     let response = await API.post(
       `${Apis.Users}/${payload.id}/leaves`,
@@ -109,7 +115,7 @@ const createLeaveOfUser = async payload => {
   }
 }
 
-const updateLeave = async payload => {
+const updateLeave = async (payload) => {
   try {
     let response = await API.patch(`${Apis.Leaves}/${payload.id}`, payload.data)
     return getAPIResponse(response)
@@ -164,7 +170,7 @@ const getQuarters = async () => {
   }
 }
 
-const sendEmailforLeave = async payload => {
+const sendEmailforLeave = async (payload) => {
   try {
     let response = await API.post(`${Apis.Leaves}/users/sendEmail`, payload)
     return getAPIResponse(response)
