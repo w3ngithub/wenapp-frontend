@@ -20,6 +20,8 @@ function Noticeboard() {
   const [openModal, setOpenModal] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState<any>({})
+  const [arrayDataToSend, setArrayDataToSend] = useState<any>([])
+  const [duplicateValue, setDuplicateValue] = useState<boolean>(false)
   const {data: noticeBoardTypes, isLoading}: any = useQuery(
     ['noticeBoardTypes'],
     getNoticeboardTypes
@@ -86,30 +88,34 @@ function Noticeboard() {
   }
 
   const handleEditClick = (input: any) => {
-    editNoticeboardTypeMutation.mutate({id: dataToEdit?._id, name: capitalizeInput(input)})
+    editNoticeboardTypeMutation.mutate({
+      id: dataToEdit?._id,
+      name: capitalizeInput(input),
+    })
   }
 
   const handleDeleteClick = (data: any, type: string) => {
     deleteNoticeboardTypeMutation.mutate({id: data._id})
   }
 
-  const handleOpenEditModal = (data: any, type: string) => {
+  const handleOpenEditModal = (data: any, type: string,currentData: any) => {
     setType(type)
-
     setIsEditMode(true)
     setOpenModal(true)
     setDataToEdit(data)
+    setArrayDataToSend(currentData)
+
   }
 
   const handleCloseModal = () => {
     setIsEditMode(false)
-
+    setDuplicateValue(false)
     setDataToEdit({})
     setOpenModal(false)
   }
-  const handleOpenModal = (type: string) => {
+  const handleOpenModal = (type: string, data: any) => {
     setType(type)
-
+    setArrayDataToSend(data)
     setOpenModal(true)
   }
 
@@ -118,6 +124,9 @@ function Noticeboard() {
       <CommonModal
         toggle={openModal}
         type={type}
+        duplicateValue={duplicateValue}
+        setDuplicateValue={setDuplicateValue}
+        currentData={arrayDataToSend}
         isEditMode={isEditMode}
         editData={dataToEdit}
         isLoading={
@@ -132,7 +141,7 @@ function Noticeboard() {
         extra={
           <Button
             className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-            onClick={() => handleOpenModal('Category')}
+            onClick={() => handleOpenModal('Category', noticeBoardTypes)}
           >
             Add
           </Button>
@@ -142,9 +151,9 @@ function Noticeboard() {
           data={noticeBoardTypes?.data?.data?.data}
           columns={POSITION_COLUMN(
             (value) => handleDeleteClick(value, 'Category'),
-            (value) => handleOpenEditModal(value, 'Category')
+            (value) => handleOpenEditModal(value, 'Category', noticeBoardTypes)
           )}
-          onAddClick={() => handleOpenModal('Category')}
+          onAddClick={() => handleOpenModal('Category', noticeBoardTypes)}
           isLoading={isLoading || deleteNoticeboardTypeMutation.isLoading}
         />
       </Card>

@@ -16,9 +16,10 @@ import CommonModal from '../CommonModal'
 function Logtime() {
   const queryClient = useQueryClient()
   const [type, setType] = useState('')
-
+  const [arrayDataToSend, setArrayDataToSend] = useState<any>([])
   const [openModal, setOpenModal] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
+  const [duplicateValue, setDuplicateValue] = useState<boolean>(false)
   const [dataToEdit, setDataToEdit] = useState<any>({})
 
   const {data: logTypes, isLoading}: any = useQuery(['logTypes'], getLogtypes)
@@ -84,23 +85,23 @@ function Logtime() {
     deleteLogTypeMutation.mutate({id: data._id})
   }
 
-  const handleOpenEditModal = (data: any, type: string) => {
+  const handleOpenEditModal = (data: any, type: string, currentData: any) => {
     setType(type)
-
     setIsEditMode(true)
     setOpenModal(true)
     setDataToEdit(data)
+    setArrayDataToSend(currentData)
   }
 
   const handleCloseModal = () => {
     setIsEditMode(false)
-
+    setDuplicateValue(false)
     setDataToEdit({})
     setOpenModal(false)
   }
-  const handleOpenModal = (type: string) => {
+  const handleOpenModal = (type: string, data:any) => {
     setType(type)
-
+    setArrayDataToSend(data)
     setOpenModal(true)
   }
 
@@ -109,6 +110,9 @@ function Logtime() {
       <CommonModal
         toggle={openModal}
         type={type}
+        duplicateValue={duplicateValue}
+        setDuplicateValue={setDuplicateValue}
+        currentData = {arrayDataToSend}
         isEditMode={isEditMode}
         editData={dataToEdit}
         isLoading={
@@ -122,7 +126,7 @@ function Logtime() {
         extra={
           <Button
             className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-            onClick={() => handleOpenModal('Log Type')}
+            onClick={() => handleOpenModal('Log Type', logTypes)}
           >
             Add
           </Button>
@@ -132,9 +136,9 @@ function Logtime() {
           data={logTypes?.data?.data?.data}
           columns={POSITION_COLUMN(
             (value) => handleDeleteClick(value, 'Log Type'),
-            (value) => handleOpenEditModal(value, 'Log Type')
+            (value) => handleOpenEditModal(value, 'Log Type', logTypes)
           )}
-          onAddClick={() => handleOpenModal('Log Type')}
+          onAddClick={() => handleOpenModal('Log Type',logTypes)}
           isLoading={isLoading || deleteLogTypeMutation.isLoading}
         />
       </Card>

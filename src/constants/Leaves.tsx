@@ -69,16 +69,12 @@ const LEAVES_COLUMN = (
                       <Divider type="vertical" />
                       {!['approved', 'cancelled'].includes(record.status) && (
                         <>
-                          <Popconfirm
-                            title="Are you sure you want to approve?"
-                            onConfirm={() => onApproveClick(record)}
-                            okText="Yes"
-                            cancelText="No"
+                          <span
+                            onClick={() => onApproveClick(record)}
+                            className="gx-link gx-text-green"
                           >
-                            <span className="gx-link gx-text-green">
-                              Approve
-                            </span>
-                          </Popconfirm>
+                            Approve
+                          </span>
                           <Divider type="vertical" />
                           <span
                             className="gx-link gx-text-danger"
@@ -228,6 +224,7 @@ export {LEAVES_COLUMN, STATUS_TYPES}
 
 export const LATE_LEAVE_TYPE_ID = '631192ec8194d8f22afe6685'
 export const LATE_ARRIVAL = 'Late Arrival'
+export const CASUAL_LEAVE = 'Casual Leave'
 
 export const LEAVES_TYPES = {
   Casual: 'casual',

@@ -63,7 +63,7 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
   }
 
   const handleMonthlyChange = (value) => {
-    setMaintenance((prev) => [{...prev[0], monthly: Boolean(value.length)}])
+    setMaintenance((prev) => [{...prev[0], enabled: Boolean(value.length)}])
   }
 
   const handleMailDayChange = (event) => {
@@ -80,13 +80,11 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
           {...formItemLayout}
           style={{marginBottom: '30px', display: 'block'}}
           label="Enable Maintenance"
-          help="Check this box to enable recurring monthly maintenance on this
-                        project."
         >
           <CheckboxGroup
             options={[{label: 'Yes', value: true}]}
             onChange={handleMonthlyChange}
-            value={[maintenance[0]?.monthly]}
+            value={[maintenance[0]?.enabled]}
             disabled={readOnly}
           />
         </FormItem>

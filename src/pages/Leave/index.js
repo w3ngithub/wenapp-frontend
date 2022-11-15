@@ -31,6 +31,7 @@ function Leave() {
   let leaveCancelReason
   const [selectedRows, setSelectedRows] = useState([])
   const [openCancelLeaveModal, setOpenCancelLeaveModal] = useState(false)
+
   const [leaveData, setLeaveData] = useState('')
   const [submittingCancelReason, setSubmittingCancelReason] = useState(false)
 
@@ -41,6 +42,8 @@ function Leave() {
   const leaveDaysQuery = useQuery(['takenAndRemainingLeaveDays'], () =>
     getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
+
+
   const handleCloseCancelLeaveModal = () => {
     setOpenCancelLeaveModal(false)
   }
@@ -126,7 +129,13 @@ function Leave() {
         leaveData={leaveData}
         loader={submittingCancelReason}
         setLoader={setSubmittingCancelReason}
+        title={"Cancel Leave"}
+        isRequired={true}
+        label = {"Cancel Leave Reason"}
+        name={"leaveCancelReason"}
       />
+
+ 
       <Card title="Leave Management System">
         <Row>
           <Col xl={12} lg={12} md={24} sm={24} xs={24}>
