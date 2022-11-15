@@ -81,9 +81,9 @@ const CO_WORKERCOLUMNS = (
               >
                 <span className="gx-link">
                   {record.active ? (
-                    <CustomIcon name="activeUser" />
-                  ) : (
                     <CustomIcon name="deactiveUser" />
+                  ) : (
+                    <CustomIcon name="activeUser" />
                   )}
                 </span>
               </Popconfirm>

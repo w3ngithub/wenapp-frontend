@@ -251,6 +251,7 @@ function LogtimeModal({
                 onSelect={() => {
                   setSearchValue('')
                 }}
+                onBlur={(e)=>setSearchValue('')}
               >
                 {[
                   ...(projectsQuery?.data?.data?.data?.data || []),
