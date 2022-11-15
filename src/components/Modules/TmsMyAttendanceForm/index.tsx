@@ -99,6 +99,7 @@ function TmsMyAttendanceForm({
         punchInTime: moment.utc().format(),
         punchInNote: values.punchInNote,
         punchInLocation: location,
+        attendanceDate: moment.utc().startOf('day').format(),
       })
     } else {
       notification({

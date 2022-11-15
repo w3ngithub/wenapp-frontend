@@ -124,6 +124,7 @@ function PunchInOut() {
         addAttendances.mutate({
           punchInTime: moment.utc().format(),
           punchInLocation: location,
+          attendanceDate: moment.utc().startOf('day').format(),
         })
       }
     } else {
