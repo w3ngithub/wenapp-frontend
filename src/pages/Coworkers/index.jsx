@@ -71,7 +71,7 @@ function CoworkersPage() {
     getUserPositionTypes
   )
   const {data, isLoading, isFetching, isError, refetch} = useQuery(
-    ['users', page, activeUser, role, position, name,sort],
+    ['users', page, activeUser, role, position, name, sort],
     () =>
       getAllUsers({
         ...page,
@@ -84,7 +84,7 @@ function CoworkersPage() {
             ? ''
             : sort.order === 'ascend'
             ? sort.field
-            : `-${sort.field}`
+            : `-${sort.field}`,
       }),
     {
       keepPreviousData: true,
@@ -94,9 +94,9 @@ function CoworkersPage() {
     select: (res) => {
       const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
         (quarter) =>
-          new Date(quarter[1].fromDate) <
+          new Date(quarter[1].fromDate) <=
             new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
-          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <
+          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
             new Date(quarter[1].toDate)
       )
 
@@ -230,9 +230,8 @@ function CoworkersPage() {
   }
 
   const handleResetAllocatedLeaves = () => {
-    resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data.name})
+    resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
   }
-
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
@@ -410,7 +409,7 @@ function CoworkersPage() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['20', '50','80'],
+            pageSizeOptions: ['20', '50', '80'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
