@@ -240,6 +240,7 @@ function ProjectModal({
                 label="Path"
                 hasFeedback={readOnly ? false : true}
                 name="path"
+                rules={[{required: true, message: 'Required!'}]}
               >
                 <Input
                   className={`${readOnly ? 'path-disabled' : ''}`}
@@ -392,7 +393,12 @@ function ProjectModal({
                 hasFeedback={readOnly ? false : true}
                 name="client"
               >
-                <Select placeholder="Select Client" disabled={readOnly}>
+                <Select
+                  placeholder="Select Client"
+                  filterOption={filterOptions}
+                  disabled={readOnly}
+                  showSearch
+                >
                   {client?.data?.data?.data?.map((tag) => (
                     <Option value={tag._id} key={tag._id}>
                       {tag.name}
