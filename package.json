@@ -1,5 +1,6 @@
 {
   "name": "wen-test",
+  "homepage": "http://app.webexpertsnepal.com",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
