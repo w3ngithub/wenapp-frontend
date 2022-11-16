@@ -165,7 +165,7 @@ export const convertDateToUTC = (date) => {
   return new Date(date.getTime()).toJSON()
 }
 
-export const debounce = (func, delay) => {
+export const debounce = (func, delay=2000) => {
   let timer
   return function () {
     let self = this

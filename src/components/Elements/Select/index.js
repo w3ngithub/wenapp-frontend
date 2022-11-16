@@ -17,6 +17,7 @@ const Select = ({
   inputSelect = false,
   width = 200,
   placeholderClass = false,
+  handleSearch,
   showSearchIcon = false,
 }) => {
   const [searchValue, setSearchValue] = useState('')
@@ -33,6 +34,7 @@ const Select = ({
         onChange={onChange}
         onSearch={(e) => {
           inputSelect && setSearchValue(e)
+          handleSearch(e)
         }}
         value={value}
         filterOption={filterOptions}
@@ -62,6 +64,7 @@ export default Select
 
 Select.defaultProps = {
   onChange: () => {},
+  handleSearch :()=>{},
   value: undefined,
   options: [],
   placeholder: 'Select Option',
