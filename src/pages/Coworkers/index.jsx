@@ -71,7 +71,7 @@ function CoworkersPage() {
     getUserPositionTypes
   )
   const {data, isLoading, isFetching, isError, refetch} = useQuery(
-    ['users', page, activeUser, role, position, name,sort],
+    ['users', page, activeUser, role, position, name, sort],
     () =>
       getAllUsers({
         ...page,
@@ -84,7 +84,7 @@ function CoworkersPage() {
             ? ''
             : sort.order === 'ascend'
             ? sort.field
-            : `-${sort.field}`
+            : `-${sort.field}`,
       }),
     {
       keepPreviousData: true,
@@ -410,7 +410,7 @@ function CoworkersPage() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['20', '50','80'],
+            pageSizeOptions: ['20', '50', '80'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
