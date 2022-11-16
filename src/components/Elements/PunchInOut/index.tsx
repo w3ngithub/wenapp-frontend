@@ -94,9 +94,10 @@ function PunchInOut() {
       })
       return
     }
+
     if (
       checkIfTimeISBetweenOfficeHour(
-        moment(new Date(user?.officeTime?.utcDate)).format('h:mm:ss')
+        moment(user?.officeTime?.utcDate).add(10, 'm').format('h:mm:ss')
       )
     ) {
       setToogle(true)
@@ -123,6 +124,7 @@ function PunchInOut() {
         addAttendances.mutate({
           punchInTime: moment.utc().format(),
           punchInLocation: location,
+          attendanceDate: moment.utc().startOf('day').format(),
         })
       }
     } else {

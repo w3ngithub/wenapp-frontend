@@ -3,7 +3,7 @@ export const app = '/wenapp'
 export const SIGNIN = 'signin'
 export const SIGNUP = 'signup'
 export const FORGOT_PASSWORD = 'forget-password'
-export const RESET_PASSWORD = '/api/v1/users/resetPassword/:token'
+export const RESET_PASSWORD = '/users/resetPassword/:token'
 
 // Sidebar
 export const DASHBOARD = 'dashboard'
@@ -24,7 +24,7 @@ export const PROJECT_LOG = `${PROJECTS}/:slug`
 
 // User
 export const PROFILE = 'profile'
-export const INVITE = 'api/v1/users/signup/:token'
+export const INVITE = 'users/signup/:token'
 
 // Reports
 export const WEEKLY_REPORT = `weekly-report`
