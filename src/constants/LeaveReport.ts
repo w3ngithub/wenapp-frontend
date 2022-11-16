@@ -17,19 +17,17 @@ const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
     sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
   },
   {
-    title: 'Allocated Leaves',
+    title: 'Approved Leaves',
     dataIndex: 'leavesTaken',
     key: 'leavesTaken',
-    sorter: (a, b) =>
-      a.leavesTaken-b.leavesTaken,
+    sorter: (a, b) => a.leavesTaken - b.leavesTaken,
     sortOrder: sortedInfo.columnKey === 'leavesTaken' && sortedInfo.order,
   },
   {
     title: 'Days Remaining',
     dataIndex: 'leavesRemaining',
     key: 'leavesRemaining',
-    sorter: (a, b) =>
-      a.leavesRemaining-b.leavesRemaining,
+    sorter: (a, b) => a.leavesRemaining - b.leavesRemaining,
 
     sortOrder: sortedInfo.columnKey === 'leavesRemaining' && sortedInfo.order,
   },
