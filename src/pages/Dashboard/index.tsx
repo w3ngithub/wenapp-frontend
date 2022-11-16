@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState,useCallback} from 'react'
 import {ReactComponent as LeaveIcon} from 'assets/images/Leave.svg'
 import {Button, Card, Col, Form, Row, Spin} from 'antd'
 import Auxiliary from 'util/Auxiliary'
@@ -47,7 +47,7 @@ import {
   DASHBOARD_PROJECT_LOG_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {LEAVES_TYPES} from 'constants/Leaves'
-
+import { debounce } from 'helpers/utils'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -60,6 +60,7 @@ const Dashboard = () => {
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
+  const [projectArray,setProjectArray] = useState([])
   const navigate = useNavigate()
   const loggedInUser = getLocalStorageData(LOCALSTORAGE_USER)
   const {innerWidth} = useWindowsSize()
@@ -110,6 +111,22 @@ const Dashboard = () => {
     () => getTimeLogChart({project, logType}),
     {enabled: false, refetchOnWindowFocus: false}
   )
+
+
+  const  handleSearch = async(projectName:any)=>{
+    if(!projectName){
+       setProjectArray([])
+      return
+    }
+    else {
+      const projects = await getAllProjects({project:projectName})
+      setProjectArray(projects?.data?.data?.data)
+    }
+    //else fetch projects from api 
+
+  }
+
+  const optimizedFn = useCallback(debounce(handleSearch,100),[])
 
   const leavesQuery = useQuery(
     ['DashBoardleaves'],
@@ -538,14 +555,23 @@ const Dashboard = () => {
                     <Select
                       showSearchIcon={true}
                       value={project}
-                      onChange={(c: any) => setProject(c)}
+                     onChange={(c:any) => setProject(c)}
+                     handleSearch={optimizedFn}
                       placeholder="Search Project"
-                      options={data?.data?.data?.data?.map(
+                      // options={data?.data?.data?.data?.map(
+                      //   (x: {_id: string; name: string}) => ({
+                      //     id: x._id,
+                      //     value: x.name,
+                      //   })
+                      // )}
+
+                        options={(projectArray || [])?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,
                           value: x.name,
                         })
                       )}
+
                       inputSelect
                     />
                   </FormItem>
