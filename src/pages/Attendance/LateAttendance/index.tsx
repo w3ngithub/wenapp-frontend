@@ -84,7 +84,6 @@ function LateAttendance({userRole}: {userRole: string}) {
 
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
     onSuccess: (response) => {
-      queryClient.invalidateQueries(['lateAttendaceAttendance'])
       if (response.status) {
         handleCutLeaveInAttendance()
       } else {
