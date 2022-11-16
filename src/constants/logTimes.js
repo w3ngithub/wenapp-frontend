@@ -61,29 +61,18 @@ const LOGTIMES_COLUMNS = (
           sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,
         },
         {
-          title: 'Added By',
-          dataIndex: 'user',
-          // width: 150,
-          key: 'user',
-          sorter: true,
-          sortOrder: sortedInfo.columnKey === 'user' && sortedInfo.order,
-        },
-
-        {
           title: 'Action',
           key: 'action',
           // width: 360,
           render: (text, record) => {
             return (
               <span>
-                {!(role === RoleAccess.TeamLead) && (
-                  <span
-                    className="gx-link"
-                    onClick={() => onOpenEditModal(record)}
-                  >
-                    <CustomIcon name="edit" />
-                  </span>
-                )}
+                <span
+                  className="gx-link"
+                  onClick={() => onOpenEditModal(record)}
+                >
+                  <CustomIcon name="edit" />
+                </span>
                 <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
                   <Divider type="vertical" />
                   <Popconfirm
@@ -159,21 +148,19 @@ const LOGTIMES_COLUMNS = (
           render: (text, record) => {
             return (
               <span style={{display: 'flex'}}>
-                <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}>
-                  {record.user === user ||
-                  [RoleAccess.Admin, RoleAccess.ProjectManager].includes(
-                    role
-                  ) ? (
-                    <span
-                      className="gx-link"
-                      onClick={() => onOpenEditModal(record)}
-                    >
-                      <CustomIcon name="edit" />
-                    </span>
-                  ) : (
-                    ''
-                  )}
-                </AccessWrapper>
+                {/* <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}> */}
+                {record.user === user ||
+                [RoleAccess.Admin, RoleAccess.ProjectManager].includes(role) ? (
+                  <span
+                    className="gx-link"
+                    onClick={() => onOpenEditModal(record)}
+                  >
+                    <CustomIcon name="edit" />
+                  </span>
+                ) : (
+                  ''
+                )}
+                {/* </AccessWrapper> */}
                 <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
                   {(role === RoleAccess.Admin ||
                     role === RoleAccess.ProjectManager) && (
