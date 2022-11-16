@@ -107,7 +107,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         }
         handleResponse(
           response,
-          'Leave Cut Successfull',
+          'Leave Cut Successful',
           'Leave creation failed',
           [() => queryClient.invalidateQueries(['lateAttendaceAttendance'])]
         )

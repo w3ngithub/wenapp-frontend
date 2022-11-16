@@ -77,13 +77,19 @@ function ProjectLogs() {
     isLoading: timelogLoading,
     isFetching: timeLogFetching,
   } = useQuery(
-    ['timeLogs', page, projectId, logType, author],
+    ['timeLogs', page, projectId, logType, author, sort],
     () =>
       getAllTimeLogs({
         ...page,
         logType,
         project: projectId,
         user: author,
+        sort:
+          sort.order === undefined || sort.column === undefined
+            ? '-logDate'
+            : sort.order === 'ascend'
+            ? sort.field
+            : `-${sort.field}`,
       }),
     {keepPreviousData: true}
   )
