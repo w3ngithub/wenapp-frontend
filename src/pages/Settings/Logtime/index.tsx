@@ -72,12 +72,10 @@ function Logtime() {
   })
 
   const handleAddClick = (input: string) => {
-    input = capitalizeInput(input)
     addLogTypeMutation.mutate({name: input})
   }
 
   const handleEditClick = (input: any) => {
-    input = capitalizeInput(input)
     editLogTypeMutation.mutate({id: dataToEdit?._id, name: input})
   }
 

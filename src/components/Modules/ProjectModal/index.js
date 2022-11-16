@@ -54,10 +54,27 @@ function ProjectModal({
     onClose()
   }
 
-  const handleSubmit = () => {
-    form.validateFields().then((values) =>
+  const changedRoleChecker = (type, key) => {
+    const newList = type?.map((item) => {
+      if (item.includes(' ')) {
+        return initialValues?.[key]?.filter((val) => val?.name === item)?.[0]?._id
+      } else return item
+    })
+    return newList;
+  }
+
+  const handleSubmit = (type) => {
+    form.validateFields().then((values) => {
+      const updatedDesigners = changedRoleChecker(values?.designers,'designers')
+      const updatedQAs = changedRoleChecker(values?.qa,'qa')
+      const updatedDevelopers = changedRoleChecker(values?.developers,'devOps')
+      const updatedDevOps = changedRoleChecker(values?.devOps, 'devOps')
       onSubmit({
         ...values,
+        designers:updatedDesigners,
+        qa:updatedQAs,
+        developers:updatedDevelopers,
+        devOps: updatedDevOps,
         maintenance: [
           {
             ...maintenance[0],
@@ -68,7 +85,7 @@ function ProjectModal({
           },
         ],
       })
-    )
+    })
   }
 
   useEffect(() => {
@@ -122,19 +139,29 @@ function ProjectModal({
             : undefined,
           developers:
             initialValues.developers?.length > 0
-              ? initialValues.developers?.map((developer) => developer._id)
+              ? initialValues.developers?.map((developer) =>
+                  developer?.positionType?.name === 'Developer'
+                    ? developer._id
+                    : developer.name
+                )
               : undefined,
           designers:
             initialValues.designers?.length > 0
-              ? initialValues.designers?.map((designer) => designer._id)
+              ? initialValues.designers?.map((designer) =>
+                  designer?.positionType?.name === 'Designer'
+                    ? designer._id
+                    : designer.name
+                )
               : undefined,
           devOps:
             initialValues.devOps?.length > 0
-              ? initialValues.devOps?.map((devop) => devop._id)
+              ? initialValues.devOps?.map((devop) => devop?.positionType?.name === 'devOps' ? devop._id : devop.name)
               : undefined,
           qa:
             initialValues.qa?.length > 0
-              ? initialValues.qa?.map((q) => q._id)
+              ? initialValues.qa?.map((q) =>
+                  q?.positionType?.name === 'QA' ? q._id : q.name
+                )
               : undefined,
           stagingUrls:
             initialValues.stagingUrls?.length > 0

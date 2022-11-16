@@ -235,7 +235,6 @@ function CoworkersPage() {
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
-
   if (isLoading) {
     return <CircularProgress />
   }
