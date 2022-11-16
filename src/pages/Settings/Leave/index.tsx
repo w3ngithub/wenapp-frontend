@@ -153,12 +153,12 @@ function Leave() {
   })
 
   const handleAddClick = (leave: leaveType) => {
-    leave = {...leave,name:capitalizeInput(leave?.name)}
+    leave = {...leave,name:leave?.name}
     addLeaveTypeMutation.mutate(leave)
   }
 
   const handleEditClick = (leave: leaveType) => {
-    leave = {...leave,name:capitalizeInput(leave?.name)}
+    leave = {...leave,name:leave?.name}
     editLeaveTypeMutation.mutate({id: dataToEdit?._id, leave})
   }
 

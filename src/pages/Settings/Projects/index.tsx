@@ -259,7 +259,6 @@ function Projects() {
   })
 
   const handleAddClick = (input: string) => {
-    input = capitalizeInput(input)
     if (type === types.PROJECT_TYPE)
       addProjectTypeMutation.mutate({name: input})
 
@@ -269,9 +268,7 @@ function Projects() {
     if (type === types.CLIENTS) addClientMutation.mutate({name: input})
   }
 
-  const handleEditClick = (input: any) => {
-    input = capitalizeInput(input)
-  
+  const handleEditClick = (input: any) => {  
     if (type === types.PROJECT_TYPE)
       editProjectTypeMutation.mutate({id: dataToEdit?._id, name: input})
 

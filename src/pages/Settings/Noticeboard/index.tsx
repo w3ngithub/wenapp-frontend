@@ -84,13 +84,13 @@ function Noticeboard() {
   })
 
   const handleAddClick = (input: string) => {
-    addNoticeboardTypeMutation.mutate({name: capitalizeInput(input)})
+    addNoticeboardTypeMutation.mutate({name: input})
   }
 
   const handleEditClick = (input: any) => {
     editNoticeboardTypeMutation.mutate({
       id: dataToEdit?._id,
-      name: capitalizeInput(input),
+      name: input,
     })
   }
 
