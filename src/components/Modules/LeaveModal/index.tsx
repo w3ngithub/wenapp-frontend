@@ -342,6 +342,7 @@ function LeaveModal({
       }
     }
   }
+  console.log('leave Data', leaveData)
   const calendarClickHandler = () => {
     const selectedDates = form?.getFieldValue('leaveDatesCasual')
     if (selectedDates?.length > 0) {
@@ -562,7 +563,7 @@ function LeaveModal({
                 </Col>
               </Row>
 
-              {!showWorker && leaveData?.cancelReason && (
+              {leaveData?.status === 'cancelled' && (
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item

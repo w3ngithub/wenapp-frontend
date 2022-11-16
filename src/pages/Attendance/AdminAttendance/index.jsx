@@ -82,7 +82,7 @@ function AdminAttendance({userRole}) {
   }, [state?.date, state?.user])
 
   const {data: users} = useQuery(['userForAttendances'], () =>
-    getAllUsers({fields: 'name'})
+    getAllUsers({fields: 'name',active:true})
   )
 
   const {data, isLoading, isFetching} = useQuery(
@@ -229,6 +229,8 @@ function AdminAttendance({userRole}) {
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data?.data?.attendances?.[0]?.data])
+
+  console.log('all users', users?.data?.data?.data)
 
   return (
     <div>
