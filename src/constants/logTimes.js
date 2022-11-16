@@ -61,15 +61,6 @@ const LOGTIMES_COLUMNS = (
           sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,
         },
         {
-          title: 'Added By',
-          dataIndex: 'user',
-          // width: 150,
-          key: 'user',
-          sorter: true,
-          sortOrder: sortedInfo.columnKey === 'user' && sortedInfo.order,
-        },
-
-        {
           title: 'Action',
           key: 'action',
           // width: 360,
