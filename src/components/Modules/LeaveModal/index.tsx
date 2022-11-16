@@ -650,14 +650,14 @@ function LeaveModal({
                         let checkDataLeave = leaveData?.leaveDates?.map(
                           (date: string) => date && date?.split('T')?.[0]
                         )
-                        let editLeave = checkDataLeave.includes(calenderDate)
+                        let editLeave = checkDataLeave?.includes(calenderDate)
                         let filteredDate = selectedDates?.map(
                           (date: string) =>
                             date?.length > 0 && date?.split('T')?.[0]
                         )
 
                         let disableSelectedDate =
-                          filteredDate && filteredDate.includes(calenderDate)
+                          filteredDate && filteredDate?.includes(calenderDate)
 
                         if (readOnly) {
                           if (disableSelectedDate) {
