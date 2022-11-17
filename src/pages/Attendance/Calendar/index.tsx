@@ -4,7 +4,12 @@ import {useNavigate} from 'react-router-dom'
 import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
-import {getLocalStorageData, MuiFormatDate, sortFromDate} from 'helpers/utils'
+import {
+  getLocalStorageData,
+  milliSecondIntoHours,
+  MuiFormatDate,
+  sortFromDate,
+} from 'helpers/utils'
 import {searchAttendacentOfUser} from 'services/attendances'
 import {monthlyState} from 'constants/Attendance'
 import {getLeavesOfAllUsers} from 'services/leaves'
@@ -32,16 +37,14 @@ function AttendanceCalendar() {
     ['userLeaves'],
     () => getLeavesOfAllUsers('approved', user._id),
     {
-      select: res => {
+      select: (res) => {
         return res?.data?.data?.data
       },
     }
   )
 
   const handleCalendarRangeChange = (calendarDate: any) => {
-    const mom = moment(moment(calendarDate[0]).add(1, 'days'))
-      .utc()
-      .format()
+    const mom = moment(moment(calendarDate[0]).add(1, 'days')).utc().format()
     const filterByWeek = calendarDate.length === 7
     const filterByDay = calendarDate.length === 1
     if (filterByWeek) {
@@ -95,8 +98,7 @@ function AttendanceCalendar() {
     }
   }
 
-  let attendances: any[] = [],
-    leaves: any[] = []
+  let leaves: any[] = []
 
   userLeaves?.forEach((leave: any) => {
     leaves.push({
@@ -119,29 +121,50 @@ function AttendanceCalendar() {
       allDay: true,
     })
   })
-  data?.data?.data?.attendances[0]?.data?.forEach((attendance: any) => {
-    const sortedAttendance = sortFromDate(
-      attendance?.data,
-      'punchInTime'
-    ).filter((attendance: any) => attendance.punchOutTime)
+  const attendances = data?.data?.data?.attendances[0]?.data?.map(
+    (attendance: any) => {
+      const sortedAttendance = sortFromDate(
+        attendance?.data,
+        'punchInTime'
+      ).filter((attendance: any) => attendance.punchOutTime)
 
-    const totalHoursWorked: number = sortedAttendance.reduce(
-      (acc: number, attendance: any) =>
-        new Date(attendance.punchOutTime).getHours() -
-        new Date(attendance.punchInTime).getHours() +
-        acc,
-      0
-    )
+      const totalHoursWorked = milliSecondIntoHours(
+        sortedAttendance
+          ?.map((x) =>
+            x?.punchOutTime
+              ? new Date(x?.punchOutTime).getTime() -
+                new Date(x?.punchInTime).getTime()
+              : ''
+          )
+          .filter(Boolean)
+          ?.reduce((accumulator, value) => {
+            return +accumulator + +value
+          }, 0)
+      )
+      const hrsMin = totalHoursWorked
+        ?.trim()
+        ?.split(' ')
+        ?.filter((item) => !isNaN(+item))
 
-    attendances.push({
-      id: attendance?._id,
-      title: 'Hours: ' + totalHoursWorked,
-      start: new Date(attendance._id?.attendanceDate),
-      end: new Date(attendance._id?.attendanceDate),
-      isLessHourWorked: totalHoursWorked < 9,
-      allDay: true,
-    })
-  })
+      let totalTime = 0
+      if (hrsMin?.length === 2) {
+        totalTime = +hrsMin[0] + +hrsMin[1] / 60
+      } else {
+        totalTime = +hrsMin[0] / 60
+      }
+
+      if (totalHoursWorked.trim() !== '') {
+        return {
+          id: attendance?._id,
+          title: totalHoursWorked,
+          start: new Date(attendance._id?.attendanceDate),
+          end: new Date(attendance._id?.attendanceDate),
+          isLessHourWorked: totalTime < 9,
+          allDay: true,
+        }
+      } else return null
+    }
+  )
 
   const handleSelectEvent = (data: any) => {
     if (data.type === 'leave' || data.type === 'longLeaves')
@@ -160,7 +183,7 @@ function AttendanceCalendar() {
         <div className="gx-rbc-calendar">
           <Calendar
             localizer={localizer}
-            events={[...attendances, ...leaves]}
+            events={[...(attendances || []), ...(leaves || [])]}
             startAccessor="start"
             endAccessor="end"
             onRangeChange={handleCalendarRangeChange}
