@@ -15,6 +15,7 @@ import moment from 'moment'
 import {useEffect} from 'react'
 import {filterOptions} from 'helpers/utils'
 import {getNoticeTypes} from 'services/noticeboard'
+import { disabledBeforeToday } from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -168,6 +169,7 @@ function NoticeModal({
                   className=" gx-w-100"
                   disabled={readOnly}
                   format={dateFormat}
+                  disabledDate={disabledBeforeToday}
                 />
               </FormItem>
             </Col>
@@ -201,6 +203,7 @@ function NoticeModal({
                   className=" gx-w-100"
                   disabled={readOnly}
                   format={dateFormat}
+                  disabledDate={disabledBeforeToday}
                 />
               </FormItem>
             </Col>
