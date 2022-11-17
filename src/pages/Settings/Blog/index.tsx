@@ -83,12 +83,10 @@ function Blog() {
   })
 
   const handleAddClick = (input: string) => {
-    input = capitalizeInput(input)
     addBlogCategoryMutation.mutate({name: input})
   }
 
   const handleEditClick = (input: any) => {
-    input = capitalizeInput(input)
     editBlogCategoryMutation.mutate({id: dataToEdit?._id, name: input})
   }
 
