@@ -8,7 +8,15 @@ import {Link} from 'react-router-dom'
 
 const BlogItem = ({blog, grid, removeBlog, access}) => {
   const {title, content, createdBy, createdAt, blogCategories, _id, slug} = blog
-  const imgSrc = content?.split('src=')[1]?.split(' ')[0]?.replace(`"`, '')
+
+  var regexp = /<img([\w\W]+?)>/g
+  const text = content.match(regexp)
+
+  const imgageBlog = text?.filter((img) =>
+    img?.includes(`alt=\"undefined\"`)
+  )[0]
+  const imgSrc = imgageBlog?.split('src=')[1]?.split(' ')[0]?.replace(`"`, '')
+
   const [parsedContent, setParsedContent] = useState(
     parse(content.substring(0, 400))
   )
