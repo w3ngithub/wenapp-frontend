@@ -11,7 +11,6 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
 
   var regexp = /<img([\w\W]+?)>/g
   const text = content.match(regexp)
-  console.log('test', text)
 
   const imgageBlog = text?.filter((img) =>
     img?.includes(`alt=\"undefined\"`)
