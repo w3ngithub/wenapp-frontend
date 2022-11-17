@@ -146,11 +146,19 @@ function AttendanceCalendar() {
         ?.split(' ')
         ?.filter((item) => !isNaN(+item))
 
+      const time = totalHoursWorked?.trim()?.split(' ')
+
+
       let totalTime = 0
       if (hrsMin?.length === 2) {
         totalTime = +hrsMin[0] + +hrsMin[1] / 60
-      } else {
-        totalTime = +hrsMin[0] / 60
+      }
+      if (hrsMin?.length === 1) {
+        if (time?.[1] === 'hrs') {
+          totalTime = +hrsMin[0]
+        } else {
+          totalTime = +hrsMin[0] / 60
+        }
       }
 
       if (totalHoursWorked.trim() !== '') {
