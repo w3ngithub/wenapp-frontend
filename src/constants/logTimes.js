@@ -1,6 +1,6 @@
 import React from 'react'
 import {Divider, Popconfirm} from 'antd'
-import {MuiFormatDate, roundedToFixed} from 'helpers/utils'
+import {roundedToFixed} from 'helpers/utils'
 import CustomIcon from 'components/Elements/Icons'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import RoleAccess, {
@@ -9,6 +9,7 @@ import RoleAccess, {
   LOG_TIME_OLD_EDIT,
 } from './RoleAccess'
 import moment from 'moment'
+
 const LOGTIMES_COLUMNS = (
   sortedInfo,
   onOpenEditModal,
