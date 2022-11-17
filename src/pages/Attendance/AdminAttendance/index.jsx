@@ -82,7 +82,7 @@ function AdminAttendance({userRole}) {
   }, [state?.date, state?.user])
 
   const {data: users} = useQuery(['userForAttendances'], () =>
-    getAllUsers({fields: 'name',active:true})
+    getAllUsers({fields: 'name',active:'true'})
   )
 
   const {data, isLoading, isFetching} = useQuery(
