@@ -97,9 +97,7 @@ const LOGTIMES_COLUMNS = (
           dataIndex: 'logDate',
           key: 'logDate',
           // width: 120,
-          sorter: (a, b) => {
-            return a.logDate.toString().localeCompare(b.logDate.toString())
-          },
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'logDate' && sortedInfo.order,
         },
         {
@@ -107,8 +105,7 @@ const LOGTIMES_COLUMNS = (
           dataIndex: 'totalHours',
           key: 'totalHours',
           // width: 70,
-          sorter: (a, b) =>
-            a.totalHours?.toString().localeCompare(b.totalHours?.toString()),
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'totalHours' && sortedInfo.order,
           render: (value) => roundedToFixed(value || 0, 2),
         },
@@ -118,8 +115,7 @@ const LOGTIMES_COLUMNS = (
           dataIndex: 'logType',
           // width: 100,
           key: 'logType',
-          sorter: (a, b) =>
-            a.logType?.toString().localeCompare(b.logType?.toString()),
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'logType' && sortedInfo.order,
         },
         {
@@ -127,8 +123,7 @@ const LOGTIMES_COLUMNS = (
           dataIndex: 'remarks',
           // width: 400,
           key: 'remarks',
-          sorter: (a, b) =>
-            a.remarks?.toString().localeCompare(b.remarks?.toString()),
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,
         },
         {
@@ -136,8 +131,7 @@ const LOGTIMES_COLUMNS = (
           dataIndex: 'user',
           // width: 150,
           key: 'user',
-          sorter: (a, b) =>
-            a.user?.toString().localeCompare(b.user?.toString()),
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'user' && sortedInfo.order,
         },
 
