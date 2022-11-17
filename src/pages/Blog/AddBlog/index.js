@@ -263,6 +263,7 @@ function AddBlog() {
                     background: darkMode ? '#434f5a' : 'white',
                     color: darkMode ? '#e0e0e0' : 'black',
                   }}
+                  handlePastedText={() => false}
                   editorState={editorState}
                   wrapperClassName="demo-wrapper"
                   onEditorStateChange={onEditorStateChange}
