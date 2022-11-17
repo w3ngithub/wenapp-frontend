@@ -1,13 +1,14 @@
 import React from 'react'
 import {Divider, Popconfirm} from 'antd'
-import {roundedToFixed} from 'helpers/utils'
+import {MuiFormatDate, roundedToFixed} from 'helpers/utils'
 import CustomIcon from 'components/Elements/Icons'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import RoleAccess, {
   LOG_TIME_ADD_NO_ACCESS,
   LOG_TIME_DELETE_NO_ACCESS,
+  LOG_TIME_OLD_EDIT,
 } from './RoleAccess'
-
+import moment from 'moment'
 const LOGTIMES_COLUMNS = (
   sortedInfo,
   onOpenEditModal,
@@ -65,14 +66,20 @@ const LOGTIMES_COLUMNS = (
           key: 'action',
           // width: 360,
           render: (text, record) => {
+            let logDateTime = record?.logDate?.split('/')
+            let sendDate = `${logDateTime[1]}/${logDateTime[0]}/${logDateTime[2]}`
             return (
               <span>
-                <span
-                  className="gx-link"
-                  onClick={() => onOpenEditModal(record)}
-                >
-                  <CustomIcon name="edit" />
-                </span>
+                {(moment(sendDate) >=
+                  moment().subtract(1, 'days').startOf('day') ||
+                  LOG_TIME_OLD_EDIT.includes(role)) && (
+                  <span
+                    className="gx-link"
+                    onClick={() => onOpenEditModal(record)}
+                  >
+                    <CustomIcon name="edit" />
+                  </span>
+                )}
                 <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
                   <Divider type="vertical" />
                   <Popconfirm
@@ -140,10 +147,14 @@ const LOGTIMES_COLUMNS = (
           key: 'action',
           // width: 360,
           render: (text, record) => {
+            let logDateTime = record?.logDate?.split('/')
+            let sendDate = `${logDateTime[1]}/${logDateTime[0]}/${logDateTime[2]}`
             return (
               <span style={{display: 'flex'}}>
                 {/* <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}> */}
-                {record.user === user ||
+                {(record.user === user &&
+                  moment(sendDate) >=
+                    moment().subtract(1, 'days').startOf('day')) ||
                 [RoleAccess.Admin, RoleAccess.ProjectManager].includes(role) ? (
                   <span
                     className="gx-link"
