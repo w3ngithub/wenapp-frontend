@@ -232,7 +232,6 @@ function CoworkersPage() {
   const handleResetAllocatedLeaves = () => {
     resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
   }
-
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
