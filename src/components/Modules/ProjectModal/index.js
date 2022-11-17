@@ -168,7 +168,7 @@ function ProjectModal({
               ? initialValues.stagingUrls
               : undefined,
           liveUrl: initialValues.liveUrl,
-          notes: initialValues.notes,
+          notes: initialValues?.notes?.replace(/<\/?[^>]+(>|$)/g,"") || "",
           emailDay:
             initialValues.maintenance?.length > 0
               ? initialValues.maintenance[0].emailDay
