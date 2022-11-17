@@ -94,9 +94,9 @@ function CoworkersPage() {
     select: (res) => {
       const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
         (quarter) =>
-          new Date(quarter[1].fromDate) <
+          new Date(quarter[1].fromDate) <=
             new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
-          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <
+          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
             new Date(quarter[1].toDate)
       )
 
@@ -230,13 +230,12 @@ function CoworkersPage() {
   }
 
   const handleResetAllocatedLeaves = () => {
-    resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data.name})
+    resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
   }
 
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
-
   if (isLoading) {
     return <CircularProgress />
   }

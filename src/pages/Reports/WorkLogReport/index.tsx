@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState,useCallback} from 'react'
 import {Button, Card, Divider , Form, Table, Tag} from 'antd'
 import RangePicker from 'components/Elements/RangePicker'
 import {intialDate} from 'constants/Attendance'
@@ -11,6 +11,7 @@ import {WORK_LOG_REPORT_COLUMNS} from 'constants/WorkLogReport'
 import moment from 'moment'
 import {changeDate, toRoundoff} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
+import { debounce } from 'helpers/utils'
 
 const FormItem = Form.Item
 let screenWidth:number;
@@ -60,6 +61,7 @@ function WorkLogReport() {
   const [logType, setLogType] = useState<string | undefined>(undefined)
   const [project, setProject] = useState<string | undefined>(undefined)
   const [user, setUser] = useState<string | undefined>(undefined)
+  const [projectData,setProjectData] = useState([])
 
   screenWidth = innerWidth;
   //init hooks
@@ -78,12 +80,29 @@ function WorkLogReport() {
 
   const {data: logTypesData} = useQuery(['logTypes'], getLogTypes)
 
-  const {data: projectData} = useQuery(['WorkLogProjects'], () =>
-    getAllProjects({
-      fields:
-        '_id,name,-devOps,-createdBy,-designers,-developers,-projectStatus,-projectTags,-projectTypes,-qa,-updatedBy',
-    })
-  )
+  // const {data: projectData} = useQuery(['WorkLogProjects'], () =>
+  //   getAllProjects({
+  //     fields:
+  //       '_id,name,-devOps,-createdBy,-designers,-developers,-projectStatus,-projectTags,-projectTypes,-qa,-updatedBy',
+  //   })
+  // )
+
+  const  handleSearch = async(projectName:any)=>{
+    if(!projectName){
+       setProjectData([])
+      return
+    }
+    else {
+      const projects = await getAllProjects({project:projectName})
+      setProjectData(projects?.data?.data?.data)
+    }
+
+  }
+
+
+
+  const optimizedFn = useCallback(debounce(handleSearch,100),[])
+
 
   const {data: usersData} = useQuery(['WorkLogusers'], () =>
     getAllUsers({
@@ -142,7 +161,8 @@ function WorkLogReport() {
                 placeholder="Select Project"
                 onChange={handleProjectChange}
                 value={project}
-                options={projectData?.data?.data?.data?.map((x: any) => ({
+                handleSearch={optimizedFn}
+                options={projectData.map((x: any) => ({
                   ...x,
                   id: x._id,
                   value: x.name,
