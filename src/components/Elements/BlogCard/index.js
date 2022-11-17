@@ -8,6 +8,9 @@ import {Link} from 'react-router-dom'
 
 const BlogItem = ({blog, grid, removeBlog, access}) => {
   const {title, content, createdBy, createdAt, blogCategories, _id, slug} = blog
+  const checkEmojiOrImage =
+    content.includes('<img src=') && content.includes(`alt="undefined"`)
+
   const imgSrc = content?.split('src=')[1]?.split(' ')[0]?.replace(`"`, '')
   const [parsedContent, setParsedContent] = useState(
     parse(content.substring(0, 400))
@@ -54,7 +57,7 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
         grid ? 'gx-product-vertical' : 'gx-product-horizontal'
       }`}
     >
-      {imgSrc && (
+      {imgSrc && checkEmojiOrImage && (
         <div className="gx-product-image">
           <div className="gx-grid-thumb-equal">
             <span className="gx-link gx-grid-thumb-cover">
