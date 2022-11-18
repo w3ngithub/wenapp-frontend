@@ -46,15 +46,8 @@ function Blogs() {
     {keepPreviousData: true}
   )
 
-  // const {data: users} = useQuery(
-  //   ['users'],
-  //   () => getAllUsers({fields: '_id,name'}),
-  //   {
-  //     keepPreviousData: true,
-  //   }
-  // )
-  const {data: users} = useQuery(
-    ['users'],
+  const {data: blogAuthors} = useQuery(
+    ['blogAuthors'],
     () => getBlogAuthors(),
     {
       keepPreviousData: true,
@@ -131,7 +124,7 @@ function Blogs() {
                   placeholder="Select Author"
                   onChange={handleUserChange}
                   value={user}
-                  options={users?.data?.data?.BlogAuthors.map((x) => ({
+                  options={blogAuthors?.data?.data?.BlogAuthors.map((x) => ({
                     id: x?.id?.[0],
                     value: x?.name?.[0],
                   }))}
