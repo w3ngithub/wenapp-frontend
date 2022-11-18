@@ -161,7 +161,7 @@ function LateAttendance({userRole}: {userRole: string}) {
       id: record._id.userId,
       data: {
         leaveDates: [
-          moment(record.data.at(-1).attendanceDate).startOf('day').format(),
+          record.data.at(-1).attendanceDate
         ],
         reason: 'Leave cut due to late attendance',
         leaveType:
