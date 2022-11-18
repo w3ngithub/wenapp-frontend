@@ -230,8 +230,6 @@ function AdminAttendance({userRole}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data?.data?.attendances?.[0]?.data])
 
-  console.log('all users', users?.data?.data?.data)
-
   return (
     <div>
       <TmsAdminAddAttendanceForm
