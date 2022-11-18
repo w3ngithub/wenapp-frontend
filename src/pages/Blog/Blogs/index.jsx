@@ -5,7 +5,7 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import {notification} from 'helpers/notification'
 import {deleteBlog, getAllBlogs} from 'services/blog'
 import BlogItem from 'components/Elements/BlogCard'
-import {getAllUsers} from 'services/users/userDetails'
+import {getBlogAuthors} from 'services/users/userDetails'
 import Select from 'components/Elements/Select'
 import {useNavigate} from 'react-router-dom'
 import {ADDBLOG} from 'helpers/routePath'
@@ -46,9 +46,9 @@ function Blogs() {
     {keepPreviousData: true}
   )
 
-  const {data: users} = useQuery(
-    ['users'],
-    () => getAllUsers({fields: '_id,name'}),
+  const {data: blogAuthors} = useQuery(
+    ['blogAuthors'],
+    () => getBlogAuthors(),
     {
       keepPreviousData: true,
     }
@@ -124,9 +124,9 @@ function Blogs() {
                   placeholder="Select Author"
                   onChange={handleUserChange}
                   value={user}
-                  options={users?.data?.data?.data.map((x) => ({
-                    id: x._id,
-                    value: x.name,
+                  options={blogAuthors?.data?.data?.BlogAuthors.map((x) => ({
+                    id: x?.id?.[0],
+                    value: x?.name?.[0],
                   }))}
                 />
               </FormItem>

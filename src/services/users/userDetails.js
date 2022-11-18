@@ -43,6 +43,15 @@ const getAllUsers = async ({
   }
 }
 
+export const getBlogAuthors = async () => {
+  try {
+    let response = await API.get(`${Apis.Blog}/blog-authors`)
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err?.response)
+  }
+}
+
 const getMyProfile = async (payload) => {
   try {
     let response = await API.get(`${Apis.Users}?_id=${payload}`)
