@@ -87,18 +87,18 @@ function PunchInOut() {
   )
 
   const handlePunch = async () => {
-    // let latestPunchInTime =
-    //   latestAttendance?.[latestAttendance.length - 1]?.punchInTime
-    // if (
-    //   latestPunchInTime &&
-    //   moment() < moment(latestPunchInTime).add(10, 'm')
-    // ) {
-    //   notification({
-    //     message: 'You have just Punched In !',
-    //     type: 'info',
-    //   })
-    //   return
-    // }
+    let latestPunchInTime =
+      latestAttendance?.[latestAttendance.length - 1]?.punchInTime
+    if (
+      latestPunchInTime &&
+      moment() < moment(latestPunchInTime).add(10, 'm')
+    ) {
+      notification({
+        message: 'You have just Punched In !',
+        type: 'info',
+      })
+      return
+    }
     if (isNotValidTimeZone()) {
       notification({
         message: 'Your timezone is not a valid timezone',
