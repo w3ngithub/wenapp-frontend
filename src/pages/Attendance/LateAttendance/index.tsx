@@ -59,7 +59,7 @@ function LateAttendance({userRole}: {userRole: string}) {
   let recordRef: any = {}
 
   const {data: users} = useQuery(['userForAttendances'], () =>
-    getAllUsers({fields: 'name',active:'true'})
+    getAllUsers({fields: 'name', active: 'true', sort: 'name'})
   )
 
   const {data: leaveTypes} = useQuery(['leaveTypes'], getLeaveTypes)
@@ -160,9 +160,7 @@ function LateAttendance({userRole}: {userRole: string}) {
     leaveMutation.mutate({
       id: record._id.userId,
       data: {
-        leaveDates: [
-          record.data.at(-1).attendanceDate
-        ],
+        leaveDates: [record.data.at(-1).attendanceDate],
         reason: 'Leave cut due to late attendance',
         leaveType:
           leaveTypes?.data?.data?.data?.find(
