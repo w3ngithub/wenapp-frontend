@@ -107,6 +107,11 @@ function CancelLeaveModal({
                             'Reason should be at least 10 letters!'
                           )
                         }
+                        if (trimmedValue?.length > 500 && isRequired) {
+                          throw new Error(
+                            'Reason should be less than 500 letters!'
+                          )
+                        }
                       } catch (err) {
                         throw new Error(err.message)
                       }

@@ -339,7 +339,7 @@ function LogtimeModal({
             <TextArea placeholder="Enter Remarks" rows={6} />
           </FormItem>
           {zeroHourMinutes && (
-            <p style={{color: 'red'}}>
+            <p className='suggestion-text'>
               Hours and minutes cannot be 0 simultaneously.
             </p>
           )}
