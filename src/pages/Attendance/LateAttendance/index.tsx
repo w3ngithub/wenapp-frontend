@@ -166,7 +166,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         reason: 'Leave cut due to late attendance',
         leaveType:
           leaveTypes?.data?.data?.data?.find(
-            (type: any) => type?.name === CASUAL_LEAVE
+            (type: any) => type?.name === LATE_ARRIVAL
           )?._id || LATE_ARRIVAL,
         leaveStatus: 'approved',
       },
