@@ -455,3 +455,8 @@ export const compare = (a, b) => {
   }
   return 0
 }
+
+// dd/mm/yyyy to yyyy-mm-dd
+export const dateToDateFormat = (date) => {
+  return date.toString().split('/').reverse().join('-')
+}
