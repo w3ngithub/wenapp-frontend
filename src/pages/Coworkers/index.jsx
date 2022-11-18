@@ -81,7 +81,7 @@ function CoworkersPage() {
         name,
         sort:
           sort.order === undefined || sort.column === undefined
-            ? ''
+            ? 'name'
             : sort.order === 'ascend'
             ? sort.field
             : `-${sort.field}`,
@@ -232,7 +232,6 @@ function CoworkersPage() {
   const handleResetAllocatedLeaves = () => {
     resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
   }
-
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }

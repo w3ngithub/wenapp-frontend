@@ -165,7 +165,7 @@ export const convertDateToUTC = (date) => {
   return new Date(date.getTime()).toJSON()
 }
 
-export const debounce = (func, delay=2000) => {
+export const debounce = (func, delay = 2000) => {
   let timer
   return function () {
     let self = this
@@ -445,4 +445,18 @@ export const isNotValidTimeZone = () => {
     Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
       'Kathmandu'
   )
+}
+
+export const compare = (a, b) => {
+  if (new Date(a?.date) < new Date(b?.date)) {
+    return -1
+  } else if (new Date(a?.date) > new Date(b?.date)) {
+    return 1
+  }
+  return 0
+}
+
+// dd/mm/yyyy to yyyy-mm-dd
+export const dateToDateFormat = (date) => {
+  return date.toString().split('/').reverse().join('-')
 }

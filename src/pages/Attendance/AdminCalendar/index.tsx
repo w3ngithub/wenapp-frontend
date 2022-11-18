@@ -3,9 +3,9 @@ import React, {useState} from 'react'
 import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
-import {MuiFormatDate, sortFromDate} from 'helpers/utils'
+import {milliSecondIntoHours, MuiFormatDate, sortFromDate} from 'helpers/utils'
 import {searchAttendacentOfUser} from 'services/attendances'
-import {monthlyState} from 'constants/Attendance'
+import {ATTENDANCE_COLUMNS, monthlyState} from 'constants/Attendance'
 import {getLeavesOfAllUsers} from 'services/leaves'
 import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
@@ -38,16 +38,14 @@ function AdminAttendanceCalendar() {
     ['userLeaves', user],
     () => getLeavesOfAllUsers('approved', user),
     {
-      select: res => {
+      select: (res) => {
         return res?.data?.data?.data
       },
     }
   )
 
   const handleCalendarRangeChange = (calendarDate: any) => {
-    const mom = moment(moment(calendarDate[0]).add(1, 'days'))
-      .utc()
-      .format()
+    const mom = moment(moment(calendarDate[0]).add(1, 'days')).utc().format()
     const filterByWeek = calendarDate.length === 7
     const filterByDay = calendarDate.length === 1
     if (filterByWeek) {
@@ -102,8 +100,7 @@ function AdminAttendanceCalendar() {
     }
   }
 
-  let attendances: any[] = [],
-    leaves: any[] = []
+  let leaves: any[] = []
 
   userLeaves?.forEach((leave: any) => {
     leaves.push({
@@ -127,29 +124,55 @@ function AdminAttendanceCalendar() {
     })
   })
 
-  data?.data?.data?.attendances[0]?.data?.forEach((attendance: any) => {
-    const sortedAttendance = sortFromDate(
-      attendance?.data,
-      'punchInTime'
-    ).filter((attendance: any) => attendance.punchOutTime)
+  const attendances = data?.data?.data?.attendances?.[0]?.data?.map(
+    (attendance: any) => {
+      let sortedAttendance = sortFromDate(
+        attendance?.data,
+        'punchInTime'
+      ).filter((attendance: any) => attendance.punchOutTime)
 
-    const totalHoursWorked: number = sortedAttendance.reduce(
-      (acc: number, attendance: any) =>
-        new Date(attendance.punchOutTime).getHours() -
-        new Date(attendance.punchInTime).getHours() +
-        acc,
-      0
-    )
+      const totalHoursWorked = milliSecondIntoHours(
+        sortedAttendance
+          ?.map((x) => {
+            return x?.punchOutTime
+              ? new Date(x?.punchOutTime).getTime() -
+                  new Date(x?.punchInTime).getTime()
+              : ''
+          })
+          .filter(Boolean)
+          ?.reduce((accumulator, value) => {
+            return +accumulator + +value
+          }, 0)
+      )
+      const hrsMin = totalHoursWorked
+        ?.trim()
+        ?.split(' ')
+        ?.filter((item) => !isNaN(+item))
+      const time = totalHoursWorked?.trim()?.split(' ')
 
-    attendances.push({
-      id: attendance?._id,
-      title: 'Hours: ' + totalHoursWorked,
-      start: new Date(attendance._id?.attendanceDate),
-      end: new Date(attendance._id?.attendanceDate),
-      isLessHourWorked: totalHoursWorked < 9,
-      allDay: true,
-    })
-  })
+      let totalTime = 0
+      if (hrsMin?.length === 2) {
+        totalTime = +hrsMin[0] + +hrsMin[1] / 60
+      }
+      if (hrsMin?.length === 1) {
+        if (time?.[1] === 'hrs') {
+          totalTime = +hrsMin[0]
+        } else {
+          totalTime = +hrsMin[0] / 60
+        }
+      }
+      if (totalHoursWorked?.trim() !== '') {
+        return {
+          id: attendance?._id,
+          title: totalHoursWorked,
+          start: new Date(attendance._id?.attendanceDate),
+          end: new Date(attendance._id?.attendanceDate),
+          isLessHourWorked: totalTime < 9,
+          allDay: true,
+        }
+      } else return null
+    }
+  )
 
   const handleSelectEvent = (data: any) => {
     if (data.type === 'leave' || data.type === 'longLeaves')
@@ -199,7 +222,7 @@ function AdminAttendanceCalendar() {
         <div className="gx-rbc-calendar">
           <Calendar
             localizer={localizer}
-            events={user ? [...attendances, ...leaves] : []}
+            events={user ? [...(attendances || []), ...(leaves || [])] : []}
             startAccessor="start"
             endAccessor="end"
             onRangeChange={handleCalendarRangeChange}

@@ -465,7 +465,7 @@ const Dashboard = () => {
               onClick={
                 loggedInUser?.role?.value !== 'Admin'
                   ? null
-                  : () => navigate('/todays-overview')
+                  : () => navigate('/todays-overview', {state:true})
               }
             />
           </Col>

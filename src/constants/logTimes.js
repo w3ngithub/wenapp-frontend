@@ -6,7 +6,9 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import RoleAccess, {
   LOG_TIME_ADD_NO_ACCESS,
   LOG_TIME_DELETE_NO_ACCESS,
+  LOG_TIME_OLD_EDIT,
 } from './RoleAccess'
+import moment from 'moment'
 
 const LOGTIMES_COLUMNS = (
   sortedInfo,
@@ -65,14 +67,20 @@ const LOGTIMES_COLUMNS = (
           key: 'action',
           // width: 360,
           render: (text, record) => {
+            let logDateTime = record?.logDate?.split('/')
+            let sendDate = `${logDateTime[1]}/${logDateTime[0]}/${logDateTime[2]}`
             return (
               <span>
-                <span
-                  className="gx-link"
-                  onClick={() => onOpenEditModal(record)}
-                >
-                  <CustomIcon name="edit" />
-                </span>
+                {(moment(sendDate) >=
+                  moment().subtract(1, 'days').startOf('day') ||
+                  LOG_TIME_OLD_EDIT.includes(role)) && (
+                  <span
+                    className="gx-link"
+                    onClick={() => onOpenEditModal(record)}
+                  >
+                    <CustomIcon name="edit" />
+                  </span>
+                )}
                 <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
                   <Divider type="vertical" />
                   <Popconfirm
@@ -97,9 +105,7 @@ const LOGTIMES_COLUMNS = (
           dataIndex: 'logDate',
           key: 'logDate',
           // width: 120,
-          sorter: (a, b) => {
-            return a.logDate.toString().localeCompare(b.logDate.toString())
-          },
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'logDate' && sortedInfo.order,
         },
         {
@@ -107,8 +113,7 @@ const LOGTIMES_COLUMNS = (
           dataIndex: 'totalHours',
           key: 'totalHours',
           // width: 70,
-          sorter: (a, b) =>
-            a.totalHours?.toString().localeCompare(b.totalHours?.toString()),
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'totalHours' && sortedInfo.order,
           render: (value) => roundedToFixed(value || 0, 2),
         },
@@ -118,8 +123,7 @@ const LOGTIMES_COLUMNS = (
           dataIndex: 'logType',
           // width: 100,
           key: 'logType',
-          sorter: (a, b) =>
-            a.logType?.toString().localeCompare(b.logType?.toString()),
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'logType' && sortedInfo.order,
         },
         {
@@ -127,8 +131,7 @@ const LOGTIMES_COLUMNS = (
           dataIndex: 'remarks',
           // width: 400,
           key: 'remarks',
-          sorter: (a, b) =>
-            a.remarks?.toString().localeCompare(b.remarks?.toString()),
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,
         },
         {
@@ -136,8 +139,7 @@ const LOGTIMES_COLUMNS = (
           dataIndex: 'user',
           // width: 150,
           key: 'user',
-          sorter: (a, b) =>
-            a.user?.toString().localeCompare(b.user?.toString()),
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'user' && sortedInfo.order,
         },
 
@@ -146,10 +148,14 @@ const LOGTIMES_COLUMNS = (
           key: 'action',
           // width: 360,
           render: (text, record) => {
+            let logDateTime = record?.logDate?.split('/')
+            let sendDate = `${logDateTime[1]}/${logDateTime[0]}/${logDateTime[2]}`
             return (
               <span style={{display: 'flex'}}>
                 {/* <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}> */}
-                {record.user === user ||
+                {(record.user === user &&
+                  moment(sendDate) >=
+                    moment().subtract(1, 'days').startOf('day')) ||
                 [RoleAccess.Admin, RoleAccess.ProjectManager].includes(role) ? (
                   <span
                     className="gx-link"

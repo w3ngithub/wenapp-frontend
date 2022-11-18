@@ -15,6 +15,7 @@ import DeadlineProjects from './DeadlineProjects'
 import {getAllProjects} from 'services/projects'
 import {Collapse} from 'antd'
 import {WalletOutlined} from '@ant-design/icons'
+import {useLocation} from 'react-router-dom'
 
 const {Panel} = Collapse
 
@@ -23,12 +24,18 @@ const endDate = `${MuiFormatDate(new Date())}`
 const Overview = () => {
   const {data} = useQuery(
     ['users'],
-    () => getAllUsers({active: 'true', fields: 'name,-role,-position,_id'}),
+    () =>
+      getAllUsers({
+        active: 'true',
+        fields: 'name,-role,-position,_id',
+        sort: 'name',
+      }),
     {
       keepPreviousData: true,
     }
   )
   const [page, setPage] = useState({page: 1, limit: 10})
+  const location = useLocation()
 
   const {data: projects} = useQuery(
     ['projects', endDate],
@@ -85,7 +92,7 @@ const Overview = () => {
   }
   return (
     <div>
-      <Collapse defaultActiveKey={['1']}>
+      <Collapse defaultActiveKey={location?.state ? ['2'] : ['1']}>
         <Panel
           header={
             <h3>
