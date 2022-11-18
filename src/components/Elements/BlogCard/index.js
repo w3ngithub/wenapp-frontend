@@ -73,7 +73,7 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
         </div>
       )} */}
       <div className="gx-product-body">
-        <h3 className="gx-product-title" onClick={() => navigate(`${_id}-${slug}`)} style={{cursor:'pointer'}} >{title}</h3>
+        <h3 className="gx-product-title clickable-title" onClick={() => navigate(`${_id}-${slug}`)} >{title}</h3>
         <div className="ant-row-flex">
           <small className="gx-text-grey">
             <EditOutlined />
