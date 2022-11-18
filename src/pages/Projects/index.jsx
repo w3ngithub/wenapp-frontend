@@ -82,16 +82,16 @@ function ProjectsPage() {
     getUserPositionTypes
   )
   const {data: developers} = useQuery(['developers', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.developer})
+    getAllUsers({positionType: positionTypeData?.developer, sort:'name'})
   )
   const {data: designers} = useQuery(['designers', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.designer})
+    getAllUsers({positionType: positionTypeData?.designer, sort:'name'})
   )
   const {data: QAs} = useQuery(['QA', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.qa})
+    getAllUsers({positionType: positionTypeData?.qa, sort:'name'})
   )
   const {data: devops} = useQuery(['DevOps', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.devops})
+    getAllUsers({positionType: positionTypeData?.devops, sort:'name'})
   )
   const {data, isLoading, isError, isFetching} = useQuery(
     [

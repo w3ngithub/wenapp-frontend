@@ -104,7 +104,7 @@ function Leaves({
   )
 
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
-  const usersQuery = useQuery(['users'], getAllUsers)
+  const usersQuery = useQuery(['users'], () => getAllUsers({sort: 'name'}))
 
   const leaveApproveMutation = useMutation(
     (payload) => changeLeaveStatus(payload.id, payload.type),
