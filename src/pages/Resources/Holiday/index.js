@@ -9,7 +9,7 @@ import {
   getAllHolidays,
   updateHoliday,
 } from 'services/resources'
-import {Button, Card, Spin, Table} from 'antd'
+import {Button, Card, Popconfirm, Spin, Table} from 'antd'
 import {HOLIDAY_COLUMNS} from 'constants/Holidays'
 import {
   changeDate,
@@ -188,9 +188,15 @@ function Holiday() {
           <AccessWrapper noAccessRoles={HOLIDAY_ACTION_NO_ACCESS}>
             <Button
               className="gx-btn gx-btn-primary gx-text-white "
-              onClick={() => setOpenAdd(true)}
             >
-              Add New Year Holidays
+              <Popconfirm
+                title="Adding next year's holidays will remove current year's holidays. Do you want to proceed?"
+                onConfirm={() => setOpenAdd(true)}
+                okText="Yes"
+                cancelText="No"
+              >
+                Add Next Year's Holidays
+              </Popconfirm>
             </Button>
           </AccessWrapper>
         }
