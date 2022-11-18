@@ -2,6 +2,7 @@ import React, {ReactElement} from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
+import {dateToDateFormat} from 'helpers/utils'
 
 interface holiday {
   title: string
@@ -35,7 +36,8 @@ const HOLIDAY_COLUMNS = (
           dataIndex: 'date',
           key: 'date',
           sorter: (a, b) =>
-            a.date?.toString().localeCompare(b.date?.toString()),
+            +new Date(dateToDateFormat(a.date)) -
+            +new Date(dateToDateFormat(b.date)),
           sortOrder: sortedInfo.columnKey === 'date' && sortedInfo.order,
         },
         {
@@ -63,7 +65,8 @@ const HOLIDAY_COLUMNS = (
           dataIndex: 'date',
           key: 'date',
           sorter: (a, b) =>
-            a.date?.toString().localeCompare(b.date?.toString()),
+            +new Date(dateToDateFormat(a.date)) -
+            +new Date(dateToDateFormat(b.date)),
           sortOrder: sortedInfo.columnKey === 'date' && sortedInfo.order,
         },
         {
