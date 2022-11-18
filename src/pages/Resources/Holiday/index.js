@@ -48,7 +48,9 @@ function Holiday() {
     data: Holidays,
     isLoading,
     isFetching,
-  } = useQuery(['DashBoardHolidays'], () => getAllHolidays({limit: '1'}))
+  } = useQuery(['DashBoardHolidays'], () =>
+    getAllHolidays({sort: '-createdAt', limit: '1'})
+  )
 
   Holidays?.data?.data?.data?.[0]?.holidays?.sort(compare)
 
