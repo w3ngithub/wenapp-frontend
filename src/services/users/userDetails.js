@@ -24,14 +24,14 @@ const logoutUser = async () => {
 
 const getAllUsers = async ({
   page = '',
-  sort = '',
+  sort = 'name',
   limit = '',
   fields = '',
   name = '',
   role = '',
   position = '',
   positionType = '',
-  active = '',
+  active = 'true',
 }) => {
   try {
     let response = await API.get(
