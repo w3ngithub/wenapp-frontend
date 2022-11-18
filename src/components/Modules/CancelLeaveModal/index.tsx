@@ -125,6 +125,7 @@ function CancelLeaveModal({
                   style={{
                     background: darkCalendar ? '#434f5a' : '',
                   }}
+                  placeholder={!isRequired ? "Additional Message (If Any)" : ''}
                 />
               </Form.Item>
             </Col>
