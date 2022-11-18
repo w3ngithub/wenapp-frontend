@@ -4,11 +4,12 @@ import {EditOutlined, DeleteOutlined} from '@ant-design/icons'
 import moment from 'moment'
 import parse from 'html-react-parser'
 
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 
 const BlogItem = ({blog, grid, removeBlog, access}) => {
   const {title, content, createdBy, createdAt, blogCategories, _id, slug} = blog
 
+  const navigate = useNavigate();
   var regexp = /<img([\w\W]+?)>/g
   const text = content.match(regexp)
 
@@ -63,16 +64,16 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
       }`}
     >
       {imgSrc && (
-        <div className="gx-product-image">
+        <div className="gx-product-image" >
           <div className="gx-grid-thumb-equal">
             <span className="gx-link gx-grid-thumb-cover">
-              <img alt="blogPicture" src={imgSrc} width={300} height={200} />
+              <img alt="blogPicture" src={imgSrc} width={300} height={200} onClick={() => navigate(`${_id}-${slug}`)}/>
             </span>
           </div>
         </div>
       )}
       <div className="gx-product-body">
-        <h3 className="gx-product-title">{title}</h3>
+        <h3 className="gx-product-title" onClick={() => navigate(`${_id}-${slug}`)} style={{cursor:'pointer'}} >{title}</h3>
         <div className="ant-row-flex">
           <small className="gx-text-grey">
             <EditOutlined />
