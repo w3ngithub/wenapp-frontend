@@ -59,7 +59,7 @@ function LateAttendance({userRole}: {userRole: string}) {
   let recordRef: any = {}
 
   const {data: users} = useQuery(['userForAttendances'], () =>
-    getAllUsers({fields: 'name', active: 'true'})
+    getAllUsers({fields: 'name', active: 'true', sort: 'name'})
   )
 
   const {data: leaveTypes} = useQuery(['leaveTypes'], getLeaveTypes)
