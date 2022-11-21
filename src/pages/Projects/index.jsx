@@ -35,7 +35,7 @@ const formattedProjects = (projects) => {
     key: project._id,
     projectStatus: project.projectStatus?.name,
     projectTypes: project.projectTypes?.[0]?.name,
-    startDate: changeDate(project?.startDate),
+    startDate: project?.startDate ? changeDate(project?.startDate) : '',
     endDate: project?.endDate ? changeDate(project?.endDate) : '',
   }))
 }
@@ -82,16 +82,16 @@ function ProjectsPage() {
     getUserPositionTypes
   )
   const {data: developers} = useQuery(['developers', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.developer})
+    getAllUsers({positionType: positionTypeData?.developer, sort:'name'})
   )
   const {data: designers} = useQuery(['designers', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.designer})
+    getAllUsers({positionType: positionTypeData?.designer, sort:'name'})
   )
   const {data: QAs} = useQuery(['QA', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.qa})
+    getAllUsers({positionType: positionTypeData?.qa, sort:'name'})
   )
   const {data: devops} = useQuery(['DevOps', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.devops})
+    getAllUsers({positionType: positionTypeData?.devops, sort:'name'})
   )
   const {data, isLoading, isError, isFetching} = useQuery(
     [
@@ -187,8 +187,9 @@ function ProjectsPage() {
         designer: types?.find(
           (type) => type.name.toLowerCase() === POSITION_TYPES?.designer
         )?._id,
-        qa: types?.find((type) => type.name.toLowerCase() === POSITION_TYPES?.qa)
-          ?._id,
+        qa: types?.find(
+          (type) => type.name.toLowerCase() === POSITION_TYPES?.qa
+        )?._id,
         devops: types?.find(
           (type) => type.name.toLowerCase() === POSITION_TYPES?.devops
         )?._id,
@@ -465,7 +466,7 @@ function ProjectsPage() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['20', '50','80'],
+            pageSizeOptions: ['20', '50', '80'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,

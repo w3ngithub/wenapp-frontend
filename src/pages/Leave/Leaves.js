@@ -34,7 +34,7 @@ const formattedLeaves = (leaves) => {
           leave?.leaveType?.name === 'Paternity' ||
           leave?.leaveType?.name === 'Paid Time Off'
           ? ' - '
-          : ' , '
+          : ' '
       ),
     type: `${leave?.leaveType?.name} ${
       leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
@@ -104,7 +104,7 @@ function Leaves({
   )
 
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
-  const usersQuery = useQuery(['users'], getAllUsers)
+  const usersQuery = useQuery(['users'], () => getAllUsers({sort: 'name'}))
 
   const leaveApproveMutation = useMutation(
     (payload) => changeLeaveStatus(payload.id, payload.type),
@@ -240,7 +240,6 @@ function Leaves({
         setLoader={setLoader}
         title={'Approve Leave'}
         isRequired={false}
-        label={'Approve Leave Description'}
         name={'leaveApproveReason'}
       />
 
