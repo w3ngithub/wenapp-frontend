@@ -30,7 +30,19 @@ const {RangePicker} = DatePicker
 const FormItem = Form.Item
 
 const formattedAttendances = (attendances) => {
-  return attendances?.map((att) => ({
+  return attendances?.map((att) => {
+    let timeToMilliSeconds = att?.data
+    ?.map((x) =>
+      x?.punchOutTime
+        ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
+        : ''
+    )
+    .filter(Boolean)
+    ?.reduce((accumulator, value) => {
+      return accumulator + value
+    }, 0)
+    
+    return ({
     ...att,
     key: att._id.attendanceDate + att._id.user,
     attendanceDate: moment(att?._id.attendanceDate).format('LL'),
@@ -39,19 +51,9 @@ const formattedAttendances = (attendances) => {
     punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
       ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
       : '',
-    officeHour: milliSecondIntoHours(
-      att?.data
-        ?.map((x) =>
-          x?.punchOutTime
-            ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
-            : ''
-        )
-        .filter(Boolean)
-        ?.reduce((accumulator, value) => {
-          return accumulator + value
-        }, 0)
-    ),
-  }))
+    officeHour: milliSecondIntoHours(timeToMilliSeconds),
+    intHour :timeToMilliSeconds
+  })})
 }
 
 function UserAttendance() {

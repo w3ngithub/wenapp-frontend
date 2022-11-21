@@ -167,13 +167,15 @@ function Leave() {
                 firstType="Sick"
                 secondType="Casual"
                 sickDayRemaining={
+                  yearlyLeavesTakn?.['Sick Leave'] ?
                   allocatedYealryLeaves?.['Sick Leave'] -
-                    yearlyLeavesTakn?.['Sick Leave'] ||
+                  yearlyLeavesTakn?.['Sick Leave'] :
                   allocatedYealryLeaves?.['Sick Leave']
                 }
                 casualDayRemaining={
+                  yearlyLeavesTakn?.['Casual Leave'] ?
                   allocatedYealryLeaves?.['Casual Leave'] -
-                    yearlyLeavesTakn?.['Casual Leave'] ||
+                    yearlyLeavesTakn?.['Casual Leave'] :
                   allocatedYealryLeaves?.['Casual Leave']
                 }
                 sickDayApplied={yearlyLeavesTakn?.['Sick Leave'] || 0}
