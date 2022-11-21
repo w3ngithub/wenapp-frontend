@@ -55,6 +55,14 @@ const formattedAttendances = (attendances) => {
           return accumulator + value
         }, 0)
     ),
+    intHour :att?.data?.map((x) =>
+      x?.punchOutTime
+        ? new Date(x?.punchOutTime).getTime() - new Date(x?.punchInTime).getTime()
+        : 0
+    )
+    ?.reduce((accumulator, value) => {
+      return (+accumulator) + (+value)
+    }, 0)
   }))
 }
 
