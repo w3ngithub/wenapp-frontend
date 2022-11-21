@@ -36,9 +36,6 @@ const PROJECT_COLUMNS = (
     dataIndex: 'path',
     key: 'path',
     width: 180,
-    sorter: true,
-
-    sortOrder: sortedInfo.columnKey === 'path' && sortedInfo.order,
     render: (text, record) => {
       return (
         <div>
@@ -74,18 +71,12 @@ const PROJECT_COLUMNS = (
     dataIndex: 'projectTypes',
     width: 150,
     key: 'projectTypes',
-    sorter: true,
-
-    sortOrder: sortedInfo.columnKey === 'projectTypes' && sortedInfo.order,
   },
   {
     title: 'Project Status',
     dataIndex: 'projectStatus',
     width: 150,
     key: 'projectStatus',
-    sorter: true,
-
-    sortOrder: sortedInfo.columnKey === 'projectStatus' && sortedInfo.order,
   },
   {
     title: 'Action',
