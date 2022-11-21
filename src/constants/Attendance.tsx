@@ -36,7 +36,8 @@ const ATTENDANCE_COLUMNS = (
           dataIndex: 'attendanceDate',
           key: 'attendanceDate',
           sorter: (a, b) =>
-            +new Date(a.attendanceDate) - +new Date(b.attendanceDate),
+            +new Date(a.attendanceDate) - +new Date(b.attendanceDate) ||
+            a.user.toString().localeCompare(b.user.toString()),
           sortOrder:
             sortedInfo.columnKey === 'attendanceDate' && sortedInfo.order,
         },
@@ -117,9 +118,8 @@ const ATTENDANCE_COLUMNS = (
           dataIndex: 'attendanceDay',
           key: 'attendanceDay',
           sorter: (a, b) =>
-            a.attendanceDay
-              ?.toString()
-              .localeCompare(b.attendanceDay?.toString()),
+            +new Date(a.attendanceDate) - +new Date(b.attendanceDate) ||
+            a.user.toString().localeCompare(b.user.toString()),
           sortOrder:
             sortedInfo.columnKey === 'attendanceDay' && sortedInfo.order,
         },
