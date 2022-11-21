@@ -69,12 +69,14 @@ function ProjectModal({
       const updatedQAs = changedRoleChecker(values?.qa,'qa')
       const updatedDevelopers = changedRoleChecker(values?.developers,'devOps')
       const updatedDevOps = changedRoleChecker(values?.devOps, 'devOps')
+      const updatedLiveUrl = typeof(values?.liveUrl)==='string' ? values?.liveUrl : values?.liveUrl?.join('');
       onSubmit({
         ...values,
         designers:updatedDesigners,
         qa:updatedQAs,
         developers:updatedDevelopers,
         devOps: updatedDevOps,
+        liveUrl: updatedLiveUrl,
         maintenance: [
           {
             ...maintenance[0],
