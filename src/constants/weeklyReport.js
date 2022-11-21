@@ -37,7 +37,7 @@ const WEEKLY_REPORT_COLUMNS = (sortedInfo, navigateToProjectLogs) => [
         <span>
           <span
             className="gx-link"
-            onClick={() => navigateToProjectLogs(`/${PROJECTS}/${record.key}`)}
+            onClick={() => navigateToProjectLogs(`/${PROJECTS}/${record.key}`,true)}
           >
             <CustomIcon name="view" />
           </span>
