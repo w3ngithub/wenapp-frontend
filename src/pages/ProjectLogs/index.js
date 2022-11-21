@@ -174,10 +174,12 @@ function ProjectLogs() {
 
   const handlelogTypeChange = (log) => {
     setLogType(log)
+    setPage({page: 1, limit: 50})
   }
 
   const handleAuthorChange = (logAuthor) => {
     setAuthor(logAuthor)
+    setPage({page: 1, limit: 50})
   }
 
   const handleResetFilter = () => {
