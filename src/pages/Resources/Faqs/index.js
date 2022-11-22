@@ -3,10 +3,12 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Button, Card} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {addFaqs, deleteFaqs, editFaqs, getAllFaqs} from 'services/resources'
-import {handleResponse} from 'helpers/utils'
+import {getLocalStorageData, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import Collapse from 'components/Elements/Collapse'
 import CommonResourceModal from 'pages/Settings/CommonResourceModal'
+import RoleAccess from 'constants/RoleAccess'
+import { LOCALSTORAGE_USER } from 'constants/Settings'
 
 function Faqs() {
   const {data, isLoading, isError} = useQuery(['faqs'], getAllFaqs)
@@ -15,6 +17,10 @@ function Faqs() {
   const [type, setType] = useState('')
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
+  const {
+    role: {key},
+  } = getLocalStorageData(LOCALSTORAGE_USER)
+
 
   useEffect(() => {
     if (isError) {
@@ -118,12 +124,17 @@ function Faqs() {
       <Card
         title="FAQS"
         extra={
-          <Button
-            className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-            onClick={() => handleOpenModal('FAQ')}
-          >
-            Add
-          </Button>
+          [
+            RoleAccess.Admin,
+            RoleAccess.HumanResource,
+          ].includes(key) ? (
+            <Button
+              className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+              onClick={() => handleOpenModal('FAQ')}
+            >
+              Add
+            </Button>
+          ) : null
         }
       >
         <Collapse

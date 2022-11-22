@@ -11,7 +11,9 @@ import {
 } from 'services/resources'
 import {notification} from 'helpers/notification'
 import CommonResourceModal from 'pages/Settings/CommonResourceModal'
-import {handleResponse} from 'helpers/utils'
+import {getLocalStorageData, handleResponse} from 'helpers/utils'
+import RoleAccess from 'constants/RoleAccess'
+import { LOCALSTORAGE_USER } from 'constants/Settings'
 
 function Policy() {
   const {data, isLoading, isError} = useQuery(['policies'], getAllPolicies)
@@ -20,6 +22,10 @@ function Policy() {
   const [type, setType] = useState('')
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
+  const {
+    role: {key},
+  } = getLocalStorageData(LOCALSTORAGE_USER)
+
 
   useEffect(() => {
     if (isError) {
@@ -124,12 +130,16 @@ function Policy() {
       <Card
         title="Policy"
         extra={
+          [
+            RoleAccess.Admin,
+            RoleAccess.HumanResource,
+          ].includes(key) ?
           <Button
             className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
             onClick={() => handleOpenModal('Policy')}
           >
             Add
-          </Button>
+          </Button> : null
         }
       >
         <Collapse
