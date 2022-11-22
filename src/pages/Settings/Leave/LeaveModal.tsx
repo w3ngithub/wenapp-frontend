@@ -126,7 +126,30 @@ function LeaveModal({
           <Form.Item
             name="name"
             label="Name"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Name is required.')
+                    }
+                    if (value?.trim() === '') {
+                      throw new Error('Name is required.')
+                    }
+                    if (value?.trim()?.length < 10) {
+                      throw new Error('At least 10 characters required')
+                    }
+                    if (value?.trim()?.length > 1000) {
+                      throw new Error('Cannot exceed more than 1000 characters')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
           >
             <Input
               // value={input}

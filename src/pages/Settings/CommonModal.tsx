@@ -77,7 +77,24 @@ function CommonModal({
           <Form.Item
             name="name"
             label={type}
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error(`${type} is required.`)
+                    }
+                    if(value?.trim() === ''){
+                      throw new Error(`${type} is required.`)
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
           >
             <Input
               // value={input}

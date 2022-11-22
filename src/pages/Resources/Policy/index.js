@@ -53,13 +53,13 @@ function Policy() {
     onSuccess: (response) =>
       handleResponse(
         response,
-        'Policies type deleted successfully',
-        'Policies type deletion failed',
+        'Policy deleted successfully',
+        'Policy deletion failed',
         [handleCloseModal, () => queryClient.invalidateQueries(['policies'])]
       ),
     onError: (error) => {
       notification({
-        message: 'Policies Type deletion failed!',
+        message: 'Policy deletion failed!',
         type: 'error',
       })
     },

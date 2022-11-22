@@ -69,10 +69,10 @@ function CommonResourceModal({
                 validator: async (rule, value) => {
                   try {
                     if (!value) {
-                      throw new Error('Required!')
+                      throw new Error('Title is required!')
                     }
                     if (value?.trim() === '') {
-                      throw new Error('Required!')
+                      throw new Error('Title is required!')
                     }
                   } catch (err) {
                     throw new Error(err.message)
@@ -90,11 +90,6 @@ function CommonResourceModal({
           <Form.Item
             name="content"
             label="Description"
-            // rules={[
-            //   {required: true, message: 'Required!'},
-            //   {min: 10, message: 'At least 10 characters required'},
-            //   {max:1000, message:'Cannot exceed more than 1000 characters'}
-            // ]}
             rules={[
               {
                 required: true,
@@ -102,10 +97,10 @@ function CommonResourceModal({
                 validator: async (rule, value) => {
                   try {
                     if (!value) {
-                      throw new Error('Required!')
+                      throw new Error('Description is required.')
                     }
                     if (value?.trim() === '') {
-                      throw new Error('Required!')
+                      throw new Error('Description is required.')
                     }
                     if (value?.trim()?.length < 10) {
                       throw new Error('At least 10 characters required')

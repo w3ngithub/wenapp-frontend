@@ -95,7 +95,24 @@ function EmailModal({
           <Form.Item
             name="title"
             label="Title"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Title is required.')
+                    }
+                    if (value?.trim() === '') {
+                      throw new Error('Title is required.')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
           >
             <Input
               // value={editData?.title ?? ""}
@@ -107,7 +124,24 @@ function EmailModal({
             <Form.Item
               name="module"
               label="Module"
-              rules={[{required: true, message: 'Required!'}]}
+              rules={[
+                {
+                  required: true,
+                  whitespace: true,
+                  validator: async (rule, value) => {
+                    try {
+                      if (!value) {
+                        throw new Error('Module is required.')
+                      }
+                      if (value?.trim() === '') {
+                        throw new Error('Module is required.')
+                      }
+                    } catch (err) {
+                      throw new Error(err.message)
+                    }
+                  },
+                },
+              ]}
             >
               <Input
                 // value={editData?.title ?? ""}
