@@ -43,6 +43,7 @@ function Leave() {
     getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
 
+  const user = localStorage.getItem('user_id') ? JSON.parse(localStorage.getItem('user_id'))?.user : {} 
 
   const handleCloseCancelLeaveModal = () => {
     setOpenCancelLeaveModal(false)
@@ -155,7 +156,8 @@ function Leave() {
               />
             </Card>
           </Col>
-
+            
+            {(user?.position!=='Intern'&& user?.role?.value!=='Normal')  &&
           <Col xl={12} lg={12} md={24} sm={24} xs={24}>
             <Card
               title="Annual Leave"
@@ -183,6 +185,7 @@ function Leave() {
               />
             </Card>
           </Col>
+        }
         </Row>
 
         <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
