@@ -24,13 +24,12 @@ const intialDate = [
 ]
 
 const formattedWeeklyReports = (reports, clients) => {
-  return reports
-    ?.map((report) => ({
-      key: report?.project?.[0]?._id || 'Other',
-      name: report?.project?.[0]?.name || 'Other' ,
-      client: clients[report?.project?.[0]?.client] || '',
-      timeSpent: roundedToFixed(report?.timeSpent || 0, 2),
-    }))
+  return reports?.map((report) => ({
+    key: report?.project?.[0]?._id || 'Other',
+    name: report?.project?.[0]?.name || 'Other',
+    client: clients[report?.project?.[0]?.client] || '',
+    timeSpent: roundedToFixed(report?.timeSpent || 0, 2),
+  }))
 }
 
 function WeeklyReport() {
@@ -56,7 +55,7 @@ function WeeklyReport() {
     getProjectClients
   )
   const {data, isLoading, isError, isFetching} = useQuery(
-    ['projects',logType, projectStatus, projectClient, date],
+    ['projects', logType, projectStatus, projectClient, date],
     () =>
       getWeeklyReport({
         ...page,
@@ -106,17 +105,16 @@ function WeeklyReport() {
     setprojectClient(undefined)
   }
 
-  const navigateToProjectLogs = (projectSlug,newPage=false) => {
-    if(!newPage){
+  const navigateToProjectLogs = (projectSlug, newPage = false) => {
+    if (!newPage) {
       navigate(`${projectSlug}`)
-    }
-    else{    
-    window.open(projectSlug,'_blank')
+    } else {
+      window.open(projectSlug, '_blank')
     }
   }
 
   const handleChangeDate = (date) => {
-    setDate([date[0],date[1].endOf('day')])
+    setDate([date[0], date[1].endOf('day')])
   }
 
   const clients = useMemo(() => {
@@ -187,26 +185,24 @@ function WeeklyReport() {
         </div>
         <Table
           className="gx-table-responsive"
-          columns={WEEKLY_REPORT_COLUMNS(
-            sort,
-            navigateToProjectLogs
-          )}
+          columns={WEEKLY_REPORT_COLUMNS(sort, navigateToProjectLogs)}
           dataSource={formattedWeeklyReports(data?.data?.data?.report, clients)}
           onChange={handleTableChange}
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: [ '20', '50'],
+            pageSizeOptions: ['20', '50'],
             showSizeChanger: true,
-            total: data.data.data.report.length|| 1,
+            total: data?.data?.data?.report?.length || 1,
             onShowSizeChange,
-            hideOnSinglePage:true,
+            hideOnSinglePage: true,
             onChange: handlePageChange,
           }}
           loading={isLoading || isFetching}
         />
       </Card>
-    </div>  )
+    </div>
+  )
 }
 
 export default WeeklyReport
