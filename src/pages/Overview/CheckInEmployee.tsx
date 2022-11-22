@@ -10,6 +10,8 @@ const formattedUsers = (users: any[]) => {
     const punchOutLocation = user?.data?.at(-1)?.punchOutLocation
     const checkIn = user?.data?.[0]?.punchInTime
     const checkOut = user?.data?.at(-1)?.punchOutTime
+    const punchInIp = user?.data?.[0]?.punchInIp || ''
+    const punchOutIp = user?.data?.[0]?.punchOutIp || ''
 
     return {
       ...user,
@@ -23,6 +25,8 @@ const formattedUsers = (users: any[]) => {
         punchInLocation && punchInLocation?.length === 2 ? 'Show On Map' : '',
       punchInLocation: punchInLocation,
       punchOutLocation: punchOutLocation,
+      punchInIp,
+      punchOutIp,
     }
   })
 }
