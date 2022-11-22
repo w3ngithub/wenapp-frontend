@@ -19,7 +19,7 @@ import {getLeaveTypes} from 'services/settings/leaveType'
 import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
 import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingAndAppliedCards'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
-import RoleAccess, {LEAVE_TABS_NO_ACCESS} from 'constants/RoleAccess'
+import RoleAccess, {LEAVE_TABS_NO_ACCESS, PositionType} from 'constants/RoleAccess'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 
 const TabPane = Tabs.TabPane
@@ -43,6 +43,7 @@ function Leave() {
     getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
 
+  const user = localStorage.getItem('user_id') ? JSON.parse(localStorage.getItem('user_id'))?.user : {} 
 
   const handleCloseCancelLeaveModal = () => {
     setOpenCancelLeaveModal(false)
@@ -155,7 +156,8 @@ function Leave() {
               />
             </Card>
           </Col>
-
+            
+            {(user?.position?.name!==PositionType.Intern && user?.role?.key!==RoleAccess.Subscriber)  &&
           <Col xl={12} lg={12} md={24} sm={24} xs={24}>
             <Card
               title="Annual Leave"
@@ -183,6 +185,7 @@ function Leave() {
               />
             </Card>
           </Col>
+        }
         </Row>
 
         <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
