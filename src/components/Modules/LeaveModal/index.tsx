@@ -342,7 +342,7 @@ function LeaveModal({
       }
     }
   }
-  console.log('leave Data', leaveData)
+
   const calendarClickHandler = () => {
     const selectedDates = form?.getFieldValue('leaveDatesCasual')
     if (selectedDates?.length > 0) {

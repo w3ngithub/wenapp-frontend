@@ -37,11 +37,12 @@ const getLeavesOfAllUsers = async (
   date = '',
   page = '',
   limit = '',
-  sort = '-leaveDates'
+  sort = '-leaveDates',
+  type = ''
 ) => {
   try {
     let response = await API.get(
-      `${Apis.Leaves}?leaveStatus=${status}&sort=${sort}&user=${user}&leaveDates=${date}&page=${page}&limit=${limit}`
+      `${Apis.Leaves}?leaveStatus=${status}&sort=${sort}&user=${user}&leaveDates=${date}&page=${page}&limit=${limit}&leaveType=${type}`
     )
     return getAPIResponse(response)
   } catch (err) {
@@ -57,7 +58,8 @@ const getLeavesOfUser = async (
   limit = 30,
   fromDate = '',
   toDate = '',
-  sort = '-leaveDates'
+  sort = '-leaveDates',
+  type='',
 ) => {
   try {
     let response = await API.get(
@@ -65,7 +67,7 @@ const getLeavesOfUser = async (
         Apis.Leaves
       }?user=${id}&page=${page}&sort=${sort}&limit=${limit}&leaveStatus=${status}&leaveDates=${
         date ?? ''
-      }&fromDate=${fromDate}&toDate=${toDate}`
+      }&fromDate=${fromDate}&toDate=${toDate}&leaveType=${type}`
     )
     return getAPIResponse(response)
   } catch (err) {

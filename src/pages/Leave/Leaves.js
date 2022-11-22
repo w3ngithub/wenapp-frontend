@@ -13,6 +13,7 @@ import moment from 'moment'
 import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
+import {getLeaveTypes} from 'services/leaves'
 import {
   LEAVES_TAB_ACTIONS_NO_ACCESS,
   LEAVE_TAB_ADD_LEAVE_NO_ACCESS,
@@ -69,7 +70,8 @@ function Leaves({
   const [dataToEdit, setDataToEdit] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
-  const [leaveStatus, setLeaveStatus] = useState(status ?? 'pending')
+  const [leaveStatus, setLeaveStatus] = useState(status ?? '')
+  const [leaveId, setLeaveId] = useState(undefined)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const [date, setDate] = useState(
@@ -89,19 +91,34 @@ function Leaves({
   const [user, setUser] = useState(selectedUser ?? undefined)
 
   const leavesQuery = useQuery(
-    ['leaves', leaveStatus, user, date, page],
+    ['leaves', leaveStatus, user, date, page, leaveId],
     () =>
       getLeavesOfAllUsers(
         leaveStatus,
         user,
         date?.utc ? date?.utc : '',
         page.page,
-        page.limit
+        page.limit,
+        '-leaveDates',
+        leaveId
       ),
     {
       onError: (err) => console.log(err),
     }
   )
+
+  const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
+    select: (res) => [
+      ...res?.data?.data?.data?.map((type) => ({
+        id: type._id,
+        value: type?.name.replace('Leave', '').trim(),
+      })),
+    ],
+  })
+
+  const handleLeaveTypeChange = (value) => {
+    setLeaveId(value)
+  }
 
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
   const usersQuery = useQuery(['users'], () => getAllUsers({sort: 'name'}))
@@ -132,7 +149,6 @@ function Leaves({
   )
 
   const sendEmailNotification = (res) => {
-    console.log(res)
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
@@ -172,6 +188,7 @@ function Leaves({
     setLeaveStatus(undefined)
     setUser(undefined)
     setDate(undefined)
+    setLeaveId(undefined)
   }
 
   const handleCloseModal = (
@@ -254,6 +271,16 @@ function Leaves({
                 options={STATUS_TYPES}
               />
             </FormItem>
+
+            <FormItem className="direct-form-item">
+              <Select
+                placeholder="Select Leave Type"
+                onChange={handleLeaveTypeChange}
+                value={leaveId}
+                options={leaveTypeQuery?.data}
+              />
+            </FormItem>
+
             <FormItem className="direct-form-item">
               <Select
                 placeholder="Select Co-worker"

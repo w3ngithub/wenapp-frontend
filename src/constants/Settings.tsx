@@ -142,7 +142,9 @@ export const LEAVES_COLUMN = (
         <div className="gx-d-flex">
           <span
             className="gx-link gx-text-primary"
-            onClick={() => onEditClick(record, true)}
+            onClick={() => {
+              onEditClick(record, true)
+            }}
           >
             <CustomIcon name="edit" />
           </span>
