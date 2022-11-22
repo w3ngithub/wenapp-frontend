@@ -444,6 +444,7 @@ function ProjectModal({
                   filterOption={filterOptions}
                   placeholder="Select Type"
                   disabled={readOnly}
+                  mode="multiple"
                 >
                   {projectTypes?.map((type) => (
                     <Option value={type._id} key={type._id}>

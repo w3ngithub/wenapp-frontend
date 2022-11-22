@@ -9,8 +9,10 @@ import {
 } from 'helpers/utils'
 import {SALARY_REVIEW_ACCESS} from 'constants/RoleAccess'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {Collapse} from 'antd'
 
 const TimeLineItem = Timeline.Item
+const {Panel} = Collapse
 
 export const events: any = ({
   announcementsData = [],
@@ -69,6 +71,7 @@ function EventsAndAnnouncements({
     ],
     Icon: 'notification',
     imageList: [],
+    details: x?.details,
   }))
 
   const holidaysData = holidays?.filter(oneWeekFilterCheck)?.map((x: any) => ({
@@ -182,18 +185,45 @@ function EventsAndAnnouncements({
               {activity.Icon}
               <h3 className=" gx-mb-1 ">{activity?.day}</h3>
             </div>
-            <Timeline>
-              {activity?.tasks?.map((task: any, index: number) => {
+            {activity.day === 'Announcements' ? (
+              activity?.tasks?.map((task: any, index: number) => {
+                console.log('task', task)
                 return (
-                  <TimeLineItem
-                    key={'timeline' + index}
-                    dot={getName(task, '')}
+                  <Collapse
+                    expandIconPosition="right"
+                    bordered={false}
+                    className="gx-dashboard-collapse"
                   >
-                    <ActivityItem task={task} />
-                  </TimeLineItem>
+                    <Panel
+                      header={
+                        <TimeLineItem
+                          key={'timeline' + index}
+                          dot={getName(task, '')}
+                        >
+                          <ActivityItem task={task} />
+                        </TimeLineItem>
+                      }
+                      key=""
+                    >
+                      {task?.details}
+                    </Panel>
+                  </Collapse>
                 )
-              })}
-            </Timeline>
+              })
+            ) : (
+              <Timeline>
+                {activity?.tasks?.map((task: any, index: number) => {
+                  return (
+                    <TimeLineItem
+                      key={'timeline' + index}
+                      dot={getName(task, '')}
+                    >
+                      <ActivityItem task={task} />
+                    </TimeLineItem>
+                  )
+                })}
+              </Timeline>
+            )}
           </div>
         ))}
     </div>

@@ -21,7 +21,7 @@ import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingA
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import RoleAccess, {
   LEAVE_TABS_NO_ACCESS,
-  PositionType,
+  EmployeeStatus
 } from 'constants/RoleAccess'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 
@@ -125,7 +125,7 @@ function Leave() {
     {}
   )
   
-  let IsIntern = user?.position?.name === PositionType.Intern && user?.role?.key === RoleAccess.Subscriber;
+  let IsIntern = user?.status===EmployeeStatus?.Probation;
 
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (

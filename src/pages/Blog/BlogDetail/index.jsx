@@ -1,4 +1,7 @@
-import React from 'react'
+import React, {useState} from 'react'
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
+import {dark, prism} from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import {useNavigate, useParams} from 'react-router-dom'
 import {useQuery} from '@tanstack/react-query'
 import {Button, Card} from 'antd'
@@ -10,11 +13,15 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import moment from 'moment'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
+import { useSelector } from 'react-redux'
+import { THEME_TYPE_DARK } from 'constants/ThemeSetting'
 
 function Detail() {
   // init hooks
   const {blog} = useParams()
   const navigate = useNavigate()
+  const {themeType} = useSelector((state) => state.settings)
+  const darkTheme = themeType === THEME_TYPE_DARK
 
   const [blogId] = blog.split('-')
 
@@ -29,6 +36,8 @@ function Detail() {
   const BLOG = data?.data?.data?.data?.[0]
   const access = !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
 
+  const [arrIndex, setArrIndex] = useState(0)
+
   const handleEdit = () => {
     navigate(`/blog/edit-blog/${blog}`)
   }
@@ -36,6 +45,8 @@ function Detail() {
   if (isLoading) {
     return <CircularProgress />
   }
+
+  const mainArray = BLOG?.content?.split('<p>@highlight-code</p>')
 
   return (
     <div>
@@ -68,9 +79,23 @@ function Detail() {
           </>
         }
       >
-        <div>
-          <div>{HTMLReactParser(BLOG?.content || '')}</div>
-        </div>
+        {mainArray?.map((item, index) => {
+          if (index % 2 !== 0) {
+            return (
+              <div>
+                <SyntaxHighlighter
+                  language="javascript"
+                  style={darkTheme ? docco : prism}
+                  showLineNumbers
+                >
+                  {item}
+                </SyntaxHighlighter>
+              </div>
+            )
+          } else {
+            return <div>{HTMLReactParser(item || '')}</div>
+          }
+        })}
       </Card>
     </div>
   )
