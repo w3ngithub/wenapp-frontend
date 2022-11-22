@@ -96,6 +96,7 @@ function ProjectLogs() {
       }),
     {keepPreviousData: true}
   )
+
   const {data: todayTimeSpent, isLoading: todayLoading} = useQuery(
     ['userTodayTimeSpent'],
     getTodayTimeLogSummary
