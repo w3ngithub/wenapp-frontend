@@ -69,7 +69,7 @@ function Leaves({
   const [dataToEdit, setDataToEdit] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
-  const [leaveStatus, setLeaveStatus] = useState(status ?? 'pending')
+  const [leaveStatus, setLeaveStatus] = useState(status ?? '')
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const [date, setDate] = useState(

@@ -25,11 +25,10 @@ const formattedLeaves = (leaves: any) => {
         (leave?.leaveType?.name === 'Maternity' ||
           leave?.leaveType?.name === 'Paternity' ||
           leave?.leaveType?.name === 'Paid Time Off') &&
-        index < leave?.leaveDates?.length-1
+        index < leave?.leaveDates?.length - 1
       ) {
         return <p>{`${changeDate(date)} - `}</p>
-      }
-      else {
+      } else {
         return <p>{changeDate(date)}</p>
       }
     }),
@@ -58,7 +57,7 @@ function MyHistory({
   const {innerWidth} = useWindowsSize()
   const [datatoShow, setdatatoShow] = useState({})
   const [openModal, setModal] = useState<boolean>(false)
-  const [leaveStatus, setLeaveStatus] = useState<string | undefined>(undefined)
+  const [leaveStatus, setLeaveStatus] = useState<string | undefined>('')
   const [date, setDate] = useState<{moment: Moment | undefined; utc: string}>({
     utc: selectedDate ? selectedDate : undefined,
     moment: selectedDate ? moment(selectedDate).startOf('day') : undefined,
