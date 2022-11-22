@@ -106,8 +106,13 @@ function WeeklyReport() {
     setprojectClient(undefined)
   }
 
-  const navigateToProjectLogs = (projectSlug) => {
-    navigate(`${projectSlug}`)
+  const navigateToProjectLogs = (projectSlug,newPage=false) => {
+    if(!newPage){
+      navigate(`${projectSlug}`)
+    }
+    else{    
+    window.open(projectSlug,'_blank')
+    }
   }
 
   const handleChangeDate = (date) => {
