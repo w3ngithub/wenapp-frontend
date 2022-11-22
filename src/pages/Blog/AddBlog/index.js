@@ -113,7 +113,6 @@ function AddBlog() {
         blocksFromHTML.contentBlocks,
         blocksFromHTML.entityMap
       )
-
       const initialState = blocksFromHTML
         ? EditorState.createWithContent(state)
         : EditorState.createEmpty()
@@ -275,7 +274,7 @@ function AddBlog() {
               <Select
                 showSearch
                 filterOption={filterOptions}
-                placeholder="Select Tags"
+                placeholder="Select Categories"
                 mode="multiple"
                 size="large"
               >
