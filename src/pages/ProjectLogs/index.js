@@ -29,6 +29,7 @@ import TimeSummary from './TimeSummary'
 import AccessWrapper from './../../components/Modules/AccessWrapper/index'
 import {LOG_TIME_ADD_NO_ACCESS} from 'constants/RoleAccess'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import ProjectModal from 'components/Modules/ProjectModal'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -57,6 +58,8 @@ function ProjectLogs() {
   const [page, setPage] = useState({page: 1, limit: 50})
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
+  const [openViewModal, setOpenViewModal] = useState(false)
+  const [userRecord, setUserRecord] = useState({})
 
   const [projectId] = slug.split('-')
   const {
@@ -254,12 +257,33 @@ function ProjectLogs() {
     setOpenModal(true)
   }
 
+  const handleOpenViewModal = () => {
+    const detailDatas = projectDetail?.data?.data?.data[0]
+    setUserRecord({
+      id: detailDatas.id,
+      project: detailDatas,
+    })
+    setOpenViewModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setOpenViewModal((prev) => !prev)
+  }
+
   if (timelogLoading) {
     return <CircularProgress />
   }
 
   return (
     <div>
+      <ProjectModal
+        toggle={openViewModal}
+        onClose={handleCloseModal}
+        initialValues={userRecord?.project}
+        isEditMode={true}
+        readOnly={true}
+        isFromLog={true}
+      />
       <LogTimeModal
         toggle={openModal}
         onClose={handleCloseTimelogModal}
@@ -328,13 +352,22 @@ function ProjectLogs() {
             </Form>
             <AccessWrapper noAccessRoles={[]}>
               {' '}
-              <Button
-                className="gx-btn gx-btn-primary gx-text-white "
-                onClick={handleOpenModal}
-                style={{marginBottom: '16px'}}
-              >
-                Add New TimeLog
-              </Button>
+              <div>
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white "
+                  onClick={handleOpenViewModal}
+                  style={{marginBottom: '16px'}}
+                >
+                  View Details
+                </Button>
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white "
+                  onClick={handleOpenModal}
+                  style={{marginBottom: '16px'}}
+                >
+                  Add New TimeLog
+                </Button>
+              </div>
             </AccessWrapper>
           </div>
         </div>
