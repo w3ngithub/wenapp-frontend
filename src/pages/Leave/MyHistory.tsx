@@ -2,7 +2,7 @@ import {useQuery} from '@tanstack/react-query'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
 import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
-import {changeDate, removeDash} from 'helpers/utils'
+import {capitalizeInput, changeDate, removeDash} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment, {Moment} from 'moment'
 import React, {useState} from 'react'
@@ -11,6 +11,7 @@ import {getLeavesOfUser} from 'services/leaves'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {getLeaveTypes} from 'services/leaves'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const FormItem = Form.Item
 
@@ -37,7 +38,7 @@ const formattedLeaves = (leaves: any) => {
         ? '- ' + removeDash(leave?.halfDay)
         : ''
     }`,
-    status: leave?.leaveStatus,
+    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus):'',
   }))
 }
 
@@ -66,9 +67,24 @@ function MyHistory({
 
   const [page, setPage] = useState(defaultPage)
 
+  const {gender} = JSON.parse(
+    localStorage.getItem(LOCALSTORAGE_USER) || ''
+  )?.user
+
   const userLeavesQuery = useQuery(
-    ['userLeaves', leaveStatus, date, page,leaveTypeId],
-    () => getLeavesOfUser(userId, leaveStatus, date?.utc, page.page, page.limit,'','','-leaveDates',leaveTypeId)
+    ['userLeaves', leaveStatus, date, page, leaveTypeId],
+    () =>
+      getLeavesOfUser(
+        userId,
+        leaveStatus,
+        date?.utc,
+        page.page,
+        page.limit,
+        '',
+        '',
+        '-leaveDates',
+        leaveTypeId
+      )
   )
 
   const handleLeaveType = (value: string | undefined) => {
@@ -76,12 +92,25 @@ function MyHistory({
   }
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
-    select: (res) => [
-      ...res?.data?.data?.data?.map((type: any) => ({
-        id: type._id,
-        value: type?.name.replace('Leave', '').trim(),
-      })),
-    ],
+    select: (res) => {
+      if (gender === 'Male') {
+        return [
+          ...res?.data?.data?.data
+            ?.filter((types: any) => types.name !== 'Substitute Leave')
+            .map((type: any) => ({
+              id: type._id,
+              value: type?.name.replace('Leave', '').trim(),
+            })),
+        ]
+      } else {
+        return [
+          ...res?.data?.data?.data?.map((type: any) => ({
+            id: type._id,
+            value: type?.name.replace('Leave', '').trim(),
+          })),
+        ]
+      }
+    },
   })
 
   const onShowSizeChange = (_: any, pageSize: number) => {

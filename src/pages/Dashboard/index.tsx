@@ -617,7 +617,7 @@ const Dashboard = () => {
                       )}
                     </div>
                   ) : (
-                    'No Data'
+                    'No Result Found'
                   )}
                 </div>
               )}
