@@ -38,7 +38,23 @@ function Detail() {
   if (isLoading) {
     return <CircularProgress />
   }
-
+  const mainArray = BLOG?.content?.split(/\r?\n/)
+  
+  // const splittedArray = mainArray?.map((item, index) => {
+  //   if (item?.includes('@highlight-code')) {
+  //     return index
+  //   } else {
+  //     return null
+  //   }
+  // })
+  const splittedArray = mainArray?.map((item, index) => {
+    if(item?.includes('@highlight-code')){
+      return [item]
+    }else{
+      return item
+    }
+  })
+  console.log('content', splittedArray)
   return (
     <div>
       <BlogsBreadCumb slug={BLOG?.title} />
@@ -70,11 +86,33 @@ function Detail() {
           </>
         }
       >
+        {mainArray?.map((item) => {
+          if (item?.includes('@highlight-code')) {
+            return (
+              <div>
+                <SyntaxHighlighter
+                  language="javascript"
+                  style={dark}
+                  showLineNumbers
+                >
+                  {item}
+                </SyntaxHighlighter>
+              </div>
+            )
+          } else {
+            return <div>{HTMLReactParser(item || '')}</div>
+          }
+        })}
         <div>
-          <div>{HTMLReactParser(BLOG?.content || '')}</div>
-          <SyntaxHighlighter language="javascript" style={dark} showLineNumbers>
-            {BLOG?.content}
-          </SyntaxHighlighter>
+        <div>
+                <SyntaxHighlighter
+                  language="javascript"
+                  style={dark}
+                  showLineNumbers
+                >
+                  {BLOG?.content}
+                </SyntaxHighlighter>
+              </div>
         </div>
       </Card>
     </div>
