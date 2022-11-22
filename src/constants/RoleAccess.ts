@@ -10,6 +10,11 @@ const RoleAccess = {
   All: 'all',
 }
 
+//Position 
+export const PositionType = {
+  Intern : 'Intern'
+}
+
 // Dashboard
 export const DASHBOARD_PROJECT_LOG_NO_ACCESS = [
   RoleAccess.HumanResource,
