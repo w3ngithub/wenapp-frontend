@@ -57,7 +57,6 @@ function EventsAndAnnouncements({
   birthdays: any[]
   salaryReview: any[]
 }) {
-  console.log('announcements', announcements)
   const {
     role: {key},
   } = getLocalStorageData(LOCALSTORAGE_USER)
