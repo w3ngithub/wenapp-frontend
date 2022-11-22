@@ -211,7 +211,7 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
               { 
                 whitespace: true,
                 validator: async (rule, value) => {
-                  const mobileRegex = /(\+977)?[9][6-9]\d{8}$/
+                  const mobileRegex = /(?:\(?\+977\)?)?[9][3-9]\d{8}|01[-]?[0-9]{7}/
                   try {
                     if(!value){
                       return
