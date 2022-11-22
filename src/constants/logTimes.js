@@ -16,7 +16,8 @@ const LOGTIMES_COLUMNS = (
   confirmDelete,
   hideAdminFeature,
   user,
-  role
+  role,
+  navigateToProjectLogs
 ) =>
   hideAdminFeature
     ? [
@@ -27,6 +28,9 @@ const LOGTIMES_COLUMNS = (
           // width: 120,
           sorter: true,
           sortOrder: sortedInfo.columnKey === 'project' && sortedInfo.order,
+          render: (text, record) => {
+            return <p onClick={()=>navigateToProjectLogs(`../projects/${record?.projectId}-${record?.slug}`)} className="project-name">{text}</p>
+          },
         },
         {
           title: 'Date',

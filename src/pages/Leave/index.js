@@ -21,7 +21,7 @@ import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingA
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import RoleAccess, {
   LEAVE_TABS_NO_ACCESS,
-  PositionType,
+  EmployeeStatus
 } from 'constants/RoleAccess'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 
@@ -124,6 +124,8 @@ function Leave() {
     },
     {}
   )
+  
+  let IsIntern = user?.status===EmployeeStatus?.Probation;
 
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
@@ -143,7 +145,7 @@ function Leave() {
 
       <Card title="Leave Management System">
         <Row>
-          <Col xl={12} lg={12} md={24} sm={24} xs={24}>
+          <Col xl={IsIntern?24:12} lg={IsIntern?24:12} md={24} sm={24} xs={24}>
             <Card
               title="Quarterly Leave"
               style={{background: 'rgb(232 232 232 / 26%)'}}
@@ -161,8 +163,7 @@ function Leave() {
             </Card>
           </Col>
 
-          {user?.position?.name !== PositionType.Intern &&
-            user?.role?.key !== RoleAccess.Subscriber && (
+          { !IsIntern && (
               <Col xl={12} lg={12} md={24} sm={24} xs={24}>
                 <Card
                   title="Annual Leave"
