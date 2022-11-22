@@ -38,6 +38,7 @@ function ProjectModal({
   designers,
   qas,
   devops,
+  isFromLog = false,
 }) {
   const [form] = Form.useForm()
   const [projectTypes, setProjectTypes] = useState([])
@@ -57,24 +58,31 @@ function ProjectModal({
   const changedRoleChecker = (type, key) => {
     const newList = type?.map((item) => {
       if (item.includes(' ')) {
-        return initialValues?.[key]?.filter((val) => val?.name === item)?.[0]?._id
+        return initialValues?.[key]?.filter((val) => val?.name === item)?.[0]
+          ?._id
       } else return item
     })
-    return newList;
+    return newList
   }
 
   const handleSubmit = (type) => {
     form.validateFields().then((values) => {
-      const updatedDesigners = changedRoleChecker(values?.designers,'designers')
-      const updatedQAs = changedRoleChecker(values?.qa,'qa')
-      const updatedDevelopers = changedRoleChecker(values?.developers,'devOps')
+      const updatedDesigners = changedRoleChecker(
+        values?.designers,
+        'designers'
+      )
+      const updatedQAs = changedRoleChecker(values?.qa, 'qa')
+      const updatedDevelopers = changedRoleChecker(values?.developers, 'devOps')
       const updatedDevOps = changedRoleChecker(values?.devOps, 'devOps')
-      const updatedLiveUrl = typeof(values?.liveUrl)==='string' ? values?.liveUrl : values?.liveUrl?.join('');
+      const updatedLiveUrl =
+        typeof values?.liveUrl === 'string'
+          ? values?.liveUrl
+          : values?.liveUrl?.join('')
       onSubmit({
         ...values,
-        designers:updatedDesigners,
-        qa:updatedQAs,
-        developers:updatedDevelopers,
+        designers: updatedDesigners,
+        qa: updatedQAs,
+        developers: updatedDevelopers,
         devOps: updatedDevOps,
         liveUrl: updatedLiveUrl,
         maintenance: [
@@ -93,7 +101,7 @@ function ProjectModal({
   useEffect(() => {
     if (toggle) {
       // setProjectStatuses(statuses.data.data.data)
-      setProjectTypes(types.data.data.data)
+      setProjectTypes(types?.data?.data?.data)
       refetch()
       if (isEditMode) {
         setStartDate(moment(initialValues.startDate))
@@ -157,7 +165,11 @@ function ProjectModal({
               : undefined,
           devOps:
             initialValues.devOps?.length > 0
-              ? initialValues.devOps?.map((devop) => devop?.positionType?.name === 'devOps' ? devop._id : devop.name)
+              ? initialValues.devOps?.map((devop) =>
+                  devop?.positionType?.name === 'devOps'
+                    ? devop._id
+                    : devop.name
+                )
               : undefined,
           qa:
             initialValues.qa?.length > 0
@@ -170,7 +182,77 @@ function ProjectModal({
               ? initialValues.stagingUrls
               : undefined,
           liveUrl: initialValues.liveUrl,
-          notes: initialValues?.notes?.replace(/<\/?[^>]+(>|$)/g,"") || "",
+          notes: initialValues?.notes?.replace(/<\/?[^>]+(>|$)/g, '') || '',
+          emailDay:
+            initialValues.maintenance?.length > 0
+              ? initialValues.maintenance[0].emailDay
+              : undefined,
+        })
+      }
+      if (isFromLog) {
+        setMaintenance([
+          {
+            selectMonths:
+              initialValues.maintenance?.length > 0
+                ? initialValues.maintenance[0].selectMonths.length === 12
+                  ? ['Toggle All', ...initialValues.maintenance[0].selectMonths]
+                  : initialValues.maintenance[0].selectMonths
+                : [],
+            emailDay:
+              initialValues.maintenance?.length > 0
+                ? initialValues.maintenance[0].emailDay
+                : undefined,
+            sendEmailTo:
+              initialValues.maintenance?.length > 0
+                ? initialValues.maintenance[0].sendEmailTo
+                : undefined,
+            enabled:
+              initialValues.maintenance?.length > 0
+                ? initialValues.maintenance[0].enabled
+                : undefined,
+          },
+        ])
+
+        form.setFieldsValue({
+          name: initialValues.name ?? '',
+          priority: initialValues.priority,
+          path: initialValues.path,
+          estimatedHours: initialValues.estimatedHours,
+          startDate: initialValues.startDate
+            ? moment(initialValues.startDate)
+            : null,
+          endDate: initialValues.endDate ? moment(initialValues.endDate) : null,
+          projectTypes: initialValues.projectTypes?.map((type) => type.name),
+          projectStatus: initialValues.projectStatus?.name,
+          projectTags:
+            initialValues.projectTags?.length > 0
+              ? initialValues.projectTags?.map((tags) => tags.name)
+              : undefined,
+          client: initialValues?.client?.hasOwnProperty('_id')
+            ? initialValues.client?.name
+            : undefined,
+          developers:
+            initialValues.developers?.length > 0
+              ? initialValues.developers?.map((developer) => developer.name)
+              : undefined,
+          designers:
+            initialValues.designers?.length > 0
+              ? initialValues.designers?.map((designer) => designer.name)
+              : undefined,
+          devOps:
+            initialValues.devOps?.length > 0
+              ? initialValues.devOps?.map((devop) => devop.name)
+              : undefined,
+          qa:
+            initialValues.qa?.length > 0
+              ? initialValues.qa?.map((q) => q.name)
+              : undefined,
+          stagingUrls:
+            initialValues.stagingUrls?.length > 0
+              ? initialValues.stagingUrls
+              : undefined,
+          liveUrl: initialValues.liveUrl,
+          notes: initialValues?.notes?.replace(/<\/?[^>]+(>|$)/g, '') || '',
           emailDay:
             initialValues.maintenance?.length > 0
               ? initialValues.maintenance[0].emailDay
@@ -189,18 +271,18 @@ function ProjectModal({
 
   useEffect(() => {
     if (moment() < moment(startDate) || startDate === undefined) {
-      let removeCompleted = statuses.data.data.data.filter(
+      let removeCompleted = statuses?.data?.data?.data?.filter(
         (data) => data.name !== 'Completed'
       )
-      let selectedStatus = statuses.data.data.data.filter(
+      let selectedStatus = statuses?.data?.data?.data?.filter(
         (status) => status._id === form.getFieldValue('projectStatus')
       )
       setProjectStatuses(removeCompleted)
-      if (selectedStatus[0]?.name === 'Completed') {
+      if (selectedStatus?.[0]?.name === 'Completed') {
         form.setFieldValue('projectStatus', null)
       }
     } else {
-      setProjectStatuses(statuses.data.data.data)
+      setProjectStatuses(statuses?.data?.data?.data)
     }
   }, [startDate])
 
@@ -220,7 +302,13 @@ function ProjectModal({
     <Modal
       width={900}
       mask={false}
-      title={isEditMode ? 'Update Project' : 'Add Project'}
+      title={
+        (isEditMode && readOnly) || isFromLog
+          ? 'Project Details'
+          : isEditMode
+          ? 'Update Project'
+          : 'Add Project'
+      }
       visible={toggle}
       onOk={handleSubmit}
       onCancel={handleCancel}
@@ -357,7 +445,7 @@ function ProjectModal({
                   placeholder="Select Type"
                   disabled={readOnly}
                 >
-                  {projectTypes.map((type) => (
+                  {projectTypes?.map((type) => (
                     <Option value={type._id} key={type._id}>
                       {type.name}
                     </Option>
@@ -383,7 +471,7 @@ function ProjectModal({
                   placeholder="Select Status"
                   disabled={readOnly}
                 >
-                  {projectStatuses.map((status) => (
+                  {projectStatuses?.map((status) => (
                     <Option value={status._id} key={status._id}>
                       {status.name}
                     </Option>

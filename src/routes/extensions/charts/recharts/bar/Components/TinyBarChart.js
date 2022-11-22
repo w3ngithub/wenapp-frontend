@@ -1,3 +1,4 @@
+import { logTypeColors } from 'constants/GraphColors'
 import { THEME_TYPE_DARK } from 'constants/ThemeSetting'
 import React from 'react'
 import { useSelector } from 'react-redux'
@@ -10,6 +11,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  Cell
 } from 'recharts'
 
 // import data from "./data";
@@ -25,7 +27,11 @@ const TinyBarChart = ({data}) => {
         <CartesianGrid strokeDasharray="3 3"/>
         <Tooltip />
         <Legend />
-        <Bar dataKey="time" fill={darkTheme ? "#13c2c2":"#003366"} name="Hours Spent" />
+        <Bar dataKey="time" fill={darkTheme ? "#13c2c2":"#003366"} name="Hours Spent" >
+        {data?.map((entry, index) => (
+            <Cell fill={logTypeColors?.[entry?.name]} />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   )
