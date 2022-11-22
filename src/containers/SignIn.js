@@ -17,7 +17,7 @@ function SignIn(props) {
   const handleSubmit = (values) => {
     values = {
       ...values,
-      email: values.emails.trim(),
+      email: values.emails.trim().toLowerCase(),
       password: values?.passwords,
     }
     props.showAuthLoader()
@@ -80,7 +80,10 @@ function SignIn(props) {
                     required: true,
                     validator: async (rule, value) => {
                       try {
-                        if (!value) throw new Error('Please enter your email or username!')
+                        if (!value)
+                          throw new Error(
+                            'Please enter your email or username!'
+                          )
                       } catch (err) {
                         throw new Error(err.message)
                       }
