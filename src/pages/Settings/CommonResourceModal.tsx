@@ -62,7 +62,24 @@ function CommonResourceModal({
           <Form.Item
             name="title"
             label="Title"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Required!')
+                    }
+                    if (value?.trim() === '') {
+                      throw new Error('Required!')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
           >
             <Input
               // value={editData?.title ?? ""}
@@ -73,10 +90,34 @@ function CommonResourceModal({
           <Form.Item
             name="content"
             label="Description"
+            // rules={[
+            //   {required: true, message: 'Required!'},
+            //   {min: 10, message: 'At least 10 characters required'},
+            //   {max:1000, message:'Cannot exceed more than 1000 characters'}
+            // ]}
             rules={[
-              {required: true, message: 'Required!'},
-              {min: 10, message: 'At least 10 characters required'},
-              {max:1000, message:'Cannot exceed more than 1000 characters'}
+              {
+                required: true,
+                whitespace: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Required!')
+                    }
+                    if (value?.trim() === '') {
+                      throw new Error('Required!')
+                    }
+                    if (value?.trim()?.length < 10) {
+                      throw new Error('At least 10 characters required')
+                    }
+                    if (value?.trim()?.length > 1000) {
+                      throw new Error('Cannot exceed more than 1000 characters')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
             ]}
           >
             <TextArea
