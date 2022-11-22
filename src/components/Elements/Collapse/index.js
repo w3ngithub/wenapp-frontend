@@ -16,7 +16,7 @@ const Collapses = ({
 }) => {
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = getLocalStorageData(LOCALSTORAGE_USER) || ''
 
   return (
     <Collapse defaultActiveKey={defaultActiveKey}>

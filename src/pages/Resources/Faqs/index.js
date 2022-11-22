@@ -19,7 +19,7 @@ function Faqs() {
   const [dataToEdit, setDataToEdit] = useState({})
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = getLocalStorageData(LOCALSTORAGE_USER) || ''
 
 
   useEffect(() => {
