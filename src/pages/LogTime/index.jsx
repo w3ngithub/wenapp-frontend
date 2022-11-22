@@ -2,6 +2,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Card, Table, Button} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import LogModal from 'components/Modules/LogtimeModal'
+import '@ant-design/compatible/assets/index.css'
 import {LOGTIMES_COLUMNS} from 'constants/logTimes'
 import {
   changeDate,
@@ -23,6 +24,7 @@ import {
 } from 'services/timeLogs'
 import TimeSummary from './TimeSummary'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import { useNavigate } from 'react-router-dom'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -32,12 +34,15 @@ const formattedLogs = (logs) => {
     logDate: changeDate(log?.logDate),
     user: log?.user?.name,
     project: log?.project?.name || 'Other',
+    slug:log?.project?.slug,
+    projectId: log?.project?.id
   }))
 }
 
 function LogTime() {
   // init hooks
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   // init states
   const [sort, setSort] = useState({})
@@ -115,6 +120,10 @@ function LogTime() {
       },
     }
   )
+
+  const navigateToProjectLogs = (url)=>{
+    navigate(url,{replace:true})
+  }
 
   const {data: logTypes} = useQuery(['logTypes'], () => getLogTypes())
 
@@ -248,7 +257,8 @@ function LogTime() {
             confirmDelete,
             true,
             undefined,
-            key
+            key,
+            navigateToProjectLogs
           )}
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}

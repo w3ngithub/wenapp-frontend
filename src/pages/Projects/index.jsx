@@ -34,7 +34,9 @@ const formattedProjects = (projects) => {
     ...project,
     key: project._id,
     projectStatus: project.projectStatus?.name,
-    projectTypes: project.projectTypes?.[0]?.name,
+    projectTypes: project.projectTypes?.map((x) => (
+      <p style={{margin: 0}}>{x?.name}</p>
+    )),
     startDate: project?.startDate ? changeDate(project?.startDate) : '',
     endDate: project?.endDate ? changeDate(project?.endDate) : '',
   }))
@@ -82,16 +84,16 @@ function ProjectsPage() {
     getUserPositionTypes
   )
   const {data: developers} = useQuery(['developers', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.developer, sort:'name'})
+    getAllUsers({positionType: positionTypeData?.developer, sort: 'name'})
   )
   const {data: designers} = useQuery(['designers', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.designer, sort:'name'})
+    getAllUsers({positionType: positionTypeData?.designer, sort: 'name'})
   )
   const {data: QAs} = useQuery(['QA', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.qa, sort:'name'})
+    getAllUsers({positionType: positionTypeData?.qa, sort: 'name'})
   )
   const {data: devops} = useQuery(['DevOps', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.devops, sort:'name'})
+    getAllUsers({positionType: positionTypeData?.devops, sort: 'name'})
   )
   const {data, isLoading, isError, isFetching} = useQuery(
     [
