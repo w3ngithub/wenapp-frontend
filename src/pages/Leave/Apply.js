@@ -122,7 +122,7 @@ function Apply({user}) {
       refetch()
       userSubstituteLeave?.refetch()
     }
-  }, [])
+  }, [gender])
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {
@@ -225,13 +225,13 @@ function Apply({user}) {
     ) {
       return notification({
         type: 'error',
-        message: `Substitute holidays cannot exceed more than ${isSubstitute?.leaveDays} days`,
+        message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} days`,
       })
     }
     if (hasSubstitute) {
       return notification({
         type: 'error',
-        message: 'Substitute Holiday Already Taken',
+        message: 'Substitute Leave Already Taken',
       })
     }
 
