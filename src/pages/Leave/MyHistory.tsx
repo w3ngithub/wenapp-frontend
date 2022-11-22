@@ -67,16 +67,8 @@ function MyHistory({
   const [page, setPage] = useState(defaultPage)
 
   const userLeavesQuery = useQuery(
-    ['userLeaves', leaveStatus, date, page, leaveTypeId],
-    () =>
-      getLeavesOfUser(
-        userId,
-        leaveStatus,
-        date?.utc,
-        page.page,
-        page.limit,
-        leaveTypeId
-      )
+    ['userLeaves', leaveStatus, date, page,leaveTypeId],
+    () => getLeavesOfUser(userId, leaveStatus, date?.utc, page.page, page.limit,'','','-leaveDates',leaveTypeId)
   )
 
   const handleLeaveType = (value: string | undefined) => {
