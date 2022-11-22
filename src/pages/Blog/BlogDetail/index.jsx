@@ -1,4 +1,6 @@
 import React from 'react'
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
+import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import {useNavigate, useParams} from 'react-router-dom'
 import {useQuery} from '@tanstack/react-query'
 import {Button, Card} from 'antd'
@@ -70,6 +72,9 @@ function Detail() {
       >
         <div>
           <div>{HTMLReactParser(BLOG?.content || '')}</div>
+          <SyntaxHighlighter language="javascript" style={dark} showLineNumbers>
+            {BLOG?.content}
+          </SyntaxHighlighter>
         </div>
       </Card>
     </div>
