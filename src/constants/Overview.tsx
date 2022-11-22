@@ -84,13 +84,16 @@ const OVERVIEW_CHECKEDIN = (
     sortOrder: sortedInfo.columnKey === 'checkIn' && sortedInfo.order,
   },
   {
+    title: 'Punched In IP',
+    dataIndex: 'punchInIp',
+    key: 'punchInIp',
+    width: 150,
+  },
+  {
     title: 'Punch In Location',
     dataIndex: 'checkInLocation',
     key: 'checkInLocation',
     width: 150,
-    sorter: (a, b) =>
-      a.checkInLocation.toString().localeCompare(b.checkInLocation.toString()),
-    sortOrder: sortedInfo.columnKey === 'checkInLocation' && sortedInfo.order,
     render: (text, record) => (
       <span
         className="gx-link"
@@ -113,16 +116,16 @@ const OVERVIEW_CHECKEDIN = (
     sortOrder: sortedInfo.columnKey === 'checkOut' && sortedInfo.order,
   },
   {
+    title: 'Punched Out IP',
+    dataIndex: 'punchOutIp',
+    key: 'punchOutIp',
+    width: 150,
+  },
+  {
     title: 'Punch Out Location',
     dataIndex: 'checkOutLocation',
     width: 150,
     key: 'checkOutLocation',
-    sorter: (a, b) =>
-      a.checkOutLocation
-        .toString()
-        .localeCompare(b.checkOutLocation.toString()),
-
-    sortOrder: sortedInfo.columnKey === 'checkOutLocation' && sortedInfo.order,
     render: (text, record) => (
       <span
         className="gx-link"

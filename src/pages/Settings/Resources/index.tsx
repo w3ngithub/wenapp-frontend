@@ -177,7 +177,6 @@ function Resources() {
 
   const handleCloseModal = () => {
     setIsEditMode(false)
-
     setDataToEdit({})
     setOpenModal(false)
   }

@@ -13,7 +13,7 @@ import moment from 'moment'
 import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
-import { getLeaveTypes } from 'services/leaves'
+import {getLeaveTypes} from 'services/leaves'
 import {
   LEAVES_TAB_ACTIONS_NO_ACCESS,
   LEAVE_TAB_ADD_LEAVE_NO_ACCESS,
@@ -70,7 +70,7 @@ function Leaves({
   const [dataToEdit, setDataToEdit] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
-  const [leaveStatus, setLeaveStatus] = useState(status ?? 'pending')
+  const [leaveStatus, setLeaveStatus] = useState(status ?? '')
   const [leaveId, setLeaveId] = useState(undefined)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
@@ -89,11 +89,9 @@ function Leaves({
   const [page, setPage] = useState({page: 1, limit: 10})
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
-  
-  console.log('checking leave id',leaveId)
 
   const leavesQuery = useQuery(
-    ['leaves', leaveStatus, user, date, page,leaveId],
+    ['leaves', leaveStatus, user, date, page, leaveId],
     () =>
       getLeavesOfAllUsers(
         leaveStatus,
@@ -101,7 +99,7 @@ function Leaves({
         date?.utc ? date?.utc : '',
         page.page,
         page.limit,
-        '',
+        '-leaveDates',
         leaveId
       ),
     {
@@ -273,7 +271,7 @@ function Leaves({
                 options={STATUS_TYPES}
               />
             </FormItem>
-          
+
             <FormItem className="direct-form-item">
               <Select
                 placeholder="Select Leave Type"
@@ -282,7 +280,6 @@ function Leaves({
                 options={leaveTypeQuery?.data}
               />
             </FormItem>
-
 
             <FormItem className="direct-form-item">
               <Select

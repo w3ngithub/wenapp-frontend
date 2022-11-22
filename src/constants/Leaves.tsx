@@ -68,17 +68,17 @@ const LEAVES_COLUMN = (
                     <>
                       <Divider type="vertical" />
                       {!['approved', 'cancelled'].includes(record.status) && (
-                          <span
-                            onClick={() => onApproveClick(record)}
-                            className="gx-link gx-text-green"
-                          >
-                            Approve
-                          </span>
-                          )}
+                        <span
+                          onClick={() => onApproveClick(record)}
+                          className="gx-link gx-text-green"
+                        >
+                          Approve
+                        </span>
+                      )}
 
-                          {!['cancelled'].includes(record.status) && (
-                            <>
-                         <Divider type="vertical" />
+                      {!['cancelled'].includes(record.status) && (
+                        <>
+                          <Divider type="vertical" />
                           <span
                             className="gx-link gx-text-danger"
                             onClick={() =>
@@ -87,23 +87,23 @@ const LEAVES_COLUMN = (
                           >
                             Cancel
                           </span>
-                            </>
-                          )}
+                        </>
+                      )}
 
                       {!['approved', 'cancelled'].includes(record.status) && (
                         <>
-                           <Divider type="vertical" />
+                          <Divider type="vertical" />
                           <i
                             className="icon icon-edit gx-link"
                             onClick={() => onEditClick(record, false)}
                           />
                         </>
-                          )}
+                      )}
                     </>
                   </AccessWrapper>
                 </div>
               )
-            return (record.status === 'pending' ) ? (
+            return record.status === 'pending' ? (
               <span
                 className="gx-link gx-text-danger"
                 onClick={() =>
@@ -201,7 +201,7 @@ const LEAVES_COLUMN = (
                   <CustomIcon name="view" />
                 </span>
 
-                {record.status === 'pending'   && (
+                {record.status === 'pending' && (
                   <>
                     {' '}
                     <Divider type="vertical" />{' '}
@@ -222,6 +222,7 @@ const LEAVES_COLUMN = (
       ]
 
 const STATUS_TYPES = [
+  {id: '', value: 'All'},
   {id: 'approved', value: 'Approved'},
   {id: 'pending', value: 'Pending'},
   {id: 'cancelled', value: 'Cancelled'},
