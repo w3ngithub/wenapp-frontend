@@ -1,7 +1,8 @@
+import {logTypeColors} from 'constants/GraphColors'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import React, {useState} from 'react'
 import {useSelector} from 'react-redux'
-import {Pie, PieChart, ResponsiveContainer, Sector} from 'recharts'
+import {Pie, PieChart, ResponsiveContainer, Sector, Cell} from 'recharts'
 
 // import data from "./data";
 
@@ -73,7 +74,6 @@ const RenderActiveShape = (props) => {
         dy={18}
         textAnchor={textAnchor}
         fill={darkTheme ? '#fff' : '#999'}
-
       >
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>
@@ -101,8 +101,12 @@ const CustomActiveShapePieChart = ({data}) => {
           data={data}
           innerRadius={70}
           outerRadius={150}
-          fill={darkTheme ? '#13c2c2': "#003366"}
-        />
+          fill={darkTheme ? '#13c2c2' : '#003366'}
+        >
+          {data?.map((entry, index) => (
+            <Cell fill={logTypeColors?.[entry?.name]} />
+          ))}
+        </Pie>
       </PieChart>
     </ResponsiveContainer>
   )

@@ -10,7 +10,7 @@ import {useLocation} from 'react-router-dom'
 import {getLeavesOfUser} from 'services/leaves'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
-import {getAllUsers} from 'services/users/userDetails'
+import {getLeaveTypes} from 'services/leaves'
 
 const FormItem = Form.Item
 
@@ -58,6 +58,7 @@ function MyHistory({
   const [datatoShow, setdatatoShow] = useState({})
   const [openModal, setModal] = useState<boolean>(false)
   const [leaveStatus, setLeaveStatus] = useState<string | undefined>('')
+  const [leaveTypeId, setLeaveType] = useState<string | undefined>(undefined)
   const [date, setDate] = useState<{moment: Moment | undefined; utc: string}>({
     utc: selectedDate ? selectedDate : undefined,
     moment: selectedDate ? moment(selectedDate).startOf('day') : undefined,
@@ -66,9 +67,30 @@ function MyHistory({
   const [page, setPage] = useState(defaultPage)
 
   const userLeavesQuery = useQuery(
-    ['userLeaves', leaveStatus, date, page],
-    () => getLeavesOfUser(userId, leaveStatus, date?.utc, page.page, page.limit)
+    ['userLeaves', leaveStatus, date, page, leaveTypeId],
+    () =>
+      getLeavesOfUser(
+        userId,
+        leaveStatus,
+        date?.utc,
+        page.page,
+        page.limit,
+        leaveTypeId
+      )
   )
+
+  const handleLeaveType = (value: string | undefined) => {
+    setLeaveType(value)
+  }
+
+  const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
+    select: (res) => [
+      ...res?.data?.data?.data?.map((type: any) => ({
+        id: type._id,
+        value: type?.name.replace('Leave', '').trim(),
+      })),
+    ],
+  })
 
   const onShowSizeChange = (_: any, pageSize: number) => {
     setPage((prev) => ({...page, limit: pageSize}))
@@ -100,6 +122,7 @@ function MyHistory({
 
   const handleResetFilter = () => {
     setLeaveStatus(undefined)
+    setLeaveType(undefined)
     setPage(defaultPage)
     setDate({
       utc: '',
@@ -126,6 +149,15 @@ function MyHistory({
               onChange={handleStatusChange}
               value={leaveStatus}
               options={STATUS_TYPES}
+            />
+          </FormItem>
+
+          <FormItem className="direct-form-item">
+            <Select
+              placeholder="Select Leave Type"
+              onChange={handleLeaveType}
+              value={leaveTypeId}
+              options={leaveTypeQuery?.data}
             />
           </FormItem>
 
