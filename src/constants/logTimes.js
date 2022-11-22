@@ -61,6 +61,9 @@ const LOGTIMES_COLUMNS = (
           key: 'remarks',
           sorter: true,
           sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,
+          render: (text, record) => {
+            return <p style={{whiteSpace: 'pre-wrap'}}>{text}</p>
+          },
         },
         {
           title: 'Action',
