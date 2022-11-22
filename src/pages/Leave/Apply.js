@@ -1,5 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import { STATUS_TYPES } from 'constants/Leaves'
+import {STATUS_TYPES} from 'constants/Leaves'
 import {
   Button,
   Checkbox,
@@ -19,7 +19,7 @@ import {
   pendingLeaves,
   specifyParticularHalf,
 } from 'helpers/utils'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {
   createLeave,
@@ -38,7 +38,8 @@ import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
-import { LOCALSTORAGE_USER } from 'constants/Settings'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -55,8 +56,11 @@ function Apply({user}) {
   const [halfLeavePending, setHalfLeavePending] = useState(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
+  const [yearStartDate, setYearStartDate] = useState(undefined)
+  const [yearEndDate, setYearEndDate] = useState(undefined)
 
-  const {name,email} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)).user ||{}
+  const {name, email, gender} =
+    JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)).user || {}
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -94,14 +98,56 @@ function Apply({user}) {
     getAllHolidays({sort: '-createdAt', limit: '1'})
   )
 
+  const {data: leaveQuarter, refetch} = useQuery(
+    ['leaveQuarter'],
+    getLeaveQuarter,
+    {
+      onSuccess: (data) => {
+        setYearStartDate(data?.data?.data?.data?.[0].firstQuarter.fromDate)
+        setYearEndDate(data?.data?.data?.data?.[0].fourthQuarter.toDate)
+      },
+      enabled: false,
+    }
+  )
+
+  const userSubstituteLeave = useQuery(
+    ['substitute', yearStartDate, yearEndDate],
+    () =>
+      getLeavesOfUser(user, '', undefined, '', '', yearStartDate, yearEndDate),
+    {enabled: false, enabled: !!yearStartDate && !!yearEndDate}
+  )
+
+  useEffect(() => {
+    if (gender === 'Female') {
+      refetch()
+      userSubstituteLeave?.refetch()
+    }
+  }, [])
+
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
-    select: (res) => [
-      ...res?.data?.data?.data?.map((type) => ({
-        id: type._id,
-        value: type?.name.replace('Leave', '').trim(),
-      })),
-    ],
+    select: (res) => {
+      if (gender === 'Male') {
+        return [
+          ...res?.data?.data?.data
+            ?.filter((types) => types.name !== 'Substitute Leave')
+            .map((type) => ({
+              id: type._id,
+              value: type?.name.replace('Leave', '').trim(),
+              leaveDays: type?.leaveDays,
+            })),
+        ]
+      } else {
+        return [
+          ...res?.data?.data?.data?.map((type) => ({
+            id: type._id,
+            value: type?.name.replace('Leave', '').trim(),
+            leaveDays: type?.leaveDays,
+          })),
+        ]
+      }
+    },
   })
+
   const teamLeadsQuery = useQuery(['teamLeads'], getTeamLeads, {
     select: (res) => ({
       ...res.data,
@@ -142,7 +188,10 @@ function Apply({user}) {
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
-      user: res.data.data.data.leaveStatus=== STATUS_TYPES[0].id ?{name,email} :res.data.data.data.user,
+      user:
+        res.data.data.data.leaveStatus === STATUS_TYPES[0].id
+          ? {name, email}
+          : res.data.data.data.user,
       leaveReason: res.data.data.data.reason,
       leaveType: `${leaveType} ${halfLeave}`,
     })
@@ -161,8 +210,31 @@ function Apply({user}) {
     setSpecificHalf(false)
     setCalendarClicked(false)
   }
-
   const handleSubmit = () => {
+    let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
+      (sub) =>
+        sub?.leaveType?.name === 'Substitute Leave' &&
+        sub?.leaveStatus === 'approved'
+    )
+    let isSubstitute = leaveTypeQuery?.data?.find(
+      (data) => data.value === 'Substitute'
+    )
+    if (
+      form.getFieldValue('leaveDatesCasual').length > 1 &&
+      isSubstitute?.id === form.getFieldValue('leaveType')
+    ) {
+      return notification({
+        type: 'error',
+        message: `Substitute holidays cannot exceed more than ${isSubstitute?.leaveDays} days`,
+      })
+    }
+    if (hasSubstitute) {
+      return notification({
+        type: 'error',
+        message: 'Substitute Holiday Already Taken',
+      })
+    }
+
     form.validateFields().then((values) => {
       const leaveTypeName = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
