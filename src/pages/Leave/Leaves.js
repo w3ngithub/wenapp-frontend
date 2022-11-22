@@ -90,8 +90,6 @@ function Leaves({
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
-  console.log('checking leave id', leaveId)
-
   const leavesQuery = useQuery(
     ['leaves', leaveStatus, user, date, page, leaveId],
     () =>
