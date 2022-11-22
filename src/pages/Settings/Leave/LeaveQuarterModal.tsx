@@ -29,18 +29,14 @@ function LeaveQuarterModal({
   const [form] = Form.useForm()
 
   const handleSubmit = () => {
-    form.validateFields().then(values => onSubmit(form.getFieldsValue()))
+    form.validateFields().then((values) => onSubmit(form.getFieldsValue()))
   }
 
   useEffect(() => {
     if (toggle) {
       if (isEditMode) {
-        const {
-          firstQuarter,
-          secondQuarter,
-          thirdQuarter,
-          fourthQuarter,
-        } = editData
+        const {firstQuarter, secondQuarter, thirdQuarter, fourthQuarter} =
+          editData
         form.setFieldsValue({
           firstendDate: moment(firstQuarter?.toDate),
           firststartDate: moment(firstQuarter?.fromDate),
@@ -96,7 +92,31 @@ function LeaveQuarterModal({
                 <Form.Item
                   name="firstendDate"
                   label="End"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {
+                      required: true,
+                      whitespace: true,
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Required!')
+                          }
+                          if (
+                            value.isBefore(
+                              form.getFieldValue('firststartDate')?.endOf('day')
+                            ) &&
+                            form.getFieldValue('firststartDate')
+                          ) {
+                            throw new Error(
+                              'End Date should be after Start Date'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
+                  ]}
                 >
                   <DatePicker />
                 </Form.Item>
@@ -120,7 +140,32 @@ function LeaveQuarterModal({
                 <Form.Item
                   name="secondstartDate"
                   label="Start"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {
+                      required: true,
+                      whitespace: true,
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Required!')
+                          }
+                          if (
+                            value <
+                              form
+                                .getFieldValue('firstendDate')
+                                ?.endOf('day') &&
+                            form.getFieldValue('firstendDate')
+                          ) {
+                            throw new Error(
+                              'Second quarter should start after first quarter ends'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
+                  ]}
                 >
                   <DatePicker />
                 </Form.Item>
@@ -129,7 +174,33 @@ function LeaveQuarterModal({
                 <Form.Item
                   name="secondendDate"
                   label="End"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {
+                      required: true,
+                      whitespace: true,
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Required!')
+                          }
+                          if (
+                            value.isBefore(
+                              form
+                                .getFieldValue('secondstartDate')
+                                ?.endOf('day')
+                            ) &&
+                            form.getFieldValue('secondstartDate')
+                          ) {
+                            throw new Error(
+                              'End Date should be after Start Date'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
+                  ]}
                 >
                   <DatePicker />
                 </Form.Item>
@@ -154,7 +225,31 @@ function LeaveQuarterModal({
                 <Form.Item
                   name="thirdstartDate"
                   label="Start"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {
+                      required: true,
+                      whitespace: true,
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Required!')
+                          }
+                          if (
+                            value.isBefore(
+                              form.getFieldValue('secondendDate')?.endOf('day')
+                            ) &&
+                            form.getFieldValue('secondendDate')
+                          ) {
+                            throw new Error(
+                              'Third quarter should start after second quarter ends'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
+                  ]}
                 >
                   <DatePicker />
                 </Form.Item>
@@ -163,7 +258,31 @@ function LeaveQuarterModal({
                 <Form.Item
                   name="thirdendDate"
                   label="End"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {
+                      required: true,
+                      whitespace: true,
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Required!')
+                          }
+                          if (
+                            value.isBefore(
+                              form.getFieldValue('thirdstartDate')?.endOf('day')
+                            ) &&
+                            form.getFieldValue('thirdstartDate')
+                          ) {
+                            throw new Error(
+                              'End Date should be after Start Date'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
+                  ]}
                 >
                   <DatePicker />
                 </Form.Item>
@@ -187,7 +306,31 @@ function LeaveQuarterModal({
                 <Form.Item
                   name="fourthstartDate"
                   label="Start"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {
+                      required: true,
+                      whitespace: true,
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Required!')
+                          }
+                          if (
+                            value.isBefore(
+                              form.getFieldValue('thirdendDate')?.endOf('day')
+                            ) &&
+                            form.getFieldValue('thirdendDate')
+                          ) {
+                            throw new Error(
+                              'Fourth quarter should start after third quarter ends'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
+                  ]}
                 >
                   <DatePicker />
                 </Form.Item>
@@ -196,7 +339,33 @@ function LeaveQuarterModal({
                 <Form.Item
                   name="fourthendDate"
                   label="End"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {
+                      required: true,
+                      whitespace: true,
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Required!')
+                          }
+                          if (
+                            value.isBefore(
+                              form
+                                .getFieldValue('fourthstartDate')
+                                ?.endOf('day')
+                            ) &&
+                            form.getFieldValue('fourthstartDate')
+                          ) {
+                            throw new Error(
+                              'End Date should be after Start Date'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
+                  ]}
                 >
                   <DatePicker />
                 </Form.Item>
