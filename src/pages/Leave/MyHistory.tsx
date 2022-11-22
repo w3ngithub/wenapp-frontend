@@ -10,7 +10,7 @@ import {useLocation} from 'react-router-dom'
 import {getLeavesOfUser} from 'services/leaves'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
-import { getLeaveTypes } from 'services/leaves'
+import {getLeaveTypes} from 'services/leaves'
 
 const FormItem = Form.Item
 
@@ -25,11 +25,10 @@ const formattedLeaves = (leaves: any) => {
         (leave?.leaveType?.name === 'Maternity' ||
           leave?.leaveType?.name === 'Paternity' ||
           leave?.leaveType?.name === 'Paid Time Off') &&
-        index < leave?.leaveDates?.length-1
+        index < leave?.leaveDates?.length - 1
       ) {
         return <p>{`${changeDate(date)} - `}</p>
-      }
-      else {
+      } else {
         return <p>{changeDate(date)}</p>
       }
     }),
@@ -58,8 +57,8 @@ function MyHistory({
   const {innerWidth} = useWindowsSize()
   const [datatoShow, setdatatoShow] = useState({})
   const [openModal, setModal] = useState<boolean>(false)
-  const [leaveStatus, setLeaveStatus] = useState<string | undefined>(undefined)
-  const [leaveTypeId,setLeaveType] = useState<string|undefined>(undefined)
+  const [leaveStatus, setLeaveStatus] = useState<string | undefined>('')
+  const [leaveTypeId, setLeaveType] = useState<string | undefined>(undefined)
   const [date, setDate] = useState<{moment: Moment | undefined; utc: string}>({
     utc: selectedDate ? selectedDate : undefined,
     moment: selectedDate ? moment(selectedDate).startOf('day') : undefined,
@@ -72,14 +71,13 @@ function MyHistory({
     () => getLeavesOfUser(userId, leaveStatus, date?.utc, page.page, page.limit,'','','-leaveDates',leaveTypeId)
   )
 
-  const handleLeaveType = (value:string|undefined)=>{
-      setLeaveType(value)
+  const handleLeaveType = (value: string | undefined) => {
+    setLeaveType(value)
   }
-
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => [
-      ...res?.data?.data?.data?.map((type:any) => ({
+      ...res?.data?.data?.data?.map((type: any) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
       })),
