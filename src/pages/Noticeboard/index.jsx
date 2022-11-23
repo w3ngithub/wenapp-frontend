@@ -22,6 +22,7 @@ import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -281,6 +282,7 @@ function NoticeBoardPage() {
           </div>
         </div>
         <Table
+        locale={{emptyText}}
           className="gx-table-responsive"
           columns={NOTICE_COLUMNS(
             sort,

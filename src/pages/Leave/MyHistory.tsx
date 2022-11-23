@@ -12,6 +12,7 @@ import {disabledDate} from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {getLeaveTypes} from 'services/leaves'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const FormItem = Form.Item
 
@@ -38,7 +39,7 @@ const formattedLeaves = (leaves: any) => {
         ? '- ' + removeDash(leave?.halfDay)
         : ''
     }`,
-    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus):'',
+    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
   }))
 }
 
@@ -203,6 +204,7 @@ function MyHistory({
         </Form>
       </div>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={LEAVES_COLUMN(
           handleOpenCancelLeaveModal,

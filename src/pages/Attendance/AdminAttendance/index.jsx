@@ -28,6 +28,7 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import RoleAccess, {
   ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS,
 } from 'constants/RoleAccess'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -307,6 +308,7 @@ function AdminAttendance({userRole}) {
         </div>
       </div>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={ATTENDANCE_COLUMNS(sort, handleView, true)}
         dataSource={formattedAttendances(sortedData)}

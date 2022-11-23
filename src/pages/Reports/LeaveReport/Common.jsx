@@ -5,6 +5,7 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import {notification} from 'helpers/notification'
 import {INTERN, LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
 import {getLeaveDaysOfAllUsers} from 'services/leaves'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const formattedLeaveReports = (reports, quarter, Intern) => {
   let currentQuarter = ''
@@ -190,6 +191,7 @@ function CommonQuarter({fromDate, toDate, quarter, positions}) {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row"></div>
       </div>
       <Table
+      locale={{emptyText}}
         className="gx-table-responsive"
         columns={LEAVE_REPORT_COLUMNS(sort)}
         dataSource={formattedLeaveReports(
