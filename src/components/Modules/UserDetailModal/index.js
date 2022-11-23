@@ -314,7 +314,19 @@ function UserDetailForm({
               {
                 required: true,
                 validator:async(_,value)=>{
+                  try {
+                    if(!value){
+                      throw new Error('Allocated Leaves is required.')
+                    }
+                    const  regex = /^[0-9]+$/
+                    const isValid = regex.test(value)
+                    if(!isValid){
+                      throw new Error('Allocated Leaves must be a number')
+                    }
 
+                  } catch (error) {
+                    throw new Error(error.message)
+                  }
                 }
               },
             ]}
