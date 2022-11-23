@@ -161,7 +161,7 @@ function LogtimeModal({
             name="logDate"
             rules={[
               {
-                message: 'Required!',
+                message: 'Date is required.',
                 required: true,
               },
             ]}
@@ -253,7 +253,7 @@ function LogtimeModal({
             label="Log Type"
             hasFeedback
             name="logType"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[{required: true, message: 'Log Type is required'}]}
           >
             <Select
               showSearch
@@ -273,7 +273,7 @@ function LogtimeModal({
               label="Project Name"
               hasFeedback
               name="project"
-              rules={[{required: true, message: 'Required!'}]}
+              rules={[{required: true, message: 'Project Name is required.'}]}
             >
                <Select
                 showSearch
@@ -323,7 +323,7 @@ function LogtimeModal({
                 required: true,
                 validator: async (rule, value) => {
                   try {
-                    if (!value) throw new Error('Required!')
+                    if (!value) throw new Error('Remarks is required.')
 
                     const trimmedValue = value && value.trim()
                     if (trimmedValue?.length < 10) {
