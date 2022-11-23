@@ -29,10 +29,10 @@ function CancelLeaveModal({
   leaveData,
   loader,
   setLoader,
-  title="",
-  isRequired=false,
-  label="",
-  name=""
+  title = '',
+  isRequired = false,
+  label = '',
+  name = '',
 }: {
   open: boolean
   onClose: () => void
@@ -40,10 +40,10 @@ function CancelLeaveModal({
   leaveData: {}
   loader: boolean
   setLoader: (param: boolean) => void
-  title : string,
-  isRequired : boolean,
-  label : string,
-  name:string
+  title: string
+  isRequired: boolean
+  label: string
+  name: string
 }) {
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)
@@ -56,7 +56,7 @@ function CancelLeaveModal({
   }, [open])
 
   const onFinish = (values: any) => {
-    form.validateFields().then(values => {
+    form.validateFields().then((values) => {
       setLoader(true)
       onSubmit({...leaveData, ...values})
     })
@@ -99,7 +99,8 @@ function CancelLeaveModal({
                     required: isRequired,
                     validator: async (rule, value) => {
                       try {
-                        if (!value && isRequired) throw new Error('Required!')
+                        if (!value && isRequired)
+                          throw new Error(`${label} is required.`)
 
                         const trimmedValue = value && value.trim()
                         if (trimmedValue?.length < 10 && isRequired) {
@@ -125,7 +126,7 @@ function CancelLeaveModal({
                   style={{
                     background: darkCalendar ? '#434f5a' : '',
                   }}
-                  placeholder={!isRequired ? "Additional Message (If Any)" : ''}
+                  placeholder={!isRequired ? 'Additional Message (If Any)' : ''}
                 />
               </Form.Item>
             </Col>

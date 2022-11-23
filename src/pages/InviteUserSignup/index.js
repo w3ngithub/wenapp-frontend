@@ -11,13 +11,8 @@ import {SIGNIN} from 'helpers/routePath'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
 import {officeDomain} from 'constants/OfficeDomain'
 import {emailRegex} from 'constants/EmailTest'
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from 'firebase/storage'
+import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import {storage} from 'firebase'
-
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -48,7 +43,7 @@ function InviteUserSignup(props) {
         setIsLoading(true)
         let usernameArr = values?.emails?.split('@')[0].split('.')
         let username = usernameArr?.[1] + usernameArr?.[0]
-        
+
         let updatedUser = {
           ...values,
           email: values?.emails?.trim(),
@@ -60,53 +55,58 @@ function InviteUserSignup(props) {
           username,
         }
 
-      //upload image 
-      if(files[0]?.originFileObj){
-        const storageRef = ref(storage, `profile/${files[0]?.originFileObj?.name}`)
-        let uploadTask = uploadBytesResumable(
-          storageRef,
-          files[0]?.originFileObj
-        )
+        //upload image
+        if (files[0]?.originFileObj) {
+          const storageRef = ref(
+            storage,
+            `profile/${files[0]?.originFileObj?.name}`
+          )
+          let uploadTask = uploadBytesResumable(
+            storageRef,
+            files[0]?.originFileObj
+          )
 
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            // const pg = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            // setProgress(() => pg);
-          },
-          (error) => {
-            // Handle unsuccessful uploads
-            setIsLoading(false)
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              updatedUser = {
-                ...updatedUser,
-                photoURL: downloadURL,
-              }
+          uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+              // const pg = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              // setProgress(() => pg);
+            },
+            (error) => {
+              // Handle unsuccessful uploads
+              setIsLoading(false)
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                updatedUser = {
+                  ...updatedUser,
+                  photoURL: downloadURL,
+                }
 
-           signUp(updatedUser, params?.token).then((response)=>{
-            handleResponse(response, 'Sign up successfull', 'Could not sign up', [
-              () => navigate(`/${SIGNIN}`),
-              () => setIsLoading(false),
-            ])
-           })
-           .catch(error=>{
-            setIsLoading(false)
-            console.log(error)
-           })
-            })
-          }
-        )
-      }
-      else {
-       const response = await  signUp(updatedUser,params?.token)
+                signUp(updatedUser, params?.token)
+                  .then((response) => {
+                    handleResponse(
+                      response,
+                      'Sign up successfull',
+                      'Could not sign up',
+                      [() => navigate(`/${SIGNIN}`), () => setIsLoading(false)]
+                    )
+                  })
+                  .catch((error) => {
+                    setIsLoading(false)
+                    console.log(error)
+                  })
+              })
+            }
+          )
+        } else {
+          const response = await signUp(updatedUser, params?.token)
 
-       handleResponse(response, 'Sign up successfull', 'Could not sign up', [
-        () => navigate(`/${SIGNIN}`),
-        () => setIsLoading(false),
-      ])
-      }
+          handleResponse(response, 'Sign up successfull', 'Could not sign up', [
+            () => navigate(`/${SIGNIN}`),
+            () => setIsLoading(false),
+          ])
+        }
       })
       .catch((err) => {
         setIsLoading(false)
@@ -125,7 +125,27 @@ function InviteUserSignup(props) {
                 label="Name"
                 hasFeedback
                 name="name"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: (_, value) => {
+                      if (!value) {
+                        return Promise.reject('Name is required.')
+                      }
+                      const regex = /^[A-Za-z ]+$/
+                      const isValid = regex.test(value)
+                      if (value.trim().length === 0) {
+                        return Promise.reject('Contains whitespaces only')
+                      }
+
+                      if (!isValid) {
+                        return Promise.reject('Please enter a valid name.')
+                      } else {
+                        return Promise.resolve()
+                      }
+                    },
+                  },
+                ]}
               >
                 <Input placeholder="Enter Name" />
               </FormItem>
@@ -139,7 +159,7 @@ function InviteUserSignup(props) {
                     required: true,
                     validator: async (rule, value) => {
                       try {
-                        if (!value) throw new Error('Required!')
+                        if (!value) throw new Error('Email is required.')
                         if (!emailRegex.test(value.trim())) {
                           throw new Error('Please enter a valid email.')
                         }
@@ -176,7 +196,7 @@ function InviteUserSignup(props) {
                   {
                     type: 'object',
                     required: true,
-                    message: 'Required!',
+                    message: 'Date of Birth is required.',
                     whitespace: true,
                   },
                 ]}
@@ -195,7 +215,7 @@ function InviteUserSignup(props) {
                 rules={[
                   {
                     required: true,
-                    message: 'Required!',
+                    message: 'Gender is required.',
                     whitespace: true,
                   },
                 ]}
@@ -215,6 +235,7 @@ function InviteUserSignup(props) {
                     required: true,
                     whitespace: true,
                     validator: async (rule, value) => {
+                      const mobileRegex = /(\+977)?[9][6-9]\d{8}$/
                       try {
                         if (!value) {
                           throw new Error(
@@ -229,6 +250,12 @@ function InviteUserSignup(props) {
 
                         if (value - Math.floor(value) !== 0) {
                           throw new Error('Please do not enter decimal values.')
+                        }
+                        if (
+                          !mobileRegex.test(value) ||
+                          value.toString().length > 10
+                        ) {
+                          throw new Error('Not a Valid Phone Number')
                         }
                       } catch (err) {
                         throw new Error(err.message)
@@ -247,6 +274,8 @@ function InviteUserSignup(props) {
                   {
                     whitespace: true,
                     validator: async (rule, value) => {
+                      const mobileRegex =
+                        /(?:\(?\+977\)?)?[9][6-9]\d{8}|01[-]?[0-9]{7}/
                       try {
                         if (!value) {
                           return
@@ -259,6 +288,13 @@ function InviteUserSignup(props) {
 
                         if (value - Math.floor(value) !== 0) {
                           throw new Error('Please do not enter decimal values.')
+                        }
+
+                        if (
+                          !mobileRegex.test(value) ||
+                          value.toString().length > 10
+                        ) {
+                          throw new Error('Not a Valid Phone Number')
                         }
                       } catch (err) {
                         throw new Error(err.message)
@@ -279,7 +315,7 @@ function InviteUserSignup(props) {
                   {
                     type: 'object',
                     required: true,
-                    message: 'Required!',
+                    message: 'Join Date is required.',
                     whitespace: true,
                   },
                 ]}
@@ -297,7 +333,7 @@ function InviteUserSignup(props) {
                 rules={[
                   {
                     required: true,
-                    message: 'Required!',
+                    message: 'Marital Status is required.',
                     whitespace: true,
                   },
                 ]}
