@@ -140,7 +140,7 @@ function LeaveModal({
                       throw new Error('Please enter a valid name.')
                     }
                     if (value?.trim()?.length < 10) {
-                      throw new Error('Leave name should at least be 10 characters.')
+                      throw new Error('Leave name should be at least 10 characters.')
                     }
                     if (value?.trim()?.length > 1000) {
                       throw new Error('Leave name cannot exceed more than 100 characters')

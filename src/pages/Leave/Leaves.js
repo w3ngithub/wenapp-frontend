@@ -329,11 +329,12 @@ function Leaves({
                 data={
                   data?.length > 0
                     ? [
-                        ['Dates', 'Type', 'Reason', 'Status'],
+                        ['Co-worker', 'Dates', 'Type', 'Reason', 'Status'],
 
                         ...data
                           ?.filter((leave) => selectedRows.includes(leave?._id))
                           ?.map((leave) => [
+                            leave?.user?.name,
                             leave?.dates,
                             leave?.type,
                             leave?.reason,

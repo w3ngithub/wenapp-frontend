@@ -360,7 +360,7 @@ function ProjectLogs() {
                   onClick={handleOpenViewModal}
                   style={{marginBottom: '16px'}}
                 >
-                  View Details
+                  View Project
                 </Button>
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
