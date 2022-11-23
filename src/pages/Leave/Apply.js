@@ -184,9 +184,8 @@ function Apply({user}) {
       (type) => type.id === res.data.data.data.leaveType
     )?.value
     const halfLeave = res.data.data.data.halfDay
-      ? res.data.data.data.halfDay
+      ? removeDash(res.data.data.data.halfDay)
       : 'Full Day'
-    console.log('halfLeave email', halfLeave)
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
@@ -195,7 +194,7 @@ function Apply({user}) {
           ? {name, email}
           : res.data.data.data.user,
       leaveReason: res.data.data.data.reason,
-      leaveType: `${leaveType} ${removeDash(halfLeave)}`,
+      leaveType: `${leaveType} ${halfLeave}`,
     })
   }
 
