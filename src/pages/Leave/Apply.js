@@ -211,33 +211,6 @@ function Apply({user}) {
     setCalendarClicked(false)
   }
   const handleSubmit = () => {
-<<<<<<< HEAD
-    let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
-      (sub) =>
-        sub?.leaveType?.name === 'Substitute Leave' &&
-        sub?.leaveStatus === 'approved'
-    )
-    let isSubstitute = leaveTypeQuery?.data?.find(
-      (data) => data.value === 'Substitute'
-    )
-    if (
-      form.getFieldValue('leaveDatesCasual').length > 1 &&
-      isSubstitute?.id === form.getFieldValue('leaveType')
-    ) {
-      return notification({
-        type: 'error',
-        message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} days`,
-      })
-    }
-    if (hasSubstitute) {
-      return notification({
-        type: 'error',
-        message: 'Substitute Leave Already Taken',
-      })
-    }
-
-=======
->>>>>>> aa06aa66403c033e496255d9e93809da0a6c3e86
     form.validateFields().then((values) => {
       const leaveTypeName = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
