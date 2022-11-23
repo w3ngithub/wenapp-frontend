@@ -1,5 +1,6 @@
 import {Button, Table} from 'antd'
 import React from 'react'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 function CommonTable({
   data,
@@ -21,6 +22,7 @@ function CommonTable({
   return (
     <>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={columns}
         dataSource={data}
