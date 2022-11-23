@@ -211,8 +211,6 @@ function Apply({user}) {
     setCalendarClicked(false)
   }
   const handleSubmit = () => {
-    
-
     let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
       (sub) =>
         sub?.leaveType?.name === 'Substitute Leave' &&
@@ -389,7 +387,7 @@ function Apply({user}) {
               <FormItem
                 label="Select Leave Dates"
                 name="leaveDatesCasual"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[{required: true, message: 'Leave Dates is required.'}]}
               >
                 <Calendar
                   className={darkCalendar ? 'bg-dark' : 'null'}
@@ -499,7 +497,12 @@ function Apply({user}) {
                     <FormItem
                       label="Leave Interval"
                       name="halfDay"
-                      rules={[{required: true, message: 'Leave Interval is required.'}]}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Leave Interval is required.',
+                        },
+                      ]}
                     >
                       <Select
                         showSearch
@@ -535,7 +538,12 @@ function Apply({user}) {
                     style={{marginBottom: '0.5px'}}
                     label="Leave Starting Date"
                     name="leaveDatesPeriod"
-                    rules={[{required: true, message: 'Leave Starting Date is required.'}]}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Leave Starting Date is required.',
+                      },
+                    ]}
                   >
                     <DatePicker
                       className="gx-mb-3 "
@@ -556,7 +564,8 @@ function Apply({user}) {
                       required: true,
                       validator: async (rule, value) => {
                         try {
-                          if (!value) throw new Error('Leave Reason is required.')
+                          if (!value)
+                            throw new Error('Leave Reason is required.')
 
                           const trimmedValue = value && value.trim()
                           if (
