@@ -98,6 +98,7 @@ function LateAttendance({userRole}: {userRole: string}) {
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
     onSuccess: (response) => {
       if (response.status) {
+        setOpenLeaveCutModal(false)
         setAttendanceRecord({
           _id: {userId: '', user: ''},
           data: [{attendanceDate: '', userId: ''}],
@@ -189,10 +190,9 @@ function LateAttendance({userRole}: {userRole: string}) {
             (type: any) => type?.name === LATE_ARRIVAL
           )?._id || LATE_ARRIVAL,
         leaveStatus: 'approved',
-        halfLeave: type === 2 ? 'first-half' : '',
+        halfDay: type === 2 ? 'first-half' : '',
       },
     })
-    setOpenLeaveCutModal(false)
   }
 
   const handleCutLeaveInAttendance = () => {
@@ -293,6 +293,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         open={openLeaveCutModal}
         onClose={hanldeCloseLeaveCutModal}
         onSubmit={handleCutLeave}
+        loading={leaveMutation.isLoading}
       />
       <div className="gx-mt-2"></div>
       <div className="components-table-demo-control-bar">

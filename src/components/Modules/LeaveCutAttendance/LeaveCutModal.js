@@ -1,8 +1,8 @@
-import {Modal, Button, Radio, Form} from 'antd'
+import {Modal, Button, Radio, Form, Spin} from 'antd'
 import React, {useEffect} from 'react'
 const FormItem = Form.Item
 
-const LeaveCutModal = ({open, onSubmit, onClose}) => {
+const LeaveCutModal = ({open, onSubmit, onClose, loading}) => {
   const [form] = Form.useForm()
 
   useEffect(() => {
@@ -37,16 +37,18 @@ const LeaveCutModal = ({open, onSubmit, onClose}) => {
         </Button>,
       ]}
     >
-      <Form form={form}>
-        <FormItem name="leaveType">
-          <Radio.Group defaultValue={1}>
-            <Radio value={1} checked>
-              Full Day
-            </Radio>
-            <Radio value={2}>Half Day</Radio>
-          </Radio.Group>
-        </FormItem>
-      </Form>
+      <Spin spinning={loading}>
+        <Form form={form}>
+          <FormItem name="leaveType">
+            <Radio.Group defaultValue={1}>
+              <Radio value={1} checked>
+                Full Day
+              </Radio>
+              <Radio value={2}>Half Day</Radio>
+            </Radio.Group>
+          </FormItem>
+        </Form>
+      </Spin>
     </Modal>
   )
 }
