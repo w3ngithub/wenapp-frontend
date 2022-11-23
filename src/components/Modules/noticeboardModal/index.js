@@ -107,7 +107,23 @@ function NoticeModal({
                 label="Title"
                 hasFeedback={readOnly ? false : true}
                 name="title"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Title is required.')
+                        }
+                        if(value?.trim() === ''){
+                          throw new Error('Please enter a valid title.')
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <Input placeholder="Enter Title" disabled={readOnly} />
               </FormItem>
@@ -118,7 +134,23 @@ function NoticeModal({
                 label="Category"
                 hasFeedback={readOnly ? false : true}
                 name="noticeType"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Category is required.')
+                        }
+                        if(value?.trim() === ''){
+                          throw new Error('Please enter a valid category.')
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <Select
                   showSearch
@@ -143,20 +175,19 @@ function NoticeModal({
                 hasFeedback={readOnly ? false : true}
                 name="startDate"
                 rules={[
-                  {required: true, message: 'Required!'},
+                  {required: true, message: 'Start Date is required.'},
 
                   ({getFieldValue}) => ({
                     validator(_, value) {
                       if (!value) {
                         return Promise.resolve()
                       }
-
                       if (
                         !value.isSameOrBefore(getFieldValue('endDate')) &&
                         getFieldValue('endDate')
                       ) {
                         return Promise.reject(
-                          new Error('The Start Date should be before End Time')
+                          new Error('Start Date should be before End Time')
                         )
                       }
 
@@ -179,7 +210,7 @@ function NoticeModal({
                 hasFeedback={readOnly ? false : true}
                 name="endDate"
                 rules={[
-                  {required: true, message: 'Required!'},
+                  {required: true, message: 'End Date is required.'},
                   ({getFieldValue}) => ({
                     validator(_, value) {
                       if (!value) {
@@ -191,7 +222,7 @@ function NoticeModal({
                         getFieldValue('startDate')
                       ) {
                         return Promise.reject(
-                          new Error('End Date should not be before Start Date')
+                          new Error('End Date should be after Start Date')
                         )
                       }
                       return Promise.resolve()
@@ -295,10 +326,23 @@ function NoticeModal({
                 hasFeedback={readOnly ? false : true}
                 name="details"
                 rules={[
-                  {required: true, message: 'Required!'},
                   {
-                    min: 10,
-                    message: 'Must be equal to or greater than 10 characters',
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Some detail is required.')
+                        }
+                        if(value?.trim() === ''){
+                          throw new Error('Please enter valid details.')
+                        }
+                        if(value?.trim()?.length < 10){
+                          throw new Error('Detail must at least consist 10 characters.')
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
                   },
                 ]}
               >

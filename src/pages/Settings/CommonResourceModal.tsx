@@ -69,10 +69,10 @@ function CommonResourceModal({
                 validator: async (rule, value) => {
                   try {
                     if (!value) {
-                      throw new Error('Title is required!')
+                      throw new Error('Title is required.')
                     }
                     if (value?.trim() === '') {
-                      throw new Error('Title is required!')
+                      throw new Error('Please enter a valid title.')
                     }
                   } catch (err) {
                     throw new Error(err.message)
@@ -100,13 +100,13 @@ function CommonResourceModal({
                       throw new Error('Description is required.')
                     }
                     if (value?.trim() === '') {
-                      throw new Error('Description is required.')
+                      throw new Error('Please enter a valid description.')
                     }
                     if (value?.trim()?.length < 10) {
-                      throw new Error('At least 10 characters required')
+                      throw new Error('Description should contain atleast 10 characters.')
                     }
                     if (value?.trim()?.length > 1000) {
-                      throw new Error('Cannot exceed more than 1000 characters')
+                      throw new Error('Description cannot exceed more than 1000 characters.')
                     }
                   } catch (err) {
                     throw new Error(err.message)
