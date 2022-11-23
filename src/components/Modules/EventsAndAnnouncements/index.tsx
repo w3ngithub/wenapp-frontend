@@ -151,7 +151,6 @@ function EventsAndAnnouncements({
       }
     } else if (task?.avatar === undefined || task.avatar === null) {
       return <i className={`icon icon-${task.Icon} gx-fs-xl`} />
-      // return <task.Icon className="gx-fs-lg" />;
     } else {
       return (
         <Avatar
@@ -181,13 +180,11 @@ function EventsAndAnnouncements({
         .map((activity: any, index: number) => (
           <div className="gx-timeline-info" key={'activity' + index}>
             <div className="gx-flex-row gx-align-items-center gx-column-gap-10 gx-mb-3 gx-border-bottom gx-pb-2 ">
-              {/* <activity.Icon className="gx-fs-xxl" /> */}
               {activity.Icon}
               <h3 className=" gx-mb-1 ">{activity?.day}</h3>
             </div>
             {activity.day === 'Announcements' ? (
               activity?.tasks?.map((task: any, index: number) => {
-                console.log('task', task)
                 return (
                   <Collapse
                     expandIconPosition="right"
