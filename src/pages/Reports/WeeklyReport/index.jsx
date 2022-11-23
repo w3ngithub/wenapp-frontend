@@ -11,6 +11,7 @@ import Select from 'components/Elements/Select'
 import {WEEKLY_REPORT_COLUMNS} from 'constants/weeklyReport'
 import {roundedToFixed} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -184,6 +185,7 @@ function WeeklyReport() {
           </div>
         </div>
         <Table
+        locale={{emptyText}}
           className="gx-table-responsive"
           columns={WEEKLY_REPORT_COLUMNS(sort, navigateToProjectLogs)}
           dataSource={formattedWeeklyReports(data?.data?.data?.report, clients)}

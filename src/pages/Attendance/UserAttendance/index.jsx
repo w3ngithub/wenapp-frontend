@@ -25,6 +25,7 @@ import CustomIcon from 'components/Elements/Icons'
 import {useLocation} from 'react-router-dom'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {punchLimit} from 'constants/PunchLimit'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -257,6 +258,7 @@ function UserAttendance() {
         </div>
       </div>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={ATTENDANCE_COLUMNS(sort, handleView)}
         dataSource={formattedAttendances(sortedData)}

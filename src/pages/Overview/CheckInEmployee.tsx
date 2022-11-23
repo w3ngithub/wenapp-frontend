@@ -3,6 +3,7 @@ import {Card, Table} from 'antd'
 import {OVERVIEW_CHECKEDIN} from 'constants/Overview'
 import moment from 'moment'
 import LocationMap from './LocationMap'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const formattedUsers = (users: any[]) => {
   return users?.map((user) => {
@@ -87,6 +88,7 @@ function CheckedInEmployee({
       />
       <Card title={''}>
         <Table
+          locale={{emptyText}}
           className="gx-table-responsive"
           columns={OVERVIEW_CHECKEDIN(sort, handleShowMap)}
           dataSource={formattedUsers(checkIn)}

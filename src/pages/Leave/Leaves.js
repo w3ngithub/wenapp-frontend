@@ -6,7 +6,12 @@ import {CSVLink} from 'react-csv'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {changeLeaveStatus, getLeavesOfAllUsers} from 'services/leaves'
-import {capitalizeInput, changeDate, handleResponse, removeDash} from 'helpers/utils'
+import {
+  capitalizeInput,
+  changeDate,
+  handleResponse,
+  removeDash,
+} from 'helpers/utils'
 import Notification from 'components/Elements/Notification'
 import {getAllUsers} from 'services/users/userDetails'
 import moment from 'moment'
@@ -20,6 +25,7 @@ import {
 } from 'constants/RoleAccess'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {sendEmailforLeave} from 'services/leaves'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const FormItem = Form.Item
 
@@ -42,7 +48,7 @@ const formattedLeaves = (leaves) => {
         ? '- ' + removeDash(leave?.halfDay)
         : ''
     }`,
-    status: leave?.leaveStatus?capitalizeInput(leave?.leaveStatus):'',
+    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
   }))
 }
 
@@ -349,6 +355,7 @@ function Leaves({
         </div>
       </div>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={LEAVES_COLUMN(
           handleOpenCancelLeaveModal,

@@ -30,6 +30,7 @@ import AccessWrapper from './../../components/Modules/AccessWrapper/index'
 import {LOG_TIME_ADD_NO_ACCESS} from 'constants/RoleAccess'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import ProjectModal from 'components/Modules/ProjectModal'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -373,6 +374,7 @@ function ProjectLogs() {
           </div>
         </div>
         <Table
+          locale={{emptyText}}
           className="gx-table-responsive"
           columns={LOGTIMES_COLUMNS(
             sort,
