@@ -46,6 +46,7 @@ function LeaveModal({
   }
 
   const handleSubmit = () => {
+    form.validateFields();
     const availableData = currentData?.data?.data?.data?.map(
       (item: {id: any; name: any}) => item?.name?.toLowerCase()
     )
@@ -133,16 +134,16 @@ function LeaveModal({
                 validator: async (rule, value) => {
                   try {
                     if (!value) {
-                      throw new Error('Name is required.')
+                      throw new Error('Leave name is required.')
                     }
                     if (value?.trim() === '') {
-                      throw new Error('Name is required.')
+                      throw new Error('Please enter a valid name.')
                     }
                     if (value?.trim()?.length < 10) {
-                      throw new Error('At least 10 characters required')
+                      throw new Error('Leave name should be at least 10 characters.')
                     }
                     if (value?.trim()?.length > 1000) {
-                      throw new Error('Cannot exceed more than 1000 characters')
+                      throw new Error('Leave name cannot exceed more than 100 characters')
                     }
                   } catch (err) {
                     throw new Error(err.message)
@@ -165,7 +166,7 @@ function LeaveModal({
                 required: true,
                 validator: async (rule, value) => {
                   try {
-                    if (!value) throw new Error('Required!')
+                    if (!value) throw new Error('Number of leave days is required.')
                     if (value < 0) {
                       throw new Error('Leave Days cannot be negative.')
                     }

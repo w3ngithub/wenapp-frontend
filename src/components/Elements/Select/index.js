@@ -15,6 +15,7 @@ const Select = ({
   style,
   mode,
   inputSelect = false,
+  defaultValue='',
   width = 200,
   placeholderClass = false,
   handleSearch,
@@ -24,6 +25,7 @@ const Select = ({
   return (
     <div>
       <Dropdown
+        
         suffixIcon={showSearchIcon ? <SearchOutlined /> : undefined}
         disabled={disabled}
         className={placeholderClass}
@@ -32,6 +34,9 @@ const Select = ({
         placeholder={placeholderClass ? null : placeholder}
         style={style}
         onChange={onChange}
+        defaultValue={defaultValue ? defaultValue : undefined}
+        // defaultValue={null}
+
         onSearch={(e) => {
           inputSelect && setSearchValue(e)
           handleSearch(e)

@@ -188,7 +188,7 @@ const ATTENDANCE_COLUMNS = (
 
 const LATE_ATTENDANCE_COLUMNS = (
   sortedInfo: any,
-  handleCutLeave: Function,
+  hanldeLeaveCutModal: Function,
   role: string
 ): notice[] =>
   ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS.includes(role)
@@ -262,16 +262,12 @@ const LATE_ATTENDANCE_COLUMNS = (
                     : 'flex',
                 }}
               >
-                <Popconfirm
-                  title={`Are you sure you want to cut leave of ${record?.user} ?`}
-                  onConfirm={() => handleCutLeave(record)}
-                  okText="Yes"
-                  cancelText="No"
+                <span
+                  className="gx-link"
+                  onClick={() => hanldeLeaveCutModal(record)}
                 >
-                  <span className="gx-link">
-                    <CustomIcon name="leaveCut" />
-                  </span>
-                </Popconfirm>
+                  <CustomIcon name="leaveCut" />
+                </span>
               </div>
             )
           },
