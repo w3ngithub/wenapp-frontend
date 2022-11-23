@@ -233,7 +233,8 @@ function Apply({user}) {
         let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
           (sub) =>
             sub?.leaveType?.name === 'Substitute Leave' &&
-            sub?.leaveStatus === 'approved'
+            sub?.leaveStatus === 'approved' &&
+            isSubstitute?.id === form.getFieldValue('leaveType')
         )
 
         if (hasSubstitute) {
