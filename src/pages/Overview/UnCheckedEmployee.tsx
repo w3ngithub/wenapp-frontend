@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {Card, Table} from 'antd'
 import {OVERVIEW_NOTCHECKEDIN} from 'constants/Overview'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const formattedUsers = (users: any[]) => {
   return users?.map((user) => ({
@@ -29,6 +30,7 @@ function UnCheckedInEmployee({notCheckInSection}: {notCheckInSection: any[]}) {
   return (
     <Card title={''}>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={OVERVIEW_NOTCHECKEDIN(sort)}
         dataSource={formattedUsers(notCheckInSection)}
