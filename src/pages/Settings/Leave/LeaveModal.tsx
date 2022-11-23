@@ -1,5 +1,5 @@
 import {Button, Form, Input, Modal, Spin} from 'antd'
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 
 interface modalInterface {
   isEditMode: boolean
@@ -31,11 +31,50 @@ function LeaveModal({
 }: modalInterface) {
   const [form] = Form.useForm()
 
+  const [nameChanged, setNameChanged] = useState<boolean | undefined>()
+
+  const formFieldChanges = (values: {name?: string}) => {
+    if (values?.hasOwnProperty('name')) {
+      if (values?.name?.toLowerCase() === editData?.name?.toLowerCase()) {
+        setNameChanged(false)
+      } else if (values?.name === editData?.name) {
+        setNameChanged(true)
+      } else {
+        setNameChanged(true)
+      }
+    }
+  }
+
   const handleSubmit = () => {
     const availableData = currentData?.data?.data?.data?.map(
       (item: {id: any; name: any}) => item?.name?.toLowerCase()
     )
-    if (availableData?.includes(form.getFieldValue('name').toLowerCase())) {
+    if (
+      !isEditMode &&
+      availableData?.includes(form.getFieldValue('name').toLowerCase())
+    ) {
+      setDuplicateValue(true)
+      return
+    }
+    if (
+      isEditMode &&
+      nameChanged &&
+      availableData
+        ?.filter(
+          (item: string) =>
+            item?.toLowerCase() !== editData?.name?.toLowerCase()
+        )
+        ?.includes(form.getFieldValue('name').toLowerCase())
+    ) {
+      setDuplicateValue(true)
+      return
+    }
+    if (
+      isEditMode &&
+      nameChanged === false &&
+      editData?.name !== form.getFieldValue('name') &&
+      availableData?.includes(form.getFieldValue('name').toLowerCase())
+    ) {
       setDuplicateValue(true)
       return
     }
@@ -57,9 +96,18 @@ function LeaveModal({
       title={isEditMode ? `Update Leave Type` : `Add Leave Type`}
       visible={toggle}
       onOk={handleSubmit}
-      onCancel={() => onCancel(setDuplicateValue)}
+      onCancel={() => {
+        setNameChanged(undefined)
+        onCancel(setDuplicateValue)
+      }}
       footer={[
-        <Button key="back" onClick={() => onCancel(setDuplicateValue)}>
+        <Button
+          key="back"
+          onClick={() => {
+            setNameChanged(undefined)
+            onCancel(setDuplicateValue)
+          }}
+        >
           Cancel
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
@@ -68,11 +116,40 @@ function LeaveModal({
       ]}
     >
       <Spin spinning={isLoading}>
-        <Form {...layout} form={form} name="control-hooks" layout="vertical">
+        <Form
+          {...layout}
+          form={form}
+          name="control-hooks"
+          layout="vertical"
+          onValuesChange={(allValues) => formFieldChanges(allValues)}
+        >
           <Form.Item
             name="name"
             label="Name"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Name is required.')
+                    }
+                    if (value?.trim() === '') {
+                      throw new Error('Name is required.')
+                    }
+                    if (value?.trim()?.length < 10) {
+                      throw new Error('At least 10 characters required')
+                    }
+                    if (value?.trim()?.length > 1000) {
+                      throw new Error('Cannot exceed more than 1000 characters')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
           >
             <Input
               // value={input}
@@ -84,7 +161,8 @@ function LeaveModal({
             name="leaveDays"
             label="Leave Days"
             rules={[
-              { required: true,
+              {
+                required: true,
                 validator: async (rule, value) => {
                   try {
                     if (!value) throw new Error('Required!')
