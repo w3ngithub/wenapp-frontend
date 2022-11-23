@@ -19,7 +19,7 @@ const layout = {
   // wrapperCol: { span: 16 }
 }
 
-function CommonLogTimeModal({
+function CommonLogTypeModal({
   isEditMode,
   toggle,
   currentData,
@@ -118,4 +118,4 @@ function CommonLogTimeModal({
   )
 }
 
-export default CommonLogTimeModal
+export default CommonLogTypeModal
