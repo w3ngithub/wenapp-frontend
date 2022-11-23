@@ -25,6 +25,7 @@ import {PROJECTS_ADD_NEW_NO_ACCESS} from 'constants/RoleAccess'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -455,6 +456,7 @@ function ProjectsPage() {
           </Form>
         </div>
         <Table
+          locale={{emptyText}}
           className="gx-table-responsive"
           columns={PROJECT_COLUMNS(
             sort,
