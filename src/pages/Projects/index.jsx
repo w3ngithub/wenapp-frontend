@@ -25,7 +25,7 @@ import {PROJECTS_ADD_NEW_NO_ACCESS} from 'constants/RoleAccess'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
-import { emptyText } from 'constants/EmptySearchAntd'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const Search = Input.Search
 const FormItem = Form.Item
