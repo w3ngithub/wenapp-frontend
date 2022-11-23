@@ -107,7 +107,7 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
                   }
 
                   if (!isValid) {
-                    return Promise.reject('Contains Special Characters')
+                    return Promise.reject('Please enter a valid name.')
                   } else {
                     return Promise.resolve()
                   }
@@ -195,7 +195,10 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
                     if (value - Math.floor(value) !== 0) {
                       throw new Error('Please do not enter decimal values.')
                     }
-                    if (!mobileRegex.test(value)) {
+                    if (
+                      !mobileRegex.test(value) ||
+                      value.toString().length > 10
+                    ) {
                       throw new Error('Not a Valid Phone Number')
                     }
                   } catch (err) {
@@ -216,7 +219,7 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
                 whitespace: true,
                 validator: async (rule, value) => {
                   const mobileRegex =
-                    /(?:\(?\+977\)?)?[9][3-9]\d{8}|01[-]?[0-9]{7}/
+                    /(?:\(?\+977\)?)?[9][6-9]\d{8}|01[-]?[0-9]{7}/
                   try {
                     if (!value) {
                       return
@@ -229,7 +232,10 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
                       throw new Error('Please do not enter decimal values.')
                     }
 
-                    if (!mobileRegex.test(value)) {
+                    if (
+                      !mobileRegex.test(value) ||
+                      value.toString().length > 10
+                    ) {
                       throw new Error('Not a Valid Phone Number')
                     }
                   } catch (err) {
