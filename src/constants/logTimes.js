@@ -29,7 +29,19 @@ const LOGTIMES_COLUMNS = (
           sorter: true,
           sortOrder: sortedInfo.columnKey === 'project' && sortedInfo.order,
           render: (text, record) => {
-            return <p onClick={()=>navigateToProjectLogs(`../projects/${record?.projectId}-${record?.slug}`)} className="project-name">{text}</p>
+            return (
+              <p
+                onClick={() => {
+                  if (!record?.projectId) return
+                  navigateToProjectLogs(
+                    `../projects/${record?.projectId}-${record?.slug}`
+                  )
+                }}
+                className={record?.projectId && 'project-name'}
+              >
+                {text}
+              </p>
+            )
           },
         },
         {
