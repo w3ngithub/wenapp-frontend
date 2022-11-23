@@ -12,6 +12,7 @@ import {
 } from 'antd'
 import moment from 'moment'
 import {filterOptions} from 'helpers/utils'
+import { async } from '@firebase/util'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -159,7 +160,25 @@ function UserDetailForm({
             {...formItemLayout}
             label="Name"
             name="name"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[{required: true,validator:async(_,value)=>{
+              try {
+                if(!value){
+                  throw new Error('Name is required.')
+                }
+                const  regex = /^[A-Za-z ]+$/
+                const isValid = regex.test(value)
+                if(value.trim().length===0){
+                  throw new Error('Please enter a valid Name.')
+                }
+  
+                if(!isValid){
+                 throw new Error('Please enter a valid Name.')
+                }
+
+              } catch (err) {
+                throw new Error(err.message)
+              }
+            }}]}
             hasFeedback={readOnly ? false : true}
           >
             <Input placeholder="Enter Name" disabled={readOnly} />
@@ -169,7 +188,7 @@ function UserDetailForm({
             label="Role"
             hasFeedback={readOnly ? false : true}
             name="role"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[{required: true, message: 'Role is required.'}]}
           >
             <Select
               showSearch
@@ -195,7 +214,7 @@ function UserDetailForm({
             {...formItemLayout}
             label="Office Start Time"
             name="officeTime"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[{required: true, message: 'Office Start Time is required.'}]}
             hasFeedback={readOnly ? false : true}
           >
             <TimePicker
@@ -213,7 +232,7 @@ function UserDetailForm({
             rules={[
               {
                 required: true,
-                message: 'Required!',
+                message: 'Position is required.',
               },
             ]}
           >
@@ -241,7 +260,7 @@ function UserDetailForm({
             rules={[
               {
                 required: true,
-                message: 'Required!',
+                message: 'Position Type is required.',
               },
             ]}
           >
@@ -268,7 +287,7 @@ function UserDetailForm({
             rules={[
               {
                 required: true,
-                message: 'Required!',
+                message: 'Status is required.',
               },
             ]}
           >
@@ -295,7 +314,21 @@ function UserDetailForm({
             rules={[
               {
                 required: true,
-                message: 'Required!',
+                validator:async(_,value)=>{
+                  try {
+                    if(!value){
+                      throw new Error('Allocated Leaves is required.')
+                    }
+                    const  regex = /^[0-9]+$/
+                    const isValid = regex.test(value)
+                    if(!isValid){
+                      throw new Error('Allocated Leaves must be a number')
+                    }
+
+                  } catch (error) {
+                    throw new Error(error.message)
+                  }
+                }
               },
             ]}
           >
@@ -309,7 +342,7 @@ function UserDetailForm({
             rules={[
               {
                 type: 'object',
-                message: 'Required!',
+                message: 'Last Review Date is required.',
                 whitespace: true,
               },
             ]}
@@ -328,7 +361,7 @@ function UserDetailForm({
             rules={[
               {
                 type: 'object',
-                message: 'Required!',
+                message: 'Exit Date is required.',
                 whitespace: true,
               },
             ]}
@@ -341,13 +374,13 @@ function UserDetailForm({
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="Pan Number"
+            label="PAN Number"
             hasFeedback={readOnly ? false : true}
             name="panNumber"
             rules={[
               {
                 pattern: new RegExp(/^[0-9]+$/),
-                message: 'Pan must be a number!',
+                message: 'PAN must be a number.',
               },
             ]}
           >

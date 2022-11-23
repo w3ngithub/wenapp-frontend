@@ -604,14 +604,14 @@ const Dashboard = () => {
                         <CustomActiveShapePieChart
                           data={chartData?.map((x: any) => ({
                             name: x.logType[0].name,
-                            value: +x.timeSpent,
+                            value: +x.timeSpent?.toFixed(2),
                           }))}
                         />
                       ) : (
                         <TinyBarChart
                           data={chartData?.map((x: any) => ({
                             name: x.logType[0].name,
-                            time: x.timeSpent,
+                            time: +x.timeSpent?.toFixed(2),
                           }))}
                         />
                       )}

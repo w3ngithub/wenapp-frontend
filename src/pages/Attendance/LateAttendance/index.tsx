@@ -27,8 +27,17 @@ import {notification} from 'helpers/notification'
 import {CASUAL_LEAVE, LATE_ARRIVAL, LATE_LEAVE_TYPE_ID} from 'constants/Leaves'
 import RangePicker from 'components/Elements/RangePicker'
 import {emptyText} from 'constants/EmptySearchAntd'
+import LeaveCutModal from 'components/Modules/LeaveCutAttendance/LeaveCutModal'
 
 const FormItem = Form.Item
+
+interface recordAttendance {
+  _id: {
+    userId: string
+    user: string
+  }
+  data: {attendanceDate: string; userId: string}[]
+}
 
 const formattedAttendances = (attendances: any) => {
   return attendances?.map((att: any) => ({
@@ -53,11 +62,14 @@ function LateAttendance({userRole}: {userRole: string}) {
   const [user, setUser] = useState<undefined | string>(undefined)
   const [attFilter, setAttFilter] = useState({id: '1', value: 'Daily'})
   const [leaveCut, setLeaveCut] = useState(leaveCutStatus[0].id)
+  const [openLeaveCutModal, setOpenLeaveCutModal] = useState<boolean>(false)
+  const [attendanceRecord, setAttendanceRecord] = useState<recordAttendance>({
+    _id: {userId: '', user: ''},
+    data: [{attendanceDate: '', userId: ''}],
+  })
 
   //init hooks
   const queryClient = useQueryClient()
-
-  let recordRef: any = {}
 
   const {data: users} = useQuery(['userForAttendances'], () =>
     getAllUsers({fields: 'name', active: 'true', sort: 'name'})
@@ -86,6 +98,11 @@ function LateAttendance({userRole}: {userRole: string}) {
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
     onSuccess: (response) => {
       if (response.status) {
+        setOpenLeaveCutModal(false)
+        setAttendanceRecord({
+          _id: {userId: '', user: ''},
+          data: [{attendanceDate: '', userId: ''}],
+        })
         handleCutLeaveInAttendance()
       } else {
         notification({
@@ -104,7 +121,10 @@ function LateAttendance({userRole}: {userRole: string}) {
     {
       onSuccess: (response) => {
         if (response.status) {
-          recordRef = {}
+          setAttendanceRecord({
+            _id: {userId: '', user: ''},
+            data: [{attendanceDate: '', userId: ''}],
+          })
         }
         handleResponse(
           response,
@@ -156,29 +176,35 @@ function LateAttendance({userRole}: {userRole: string}) {
     setLeaveCut(leaveCutStatus[0].id)
   }
 
-  const handleCutLeave = (record: any) => {
-    recordRef = record
+  const handleCutLeave = (type: number) => {
     leaveMutation.mutate({
-      id: record._id.userId,
+      id: attendanceRecord?._id?.userId,
       data: {
-        leaveDates: [record.data.at(-1).attendanceDate],
+        leaveDates: [
+          attendanceRecord?.data?.[attendanceRecord?.data.length - 1]
+            .attendanceDate,
+        ],
         reason: 'Leave cut due to late attendance',
         leaveType:
           leaveTypes?.data?.data?.data?.find(
             (type: any) => type?.name === LATE_ARRIVAL
           )?._id || LATE_ARRIVAL,
         leaveStatus: 'approved',
+        halfDay: type === 2 ? 'first-half' : '',
       },
     })
   }
 
   const handleCutLeaveInAttendance = () => {
-    const payload = recordRef.data.map((x: any) => x._id) || []
+    const payload = attendanceRecord?.data.map((x: any) => x._id) || []
 
     attendanceGroupMutation.mutate({
       attendance: payload,
-      userId: recordRef.data[0].userId,
-      leaveCutdate: moment(recordRef.data.at(-1).attendanceDate)
+      userId: attendanceRecord?.data[0].userId,
+      leaveCutdate: moment(
+        attendanceRecord?.data?.[attendanceRecord?.data.length - 1]
+          .attendanceDate
+      )
         .startOf('day')
         .format(),
     })
@@ -251,8 +277,24 @@ function LateAttendance({userRole}: {userRole: string}) {
     })
   )
 
+  const hanldeLeaveCutModal = (record: any) => {
+    console.log(record)
+    setAttendanceRecord(record)
+    setOpenLeaveCutModal(true)
+  }
+
+  const hanldeCloseLeaveCutModal = () => {
+    setOpenLeaveCutModal(false)
+  }
+
   return (
     <div>
+      <LeaveCutModal
+        open={openLeaveCutModal}
+        onClose={hanldeCloseLeaveCutModal}
+        onSubmit={handleCutLeave}
+        loading={leaveMutation.isLoading}
+      />
       <div className="gx-mt-2"></div>
       <div className="components-table-demo-control-bar">
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
@@ -301,7 +343,7 @@ function LateAttendance({userRole}: {userRole: string}) {
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        columns={LATE_ATTENDANCE_COLUMNS(sort, handleCutLeave, userRole)}
+        columns={LATE_ATTENDANCE_COLUMNS(sort, hanldeLeaveCutModal, userRole)}
         dataSource={formattedAttendances(formattedAttendaces)}
         expandable={{expandedRowRender}}
         onChange={handleTableChange}

@@ -94,9 +94,9 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
             label="Name"
             hasFeedback
             name="name"
-            rules={[{required: true, message: 'Required!'},{validator:(_,value)=>{
+            rules={[{required: true},{validator:(_,value)=>{
               if(!value){
-                return Promise.resolve()
+                return Promise.reject('Name is required.')
               }
               const  regex = /^[A-Za-z ]+$/
               const isValid = regex.test(value)

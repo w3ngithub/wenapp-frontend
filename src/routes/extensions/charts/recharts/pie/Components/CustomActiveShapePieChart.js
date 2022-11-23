@@ -75,7 +75,7 @@ const RenderActiveShape = (props) => {
         textAnchor={textAnchor}
         fill={darkTheme ? '#fff' : '#999'}
       >
-        {`(${(percent * 100).toFixed(2)}%)`}
+        {`(${(percent * 100)?.toFixed(2)}%)`}
       </text>
     </g>
   )
