@@ -394,7 +394,7 @@ function Apply({user}) {
               <FormItem
                 label="Select Leave Dates"
                 name="leaveDatesCasual"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[{required: true, message: 'Leave Dates is required.'}]}
               >
                 <Calendar
                   className={darkCalendar ? 'bg-dark' : 'null'}

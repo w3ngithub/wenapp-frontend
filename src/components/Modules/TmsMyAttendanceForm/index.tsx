@@ -193,7 +193,9 @@ function TmsMyAttendanceForm({
                 <Form.Item
                   label="Punch In Note"
                   name="punchInNote"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {required: true, message: 'Punch In Note is required.'},
+                  ]}
                   hasFeedback
                 >
                   <Input.TextArea rows={5} />
@@ -219,7 +221,9 @@ function TmsMyAttendanceForm({
                 <Form.Item
                   label="Punch Out Note"
                   name="punchOutNote"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {required: true, message: 'Punch Out Note is required.'},
+                  ]}
                   hasFeedback
                 >
                   <Input.TextArea rows={5} />

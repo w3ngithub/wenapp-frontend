@@ -30,17 +30,16 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
   }
 
   const handleSubmit = () => {
-    form.validateFields().then((values) =>{
+    form.validateFields().then((values) => {
       onSubmit(
         {
           ...values,
-          name:values?.name?.trim(),
+          name: values?.name?.trim(),
           photoURL: files.length > 0 ? files[0] : null,
         },
         removedFile
       )
-    }
-    )
+    })
   }
 
   const disableDate = (current) => {
@@ -94,24 +93,27 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
             label="Name"
             hasFeedback
             name="name"
-            rules={[{required: true},{validator:(_,value)=>{
-              if(!value){
-                return Promise.reject('Name is required.')
-              }
-              const  regex = /^[A-Za-z ]+$/
-              const isValid = regex.test(value)
-              if(value.trim().length===0){
-                return Promise.reject('Contains whitespaces only')
-              }
+            rules={[
+              {
+                required: true,
+                validator: (_, value) => {
+                  if (!value) {
+                    return Promise.reject('Name is required.')
+                  }
+                  const regex = /^[A-Za-z ]+$/
+                  const isValid = regex.test(value)
+                  if (value.trim().length === 0) {
+                    return Promise.reject('Contains whitespaces only')
+                  }
 
-              if(!isValid){
-               return Promise.reject('Contains Special Characters')
-              }
-              else {
-                return Promise.resolve()
-              }
-
-            }}]}
+                  if (!isValid) {
+                    return Promise.reject('Please enter a valid name.')
+                  } else {
+                    return Promise.resolve()
+                  }
+                },
+              },
+            ]}
           >
             <Input placeholder="Enter Name" />
           </FormItem>
@@ -175,13 +177,16 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
             hasFeedback
             name="primaryPhone"
             rules={[
-              { required:true,
+              {
+                required: true,
                 whitespace: true,
                 validator: async (rule, value) => {
                   const mobileRegex = /(\+977)?[9][6-9]\d{8}$/
                   try {
                     if (!value) {
-                      throw new Error('Phone number is required.(Enter numbers only)')
+                      throw new Error(
+                        'Phone number is required.(Enter numbers only)'
+                      )
                     }
                     if (value < 0) {
                       throw new Error('Please do not enter negative numbers.')
@@ -190,10 +195,12 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
                     if (value - Math.floor(value) !== 0) {
                       throw new Error('Please do not enter decimal values.')
                     }
-                    if(!mobileRegex.test(value)){
-                        throw new Error('Not a Valid Phone Number')
+                    if (
+                      !mobileRegex.test(value) ||
+                      value.toString().length > 10
+                    ) {
+                      throw new Error('Not a Valid Phone Number')
                     }
-
                   } catch (err) {
                     throw new Error(err.message)
                   }
@@ -208,12 +215,13 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
             label="Secondary Phone"
             name="secondaryPhone"
             rules={[
-              { 
+              {
                 whitespace: true,
                 validator: async (rule, value) => {
-                  const mobileRegex = /(?:\(?\+977\)?)?[9][3-9]\d{8}|01[-]?[0-9]{7}/
+                  const mobileRegex =
+                    /(?:\(?\+977\)?)?[9][6-9]\d{8}|01[-]?[0-9]{7}/
                   try {
-                    if(!value){
+                    if (!value) {
                       return
                     }
                     if (value < 0) {
@@ -224,10 +232,12 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
                       throw new Error('Please do not enter decimal values.')
                     }
 
-                    if(!mobileRegex.test(value)){
+                    if (
+                      !mobileRegex.test(value) ||
+                      value.toString().length > 10
+                    ) {
                       throw new Error('Not a Valid Phone Number')
-                  }
-
+                    }
                   } catch (err) {
                     throw new Error(err.message)
                   }
