@@ -345,7 +345,7 @@ function Coworkers() {
                         required: true,
                         validator: async (rule, value) => {
                           try {
-                            if (!value) throw new Error('Required!')
+                            if (!value) throw new Error('Email is required.')
                             value.split(',').forEach((item: any) => {
                               if (!emailRegex.test(item.trim())) {
                                 throw new Error('Please enter a valid email.')
