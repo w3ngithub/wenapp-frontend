@@ -17,6 +17,7 @@ import {
   handleResponse,
   MuiFormatDate,
   pendingLeaves,
+  removeDash,
   specifyParticularHalf,
 } from 'helpers/utils'
 import React, {useEffect, useState} from 'react'
@@ -183,7 +184,7 @@ function Apply({user}) {
       (type) => type.id === res.data.data.data.leaveType
     )?.value
     const halfLeave = res.data.data.data.halfDay
-      ? res.data.data.data.halfDay
+      ? removeDash(res.data.data.data.halfDay)
       : 'Full Day'
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
