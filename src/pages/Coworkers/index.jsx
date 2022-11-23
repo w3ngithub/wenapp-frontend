@@ -28,6 +28,7 @@ import {
   CO_WORKERS_SEARCH_IMPORT_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -388,6 +389,7 @@ function CoworkersPage() {
           </div>
         </AccessWrapper>
         <Table
+        locale={{emptyText}}
           className="gx-table-responsive"
           columns={CO_WORKERCOLUMNS(
             sort,

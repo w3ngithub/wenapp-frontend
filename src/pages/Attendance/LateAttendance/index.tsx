@@ -26,6 +26,7 @@ import {createLeaveOfUser, getLeaveTypes} from 'services/leaves'
 import {notification} from 'helpers/notification'
 import {CASUAL_LEAVE, LATE_ARRIVAL, LATE_LEAVE_TYPE_ID} from 'constants/Leaves'
 import RangePicker from 'components/Elements/RangePicker'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const FormItem = Form.Item
 
@@ -298,6 +299,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         </div>
       </div>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={LATE_ATTENDANCE_COLUMNS(sort, handleCutLeave, userRole)}
         dataSource={formattedAttendances(formattedAttendaces)}
