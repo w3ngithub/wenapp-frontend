@@ -234,12 +234,32 @@ function AddBlog() {
             <Form.Item
               name="title"
               label="Title"
-              rules={[{required: true, message: 'Title is Required!'}]}
+              rules={[
+                {
+                  required: true,
+                  validator: async (rule, value) => {
+                    try {
+                      if (!value) {
+                        throw new Error(`Title is required.`)
+                      }
+                      if(value?.trim() === ''){
+                        throw new Error(`Please enter a valid title.`)
+                      }
+                    } catch (err) {
+                      throw new Error(err.message)
+                    }
+                  },
+                },
+              ]}
               hasFeedback
             >
               <Input />
             </Form.Item>
-            <Form.Item name="content" label="Content">
+
+            <Form.Item
+              name="content"
+              label="Content"
+            >
               <>
                 <Button
                   type="primary"
