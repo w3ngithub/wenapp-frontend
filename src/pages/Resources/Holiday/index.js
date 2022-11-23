@@ -230,6 +230,7 @@ function Holiday() {
               events={holidaysCalendar}
               startAccessor="start"
               endAccessor="end"
+              views = {['month']}
               popup
             />
           </div>

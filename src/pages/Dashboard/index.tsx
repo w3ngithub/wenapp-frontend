@@ -295,10 +295,10 @@ const Dashboard = () => {
       )
     if (props.event.type === 'holiday')
       return (
-        <p style={{...style, margin: 0, flexWrap: 'wrap'}}>
-          <i className="icon icon-calendar gx-fs-xxl" />
+        <div style={{...style, margin: 0, flexWrap: 'nowrap'}}>
+          <i className="icon icon-calendar gx-fs-md" />
           <p style={{...style}}>{props?.event?.title}</p>
-        </p>
+        </div>
       )
 
     if (props.event.type === 'leave') {
