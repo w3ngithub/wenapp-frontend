@@ -25,6 +25,7 @@ import {
 import TimeSummary from './TimeSummary'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import { useNavigate } from 'react-router-dom'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -250,6 +251,7 @@ function LogTime() {
           </div>
         </div>
         <Table
+        locale={{emptyText}}
           className="gx-table-responsive"
           columns={LOGTIMES_COLUMNS(
             sort,
