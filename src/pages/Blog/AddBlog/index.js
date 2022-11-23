@@ -18,7 +18,6 @@ import CircularProgress from 'components/Elements/CircularProgress/index'
 import {storage} from 'firebase'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
-import HTMLReactParser from 'html-react-parser'
 
 function AddBlog() {
   // init state
@@ -128,10 +127,6 @@ function AddBlog() {
   }
 
   const submitBlog = (formData) => {
-    console.log(
-      'content',
-      convertToRaw(editorState.getCurrentContent())?.blocks?.[0]?.text
-    )
     const rawContent = convertToRaw(editorState.getCurrentContent())
       ?.blocks?.[0]?.text
 
