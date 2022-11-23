@@ -3,6 +3,7 @@ import {Card, Table} from 'antd'
 import {OVERVIEW_LEAVES} from 'constants/Overview'
 import {changeDate} from 'helpers/utils'
 import {LEAVES_TYPES} from 'constants/Leaves'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const formattedLeaves = (leaves: any[]) => {
   return leaves?.map((leave) => ({
@@ -42,6 +43,7 @@ function LeaveEmployee({leaves}: {leaves: any[]}) {
   return (
     <Card title={''}>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={OVERVIEW_LEAVES(sort)}
         dataSource={formattedLeaves(leaves)}

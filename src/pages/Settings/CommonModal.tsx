@@ -33,6 +33,7 @@ function CommonModal({
 }: modalInterface) {
   const [form] = Form.useForm()
   const handleSubmit = () => {
+    form.validateFields();
     let availableData
     if (currentData?.hasOwnProperty('data')) {
       availableData = currentData?.data?.data?.data?.map(
@@ -80,7 +81,6 @@ function CommonModal({
             rules={[
               {
                 required: true,
-                whitespace: true,
                 validator: async (rule, value) => {
                   try {
                     if (!value) {

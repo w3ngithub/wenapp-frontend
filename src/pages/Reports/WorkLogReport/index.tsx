@@ -12,6 +12,7 @@ import moment from 'moment'
 import {changeDate, toRoundoff} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {debounce} from 'helpers/utils'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const FormItem = Form.Item
 let screenWidth: number
@@ -204,6 +205,7 @@ function WorkLogReport() {
         </div>
       </div>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={WORK_LOG_REPORT_COLUMNS(sort)}
         dataSource={formattedWorkLogReport(logData)}
