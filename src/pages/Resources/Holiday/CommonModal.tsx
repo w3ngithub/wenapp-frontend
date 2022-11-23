@@ -144,7 +144,10 @@ const CommonModal = (props: modalType) => {
                           name={[field.name, 'date']}
                           required={false}
                           rules={[
-                            {required: indexes[index], message: 'Required!'},
+                            {
+                              required: indexes[index],
+                              message: 'Date is required.',
+                            },
                           ]}
                         >
                           <DatePicker className=" gx-w-100" />
@@ -165,7 +168,14 @@ const CommonModal = (props: modalType) => {
                           name={[field.name, 'title']}
                           required={false}
                           rules={[
-                            {required: indexes[index], message: 'Required!'},
+                            {
+                              required: indexes[index],
+                              message: 'Title is required.',
+                            },
+                            {
+                              whitespace: true,
+                              message: 'Please enter a valid title',
+                            },
                           ]}
                         >
                           <Input />
