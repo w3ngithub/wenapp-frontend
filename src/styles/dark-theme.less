@@ -86,6 +86,9 @@ body.dark-theme {
   & .@{class-prefix}-product-item{
     border: 1px solid #5c6d7a;
   }
+  & .@{class-prefix}-dashboard-collapse  .ant-collapse-content-box{
+    background-color: @dark-theme-component-background !important;
+  }
 
   & .ant-form-item-control-input {
     & .ant-input[disabled] {
@@ -422,6 +425,9 @@ body.dark-theme {
       color: @menu-dark-highlight-color !important;
       background: white !important;
     }
+  }
+  & .ant-input-password-icon.anticon {
+    color: @dark-theme-text-color;
   }
 
   & input#emails:-webkit-autofill,

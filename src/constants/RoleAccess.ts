@@ -15,6 +15,11 @@ export const PositionType = {
   Intern : 'Intern'
 }
 
+export const EmployeeStatus = {
+  Probation:'Probation',
+  Permanent:'Permanent'
+}
+
 // Dashboard
 export const DASHBOARD_PROJECT_LOG_NO_ACCESS = [
   RoleAccess.HumanResource,
