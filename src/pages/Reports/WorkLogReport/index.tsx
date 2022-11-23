@@ -206,7 +206,7 @@ function WorkLogReport() {
       </div>
       <Table
         locale={{emptyText}}
-        className="gx-table-responsive"
+        className="gx-table-responsive align-longtext"
         columns={WORK_LOG_REPORT_COLUMNS(sort)}
         dataSource={formattedWorkLogReport(logData)}
         onChange={handleTableChange}
