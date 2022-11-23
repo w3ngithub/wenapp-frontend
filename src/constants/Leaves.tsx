@@ -67,7 +67,7 @@ const LEAVES_COLUMN = (
                   <AccessWrapper noAccessRoles={LEAVE_TABLE_ACTION_NO_ACESS}>
                     <>
                       <Divider type="vertical" />
-                      {!['approved', 'cancelled'].includes(record.status) && (
+                      {!['approved', 'cancelled'].includes(record.leaveStatus) && (
                         <span
                           onClick={() => onApproveClick(record)}
                           className="gx-link gx-text-green"
@@ -76,7 +76,7 @@ const LEAVES_COLUMN = (
                         </span>
                       )}
 
-                      {!['cancelled'].includes(record.status) && (
+                      {!['cancelled'].includes(record.leaveStatus) && (
                         <>
                           <Divider type="vertical" />
                           <span
@@ -90,7 +90,7 @@ const LEAVES_COLUMN = (
                         </>
                       )}
 
-                      {!['approved', 'cancelled'].includes(record.status) && (
+                      {!['approved', 'cancelled'].includes(record.leaveStatus) && (
                         <>
                           <Divider type="vertical" />
                           <i
@@ -103,7 +103,7 @@ const LEAVES_COLUMN = (
                   </AccessWrapper>
                 </div>
               )
-            return record.status === 'pending' ? (
+            return record.leaveStatus === 'pending' ? (
               <span
                 className="gx-link gx-text-danger"
                 onClick={() =>
@@ -170,7 +170,7 @@ const LEAVES_COLUMN = (
                     <CustomIcon name="view" />
                   </span>
                   <Divider type="vertical" />
-                  {!['approved', 'cancelled'].includes(record.status) && (
+                  {!['approved', 'cancelled'].includes(record.leaveStatus) && (
                     <>
                       <Popconfirm
                         title="Are you sure you want to approve?"
@@ -201,7 +201,7 @@ const LEAVES_COLUMN = (
                   <CustomIcon name="view" />
                 </span>
 
-                {record.status === 'pending' && (
+                {record.leaveStatus === 'pending' && (
                   <>
                     {' '}
                     <Divider type="vertical" />{' '}
