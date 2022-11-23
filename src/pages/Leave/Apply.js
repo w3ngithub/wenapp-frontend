@@ -115,13 +115,12 @@ function Apply({user}) {
     ['substitute', yearStartDate, yearEndDate],
     () =>
       getLeavesOfUser(user, '', undefined, '', '', yearStartDate, yearEndDate),
-    {enabled: false, enabled: !!yearStartDate && !!yearEndDate}
+    {enabled: !!yearStartDate && !!yearEndDate}
   )
 
   useEffect(() => {
     if (gender === 'Female') {
       refetch()
-      userSubstituteLeave?.refetch()
     }
   }, [gender])
 
@@ -212,36 +211,41 @@ function Apply({user}) {
     setCalendarClicked(false)
   }
   const handleSubmit = () => {
-    
-
-    let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
-      (sub) =>
-        sub?.leaveType?.name === 'Substitute Leave' &&
-        sub?.leaveStatus === 'approved'
-    )
-    let isSubstitute = leaveTypeQuery?.data?.find(
-      (data) => data.value === 'Substitute'
-    )
-    if (
-      form.getFieldValue('leaveDatesCasual').length > 1 &&
-      isSubstitute?.id === form.getFieldValue('leaveType')
-    ) {
-      return notification({
-        type: 'error',
-        message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} days`,
-      })
-    }
-    if (hasSubstitute) {
-      return notification({
-        type: 'error',
-        message: 'Substitute Leave Already Taken',
-      })
-    }
-
     form.validateFields().then((values) => {
       const leaveTypeName = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
       )?.value
+
+      //code for substitute leave
+      if (gender === 'Female') {
+        let isSubstitute = leaveTypeQuery?.data?.find(
+          (data) => data?.value === 'Substitute'
+        )
+        if (
+          form.getFieldValue('leaveDatesCasual').length >
+            isSubstitute?.leaveDays &&
+          isSubstitute?.id === form.getFieldValue('leaveType')
+        ) {
+          return notification({
+            type: 'error',
+            message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} day`,
+          })
+        }
+        let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
+          (sub) =>
+            sub?.leaveType?.name === 'Substitute Leave' &&
+            sub?.leaveStatus === 'approved' &&
+            isSubstitute?.id === form.getFieldValue('leaveType')
+        )
+
+        if (hasSubstitute) {
+          return notification({
+            type: 'error',
+            message: 'Substitute Leave Already Taken',
+          })
+        }
+      }
+
       // calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
         leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
@@ -500,7 +504,12 @@ function Apply({user}) {
                     <FormItem
                       label="Leave Interval"
                       name="halfDay"
-                      rules={[{required: true, message: 'Leave Interval is required.'}]}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Leave Interval is required.',
+                        },
+                      ]}
                     >
                       <Select
                         showSearch
@@ -536,7 +545,12 @@ function Apply({user}) {
                     style={{marginBottom: '0.5px'}}
                     label="Leave Starting Date"
                     name="leaveDatesPeriod"
-                    rules={[{required: true, message: 'Leave Starting Date is required.'}]}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Leave Starting Date is required.',
+                      },
+                    ]}
                   >
                     <DatePicker
                       className="gx-mb-3 "
@@ -557,7 +571,8 @@ function Apply({user}) {
                       required: true,
                       validator: async (rule, value) => {
                         try {
-                          if (!value) throw new Error('Leave Reason is required.')
+                          if (!value)
+                            throw new Error('Leave Reason is required.')
 
                           const trimmedValue = value && value.trim()
                           if (
