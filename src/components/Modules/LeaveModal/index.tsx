@@ -443,7 +443,9 @@ function LeaveModal({
                     {...formItemLayout}
                     name="leaveType"
                     label="Leave Type"
-                    rules={[{required: true, message: 'Required!'}]}
+                    rules={[
+                      {required: true, message: 'Leave Type is required.'},
+                    ]}
                   >
                     <Select
                       showSearch
@@ -474,7 +476,12 @@ function LeaveModal({
                       {...formItemLayout}
                       label="Leave Interval"
                       name="halfDay"
-                      rules={[{required: true, message: 'Required!'}]}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Leave Interval is required.',
+                        },
+                      ]}
                     >
                       <Select
                         showSearch
@@ -502,7 +509,9 @@ function LeaveModal({
                       {...formItemLayout}
                       name="user"
                       label="Co-worker"
-                      rules={[{required: true, message: 'Required!'}]}
+                      rules={[
+                        {required: true, message: 'Co-worker is required.'},
+                      ]}
                     >
                       <Select
                         showSearch
@@ -533,7 +542,8 @@ function LeaveModal({
                         required: true,
                         validator: async (rule, value) => {
                           try {
-                            if (!value) throw new Error('Required!')
+                            if (!value)
+                              throw new Error('Leave Reason is required.')
 
                             const trimmedValue = value && value.trim()
                             if (
@@ -592,7 +602,12 @@ function LeaveModal({
                       style={{marginBottom: '0.5px'}}
                       label="Leave Start Date"
                       name="leaveDatesPeriod"
-                      rules={[{required: true, message: 'Required!'}]}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Leave Start Date is required.',
+                        },
+                      ]}
                     >
                       <DatePicker
                         className="gx-mb-3 "
@@ -609,7 +624,9 @@ function LeaveModal({
                     {...formItemLayout}
                     name="leaveDatesCasual"
                     label={!readOnly && 'Select Leave Date'}
-                    rules={[{required: true, message: 'Required!'}]}
+                    rules={[
+                      {required: true, message: 'Leave Date is required.'},
+                    ]}
                   >
                     <Calendar
                       className={darkCalendar ? 'bg-dark' : 'null'}

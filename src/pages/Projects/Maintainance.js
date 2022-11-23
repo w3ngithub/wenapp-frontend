@@ -112,15 +112,17 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
             {
               validator: async (rule, value) => {
                 try {
-                  if (value < 0) {
-                    throw new Error('Positive number is required.')
-                  }
+                  if (maintenance[0]?.enabled === true) {
+                    if (value < 0) {
+                      throw new Error('Positive number is required.')
+                    }
 
-                  if (value > 31) {
-                    throw new Error('Maximum available date is 31')
-                  }
-                  if (value - Math.floor(value) !== 0) {
-                    throw new Error('Please do not enter decimal values.')
+                    if (value > 31) {
+                      throw new Error('Maximum available date is 31')
+                    }
+                    if (value - Math.floor(value) !== 0) {
+                      throw new Error('Please do not enter decimal values.')
+                    }
                   }
                 } catch (err) {
                   throw new Error(err.message)
