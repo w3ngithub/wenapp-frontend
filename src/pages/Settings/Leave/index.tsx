@@ -153,12 +153,12 @@ function Leave() {
   })
 
   const handleAddClick = (leave: leaveType) => {
-    leave = {...leave,name:leave?.name}
+    leave = {...leave, name: leave?.name}
     addLeaveTypeMutation.mutate(leave)
   }
 
   const handleEditClick = (leave: leaveType) => {
-    leave = {...leave,name:leave?.name}
+    leave = {...leave, name: leave?.name}
     editLeaveTypeMutation.mutate({id: dataToEdit?._id, leave})
   }
 
@@ -179,7 +179,7 @@ function Leave() {
     setDataToEdit({})
     setOpenModal(false)
   }
-  const handleOpenModal = (type: string, data:any) => {
+  const handleOpenModal = (type: string, data: any) => {
     type === 'Leave Type' ? setOpenModal(true) : setQuarterModel(true)
     setArrayDataToSend(data)
   }
@@ -284,22 +284,22 @@ function Leave() {
     const preparedPayload = {
       firstQuarter: {
         fromDate: moment.utc(firststartDate.startOf('day')).format(),
-        toDate: moment.utc(firstendDate.startOf('day')).format(),
+        toDate: moment.utc(firstendDate.endOf('day')).format(),
         leaves: firstleaves,
       },
       secondQuarter: {
         fromDate: moment.utc(secondstartDate.startOf('day')).format(),
-        toDate: moment.utc(secondendDate.startOf('day')).format(),
+        toDate: moment.utc(secondendDate.endOf('day')).format(),
         leaves: secondleaves,
       },
       thirdQuarter: {
         fromDate: moment.utc(thirdstartDate.startOf('day')).format(),
-        toDate: moment.utc(thirdendDate.startOf('day')).format(),
+        toDate: moment.utc(thirdendDate.endOf('day')).format(),
         leaves: thirdleaves,
       },
       fourthQuarter: {
         fromDate: moment.utc(fourthstartDate.startOf('day')).format(),
-        toDate: moment.utc(fourthendDate.startOf('day')).format(),
+        toDate: moment.utc(fourthendDate.endOf('day')).format(),
         leaves: fourthleaves,
       },
     }
@@ -325,7 +325,7 @@ function Leave() {
         isEditMode={isEditMode}
         duplicateValue={duplicateValue}
         setDuplicateValue={setDuplicateValue}
-        currentData = {arrayDataToSend}
+        currentData={arrayDataToSend}
         editData={dataToEdit}
         isLoading={
           addLeaveTypeMutation.isLoading || editLeaveTypeMutation.isLoading

@@ -87,7 +87,7 @@ function CommonModal({
                       throw new Error(`${type} is required.`)
                     }
                     if(value?.trim() === ''){
-                      throw new Error(`${type} is required.`)
+                      throw new Error(`Please enter a valid ${type}.`)
                     }
                   } catch (err) {
                     throw new Error(err.message)
