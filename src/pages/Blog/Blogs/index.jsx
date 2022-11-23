@@ -1,11 +1,21 @@
 import React, {useEffect, useState} from 'react'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {Card, Form, Input, Button, Pagination, Spin, Col, Row} from 'antd'
+import {
+  Card,
+  Form,
+  Input,
+  Button,
+  Pagination,
+  Spin,
+  Col,
+  Row,
+  Empty,
+} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {notification} from 'helpers/notification'
 import {deleteBlog, getAllBlogs} from 'services/blog'
 import BlogItem from 'components/Elements/BlogCard'
-import {getAllUsers} from 'services/users/userDetails'
+import {getBlogAuthors} from 'services/users/userDetails'
 import Select from 'components/Elements/Select'
 import {useNavigate} from 'react-router-dom'
 import {ADDBLOG} from 'helpers/routePath'
@@ -46,9 +56,9 @@ function Blogs() {
     {keepPreviousData: true}
   )
 
-  const {data: users} = useQuery(
-    ['users'],
-    () => getAllUsers({fields: '_id,name'}),
+  const {data: blogAuthors} = useQuery(
+    ['blogAuthors'],
+    () => getBlogAuthors(),
     {
       keepPreviousData: true,
     }
@@ -124,9 +134,9 @@ function Blogs() {
                   placeholder="Select Author"
                   onChange={handleUserChange}
                   value={user}
-                  options={users?.data?.data?.data.map((x) => ({
-                    id: x._id,
-                    value: x.name,
+                  options={blogAuthors?.data?.data?.BlogAuthors?.map((x) => ({
+                    id: x?.id?.[0],
+                    value: x?.name?.[0],
                   }))}
                 />
               </FormItem>
@@ -156,117 +166,126 @@ function Blogs() {
           </div>
         </div>
         <Spin spinning={isFetching}>
-          <Row align="top">
-            <Col xl={8} md={12} sm={24} xs={24}>
-              {data?.data?.data?.data?.map((blog, index) => {
-                if (innerWidth > 1200 && (index + 1) % 3 === 1) {
-                  return (
-                    <BlogItem
-                      key={blog._id}
-                      grid={true}
-                      blog={blog}
-                      removeBlog={removeBlog}
-                      access={
-                        !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                      }
-                    />
-                  )
-                } else if (innerWidth < 1200 && (index + 1) % 2 !== 0) {
-                  return (
-                    <BlogItem
-                      key={blog._id}
-                      grid={true}
-                      blog={blog}
-                      removeBlog={removeBlog}
-                      access={
-                        !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                      }
-                    />
-                  )
-                } else if (innerWidth < 765) {
-                  return (
-                    <BlogItem
-                      key={blog._id}
-                      grid={true}
-                      blog={blog}
-                      removeBlog={removeBlog}
-                      access={
-                        !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                      }
-                    />
-                  )
-                } else return null
-              })}
-            </Col>
-            <Col xl={8} md={12} sm={24} xs={24}>
-              {data?.data?.data?.data?.map((blog, index) => {
-                if (innerWidth > 1200 && (index + 1) % 3 === 2) {
-                  return (
-                    <BlogItem
-                      key={blog._id}
-                      grid={true}
-                      blog={blog}
-                      removeBlog={removeBlog}
-                      access={
-                        !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                      }
-                    />
-                  )
-                } else if (
-                  innerWidth > 765 &&
-                  innerWidth < 1200 &&
-                  (index + 1) % 2 === 0
-                ) {
-                  return (
-                    <BlogItem
-                      key={blog._id}
-                      grid={true}
-                      blog={blog}
-                      removeBlog={removeBlog}
-                      access={
-                        !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                      }
-                    />
-                  )
-                } else if (innerWidth < 765) {
-                  return null
-                } else return null
-              })}
-            </Col>
-            <Col xl={8} md={12} sm={24} xs={24}>
-              {data?.data?.data?.data?.map((blog, index) => {
-                if (
-                  innerWidth > 765 &&
-                  innerWidth > 1200 &&
-                  (index + 1) % 3 === 0
-                ) {
-                  return (
-                    <BlogItem
-                      key={blog._id}
-                      grid={true}
-                      blog={blog}
-                      removeBlog={removeBlog}
-                      access={
-                        !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                      }
-                    />
-                  )
-                } else if (innerWidth < 765) {
-                  return null
-                } else return null
-              })}
-            </Col>
-          </Row>
-
-          <Pagination
-            total={data?.data?.data?.count || 1}
-            current={page.page}
-            pageSize={page.limit}
-            pageSizeOptions={['5', '10', '20', '50']}
-            showSizeChanger={true}
-            onShowSizeChange={onShowSizeChange}
-            onChange={handlePageChange}
-          />
+          {data?.data?.data?.data && data?.data?.data?.data?.length ? (
+            <>
+              {' '}
+              <Row align="top">
+                <Col xl={8} md={12} sm={24} xs={24}>
+                  {data?.data?.data?.data?.map((blog, index) => {
+                    if (innerWidth > 1200 && (index + 1) % 3 === 1) {
+                      return (
+                        <BlogItem
+                          key={blog._id}
+                          grid={true}
+                          blog={blog}
+                          removeBlog={removeBlog}
+                          access={
+                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
+                          }
+                        />
+                      )
+                    } else if (innerWidth < 1200 && (index + 1) % 2 !== 0) {
+                      return (
+                        <BlogItem
+                          key={blog._id}
+                          grid={true}
+                          blog={blog}
+                          removeBlog={removeBlog}
+                          access={
+                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
+                          }
+                        />
+                      )
+                    } else if (innerWidth < 765) {
+                      return (
+                        <BlogItem
+                          key={blog._id}
+                          grid={true}
+                          blog={blog}
+                          removeBlog={removeBlog}
+                          access={
+                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
+                          }
+                        />
+                      )
+                    } else return null
+                  })}
+                </Col>
+                <Col xl={8} md={12} sm={24} xs={24}>
+                  {data?.data?.data?.data?.map((blog, index) => {
+                    if (innerWidth > 1200 && (index + 1) % 3 === 2) {
+                      return (
+                        <BlogItem
+                          key={blog._id}
+                          grid={true}
+                          blog={blog}
+                          removeBlog={removeBlog}
+                          access={
+                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
+                          }
+                        />
+                      )
+                    } else if (
+                      innerWidth > 765 &&
+                      innerWidth < 1200 &&
+                      (index + 1) % 2 === 0
+                    ) {
+                      return (
+                        <BlogItem
+                          key={blog._id}
+                          grid={true}
+                          blog={blog}
+                          removeBlog={removeBlog}
+                          access={
+                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
+                          }
+                        />
+                      )
+                    } else if (innerWidth < 765) {
+                      return null
+                    } else return null
+                  })}
+                </Col>
+                <Col xl={8} md={12} sm={24} xs={24}>
+                  {data?.data?.data?.data?.map((blog, index) => {
+                    if (
+                      innerWidth > 765 &&
+                      innerWidth > 1200 &&
+                      (index + 1) % 3 === 0
+                    ) {
+                      return (
+                        <BlogItem
+                          key={blog._id}
+                          grid={true}
+                          blog={blog}
+                          removeBlog={removeBlog}
+                          access={
+                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
+                          }
+                        />
+                      )
+                    } else if (innerWidth < 765) {
+                      return null
+                    } else return null
+                  })}
+                </Col>
+              </Row>
+              <Pagination
+                total={data?.data?.data?.count || 1}
+                current={page.page}
+                pageSize={page.limit}
+                pageSizeOptions={['5', '10', '20', '50']}
+                showSizeChanger={true}
+                onShowSizeChange={onShowSizeChange}
+                onChange={handlePageChange}
+              />
+            </>
+          ) : (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description="No Result Found"
+            />
+          )}
         </Spin>
       </Card>
     </div>

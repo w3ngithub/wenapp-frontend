@@ -24,7 +24,7 @@ const WEEKLY_REPORT_COLUMNS = (sortedInfo, navigateToProjectLogs) => [
     dataIndex: 'timeSpent',
     key: 'timeSpent',
     sorter: (a, b) =>
-      a.timeSpent?.toString().localeCompare(b.timeSpent?.toString()),
+      a.timeSpent-b.timeSpent,
 
     sortOrder: sortedInfo.columnKey === 'timeSpent' && sortedInfo.order,
   },
@@ -37,7 +37,7 @@ const WEEKLY_REPORT_COLUMNS = (sortedInfo, navigateToProjectLogs) => [
         <span>
           <span
             className="gx-link"
-            onClick={() => navigateToProjectLogs(`/${PROJECTS}/${record.key}`)}
+            onClick={() => navigateToProjectLogs(`/${PROJECTS}/${record.key}`,true)}
           >
             <CustomIcon name="view" />
           </span>

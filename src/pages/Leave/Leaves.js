@@ -6,17 +6,26 @@ import {CSVLink} from 'react-csv'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {changeLeaveStatus, getLeavesOfAllUsers} from 'services/leaves'
-import {changeDate, handleResponse, removeDash} from 'helpers/utils'
+import {
+  capitalizeInput,
+  changeDate,
+  handleResponse,
+  removeDash,
+} from 'helpers/utils'
 import Notification from 'components/Elements/Notification'
 import {getAllUsers} from 'services/users/userDetails'
 import moment from 'moment'
 import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
+import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
+import {getLeaveTypes} from 'services/leaves'
 import {
   LEAVES_TAB_ACTIONS_NO_ACCESS,
   LEAVE_TAB_ADD_LEAVE_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {disabledDate} from 'util/antDatePickerDisabled'
+import {sendEmailforLeave} from 'services/leaves'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const FormItem = Form.Item
 
@@ -32,14 +41,14 @@ const formattedLeaves = (leaves) => {
           leave?.leaveType?.name === 'Paternity' ||
           leave?.leaveType?.name === 'Paid Time Off'
           ? ' - '
-          : ' , '
+          : ' '
       ),
     type: `${leave?.leaveType?.name} ${
       leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
         ? '- ' + removeDash(leave?.halfDay)
         : ''
     }`,
-    status: leave?.leaveStatus,
+    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
   }))
 }
 
@@ -60,12 +69,15 @@ function Leaves({
   userRole,
 }) {
   const queryClient = useQueryClient()
-
+  let approveReason
   const [openModal, setOpenModal] = useState(false)
+  const [openApproveLeaveModal, setopenApproveLeaveModal] = useState(false)
+  const [loader, setLoader] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
-  const [leaveStatus, setLeaveStatus] = useState(status ?? 'pending')
+  const [leaveStatus, setLeaveStatus] = useState(status ?? '')
+  const [leaveId, setLeaveId] = useState(undefined)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const [date, setDate] = useState(
@@ -81,25 +93,41 @@ function Leaves({
       : undefined
   )
   const [page, setPage] = useState({page: 1, limit: 10})
-
+  const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
   const leavesQuery = useQuery(
-    ['leaves', leaveStatus, user, date, page],
+    ['leaves', leaveStatus, user, date, page, leaveId],
     () =>
       getLeavesOfAllUsers(
         leaveStatus,
         user,
         date?.utc ? date?.utc : '',
         page.page,
-        page.limit
+        page.limit,
+        '-leaveDates',
+        leaveId
       ),
     {
       onError: (err) => console.log(err),
     }
   )
 
-  const usersQuery = useQuery(['users'], getAllUsers)
+  const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
+    select: (res) => [
+      ...res?.data?.data?.data?.map((type) => ({
+        id: type._id,
+        value: type?.name.replace('Leave', '').trim(),
+      })),
+    ],
+  })
+
+  const handleLeaveTypeChange = (value) => {
+    setLeaveId(value)
+  }
+
+  const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
+  const usersQuery = useQuery(['users'], () => getAllUsers({sort: 'name'}))
 
   const leaveApproveMutation = useMutation(
     (payload) => changeLeaveStatus(payload.id, payload.type),
@@ -110,6 +138,7 @@ function Leaves({
           'Leave approved successfully',
           'Could not approve leave',
           [
+            () => sendEmailNotification(response),
             () => queryClient.invalidateQueries(['userLeaves']),
             () => queryClient.invalidateQueries(['leaves']),
             () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
@@ -125,8 +154,33 @@ function Leaves({
     }
   )
 
+  const sendEmailNotification = (res) => {
+    emailMutation.mutate({
+      leaveStatus: res.data.data.data.leaveStatus,
+      leaveDates: res.data.data.data.leaveDates,
+      user: res.data.data.data.user,
+      leaveApproveReason: approveReason || '',
+    })
+    setLoader(false)
+    handleCloseApproveModal()
+  }
+
+  const handleCloseApproveModal = () => {
+    setopenApproveLeaveModal(false)
+  }
+
+  const handleOpenApproveModal = (leaveDetails) => {
+    setleaveDetails(leaveDetails)
+    setopenApproveLeaveModal(true)
+  }
+
   const handleApproveLeave = (leave) => {
-    leaveApproveMutation.mutate({id: leave._id, type: 'approve'})
+    approveReason = leave?.leaveApproveReason
+    leaveApproveMutation.mutate({
+      id: leave._id,
+      type: 'approve',
+      reason: approveReason,
+    })
   }
 
   const handleStatusChange = (statusId) => {
@@ -140,11 +194,13 @@ function Leaves({
     setLeaveStatus(undefined)
     setUser(undefined)
     setDate(undefined)
+    setLeaveId(undefined)
   }
 
   const handleCloseModal = (
     setSpecificHalf,
     setHalfLeaveApproved,
+    setHalfLeavePending,
     setMultipleDatesSelected,
     setCalendarClicked
   ) => {
@@ -152,6 +208,7 @@ function Leaves({
     setIsEditMode(false)
     setSpecificHalf(false)
     setHalfLeaveApproved(false)
+    setHalfLeavePending(false)
     setMultipleDatesSelected(false)
     setCalendarClicked(false)
   }
@@ -196,6 +253,19 @@ function Leaves({
         users={usersQuery?.data?.data?.data?.data}
         readOnly={readOnly}
       />
+
+      <CancelLeaveModal
+        open={openApproveLeaveModal}
+        onClose={handleCloseApproveModal}
+        onSubmit={handleApproveLeave}
+        leaveData={leaveDetails}
+        loader={loader}
+        setLoader={setLoader}
+        title={'Approve Leave'}
+        isRequired={false}
+        name={'leaveApproveReason'}
+      />
+
       <div className="components-table-demo-control-bar">
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
@@ -207,6 +277,16 @@ function Leaves({
                 options={STATUS_TYPES}
               />
             </FormItem>
+
+            <FormItem className="direct-form-item">
+              <Select
+                placeholder="Select Leave Type"
+                onChange={handleLeaveTypeChange}
+                value={leaveId}
+                options={leaveTypeQuery?.data}
+              />
+            </FormItem>
+
             <FormItem className="direct-form-item">
               <Select
                 placeholder="Select Co-worker"
@@ -275,10 +355,11 @@ function Leaves({
         </div>
       </div>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={LEAVES_COLUMN(
           handleOpenCancelLeaveModal,
-          handleApproveLeave,
+          handleOpenApproveModal,
           handleOpenEditModal,
           true,
           userRole

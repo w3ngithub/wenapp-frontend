@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import {Button, Card, Divider , Form, Table, Tag} from 'antd'
+import React, {useState, useCallback} from 'react'
+import {Button, Card, Divider, Form, Table, Tag} from 'antd'
 import RangePicker from 'components/Elements/RangePicker'
 import {intialDate} from 'constants/Attendance'
 import Select from 'components/Elements/Select'
@@ -11,9 +11,11 @@ import {WORK_LOG_REPORT_COLUMNS} from 'constants/WorkLogReport'
 import moment from 'moment'
 import {changeDate, toRoundoff} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {debounce} from 'helpers/utils'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const FormItem = Form.Item
-let screenWidth:number;
+let screenWidth: number
 
 const formattedWorkLogReport: any = (logs: any) => {
   return logs?.map((log: any) => ({
@@ -30,10 +32,12 @@ const formattedWorkLogReport: any = (logs: any) => {
             </span>
             {x.map((item: any) => (
               <div className=" gx-d-flex" key={item.remarks + item.totalHours}>
-                <span className="gx-mr-5" style={{width:'100px'}}>
+                <span className="gx-mr-5" style={{width: '100px'}}>
                   {item.project?.[0]?.name || 'Other'}
                 </span>
-                <span style={{maxWidth: screenWidth < 1808 ? '54rem':'74rem'}}>
+                <span
+                  style={{maxWidth: screenWidth < 1808 ? '54rem' : '74rem'}}
+                >
                   {item.remarks}
                   <Tag color="cyan" className="gx-ml-1">
                     {' '}
@@ -43,8 +47,7 @@ const formattedWorkLogReport: any = (logs: any) => {
               </div>
             ))}
           </div>
-          <Divider type='horizontal' />
-
+          <Divider type="horizontal" />
         </>
       )
     ),
@@ -56,12 +59,13 @@ function WorkLogReport() {
   const [sort, setSort] = useState({})
   const [form] = Form.useForm()
   const [date, setDate] = useState(intialDate)
-  const{innerWidth} = useWindowsSize();
+  const {innerWidth} = useWindowsSize()
   const [logType, setLogType] = useState<string | undefined>(undefined)
   const [project, setProject] = useState<string | undefined>(undefined)
   const [user, setUser] = useState<string | undefined>(undefined)
+  const [projectData, setProjectData] = useState([])
 
-  screenWidth = innerWidth;
+  screenWidth = innerWidth
   //init hooks
 
   const {data, isFetching} = useQuery(
@@ -71,29 +75,42 @@ function WorkLogReport() {
         user,
         project,
         logType,
-        fromDate: date?.[0] ? moment.utc(date[0]).format(): '',
-        toDate: date?.[1] ?  moment.utc(date[1]).format(): '',
+        fromDate: date?.[0] ? moment.utc(date[0]).format() : '',
+        toDate: date?.[1] ? moment.utc(date[1]).format() : '',
       })
   )
 
   const {data: logTypesData} = useQuery(['logTypes'], getLogTypes)
 
-  const {data: projectData} = useQuery(['WorkLogProjects'], () =>
-    getAllProjects({
-      fields:
-        '_id,name,-devOps,-createdBy,-designers,-developers,-projectStatus,-projectTags,-projectTypes,-qa,-updatedBy',
-    })
-  )
+  // const {data: projectData} = useQuery(['WorkLogProjects'], () =>
+  //   getAllProjects({
+  //     fields:
+  //       '_id,name,-devOps,-createdBy,-designers,-developers,-projectStatus,-projectTags,-projectTypes,-qa,-updatedBy',
+  //   })
+  // )
+
+  const handleSearch = async (projectName: any) => {
+    if (!projectName) {
+      setProjectData([])
+      return
+    } else {
+      const projects = await getAllProjects({project: projectName})
+      setProjectData(projects?.data?.data?.data)
+    }
+  }
+
+  const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
   const {data: usersData} = useQuery(['WorkLogusers'], () =>
     getAllUsers({
       active: 'true',
       fields: '_id,name',
+      sort: 'name',
     })
   )
 
   const handleChangeDate = (date: any[]) => {
-    setDate([date[0],date[1].endOf('day')])
+    setDate([date[0], date[1].endOf('day')])
   }
 
   const handleLogTypeChange = (typeId: string) => {
@@ -135,14 +152,15 @@ function WorkLogReport() {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
             <FormItem>
-              <RangePicker handleChangeDate={handleChangeDate} date={date}/>
+              <RangePicker handleChangeDate={handleChangeDate} date={date} />
             </FormItem>
             <FormItem className="direct-form-item">
               <Select
                 placeholder="Select Project"
                 onChange={handleProjectChange}
                 value={project}
-                options={projectData?.data?.data?.data?.map((x: any) => ({
+                handleSearch={optimizedFn}
+                options={projectData.map((x: any) => ({
                   ...x,
                   id: x._id,
                   value: x.name,
@@ -187,6 +205,7 @@ function WorkLogReport() {
         </div>
       </div>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={WORK_LOG_REPORT_COLUMNS(sort)}
         dataSource={formattedWorkLogReport(logData)}

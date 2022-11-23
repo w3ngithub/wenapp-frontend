@@ -2,6 +2,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Card, Table, Button} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import LogModal from 'components/Modules/LogtimeModal'
+import '@ant-design/compatible/assets/index.css'
 import {LOGTIMES_COLUMNS} from 'constants/logTimes'
 import {
   changeDate,
@@ -23,6 +24,8 @@ import {
 } from 'services/timeLogs'
 import TimeSummary from './TimeSummary'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import { useNavigate } from 'react-router-dom'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -32,22 +35,25 @@ const formattedLogs = (logs) => {
     logDate: changeDate(log?.logDate),
     user: log?.user?.name,
     project: log?.project?.name || 'Other',
+    slug:log?.project?.slug,
+    projectId: log?.project?.id
   }))
 }
 
 function LogTime() {
   // init hooks
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   // init states
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState({page: 1, limit: 20})
   const [openModal, setOpenModal] = useState(false)
 
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const {
-    user: {_id},
+    user: {_id,role:{key}},
   } = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
 
   const {
@@ -115,6 +121,10 @@ function LogTime() {
       },
     }
   )
+
+  const navigateToProjectLogs = (url)=>{
+    navigate(url,{replace:true})
+  }
 
   const {data: logTypes} = useQuery(['logTypes'], () => getLogTypes())
 
@@ -212,6 +222,7 @@ function LogTime() {
         initialValues={timeLogToUpdate}
         isEditMode={isEditMode}
         isUserLogtime={true}
+        role={key}
       />
       <div style={{marginTop: 20}}></div>
       <Card title={' Time Summary'}>
@@ -240,19 +251,23 @@ function LogTime() {
           </div>
         </div>
         <Table
+        locale={{emptyText}}
           className="gx-table-responsive"
           columns={LOGTIMES_COLUMNS(
             sort,
             handleOpenEditModal,
             confirmDelete,
-            true
+            true,
+            undefined,
+            key,
+            navigateToProjectLogs
           )}
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['5', '10', '20', '50'],
+            pageSizeOptions: ['20', '50','80'],
             showSizeChanger: true,
             total: logTimeDetails?.data?.data?.count || 1,
             onShowSizeChange,

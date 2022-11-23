@@ -62,7 +62,24 @@ function CommonResourceModal({
           <Form.Item
             name="title"
             label="Title"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Title is required.')
+                    }
+                    if (value?.trim() === '') {
+                      throw new Error('Please enter a valid title.')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
           >
             <Input
               // value={editData?.title ?? ""}
@@ -74,9 +91,28 @@ function CommonResourceModal({
             name="content"
             label="Description"
             rules={[
-              {required: true, message: 'Required!'},
-              {min: 10, message: 'At least 10 characters required'},
-              {max:1000, message:'Cannot exceed more than 1000 characters'}
+              {
+                required: true,
+                whitespace: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Description is required.')
+                    }
+                    if (value?.trim() === '') {
+                      throw new Error('Please enter a valid description.')
+                    }
+                    if (value?.trim()?.length < 10) {
+                      throw new Error('Description should contain atleast 10 characters.')
+                    }
+                    if (value?.trim()?.length > 1000) {
+                      throw new Error('Description cannot exceed more than 1000 characters.')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
             ]}
           >
             <TextArea

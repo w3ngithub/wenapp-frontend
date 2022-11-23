@@ -25,6 +25,7 @@ import {PROJECTS_ADD_NEW_NO_ACCESS} from 'constants/RoleAccess'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -34,8 +35,10 @@ const formattedProjects = (projects) => {
     ...project,
     key: project._id,
     projectStatus: project.projectStatus?.name,
-    projectTypes: project.projectTypes?.[0]?.name,
-    startDate: changeDate(project?.startDate),
+    projectTypes: project.projectTypes?.map((x) => (
+      <p style={{margin: 0}}>{x?.name}</p>
+    )),
+    startDate: project?.startDate ? changeDate(project?.startDate) : '',
     endDate: project?.endDate ? changeDate(project?.endDate) : '',
   }))
 }
@@ -46,7 +49,7 @@ function ProjectsPage() {
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const [project, setProject] = useState('')
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState({page: 1, limit: 20})
   const [projectStatus, setProjectStatus] = useState(undefined)
   const [projectType, setProjectType] = useState(undefined)
   const [projectClient, setprojectClient] = useState(undefined)
@@ -82,16 +85,16 @@ function ProjectsPage() {
     getUserPositionTypes
   )
   const {data: developers} = useQuery(['developers', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.developer})
+    getAllUsers({positionType: positionTypeData?.developer, sort: 'name'})
   )
   const {data: designers} = useQuery(['designers', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.designer})
+    getAllUsers({positionType: positionTypeData?.designer, sort: 'name'})
   )
   const {data: QAs} = useQuery(['QA', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.qa})
+    getAllUsers({positionType: positionTypeData?.qa, sort: 'name'})
   )
   const {data: devops} = useQuery(['DevOps', positionTypeData], () =>
-    getAllUsers({positionType: positionTypeData?.devops})
+    getAllUsers({positionType: positionTypeData?.devops, sort: 'name'})
   )
   const {data, isLoading, isError, isFetching} = useQuery(
     [
@@ -142,7 +145,7 @@ function ProjectsPage() {
     },
   })
   const updateProjectMutation = useMutation(
-    (project) => updateProject(project.id, project.details),
+    (project) => updateProject(project?.id, project?.details),
     {
       onSuccess: (response) =>
         handleResponse(
@@ -182,15 +185,16 @@ function ProjectsPage() {
     if (types?.length > 0) {
       setPositionTypeData({
         developer: types?.find(
-          (type) => type.name.toLowerCase() === POSITION_TYPES.developer
+          (type) => type.name.toLowerCase() === POSITION_TYPES?.developer
         )?._id,
         designer: types?.find(
-          (type) => type.name.toLowerCase() === POSITION_TYPES.designer
+          (type) => type.name.toLowerCase() === POSITION_TYPES?.designer
         )?._id,
-        qa: types?.find((type) => type.name.toLowerCase() === POSITION_TYPES.qa)
-          ?._id,
+        qa: types?.find(
+          (type) => type.name.toLowerCase() === POSITION_TYPES?.qa
+        )?._id,
         devops: types?.find(
-          (type) => type.name.toLowerCase() === POSITION_TYPES.devops
+          (type) => type.name.toLowerCase() === POSITION_TYPES?.devops
         )?._id,
       })
     }
@@ -206,14 +210,14 @@ function ProjectsPage() {
     try {
       const updatedProject = {
         ...project,
-        estimatedHours: project.estimatedHours
-          ? +project.estimatedHours
+        estimatedHours: project?.estimatedHours
+          ? +project?.estimatedHours
           : undefined,
-        startDate: project.startDate
-          ? MuiFormatDate(new Date(moment.utc(project.startDate).format()))
+        startDate: project?.startDate
+          ? MuiFormatDate(new Date(moment.utc(project?.startDate)?.format()))
           : undefined,
         endDate: project.endDate
-          ? MuiFormatDate(new Date(moment.utc(project.endDate).format()))
+          ? MuiFormatDate(new Date(moment.utc(project?.endDate)?.format()))
           : undefined,
       }
       if (isEditMode)
@@ -229,7 +233,7 @@ function ProjectsPage() {
 
   const handleOpenEditModal = (projectToUpdate, mode) => {
     const originalProject = data?.data?.data?.data?.find(
-      (project) => project.id === projectToUpdate.id
+      (project) => project?.id === projectToUpdate?.id
     )
     setOpenUserDetailModal((prev) => !prev)
     setUserRecord({
@@ -239,7 +243,7 @@ function ProjectsPage() {
         projectStatus: originalProject?.projectStatus,
         projectTypes: originalProject?.projectTypes,
         startDate: originalProject.startDate ?? null,
-        endDate: originalProject.endDate ?? null,
+        endDate: originalProject?.endDate ?? null,
       },
     })
     setReadOnly(mode)
@@ -322,7 +326,7 @@ function ProjectsPage() {
         onClose={handleCloseModal}
         onSubmit={handleUserDetailSubmit}
         loading={
-          addProjectMutation.isLoading || updateProjectMutation.isLoading
+          addProjectMutation?.isLoading || updateProjectMutation?.isLoading
         }
         types={projectTypesData}
         statuses={projectStatusData}
@@ -331,7 +335,7 @@ function ProjectsPage() {
         designers={designers}
         qas={QAs}
         devops={devops}
-        initialValues={userRecord.project}
+        initialValues={userRecord?.project}
         readOnly={readOnly}
         isEditMode={isEditMode}
       />
@@ -452,6 +456,7 @@ function ProjectsPage() {
           </Form>
         </div>
         <Table
+          locale={{emptyText}}
           className="gx-table-responsive"
           columns={PROJECT_COLUMNS(
             sort,
@@ -465,14 +470,14 @@ function ProjectsPage() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['5', '10', '20', '50'],
+            pageSizeOptions: ['20', '50', '80'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
             hideOnSinglePage: data?.data?.data?.count ? false : true,
             onChange: handlePageChange,
           }}
-          loading={isLoading || isFetching || deleteProjectMutation.isLoading}
+          loading={isLoading || isFetching || deleteProjectMutation?.isLoading}
         />
       </Card>
     </div>

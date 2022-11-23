@@ -63,7 +63,7 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
   }
 
   const handleMonthlyChange = (value) => {
-    setMaintenance((prev) => [{...prev[0], monthly: Boolean(value.length)}])
+    setMaintenance((prev) => [{...prev[0], enabled: Boolean(value.length)}])
   }
 
   const handleMailDayChange = (event) => {
@@ -80,13 +80,11 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
           {...formItemLayout}
           style={{marginBottom: '30px', display: 'block'}}
           label="Enable Maintenance"
-          help="Check this box to enable recurring monthly maintenance on this
-                        project."
         >
           <CheckboxGroup
             options={[{label: 'Yes', value: true}]}
             onChange={handleMonthlyChange}
-            value={[maintenance[0]?.monthly]}
+            value={[maintenance[0]?.enabled]}
             disabled={readOnly}
           />
         </FormItem>
@@ -109,19 +107,51 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
           style={{marginBottom: '30px', display: 'block'}}
           {...formItemLayout}
           label="Send Mail On"
-          help="Select the day of the month e.g. if you input 12 - the field mail will be sent on the 12th of every month."
+          name="emailDay"
+          rules={[
+            {
+              validator: async (rule, value) => {
+                try {
+                  if (value < 0) {
+                    throw new Error('Positive number is required.')
+                  }
+
+                  if (value > 31) {
+                    throw new Error('Maximum available date is 31')
+                  }
+                  if (value - Math.floor(value) !== 0) {
+                    throw new Error('Please do not enter decimal values.')
+                  }
+                } catch (err) {
+                  throw new Error(err.message)
+                }
+              },
+            },
+          ]}
         >
           <Input
             placeholder="0"
             style={{marginTop: '15px'}}
-            value={maintenance[0]?.emailDay}
+            // value={maintenance[0]?.emailDay}
             onChange={handleMailDayChange}
             disabled={readOnly}
+            type="number"
+            min={1}
+            max={31}
           />
         </FormItem>
+        <p
+          style={{
+            color: 'rgba(0,0,0,0.45)',
+            marginLeft: '1rem',
+          }}
+        >
+          Select the day of the month e.g. if you input 12 - the field mail will
+          be sent on the 12th of every month.
+        </p>
         <FormItem
           {...formItemLayout}
-          style={{marginBottom: '30px', display: 'block'}}
+          style={{marginBottom: '30px', display: 'block', marginTop: '1rem'}}
           label="Project Coordinator E-mail"
           help="will default to info@webexpertsnepal.com if left blank"
         >

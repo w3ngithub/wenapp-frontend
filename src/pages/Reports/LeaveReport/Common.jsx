@@ -5,8 +5,28 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import {notification} from 'helpers/notification'
 import {INTERN, LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
 import {getLeaveDaysOfAllUsers} from 'services/leaves'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const formattedLeaveReports = (reports, quarter, Intern) => {
+  let currentQuarter = ''
+  switch (quarter) {
+    case 1:
+      currentQuarter = 'firstQuarter'
+      break
+    case 2:
+      currentQuarter = 'secondQuarter'
+      break
+    case 3:
+      currentQuarter = 'thirdQuarter'
+      break
+    case 4:
+      currentQuarter = 'fourthQuarter'
+      break
+
+    default:
+      currentQuarter = ''
+      break
+  }
   return reports?.[quarter - 1]?.map((report) => ({
     key: report?._id._id?.[0],
     name: report?._id.name?.[0],
@@ -21,6 +41,7 @@ const formattedLeaveReports = (reports, quarter, Intern) => {
     ),
 
     leavesTaken: report?.leavesTaken,
+    allocatedLeaves: report?._id?.allocatedLeaves?.[0]?.[currentQuarter],
   }))
 }
 
@@ -163,7 +184,6 @@ function CommonQuarter({fromDate, toDate, quarter, positions}) {
   if (isLoading) {
     return <CircularProgress className="" />
   }
-  console.log(data?.data?.data?.data, quarter)
 
   return (
     <>
@@ -171,6 +191,7 @@ function CommonQuarter({fromDate, toDate, quarter, positions}) {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row"></div>
       </div>
       <Table
+      locale={{emptyText}}
         className="gx-table-responsive"
         columns={LEAVE_REPORT_COLUMNS(sort)}
         dataSource={formattedLeaveReports(
@@ -184,9 +205,11 @@ function CommonQuarter({fromDate, toDate, quarter, positions}) {
           pageSize: page.limit,
           pageSizeOptions: ['5', '10', '20', '50'],
           showSizeChanger: true,
-          total: data?.data?.data?.data?.[quarter-1]?.length || 1,
+          total: data?.data?.data?.data?.[quarter - 1]?.length || 1,
           onShowSizeChange,
-          hideOnSinglePage: data?.data?.data?.data?.[quarter-1]?.length ? false : true,
+          hideOnSinglePage: data?.data?.data?.data?.[quarter - 1]?.length
+            ? false
+            : true,
           onChange: handlePageChange,
         }}
         loading={isLoading || isFetching}

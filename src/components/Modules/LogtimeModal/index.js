@@ -1,11 +1,14 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState,useCallback} from 'react'
 import '@ant-design/compatible/assets/index.css'
 import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
-import {getAllProjects} from 'services/projects'
+import {getAllProjects, getProject} from 'services/projects'
 import {filterOptions} from 'helpers/utils'
-
+import {LOG_TIME_OLD_EDIT} from 'constants/RoleAccess'
+import {SearchOutlined} from '@ant-design/icons'
+import { debounce } from 'helpers/utils'
+import { notification } from 'helpers/notification'
 const FormItem = Form.Item
 const Option = Select.Option
 const {TextArea} = Input
@@ -30,17 +33,21 @@ function LogtimeModal({
   loading = false,
   isEditMode,
   isUserLogtime = false,
+  role,
 }) {
   // const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
   const [searchValue, setSearchValue] = useState('')
 
   const [form] = Form.useForm()
   const [types, setTypes] = useState([])
-  const [zeroHourMinutes, setZeroHourMinutes] = useState(false);
+  const [zeroHourMinutes, setZeroHourMinutes] = useState(false)
+  const [project,setProject] = useState()
+  const [projectArray,setProjectArray] = useState([])
   const projectsQuery = useQuery(['projects'], getAllProjects, {
     enabled: false,
   })
 
+  const dateFormat = 'YYYY-MM-DD';
   const handleCancel = () => {
     setZeroHourMinutes(false)
     form.resetFields()
@@ -49,11 +56,11 @@ function LogtimeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      if(!parseInt(values?.hours)  && !parseInt(values?.minutes)){
-        setZeroHourMinutes(true);
-        return;
-      }else {
-        setZeroHourMinutes(false);
+      if (!parseInt(values?.hours) && !parseInt(values?.minutes)) {
+        setZeroHourMinutes(true)
+        return
+      } else {
+        setZeroHourMinutes(false)
       }
       onSubmit(
         isEditMode
@@ -63,15 +70,45 @@ function LogtimeModal({
     })
   }
 
+  const  handleSearch = async(projectName)=>{
+    if(!projectName){
+       setProjectArray([])
+      return
+    }
+    else {
+      setSearchValue(projectName)
+      const projects = await getAllProjects({project:projectName})
+      setProjectArray(projects?.data?.data?.data)
+    }
+    //else fetch projects from api 
+
+  }
+
+  const optimizedFn = useCallback(debounce(handleSearch,100),[])
+
+
   useEffect(() => {
     if (toggle) {
       setTypes(logTypes.data?.data?.data)
-      projectsQuery.refetch()
+     // projectsQuery.refetch()
       form.setFieldsValue({
         hours: '0',
         minutes: '0',
       })
       if (isEditMode) {
+      if(initialValues?.project?._id && isUserLogtime){
+        getProject(initialValues?.project?._id).then((data)=>{
+          if(data?.data?.status==='success'){
+             let projectInfo = data?.data?.data?.data
+              setProjectArray(projectInfo)
+          }
+          else{
+            notification({message:'Project Cannot be Imported'})
+          }
+        })
+      }
+
+        
         form.setFieldsValue(
           isUserLogtime
             ? {
@@ -92,6 +129,8 @@ function LogtimeModal({
                 remarks: initialValues?.remarks,
               }
         )
+      }else{
+        form.setFieldValue('logDate',moment())
       }
     }
 
@@ -130,10 +169,15 @@ function LogtimeModal({
             <DatePicker
               className=" gx-w-100"
               placeholder="Select Date"
-              disabledDate={(current) =>
-                (current &&
-                  current < moment().subtract(1, 'days').startOf('day')) ||
-                current > moment().endOf('day')
+              format={dateFormat}
+              disabledDate={
+                LOG_TIME_OLD_EDIT.includes(role)
+                  ? false
+                  : (current) =>
+                      (current &&
+                        current <
+                          moment().subtract(1, 'days').startOf('day')) ||
+                      current > moment().endOf('day')
               }
             />
           </FormItem>
@@ -146,8 +190,8 @@ function LogtimeModal({
               {
                 validator: async (rule, value) => {
                   try {
-                    if(form.getFieldValue('minutes') && !value) return 
-            
+                    if (form.getFieldValue('minutes') && !value) return
+
                     if (value < 0) {
                       throw new Error('Log Hours cannot be below 0.')
                     }
@@ -155,7 +199,7 @@ function LogtimeModal({
                     if (value > 9) {
                       throw new Error('Log Hours cannot exceed 9')
                     }
-                    if(value - Math.floor(value) !== 0){
+                    if (value - Math.floor(value) !== 0) {
                       throw new Error('Log Hours cannot contain decimal value')
                     }
                   } catch (err) {
@@ -175,9 +219,9 @@ function LogtimeModal({
             rules={[
               {
                 validator: async (rule, val) => {
-                  let value = val+''
+                  let value = val + ''
                   try {
-                    if(form.getFieldValue('hours') && !parseInt(value)) return
+                    if (form.getFieldValue('hours') && !parseInt(value)) return
 
                     if (
                       value !== '0' &&
@@ -231,27 +275,41 @@ function LogtimeModal({
               name="project"
               rules={[{required: true, message: 'Required!'}]}
             >
-              <Select
+               <Select
                 showSearch
+                suffixIcon={<SearchOutlined />}
                 filterOption={filterOptions}
-                placeholder="Select Project"
-                onSearch={(e) => {
-                  setSearchValue(e)
-                }}
+                placeholder="Search Project"
+                onSearch={optimizedFn}
+                value={project}
+                allowClear
+                onChange={e=>setProject(e)}
                 open={searchValue.length ? true : false}
                 onSelect={() => {
                   setSearchValue('')
                 }}
+                onBlur={(e)=>setSearchValue('')}
               >
-                {[
+                {/* {[
                   ...(projectsQuery?.data?.data?.data?.data || []),
                   {_id: process.env.REACT_APP_OTHER_PROJECT_ID, name: 'Other'},
                 ].map((project) => (
                   <Option value={project._id} key={project._id}>
                     {project.name}
                   </Option>
+                ))} */}
+
+
+              {[
+                  ...(projectArray || []),
+                  {_id: process.env.REACT_APP_OTHER_PROJECT_ID, name: 'Other'},
+                ].map((project) => (
+                  <Option value={project._id} key={project._id}>
+                    {project.name}
+                  </Option>
                 ))}
-              </Select>
+              </Select> 
+
             </FormItem>
           )}
 
@@ -278,9 +336,13 @@ function LogtimeModal({
               },
             ]}
           >
-            <TextArea placeholder="Enter Remarks" rows={6}/>
+            <TextArea placeholder="Enter Remarks" rows={6} />
           </FormItem>
-          {zeroHourMinutes && <p style={{color:'red'}}>Hours and minutes cannot be 0 simultaneously.</p> }
+          {zeroHourMinutes && (
+            <p className='suggestion-text'>
+              Hours and minutes cannot be 0 simultaneously.
+            </p>
+          )}
         </Form>
       </Spin>
     </Modal>

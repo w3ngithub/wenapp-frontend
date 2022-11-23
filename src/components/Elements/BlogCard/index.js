@@ -1,14 +1,23 @@
 import React, {useEffect, useState} from 'react'
-import {Button, Col, Popconfirm, Row, Tag} from 'antd'
+import { Popconfirm, Tag} from 'antd'
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons'
 import moment from 'moment'
 import parse from 'html-react-parser'
 
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 
 const BlogItem = ({blog, grid, removeBlog, access}) => {
   const {title, content, createdBy, createdAt, blogCategories, _id, slug} = blog
-  const imgSrc = content?.split('src=')[1]?.split(' ')[0]?.replace(`"`, '')
+
+  const navigate = useNavigate();
+  // var regexp = /<img([\w\W]+?)>/g
+  // const text = content.match(regexp)
+
+  // const imgageBlog = text?.filter((img) =>
+  //   img?.includes(`alt=\"undefined\"`)
+  // )[0]
+  // const imgSrc = imgageBlog?.split('src=')[1]?.split(' ')[0]?.replace(`"`, '')
+
   const [parsedContent, setParsedContent] = useState(
     parse(content.substring(0, 400))
   )
@@ -54,17 +63,17 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
         grid ? 'gx-product-vertical' : 'gx-product-horizontal'
       }`}
     >
-      {imgSrc && (
-        <div className="gx-product-image">
+      {/* {imgSrc && (
+        <div className="gx-product-image" >
           <div className="gx-grid-thumb-equal">
             <span className="gx-link gx-grid-thumb-cover">
-              <img alt="blogPicture" src={imgSrc} width={300} height={200} />
+              <img alt="blogPicture" src={imgSrc} width={300} height={200} onClick={() => navigate(`${_id}-${slug}`)}/>
             </span>
           </div>
         </div>
-      )}
+      )} */}
       <div className="gx-product-body">
-        <h3 className="gx-product-title">{title}</h3>
+        <h3 className="gx-product-title clickable-title" onClick={() => navigate(`${_id}-${slug}`)} >{title}</h3>
         <div className="ant-row-flex">
           <small className="gx-text-grey">
             <EditOutlined />
@@ -83,7 +92,7 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
           {filteredContent}...<Link to={`${_id}-${slug}`}> Read More</Link>
         </p>
       </div>
-      <div className="gx-footer">
+      <div className="gx-footer gx-d-flex gx-justify-content-end ">
         {access && (
           <Popconfirm
             title="Are you sure to delete this Blog?"
@@ -91,9 +100,7 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
             okText="Yes"
             cancelText="No"
           >
-            <button type="button" className="ant-btn ant-btn-danger">
-              <DeleteOutlined />
-            </button>
+              <DeleteOutlined style={{color:'red', marginRight:'0.5rem', marginBottom:'0.5rem'}}/>
           </Popconfirm>
         )}
       </div>

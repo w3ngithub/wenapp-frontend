@@ -15,6 +15,7 @@ import moment from 'moment'
 import {useEffect} from 'react'
 import {filterOptions} from 'helpers/utils'
 import {getNoticeTypes} from 'services/noticeboard'
+import { disabledBeforeToday } from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -42,11 +43,10 @@ function NoticeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      console.log(values);
       onSubmit(values)
     })
   }
-  const dateFormat = 'YYYY/MM/DD';
+  const dateFormat = 'YYYY/MM/DD'
 
   useEffect(() => {
     if (toggle) {
@@ -55,7 +55,7 @@ function NoticeModal({
         form.setFieldsValue({
           title: initialValues?.title,
           details: initialValues?.details,
-          noticeType: initialValues?.noticeType?._id,
+          noticeType: initialValues?.categoryId,
           startDate: initialValues?.startDate
             ? moment(initialValues?.startDate)
             : null,
@@ -107,7 +107,23 @@ function NoticeModal({
                 label="Title"
                 hasFeedback={readOnly ? false : true}
                 name="title"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Title is required.')
+                        }
+                        if(value?.trim() === ''){
+                          throw new Error('Please enter a valid title.')
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <Input placeholder="Enter Title" disabled={readOnly} />
               </FormItem>
@@ -118,7 +134,23 @@ function NoticeModal({
                 label="Category"
                 hasFeedback={readOnly ? false : true}
                 name="noticeType"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Category is required.')
+                        }
+                        if(value?.trim() === ''){
+                          throw new Error('Please enter a valid category.')
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <Select
                   showSearch
@@ -142,28 +174,34 @@ function NoticeModal({
                 label="Start Date"
                 hasFeedback={readOnly ? false : true}
                 name="startDate"
-                
-                rules={[ 
-                  {required: true, message: 'Required!'},
+                rules={[
+                  {required: true, message: 'Start Date is required.'},
 
-                  ({ getFieldValue }) => ({
+                  ({getFieldValue}) => ({
                     validator(_, value) {
-                      if(!value){
-                      return Promise.resolve()
+                      if (!value) {
+                        return Promise.resolve()
                       }
-            
-                      if (!value.isSameOrBefore(getFieldValue('endDate')) && getFieldValue('endDate')) {
-                        return Promise.reject(new Error('The Start Date should be before End Time')); 
+                      if (
+                        !value.isSameOrBefore(getFieldValue('endDate')) &&
+                        getFieldValue('endDate')
+                      ) {
+                        return Promise.reject(
+                          new Error('Start Date should be before End Time')
+                        )
                       }
 
                       return Promise.resolve()
-                      
                     },
                   }),
                 ]}
-
               >
-                <DatePicker className=" gx-w-100" disabled={readOnly} format={dateFormat}/>
+                <DatePicker
+                  className=" gx-w-100"
+                  disabled={readOnly}
+                  format={dateFormat}
+                  disabledDate={disabledBeforeToday}
+                />
               </FormItem>
             </Col>
             <Col span={24} sm={12}>
@@ -171,25 +209,33 @@ function NoticeModal({
                 label="End Date"
                 hasFeedback={readOnly ? false : true}
                 name="endDate"
-
-                rules={[ 
-                  {required: true, message: 'Required!'},
-                  ({ getFieldValue }) => ({
+                rules={[
+                  {required: true, message: 'End Date is required.'},
+                  ({getFieldValue}) => ({
                     validator(_, value) {
-                      if(!value){
+                      if (!value) {
                         return Promise.resolve()
                       }
 
-                     if(value.isBefore(getFieldValue('startDate')) && getFieldValue('startDate')){
-                      return Promise.reject(new Error('End Date should not be before Start Date'))
-                     }
-                     return Promise.resolve()
-
+                      if (
+                        value.isBefore(getFieldValue('startDate')) &&
+                        getFieldValue('startDate')
+                      ) {
+                        return Promise.reject(
+                          new Error('End Date should be after Start Date')
+                        )
+                      }
+                      return Promise.resolve()
                     },
                   }),
                 ]}
               >
-                <DatePicker className=" gx-w-100" disabled={readOnly}  format={dateFormat}/>
+                <DatePicker
+                  className=" gx-w-100"
+                  disabled={readOnly}
+                  format={dateFormat}
+                  disabledDate={disabledBeforeToday}
+                />
               </FormItem>
             </Col>
           </Row>
@@ -199,33 +245,36 @@ function NoticeModal({
                 label="Start Time"
                 hasFeedback={readOnly ? false : true}
                 name="startTime"
+                rules={[
+                  ({getFieldValue}) => {
+                    let sameDate =
+                      moment(getFieldValue('startDate')).format(dateFormat) ===
+                      moment(getFieldValue('endDate')).format(dateFormat)
+                    return {
+                      validator(_, value) {
+                        if (!value && !getFieldValue('endTime')) {
+                          return Promise.resolve()
+                        }
 
-                rules={[ 
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
+                        if (sameDate && value && getFieldValue('endTime')) {
+                          if (!value.isBefore(getFieldValue('endTime'))) {
+                            return Promise.reject(
+                              new Error('End Time should not exceed Start Time')
+                            )
+                          }
+                        }
 
+                        if (!value && getFieldValue('endTime')) {
+                          return Promise.reject(
+                            new Error('Only End Time is not allowed')
+                          )
+                        }
 
-                     if(!value && !getFieldValue('endTime')){
-                      return Promise.resolve()
-                     }
-
-                     if(getFieldValue('startDate').isSame(getFieldValue('endDate')) && value && getFieldValue('endTime')){
-                      if(!value.isBefore(getFieldValue('endTime'))){
-                        return Promise.reject(new Error('End Time should not exceed Start Time'))
-                      }
-                     }
-
-
-                     if(!value && getFieldValue('endTime')){
-                      return Promise.reject(new Error('Only End Time is not allowed'))
-                     }
-
-                     return Promise.resolve()
-
-                    },
-                  }),
+                        return Promise.resolve()
+                      },
+                    }
+                  },
                 ]}
-
               >
                 <TimePicker className=" gx-w-100" disabled={readOnly} />
               </FormItem>
@@ -235,29 +284,36 @@ function NoticeModal({
                 label="End Time"
                 hasFeedback={readOnly ? false : true}
                 name="endTime"
+                rules={[
+                  ({getFieldValue}) => {
+                    let sameDate =
+                      moment(getFieldValue('startDate')).format(dateFormat) ===
+                      moment(getFieldValue('endDate')).format(dateFormat)
 
-                rules={[ 
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if(!value && !getFieldValue('startTime')){
+                    return {
+                      validator(_, value) {
+                        if (!value && !getFieldValue('startTime')) {
+                          return Promise.resolve()
+                        }
+
+                        if (sameDate && value && getFieldValue('startTime')) {
+                          if (value.isBefore(getFieldValue('startTime'))) {
+                            return Promise.reject(
+                              new Error('End Time should not exceed Start Time')
+                            )
+                          }
+                        }
+                        if (getFieldValue('startTime') && !value) {
+                          return Promise.reject(
+                            new Error('Only Start Time is not allowed')
+                          )
+                        }
+
                         return Promise.resolve()
-                       }
-
-                     if(getFieldValue('startDate').isSame(getFieldValue('endDate')) && value && getFieldValue('startTime')){
-                      if(value.isBefore(getFieldValue('startTime'))){
-                        return Promise.reject(new Error('End Time should not exceed Start Time'))
-                      }
-                     }
-                    if(getFieldValue('startTime') && !value){
-                      return Promise.reject(new Error('Only Start Time is not allowed'))
+                      },
                     }
-
-                     return Promise.resolve()
-
-                    },
-                  }),
+                  },
                 ]}
-
               >
                 <TimePicker className=" gx-w-100" disabled={readOnly} />
               </FormItem>
@@ -270,10 +326,23 @@ function NoticeModal({
                 hasFeedback={readOnly ? false : true}
                 name="details"
                 rules={[
-                  {required: true, message: 'Required!'},
                   {
-                    min: 10,
-                    message: 'Must be equal to or greater than 10 characters',
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Some detail is required.')
+                        }
+                        if(value?.trim() === ''){
+                          throw new Error('Please enter valid details.')
+                        }
+                        if(value?.trim()?.length < 10){
+                          throw new Error('Detail must at least consist 10 characters.')
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
                   },
                 ]}
               >

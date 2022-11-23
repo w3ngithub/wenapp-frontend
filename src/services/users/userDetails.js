@@ -24,19 +24,28 @@ const logoutUser = async () => {
 
 const getAllUsers = async ({
   page = '',
-  sort = '',
+  sort = 'name',
   limit = '',
   fields = '',
   name = '',
   role = '',
   position = '',
   positionType = '',
-  active = '',
+  active = 'true',
 }) => {
   try {
     let response = await API.get(
       `${Apis.Users}?search=${name}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&role=${role}&position=${position}&positionType=${positionType}&active=${active}`
     )
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err?.response)
+  }
+}
+
+export const getBlogAuthors = async () => {
+  try {
+    let response = await API.get(`${Apis.Blog}/blog-authors`)
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)

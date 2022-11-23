@@ -7,6 +7,7 @@ import LiveTime from '../LiveTime/index'
 import {
   checkIfTimeISBetweenOfficeHour,
   handleResponse,
+  isNotValidTimeZone,
   sortFromDate,
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
@@ -24,6 +25,7 @@ function PunchInOut() {
   const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
 
   const [toogle, setToogle] = useState(false)
+  const [disableButton, setdisableButton] = useState(false)
   const queryClient = useQueryClient()
   const dispatch: Dispatch<any> = useDispatch()
   const reduxuserAttendance = useSelector((state: any) => state.attendance)
@@ -85,10 +87,35 @@ function PunchInOut() {
   )
 
   const handlePunch = async () => {
-    if (checkIfTimeISBetweenOfficeHour()) {
+    let latestPunchInTime =
+      latestAttendance?.[latestAttendance.length - 1]?.punchInTime
+    if (
+      latestPunchInTime &&
+      moment() < moment(latestPunchInTime).add(10, 'm')
+    ) {
+      notification({
+        message: 'You have just Punched In !',
+        type: 'info',
+      })
+      return
+    }
+    if (isNotValidTimeZone()) {
+      notification({
+        message: 'Your timezone is not a valid timezone',
+        type: 'error',
+      })
+      return
+    }
+
+    if (
+      checkIfTimeISBetweenOfficeHour(
+        moment(user?.officeTime?.utcDate).add(10, 'm').format('h:mm:ss')
+      )
+    ) {
       setToogle(true)
       return
     }
+    setdisableButton(true)
     const location = await getLocation()
     if (await checkLocationPermission()) {
       if (!punchIn) {
@@ -109,6 +136,7 @@ function PunchInOut() {
         addAttendances.mutate({
           punchInTime: moment.utc().format(),
           punchInLocation: location,
+          attendanceDate: moment.utc().startOf('day').format(),
         })
       }
     } else {
@@ -117,6 +145,7 @@ function PunchInOut() {
         type: 'error',
       })
     }
+    setdisableButton(false)
   }
 
   return (
@@ -145,7 +174,8 @@ function PunchInOut() {
         disabled={
           addAttendances.isLoading ||
           punchOutAttendances.isLoading ||
-          latestAttendance?.length === 0
+          latestAttendance?.length === 0 ||
+          disableButton
         }
         style={{width: '200px'}}
       >

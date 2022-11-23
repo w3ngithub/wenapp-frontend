@@ -20,6 +20,8 @@ function Blog() {
   const [openModal, setOpenModal] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState<any>({})
+  const [arrayDataToSend, setArrayDataToSend] = useState<any>([])
+  const [duplicateValue, setDuplicateValue] = useState<boolean>(false)
   const {data: blogCategories, isLoading}: any = useQuery(
     ['blogCategories'],
     getBlogCategories
@@ -81,12 +83,10 @@ function Blog() {
   })
 
   const handleAddClick = (input: string) => {
-    input = capitalizeInput(input)
     addBlogCategoryMutation.mutate({name: input})
   }
 
   const handleEditClick = (input: any) => {
-    input = capitalizeInput(input)
     editBlogCategoryMutation.mutate({id: dataToEdit?._id, name: input})
   }
 
@@ -94,23 +94,23 @@ function Blog() {
     deleteBlogCategoryMutation.mutate({id: data._id})
   }
 
-  const handleOpenEditModal = (data: any, type: string) => {
+  const handleOpenEditModal = (data: any, type: string, currentData: any) => {
     setType(type)
-
     setIsEditMode(true)
     setOpenModal(true)
     setDataToEdit(data)
+    setArrayDataToSend(currentData)
   }
 
   const handleCloseModal = () => {
     setIsEditMode(false)
-
+    setDuplicateValue(false)
     setDataToEdit({})
     setOpenModal(false)
   }
-  const handleOpenModal = (type: string) => {
+  const handleOpenModal = (type: string, data: any) => {
     setType(type)
-
+    setArrayDataToSend(data)
     setOpenModal(true)
   }
 
@@ -118,7 +118,10 @@ function Blog() {
     <>
       <CommonModal
         toggle={openModal}
+        duplicateValue={duplicateValue}
+        setDuplicateValue={setDuplicateValue}
         type={type}
+        currentData={arrayDataToSend}
         isEditMode={isEditMode}
         editData={dataToEdit}
         isLoading={
@@ -133,7 +136,7 @@ function Blog() {
         extra={
           <Button
             className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-            onClick={() => handleOpenModal('Category')}
+            onClick={() => handleOpenModal('Category', blogCategories)}
           >
             Add
           </Button>
@@ -143,9 +146,9 @@ function Blog() {
           data={blogCategories?.data?.data?.data}
           columns={POSITION_COLUMN(
             (value) => handleDeleteClick(value, 'Category'),
-            (value) => handleOpenEditModal(value, 'Category')
+            (value) => handleOpenEditModal(value, 'Category', blogCategories)
           )}
-          onAddClick={() => handleOpenModal('Category')}
+          onAddClick={() => handleOpenModal('Category', blogCategories)}
           isLoading={isLoading || deleteBlogCategoryMutation.isLoading}
         />
       </Card>

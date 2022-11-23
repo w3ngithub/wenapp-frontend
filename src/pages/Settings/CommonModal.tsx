@@ -4,8 +4,11 @@ import React, {useEffect} from 'react'
 interface modalInterface {
   isEditMode: boolean
   toggle: boolean
+  currentData: any
+  duplicateValue: boolean,
+  setDuplicateValue:(a:boolean)=>void
   onSubmit: (name: string) => void
-  onCancel: React.MouseEventHandler<HTMLElement>
+  onCancel: (setDuplicateValue: any) => void
   type: string
   isLoading: boolean
   editData: any
@@ -19,15 +22,32 @@ const layout = {
 function CommonModal({
   isEditMode,
   toggle,
+  currentData,
   onSubmit,
+  setDuplicateValue,
+  duplicateValue,
   onCancel,
   type,
   isLoading,
   editData,
 }: modalInterface) {
   const [form] = Form.useForm()
-
   const handleSubmit = () => {
+    form.validateFields();
+    let availableData
+    if (currentData?.hasOwnProperty('data')) {
+      availableData = currentData?.data?.data?.data?.map(
+        (item: {id: any; name: any}) => item?.name?.toLowerCase()
+      )
+    } else {
+      availableData = currentData.map((item: {id: any; name: any}) =>
+        item?.name?.toLowerCase()
+      )
+    }
+    if (availableData?.includes(form.getFieldValue('name').toLowerCase())) {
+      setDuplicateValue(true)
+      return
+    }
     form.validateFields().then((values) => onSubmit(form.getFieldValue('name')))
   }
 
@@ -43,9 +63,9 @@ function CommonModal({
       visible={toggle}
       onOk={handleSubmit}
       mask={false}
-      onCancel={onCancel}
+      onCancel={() => onCancel(setDuplicateValue)}
       footer={[
-        <Button key="back" onClick={onCancel}>
+        <Button key="back" onClick={() => onCancel(setDuplicateValue)}>
           Cancel
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
@@ -58,7 +78,23 @@ function CommonModal({
           <Form.Item
             name="name"
             label={type}
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[
+              {
+                required: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error(`${type} is required.`)
+                    }
+                    if(value?.trim() === ''){
+                      throw new Error(`Please enter a valid ${type}.`)
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
           >
             <Input
               // value={input}
@@ -66,6 +102,9 @@ function CommonModal({
               // onChange={handleInputChange}
             />
           </Form.Item>
+          {duplicateValue && (
+            <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>
+          )}
         </Form>
       </Spin>
     </Modal>

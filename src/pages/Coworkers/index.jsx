@@ -28,6 +28,7 @@ import {
   CO_WORKERS_SEARCH_IMPORT_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -45,10 +46,10 @@ const formattedUsers = (users, isAdmin) => {
 function CoworkersPage() {
   // init hooks
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState({page: 1, limit: 20})
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
-  const [activeUser, setActiveUser] = useState('')
-  const [defaultUser, setDefaultUser] = useState('')
+  const [activeUser, setActiveUser] = useState(true)
+  const [defaultUser, setDefaultUser] = useState('active')
   const [position, setPosition] = useState(undefined)
   const [role, setRole] = useState(undefined)
   const [name, setName] = useState('')
@@ -71,7 +72,7 @@ function CoworkersPage() {
     getUserPositionTypes
   )
   const {data, isLoading, isFetching, isError, refetch} = useQuery(
-    ['users', page, activeUser, role, position, name,sort],
+    ['users', page, activeUser, role, position, name, sort],
     () =>
       getAllUsers({
         ...page,
@@ -81,10 +82,10 @@ function CoworkersPage() {
         name,
         sort:
           sort.order === undefined || sort.column === undefined
-            ? ''
+            ? 'name'
             : sort.order === 'ascend'
             ? sort.field
-            : `-${sort.field}`
+            : `-${sort.field}`,
       }),
     {
       keepPreviousData: true,
@@ -94,9 +95,9 @@ function CoworkersPage() {
     select: (res) => {
       const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
         (quarter) =>
-          new Date(quarter[1].fromDate) <
+          new Date(quarter[1].fromDate) <=
             new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
-          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <
+          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
             new Date(quarter[1].toDate)
       )
 
@@ -230,13 +231,11 @@ function CoworkersPage() {
   }
 
   const handleResetAllocatedLeaves = () => {
-    resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data.name})
+    resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
   }
-
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
-
   if (isLoading) {
     return <CircularProgress />
   }
@@ -390,6 +389,7 @@ function CoworkersPage() {
           </div>
         </AccessWrapper>
         <Table
+        locale={{emptyText}}
           className="gx-table-responsive"
           columns={CO_WORKERCOLUMNS(
             sort,
@@ -410,7 +410,7 @@ function CoworkersPage() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['5', '10', '20', '50'],
+            pageSizeOptions: ['20', '50', '80'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,

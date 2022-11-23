@@ -51,7 +51,8 @@ function Coworkers() {
   const [openModal, setOpenModal] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState<any>({})
-  const [sendingInvitation, setSendingInvitation] = useState(false);
+  const [arrayDataToSend, setArrayDataToSend] = useState<any>([])
+  const [duplicateValue, setDuplicateValue] = useState<boolean>(false)
 
   const handleUserInviteSuccess = () => {
     form.resetFields()
@@ -83,7 +84,7 @@ function Coworkers() {
       ),
   })
 
-  const inviteUserMutation = useMutation(inviteUsers,{
+  const inviteUserMutation = useMutation(inviteUsers, {
     onSuccess: (response) =>
       handleResponse(
         response,
@@ -128,7 +129,7 @@ function Coworkers() {
   })
 
   const addPositionTypeMutation = useMutation(addPositionTypes, {
-    onSuccess: (response) =>
+    onSuccess: (response) => {
       handleResponse(
         response,
         'Position type added successfully',
@@ -137,7 +138,8 @@ function Coworkers() {
           handleCloseModal,
           () => queryClient.invalidateQueries(['positionTypes']),
         ]
-      ),
+      )
+    },
     onError: (error) => {
       notification({
         message: 'Position type add failed!',
@@ -247,19 +249,16 @@ function Coworkers() {
   }
 
   const handleAddClick = (input: string) => {
-    input = capitalizeInput(input)
-
     if (type === types.POSITION) addPositionMutation.mutate({name: input})
 
     if (type === types.POSITION_TYPE)
       addPositionTypeMutation.mutate({name: input})
 
     if (type === types.ROLE)
-      addRoleMutation.mutate({value: input, key: input.toLowerCase()})
+      addRoleMutation.mutate({value: input,key: input.toLowerCase()})
   }
 
   const handleEditClick = (input: any) => {
-    input = capitalizeInput(input)
     if (type === types.POSITION)
       editPositionMutation.mutate({id: dataToEdit?._id, name: input})
 
@@ -282,22 +281,24 @@ function Coworkers() {
     if (type === types.ROLE) deleteRoleMutation.mutate({id: data._id})
   }
 
-  const handleOpenEditModal = (data: any, type: string) => {
+  const handleOpenEditModal = (data: any, type: string, currentData: any) => {
     setIsEditMode(true)
     setType(type)
     setOpenModal(true)
     setDataToEdit(data)
+    setArrayDataToSend(currentData)
   }
 
   const handleCloseModal = () => {
     setIsEditMode(false)
-
+    setDuplicateValue(false)
     setDataToEdit({})
     setOpenModal(false)
   }
-  const handleOpenModal = (type: string) => {
+  const handleOpenModal = (type: string, data: any) => {
     setOpenModal(true)
     setType(type)
+    setArrayDataToSend(data)
   }
 
   const handleInviteSubmit = () => {
@@ -309,6 +310,9 @@ function Coworkers() {
       <CommonModal
         toggle={openModal}
         type={type}
+        duplicateValue={duplicateValue}
+        setDuplicateValue={setDuplicateValue}
+        currentData={arrayDataToSend}
         isEditMode={isEditMode}
         editData={dataToEdit}
         isLoading={
@@ -341,7 +345,7 @@ function Coworkers() {
                         required: true,
                         validator: async (rule, value) => {
                           try {
-                            if (!value) throw new Error('Required!')
+                            if (!value) throw new Error('Email is required.')
                             value.split(',').forEach((item: any) => {
                               if (!emailRegex.test(item.trim())) {
                                 throw new Error('Please enter a valid email.')
@@ -366,8 +370,8 @@ function Coworkers() {
                     />
                   </Form.Item>
                 </div>
-                { inviteUserMutation?.isLoading ? (
-                    <Spin style={{marginTop:'2rem'}}/>
+                {inviteUserMutation?.isLoading ? (
+                  <Spin style={{marginTop: '2rem'}} />
                 ) : (
                   <Form.Item>
                     <Button
@@ -410,7 +414,7 @@ function Coworkers() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white "
-                onClick={() => handleOpenModal('Position')}
+                onClick={() => handleOpenModal('Position', positions)}
               >
                 Add
               </Button>
@@ -420,9 +424,9 @@ function Coworkers() {
               data={positions?.data?.data?.data}
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.POSITION),
-                (value) => handleOpenEditModal(value, types.POSITION)
+                (value) => handleOpenEditModal(value, types.POSITION, positions)
               )}
-              onAddClick={() => handleOpenModal(types.POSITION)}
+              onAddClick={() => handleOpenModal(types.POSITION, positions)}
               isLoading={
                 isLoading ||
                 isPositionsFetching ||
@@ -439,7 +443,7 @@ function Coworkers() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white settings-add"
-                onClick={() => handleOpenModal('Position Type')}
+                onClick={() => handleOpenModal('Position Type', positionTypes)}
               >
                 Add
               </Button>
@@ -449,14 +453,15 @@ function Coworkers() {
               data={positionTypes?.data?.data?.data}
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.POSITION_TYPE),
-                (value) => handleOpenEditModal(value, types.POSITION_TYPE)
+                (value) =>
+                  handleOpenEditModal(value, types.POSITION_TYPE, positionTypes)
               )}
               isLoading={
                 isLoading ||
                 isPositionTypesFetching ||
                 deletePositionTypeMutation.isLoading
               }
-              onAddClick={() => handleOpenModal('Position Type')}
+              onAddClick={() => handleOpenModal('Position Type', positionTypes)}
             />
           </Card>
         </Col>
@@ -466,7 +471,7 @@ function Coworkers() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white settings-add"
-                onClick={() => handleOpenModal('Role')}
+                onClick={() => handleOpenModal('Role', roles)}
               >
                 Add
               </Button>
@@ -476,10 +481,10 @@ function Coworkers() {
               data={roles}
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.ROLE),
-                (value) => handleOpenEditModal(value, types.ROLE)
+                (value) => handleOpenEditModal(value, types.ROLE, roles)
               )}
               isLoading={deleteRoleMutation.isLoading || isLoading}
-              onAddClick={() => handleOpenModal('Role')}
+              onAddClick={() => handleOpenModal('Role', roles)}
             />
           </Card>
         </Col>

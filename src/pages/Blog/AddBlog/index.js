@@ -113,7 +113,6 @@ function AddBlog() {
         blocksFromHTML.contentBlocks,
         blocksFromHTML.entityMap
       )
-
       const initialState = blocksFromHTML
         ? EditorState.createWithContent(state)
         : EditorState.createEmpty()
@@ -235,12 +234,32 @@ function AddBlog() {
             <Form.Item
               name="title"
               label="Title"
-              rules={[{required: true, message: 'Title is Required!'}]}
+              rules={[
+                {
+                  required: true,
+                  validator: async (rule, value) => {
+                    try {
+                      if (!value) {
+                        throw new Error(`Title is required.`)
+                      }
+                      if(value?.trim() === ''){
+                        throw new Error(`Please enter a valid title.`)
+                      }
+                    } catch (err) {
+                      throw new Error(err.message)
+                    }
+                  },
+                },
+              ]}
               hasFeedback
             >
               <Input />
             </Form.Item>
-            <Form.Item name="content" label="Content">
+
+            <Form.Item
+              name="content"
+              label="Content"
+            >
               <>
                 <Button
                   type="primary"
@@ -263,6 +282,7 @@ function AddBlog() {
                     background: darkMode ? '#434f5a' : 'white',
                     color: darkMode ? '#e0e0e0' : 'black',
                   }}
+                  handlePastedText={() => false}
                   editorState={editorState}
                   wrapperClassName="demo-wrapper"
                   onEditorStateChange={onEditorStateChange}
@@ -274,7 +294,7 @@ function AddBlog() {
               <Select
                 showSearch
                 filterOption={filterOptions}
-                placeholder="Select Tags"
+                placeholder="Select Categories"
                 mode="multiple"
                 size="large"
               >

@@ -24,8 +24,9 @@ import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
 import {createLeaveOfUser, getLeaveTypes} from 'services/leaves'
 import {notification} from 'helpers/notification'
-import {LATE_ARRIVAL, LATE_LEAVE_TYPE_ID} from 'constants/Leaves'
+import {CASUAL_LEAVE, LATE_ARRIVAL, LATE_LEAVE_TYPE_ID} from 'constants/Leaves'
 import RangePicker from 'components/Elements/RangePicker'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const FormItem = Form.Item
 
@@ -59,7 +60,7 @@ function LateAttendance({userRole}: {userRole: string}) {
   let recordRef: any = {}
 
   const {data: users} = useQuery(['userForAttendances'], () =>
-    getAllUsers({fields: 'name'})
+    getAllUsers({fields: 'name', active: 'true', sort: 'name'})
   )
 
   const {data: leaveTypes} = useQuery(['leaveTypes'], getLeaveTypes)
@@ -107,7 +108,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         }
         handleResponse(
           response,
-          'Leave Cut Successfull',
+          'Leave Cut Successful',
           'Leave creation failed',
           [() => queryClient.invalidateQueries(['lateAttendaceAttendance'])]
         )
@@ -160,9 +161,7 @@ function LateAttendance({userRole}: {userRole: string}) {
     leaveMutation.mutate({
       id: record._id.userId,
       data: {
-        leaveDates: [
-          moment(record.data.at(-1).attendanceDate).startOf('day').format(),
-        ],
+        leaveDates: [record.data.at(-1).attendanceDate],
         reason: 'Leave cut due to late attendance',
         leaveType:
           leaveTypes?.data?.data?.data?.find(
@@ -300,6 +299,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         </div>
       </div>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={LATE_ATTENDANCE_COLUMNS(sort, handleCutLeave, userRole)}
         dataSource={formattedAttendances(formattedAttendaces)}

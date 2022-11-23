@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState,useCallback} from 'react'
 import {ReactComponent as LeaveIcon} from 'assets/images/Leave.svg'
 import {Button, Card, Col, Form, Row, Spin} from 'antd'
 import Auxiliary from 'util/Auxiliary'
@@ -47,7 +47,7 @@ import {
   DASHBOARD_PROJECT_LOG_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {LEAVES_TYPES} from 'constants/Leaves'
-
+import { debounce } from 'helpers/utils'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -60,6 +60,7 @@ const Dashboard = () => {
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
+  const [projectArray,setProjectArray] = useState([])
   const navigate = useNavigate()
   const loggedInUser = getLocalStorageData(LOCALSTORAGE_USER)
   const {innerWidth} = useWindowsSize()
@@ -110,6 +111,22 @@ const Dashboard = () => {
     () => getTimeLogChart({project, logType}),
     {enabled: false, refetchOnWindowFocus: false}
   )
+
+
+  const  handleSearch = async(projectName:any)=>{
+    if(!projectName){
+       setProjectArray([])
+      return
+    }
+    else {
+      const projects = await getAllProjects({project:projectName})
+      setProjectArray(projects?.data?.data?.data)
+    }
+    //else fetch projects from api 
+
+  }
+
+  const optimizedFn = useCallback(debounce(handleSearch,100),[])
 
   const leavesQuery = useQuery(
     ['DashBoardleaves'],
@@ -278,13 +295,29 @@ const Dashboard = () => {
       )
     if (props.event.type === 'holiday')
       return (
-        <p style={{...style, margin: 0, flexWrap: 'wrap'}}>
-          <i className="icon icon-calendar gx-fs-xxl" />
+        <div style={{...style, margin: 0, flexWrap: 'nowrap'}}>
+          <i className="icon icon-calendar gx-fs-md" />
           <p style={{...style}}>{props?.event?.title}</p>
-        </p>
+        </div>
       )
 
-    if (props.event.type === 'leave')
+    if (props.event.type === 'leave') {
+      let specificHalf = ''
+      if (
+        props?.event?.leaveType === 'Maternity' ||
+        props?.event?.leaveType === 'Paternity' ||
+        props?.event?.leaveType === 'Paid Time Off' ||
+        props?.event?.halfDay === ''
+      ) {
+        specificHalf = ''
+      } else {
+        if (props?.event?.halfDay === 'first-half') {
+          specificHalf = '1st'
+        }
+        if (props?.event?.halfDay === 'second-half') {
+          specificHalf = '2nd'
+        }
+      }
       return (
         <div
           style={{
@@ -313,10 +346,12 @@ const Dashboard = () => {
               width="18px"
               fill={darkTheme ? darkThemeTextColor : '#038fde'}
             />
-            {shortName}
+            {`${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`}
+            {/* {`${shortName} ${specificHalf}`} */}
           </p>
         </div>
       )
+    }
 
     if (props.event.type === 'notice') {
       return (
@@ -430,7 +465,7 @@ const Dashboard = () => {
               onClick={
                 loggedInUser?.role?.value !== 'Admin'
                   ? null
-                  : () => navigate('/todays-overview')
+                  : () => navigate('/todays-overview', {state:true})
               }
             />
           </Col>
@@ -518,15 +553,25 @@ const Dashboard = () => {
                   </FormItem>
                   <FormItem name="project" className="direct-form-item">
                     <Select
+                      showSearchIcon={true}
                       value={project}
-                      onChange={(c: any) => setProject(c)}
-                      placeholder="Select Project"
-                      options={data?.data?.data?.data?.map(
+                     onChange={(c:any) => setProject(c)}
+                     handleSearch={optimizedFn}
+                      placeholder="Search Project"
+                      // options={data?.data?.data?.data?.map(
+                      //   (x: {_id: string; name: string}) => ({
+                      //     id: x._id,
+                      //     value: x.name,
+                      //   })
+                      // )}
+
+                        options={(projectArray || [])?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,
                           value: x.name,
                         })
                       )}
+
                       inputSelect
                     />
                   </FormItem>
@@ -572,7 +617,7 @@ const Dashboard = () => {
                       )}
                     </div>
                   ) : (
-                    'No Data'
+                    'No Result Found'
                   )}
                 </div>
               )}

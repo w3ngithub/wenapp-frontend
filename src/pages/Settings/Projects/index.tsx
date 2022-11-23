@@ -38,6 +38,8 @@ function Projects() {
   const [openModal, setOpenModal] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState<any>({})
+  const [duplicateValue, setDuplicateValue] = useState<boolean>(false)
+  const [arrayDataToSend, setArrayDataToSend] = useState<any>([])
 
   const {data: projectTypes}: {data: any} = useQuery(
     ['projectTypes'],
@@ -257,7 +259,6 @@ function Projects() {
   })
 
   const handleAddClick = (input: string) => {
-    input = capitalizeInput(input)
     if (type === types.PROJECT_TYPE)
       addProjectTypeMutation.mutate({name: input})
 
@@ -267,9 +268,7 @@ function Projects() {
     if (type === types.CLIENTS) addClientMutation.mutate({name: input})
   }
 
-  const handleEditClick = (input: any) => {
-    input = capitalizeInput(input)
-  
+  const handleEditClick = (input: any) => {  
     if (type === types.PROJECT_TYPE)
       editProjectTypeMutation.mutate({id: dataToEdit?._id, name: input})
 
@@ -297,28 +296,34 @@ function Projects() {
     // if (type === types.ROLE) deleteRoleMutation.mutate({ id: data._id });
   }
 
-  const handleOpenEditModal = (data: any, type: string) => {
+  const handleOpenEditModal = (data: any, type: string, currentData: any) => {
     setIsEditMode(true)
     setType(type)
     setOpenModal(true)
     setDataToEdit(data)
+    setArrayDataToSend(currentData)
+
   }
 
   const handleCloseModal = () => {
     setIsEditMode(false)
-
+    setDuplicateValue(false)
     setDataToEdit({})
     setOpenModal(false)
   }
-  const handleOpenModal = (type: string) => {
+  const handleOpenModal = (type: string, data:any) => {
     setOpenModal(true)
     setType(type)
+    setArrayDataToSend(data)
   }
   return (
     <>
       <CommonModal
         toggle={openModal}
         type={type}
+        currentData = {arrayDataToSend}
+        duplicateValue={duplicateValue}
+        setDuplicateValue={setDuplicateValue}
         isEditMode={isEditMode}
         editData={dataToEdit}
         isLoading={
@@ -341,7 +346,7 @@ function Projects() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal(types.PROJECT_TYPE)}
+                onClick={() => handleOpenModal(types.PROJECT_TYPE,projectTypes)}
               >
                 Add
               </Button>
@@ -349,10 +354,10 @@ function Projects() {
           >
             <SettingTable
               data={projectTypes?.data?.data?.data}
-              onAddClick={() => handleOpenModal(types.PROJECT_TYPE)}
+              onAddClick={() => handleOpenModal(types.PROJECT_TYPE,projectTypes)}
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.PROJECT_TYPE),
-                (value) => handleOpenEditModal(value, types.PROJECT_TYPE)
+                (value) => handleOpenEditModal(value, types.PROJECT_TYPE, projectTypes)
               )}
               isLoading={isLoading || deleteProjectTypeMutation.isLoading}
             />
@@ -364,7 +369,7 @@ function Projects() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal(types.PROJECT_STATUS)}
+                onClick={() => handleOpenModal(types.PROJECT_STATUS,projectStatuses)}
               >
                 Add
               </Button>
@@ -374,9 +379,9 @@ function Projects() {
               data={projectStatuses?.data?.data?.data}
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.PROJECT_STATUS),
-                (value) => handleOpenEditModal(value, types.PROJECT_STATUS)
+                (value) => handleOpenEditModal(value, types.PROJECT_STATUS, projectStatuses)
               )}
-              onAddClick={() => handleOpenModal(types.PROJECT_STATUS)}
+              onAddClick={() => handleOpenModal(types.PROJECT_STATUS,projectStatuses)}
               isLoading={isLoading || deleteProjectStatusMutation.isLoading}
             />
           </Card>
@@ -389,7 +394,7 @@ function Projects() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal(types.PROJECT_TAG)}
+                onClick={() => handleOpenModal(types.PROJECT_TAG,projectTags)}
               >
                 Add
               </Button>
@@ -399,9 +404,9 @@ function Projects() {
               data={projectTags?.data?.data?.data}
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.PROJECT_TAG),
-                (value) => handleOpenEditModal(value, types.PROJECT_TAG)
+                (value) => handleOpenEditModal(value, types.PROJECT_TAG,projectTags)
               )}
-              onAddClick={() => handleOpenModal(types.PROJECT_TAG)}
+              onAddClick={() => handleOpenModal(types.PROJECT_TAG, projectTags)}
               isLoading={isLoading || deleteProjectTagMutation.isLoading}
             />
           </Card>
@@ -412,7 +417,7 @@ function Projects() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal(types.CLIENTS)}
+                onClick={() => handleOpenModal(types.CLIENTS,clients)}
               >
                 Add
               </Button>
@@ -422,9 +427,9 @@ function Projects() {
               data={clients?.data?.data?.data}
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.CLIENTS),
-                (value) => handleOpenEditModal(value, types.CLIENTS)
+                (value) => handleOpenEditModal(value, types.CLIENTS,clients)
               )}
-              onAddClick={() => handleOpenModal(types.CLIENTS)}
+              onAddClick={() => handleOpenModal(types.CLIENTS,clients)}
               isLoading={isLoading || deleteClientMutation.isLoading}
             />
           </Card>

@@ -1,4 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import {STATUS_TYPES} from 'constants/Leaves'
 import {
   Button,
   Checkbox,
@@ -15,9 +16,10 @@ import {
   filterOptions,
   handleResponse,
   MuiFormatDate,
+  pendingLeaves,
   specifyParticularHalf,
 } from 'helpers/utils'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {
   createLeave,
@@ -36,6 +38,8 @@ import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -49,44 +53,101 @@ function Apply({user}) {
   const {innerWidth} = useWindowsSize()
   const [specificHalf, setSpecificHalf] = useState(false)
   const [halfLeaveApproved, setHalfLeaveApproved] = useState(false)
+  const [halfLeavePending, setHalfLeavePending] = useState(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
+  const [yearStartDate, setYearStartDate] = useState(undefined)
+  const [yearEndDate, setYearEndDate] = useState(undefined)
 
+  const {name, email, gender} =
+    JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)).user || {}
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
 
-  const [fromDate, setFromDate] = useState(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+  const [fromDate, setFromDate] = useState(
+    `${MuiFormatDate(firstDay)}T00:00:00Z`
+  )
   const [toDate, setToDate] = useState(`${MuiFormatDate(lastDay)}T00:00:00Z`)
 
   const monthChangeHandler = (date) => {
     const newMonthDate = new Date(date)
-    const firstDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth(), 1)
-    const lastDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth() + 1, 0)
-    setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`);
-    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`);
+    const firstDay = new Date(
+      newMonthDate.getFullYear(),
+      newMonthDate.getMonth(),
+      1
+    )
+    const lastDay = new Date(
+      newMonthDate.getFullYear(),
+      newMonthDate.getMonth() + 1,
+      0
+    )
+    setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
   }
 
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const [leaveType, setLeaveType] = useState('')
 
-  const userLeavesQuery = useQuery(['userLeaves',fromDate,toDate], () =>
-    getLeavesOfUser(user, '', undefined, 1, 30,fromDate,toDate)
+  const userLeavesQuery = useQuery(['userLeaves', fromDate, toDate], () =>
+    getLeavesOfUser(user, '', undefined, 1, 30, fromDate, toDate)
   )
 
   const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
     getAllHolidays({sort: '-createdAt', limit: '1'})
   )
 
+  const {data: leaveQuarter, refetch} = useQuery(
+    ['leaveQuarter'],
+    getLeaveQuarter,
+    {
+      onSuccess: (data) => {
+        setYearStartDate(data?.data?.data?.data?.[0].firstQuarter.fromDate)
+        setYearEndDate(data?.data?.data?.data?.[0].fourthQuarter.toDate)
+      },
+      enabled: false,
+    }
+  )
+
+  const userSubstituteLeave = useQuery(
+    ['substitute', yearStartDate, yearEndDate],
+    () =>
+      getLeavesOfUser(user, '', undefined, '', '', yearStartDate, yearEndDate),
+    {enabled: false, enabled: !!yearStartDate && !!yearEndDate}
+  )
+
+  useEffect(() => {
+    if (gender === 'Female') {
+      refetch()
+      userSubstituteLeave?.refetch()
+    }
+  }, [gender])
+
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
-    select: (res) => [
-      ...res?.data?.data?.data?.map((type) => ({
-        id: type._id,
-        value: type?.name.replace('Leave', '').trim(),
-      })),
-    ],
+    select: (res) => {
+      if (gender === 'Male') {
+        return [
+          ...res?.data?.data?.data
+            ?.filter((types) => types.name !== 'Substitute Leave')
+            .map((type) => ({
+              id: type._id,
+              value: type?.name.replace('Leave', '').trim(),
+              leaveDays: type?.leaveDays,
+            })),
+        ]
+      } else {
+        return [
+          ...res?.data?.data?.data?.map((type) => ({
+            id: type._id,
+            value: type?.name.replace('Leave', '').trim(),
+            leaveDays: type?.leaveDays,
+          })),
+        ]
+      }
+    },
   })
+
   const teamLeadsQuery = useQuery(['teamLeads'], getTeamLeads, {
     select: (res) => ({
       ...res.data,
@@ -118,11 +179,21 @@ function Apply({user}) {
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
 
   const sendEmailNotification = (res) => {
+    const leaveType = leaveTypeQuery?.data?.find(
+      (type) => type.id === res.data.data.data.leaveType
+    )?.value
+    const halfLeave = res.data.data.data.halfDay
+      ? res.data.data.data.halfDay
+      : 'Full Day'
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
-      user: res.data.data.data.user,
+      user:
+        res.data.data.data.leaveStatus === STATUS_TYPES[0].id
+          ? {name, email}
+          : res.data.data.data.user,
       leaveReason: res.data.data.data.reason,
+      leaveType: `${leaveType} ${halfLeave}`,
     })
   }
 
@@ -135,10 +206,35 @@ function Apply({user}) {
     setLeaveType('')
     setMultipleDatesSelected(false)
     setHalfLeaveApproved(false)
+    setHalfLeavePending(false)
     setSpecificHalf(false)
+    setCalendarClicked(false)
   }
-
   const handleSubmit = () => {
+    let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
+      (sub) =>
+        sub?.leaveType?.name === 'Substitute Leave' &&
+        sub?.leaveStatus === 'approved'
+    )
+    let isSubstitute = leaveTypeQuery?.data?.find(
+      (data) => data.value === 'Substitute'
+    )
+    if (
+      form.getFieldValue('leaveDatesCasual').length > 1 &&
+      isSubstitute?.id === form.getFieldValue('leaveType')
+    ) {
+      return notification({
+        type: 'error',
+        message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} days`,
+      })
+    }
+    if (hasSubstitute) {
+      return notification({
+        type: 'error',
+        message: 'Substitute Leave Already Taken',
+      })
+    }
+
     form.validateFields().then((values) => {
       const leaveTypeName = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
@@ -158,9 +254,11 @@ function Apply({user}) {
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
-      const casualLeaveDaysUTC = casualLeaveDays.map((leave) =>
-        MuiFormatDate(new Date(leave))
+      const casualLeaveDaysUTC = casualLeaveDays.map(
+        (leave) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
       )
+      setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
       form.validateFields().then((values) =>
         leaveMutation.mutate({
           ...values,
@@ -202,10 +300,12 @@ function Apply({user}) {
   })
 
   const disableInterval = (index) => {
-    if (multipleDatesSelected && index !== 0) {
-      return true
+    if (multipleDatesSelected) {
+      if (index !== 0) {
+        return true
+      }
     } else {
-      if (index === 0 && halfLeaveApproved) {
+      if (index === 0 && (halfLeaveApproved || halfLeavePending)) {
         return true
       }
       if (index === 1 && specificHalf === 'first-half') {
@@ -230,14 +330,17 @@ function Apply({user}) {
         setHalfLeaveApproved(
           specifyParticularHalf(leaveDate)?.halfLeaveApproved
         )
+        setHalfLeavePending(specifyParticularHalf(leaveDate)?.halfLeavePending)
         setSpecificHalf(specifyParticularHalf(leaveDate)?.specificHalf)
       } else if (values?.leaveDatesCasual?.length === 0) {
         setHalfLeaveApproved(false)
+        setHalfLeavePending(false)
         setSpecificHalf(false)
         setMultipleDatesSelected(false)
       } else {
         setMultipleDatesSelected(true)
         setHalfLeaveApproved(false)
+        setHalfLeavePending(false)
       }
     }
   }
@@ -270,7 +373,6 @@ function Apply({user}) {
     }
   }
 
-
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Form
@@ -293,7 +395,7 @@ function Apply({user}) {
                   numberOfMonths={1}
                   disableMonthPicker
                   disableYearPicker
-                  onMonthChange={(date)=>monthChangeHandler(date)}
+                  onMonthChange={(date) => monthChangeHandler(date)}
                   weekStartDayIndex={1}
                   multiple
                   minDate={
@@ -310,25 +412,37 @@ function Apply({user}) {
                     let leaveDate = userLeaves?.filter(
                       (leave) => leave.date === date.format()
                     )
+                    const leavePending = pendingLeaves(leaveDate)
                     let leaveAlreadyTakenDates = filterHalfDayLeaves(leaveDate)
-                    if (isWeekend || isHoliday || leaveAlreadyTakenDates)
+                    if (
+                      isWeekend ||
+                      isHoliday ||
+                      leaveAlreadyTakenDates ||
+                      leavePending
+                    )
                       return {
                         disabled: true,
                         style: {
                           color:
-                            isWeekend || leaveAlreadyTakenDates
+                            isWeekend || leaveAlreadyTakenDates || leavePending
                               ? '#ccc'
                               : 'rgb(237 45 45)',
                         },
                         onClick: () => {
                           if (isWeekend)
-                            notification({message: 'Weekends are disabled'})
+                            notification({message: 'Weekends are disabled.'})
                           else if (isHoliday)
                             notification({
-                              message: `${holidayList[0]?.name} holiday`,
+                              message: `${holidayList[0]?.name} Holiday`,
                             })
                           else if (leaveAlreadyTakenDates)
-                            notification({message: `Leave already taken`})
+                            notification({
+                              message: `Leave already registered for the day.`,
+                            })
+                          else if (leavePending)
+                            notification({
+                              message: `Leave request for the day is pending. Please cancel the previously applied leave requests to apply again`,
+                            })
                         },
                       }
                   }}

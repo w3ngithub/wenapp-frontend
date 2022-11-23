@@ -29,6 +29,10 @@ function CancelLeaveModal({
   leaveData,
   loader,
   setLoader,
+  title="",
+  isRequired=false,
+  label="",
+  name=""
 }: {
   open: boolean
   onClose: () => void
@@ -36,6 +40,10 @@ function CancelLeaveModal({
   leaveData: {}
   loader: boolean
   setLoader: (param: boolean) => void
+  title : string,
+  isRequired : boolean,
+  label : string,
+  name:string
 }) {
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)
@@ -57,7 +65,7 @@ function CancelLeaveModal({
   return (
     <Modal
       width={1100}
-      title="Cancel Leave"
+      title={title}
       style={{flexDirection: 'row'}}
       visible={open}
       mask={false}
@@ -84,19 +92,24 @@ function CancelLeaveModal({
             <Col xs={24} sm={24} xl={24}>
               <Form.Item
                 {...formItemLayout}
-                name="leaveCancelReason"
-                label="Cancel Leave Reason"
+                name={name}
+                label={label}
                 rules={[
                   {
-                    required: true,
+                    required: isRequired,
                     validator: async (rule, value) => {
                       try {
-                        if (!value) throw new Error('Required!')
+                        if (!value && isRequired) throw new Error('Required!')
 
                         const trimmedValue = value && value.trim()
-                        if (trimmedValue?.length < 10) {
+                        if (trimmedValue?.length < 10 && isRequired) {
                           throw new Error(
                             'Reason should be at least 10 letters!'
+                          )
+                        }
+                        if (trimmedValue?.length > 500 && isRequired) {
+                          throw new Error(
+                            'Reason should be less than 500 letters!'
                           )
                         }
                       } catch (err) {
@@ -112,6 +125,7 @@ function CancelLeaveModal({
                   style={{
                     background: darkCalendar ? '#434f5a' : '',
                   }}
+                  placeholder={!isRequired ? "Additional Message (If Any)" : ''}
                 />
               </Form.Item>
             </Col>

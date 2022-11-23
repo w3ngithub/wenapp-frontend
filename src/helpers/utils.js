@@ -165,7 +165,7 @@ export const convertDateToUTC = (date) => {
   return new Date(date.getTime()).toJSON()
 }
 
-export const debounce = (func, delay) => {
+export const debounce = (func, delay = 2000) => {
   let timer
   return function () {
     let self = this
@@ -347,12 +347,31 @@ export const filterHalfDayLeaves = (leaves) => {
   return false
 }
 
+export const pendingLeaves = (leaves) => {
+  const pendingLeaves = leaves.filter(
+    (leave) => leave.leaveStatus === 'pending'
+  )
+  if (pendingLeaves.length === 1 && pendingLeaves[0]?.isHalfDay === '') {
+    return true
+  }
+  if (pendingLeaves.length === 2) {
+    return true
+  }
+}
+
 export const specifyParticularHalf = (leaves) => {
+  // console.log('to disable halves', leaves);
   const approvedLeaves = leaves.filter(
     (leave) => leave.leaveStatus === 'approved'
   )
   if (approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay !== '') {
     return {specificHalf: approvedLeaves[0]?.isHalfDay, halfLeaveApproved: true}
+  }
+  const pendingLeaves = leaves.filter(
+    (leave) => leave.leaveStatus === 'pending'
+  )
+  if (pendingLeaves.length === 1 && pendingLeaves[0]?.isHalfDay !== '') {
+    return {specificHalf: pendingLeaves[0]?.isHalfDay, halfLeavePending: true}
   }
 }
 
@@ -380,10 +399,12 @@ export const oneWeekFilterCheck = (x) => {
       )
   )
 }
-export const checkIfTimeISBetweenOfficeHour = () => {
+export const checkIfTimeISBetweenOfficeHour = (
+  officeStartTime = '09:10:00'
+) => {
   const now = new Date()
 
-  const startTime = '09:10:00'
+  const startTime = officeStartTime
   const endTime = '17:30:00'
 
   const s = startTime.split(':')
@@ -408,9 +429,45 @@ export const checkIfTimeISBetweenOfficeHour = () => {
   return now > startTime1 && now < endTime2
 }
 
+export function capitalizeInput(input) {
+  input = input
+    .toLowerCase()
+    .split(' ')
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+  input = input.join(' ')
+  return input
+}
 
-export function capitalizeInput(input){
-    input = input.toLowerCase().split(" ").map((s)=>s.charAt(0).toUpperCase() + s.slice(1))
-    input = input.join(" ")
-    return input
+export const isNotValidTimeZone = () => {
+  return (
+    Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
+      'Katmandu' &&
+    Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
+      'Kathmandu'
+  )
+}
+
+export const compare = (a, b) => {
+  if (new Date(a?.date) < new Date(b?.date)) {
+    return -1
+  } else if (new Date(a?.date) > new Date(b?.date)) {
+    return 1
+  }
+  return 0
+}
+
+// dd/mm/yyyy to yyyy-mm-dd
+export const dateToDateFormat = (date) => {
+  return date.toString().split('/').reverse().join('-')
+}
+
+//sorting through day
+export const daySorter = {
+  Monday: 1,
+  Tuesday: 2,
+  Wednesday: 3,
+  Thursday: 4,
+  Friday: 5,
+  Saturday: 6,
+  Sunday: 7,
 }

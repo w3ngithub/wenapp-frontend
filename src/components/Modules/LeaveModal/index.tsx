@@ -27,6 +27,7 @@ import {
   handleResponse,
   MuiFormatDate,
   specifyParticularHalf,
+  pendingLeaves,
 } from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
@@ -75,6 +76,7 @@ function LeaveModal({
   onClose: (
     setSpecificHalf: any,
     setHalfLeaveApproved: any,
+    setHalfLeavePending: any,
     setMultipleDatesSelected: any,
     setCalendarClicked: any
   ) => void
@@ -84,6 +86,7 @@ function LeaveModal({
 }) {
   const queryClient = useQueryClient()
 
+  const [colorState, setColorState] = useState(true)
   const [form] = Form.useForm()
   const [leaveType, setLeaveType] = useState('')
   const [user, setUser] = useState('')
@@ -93,8 +96,37 @@ function LeaveModal({
   const [holidays, setHolidays] = useState([])
   const [specificHalf, setSpecificHalf] = useState<any>(false)
   const [halfLeaveApproved, setHalfLeaveApproved] = useState<any>(false)
+  const [halfLeavePending, setHalfLeavePending] = useState<any>(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
+
+  const date = new Date()
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
+  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+
+  const [fromDate, setFromDate] = useState<any>(
+    `${MuiFormatDate(firstDay)}T00:00:00Z`
+  )
+
+  const [toDate, setToDate] = useState<any>(
+    `${MuiFormatDate(lastDay)}T00:00:00Z`
+  )
+
+  const monthChangeHandler = (date: any) => {
+    const newMonthDate = new Date(date)
+    const firstDay = new Date(
+      newMonthDate.getFullYear(),
+      newMonthDate.getMonth(),
+      1
+    )
+    const lastDay = new Date(
+      newMonthDate.getFullYear(),
+      newMonthDate.getMonth() + 1,
+      0
+    )
+    setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+    setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+  }
 
   const darkCalendar = themeType === THEME_TYPE_DARK
 
@@ -107,8 +139,8 @@ function LeaveModal({
     ],
   })
 
-  const userLeavesQuery = useQuery(['userLeaves', user], () =>
-    getLeavesOfUser(user)
+  const userLeavesQuery = useQuery(['userLeaves', fromDate, toDate, user], () =>
+    getLeavesOfUser(user, '', undefined, 1, 30, fromDate, toDate)
   )
 
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
@@ -124,6 +156,7 @@ function LeaveModal({
             onClose(
               setSpecificHalf,
               setHalfLeaveApproved,
+              setHalfLeavePending,
               setMultipleDatesSelected,
               setCalendarClicked
             ),
@@ -146,6 +179,7 @@ function LeaveModal({
             onClose(
               setSpecificHalf,
               setHalfLeaveApproved,
+              setHalfLeavePending,
               setMultipleDatesSelected,
               setCalendarClicked
             ),
@@ -176,8 +210,8 @@ function LeaveModal({
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
-      const casualLeaveDaysUTC = casualLeaveDays.map((leave: string) =>
-        MuiFormatDate(new Date(leave))
+      const casualLeaveDaysUTC = casualLeaveDays.map(
+        (leave: string) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
       )
       const newLeave = {
         ...values,
@@ -192,6 +226,8 @@ function LeaveModal({
             : values?.halfDay,
         leaveStatus: appliedDate ? 'approved' : 'pending',
       }
+      setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
       if (isEditMode) leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
       else
         leaveMutation.mutate({
@@ -218,7 +254,7 @@ function LeaveModal({
           leaveDatesPeriod: moment(leaveData),
           reason: leaveData.reason,
           user: leaveData.user._id,
-          halfDay:leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
+          halfDay: leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
           cancelReason: leaveData?.cancelReason,
         })
         setUser(leaveData.user._id)
@@ -263,10 +299,12 @@ function LeaveModal({
   })
 
   const disableInterval = (index: number) => {
-    if (multipleDatesSelected && index !== 0) {
-      return true
+    if (multipleDatesSelected) {
+      if (index !== 0) {
+        return true
+      }
     } else {
-      if (index === 0 && halfLeaveApproved) {
+      if (index === 0 && (halfLeaveApproved || halfLeavePending)) {
         return true
       }
       if (index === 1 && specificHalf === 'first-half') {
@@ -290,17 +328,21 @@ function LeaveModal({
         setHalfLeaveApproved(
           specifyParticularHalf(leaveDate)?.halfLeaveApproved
         )
+        setHalfLeavePending(specifyParticularHalf(leaveDate)?.halfLeavePending)
         setSpecificHalf(specifyParticularHalf(leaveDate)?.specificHalf)
       } else if (values?.leaveDatesCasual?.length === 0) {
         setHalfLeaveApproved(false)
+        setHalfLeavePending(false)
         setSpecificHalf(false)
         setMultipleDatesSelected(false)
       } else {
         setMultipleDatesSelected(true)
         setHalfLeaveApproved(false)
+        setHalfLeavePending(false)
       }
     }
   }
+
   const calendarClickHandler = () => {
     const selectedDates = form?.getFieldValue('leaveDatesCasual')
     if (selectedDates?.length > 0) {
@@ -340,6 +382,7 @@ function LeaveModal({
         onClose(
           setSpecificHalf,
           setHalfLeaveApproved,
+          setHalfLeavePending,
           setMultipleDatesSelected,
           setCalendarClicked
         )
@@ -353,6 +396,7 @@ function LeaveModal({
                   onClose(
                     setSpecificHalf,
                     setHalfLeaveApproved,
+                    setHalfLeavePending,
                     setMultipleDatesSelected,
                     setCalendarClicked
                   )
@@ -368,6 +412,7 @@ function LeaveModal({
                   onClose(
                     setSpecificHalf,
                     setHalfLeaveApproved,
+                    setHalfLeavePending,
                     setMultipleDatesSelected,
                     setCalendarClicked
                   )
@@ -419,36 +464,37 @@ function LeaveModal({
                       )}
                     </Select>
                   </Form.Item>
-                  {((leaveType === 'Casual' ||
+                  {(((leaveType === 'Casual' ||
                     leaveType === 'Sick' ||
                     leaveType === 'Casual Leave' ||
                     leaveType === 'Sick Leave') &&
-                    calendarClicked || readOnly) && (
-                      <Form.Item
-                        {...formItemLayout}
-                        label="Leave Interval"
-                        name="halfDay"
-                        rules={[{required: true, message: 'Required!'}]}
+                    calendarClicked) ||
+                    readOnly) && (
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Leave Interval"
+                      name="halfDay"
+                      rules={[{required: true, message: 'Required!'}]}
+                    >
+                      <Select
+                        showSearch
+                        filterOption={filterOptions}
+                        placeholder="Select Duration"
+                        style={{width: '100%'}}
+                        disabled={readOnly}
                       >
-                        <Select
-                          showSearch
-                          filterOption={filterOptions}
-                          placeholder="Select Duration"
-                          style={{width: '100%'}}
-                          disabled={readOnly}
-                        >
-                          {leaveInterval?.map((type, index) => (
-                            <Option
-                              value={type?.value}
-                              key={index}
-                              disabled={disableInterval(index)}
-                            >
-                              {type?.name}
-                            </Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                    )}
+                        {leaveInterval?.map((type, index) => (
+                          <Option
+                            value={type?.value}
+                            key={index}
+                            disabled={disableInterval(index)}
+                          >
+                            {type?.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  )}
                 </Col>
                 <Col span={6} xs={24} sm={12}>
                   {showWorker && (
@@ -517,7 +563,7 @@ function LeaveModal({
                 </Col>
               </Row>
 
-              {!showWorker && leaveData?.cancelReason && (
+              {leaveData?.status === 'cancelled' && (
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item
@@ -569,6 +615,7 @@ function LeaveModal({
                       className={darkCalendar ? 'bg-dark' : 'null'}
                       buttons={readOnly ? false : true}
                       onChange={calendarClickHandler}
+                      onMonthChange={(date) => monthChangeHandler(date)}
                       numberOfMonths={1}
                       disableMonthPicker
                       disableYearPicker
@@ -584,6 +631,8 @@ function LeaveModal({
                       }
                       mapDays={({date}) => {
                         let isWeekend = [0, 6].includes(date.weekDay.index)
+                        let dates = `${date.year}/${date.month}/${date.day}`
+                        let calenderDate = MuiFormatDate(dates)
                         let holidayList: any[] = holidays?.filter(
                           (holiday: any) => date.format() === holiday?.date
                         )
@@ -591,29 +640,68 @@ function LeaveModal({
                         let leaveDate = userLeaves?.filter(
                           (leave) => leave.date === date.format()
                         )
+                        const leavePending = pendingLeaves(leaveDate)
+
                         let leaveAlreadyTakenDates =
                           filterHalfDayLeaves(leaveDate)
-                        const isLeaveTaken =
-                          readOnly &&
-                          form
-                            ?.getFieldValue('leaveDatesCasual')?.[0]
-                            ?.split('-')
-                            ?.join('/')
-                            ?.split('T')?.[0] === leaveDate?.[0]?.date
-                        if (readOnly && !isLeaveTaken) {
-                          return {
-                            disabled: true,
-                            style: {
-                              color: '#ccc',
-                            },
+
+                        let selectedDates =
+                          form?.getFieldValue('leaveDatesCasual')
+
+                        let checkDataLeave = leaveData?.leaveDates?.map(
+                          (date: string) => date && date?.split('T')?.[0]
+                        )
+                        let editLeave = checkDataLeave?.includes(calenderDate)
+                        let filteredDate = selectedDates?.map(
+                          (date: string) =>
+                            date?.length > 0 && date?.split('T')?.[0]
+                        )
+
+                        let disableSelectedDate =
+                          filteredDate && filteredDate?.includes(calenderDate)
+
+                        if (readOnly) {
+                          if (disableSelectedDate) {
+                            return {
+                              style: {
+                                color: 'white',
+                                backgroundColor: '#0074d9',
+                              },
+                            }
+                          } else
+                            return {
+                              disabled: true,
+                              style: {
+                                color: '#ccc',
+                              },
+                            }
+                        } else {
+                          if (disableSelectedDate || editLeave) {
+                            return {
+                              onClick: () => setColorState(false),
+                              disabled: false,
+                              style: {
+                                color: colorState ? 'white' : 'null',
+                                backgroundColor: colorState
+                                  ? '#0074d9'
+                                  : 'null',
+                              },
+                            }
                           }
                         }
-                        if (isWeekend || isHoliday || leaveAlreadyTakenDates)
+                        if (
+                          isWeekend ||
+                          isHoliday ||
+                          leaveAlreadyTakenDates ||
+                          leavePending
+                        )
                           return {
                             disabled: true,
                             style: {
                               color:
-                                isWeekend || leaveAlreadyTakenDates
+                                isWeekend ||
+                                leaveAlreadyTakenDates ||
+                                leavePending
                                   ? '#ccc'
                                   : 'rgb(237 45 45)',
                             },
@@ -626,6 +714,10 @@ function LeaveModal({
                                 })
                               else if (leaveAlreadyTakenDates)
                                 notification({message: `Leave already taken`})
+                              else if (leavePending)
+                                notification({
+                                  message: `Leave request for the day is pending. Please cancel the previous applied leave to apply again`,
+                                })
                             },
                           }
                       }}

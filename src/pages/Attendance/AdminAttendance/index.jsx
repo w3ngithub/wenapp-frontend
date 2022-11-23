@@ -28,12 +28,25 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import RoleAccess, {
   ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS,
 } from 'constants/RoleAccess'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
 
 const formattedAttendances = (attendances) => {
-  return attendances?.map((att) => ({
+  return attendances?.map((att) => {
+    let timeInMilliSeconds = att?.data
+    ?.map((x) =>
+      x?.punchOutTime
+        ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
+        : ''
+    )
+    .filter(Boolean)
+    ?.reduce((accumulator, value) => {
+      return accumulator + value
+    }, 0)
+
+    return ({
     ...att,
     key: att._id.attendanceDate + att._id.user,
     user: att._id.user,
@@ -43,25 +56,15 @@ const formattedAttendances = (attendances) => {
     punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
       ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
       : '',
-    officeHour: milliSecondIntoHours(
-      att?.data
-        ?.map((x) =>
-          x?.punchOutTime
-            ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
-            : ''
-        )
-        .filter(Boolean)
-        ?.reduce((accumulator, value) => {
-          return accumulator + value
-        }, 0)
-    ),
-  }))
+    officeHour: milliSecondIntoHours(timeInMilliSeconds),
+    intHour :timeInMilliSeconds
+  })})
 }
 
 function AdminAttendance({userRole}) {
   //init hooks
   const {state} = useLocation()
-  const [sort, setSort] = useState({})
+  const [sort, setSort] = useState({order: 'ascend',field:'attendanceDate',columnKey: 'attendanceDate'})
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
   const [openView, setOpenView] = useState(false)
@@ -82,15 +85,15 @@ function AdminAttendance({userRole}) {
   }, [state?.date, state?.user])
 
   const {data: users} = useQuery(['userForAttendances'], () =>
-    getAllUsers({fields: 'name'})
+    getAllUsers({fields: 'name',active:'true',sort:'name'})
   )
 
   const {data, isLoading, isFetching} = useQuery(
-    ['adminAttendance', user, date, page, user],
+    ['adminAttendance', user, date],
     () =>
       searchAttendacentOfUser({
-        page: page.page + '',
-        limit: page.limit + '',
+        // page: page.page + '',
+        // limit: page.limit + '',
         userId: user || '',
         fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
         toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
@@ -305,6 +308,7 @@ function AdminAttendance({userRole}) {
         </div>
       </div>
       <Table
+        locale={{emptyText}}
         className="gx-table-responsive"
         columns={ATTENDANCE_COLUMNS(sort, handleView, true)}
         dataSource={formattedAttendances(sortedData)}

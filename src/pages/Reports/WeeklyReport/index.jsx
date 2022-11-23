@@ -11,6 +11,7 @@ import Select from 'components/Elements/Select'
 import {WEEKLY_REPORT_COLUMNS} from 'constants/weeklyReport'
 import {roundedToFixed} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -24,14 +25,12 @@ const intialDate = [
 ]
 
 const formattedWeeklyReports = (reports, clients) => {
-  return reports
-    ?.filter((reportFil) => reportFil.project?.length !== 0)
-    ?.map((report) => ({
-      key: report?.project?.[0]?._id,
-      name: report?.project?.[0]?.name,
-      client: clients[report?.project?.[0]?.client] || '',
-      timeSpent: roundedToFixed(report?.timeSpent || 0, 2),
-    }))
+  return reports?.map((report) => ({
+    key: report?.project?.[0]?._id || 'Other',
+    name: report?.project?.[0]?.name || 'Other',
+    client: clients[report?.project?.[0]?.client] || '',
+    timeSpent: roundedToFixed(report?.timeSpent || 0, 2),
+  }))
 }
 
 function WeeklyReport() {
@@ -57,7 +56,7 @@ function WeeklyReport() {
     getProjectClients
   )
   const {data, isLoading, isError, isFetching} = useQuery(
-    ['projects', page, logType, projectStatus, projectClient, date],
+    ['projects', logType, projectStatus, projectClient, date],
     () =>
       getWeeklyReport({
         ...page,
@@ -85,7 +84,7 @@ function WeeklyReport() {
   }
 
   const onShowSizeChange = (_, pageSize) => {
-    setPage((prev) => ({...page, limit: pageSize}))
+    setPage((prev) => ({...prev, limit: pageSize}))
   }
 
   const handleLogTypeChange = (typeId) => {
@@ -107,17 +106,21 @@ function WeeklyReport() {
     setprojectClient(undefined)
   }
 
-  const navigateToProjectLogs = (projectSlug) => {
-    navigate(`${projectSlug}`)
+  const navigateToProjectLogs = (projectSlug, newPage = false) => {
+    if (!newPage) {
+      navigate(`${projectSlug}`)
+    } else {
+      window.open(projectSlug, '_blank')
+    }
   }
 
   const handleChangeDate = (date) => {
-    setDate(date)
+    setDate([date[0], date[1].endOf('day')])
   }
 
   const clients = useMemo(() => {
     return projectClientsData?.data?.data?.data?.reduce((obj, client) => {
-      obj[client._id] = client.name
+      obj[client._id] = client?.name
       return obj
     }, {})
   }, [projectClientsData])
@@ -125,7 +128,6 @@ function WeeklyReport() {
   if (isLoading) {
     return <CircularProgress />
   }
-
   return (
     <div>
       <Card title="Weekly Report">
@@ -183,22 +185,19 @@ function WeeklyReport() {
           </div>
         </div>
         <Table
+        locale={{emptyText}}
           className="gx-table-responsive"
-          columns={WEEKLY_REPORT_COLUMNS(
-            sort,
-
-            navigateToProjectLogs
-          )}
+          columns={WEEKLY_REPORT_COLUMNS(sort, navigateToProjectLogs)}
           dataSource={formattedWeeklyReports(data?.data?.data?.report, clients)}
           onChange={handleTableChange}
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['5', '10', '20', '50'],
+            pageSizeOptions: ['20', '50'],
             showSizeChanger: true,
-            total: data?.data?.data?.count || 1,
+            total: data?.data?.data?.report?.length || 1,
             onShowSizeChange,
-            hideOnSinglePage: data?.data?.data?.count ? false : true,
+            hideOnSinglePage: true,
             onChange: handlePageChange,
           }}
           loading={isLoading || isFetching}

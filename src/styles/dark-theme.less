@@ -16,6 +16,7 @@
 @dark-theme-heading-color: lighten(@dark-theme-text-color, 5%);
 @dark-theme-sidebar-dark-bg: darken(@dark-theme-primary-color, 2%);
 @dark-theme-component-background: #434f5a;
+@dark-theme-calender-today:#a39898;
 @dark-theme-sidebar-dark-text-color: #a1a1a1;
 @dark-theme-sidebar-dark-bg-darken: lighten(@dark-theme-sidebar-dark-bg, 6%);
 @dark-theme-sidebar-dark-hover-color: @dark-theme-component-background;
@@ -84,6 +85,9 @@ body.dark-theme {
   }
   & .@{class-prefix}-product-item{
     border: 1px solid #5c6d7a;
+  }
+  & .@{class-prefix}-dashboard-collapse  .ant-collapse-content-box{
+    background-color: @dark-theme-component-background !important;
   }
 
   & .ant-form-item-control-input {
@@ -256,6 +260,9 @@ body.dark-theme {
   & .ant-layout.ant-layout-has-sider > .ant-layout {
     background: @dark-theme-primary-color;
   }
+  & .suggestion-text {
+    color: @dark-theme-text-color
+  }
 
   & .ant-layout-header {
     background: @dark-theme-primary-color;
@@ -419,9 +426,12 @@ body.dark-theme {
       background: white !important;
     }
   }
+  & .ant-input-password-icon.anticon {
+    color: @dark-theme-text-color;
+  }
 
-  & input#email:-webkit-autofill,
-   input#password:-webkit-autofill {
+  & input#emails:-webkit-autofill,
+   input#passwords:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 10px #5b656e inset; /* Change the color to your own background color */
   box-shadow: 0 0 0 10px #5b656e inset;
   &:focus {
@@ -2903,9 +2913,12 @@ body.dark-theme {
   }
 
   & .rbc-month-view,
-  & .rbc-time-view,
-  & .rbc-today {
+  & .rbc-time-view {
     background: @dark-theme-component-background;
+  }
+
+  & .rbc-today{
+    background: @dark-theme-calender-today;
   }
 
   & .rbc-date-cell {
