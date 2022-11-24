@@ -104,7 +104,7 @@ const CustomActiveShapePieChart = ({data}) => {
           fill={darkTheme ? '#13c2c2' : '#003366'}
         >
           {data?.map((entry, index) => (
-            <Cell fill={logTypeColors?.[entry?.name]} />
+            <Cell fill={entry?.color} />
           ))}
         </Pie>
       </PieChart>

@@ -539,7 +539,7 @@ const Dashboard = () => {
                       value={chart}
                       onChange={(c: any) => setChart(c)}
                       placeholder="Select Chart"
-                      defaultValue='Bar Chart'
+                      defaultValue="Bar Chart"
                       options={[
                         {_id: '1', name: 'Bar Chart'},
                         {_id: '2', name: 'Pie Chart'},
@@ -562,7 +562,9 @@ const Dashboard = () => {
                               throw new Error('Project is required.')
                             }
                             if (value?.trim() === '') {
-                              throw new Error('Please enter a valid project name.')
+                              throw new Error(
+                                'Please enter a valid project name.'
+                              )
                             }
                           } catch (err) {
                             throw new Error(err.message)
@@ -620,15 +622,19 @@ const Dashboard = () => {
                     <div>
                       {chart === '2' ? (
                         <CustomActiveShapePieChart
-                          data={chartData?.map((x: any) => ({
-                            name: x.logType[0].name,
-                            value: +x.timeSpent?.toFixed(2),
-                          }))}
+                          data={chartData?.map((x: any) => {
+                            return {
+                              name: x.logType[0].name,
+                              color: x.logType[0].color,
+                              value: +x.timeSpent?.toFixed(2),
+                            }
+                          })}
                         />
                       ) : (
                         <TinyBarChart
                           data={chartData?.map((x: any) => ({
                             name: x.logType[0].name,
+                            color: x.logType[0].color,
                             time: +x.timeSpent?.toFixed(2),
                           }))}
                         />

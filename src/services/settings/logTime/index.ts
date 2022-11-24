@@ -11,7 +11,7 @@ export const getLogtypes = async () => {
   }
 }
 
-export const addLogType = async (payload: {name: string}) => {
+export const addLogType = async (payload: {name: string, color:string}) => {
   try {
     let response = await API.post(`${Apis.TimeLogs}/types`, payload)
     return getAPIResponse(response)
@@ -20,7 +20,7 @@ export const addLogType = async (payload: {name: string}) => {
   }
 }
 
-export const editLogType = async (payload: {name: string; id: string}) => {
+export const editLogType = async (payload: {name: string; id: string, color: string}) => {
   try {
     let response = await API.patch(
       `${Apis.TimeLogs}/types/${payload?.id}`,
