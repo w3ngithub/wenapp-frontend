@@ -1,3 +1,4 @@
+import axios from 'axios'
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
@@ -169,6 +170,15 @@ const updateLateAttendance = async (attendance: any) => {
   }
 }
 
+const getIpAddres = async () => {
+  try {
+    let response = await axios.get('https://geolocation-db.com/json/')
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err?.response)
+  }
+}
+
 export {
   getAllAttendances,
   getAttendance,
@@ -183,4 +193,5 @@ export {
   getTodaysUserAttendanceCount,
   searchLateAttendacentOfUser,
   updateLateAttendance,
+  getIpAddres,
 }
