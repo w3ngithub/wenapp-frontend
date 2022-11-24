@@ -11,7 +11,7 @@ import {
   sortFromDate,
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
-import {addAttendance, updatePunchout} from 'services/attendances'
+import {addAttendance, getIpAddres, updatePunchout} from 'services/attendances'
 import {useDispatch, useSelector} from 'react-redux'
 import {PUNCH_IN, PUNCH_OUT} from 'constants/ActionTypes'
 import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
@@ -118,6 +118,8 @@ function PunchInOut() {
     setdisableButton(true)
     const location = await getLocation()
     if (await checkLocationPermission()) {
+      const IP = await getIpAddres()
+
       if (!punchIn) {
         const lastattendace = sortFromDate(latestAttendance, 'punchInTime').at(
           -1
@@ -130,6 +132,7 @@ function PunchInOut() {
             midDayExit: false,
             punchOutTime: moment.utc().format(),
             punchOutLocation: location,
+            punchOutIp: IP?.data?.IPv4,
           },
         })
       } else {
@@ -137,6 +140,7 @@ function PunchInOut() {
           punchInTime: moment.utc().format(),
           punchInLocation: location,
           attendanceDate: moment.utc().startOf('day').format(),
+          punchInIp: IP?.data?.IPv4,
         })
       }
     } else {
