@@ -39,7 +39,7 @@ function CommonModal({
       availableData = currentData?.data?.data?.data?.map(
         (item: {id: any; name: any}) => item?.name?.toLowerCase()
       )
-    } else {
+    } else { // this is for roles tab
       availableData = currentData.map((item: {id: any; name: any}) =>
         item?.name?.toLowerCase()
       )
