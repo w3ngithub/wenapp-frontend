@@ -13,6 +13,7 @@ import {
   Form,
   Spin,
 } from 'antd'
+import {emptyText} from 'constants/EmptySearchAntd'
 import {capitalizeInput, filterOptions} from 'helpers/utils'
 import moment from 'moment'
 import Maintenance from 'pages/Projects/Maintainance'
@@ -464,6 +465,7 @@ function ProjectModal({
                 name="projectTypes"
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Type"
@@ -492,6 +494,7 @@ function ProjectModal({
               >
                 <Select
                   showSearch
+                  notFoundContent={emptyText}
                   filterOption={filterOptions}
                   placeholder="Select Status"
                   disabled={readOnly}
@@ -514,6 +517,7 @@ function ProjectModal({
               >
                 <Select
                   showSearch
+                  notFoundContent={emptyText}
                   filterOption={filterOptions}
                   placeholder="Select Tags"
                   disabled={readOnly}
@@ -536,6 +540,7 @@ function ProjectModal({
                 name="client"
               >
                 <Select
+                  notFoundContent={emptyText}
                   placeholder="Select Client"
                   filterOption={filterOptions}
                   disabled={readOnly}
@@ -559,6 +564,7 @@ function ProjectModal({
                 name="developers"
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Developers"
@@ -580,6 +586,7 @@ function ProjectModal({
                 name="designers"
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Designers"
@@ -603,6 +610,7 @@ function ProjectModal({
                 name="qa"
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select QA"
@@ -624,6 +632,7 @@ function ProjectModal({
                 name="devOps"
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select DevOps"

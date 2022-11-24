@@ -41,6 +41,7 @@ import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -485,6 +486,7 @@ function Apply({user}) {
                 >
                   <Select
                     showSearch
+                    notFoundContent={emptyText}
                     filterOption={filterOptions}
                     placeholder="Select Type"
                     style={{width: '100%'}}
