@@ -40,6 +40,7 @@ import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const {Option} = Select
 
@@ -448,6 +449,7 @@ function LeaveModal({
                     ]}
                   >
                     <Select
+                      notFoundContent={emptyText}
                       showSearch
                       filterOption={filterOptions}
                       placeholder="Select Leave Type"
@@ -485,6 +487,7 @@ function LeaveModal({
                     >
                       <Select
                         showSearch
+                        notFoundContent={emptyText}
                         filterOption={filterOptions}
                         placeholder="Select Duration"
                         style={{width: '100%'}}
@@ -514,6 +517,7 @@ function LeaveModal({
                       ]}
                     >
                       <Select
+                        notFoundContent={emptyText}
                         showSearch
                         filterOption={filterOptions}
                         placeholder="Select Co-worker"

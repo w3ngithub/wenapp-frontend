@@ -16,6 +16,7 @@ import {useEffect} from 'react'
 import {filterOptions} from 'helpers/utils'
 import {getNoticeTypes} from 'services/noticeboard'
 import {disabledBeforeToday} from 'util/antDatePickerDisabled'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -153,6 +154,7 @@ function NoticeModal({
                 ]}
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Category"
