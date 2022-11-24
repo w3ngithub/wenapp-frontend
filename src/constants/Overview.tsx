@@ -55,7 +55,21 @@ const OVERVIEW_LEAVES = (sortedInfo: any): tableCol[] => [
     dataIndex: 'period',
     width: 150,
     key: 'period',
-    sorter: (a, b) => a.period.toString().localeCompare(b.period.toString()),
+    sorter: (a, b) => {
+      let first = parseFloat(
+        a.period
+          .replace('/Days|Day/gi', '')
+          .replace('First Half', '0.8')
+          .replace('Second Half', '0.9')
+      )
+      let second = parseFloat(
+        b.period
+          .replace('/Days|Day/gi', '')
+          .replace('First Half', '0.8')
+          .replace('Second Half', '0.9')
+      )
+      return first - second
+    },
 
     sortOrder: sortedInfo.columnKey === 'period' && sortedInfo.order,
   },
