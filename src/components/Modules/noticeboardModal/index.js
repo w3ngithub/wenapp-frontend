@@ -15,7 +15,8 @@ import moment from 'moment'
 import {useEffect} from 'react'
 import {filterOptions} from 'helpers/utils'
 import {getNoticeTypes} from 'services/noticeboard'
-import { disabledBeforeToday } from 'util/antDatePickerDisabled'
+import {disabledBeforeToday} from 'util/antDatePickerDisabled'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -115,7 +116,7 @@ function NoticeModal({
                         if (!value) {
                           throw new Error('Title is required.')
                         }
-                        if(value?.trim() === ''){
+                        if (value?.trim() === '') {
                           throw new Error('Please enter a valid title.')
                         }
                       } catch (err) {
@@ -142,7 +143,7 @@ function NoticeModal({
                         if (!value) {
                           throw new Error('Category is required.')
                         }
-                        if(value?.trim() === ''){
+                        if (value?.trim() === '') {
                           throw new Error('Please enter a valid category.')
                         }
                       } catch (err) {
@@ -153,6 +154,7 @@ function NoticeModal({
                 ]}
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Category"
@@ -333,11 +335,13 @@ function NoticeModal({
                         if (!value) {
                           throw new Error('Some detail is required.')
                         }
-                        if(value?.trim() === ''){
+                        if (value?.trim() === '') {
                           throw new Error('Please enter valid details.')
                         }
-                        if(value?.trim()?.length < 10){
-                          throw new Error('Detail must at least consist 10 characters.')
+                        if (value?.trim()?.length < 10) {
+                          throw new Error(
+                            'Detail must at least consist 10 characters.'
+                          )
                         }
                       } catch (err) {
                         throw new Error(err.message)

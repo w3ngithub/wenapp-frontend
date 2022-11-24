@@ -312,6 +312,7 @@ function ProjectLogs() {
             <Form layout="inline" form={form}>
               <FormItem className="direct-form-item">
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Log Type"
@@ -328,6 +329,7 @@ function ProjectLogs() {
               </FormItem>
               <FormItem className="direct-form-item">
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Log Author"
