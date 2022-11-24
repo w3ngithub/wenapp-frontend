@@ -2,7 +2,7 @@ import {Modal, Button, Radio, Form, Spin} from 'antd'
 import React, {useEffect} from 'react'
 const FormItem = Form.Item
 
-const LeaveCutModal = ({open, onSubmit, onClose, loading}) => {
+const LeaveCutModal = ({open, onSubmit, onClose, loading, coWorker}) => {
   const [form] = Form.useForm()
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const LeaveCutModal = ({open, onSubmit, onClose, loading}) => {
   return (
     <Modal
       className="rounded-modal"
-      title="Select Leave Cut Day"
+      title={`Select Leave Cut Day of ${coWorker}`}
       mask={false}
       visible={open}
       onOk={handleSubmit}

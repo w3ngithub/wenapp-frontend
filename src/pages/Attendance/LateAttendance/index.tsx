@@ -282,7 +282,6 @@ function LateAttendance({userRole}: {userRole: string}) {
   )
 
   const hanldeLeaveCutModal = (record: any) => {
-    console.log(record)
     setAttendanceRecord(record)
     setOpenLeaveCutModal(true)
   }
@@ -294,6 +293,7 @@ function LateAttendance({userRole}: {userRole: string}) {
   return (
     <div>
       <LeaveCutModal
+        coWorker={attendanceRecord?._id?.user || ''}
         open={openLeaveCutModal}
         onClose={hanldeCloseLeaveCutModal}
         onSubmit={handleCutLeave}
