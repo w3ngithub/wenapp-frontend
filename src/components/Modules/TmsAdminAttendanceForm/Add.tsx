@@ -22,6 +22,7 @@ import {notification} from 'helpers/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 import getLocation from 'helpers/getLocation'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 function TmsAdminAddAttendanceForm({
   toogle,
@@ -136,6 +137,7 @@ function TmsAdminAddAttendanceForm({
                   style={{marginRight: innerWidth <= 748 ? 0 : '1rem'}}
                 >
                   <Select
+                    notFoundContent={emptyText}
                     showSearch
                     filterOption={filterOptions}
                     placeholder="Select Co-worker"
