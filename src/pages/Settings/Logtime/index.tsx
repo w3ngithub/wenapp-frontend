@@ -11,7 +11,7 @@ import {
 } from 'services/settings/logTime'
 import {capitalizeInput, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
-import CommonModal from '../CommonModal'
+import CommonLogTypeModal from '../CommonLogTypeModal'
 
 function Logtime() {
   const queryClient = useQueryClient()
@@ -19,7 +19,9 @@ function Logtime() {
   const [arrayDataToSend, setArrayDataToSend] = useState<any>([])
   const [openModal, setOpenModal] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
+  const [displayColorPicker, setDisplayColorPicker] = useState(false)
   const [duplicateValue, setDuplicateValue] = useState<boolean>(false)
+  const [hexCode, setHexCode] = useState<string>('')
   const [dataToEdit, setDataToEdit] = useState<any>({})
 
   const {data: logTypes, isLoading}: any = useQuery(['logTypes'], getLogtypes)
@@ -71,12 +73,12 @@ function Logtime() {
     },
   })
 
-  const handleAddClick = (input: string) => {
-    addLogTypeMutation.mutate({name: input})
+  const handleAddClick = (name:string, color:string) => {
+    addLogTypeMutation.mutate({name: name, color: color})
   }
 
-  const handleEditClick = (input: any) => {
-    editLogTypeMutation.mutate({id: dataToEdit?._id, name: input})
+  const handleEditClick = (name:string, color:string) => {
+    editLogTypeMutation.mutate({id: dataToEdit?._id, name: name, color: color})
   }
 
   const handleDeleteClick = (data: any, type: string) => {
@@ -94,7 +96,9 @@ function Logtime() {
   const handleCloseModal = () => {
     setIsEditMode(false)
     setDuplicateValue(false)
+    setHexCode('')
     setDataToEdit({})
+    setDisplayColorPicker(false)
     setOpenModal(false)
   }
   const handleOpenModal = (type: string, data:any) => {
@@ -105,11 +109,15 @@ function Logtime() {
 
   return (
     <>
-      <CommonModal
+      <CommonLogTypeModal
         toggle={openModal}
         type={type}
         duplicateValue={duplicateValue}
+        hexCode = {hexCode}
+        setHexCode={setHexCode}
         setDuplicateValue={setDuplicateValue}
+        displayColorPicker = {displayColorPicker}
+        setDisplayColorPicker = {setDisplayColorPicker}
         currentData = {arrayDataToSend}
         isEditMode={isEditMode}
         editData={dataToEdit}
