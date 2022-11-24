@@ -15,7 +15,7 @@ import moment from 'moment'
 import {useEffect} from 'react'
 import {filterOptions} from 'helpers/utils'
 import {getNoticeTypes} from 'services/noticeboard'
-import { disabledBeforeToday } from 'util/antDatePickerDisabled'
+import {disabledBeforeToday} from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -115,7 +115,7 @@ function NoticeModal({
                         if (!value) {
                           throw new Error('Title is required.')
                         }
-                        if(value?.trim() === ''){
+                        if (value?.trim() === '') {
                           throw new Error('Please enter a valid title.')
                         }
                       } catch (err) {
@@ -142,7 +142,7 @@ function NoticeModal({
                         if (!value) {
                           throw new Error('Category is required.')
                         }
-                        if(value?.trim() === ''){
+                        if (value?.trim() === '') {
                           throw new Error('Please enter a valid category.')
                         }
                       } catch (err) {
@@ -175,28 +175,36 @@ function NoticeModal({
                 hasFeedback={readOnly ? false : true}
                 name="startDate"
                 rules={[
-                  {required: true, message: 'Start Date is required.'},
-
-                  ({getFieldValue}) => ({
-                    validator(_, value) {
-                      if (!value) {
-                        return Promise.resolve()
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error(`Start Date is required.`)
+                        }
+                        if (
+                          !value.isSameOrBefore(
+                            form.getFieldValue('endDate')
+                          ) &&
+                          form.getFieldValue('endDate')
+                        ) {
+                          throw new Error(
+                            'Start Date should be before End Date'
+                          )
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
                       }
-                      if (
-                        !value.isSameOrBefore(getFieldValue('endDate')) &&
-                        getFieldValue('endDate')
-                      ) {
-                        return Promise.reject(
-                          new Error('Start Date should be before End Time')
-                        )
-                      }
-
-                      return Promise.resolve()
                     },
-                  }),
+                  },
                 ]}
               >
                 <DatePicker
+                  onChange={() => {
+                    if (form.getFieldValue('endDate')) {
+                      form.validateFields(['endDate'])
+                    }
+                  }}
                   className=" gx-w-100"
                   disabled={readOnly}
                   format={dateFormat}
@@ -222,7 +230,7 @@ function NoticeModal({
                         getFieldValue('startDate')
                       ) {
                         return Promise.reject(
-                          new Error('End Date should be after Start Date')
+                          new Error('End Date should be after Start Date.')
                         )
                       }
                       return Promise.resolve()
@@ -231,6 +239,11 @@ function NoticeModal({
                 ]}
               >
                 <DatePicker
+                  onChange={() => {
+                    if (form.getFieldValue('startDate')) {
+                      form.validateFields(['startDate'])
+                    }
+                  }}
                   className=" gx-w-100"
                   disabled={readOnly}
                   format={dateFormat}
@@ -333,11 +346,13 @@ function NoticeModal({
                         if (!value) {
                           throw new Error('Some detail is required.')
                         }
-                        if(value?.trim() === ''){
+                        if (value?.trim() === '') {
                           throw new Error('Please enter valid details.')
                         }
-                        if(value?.trim()?.length < 10){
-                          throw new Error('Detail must at least consist 10 characters.')
+                        if (value?.trim()?.length < 10) {
+                          throw new Error(
+                            'Detail must at least consist 10 characters.'
+                          )
                         }
                       } catch (err) {
                         throw new Error(err.message)
