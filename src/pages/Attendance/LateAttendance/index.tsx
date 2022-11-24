@@ -103,7 +103,7 @@ function LateAttendance({userRole}: {userRole: string}) {
           _id: {userId: '', user: ''},
           data: [{attendanceDate: '', userId: ''}],
         })
-        handleCutLeaveInAttendance()
+        handleCutLeaveInAttendance(response)
       } else {
         notification({
           message: `Leave creation failed !`,
@@ -195,10 +195,14 @@ function LateAttendance({userRole}: {userRole: string}) {
     })
   }
 
-  const handleCutLeaveInAttendance = () => {
+  const handleCutLeaveInAttendance = (leaveResponse: any) => {
     const payload = attendanceRecord?.data.map((x: any) => x._id) || []
 
     attendanceGroupMutation.mutate({
+      leaveType:
+        leaveResponse?.data?.data?.data?.halfDay === ''
+          ? 'Full Day'
+          : 'First Half',
       attendance: payload,
       userId: attendanceRecord?.data[0].userId,
       leaveCutdate: moment(
