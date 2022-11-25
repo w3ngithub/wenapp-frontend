@@ -235,11 +235,13 @@ function Apply({user}) {
         let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
           (sub) =>
             sub?.leaveType?.name === 'Substitute Leave' &&
-            sub?.leaveStatus === 'approved' &&
-            isSubstitute?.id === form.getFieldValue('leaveType')
+            sub?.leaveStatus === 'approved'
         )
 
-        if (hasSubstitute) {
+        if (
+          hasSubstitute &&
+          isSubstitute?.id === form.getFieldValue('leaveType')
+        ) {
           return notification({
             type: 'error',
             message: 'Substitute Leave Already Taken',
