@@ -82,7 +82,7 @@ const ProjectLogs = lazy(() => import('pages/ProjectLogs'))
 moment.locale('en-gb')
 
 function App(props: any) {
-  const {locale, authUser, themeType} = props
+  const {locale, authUser, themeType, switchingUser} = props
 
   const currentAppLocale = AppLocale[locale.locale]
   const navigate = useNavigate()
@@ -104,6 +104,8 @@ function App(props: any) {
     )
       navigate('notAllowed')
   }, [])
+
+  if (switchingUser) return <FallBack />
 
   return (
     <ConfigProvider locale={currentAppLocale.antd}>
@@ -358,7 +360,7 @@ const FallBack = () => <CircularProgress className="" />
 
 const mapStateToProps = ({settings, auth}: {settings: any; auth: any}) => {
   const {locale, themeType} = settings
-  const {authUser} = auth
-  return {locale, authUser, themeType}
+  const {authUser, switchingUser} = auth
+  return {locale, authUser, themeType, switchingUser}
 }
 export default connect(mapStateToProps)(App)

@@ -12,10 +12,10 @@ function UserInfo(props) {
   const [openPasswordModel, setOpenPasswordChangeModel] = useState(false)
 
   let nameInitials = ''
-  if(!props?.authUser?.user?.photoURL){
+  if (!props?.authUser?.user?.photoURL) {
     const initials = props?.authUser?.user?.name?.split(' ')
-    initials?.forEach((a)=>{
-      nameInitials = nameInitials+a[0].toUpperCase()
+    initials?.forEach((a) => {
+      nameInitials = nameInitials + a[0].toUpperCase()
     })
   }
 
@@ -48,6 +48,13 @@ function UserInfo(props) {
       <li
         onClick={() => {
           handleVisibleChange(false)
+        }}
+      >
+        Switch To Admin
+      </li>
+      <li
+        onClick={() => {
+          handleVisibleChange(false)
           props.userSignOut()
         }}
       >
@@ -55,7 +62,7 @@ function UserInfo(props) {
       </li>
     </ul>
   )
-  
+
   return (
     <>
       <ChangePasswordModel
@@ -73,17 +80,17 @@ function UserInfo(props) {
         onVisibleChange={handleVisibleChange}
       >
         <Avatar
-                className="gx-avatar gx-pointer"
-                alt="..."
-                style={
-                  props?.authUser?.user?.photoURL
-                    ? {}
-                    : {color: '#f56a00', backgroundColor: '#fde3cf'}
-                }
-                src={props?.authUser?.user?.photoURL}
-              >
-                {nameInitials}
-              </Avatar>
+          className="gx-avatar gx-pointer"
+          alt="..."
+          style={
+            props?.authUser?.user?.photoURL
+              ? {}
+              : {color: '#f56a00', backgroundColor: '#fde3cf'}
+          }
+          src={props?.authUser?.user?.photoURL}
+        >
+          {nameInitials}
+        </Avatar>
       </Popover>
     </>
   )

@@ -3,6 +3,8 @@ import {
   INIT_URL,
   ON_HIDE_LOADER,
   ON_SHOW_LOADER,
+  ON_SWITCHED_USER,
+  ON_SWITCH_USER,
   SET_PROFILE_PHOTO,
   SHOW_MESSAGE,
   SIGNIN_USER_SUCCESS,
@@ -12,7 +14,8 @@ import {
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const INIT_STATE = {
-  loader: false,
+  showLoader: false,
+  switchingUser: false,
   alertMessage: '',
   showMessage: false,
   initURL: '',
@@ -24,14 +27,14 @@ const reducer = (state = INIT_STATE, action) => {
     case SIGNUP_USER_SUCCESS: {
       return {
         ...state,
-        loader: false,
+        showLoader: false,
         authUser: action.payload,
       }
     }
     case SIGNIN_USER_SUCCESS: {
       return {
         ...state,
-        loader: false,
+        showLoader: false,
         authUser: action.payload,
       }
     }
@@ -46,7 +49,7 @@ const reducer = (state = INIT_STATE, action) => {
         ...state,
         authUser: null,
         initURL: '/',
-        loader: false,
+        showLoader: false,
       }
     }
 
@@ -55,7 +58,7 @@ const reducer = (state = INIT_STATE, action) => {
         ...state,
         alertMessage: action.payload,
         showMessage: true,
-        loader: false,
+        showLoader: false,
       }
     }
     case HIDE_MESSAGE: {
@@ -63,26 +66,41 @@ const reducer = (state = INIT_STATE, action) => {
         ...state,
         alertMessage: '',
         showMessage: false,
-        loader: false,
+        showLoader: false,
       }
     }
 
     case ON_SHOW_LOADER: {
       return {
         ...state,
-        loader: true,
+        showLoader: true,
       }
     }
     case ON_HIDE_LOADER: {
       return {
         ...state,
-        loader: false,
+        showLoader: false,
+      }
+    }
+    case ON_SWITCH_USER: {
+      return {
+        ...state,
+        switchingUser: true,
+      }
+    }
+    case ON_SWITCHED_USER: {
+      return {
+        ...state,
+        switchingUser: false,
       }
     }
     case SET_PROFILE_PHOTO: {
       return {
         ...state,
-        authUser: {...state.authUser,user: {...state.authUser.user, photoURL: action.payload}},
+        authUser: {
+          ...state.authUser,
+          user: {...state.authUser.user, photoURL: action.payload},
+        },
       }
     }
     default:

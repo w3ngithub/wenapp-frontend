@@ -3,6 +3,8 @@ import {
   INIT_URL,
   ON_HIDE_LOADER,
   ON_SHOW_LOADER,
+  ON_SWITCHED_USER,
+  ON_SWITCH_USER,
   SET_PROFILE_PHOTO,
   SHOW_MESSAGE,
   SIGNIN_USER,
@@ -84,5 +86,16 @@ export const setProfilePhoto = (photo) => {
   return {
     type: SET_PROFILE_PHOTO,
     payload: photo,
+  }
+}
+
+export const switchUser = () => {
+  return {
+    type: ON_SWITCH_USER,
+  }
+}
+export const switchedUser = () => {
+  return {
+    type: ON_SWITCHED_USER,
   }
 }
