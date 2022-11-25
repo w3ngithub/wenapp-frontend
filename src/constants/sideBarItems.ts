@@ -1,4 +1,5 @@
 import {
+  ACTIVITY_LOGS,
   ATTENDANCE,
   BLOG,
   COWORKERS,
@@ -159,6 +160,12 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
         name: 'sidebar.reports.leavereport',
         url: LEAVE_REPORT,
         id: 3,
+        roles: LEAVE_REPORT_REPORT_ACESS,
+      },
+      {
+        name: 'sidebar.reports.activitylogs',
+        url: ACTIVITY_LOGS,
+        id: 4,
         roles: LEAVE_REPORT_REPORT_ACESS,
       },
     ],

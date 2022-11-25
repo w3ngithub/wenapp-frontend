@@ -17,6 +17,7 @@ import {
 import {connect} from 'react-redux'
 import PunchInOut from 'components/Elements/PunchInOut'
 import {setThemeType} from 'appRedux/actions/Setting'
+import ActivityInfo from 'components/Modules/ActivityInfo'
 
 const {Header} = Layout
 
@@ -103,6 +104,10 @@ class Topbar extends Component {
                     }
                     onChange={this.handleThemeChange}
                   />
+                </li>
+
+                <li className="gx-user-nav gx-notify li-gap">
+                  <ActivityInfo />
                 </li>
 
                 <li className="gx-user-nav li-gap">
