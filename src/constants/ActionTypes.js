@@ -11,6 +11,8 @@ export const SHOW_MESSAGE = 'SHOW_MESSAGE'
 export const HIDE_MESSAGE = 'HIDE_MESSAGE'
 export const ON_SHOW_LOADER = 'ON_SHOW_LOADER'
 export const ON_HIDE_LOADER = 'ON_HIDE_LOADER'
+export const ON_SWITCH_USER = 'ON_SWITCH_USER'
+export const ON_SWITCHED_USER = 'ON_SWITCHED_USER'
 
 //Auth const
 export const SIGNUP_USER = 'SIGNUP_USER'

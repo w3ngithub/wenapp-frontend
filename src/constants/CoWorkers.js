@@ -6,6 +6,7 @@ import {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
 const CO_WORKERCOLUMNS = (
   sortedInfo,
   openEditPopup,
+  handleSwitchToUser,
   updatMutation,
   disableMutation,
   role
@@ -93,6 +94,14 @@ const CO_WORKERCOLUMNS = (
                 onClick={() => openEditPopup(record, false)}
               >
                 <CustomIcon name="edit" />
+              </span>
+              <Divider type="vertical" />
+
+              <span
+                className="gx-link"
+                onClick={() => handleSwitchToUser(record)}
+              >
+                <CustomIcon name="switchToUser" />
               </span>
             </>
           )}

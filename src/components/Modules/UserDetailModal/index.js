@@ -72,7 +72,8 @@ function UserDetailForm({
   }
 
   const handleStatusChange = (value) => {
-    if (value === 'Probation') form.setFieldValue('allocatedLeaves', 3)
+    if (value === 'Probation')
+      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
     else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
   }
 
@@ -91,7 +92,7 @@ function UserDetailForm({
     const isOnProbation = form.getFieldValue('status') === 'Probation'
 
     if (isIntern || isTrainee || isOnProbation)
-      form.setFieldValue('allocatedLeaves', 3)
+      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
     else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
   }
   useEffect(() => {

@@ -4,6 +4,8 @@ import {
   INIT_URL,
   ON_HIDE_LOADER,
   ON_SHOW_LOADER,
+  ON_SWITCHED_USER,
+  ON_SWITCH_USER,
   SHOW_MESSAGE,
   SIGNIN_USER,
   SIGNIN_USER_SUCCESS,
@@ -80,6 +82,16 @@ export const hideAuthLoader = () => {
   }
 }
 
+export const switchUser = () => {
+  return {
+    type: ON_SWITCH_USER,
+  }
+}
+export const switchedUser = () => {
+  return {
+    type: ON_SWITCHED_USER,
+  }
+}
 export const getUserProfile = (userData) => {
   return {
     type: UPDATE_USER_PROFILE,

@@ -22,11 +22,11 @@ const {Content, Footer} = Layout
 
 export const MainApp = (props) => {
   const dispatch = useDispatch()
-  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
+  const userId = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
 
   const {data: details} = useQuery(
-    ['userDetail', user._id],
-    () => getMyProfile(user._id),
+    ['userDetail', userId],
+    () => getMyProfile(userId),
     {
       onSuccess: (data) => {
         localStorage.setItem(
@@ -43,8 +43,8 @@ export const MainApp = (props) => {
   )
 
   useEffect(() => {
-    dispatch(fetchLoggedInUserAttendance(user._id))
-  }, [dispatch, user._id])
+    dispatch(fetchLoggedInUserAttendance(userId))
+  }, [dispatch, userId])
 
   useEffect(() => {
     const timeout = setInterval(() => {

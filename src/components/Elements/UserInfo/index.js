@@ -1,21 +1,24 @@
 import React, {useState} from 'react'
-import {connect} from 'react-redux'
+import {connect, useDispatch} from 'react-redux'
 import {Avatar, Popover} from 'antd'
-import {userSignOut} from 'appRedux/actions/Auth'
+import {switchedUser, switchUser, userSignOut} from 'appRedux/actions/Auth'
 import {useNavigate} from 'react-router-dom'
 import {PROFILE} from 'helpers/routePath'
 import ChangePasswordModel from 'components/Modules/ChangePasswordModel'
+import {getLocalStorageData} from 'helpers/utils'
 
 function UserInfo(props) {
   const navigate = useNavigate()
   const [visible, setVisible] = useState(false)
   const [openPasswordModel, setOpenPasswordChangeModel] = useState(false)
+  const admin = JSON.parse(localStorage.getItem('admin')) || {}
+  const dispatch = useDispatch()
 
   let nameInitials = ''
-  if(!props?.authUser?.user?.photoURL){
+  if (!props?.authUser?.user?.photoURL) {
     const initials = props?.authUser?.user?.name?.split(' ')
-    initials?.forEach((a)=>{
-      nameInitials = nameInitials+a[0].toUpperCase()
+    initials?.forEach((a) => {
+      nameInitials = nameInitials + a[0].toUpperCase()
     })
   }
 
@@ -26,6 +29,14 @@ function UserInfo(props) {
   const handleChangePassword = () => {
     handleVisibleChange(false)
     setOpenPasswordChangeModel(true)
+  }
+
+  const handleSwitchToAdmin = () => {
+    dispatch(switchUser())
+    const admin = JSON.parse(localStorage.getItem('admin'))
+    localStorage.setItem('user_id', JSON.stringify(admin))
+    localStorage.removeItem('admin')
+    dispatch(switchedUser())
   }
 
   const userMenuOptions = (
@@ -45,6 +56,9 @@ function UserInfo(props) {
       >
         Change Password
       </li>
+      {admin.hasOwnProperty('user') && (
+        <li onClick={handleSwitchToAdmin}>Switch To Admin</li>
+      )}
       <li
         onClick={() => {
           handleVisibleChange(false)
@@ -55,7 +69,7 @@ function UserInfo(props) {
       </li>
     </ul>
   )
-  
+
   return (
     <>
       <ChangePasswordModel
@@ -73,17 +87,17 @@ function UserInfo(props) {
         onVisibleChange={handleVisibleChange}
       >
         <Avatar
-                className="gx-avatar gx-pointer"
-                alt="..."
-                style={
-                  props?.authUser?.user?.photoURL
-                    ? {}
-                    : {color: '#f56a00', backgroundColor: '#fde3cf'}
-                }
-                src={props?.authUser?.user?.photoURL}
-              >
-                {nameInitials}
-              </Avatar>
+          className="gx-avatar gx-pointer"
+          alt="..."
+          style={
+            props?.authUser?.user?.photoURL
+              ? {}
+              : {color: '#f56a00', backgroundColor: '#fde3cf'}
+          }
+          src={props?.authUser?.user?.photoURL}
+        >
+          {nameInitials}
+        </Avatar>
       </Popover>
     </>
   )
