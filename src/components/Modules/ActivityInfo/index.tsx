@@ -10,32 +10,37 @@ import moment from 'moment'
 
 function ActivityInfo() {
   const [visible, setVisible] = useState<boolean>(false)
+  const [page, setPage] = useState<any>({
+    page: 1,
+    limit: 6,
+  })
 
   const {
     role: {key},
   } = getLocalStorageData(LOCALSTORAGE_USER)
 
-  const {data, refetch} = useQuery(
-    ['activityLogsInfo'],
-    () =>
-      getActivityLogs({
-        page: 1,
-        limit: 6,
-      }),
-    {enabled: false}
+  const {data} = useQuery(
+    ['activityLogsInfo', page],
+    () => getActivityLogs({...page}),
+    {enabled: key === RoleAccess.Admin, keepPreviousData: true}
   )
-
-  useEffect(() => {
-    if (key === RoleAccess.Admin) {
-      refetch()
-    }
-  }, [key, refetch])
 
   const handleVisibleChange = (newVisible: boolean) => {
     setVisible(newVisible)
   }
+
+  const loadMore = () => {
+    if (data?.data?.data?.count <= page.page * page.limit) return
+    setPage((prev: {page: number; limit: number}) => ({
+      ...prev,
+      page: prev.page + 1,
+    }))
+  }
+
   const userMenuOptions = (
     <RecentActivity
+      showLoadMore={data?.data?.data?.count <= page.page * page.limit}
+      loadMore={loadMore}
       recentList={[
         {
           id: 1,

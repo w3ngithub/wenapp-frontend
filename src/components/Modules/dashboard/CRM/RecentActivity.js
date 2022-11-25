@@ -19,7 +19,7 @@ function getName(task, shape) {
 }
 
 function RecentActivity(props) {
-  const {recentList} = props
+  const {recentList, loadMore, showLoadMore} = props
 
   return (
     <div className="gx-entry-sec">
@@ -41,9 +41,11 @@ function RecentActivity(props) {
           </Timeline>
         </div>
       ))}
-      <span className="gx-link gx-btn-link" onClick={() => {}}>
-        Load More
-      </span>
+      {!showLoadMore && (
+        <span className="gx-link gx-btn-link" onClick={loadMore}>
+          Load More
+        </span>
+      )}
     </div>
   )
 }
