@@ -141,6 +141,7 @@ function Faqs() {
           data={data?.data?.data?.data}
           onEditClick={handleOpenEditModal}
           onDeleteClick={handleDeleteClick}
+          type='FAQ'
         />
       </Card>
     </>

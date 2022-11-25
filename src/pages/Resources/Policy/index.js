@@ -146,6 +146,7 @@ function Policy() {
           data={data?.data?.data?.data}
           onEditClick={handleOpenEditModal}
           onDeleteClick={handleDeleteClick}
+          type='Policy'
         />
       </Card>
     </>
