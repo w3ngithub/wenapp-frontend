@@ -16,7 +16,7 @@ import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {getMyProfile} from 'services/users/userDetails'
 import {useQuery} from '@tanstack/react-query'
-import {getUserProfile} from 'appRedux/actions/UserProfile'
+import {getUserProfile} from 'appRedux/actions'
 
 const {Content, Footer} = Layout
 
@@ -35,8 +35,7 @@ export const MainApp = (props) => {
         )
         dispatch(
           getUserProfile({
-            name: data.data.data.data[0].name,
-            position: data.data.data.data[0].position.name,
+            user: data.data.data.data[0],
           })
         )
       },

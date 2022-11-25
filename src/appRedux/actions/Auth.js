@@ -1,4 +1,5 @@
 import {
+  UPDATE_USER_PROFILE,
   HIDE_MESSAGE,
   INIT_URL,
   ON_HIDE_LOADER,
@@ -97,5 +98,11 @@ export const switchUser = () => {
 export const switchedUser = () => {
   return {
     type: ON_SWITCHED_USER,
+  }
+}
+export const getUserProfile = (userData) => {
+  return {
+    type: UPDATE_USER_PROFILE,
+    payload: userData,
   }
 }

@@ -1,4 +1,5 @@
 import {
+  UPDATE_USER_PROFILE,
   HIDE_MESSAGE,
   INIT_URL,
   ON_HIDE_LOADER,
@@ -103,6 +104,16 @@ const reducer = (state = INIT_STATE, action) => {
         },
       }
     }
+
+    case UPDATE_USER_PROFILE:
+      return {
+        ...state,
+        authUser: {
+          ...state.authUser,
+          user: {...action.payload.user},
+        },
+      }
+
     default:
       return state
   }
