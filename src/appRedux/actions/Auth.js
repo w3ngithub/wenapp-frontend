@@ -1,4 +1,5 @@
 import {
+  UPDATE_USER_PROFILE,
   HIDE_MESSAGE,
   INIT_URL,
   ON_HIDE_LOADER,
@@ -84,5 +85,12 @@ export const setProfilePhoto = (photo) => {
   return {
     type: SET_PROFILE_PHOTO,
     payload: photo,
+  }
+}
+
+export const getUserProfile = (userData) => {
+  return {
+    type: UPDATE_USER_PROFILE,
+    payload: userData,
   }
 }

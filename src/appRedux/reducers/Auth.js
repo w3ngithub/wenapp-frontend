@@ -1,4 +1,5 @@
 import {
+  UPDATE_USER_PROFILE,
   HIDE_MESSAGE,
   INIT_URL,
   ON_HIDE_LOADER,
@@ -82,9 +83,22 @@ const reducer = (state = INIT_STATE, action) => {
     case SET_PROFILE_PHOTO: {
       return {
         ...state,
-        authUser: {...state.authUser,user: {...state.authUser.user, photoURL: action.payload}},
+        authUser: {
+          ...state.authUser,
+          user: {...state.authUser.user, photoURL: action.payload},
+        },
       }
     }
+
+    case UPDATE_USER_PROFILE:
+      return {
+        ...state,
+        authUser: {
+          ...state.authUser,
+          user: {...action.payload.user},
+        },
+      }
+
     default:
       return state
   }
