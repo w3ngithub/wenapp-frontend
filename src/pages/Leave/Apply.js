@@ -110,7 +110,6 @@ function Apply({user}) {
   )
  
   const onFocus = () => {
-    console.log('Tab is in focus')
     queryClient.invalidateQueries(['userLeaves'])
   }
 
