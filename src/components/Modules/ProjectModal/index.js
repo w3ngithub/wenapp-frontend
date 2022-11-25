@@ -1,5 +1,5 @@
 import '@ant-design/compatible/assets/index.css'
-import { async } from '@firebase/util'
+import {async} from '@firebase/util'
 import {useQuery} from '@tanstack/react-query'
 import {
   Button,
@@ -13,7 +13,8 @@ import {
   Form,
   Spin,
 } from 'antd'
-import {filterOptions} from 'helpers/utils'
+import {emptyText} from 'constants/EmptySearchAntd'
+import {capitalizeInput, filterOptions} from 'helpers/utils'
 import moment from 'moment'
 import Maintenance from 'pages/Projects/Maintainance'
 import {useEffect, useState} from 'react'
@@ -81,6 +82,7 @@ function ProjectModal({
           : values?.liveUrl?.join('')
       onSubmit({
         ...values,
+        name: values?.name[0].toUpperCase() + values?.name?.slice(1),
         designers: updatedDesigners,
         qa: updatedQAs,
         developers: updatedDevelopers,
@@ -90,8 +92,8 @@ function ProjectModal({
           {
             ...maintenance[0],
             selectMonths:
-              maintenance[0]?.selectMonths.length === 13
-                ? [...maintenance[0]?.selectMonths.slice(1)]
+              maintenance[0]?.selectMonths?.length === 13
+                ? [...maintenance[0]?.selectMonths?.slice(1)]
                 : maintenance[0]?.selectMonths,
           },
         ],
@@ -338,25 +340,29 @@ function ProjectModal({
                 label="Name"
                 hasFeedback={readOnly ? false : true}
                 name="name"
-                rules={[{required: true,validator:async(_,value)=>{
-                  try {
-                    if(!value){
-                      throw new Error('Name is required.')
-                    }
-                    const  regex = /^[A-Za-z ]+$/
-                    const isValid = regex.test(value)
-                    if(value.trim().length===0){
-                      throw new Error('Please enter a valid Name.')
-                    }
-      
-                    if(!isValid){
-                     throw new Error('Please enter a valid Name.')
-                    }
-    
-                  } catch (err) {
-                    throw new Error(err.message)
-                  }
-                }}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (_, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Name is required.')
+                        }
+                        const regex = /^[A-Za-z ]+$/
+                        const isValid = regex.test(value)
+                        if (value.trim().length === 0) {
+                          throw new Error('Please enter a valid Name.')
+                        }
+
+                        if (!isValid) {
+                          throw new Error('Please enter a valid Name.')
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <Input placeholder="Enter Name" disabled={readOnly} />
               </FormItem>
@@ -459,6 +465,7 @@ function ProjectModal({
                 name="projectTypes"
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Type"
@@ -481,12 +488,13 @@ function ProjectModal({
                 rules={[
                   {
                     required: true,
-                    message: 'Required!',
+                    message: 'Status is required.',
                   },
                 ]}
               >
                 <Select
                   showSearch
+                  notFoundContent={emptyText}
                   filterOption={filterOptions}
                   placeholder="Select Status"
                   disabled={readOnly}
@@ -509,6 +517,7 @@ function ProjectModal({
               >
                 <Select
                   showSearch
+                  notFoundContent={emptyText}
                   filterOption={filterOptions}
                   placeholder="Select Tags"
                   disabled={readOnly}
@@ -531,6 +540,7 @@ function ProjectModal({
                 name="client"
               >
                 <Select
+                  notFoundContent={emptyText}
                   placeholder="Select Client"
                   filterOption={filterOptions}
                   disabled={readOnly}
@@ -554,6 +564,7 @@ function ProjectModal({
                 name="developers"
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Developers"
@@ -575,6 +586,7 @@ function ProjectModal({
                 name="designers"
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Designers"
@@ -598,6 +610,7 @@ function ProjectModal({
                 name="qa"
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select QA"
@@ -619,6 +632,7 @@ function ProjectModal({
                 name="devOps"
               >
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select DevOps"

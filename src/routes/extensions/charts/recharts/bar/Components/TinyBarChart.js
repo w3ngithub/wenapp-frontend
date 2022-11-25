@@ -29,7 +29,7 @@ const TinyBarChart = ({data}) => {
         <Legend />
         <Bar dataKey="time" fill={darkTheme ? "#13c2c2":"#003366"} name="Hours Spent" >
         {data?.map((entry, index) => (
-            <Cell fill={logTypeColors?.[entry?.name]} />
+            <Cell fill={entry?.color} />
           ))}
         </Bar>
       </BarChart>

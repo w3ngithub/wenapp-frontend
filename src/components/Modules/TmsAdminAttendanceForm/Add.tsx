@@ -21,7 +21,8 @@ import {filterOptions, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 import getLocation from 'helpers/getLocation'
-import { disabledAfterToday } from 'util/antDatePickerDisabled'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 function TmsAdminAddAttendanceForm({
   toogle,
@@ -96,7 +97,9 @@ function TmsAdminAddAttendanceForm({
         <div className="gx-d-flex gx-flex-row">
           <FieldTimeOutlined style={{fontSize: '24px'}} />
           <LiveTime />
-          <span style={{marginLeft:'0.5rem'}}>{moment().format('dddd, MMMM D, YYYY')}</span>
+          <span style={{marginLeft: '0.5rem'}}>
+            {moment().format('dddd, MMMM D, YYYY')}
+          </span>
         </div>
       }
       mask={false}
@@ -129,11 +132,12 @@ function TmsAdminAddAttendanceForm({
               <Row>
                 <Form.Item
                   name="user"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[{required: true, message: 'Co-worker is required.'}]}
                   className="direct-form-item"
                   style={{marginRight: innerWidth <= 748 ? 0 : '1rem'}}
                 >
                   <Select
+                    notFoundContent={emptyText}
                     showSearch
                     filterOption={filterOptions}
                     placeholder="Select Co-worker"
@@ -147,7 +151,9 @@ function TmsAdminAddAttendanceForm({
                 </Form.Item>
                 <Form.Item
                   name="attendanceDate"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {required: true, message: 'Attendance Date is required.'},
+                  ]}
                 >
                   <DatePicker
                     style={{width: innerWidth <= 748 ? '100%' : '200px'}}
@@ -161,7 +167,9 @@ function TmsAdminAddAttendanceForm({
             <Col span={24} sm={12} xs={24}>
               <Form.Item
                 name="punchInTime"
-                rules={[{required: true, message: 'Required!'}]}
+                rules={[
+                  {required: true, message: 'Punch In Time is required.'},
+                ]}
                 hasFeedback
               >
                 <TimePicker
