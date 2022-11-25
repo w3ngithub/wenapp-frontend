@@ -20,7 +20,7 @@ const INIT_STATE = {
   alertMessage: '',
   showMessage: false,
   initURL: '',
-  authUser: JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)),
+  authUser: null,
 }
 
 const reducer = (state = INIT_STATE, action) => {

@@ -35,7 +35,7 @@ function* signInUserWithEmailPassword({payload}) {
       localStorage.setItem('token', signInUser.data.token)
       localStorage.setItem(
         LOCALSTORAGE_USER,
-        JSON.stringify(signInUser.data.data)
+        JSON.stringify(signInUser.data.data?.user?._id)
       )
       instance.defaults.headers[
         'Authorization'
