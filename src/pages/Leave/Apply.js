@@ -1,16 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {STATUS_TYPES} from 'constants/Leaves'
-import {
-  Button,
-  Checkbox,
-  Col,
-  Input,
-  Row,
-  Select,
-  Spin,
-  Form,
-  DatePicker,
-} from 'antd'
+import {Button, Col, Input, Row, Select, Spin, Form, DatePicker} from 'antd'
 import {
   filterHalfDayLeaves,
   filterOptions,
@@ -118,12 +108,23 @@ function Apply({user}) {
       getLeavesOfUser(user, '', undefined, '', '', yearStartDate, yearEndDate),
     {enabled: !!yearStartDate && !!yearEndDate}
   )
+ 
+  const onFocus = () => {
+    console.log('Tab is in focus')
+    queryClient.invalidateQueries(['userLeaves'])
+  }
+
+  useEffect(() => {
+    window.addEventListener('focus', onFocus)
+  }, [])
 
   useEffect(() => {
     if (gender === 'Female') {
       refetch()
     }
   }, [gender])
+
+ 
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {
