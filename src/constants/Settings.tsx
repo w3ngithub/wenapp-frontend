@@ -50,7 +50,7 @@ export const LOGTYPE_COLUMN = (
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-    width: 630,
+    width: 500,
   },
   {
     title: 'Log Color',
@@ -76,7 +76,6 @@ export const LOGTYPE_COLUMN = (
   {
     title: 'Action',
     key: 'action',
-    width: 10,
     render: (text: any, record: any) => {
       return (
         <div style={{display: 'flex'}}>
