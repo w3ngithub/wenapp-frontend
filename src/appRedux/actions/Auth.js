@@ -4,7 +4,6 @@ import {
   INIT_URL,
   ON_HIDE_LOADER,
   ON_SHOW_LOADER,
-  SET_PROFILE_PHOTO,
   SHOW_MESSAGE,
   SIGNIN_USER,
   SIGNIN_USER_SUCCESS,
@@ -78,13 +77,6 @@ export const hideMessage = () => {
 export const hideAuthLoader = () => {
   return {
     type: ON_HIDE_LOADER,
-  }
-}
-
-export const setProfilePhoto = (photo) => {
-  return {
-    type: SET_PROFILE_PHOTO,
-    payload: photo,
   }
 }
 
