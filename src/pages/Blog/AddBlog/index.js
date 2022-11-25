@@ -136,7 +136,7 @@ function AddBlog() {
     } else {
       setNoContent(false)
       if (
-        draftToHtml(convertToRaw(editorState.getCurrentContent())).length < 9
+        rawContent.length < 9
       ) {
         notification({
           message: 'Content Must be at least 10 characters',

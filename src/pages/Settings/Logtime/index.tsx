@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Button, Card} from 'antd'
 import SettingTable from '../CommonTable'
-import {POSITION_COLUMN} from 'constants/Settings'
+import {LOGTYPE_COLUMN} from 'constants/Settings'
 import {
   addLogType,
   deleteLogType,
@@ -140,7 +140,7 @@ function Logtime() {
       >
         <SettingTable
           data={logTypes?.data?.data?.data}
-          columns={POSITION_COLUMN(
+          columns={LOGTYPE_COLUMN(
             (value) => handleDeleteClick(value, 'Log Type'),
             (value) => handleOpenEditModal(value, 'Log Type', logTypes)
           )}
