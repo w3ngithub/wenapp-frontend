@@ -1,13 +1,12 @@
 import React, {useState} from 'react'
 import {useInfiniteQuery} from '@tanstack/react-query'
 import {getActivityLogs} from 'services/activitLogs'
-import {getLocalStorageData} from 'helpers/utils'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import RoleAccess from 'constants/RoleAccess'
 import {Popover} from 'antd'
 import RecentActivity from '../dashboard/CRM/RecentActivity'
 import moment from 'moment'
 import {useInView} from 'react-intersection-observer'
+import {useSelector} from 'react-redux'
 
 function ActivityInfo() {
   const {ref, inView} = useInView({threshold: 0.5})
@@ -16,7 +15,7 @@ function ActivityInfo() {
 
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector((state: any) => state?.auth?.authUser?.user)
 
   const handleVisibleChange = (newVisible: boolean) => {
     setVisible(newVisible)

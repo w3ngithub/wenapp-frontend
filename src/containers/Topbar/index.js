@@ -19,15 +19,13 @@ import PunchInOut from 'components/Elements/PunchInOut'
 import {setThemeType} from 'appRedux/actions/Setting'
 import ActivityInfo from 'components/Modules/ActivityInfo'
 import RoleAccess from 'constants/RoleAccess'
-import {getLocalStorageData} from './../../helpers/utils'
-import {LOCALSTORAGE_USER} from './../../constants/Settings'
 
 const {Header} = Layout
 
 class Topbar extends Component {
   state = {
     searchText: '',
-    user: getLocalStorageData(LOCALSTORAGE_USER),
+    user: this.props.user,
   }
 
   updateSearchChatUser = (evt) => {
@@ -128,9 +126,12 @@ class Topbar extends Component {
   }
 }
 
-const mapStateToProps = ({settings}) => {
+const mapStateToProps = ({settings, auth}) => {
   const {navStyle, navCollapsed, width, themeType} = settings
-  return {navStyle, navCollapsed, width, themeType}
+  const {
+    authUser: {user},
+  } = auth
+  return {navStyle, navCollapsed, width, themeType, user}
 }
 
 export default connect(mapStateToProps, {
