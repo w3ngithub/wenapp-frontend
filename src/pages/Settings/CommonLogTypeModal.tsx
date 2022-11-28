@@ -1,5 +1,6 @@
 import {Button, Form, Input, Modal, Spin} from 'antd'
 import React, {useEffect, useState} from 'react'
+import ColorPicker from './ColorPicker'
 
 interface modalInterface {
   isEditMode: boolean
@@ -7,8 +8,13 @@ interface modalInterface {
   currentData: any
   duplicateValue: boolean
   setDuplicateValue: (a: boolean) => void
-  onSubmit: (leave: {name: string; leaveDays: string}) => void
-  onCancel: (setDuplicateValue: any) => void
+  onSubmit: (name: string, color: string) => void
+  onCancel: (setDuplicateValue: any, setHexCode: any) => void
+  hexCode: string
+  setHexCode: (a: string) => void
+  displayColorPicker: boolean
+  setDisplayColorPicker: (a: boolean) => void
+  type: string
   isLoading: boolean
   editData: any
 }
@@ -18,14 +24,19 @@ const layout = {
   // wrapperCol: { span: 16 }
 }
 
-function LeaveModal({
+function CommonLogTypeModal({
   isEditMode,
   toggle,
   currentData,
   onSubmit,
-  duplicateValue,
   setDuplicateValue,
+  duplicateValue,
+  hexCode,
+  displayColorPicker,
+  setDisplayColorPicker,
+  setHexCode,
   onCancel,
+  type,
   isLoading,
   editData,
 }: modalInterface) {
@@ -46,10 +57,18 @@ function LeaveModal({
   }
 
   const handleSubmit = () => {
-    form.validateFields();
-    const availableData = currentData?.data?.data?.data?.map(
-      (item: {id: any; name: any}) => item?.name?.toLowerCase()
-    )
+    console.log('currentData', currentData)
+    form.validateFields()
+    let availableData
+    if (currentData?.hasOwnProperty('data')) {
+      availableData = currentData?.data?.data?.data?.map(
+        (item: {id: any; name: any}) => item?.name?.toLowerCase()
+      )
+    } else {
+      availableData = currentData.map((item: {id: any; name: any}) =>
+        item?.name?.toLowerCase()
+      )
+    }
     if (
       !isEditMode &&
       availableData?.includes(form.getFieldValue('name').toLowerCase())
@@ -79,34 +98,39 @@ function LeaveModal({
       setDuplicateValue(true)
       return
     }
-    form.validateFields().then((values) => onSubmit(form.getFieldsValue()))
+    form
+      .validateFields()
+      .then((values) =>
+        onSubmit(form.getFieldValue('name'), form.getFieldValue('color'))
+      )
   }
 
   useEffect(() => {
     if (toggle) {
-      if (isEditMode)
-        form.setFieldsValue({
-          name: editData?.name,
-          leaveDays: editData?.leaveDays,
-        })
+      if (isEditMode) {
+        form.setFieldValue('name', editData?.name)
+        form.setFieldValue('color', editData?.color)
+      }
     }
     if (!toggle) form.resetFields()
   }, [toggle])
   return (
     <Modal
-      title={isEditMode ? `Update Leave Type` : `Add Leave Type`}
+      title={isEditMode ? `Update ${type}` : `Add ${type}`}
       visible={toggle}
+      
       onOk={handleSubmit}
+      mask={false}
       onCancel={() => {
         setNameChanged(undefined)
-        onCancel(setDuplicateValue)
+        onCancel(setDuplicateValue, setHexCode)
       }}
       footer={[
         <Button
           key="back"
           onClick={() => {
             setNameChanged(undefined)
-            onCancel(setDuplicateValue)
+            onCancel(setDuplicateValue, setHexCode)
           }}
         >
           Cancel
@@ -126,24 +150,17 @@ function LeaveModal({
         >
           <Form.Item
             name="name"
-            label="Name"
+            label={type}
             rules={[
               {
                 required: true,
-                whitespace: true,
                 validator: async (rule, value) => {
                   try {
                     if (!value) {
-                      throw new Error('Leave name is required.')
+                      throw new Error(`${type} is required.`)
                     }
                     if (value?.trim() === '') {
-                      throw new Error('Please enter a valid name.')
-                    }
-                    if (value?.trim()?.length < 10) {
-                      throw new Error('Leave name should be at least 10 characters.')
-                    }
-                    if (value?.trim()?.length > 1000) {
-                      throw new Error('Leave name cannot exceed more than 100 characters')
+                      throw new Error(`Please enter a valid ${type}.`)
                     }
                   } catch (err) {
                     throw new Error(err.message)
@@ -152,45 +169,30 @@ function LeaveModal({
               },
             ]}
           >
-            <Input
-              // value={input}
-              placeholder="Name"
-              // onChange={handleInputChange}
-            />
+            <Input placeholder={type} />
           </Form.Item>
           <Form.Item
-            name="leaveDays"
-            label="Leave Days"
+            name="color"
+            label="Select Color"
             rules={[
-              {
-                required: true,
-                validator: async (rule, value) => {
-                  try {
-                    if (!value) throw new Error('Number of leave days is required.')
-                    if (value < 0) {
-                      throw new Error('Leave Days cannot be negative.')
-                    }
-                    if (value < 1) {
-                      throw new Error('At least 1 leave day is required.')
-                    }
-                    if (value - Math.floor(value) !== 0) {
-                      throw new Error('Leave Days cannot be decimal.')
-                    }
-                  } catch (err) {
-                    throw new Error(err.message)
-                  }
-                },
-              },
+              {required: true, message: 'Color for log type is required.'},
             ]}
           >
             <Input
-              // value={input}
-              placeholder="Leave days"
-              type="number"
-              min={1}
-              // onChange={handleInputChange}
+              value={hexCode ? hexCode : undefined}
+              placeholder="Log Color"
+              onClick={() => setDisplayColorPicker(false)}
+              suffix={
+                <ColorPicker
+                  form={form}
+                  editData={editData}
+                  displayColorPicker={displayColorPicker}
+                  setDisplayColorPicker={setDisplayColorPicker}
+                />
+              }
             />
           </Form.Item>
+
           {duplicateValue && (
             <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>
           )}
@@ -200,4 +202,4 @@ function LeaveModal({
   )
 }
 
-export default LeaveModal
+export default CommonLogTypeModal

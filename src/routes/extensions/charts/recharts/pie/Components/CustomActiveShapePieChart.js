@@ -75,7 +75,7 @@ const RenderActiveShape = (props) => {
         textAnchor={textAnchor}
         fill={darkTheme ? '#fff' : '#999'}
       >
-        {`(${(percent * 100).toFixed(2)}%)`}
+        {`(${(percent * 100)?.toFixed(2)}%)`}
       </text>
     </g>
   )
@@ -104,7 +104,7 @@ const CustomActiveShapePieChart = ({data}) => {
           fill={darkTheme ? '#13c2c2' : '#003366'}
         >
           {data?.map((entry, index) => (
-            <Cell fill={logTypeColors?.[entry?.name]} />
+            <Cell fill={entry?.color} />
           ))}
         </Pie>
       </PieChart>

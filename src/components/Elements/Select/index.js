@@ -3,6 +3,7 @@ import {Select as Dropdown} from 'antd'
 import {filterOptions} from 'helpers/utils'
 import './selectLabel.less'
 import {SearchOutlined} from '@ant-design/icons'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const Option = Dropdown.Option
 
@@ -15,6 +16,7 @@ const Select = ({
   style,
   mode,
   inputSelect = false,
+  defaultValue = '',
   width = 200,
   placeholderClass = false,
   handleSearch,
@@ -24,6 +26,7 @@ const Select = ({
   return (
     <div>
       <Dropdown
+        notFoundContent={emptyText}
         suffixIcon={showSearchIcon ? <SearchOutlined /> : undefined}
         disabled={disabled}
         className={placeholderClass}
@@ -32,6 +35,9 @@ const Select = ({
         placeholder={placeholderClass ? null : placeholder}
         style={style}
         onChange={onChange}
+        defaultValue={defaultValue ? defaultValue : undefined}
+        // defaultValue={null}
+
         onSearch={(e) => {
           inputSelect && setSearchValue(e)
           handleSearch(e)
@@ -64,7 +70,7 @@ export default Select
 
 Select.defaultProps = {
   onChange: () => {},
-  handleSearch :()=>{},
+  handleSearch: () => {},
   value: undefined,
   options: [],
   placeholder: 'Select Option',

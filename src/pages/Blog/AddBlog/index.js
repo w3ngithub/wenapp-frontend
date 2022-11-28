@@ -25,6 +25,7 @@ function AddBlog() {
   const [editorState, seteditorState] = useState(EditorState.createEmpty())
   const [submitting, setSubmitting] = useState(false)
   const [openMedia, setopenMedia] = useState(false)
+  const [noContent, setNoContent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [progress, setProgress] = useState(null)
   const {themeType} = useSelector((state) => state.settings)
@@ -126,24 +127,35 @@ function AddBlog() {
   }
 
   const submitBlog = (formData) => {
-    if (draftToHtml(convertToRaw(editorState.getCurrentContent())).length < 9) {
-      notification({
-        message: 'Content Must be at least 10 characters',
-        type: 'error',
-      })
+    const rawContent = convertToRaw(editorState.getCurrentContent())
+      ?.blocks?.[0]?.text
+
+    if (rawContent === '') {
+      setNoContent(true)
       return
-    }
-    setSubmitting(true)
-    if (bid) {
-      updateBlogMutation.mutate({
-        ...formData,
-        content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-      })
     } else {
-      addBlogMutation.mutate({
-        ...formData,
-        content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-      })
+      setNoContent(false)
+      if (
+        rawContent.length < 9
+      ) {
+        notification({
+          message: 'Content Must be at least 10 characters',
+          type: 'error',
+        })
+        return
+      }
+      setSubmitting(true)
+      if (bid) {
+        updateBlogMutation.mutate({
+          ...formData,
+          content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+        })
+      } else {
+        addBlogMutation.mutate({
+          ...formData,
+          content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+        })
+      }
     }
   }
 
@@ -242,7 +254,7 @@ function AddBlog() {
                       if (!value) {
                         throw new Error(`Title is required.`)
                       }
-                      if(value?.trim() === ''){
+                      if (value?.trim() === '') {
                         throw new Error(`Please enter a valid title.`)
                       }
                     } catch (err) {
@@ -256,10 +268,7 @@ function AddBlog() {
               <Input />
             </Form.Item>
 
-            <Form.Item
-              name="content"
-              label="Content"
-            >
+            <Form.Item name="content" label="Content">
               <>
                 <Button
                   type="primary"
@@ -289,7 +298,11 @@ function AddBlog() {
                 />
               </>
             </Form.Item>
-
+            {noContent && (
+              <p className="suggestion-text">
+                Content is required. Please enter some valid content.
+              </p>
+            )}
             <Form.Item name="blogCategories" label="Categories">
               <Select
                 showSearch

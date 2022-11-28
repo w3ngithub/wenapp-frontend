@@ -1,4 +1,4 @@
-import React, {useEffect, useState,useCallback} from 'react'
+import React, {useEffect, useState, useCallback} from 'react'
 import '@ant-design/compatible/assets/index.css'
 import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
 import moment from 'moment'
@@ -7,8 +7,9 @@ import {getAllProjects, getProject} from 'services/projects'
 import {filterOptions} from 'helpers/utils'
 import {LOG_TIME_OLD_EDIT} from 'constants/RoleAccess'
 import {SearchOutlined} from '@ant-design/icons'
-import { debounce } from 'helpers/utils'
-import { notification } from 'helpers/notification'
+import {debounce} from 'helpers/utils'
+import {notification} from 'helpers/notification'
+import {emptyText} from 'constants/EmptySearchAntd'
 const FormItem = Form.Item
 const Option = Select.Option
 const {TextArea} = Input
@@ -41,13 +42,13 @@ function LogtimeModal({
   const [form] = Form.useForm()
   const [types, setTypes] = useState([])
   const [zeroHourMinutes, setZeroHourMinutes] = useState(false)
-  const [project,setProject] = useState()
-  const [projectArray,setProjectArray] = useState([])
+  const [project, setProject] = useState()
+  const [projectArray, setProjectArray] = useState([])
   const projectsQuery = useQuery(['projects'], getAllProjects, {
     enabled: false,
   })
 
-  const dateFormat = 'YYYY-MM-DD';
+  const dateFormat = 'YYYY-MM-DD'
   const handleCancel = () => {
     setZeroHourMinutes(false)
     form.resetFields()
@@ -70,45 +71,40 @@ function LogtimeModal({
     })
   }
 
-  const  handleSearch = async(projectName)=>{
-    if(!projectName){
-       setProjectArray([])
+  const handleSearch = async (projectName) => {
+    if (!projectName) {
+      setProjectArray([])
       return
-    }
-    else {
+    } else {
       setSearchValue(projectName)
-      const projects = await getAllProjects({project:projectName})
+      const projects = await getAllProjects({project: projectName})
       setProjectArray(projects?.data?.data?.data)
     }
-    //else fetch projects from api 
-
+    //else fetch projects from api
   }
 
-  const optimizedFn = useCallback(debounce(handleSearch,100),[])
-
+  const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
   useEffect(() => {
     if (toggle) {
       setTypes(logTypes.data?.data?.data)
-     // projectsQuery.refetch()
+      // projectsQuery.refetch()
       form.setFieldsValue({
         hours: '0',
         minutes: '0',
       })
       if (isEditMode) {
-      if(initialValues?.project?._id && isUserLogtime){
-        getProject(initialValues?.project?._id).then((data)=>{
-          if(data?.data?.status==='success'){
-             let projectInfo = data?.data?.data?.data
+        if (initialValues?.project?._id && isUserLogtime) {
+          getProject(initialValues?.project?._id).then((data) => {
+            if (data?.data?.status === 'success') {
+              let projectInfo = data?.data?.data?.data
               setProjectArray(projectInfo)
-          }
-          else{
-            notification({message:'Project Cannot be Imported'})
-          }
-        })
-      }
+            } else {
+              notification({message: 'Project Cannot be Imported'})
+            }
+          })
+        }
 
-        
         form.setFieldsValue(
           isUserLogtime
             ? {
@@ -129,8 +125,8 @@ function LogtimeModal({
                 remarks: initialValues?.remarks,
               }
         )
-      }else{
-        form.setFieldValue('logDate',moment())
+      } else {
+        form.setFieldValue('logDate', moment())
       }
     }
 
@@ -161,7 +157,7 @@ function LogtimeModal({
             name="logDate"
             rules={[
               {
-                message: 'Required!',
+                message: 'Date is required.',
                 required: true,
               },
             ]}
@@ -253,9 +249,10 @@ function LogtimeModal({
             label="Log Type"
             hasFeedback
             name="logType"
-            rules={[{required: true, message: 'Required!'}]}
+            rules={[{required: true, message: 'Log Type is required'}]}
           >
             <Select
+              notFoundContent={emptyText}
               showSearch
               filterOption={filterOptions}
               placeholder="Select Log Type"
@@ -273,9 +270,10 @@ function LogtimeModal({
               label="Project Name"
               hasFeedback
               name="project"
-              rules={[{required: true, message: 'Required!'}]}
+              rules={[{required: true, message: 'Project Name is required.'}]}
             >
-               <Select
+              <Select
+                notFoundContent={emptyText}
                 showSearch
                 suffixIcon={<SearchOutlined />}
                 filterOption={filterOptions}
@@ -283,12 +281,12 @@ function LogtimeModal({
                 onSearch={optimizedFn}
                 value={project}
                 allowClear
-                onChange={e=>setProject(e)}
+                onChange={(e) => setProject(e)}
                 open={searchValue.length ? true : false}
                 onSelect={() => {
                   setSearchValue('')
                 }}
-                onBlur={(e)=>setSearchValue('')}
+                onBlur={(e) => setSearchValue('')}
               >
                 {/* {[
                   ...(projectsQuery?.data?.data?.data?.data || []),
@@ -299,8 +297,7 @@ function LogtimeModal({
                   </Option>
                 ))} */}
 
-
-              {[
+                {[
                   ...(projectArray || []),
                   {_id: process.env.REACT_APP_OTHER_PROJECT_ID, name: 'Other'},
                 ].map((project) => (
@@ -308,8 +305,7 @@ function LogtimeModal({
                     {project.name}
                   </Option>
                 ))}
-              </Select> 
-
+              </Select>
             </FormItem>
           )}
 
@@ -323,7 +319,7 @@ function LogtimeModal({
                 required: true,
                 validator: async (rule, value) => {
                   try {
-                    if (!value) throw new Error('Required!')
+                    if (!value) throw new Error('Remarks is required.')
 
                     const trimmedValue = value && value.trim()
                     if (trimmedValue?.length < 10) {
@@ -339,7 +335,7 @@ function LogtimeModal({
             <TextArea placeholder="Enter Remarks" rows={6} />
           </FormItem>
           {zeroHourMinutes && (
-            <p className='suggestion-text'>
+            <p className="suggestion-text">
               Hours and minutes cannot be 0 simultaneously.
             </p>
           )}

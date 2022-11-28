@@ -312,6 +312,7 @@ function ProjectLogs() {
             <Form layout="inline" form={form}>
               <FormItem className="direct-form-item">
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Log Type"
@@ -328,6 +329,7 @@ function ProjectLogs() {
               </FormItem>
               <FormItem className="direct-form-item">
                 <Select
+                  notFoundContent={emptyText}
                   showSearch
                   filterOption={filterOptions}
                   placeholder="Select Log Author"
@@ -360,7 +362,7 @@ function ProjectLogs() {
                   onClick={handleOpenViewModal}
                   style={{marginBottom: '16px'}}
                 >
-                  View Details
+                  View Project
                 </Button>
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "

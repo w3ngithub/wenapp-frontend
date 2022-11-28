@@ -108,7 +108,7 @@ function LeaveQuarterModal({
                             form.getFieldValue('firststartDate')
                           ) {
                             throw new Error(
-                              'End Date should be after Start Date'
+                              'End Date should be after Start Date.'
                             )
                           }
                         } catch (err) {
@@ -192,7 +192,7 @@ function LeaveQuarterModal({
                             form.getFieldValue('secondstartDate')
                           ) {
                             throw new Error(
-                              'End Date should be after Start Date'
+                              'End Date should be after Start Date.'
                             )
                           }
                         } catch (err) {
@@ -274,7 +274,7 @@ function LeaveQuarterModal({
                             form.getFieldValue('thirdstartDate')
                           ) {
                             throw new Error(
-                              'End Date should be after Start Date'
+                              'End Date should be after Start Date.'
                             )
                           }
                         } catch (err) {
@@ -357,7 +357,7 @@ function LeaveQuarterModal({
                             form.getFieldValue('fourthstartDate')
                           ) {
                             throw new Error(
-                              'End Date should be after Start Date'
+                              'End Date should be after Start Date.'
                             )
                           }
                         } catch (err) {

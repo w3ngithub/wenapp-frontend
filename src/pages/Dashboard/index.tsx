@@ -1,4 +1,4 @@
-import React, {useEffect, useState,useCallback} from 'react'
+import React, {useEffect, useState, useCallback} from 'react'
 import {ReactComponent as LeaveIcon} from 'assets/images/Leave.svg'
 import {Button, Card, Col, Form, Row, Spin} from 'antd'
 import Auxiliary from 'util/Auxiliary'
@@ -47,7 +47,7 @@ import {
   DASHBOARD_PROJECT_LOG_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {LEAVES_TYPES} from 'constants/Leaves'
-import { debounce } from 'helpers/utils'
+import {debounce} from 'helpers/utils'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -60,7 +60,7 @@ const Dashboard = () => {
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
-  const [projectArray,setProjectArray] = useState([])
+  const [projectArray, setProjectArray] = useState([])
   const navigate = useNavigate()
   const loggedInUser = getLocalStorageData(LOCALSTORAGE_USER)
   const {innerWidth} = useWindowsSize()
@@ -112,21 +112,18 @@ const Dashboard = () => {
     {enabled: false, refetchOnWindowFocus: false}
   )
 
-
-  const  handleSearch = async(projectName:any)=>{
-    if(!projectName){
-       setProjectArray([])
+  const handleSearch = async (projectName: any) => {
+    if (!projectName) {
+      setProjectArray([])
       return
-    }
-    else {
-      const projects = await getAllProjects({project:projectName})
+    } else {
+      const projects = await getAllProjects({project: projectName})
       setProjectArray(projects?.data?.data?.data)
     }
-    //else fetch projects from api 
-
+    //else fetch projects from api
   }
 
-  const optimizedFn = useCallback(debounce(handleSearch,100),[])
+  const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
   const leavesQuery = useQuery(
     ['DashBoardleaves'],
@@ -465,7 +462,7 @@ const Dashboard = () => {
               onClick={
                 loggedInUser?.role?.value !== 'Admin'
                   ? null
-                  : () => navigate('/todays-overview', {state:true})
+                  : () => navigate('/todays-overview', {state: true})
               }
             />
           </Col>
@@ -542,6 +539,7 @@ const Dashboard = () => {
                       value={chart}
                       onChange={(c: any) => setChart(c)}
                       placeholder="Select Chart"
+                      defaultValue="Bar Chart"
                       options={[
                         {_id: '1', name: 'Bar Chart'},
                         {_id: '2', name: 'Pie Chart'},
@@ -551,12 +549,35 @@ const Dashboard = () => {
                       }))}
                     />
                   </FormItem>
-                  <FormItem name="project" className="direct-form-item">
+                  <FormItem
+                    name="project"
+                    // className="direct-form-item"
+                    required
+                    rules={[
+                      {
+                        required: true,
+                        validator: async (rule, value) => {
+                          try {
+                            if (!value) {
+                              throw new Error('Project is required.')
+                            }
+                            if (value?.trim() === '') {
+                              throw new Error(
+                                'Please enter a valid project name.'
+                              )
+                            }
+                          } catch (err) {
+                            throw new Error(err.message)
+                          }
+                        },
+                      },
+                    ]}
+                  >
                     <Select
                       showSearchIcon={true}
                       value={project}
-                     onChange={(c:any) => setProject(c)}
-                     handleSearch={optimizedFn}
+                      onChange={(c: any) => setProject(c)}
+                      handleSearch={optimizedFn}
                       placeholder="Search Project"
                       // options={data?.data?.data?.data?.map(
                       //   (x: {_id: string; name: string}) => ({
@@ -565,13 +586,12 @@ const Dashboard = () => {
                       //   })
                       // )}
 
-                        options={(projectArray || [])?.map(
+                      options={(projectArray || [])?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,
                           value: x.name,
                         })
                       )}
-
                       inputSelect
                     />
                   </FormItem>
@@ -602,16 +622,20 @@ const Dashboard = () => {
                     <div>
                       {chart === '2' ? (
                         <CustomActiveShapePieChart
-                          data={chartData?.map((x: any) => ({
-                            name: x.logType[0].name,
-                            value: +x.timeSpent,
-                          }))}
+                          data={chartData?.map((x: any) => {
+                            return {
+                              name: x.logType[0].name,
+                              color: x.logType[0].color,
+                              value: +x.timeSpent?.toFixed(2),
+                            }
+                          })}
                         />
                       ) : (
                         <TinyBarChart
                           data={chartData?.map((x: any) => ({
                             name: x.logType[0].name,
-                            time: x.timeSpent,
+                            color: x.logType[0].color,
+                            time: +x.timeSpent?.toFixed(2),
                           }))}
                         />
                       )}

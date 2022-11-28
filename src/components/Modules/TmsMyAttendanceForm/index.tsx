@@ -4,7 +4,7 @@ import moment from 'moment'
 import {FieldTimeOutlined} from '@ant-design/icons'
 import LiveTime from 'components/Elements/LiveTime'
 import {useMutation, useQueryClient} from '@tanstack/react-query'
-import {addAttendance, updatePunchout} from 'services/attendances'
+import {addAttendance, getIpAddres, updatePunchout} from 'services/attendances'
 import {handleResponse, isNotValidTimeZone, sortFromDate} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {useDispatch, useSelector} from 'react-redux'
@@ -95,10 +95,13 @@ function TmsMyAttendanceForm({
     const location = await getLocation()
 
     if (await checkLocationPermission()) {
+      const IP = await getIpAddres()
+
       addAttendances.mutate({
         punchInTime: moment.utc().format(),
         punchInNote: values.punchInNote,
         punchInLocation: location,
+        punchInIp: IP?.data?.IPv4,
         attendanceDate: moment.utc().startOf('day').format(),
       })
     } else {
@@ -124,6 +127,8 @@ function TmsMyAttendanceForm({
     const lastattendace = sortFromDate(latestAttendance, 'punchInTime').at(-1)
 
     if (await checkLocationPermission()) {
+      const IP = await getIpAddres()
+
       punchOutAttendances.mutate({
         userId: lastattendace._id,
         payload: {
@@ -131,6 +136,7 @@ function TmsMyAttendanceForm({
           midDayExit: values.midDayExit ? true : false,
           punchOutTime: moment.utc().format(),
           punchOutLocation: location,
+          punchOutIp: IP?.data?.IPv4,
         },
       })
     } else {
@@ -193,7 +199,9 @@ function TmsMyAttendanceForm({
                 <Form.Item
                   label="Punch In Note"
                   name="punchInNote"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {required: true, message: 'Punch In Note is required.'},
+                  ]}
                   hasFeedback
                 >
                   <Input.TextArea rows={5} />
@@ -219,7 +227,9 @@ function TmsMyAttendanceForm({
                 <Form.Item
                   label="Punch Out Note"
                   name="punchOutNote"
-                  rules={[{required: true, message: 'Required!'}]}
+                  rules={[
+                    {required: true, message: 'Punch Out Note is required.'},
+                  ]}
                   hasFeedback
                 >
                   <Input.TextArea rows={5} />
