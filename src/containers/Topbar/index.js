@@ -17,12 +17,17 @@ import {
 import {connect} from 'react-redux'
 import PunchInOut from 'components/Elements/PunchInOut'
 import {setThemeType} from 'appRedux/actions/Setting'
+import ActivityInfo from 'components/Modules/ActivityInfo'
+import RoleAccess from 'constants/RoleAccess'
+import {getLocalStorageData} from './../../helpers/utils'
+import {LOCALSTORAGE_USER} from './../../constants/Settings'
 
 const {Header} = Layout
 
 class Topbar extends Component {
   state = {
     searchText: '',
+    user: getLocalStorageData(LOCALSTORAGE_USER),
   }
 
   updateSearchChatUser = (evt) => {
@@ -104,6 +109,12 @@ class Topbar extends Component {
                     onChange={this.handleThemeChange}
                   />
                 </li>
+
+                {RoleAccess.Admin === this.state.user.role.key && (
+                  <li className="gx-user-nav gx-notify li-gap">
+                    <ActivityInfo />
+                  </li>
+                )}
 
                 <li className="gx-user-nav li-gap">
                   <UserInfo />

@@ -11,6 +11,7 @@ import SignIn from 'containers/SignIn'
 import SignUp from 'containers/SignUp'
 
 import {
+  ACTIVITY_LOGS,
   ADDBLOG,
   ATTENDANCE,
   BLOG,
@@ -68,6 +69,7 @@ import {getMyProfile} from 'services/users/userDetails'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {useQuery} from '@tanstack/react-query'
 import {getUserProfile} from 'appRedux/actions'
+import ActivityLogs from 'pages/Reports/ActivityLogs'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -317,6 +319,14 @@ function App(props: any) {
                   element={
                     <AccessRoute roles={LEAVE_REPORT_REPORT_ACESS}>
                       <LeaveReport />
+                    </AccessRoute>
+                  }
+                />
+                <Route
+                  path={ACTIVITY_LOGS}
+                  element={
+                    <AccessRoute roles={LEAVE_REPORT_REPORT_ACESS}>
+                      <ActivityLogs />
                     </AccessRoute>
                   }
                 />
