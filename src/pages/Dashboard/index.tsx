@@ -471,9 +471,11 @@ const Dashboard = () => {
               totalCount={PendingLeaves?.data?.data?.leaves || 0}
               label="Pending Leave Request"
               onClick={() =>
-                navigate('/leave', {
-                  state: {tabKey: '3', leaveStatus: 'pending'},
-                })
+                loggedInUser?.role?.value !== 'Admin'
+                  ? null
+                  : navigate('/leave', {
+                      state: {tabKey: '3', leaveStatus: 'pending'},
+                    })
               }
             />
           </Col>
