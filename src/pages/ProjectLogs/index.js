@@ -9,7 +9,6 @@ import {
   filterOptions,
   roundedToFixed,
   handleResponse,
-  getLocalStorageData,
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
@@ -28,9 +27,9 @@ import LogsBreadCumb from './LogsBreadCumb'
 import TimeSummary from './TimeSummary'
 import AccessWrapper from './../../components/Modules/AccessWrapper/index'
 import {LOG_TIME_ADD_NO_ACCESS} from 'constants/RoleAccess'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import ProjectModal from 'components/Modules/ProjectModal'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {useSelector} from 'react-redux'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -66,7 +65,7 @@ function ProjectLogs() {
   const {
     name,
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector((state) => state?.auth?.authUser?.user)
 
   const {data: projectDetail} = useQuery(['singleProject', projectId], () =>
     getProject(projectId)

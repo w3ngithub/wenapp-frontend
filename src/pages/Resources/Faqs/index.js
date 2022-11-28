@@ -3,12 +3,12 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Button, Card} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {addFaqs, deleteFaqs, editFaqs, getAllFaqs} from 'services/resources'
-import {getLocalStorageData, handleResponse} from 'helpers/utils'
+import {handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import Collapse from 'components/Elements/Collapse'
 import CommonResourceModal from 'pages/Settings/CommonResourceModal'
 import RoleAccess from 'constants/RoleAccess'
-import { LOCALSTORAGE_USER } from 'constants/Settings'
+import {useSelector} from 'react-redux'
 
 function Faqs() {
   const {data, isLoading, isError} = useQuery(['faqs'], getAllFaqs)
@@ -19,8 +19,7 @@ function Faqs() {
   const [dataToEdit, setDataToEdit] = useState({})
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER) || ''
-
+  } = useSelector((state) => state?.auth?.authUser?.user)
 
   useEffect(() => {
     if (isError) {
@@ -124,10 +123,7 @@ function Faqs() {
       <Card
         title="FAQS"
         extra={
-          [
-            RoleAccess.Admin,
-            RoleAccess.HumanResource,
-          ].includes(key) ? (
+          [RoleAccess.Admin, RoleAccess.HumanResource].includes(key) ? (
             <Button
               className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
               onClick={() => handleOpenModal('FAQ')}

@@ -11,7 +11,6 @@ import {
   SIGNOUT_USER_SUCCESS,
   SIGNUP_USER_SUCCESS,
 } from 'constants/ActionTypes'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const INIT_STATE = {
   showLoader: false,

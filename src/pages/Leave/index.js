@@ -7,7 +7,7 @@ import {
   getTakenAndRemainingLeaveDaysOfUser,
   sendEmailforLeave,
 } from 'services/leaves'
-import {getLocalStorageData, handleResponse} from 'helpers/utils'
+import {handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import LeavesApply from './Apply'
 import Leaves from './Leaves'
@@ -18,12 +18,12 @@ import MyHistory from './MyHistory'
 import {getLeaveTypes} from 'services/settings/leaveType'
 import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
 import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingAndAppliedCards'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import RoleAccess, {
   LEAVE_TABS_NO_ACCESS,
-  EmployeeStatus
+  EmployeeStatus,
 } from 'constants/RoleAccess'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
+import {useSelector} from 'react-redux'
 
 const TabPane = Tabs.TabPane
 
@@ -38,7 +38,7 @@ function Leave() {
   const [leaveData, setLeaveData] = useState('')
   const [submittingCancelReason, setSubmittingCancelReason] = useState(false)
 
-  const loggedInUser = getLocalStorageData(LOCALSTORAGE_USER)
+  const loggedInUser = useSelector((state) => state?.auth?.authUser?.user)
 
   const {data: leaveTypes, isLoading} = useQuery(['leaveTypes'], getLeaveTypes)
 
@@ -124,8 +124,8 @@ function Leave() {
     },
     {}
   )
-  
-  let IsIntern = user?.status===EmployeeStatus?.Probation;
+
+  let IsIntern = user?.status === EmployeeStatus?.Probation
 
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
@@ -145,7 +145,13 @@ function Leave() {
 
       <Card title="Leave Management System">
         <Row>
-          <Col xl={IsIntern?24:12} lg={IsIntern?24:12} md={24} sm={24} xs={24}>
+          <Col
+            xl={IsIntern ? 24 : 12}
+            lg={IsIntern ? 24 : 12}
+            md={24}
+            sm={24}
+            xs={24}
+          >
             <Card
               title="Quarterly Leave"
               style={{background: 'rgb(232 232 232 / 26%)'}}
@@ -163,35 +169,35 @@ function Leave() {
             </Card>
           </Col>
 
-          { !IsIntern && (
-              <Col xl={12} lg={12} md={24} sm={24} xs={24}>
-                <Card
-                  title="Annual Leave"
-                  style={{background: 'rgb(232 232 232 / 26%)'}}
-                >
-                  <AnnualLeavesRemainingAndAppliedCards
-                    firstTitle="Days Remaining"
-                    secondTitle="Days Approved"
-                    firstType="Sick"
-                    secondType="Casual"
-                    sickDayRemaining={
-                      yearlyLeavesTakn?.['Sick Leave']
-                        ? allocatedYealryLeaves?.['Sick Leave'] -
-                          yearlyLeavesTakn?.['Sick Leave']
-                        : allocatedYealryLeaves?.['Sick Leave']
-                    }
-                    casualDayRemaining={
-                      yearlyLeavesTakn?.['Casual Leave']
-                        ? allocatedYealryLeaves?.['Casual Leave'] -
-                          yearlyLeavesTakn?.['Casual Leave']
-                        : allocatedYealryLeaves?.['Casual Leave']
-                    }
-                    sickDayApplied={yearlyLeavesTakn?.['Sick Leave'] || 0}
-                    casualDayApplied={yearlyLeavesTakn?.['Casual Leave'] || 0}
-                  />
-                </Card>
-              </Col>
-            )}
+          {!IsIntern && (
+            <Col xl={12} lg={12} md={24} sm={24} xs={24}>
+              <Card
+                title="Annual Leave"
+                style={{background: 'rgb(232 232 232 / 26%)'}}
+              >
+                <AnnualLeavesRemainingAndAppliedCards
+                  firstTitle="Days Remaining"
+                  secondTitle="Days Approved"
+                  firstType="Sick"
+                  secondType="Casual"
+                  sickDayRemaining={
+                    yearlyLeavesTakn?.['Sick Leave']
+                      ? allocatedYealryLeaves?.['Sick Leave'] -
+                        yearlyLeavesTakn?.['Sick Leave']
+                      : allocatedYealryLeaves?.['Sick Leave']
+                  }
+                  casualDayRemaining={
+                    yearlyLeavesTakn?.['Casual Leave']
+                      ? allocatedYealryLeaves?.['Casual Leave'] -
+                        yearlyLeavesTakn?.['Casual Leave']
+                      : allocatedYealryLeaves?.['Casual Leave']
+                  }
+                  sickDayApplied={yearlyLeavesTakn?.['Sick Leave'] || 0}
+                  casualDayApplied={yearlyLeavesTakn?.['Casual Leave'] || 0}
+                />
+              </Card>
+            </Col>
+          )}
         </Row>
 
         <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
