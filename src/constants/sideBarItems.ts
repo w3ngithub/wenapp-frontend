@@ -1,4 +1,5 @@
 import {
+  ACTIVITY_LOGS,
   ATTENDANCE,
   BLOG,
   COWORKERS,
@@ -23,6 +24,7 @@ import RoleAccess, {
   LEAVE_REPORT_REPORT_ACESS,
   WEEKLY_REPORT_ACCESS,
   WORK_LOG_REPORT_ACESS,
+  ACTIVITY_LOGS_ACCESS,
 } from './RoleAccess'
 
 export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
@@ -160,6 +162,12 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
         url: LEAVE_REPORT,
         id: 3,
         roles: LEAVE_REPORT_REPORT_ACESS,
+      },
+      {
+        name: 'sidebar.reports.activitylogs',
+        url: ACTIVITY_LOGS,
+        id: 4,
+        roles: ACTIVITY_LOGS_ACCESS,
       },
     ],
   },
