@@ -1,9 +1,11 @@
 import {
+  UPDATE_USER_PROFILE,
   HIDE_MESSAGE,
   INIT_URL,
   ON_HIDE_LOADER,
   ON_SHOW_LOADER,
-  SET_PROFILE_PHOTO,
+  ON_SWITCHED_USER,
+  ON_SWITCH_USER,
   SHOW_MESSAGE,
   SIGNIN_USER,
   SIGNIN_USER_SUCCESS,
@@ -80,9 +82,19 @@ export const hideAuthLoader = () => {
   }
 }
 
-export const setProfilePhoto = (photo) => {
+export const switchUser = () => {
   return {
-    type: SET_PROFILE_PHOTO,
-    payload: photo,
+    type: ON_SWITCH_USER,
+  }
+}
+export const switchedUser = () => {
+  return {
+    type: ON_SWITCHED_USER,
+  }
+}
+export const getUserProfile = (userData) => {
+  return {
+    type: UPDATE_USER_PROFILE,
+    payload: userData,
   }
 }

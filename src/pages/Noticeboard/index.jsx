@@ -4,7 +4,6 @@ import {Card, Table, Form, Input, Button} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {
   changeDate,
-  getLocalStorageData,
   handleResponse,
   MuiFormatDate,
 } from 'helpers/utils'
@@ -21,8 +20,8 @@ import NoticeBoardModal from 'components/Modules/noticeboardModal'
 import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import { emptyText } from 'constants/EmptySearchAntd'
+import { useSelector } from 'react-redux'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -56,7 +55,7 @@ function NoticeBoardPage() {
 
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector((state)=>state?.auth?.authUser?.user)
 
   const {data, isLoading, isError, isFetching} = useQuery(
     ['notices', page, title, date,sort],

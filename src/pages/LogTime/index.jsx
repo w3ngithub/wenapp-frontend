@@ -4,12 +4,7 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import LogModal from 'components/Modules/LogtimeModal'
 import '@ant-design/compatible/assets/index.css'
 import {LOGTIMES_COLUMNS} from 'constants/logTimes'
-import {
-  changeDate,
-  getLocalStorageData,
-  roundedToFixed,
-  handleResponse,
-} from 'helpers/utils'
+import {changeDate, roundedToFixed, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
 import React, {useState} from 'react'
@@ -23,9 +18,9 @@ import {
   updateTimeLog,
 } from 'services/timeLogs'
 import TimeSummary from './TimeSummary'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
-import { useNavigate } from 'react-router-dom'
-import { emptyText } from 'constants/EmptySearchAntd'
+import {useNavigate} from 'react-router-dom'
+import {emptyText} from 'constants/EmptySearchAntd'
+import {useSelector} from 'react-redux'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -35,8 +30,8 @@ const formattedLogs = (logs) => {
     logDate: changeDate(log?.logDate),
     user: log?.user?.name,
     project: log?.project?.name || 'Other',
-    slug:log?.project?.slug,
-    projectId: log?.project?.id
+    slug: log?.project?.slug,
+    projectId: log?.project?.id,
   }))
 }
 
@@ -44,6 +39,7 @@ function LogTime() {
   // init hooks
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const idUser = useSelector((state) => state?.auth?.authUser?.user)
 
   // init states
   const [sort, setSort] = useState({})
@@ -53,25 +49,28 @@ function LogTime() {
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const {
-    user: {_id,role:{key}},
-  } = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
+    user: {
+      _id,
+      role: {key},
+    },
+  } = useSelector((state) => state.auth?.authUser)
 
   const {
     data: logTimeDetails,
     isLoading: timelogLoading,
     isFetching: timeLogFetching,
   } = useQuery(
-    ['UsertimeLogs', page, _id,sort],
+    ['UsertimeLogs', page, _id, sort],
     () =>
       getWeeklyTimeLogs({
         ...page,
         user: _id,
-        sort: 
-        sort.order === undefined || sort.column === undefined
+        sort:
+          sort.order === undefined || sort.column === undefined
             ? '-logDate'
             : sort.order === 'ascend'
             ? sort.field
-            : `-${sort.field}`
+            : `-${sort.field}`,
       }),
     {keepPreviousData: true}
   )
@@ -122,8 +121,8 @@ function LogTime() {
     }
   )
 
-  const navigateToProjectLogs = (url)=>{
-    navigate(url,{replace:true})
+  const navigateToProjectLogs = (url) => {
+    navigate(url, {replace: true})
   }
 
   const {data: logTypes} = useQuery(['logTypes'], () => getLogTypes())
@@ -183,7 +182,7 @@ function LogTime() {
   }
 
   const handleOpenModal = () => {
-      setOpenModal(true)
+    setOpenModal(true)
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
@@ -192,7 +191,7 @@ function LogTime() {
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
-      user: getLocalStorageData(LOCALSTORAGE_USER)._id,
+      user: idUser,
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
@@ -251,7 +250,7 @@ function LogTime() {
           </div>
         </div>
         <Table
-        locale={{emptyText}}
+          locale={{emptyText}}
           className="gx-table-responsive"
           columns={LOGTIMES_COLUMNS(
             sort,
@@ -267,7 +266,7 @@ function LogTime() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['20', '50','80'],
+            pageSizeOptions: ['20', '50', '80'],
             showSizeChanger: true,
             total: logTimeDetails?.data?.data?.count || 1,
             onShowSizeChange,

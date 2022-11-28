@@ -17,12 +17,15 @@ import {
 import {connect} from 'react-redux'
 import PunchInOut from 'components/Elements/PunchInOut'
 import {setThemeType} from 'appRedux/actions/Setting'
+import ActivityInfo from 'components/Modules/ActivityInfo'
+import RoleAccess from 'constants/RoleAccess'
 
 const {Header} = Layout
 
 class Topbar extends Component {
   state = {
     searchText: '',
+    user: this.props.user,
   }
 
   updateSearchChatUser = (evt) => {
@@ -105,6 +108,12 @@ class Topbar extends Component {
                   />
                 </li>
 
+                {RoleAccess.Admin === this.state.user.role.key && (
+                  <li className="gx-user-nav gx-notify li-gap">
+                    <ActivityInfo />
+                  </li>
+                )}
+
                 <li className="gx-user-nav li-gap">
                   <UserInfo />
                 </li>
@@ -117,9 +126,12 @@ class Topbar extends Component {
   }
 }
 
-const mapStateToProps = ({settings}) => {
+const mapStateToProps = ({settings, auth}) => {
   const {navStyle, navCollapsed, width, themeType} = settings
-  return {navStyle, navCollapsed, width, themeType}
+  const {
+    authUser: {user},
+  } = auth
+  return {navStyle, navCollapsed, width, themeType, user}
 }
 
 export default connect(mapStateToProps, {

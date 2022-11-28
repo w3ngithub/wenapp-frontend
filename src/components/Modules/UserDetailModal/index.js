@@ -12,7 +12,8 @@ import {
 } from 'antd'
 import moment from 'moment'
 import {filterOptions} from 'helpers/utils'
-import { async } from '@firebase/util'
+import {async} from '@firebase/util'
+import {useSelector} from 'react-redux'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -47,9 +48,10 @@ function UserDetailForm({
     onToggleModal({})
   }
 
-  const {role: storageRole} = localStorage.getItem('user_id')
-    ? JSON.parse(localStorage.getItem('user_id')).user
-    : {}
+  const user = useSelector((state) => state.auth?.authUser)
+  // const {role: user?.role} = localStorage.getItem('user_id')
+  //   ? JSON.parse(localStorage.getItem('user_id')).user
+  //   : {}
 
   const handleSubmit = () => {
     const data = intialValues?.allocatedLeaves
@@ -72,7 +74,8 @@ function UserDetailForm({
   }
 
   const handleStatusChange = (value) => {
-    if (value === 'Probation') form.setFieldValue('allocatedLeaves', 3)
+    if (value === 'Probation')
+      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
     else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
   }
 
@@ -91,7 +94,7 @@ function UserDetailForm({
     const isOnProbation = form.getFieldValue('status') === 'Probation'
 
     if (isIntern || isTrainee || isOnProbation)
-      form.setFieldValue('allocatedLeaves', 3)
+      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
     else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
   }
   useEffect(() => {
@@ -159,25 +162,29 @@ function UserDetailForm({
             {...formItemLayout}
             label="Name"
             name="name"
-            rules={[{required: true,validator:async(_,value)=>{
-              try {
-                if(!value){
-                  throw new Error('Name is required.')
-                }
-                const  regex = /^[A-Za-z ]+$/
-                const isValid = regex.test(value)
-                if(value.trim().length===0){
-                  throw new Error('Please enter a valid Name.')
-                }
-  
-                if(!isValid){
-                 throw new Error('Please enter a valid Name.')
-                }
+            rules={[
+              {
+                required: true,
+                validator: async (_, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Name is required.')
+                    }
+                    const regex = /^[A-Za-z ]+$/
+                    const isValid = regex.test(value)
+                    if (value.trim().length === 0) {
+                      throw new Error('Please enter a valid Name.')
+                    }
 
-              } catch (err) {
-                throw new Error(err.message)
-              }
-            }}]}
+                    if (!isValid) {
+                      throw new Error('Please enter a valid Name.')
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
             hasFeedback={readOnly ? false : true}
           >
             <Input placeholder="Enter Name" disabled={readOnly} />
@@ -199,7 +206,7 @@ function UserDetailForm({
                 roles?.data?.data?.data
                   ?.filter((role) => {
                     return !(
-                      storageRole?.key !== 'admin' && role?.key === 'admin'
+                      user?.role?.key !== 'admin' && role?.key === 'admin'
                     )
                   })
                   .map((role) => (
@@ -213,7 +220,9 @@ function UserDetailForm({
             {...formItemLayout}
             label="Office Start Time"
             name="officeTime"
-            rules={[{required: true, message: 'Office Start Time is required.'}]}
+            rules={[
+              {required: true, message: 'Office Start Time is required.'},
+            ]}
             hasFeedback={readOnly ? false : true}
           >
             <TimePicker
@@ -313,21 +322,20 @@ function UserDetailForm({
             rules={[
               {
                 required: true,
-                validator:async(_,value)=>{
+                validator: async (_, value) => {
                   try {
-                    if(!value){
+                    if (!value) {
                       throw new Error('Allocated Leaves is required.')
                     }
-                    const  regex = /^[0-9]+$/
+                    const regex = /^[0-9]+$/
                     const isValid = regex.test(value)
-                    if(!isValid){
+                    if (!isValid) {
                       throw new Error('Allocated Leaves must be a number')
                     }
-
                   } catch (error) {
                     throw new Error(error.message)
                   }
-                }
+                },
               },
             ]}
           >

@@ -2,9 +2,8 @@ import React from 'react'
 import {Collapse, Divider, Popconfirm} from 'antd'
 import parse from 'html-react-parser'
 import CustomIcon from '../Icons'
-import {getLocalStorageData} from 'helpers/utils'
 import RoleAccess from 'constants/RoleAccess'
-import { LOCALSTORAGE_USER } from 'constants/Settings'
+import {useSelector} from 'react-redux'
 
 const Panel = Collapse.Panel
 
@@ -17,7 +16,7 @@ const Collapses = ({
 }) => {
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER) || ''
+  } = useSelector((state) => state?.auth?.authUser?.user)
 
   return (
     <Collapse defaultActiveKey={defaultActiveKey}>
@@ -26,10 +25,7 @@ const Collapses = ({
           header={
             <div className="gx-d-flex gx-justify-content-between">
               {item?.title}{' '}
-              {[
-                RoleAccess.Admin,
-                RoleAccess.HumanResource,
-              ].includes(key) && (
+              {[RoleAccess.Admin, RoleAccess.HumanResource].includes(key) && (
                 <div className="gx-d-flex">
                   <span
                     className="gx-link gx-text-primary"

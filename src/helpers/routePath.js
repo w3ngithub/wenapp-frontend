@@ -30,6 +30,7 @@ export const INVITE = 'users/signup/:token'
 export const WEEKLY_REPORT = `weekly-report`
 export const WORK_LOG_REPORT = `work-log-report`
 export const LEAVE_REPORT = `leave-report`
+export const ACTIVITY_LOGS = `activity-logs`
 
 // Resources
 export const FAQS = `faq`

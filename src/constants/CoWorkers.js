@@ -1,11 +1,12 @@
 import React from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
-import {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
+import RoleAccess, {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
 
 const CO_WORKERCOLUMNS = (
   sortedInfo,
   openEditPopup,
+  handleSwitchToUser,
   updatMutation,
   disableMutation,
   role
@@ -93,6 +94,18 @@ const CO_WORKERCOLUMNS = (
                 onClick={() => openEditPopup(record, false)}
               >
                 <CustomIcon name="edit" />
+              </span>
+            </>
+          )}
+          {role === RoleAccess.Admin && (
+            <>
+              <Divider type="vertical" />
+
+              <span
+                className="gx-link"
+                onClick={() => handleSwitchToUser(record)}
+              >
+                <CustomIcon name="switchToUser" />
               </span>
             </>
           )}

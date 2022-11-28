@@ -23,7 +23,7 @@ function TmsMyAttendanceForm({
   toogle: boolean
   handleCancel: any
 }) {
-  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
+  const {user} = useSelector((state: any) => state.auth?.authUser)
 
   const [PUnchInform] = Form.useForm()
   const [PUnchOutform] = Form.useForm()

@@ -1,6 +1,5 @@
-import {getLocalStorageData} from 'helpers/utils'
 import {Navigate} from 'react-router-dom'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {useSelector} from 'react-redux'
 
 function AccessRoute({
   roles,
@@ -11,7 +10,7 @@ function AccessRoute({
 }) {
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector((state: any) => state?.auth?.authUser?.user)
 
   if (roles.includes(key)) {
     return children

@@ -29,7 +29,6 @@ import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {emptyText} from 'constants/EmptySearchAntd'
 
@@ -51,8 +50,9 @@ function Apply({user}) {
   const [yearStartDate, setYearStartDate] = useState(undefined)
   const [yearEndDate, setYearEndDate] = useState(undefined)
 
-  const {name, email, gender} =
-    JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)).user || {}
+  const {name, email, gender} = useSelector(
+    (state) => state.auth?.authUser?.user
+  )
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
