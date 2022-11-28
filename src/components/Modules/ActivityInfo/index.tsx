@@ -96,6 +96,7 @@ function ActivityInfo() {
         padding: 0,
         width: '400px',
       }}
+      overlayStyle={{paddingBottom: '10px'}}
     >
       <i
         className={`icon icon-notification gx-fs-xl`}

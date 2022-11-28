@@ -10,14 +10,14 @@ const RoleAccess = {
   All: 'all',
 }
 
-//Position 
+//Position
 export const PositionType = {
-  Intern : 'Intern'
+  Intern: 'Intern',
 }
 
 export const EmployeeStatus = {
-  Probation:'Probation',
-  Permanent:'Permanent'
+  Probation: 'Probation',
+  Permanent: 'Permanent',
 }
 
 // Dashboard
@@ -75,8 +75,12 @@ export const ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS = [
 
 // LogTime
 export const LOG_TIME_ADD_NO_ACCESS = [RoleAccess.TeamLead]
-export const LOG_TIME_DELETE_NO_ACCESS = [RoleAccess.Editor, RoleAccess.Normal,RoleAccess.TeamLead]
-export const LOG_TIME_OLD_EDIT = [RoleAccess.Admin,RoleAccess.ProjectManager]
+export const LOG_TIME_DELETE_NO_ACCESS = [
+  RoleAccess.Editor,
+  RoleAccess.Normal,
+  RoleAccess.TeamLead,
+]
+export const LOG_TIME_OLD_EDIT = [RoleAccess.Admin, RoleAccess.ProjectManager]
 
 // Leaves
 export const LEAVE_TABS_NO_ACCESS = [
@@ -121,6 +125,8 @@ export const LEAVE_REPORT_REPORT_ACESS = [
   RoleAccess.HumanResource,
   RoleAccess.Finance,
 ]
+
+export const ACTIVITY_LOGS_ACCESS = [RoleAccess.Admin]
 
 // Resources
 export const HOLIDAY_ACTION_NO_ACCESS = [
