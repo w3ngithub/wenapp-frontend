@@ -327,7 +327,7 @@ function Coworkers() {
         onCancel={handleCloseModal}
       />
       <Row>
-        <Col span={6} xs={24} md={12} style={{paddingLeft: 0}}>
+        <Col span={6} xs={24} md={12} >
           <Card title="Invite A Co-worker">
             <Form
               {...layout}

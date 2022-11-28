@@ -340,7 +340,7 @@ function Projects() {
         onCancel={handleCloseModal}
       />
       <Row>
-        <Col span={6} xs={24} md={12} style={{paddingLeft: 0}}>
+        <Col span={6} xs={24} md={12} >
           <Card
             title="Project Type"
             extra={
