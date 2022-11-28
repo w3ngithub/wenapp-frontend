@@ -6,7 +6,6 @@ import {
   ON_SHOW_LOADER,
   ON_SWITCHED_USER,
   ON_SWITCH_USER,
-  SET_PROFILE_PHOTO,
   SHOW_MESSAGE,
   SIGNIN_USER_SUCCESS,
   SIGNOUT_USER_SUCCESS,
@@ -92,15 +91,6 @@ const reducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         switchingUser: false,
-      }
-    }
-    case SET_PROFILE_PHOTO: {
-      return {
-        ...state,
-        authUser: {
-          ...state.authUser,
-          user: {...state.authUser.user, photoURL: action.payload},
-        },
       }
     }
 

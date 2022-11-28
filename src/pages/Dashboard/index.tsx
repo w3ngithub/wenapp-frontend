@@ -23,11 +23,7 @@ import {
   getTodaysUserLeaveCount,
   getWeekRangeLeaves,
 } from 'services/leaves'
-import {
-  getLocalStorageData,
-  MuiFormatDate,
-  oneWeekFilterCheck,
-} from 'helpers/utils'
+import {MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
 import {getWeeklyNotices} from 'services/noticeboard'
 import {getAllHolidays} from 'services/resources'
 import {
@@ -40,7 +36,6 @@ import {useNavigate} from 'react-router-dom'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {
   DASHBOARD_ICON_ACCESS,
@@ -55,14 +50,14 @@ const localizer = momentLocalizer(moment)
 const Dashboard = () => {
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector((state: any) => state?.auth?.authUser?.user)
 
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
   const [projectArray, setProjectArray] = useState([])
   const navigate = useNavigate()
-  const loggedInUser = getLocalStorageData(LOCALSTORAGE_USER)
+  const loggedInUser = useSelector((state: any) => state?.auth?.authUser?.user)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)

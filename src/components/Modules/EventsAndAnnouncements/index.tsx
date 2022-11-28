@@ -1,15 +1,10 @@
 import {Avatar, Timeline} from 'antd'
 import React from 'react'
 import ActivityItem from '../dashboard/CRM/ActivityItem'
-import {
-  changeDate,
-  dayCheck,
-  getLocalStorageData,
-  oneWeekFilterCheck,
-} from 'helpers/utils'
+import {changeDate, dayCheck, oneWeekFilterCheck} from 'helpers/utils'
 import {SALARY_REVIEW_ACCESS} from 'constants/RoleAccess'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {Collapse} from 'antd'
+import {useSelector} from 'react-redux'
 
 const TimeLineItem = Timeline.Item
 const {Panel} = Collapse
@@ -59,7 +54,7 @@ function EventsAndAnnouncements({
 }) {
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector((state: any) => state?.auth?.authUser?.user)
   const announcementsData = announcements?.map((x: any) => ({
     id: x._id,
     name: x.title,

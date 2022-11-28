@@ -18,7 +18,7 @@ import {storage} from 'firebase'
 import moment from 'moment'
 import {handleResponse} from 'helpers/utils'
 import {useDispatch} from 'react-redux'
-import {getUserProfile, setProfilePhoto} from 'appRedux/actions'
+import {getUserProfile} from 'appRedux/actions'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {connect} from 'react-redux'
 
@@ -78,8 +78,6 @@ function Profile(props) {
               LOCALSTORAGE_USER,
               JSON.stringify(response.data.data.user?._id)
             ),
-          () => dispatch(setProfilePhoto(response.data.data.user.photoURL)),
-
           () => setIsLoading(false),
         ]
       )

@@ -5,7 +5,6 @@ import {switchedUser, switchUser, userSignOut} from 'appRedux/actions/Auth'
 import {useNavigate} from 'react-router-dom'
 import {PROFILE} from 'helpers/routePath'
 import ChangePasswordModel from 'components/Modules/ChangePasswordModel'
-import {getLocalStorageData} from 'helpers/utils'
 
 function UserInfo(props) {
   const navigate = useNavigate()

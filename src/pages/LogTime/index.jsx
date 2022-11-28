@@ -4,12 +4,7 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import LogModal from 'components/Modules/LogtimeModal'
 import '@ant-design/compatible/assets/index.css'
 import {LOGTIMES_COLUMNS} from 'constants/logTimes'
-import {
-  changeDate,
-  getLocalStorageData,
-  roundedToFixed,
-  handleResponse,
-} from 'helpers/utils'
+import {changeDate, roundedToFixed, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
 import React, {useState} from 'react'
@@ -23,7 +18,6 @@ import {
   updateTimeLog,
 } from 'services/timeLogs'
 import TimeSummary from './TimeSummary'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {useNavigate} from 'react-router-dom'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
@@ -45,6 +39,7 @@ function LogTime() {
   // init hooks
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const idUser = useSelector((state) => state?.auth?.authUser?.user)
 
   // init states
   const [sort, setSort] = useState({})
@@ -196,7 +191,7 @@ function LogTime() {
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
-      user: getLocalStorageData(LOCALSTORAGE_USER)._id,
+      user: idUser,
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
