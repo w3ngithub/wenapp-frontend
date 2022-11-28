@@ -39,7 +39,6 @@ import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {emptyText} from 'constants/EmptySearchAntd'
 

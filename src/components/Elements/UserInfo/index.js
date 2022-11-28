@@ -10,7 +10,7 @@ function UserInfo(props) {
   const navigate = useNavigate()
   const [visible, setVisible] = useState(false)
   const [openPasswordModel, setOpenPasswordChangeModel] = useState(false)
-  const admin = JSON.parse(localStorage.getItem('admin')) || {}
+  const admin = JSON.parse(localStorage.getItem('admin')) || null
   const dispatch = useDispatch()
 
   let nameInitials = ''
@@ -30,14 +30,16 @@ function UserInfo(props) {
     setOpenPasswordChangeModel(true)
   }
 
-  const handleSwitchToAdmin = () => {
+  const handleSwitchToAdmin = async () => {
     dispatch(switchUser())
-    const admin = JSON.parse(localStorage.getItem('admin'))
-    localStorage.setItem('user_id', JSON.stringify(admin))
-    localStorage.removeItem('admin')
-    dispatch(switchedUser())
-  }
+    setTimeout(() => {
+      localStorage.setItem('user_id', JSON.stringify(admin))
+      localStorage.removeItem('admin')
+      dispatch(switchedUser())
+    }, 1000)
 
+    handleVisibleChange(false)
+  }
   const userMenuOptions = (
     <ul className="gx-user-popover">
       <li
@@ -55,9 +57,7 @@ function UserInfo(props) {
       >
         Change Password
       </li>
-      {admin.hasOwnProperty('user') && (
-        <li onClick={handleSwitchToAdmin}>Switch To Admin</li>
-      )}
+      {admin && <li onClick={handleSwitchToAdmin}>Switch To Admin</li>}
       <li
         onClick={() => {
           handleVisibleChange(false)

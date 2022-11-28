@@ -22,7 +22,6 @@ import {
 import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
 import {getQuarters} from 'services/leaves'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {
   CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS,
@@ -31,13 +30,7 @@ import {
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useDispatch, useSelector} from 'react-redux'
-import {ON_HIDE_LOADER, ON_SHOW_LOADER} from 'constants/ActionTypes'
-import {
-  hideAuthLoader,
-  showAuthLoader,
-  switchedUser,
-  switchUser,
-} from 'appRedux/actions'
+import {switchedUser, switchUser} from 'appRedux/actions'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -250,11 +243,11 @@ function CoworkersPage() {
   const handleSwitchToUser = async (user) => {
     dispatch(switchUser())
     const response = await getMyProfile(user?._id)
-    const admin = getLocalStorageData('user_id')
-    localStorage.setItem('admin', JSON.stringify({user: admin}))
+    const adminId = getLocalStorageData('user_id')
+    localStorage.setItem('admin', JSON.stringify(adminId))
     localStorage.setItem(
       'user_id',
-      JSON.stringify({user: response?.data?.data?.data[0]})
+      JSON.stringify(response?.data?.data?.data[0]?._id)
     )
     dispatch(switchedUser())
   }

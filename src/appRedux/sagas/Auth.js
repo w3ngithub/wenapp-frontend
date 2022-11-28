@@ -53,6 +53,7 @@ function* signOut() {
     if (signOutUser.status) {
       localStorage.removeItem(LOCALSTORAGE_USER)
       localStorage.removeItem('token')
+      localStorage.removeItem('admin')
       yield put(userSignOutSuccess(signOutUser))
     } else {
       yield put(showAuthMessage(signOutUser.data.message))

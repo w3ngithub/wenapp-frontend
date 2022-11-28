@@ -22,7 +22,7 @@ const {Content, Footer} = Layout
 
 export const MainApp = (props) => {
   const dispatch = useDispatch()
-  const userId = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
+  const userId = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || null)
 
   const {data: details} = useQuery(
     ['userDetail', userId],

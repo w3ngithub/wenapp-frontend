@@ -39,11 +39,11 @@ function Leave() {
   const [submittingCancelReason, setSubmittingCancelReason] = useState(false)
 
   const loggedInUser = useSelector((state) => state?.auth?.authUser?.user)
-
   const {data: leaveTypes, isLoading} = useQuery(['leaveTypes'], getLeaveTypes)
 
-  const leaveDaysQuery = useQuery(['takenAndRemainingLeaveDays'], () =>
-    getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
+  const leaveDaysQuery = useQuery(
+    ['takenAndRemainingLeaveDays', loggedInUser],
+    () => getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
 
   const user = useSelector((state) => state.auth?.authUser?.user)
@@ -58,7 +58,7 @@ function Leave() {
   }
 
   const quarterleaveDaysQuery = useQuery(
-    ['quartertakenAndRemainingLeaveDays'],
+    ['quartertakenAndRemainingLeaveDays', loggedInUser],
     () => getQuarterTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
 

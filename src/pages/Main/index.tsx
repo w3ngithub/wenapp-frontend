@@ -104,7 +104,6 @@ function App(props: any) {
     )
       navigate('notAllowed')
   }, [])
-
   if (switchingUser) return <FallBack />
 
   return (
