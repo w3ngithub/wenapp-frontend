@@ -24,6 +24,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
+import {useSelector} from 'react-redux'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -41,9 +42,7 @@ function Blogs() {
   const [form] = Form.useForm()
 
   const [typedTitle, setTypedTitle] = useState('')
-  const {user: userData} = JSON.parse(
-    localStorage.getItem(LOCALSTORAGE_USER) || {}
-  )
+  const {user: userData} = useSelector((state) => state.auth?.authUser)
 
   const {data, isLoading, isError, isFetching} = useQuery(
     ['blogs', page, title, user],

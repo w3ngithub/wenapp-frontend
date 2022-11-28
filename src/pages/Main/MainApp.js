@@ -31,7 +31,7 @@ export const MainApp = (props) => {
       onSuccess: (data) => {
         localStorage.setItem(
           LOCALSTORAGE_USER,
-          JSON.stringify({user: data.data.data.data[0]})
+          JSON.stringify(data.data.data.data[0]?._id)
         )
         dispatch(
           getUserProfile({

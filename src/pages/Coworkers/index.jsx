@@ -72,7 +72,7 @@ function CoworkersPage() {
   const dispatch = useDispatch()
 
   // get user detail from storage
-  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
+  const {user} = useSelector((state) => state.auth?.authUser)
   const [form] = Form.useForm()
 
   const {data: roleData} = useQuery(['userRoles'], getUserRoles)

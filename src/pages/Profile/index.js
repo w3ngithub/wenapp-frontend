@@ -76,7 +76,7 @@ function Profile(props) {
           () =>
             localStorage.setItem(
               LOCALSTORAGE_USER,
-              JSON.stringify({user: response.data.data.user})
+              JSON.stringify(response.data.data.user?._id)
             ),
           () => dispatch(setProfilePhoto(response.data.data.user.photoURL)),
 

@@ -61,8 +61,9 @@ function Apply({user}) {
   const [yearStartDate, setYearStartDate] = useState(undefined)
   const [yearEndDate, setYearEndDate] = useState(undefined)
 
-  const {name, email, gender} =
-    JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)).user || {}
+  const {name, email, gender} = useSelector(
+    (state) => state.auth?.authUser?.user
+  )
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
