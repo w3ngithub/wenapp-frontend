@@ -1,65 +1,84 @@
-import React, {useEffect, useState} from 'react'
-import {useQuery} from '@tanstack/react-query'
+import React, {useState} from 'react'
+import {useInfiniteQuery} from '@tanstack/react-query'
 import {getActivityLogs} from 'services/activitLogs'
-import {getLocalStorageData, isoDateWithoutTimeZone} from 'helpers/utils'
+import {getLocalStorageData} from 'helpers/utils'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import RoleAccess from 'constants/RoleAccess'
 import {Popover} from 'antd'
 import RecentActivity from '../dashboard/CRM/RecentActivity'
 import moment from 'moment'
+import {useInView} from 'react-intersection-observer'
 
 function ActivityInfo() {
+  const {ref, inView} = useInView({threshold: 0.5})
+
   const [visible, setVisible] = useState<boolean>(false)
-  const [page, setPage] = useState<any>({
-    page: 1,
-    limit: 6,
-  })
 
   const {
     role: {key},
   } = getLocalStorageData(LOCALSTORAGE_USER)
 
-  const {data} = useQuery(
-    ['activityLogsInfo', page],
-    () => getActivityLogs({...page}),
-    {enabled: key === RoleAccess.Admin, keepPreviousData: true}
-  )
-
   const handleVisibleChange = (newVisible: boolean) => {
     setVisible(newVisible)
   }
 
-  const loadMore = () => {
-    if (data?.data?.data?.count <= page.page * page.limit) return
-    setPage((prev: {page: number; limit: number}) => ({
-      ...prev,
-      page: prev.page + 1,
-    }))
-  }
+  const {data, isFetching, isFetchingNextPage, fetchNextPage} =
+    useInfiniteQuery(
+      ['activityLogsInfo'],
+      async ({pageParam = 1}) => {
+        const res = await getActivityLogs({page: pageParam, limit: 6})
+        return res
+      },
+      {
+        enabled: key === RoleAccess.Admin,
+      }
+    )
+
+  React.useEffect(() => {
+    if (
+      inView &&
+      !(
+        (data?.pageParams.length || 1) * 6 >=
+        data?.pages[0]?.data?.data?.count
+      ) &&
+      !isFetchingNextPage
+    ) {
+      fetchNextPage({pageParam: (data?.pages?.length || 0) + 1})
+    }
+  }, [
+    inView,
+    fetchNextPage,
+    data?.pages?.length,
+    data?.pageParams.length,
+    data?.pages,
+    isFetchingNextPage,
+  ])
 
   const userMenuOptions = (
     <RecentActivity
-      showLoadMore={data?.data?.data?.count <= page.page * page.limit}
-      loadMore={loadMore}
-      recentList={[
-        {
-          id: 1,
-          tasks: data?.data?.data?.data?.map((log: any) => ({
-            id: log._id,
-            name: 'Mila Alba',
-            title: [
-              <span className="gx-link" key={1}>
-                {log?.activity}
-              </span>,
-              <p style={{opacity: 0.6}}>
-                {moment(log?.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')}
-              </p>,
-            ],
-            avatar: 'https://via.placeholder.com/150x150',
-            imageList: [],
-          })),
-        },
-      ]}
+      isFetching={isFetching}
+      isFetchingNextPage={isFetchingNextPage}
+      showMore={
+        (data?.pageParams.length || 1) * 6 >= data?.pages[0]?.data?.data?.count
+      }
+      viewRef={ref}
+      recentList={data?.pages.map((page, i) => ({
+        id: i,
+        tasks: page?.data?.data?.data?.map((log: any) => ({
+          id: log._id,
+          name: log.user.name || '',
+          title: [
+            <span className="gx-link" key={1}>
+              {log?.activity}
+            </span>,
+            <p style={{opacity: 0.6}}>
+              {moment(log?.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')}
+            </p>,
+          ],
+          avatar: log.user.photo || '',
+          imageList: [],
+        })),
+      }))}
       shape="circle"
     />
   )
@@ -71,6 +90,12 @@ function ActivityInfo() {
       trigger="click"
       visible={visible}
       onVisibleChange={handleVisibleChange}
+      overlayInnerStyle={{
+        overflowY: 'auto',
+        height: '400px',
+        padding: 0,
+        width: '400px',
+      }}
     >
       <i
         className={`icon icon-notification gx-fs-xl`}
