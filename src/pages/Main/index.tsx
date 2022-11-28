@@ -1,6 +1,12 @@
 import React, {useEffect, lazy, Suspense} from 'react'
 import {connect, useDispatch} from 'react-redux'
-import {Navigate, Route, Routes, useNavigate} from 'react-router-dom'
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom'
 import {ConfigProvider} from 'antd'
 import moment from 'moment'
 import 'moment/locale/en-gb'
@@ -90,6 +96,7 @@ function App(props: any) {
   const currentAppLocale = AppLocale[locale.locale]
   const navigate = useNavigate()
 
+  const location = useLocation()
   const dispatch = useDispatch()
   const userId = localStorage.getItem(LOCALSTORAGE_USER)
     ? JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
@@ -131,7 +138,9 @@ function App(props: any) {
     )
       navigate('notAllowed')
   }, [])
-  if (switchingUser || isFetching) return <FallBack />
+
+  if ((!location?.pathname?.includes('signin') && isFetching) || switchingUser)
+    return <FallBack />
 
   return (
     <ConfigProvider locale={currentAppLocale.antd}>
