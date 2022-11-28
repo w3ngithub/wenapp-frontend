@@ -24,24 +24,6 @@ export const MainApp = (props) => {
   const dispatch = useDispatch()
   const userId = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
 
-  const {data: details} = useQuery(
-    ['userDetail', userId],
-    () => getMyProfile(userId),
-    {
-      onSuccess: (data) => {
-        localStorage.setItem(
-          LOCALSTORAGE_USER,
-          JSON.stringify(data.data.data.data[0]?._id)
-        )
-        dispatch(
-          getUserProfile({
-            user: data.data.data.data[0],
-          })
-        )
-      },
-    }
-  )
-
   useEffect(() => {
     dispatch(fetchLoggedInUserAttendance(userId))
   }, [dispatch, userId])

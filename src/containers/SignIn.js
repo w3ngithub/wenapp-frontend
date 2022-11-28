@@ -6,8 +6,6 @@ import {useNavigate} from 'react-router-dom'
 import {hideMessage, showAuthLoader, userSignIn} from 'appRedux/actions/Auth'
 import IntlMessages from 'util/IntlMessages'
 import {FORGOT_PASSWORD} from 'helpers/routePath'
-import {emailRegex} from 'constants/EmailTest'
-import {officeDomain} from 'constants/OfficeDomain'
 
 const FormItem = Form.Item
 
