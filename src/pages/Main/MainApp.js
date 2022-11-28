@@ -16,36 +16,17 @@ import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {getMyProfile} from 'services/users/userDetails'
 import {useQuery} from '@tanstack/react-query'
-import {getUserProfile} from 'appRedux/actions/UserProfile'
+import {getUserProfile} from 'appRedux/actions'
 
 const {Content, Footer} = Layout
 
 export const MainApp = (props) => {
   const dispatch = useDispatch()
-  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
-
-  const {data: details} = useQuery(
-    ['userDetail', user._id],
-    () => getMyProfile(user._id),
-    {
-      onSuccess: (data) => {
-        localStorage.setItem(
-          LOCALSTORAGE_USER,
-          JSON.stringify({user: data.data.data.data[0]})
-        )
-        dispatch(
-          getUserProfile({
-            name: data.data.data.data[0].name,
-            position: data.data.data.data[0].position.name,
-          })
-        )
-      },
-    }
-  )
+  const userId = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || null)
 
   useEffect(() => {
-    dispatch(fetchLoggedInUserAttendance(user._id))
-  }, [dispatch, user._id])
+    dispatch(fetchLoggedInUserAttendance(userId))
+  }, [dispatch, userId])
 
   useEffect(() => {
     const timeout = setInterval(() => {

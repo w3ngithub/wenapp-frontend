@@ -28,6 +28,8 @@ import {CASUAL_LEAVE, LATE_ARRIVAL, LATE_LEAVE_TYPE_ID} from 'constants/Leaves'
 import RangePicker from 'components/Elements/RangePicker'
 import {emptyText} from 'constants/EmptySearchAntd'
 import LeaveCutModal from 'components/Modules/LeaveCutAttendance/LeaveCutModal'
+import CustomIcon from 'components/Elements/Icons'
+import ViewDetailModel from '../ViewDetailModel'
 
 const FormItem = Form.Item
 
@@ -62,6 +64,8 @@ function LateAttendance({userRole}: {userRole: string}) {
   const [user, setUser] = useState<undefined | string>(undefined)
   const [attFilter, setAttFilter] = useState({id: '1', value: 'Daily'})
   const [leaveCut, setLeaveCut] = useState(leaveCutStatus[0].id)
+  const [openView, setOpenView] = useState<boolean>(false)
+  const [attToView, setAttToView] = useState<any>({})
   const [openLeaveCutModal, setOpenLeaveCutModal] = useState<boolean>(false)
   const [attendanceRecord, setAttendanceRecord] = useState<recordAttendance>({
     _id: {userId: '', user: ''},
@@ -169,6 +173,17 @@ function LateAttendance({userRole}: {userRole: string}) {
     setLeaveCut(val)
   }
 
+  const handleView = (record: any) => {
+    setOpenView(true)
+    setAttToView({
+      ...record,
+      attendanceDate: moment(record?.attendanceDate).format('LL'),
+      attendanceDay: moment(record?.attendanceDate).format('dddd'),
+      punchInTime: record?.punchInTime,
+      punchOutTime: record?.punchOutTime ? record?.punchOutTime : '',
+      officeHour: record?.officeHour ? record?.officeHour : '',
+    })
+  }
   const handleReset = () => {
     setUser(undefined)
     setAttFilter({id: '1', value: 'Daily'})
@@ -236,6 +251,19 @@ function LateAttendance({userRole}: {userRole: string}) {
         dataIndex: 'officeHour',
         key: 'officeHour',
       },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (text: any, record: any) => {
+          return (
+            <span>
+              <span className="gx-link" onClick={() => handleView(record)}>
+                <CustomIcon name="view" />
+              </span>
+            </span>
+          )
+        },
+      },
     ]
     const data = parentRow?.data?.map((att: any) => ({
       ...att,
@@ -298,6 +326,14 @@ function LateAttendance({userRole}: {userRole: string}) {
         onClose={hanldeCloseLeaveCutModal}
         onSubmit={handleCutLeave}
         loading={leaveMutation.isLoading}
+      />
+      <ViewDetailModel
+        toogle={openView}
+        title={attToView?.user ? attToView?.user : 'Attendance Details'}
+        handleCancel={() => {
+          setOpenView(false)
+        }}
+        attendanceToview={attToView}
       />
       <div className="gx-mt-2"></div>
       <div className="components-table-demo-control-bar">

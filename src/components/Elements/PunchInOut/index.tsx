@@ -22,7 +22,7 @@ import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {punchLimit} from 'constants/PunchLimit'
 
 function PunchInOut() {
-  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
+  const {user} = useSelector((state: any) => state.auth?.authUser)
 
   const [toogle, setToogle] = useState(false)
   const [disableButton, setdisableButton] = useState(false)

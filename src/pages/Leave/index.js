@@ -7,7 +7,7 @@ import {
   getTakenAndRemainingLeaveDaysOfUser,
   sendEmailforLeave,
 } from 'services/leaves'
-import {getLocalStorageData, handleResponse} from 'helpers/utils'
+import {handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import LeavesApply from './Apply'
 import Leaves from './Leaves'
@@ -18,12 +18,12 @@ import MyHistory from './MyHistory'
 import {getLeaveTypes} from 'services/settings/leaveType'
 import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
 import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingAndAppliedCards'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import RoleAccess, {
   LEAVE_TABS_NO_ACCESS,
   EmployeeStatus,
 } from 'constants/RoleAccess'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
+import {useSelector} from 'react-redux'
 
 const TabPane = Tabs.TabPane
 
@@ -38,17 +38,15 @@ function Leave() {
   const [leaveData, setLeaveData] = useState('')
   const [submittingCancelReason, setSubmittingCancelReason] = useState(false)
 
-  const loggedInUser = getLocalStorageData(LOCALSTORAGE_USER)
-
+  const loggedInUser = useSelector((state) => state?.auth?.authUser?.user)
   const {data: leaveTypes, isLoading} = useQuery(['leaveTypes'], getLeaveTypes)
 
-  const leaveDaysQuery = useQuery(['takenAndRemainingLeaveDays'], () =>
-    getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
+  const leaveDaysQuery = useQuery(
+    ['takenAndRemainingLeaveDays', loggedInUser],
+    () => getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
 
-  const user = localStorage.getItem('user_id')
-    ? JSON.parse(localStorage.getItem('user_id'))?.user
-    : {}
+  const user = useSelector((state) => state.auth?.authUser?.user)
 
   const handleCloseCancelLeaveModal = () => {
     setOpenCancelLeaveModal(false)
@@ -60,7 +58,7 @@ function Leave() {
   }
 
   const quarterleaveDaysQuery = useQuery(
-    ['quartertakenAndRemainingLeaveDays'],
+    ['quartertakenAndRemainingLeaveDays', loggedInUser],
     () => getQuarterTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
 

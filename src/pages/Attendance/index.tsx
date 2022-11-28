@@ -7,8 +7,7 @@ import AttendanceCalendar from './Calendar'
 import AdminAttendanceCalendar from './AdminCalendar'
 import {useLocation} from 'react-router-dom'
 import {ATTENDANCE_ALL_TAB_NO_ACCESS} from 'constants/RoleAccess'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
-import {getLocalStorageData} from 'helpers/utils'
+import {useSelector} from 'react-redux'
 
 function Attendace() {
   const {state}: {state: any} = useLocation()
@@ -17,7 +16,7 @@ function Attendace() {
 
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector((state: any) => state?.auth?.authUser?.user)
 
   useEffect(() => {
     setTabKey(state?.tab)
@@ -28,7 +27,7 @@ function Attendace() {
       <Tabs
         type="card"
         activeKey={tabKey || '1'}
-        onChange={tab => {
+        onChange={(tab) => {
           setTabKey(tab)
         }}
       >
