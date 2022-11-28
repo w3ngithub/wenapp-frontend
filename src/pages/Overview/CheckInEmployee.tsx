@@ -40,7 +40,11 @@ function CheckedInEmployee({
   isLoading: boolean
 }) {
   const [openMap, setOpenMap] = useState(false)
-  const [sort, setSort] = useState({})
+  const [sort, setSort] = useState({
+    order: 'ascend',
+    field: 'name',
+    columnKey: 'name',
+  })
   const [page, setPage] = useState({page: 1, limit: 20})
 
   const [selectedCheckedInUser, setSelectedCheckedInUser] = useState([])

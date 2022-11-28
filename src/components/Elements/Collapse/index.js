@@ -12,6 +12,7 @@ const Collapses = ({
   defaultActiveKey = ['0'],
   onEditClick,
   onDeleteClick,
+  type
 }) => {
   const {
     role: {key},
@@ -30,7 +31,7 @@ const Collapses = ({
                     className="gx-link gx-text-primary"
                     onClick={(e) => {
                       e.stopPropagation()
-                      onEditClick(item, true)
+                      onEditClick(item, type)
                     }}
                   >
                     <CustomIcon name="edit" />
