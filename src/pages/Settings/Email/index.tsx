@@ -124,7 +124,7 @@ function Email() {
         onCancel={handleCloseModal}
       />
       <Row>
-        <Col span={6} xs={24} md={24} style={{paddingLeft: 0}}>
+        <Col span={6} xs={24} md={24}>
           <Card
             title="Emails"
             extra={

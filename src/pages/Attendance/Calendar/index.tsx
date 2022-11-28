@@ -4,26 +4,21 @@ import {useNavigate} from 'react-router-dom'
 import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
-import {
-  getLocalStorageData,
-  milliSecondIntoHours,
-  MuiFormatDate,
-  sortFromDate,
-} from 'helpers/utils'
+import {milliSecondIntoHours, MuiFormatDate, sortFromDate} from 'helpers/utils'
 import {searchAttendacentOfUser} from 'services/attendances'
 import {monthlyState} from 'constants/Attendance'
 import {getLeavesOfAllUsers} from 'services/leaves'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {ATTENDANCE} from 'helpers/routePath'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {LEAVES_TYPES} from 'constants/Leaves'
+import {useSelector} from 'react-redux'
 
 const localizer = momentLocalizer(moment)
 
 function AttendanceCalendar() {
   const navigate = useNavigate()
 
-  const user = getLocalStorageData(LOCALSTORAGE_USER)
+  const user = useSelector((state: any) => state?.auth?.authUser?.user)
   const {innerWidth} = useWindowsSize()
   const [date, setDate] = useState(monthlyState)
   const {data, isLoading} = useQuery(['userAttendance', user, date], () =>
@@ -147,7 +142,6 @@ function AttendanceCalendar() {
         ?.filter((item) => !isNaN(+item))
 
       const time = totalHoursWorked?.trim()?.split(' ')
-
 
       let totalTime = 0
       if (hrsMin?.length === 2) {

@@ -18,7 +18,7 @@ function ChangePasswordModel({open, onClose}: {open: boolean; onClose: any}) {
           localStorage.setItem('token', response.data.token)
           localStorage.setItem(
             LOCALSTORAGE_USER,
-            JSON.stringify(response.data.data)
+            JSON.stringify(response.data.data?.user?._id)
           )
           instance.defaults.headers[
             'Authorization'

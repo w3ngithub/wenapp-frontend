@@ -1,16 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {STATUS_TYPES} from 'constants/Leaves'
-import {
-  Button,
-  Checkbox,
-  Col,
-  Input,
-  Row,
-  Select,
-  Spin,
-  Form,
-  DatePicker,
-} from 'antd'
+import {Button, Col, Input, Row, Select, Spin, Form, DatePicker} from 'antd'
 import {
   filterHalfDayLeaves,
   filterOptions,
@@ -39,7 +29,6 @@ import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {emptyText} from 'constants/EmptySearchAntd'
 
@@ -61,8 +50,9 @@ function Apply({user}) {
   const [yearStartDate, setYearStartDate] = useState(undefined)
   const [yearEndDate, setYearEndDate] = useState(undefined)
 
-  const {name, email, gender} =
-    JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)).user || {}
+  const {name, email, gender} = useSelector(
+    (state) => state.auth?.authUser?.user
+  )
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -118,12 +108,22 @@ function Apply({user}) {
       getLeavesOfUser(user, '', undefined, '', '', yearStartDate, yearEndDate),
     {enabled: !!yearStartDate && !!yearEndDate}
   )
+ 
+  const onFocus = () => {
+    queryClient.invalidateQueries(['userLeaves'])
+  }
+
+  useEffect(() => {
+    window.addEventListener('focus', onFocus)
+  }, [])
 
   useEffect(() => {
     if (gender === 'Female') {
       refetch()
     }
   }, [gender])
+
+ 
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {

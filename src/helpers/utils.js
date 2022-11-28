@@ -208,12 +208,12 @@ export const getLocalStorageData = (type) => {
   let storage = sessionStorage.getItem(type) || localStorage.getItem(type)
 
   try {
-    return JSON.parse(storage).user
+    return JSON.parse(storage)
   } catch (error) {
     storage = JSON.stringify(
       sessionStorage.getItem(type) || localStorage.getItem(type)
     )
-    return JSON.parse(storage)?.user
+    return JSON.parse(storage)
   }
 }
 

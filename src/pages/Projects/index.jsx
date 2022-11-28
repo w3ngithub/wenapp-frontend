@@ -26,6 +26,7 @@ import {LOCALSTORAGE_USER} from 'constants/Settings'
 import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {useSelector} from 'react-redux'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -69,7 +70,7 @@ function ProjectsPage() {
     user: {
       role: {key},
     },
-  } = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
+  } = useSelector((state) => state.auth?.authUser)
 
   const {data: projectTypesData} = useQuery(['projectTypes'], getProjectTypes)
   const {data: projectStatusData} = useQuery(

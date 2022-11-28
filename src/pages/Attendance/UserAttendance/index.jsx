@@ -25,7 +25,7 @@ import CustomIcon from 'components/Elements/Icons'
 import {useLocation} from 'react-router-dom'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {punchLimit} from 'constants/PunchLimit'
-import { emptyText } from 'constants/EmptySearchAntd'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -33,34 +33,39 @@ const FormItem = Form.Item
 const formattedAttendances = (attendances) => {
   return attendances?.map((att) => {
     let timeToMilliSeconds = att?.data
-    ?.map((x) =>
-      x?.punchOutTime
-        ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
-        : ''
-    )
-    .filter(Boolean)
-    ?.reduce((accumulator, value) => {
-      return accumulator + value
-    }, 0)
-    
-    return ({
-    ...att,
-    key: att._id.attendanceDate + att._id.user,
-    attendanceDate: moment(att?._id.attendanceDate).format('LL'),
-    attendanceDay: moment(att?._id.attendanceDate).format('dddd'),
-    punchInTime: moment(att?.data?.[0]?.punchInTime).format('LTS'),
-    punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
-      ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
-      : '',
-    officeHour: milliSecondIntoHours(timeToMilliSeconds),
-    intHour :timeToMilliSeconds
-  })})
+      ?.map((x) =>
+        x?.punchOutTime
+          ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
+          : ''
+      )
+      .filter(Boolean)
+      ?.reduce((accumulator, value) => {
+        return accumulator + value
+      }, 0)
+
+    return {
+      ...att,
+      key: att._id.attendanceDate + att._id.user,
+      attendanceDate: moment(att?._id.attendanceDate).format('LL'),
+      attendanceDay: moment(att?._id.attendanceDate).format('dddd'),
+      punchInTime: moment(att?.data?.[0]?.punchInTime).format('LTS'),
+      punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
+        ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
+        : '',
+      officeHour: milliSecondIntoHours(timeToMilliSeconds),
+      intHour: timeToMilliSeconds,
+    }
+  })
 }
 
 function UserAttendance() {
   //init hooks
   const {state} = useLocation()
-  const [sort, setSort] = useState({order: 'ascend',field:'attendanceDate',columnKey: 'attendanceDate'})
+  const [sort, setSort] = useState({
+    order: 'ascend',
+    field: 'attendanceDate',
+    columnKey: 'attendanceDate',
+  })
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
   const [openView, setOpenView] = useState(false)
@@ -69,7 +74,7 @@ function UserAttendance() {
   const [attFilter, setAttFilter] = useState({id: '1', value: 'Daily'})
   const [toogle, setToogle] = useState(false)
 
-  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
+  const {user} = useSelector((state) => state.auth?.authUser)
 
   const punchIn = useSelector((state) => state.attendance.punchIn)
 
@@ -236,14 +241,13 @@ function UserAttendance() {
               disabled={isLoading}
               onClick={
                 data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.length >=
-                punchLimit &&
-                !data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.map(
-                  (item) => item?.hasOwnProperty('punchOutTime')
-                ).includes(false)
+                  punchLimit &&
+                !data?.data?.data?.attendances?.[0]?.data?.[0]?.data
+                  ?.map((item) => item?.hasOwnProperty('punchOutTime'))
+                  .includes(false)
                   ? () => {
                       notification({
-                        message:
-                          'Punch Limit Exceeded',
+                        message: 'Punch Limit Exceeded',
                         type: 'error',
                       })
                     }

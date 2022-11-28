@@ -345,7 +345,7 @@ function Leave() {
         onCancel={closeQuarterModel}
       />
       <Row>
-        <Col span={6} xs={24} md={12} style={{paddingLeft: 0}}>
+        <Col span={6} xs={24} md={12}>
           <Card
             title="Leave Type"
             extra={

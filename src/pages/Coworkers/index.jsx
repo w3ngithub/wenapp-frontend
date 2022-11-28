@@ -5,13 +5,14 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import UserDetailForm from 'components/Modules/UserDetailModal'
 import {CO_WORKERCOLUMNS} from 'constants/CoWorkers'
 import {notification} from 'helpers/notification'
-import {changeDate, handleResponse} from 'helpers/utils'
+import {changeDate, getLocalStorageData, handleResponse} from 'helpers/utils'
 import moment from 'moment'
 import {useEffect, useState} from 'react'
 import {CSVLink} from 'react-csv'
 import {
   disableUser,
   getAllUsers,
+  getMyProfile,
   getUserPosition,
   getUserPositionTypes,
   getUserRoles,
@@ -21,14 +22,15 @@ import {
 import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
 import {getQuarters} from 'services/leaves'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {
   CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS,
   CO_WORKERS_SEARCH_IMPORT_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
-import { emptyText } from 'constants/EmptySearchAntd'
+import {emptyText} from 'constants/EmptySearchAntd'
+import {useDispatch, useSelector} from 'react-redux'
+import {switchedUser, switchUser} from 'appRedux/actions'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -60,9 +62,10 @@ function CoworkersPage() {
   const [openImport, setOpenImport] = useState(false)
   const [files, setFiles] = useState([])
   const queryClient = useQueryClient()
+  const dispatch = useDispatch()
 
   // get user detail from storage
-  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
+  const {user} = useSelector((state) => state.auth?.authUser)
   const [form] = Form.useForm()
 
   const {data: roleData} = useQuery(['userRoles'], getUserRoles)
@@ -236,6 +239,18 @@ function CoworkersPage() {
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
+
+  const handleSwitchToUser = async (user) => {
+    dispatch(switchUser())
+    const response = await getMyProfile(user?._id)
+    const adminId = getLocalStorageData('user_id')
+    localStorage.setItem('admin', JSON.stringify(adminId))
+    localStorage.setItem(
+      'user_id',
+      JSON.stringify(response?.data?.data?.data[0]?._id)
+    )
+    dispatch(switchedUser())
+  }
   if (isLoading) {
     return <CircularProgress />
   }
@@ -389,11 +404,12 @@ function CoworkersPage() {
           </div>
         </AccessWrapper>
         <Table
-        locale={{emptyText}}
+          locale={{emptyText}}
           className="gx-table-responsive"
           columns={CO_WORKERCOLUMNS(
             sort,
             handleToggleModal,
+            handleSwitchToUser,
             mutation,
             disableUserMmutation,
             user.role.key
