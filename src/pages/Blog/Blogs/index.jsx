@@ -24,7 +24,6 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
-import useScroll from 'hooks/useScroll'
 import {useSelector} from 'react-redux'
 
 const Search = Input.Search
@@ -35,9 +34,6 @@ function Blogs() {
   const [title, setTitle] = useState('')
   const [user, setUser] = useState(undefined)
   const [page, setPage] = useState({page: 1, limit: 10})
-  const [popupOpen, setPopupOpen] = useState(false)
-
-  useScroll(setPopupOpen)
 
   // init hooks
   const navigate = useNavigate()
@@ -134,7 +130,6 @@ function Blogs() {
               </FormItem>
               <FormItem className="direct-form-item">
                 <Select
-                  open={popupOpen}
                   placeholder="Select Author"
                   onChange={handleUserChange}
                   value={user}

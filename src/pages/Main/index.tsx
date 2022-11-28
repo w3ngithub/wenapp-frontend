@@ -145,7 +145,22 @@ function App(props: any) {
     return <FallBack />
 
   return (
-    <ConfigProvider locale={currentAppLocale.antd}>
+    <ConfigProvider
+      locale={currentAppLocale.antd}
+      getPopupContainer={(node: any) => {
+        console.log('n', node)
+        if (node && node?.classList) {
+          if (
+            Array.from(node?.classList).includes('ant-select-selector') ||
+            Array.from(node?.classList).includes('ant-picker')
+          ) {
+            return node.parentNode
+          }
+          return document.body
+        }
+        return document.body
+      }}
+    >
       {/* <ConfigProvider locale={en_GB}> */}
       <IntlProvider
         locale={currentAppLocale.locale}
