@@ -36,7 +36,6 @@ function UserInfo(props) {
     localStorage.setItem('user_id', JSON.stringify(admin))
     localStorage.removeItem('admin')
     dispatch(switchedUser())
-
     handleVisibleChange(false)
   }
   const userMenuOptions = (
