@@ -429,8 +429,6 @@ const Dashboard = () => {
   const isAdmin = DASHBOARD_ICON_ACCESS.includes(key)
   const width = isAdmin ? 6 : 12
 
-  console.log('chartData', chartData, chartData?.length)
-
   return (
     <Auxiliary>
       <Row>
@@ -585,7 +583,7 @@ const Dashboard = () => {
                       //   })
                       // )}
 
-                      options={(projectArray || ['bob', 'bob2'])?.map(
+                      options={(projectArray || [])?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,
                           value: x.name,
