@@ -11,7 +11,7 @@ import {
 } from 'services/resources'
 import {Button, Card, Popconfirm, Spin, Table} from 'antd'
 import {HOLIDAY_COLUMNS} from 'constants/Holidays'
-import {changeDate, compare, handleResponse} from 'helpers/utils'
+import {changeDate, compare, getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import AccessWrapper from 'components/Modules/AccessWrapper'
@@ -181,7 +181,10 @@ function Holiday() {
         title="Holidays"
         extra={
           <AccessWrapper noAccessRoles={HOLIDAY_ACTION_NO_ACCESS}>
-            <Button className="gx-btn gx-btn-primary gx-text-white ">
+            <Button
+              className="gx-btn gx-btn-primary gx-text-white "
+              disabled={getIsAdmin()}
+            >
               <Popconfirm
                 title="Adding next year's holidays will remove current year's holidays. Do you want to proceed?"
                 onConfirm={() => setOpenAdd(true)}

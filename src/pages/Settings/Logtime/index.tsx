@@ -9,7 +9,7 @@ import {
   editLogType,
   getLogtypes,
 } from 'services/settings/logTime'
-import {capitalizeInput, handleResponse} from 'helpers/utils'
+import {capitalizeInput, getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonLogTypeModal from '../CommonLogTypeModal'
 
@@ -73,11 +73,11 @@ function Logtime() {
     },
   })
 
-  const handleAddClick = (name:string, color:string) => {
+  const handleAddClick = (name: string, color: string) => {
     addLogTypeMutation.mutate({name: name, color: color})
   }
 
-  const handleEditClick = (name:string, color:string) => {
+  const handleEditClick = (name: string, color: string) => {
     editLogTypeMutation.mutate({id: dataToEdit?._id, name: name, color: color})
   }
 
@@ -101,7 +101,7 @@ function Logtime() {
     setDisplayColorPicker(false)
     setOpenModal(false)
   }
-  const handleOpenModal = (type: string, data:any) => {
+  const handleOpenModal = (type: string, data: any) => {
     setType(type)
     setArrayDataToSend(data)
     setOpenModal(true)
@@ -113,12 +113,12 @@ function Logtime() {
         toggle={openModal}
         type={type}
         duplicateValue={duplicateValue}
-        hexCode = {hexCode}
+        hexCode={hexCode}
         setHexCode={setHexCode}
         setDuplicateValue={setDuplicateValue}
-        displayColorPicker = {displayColorPicker}
-        setDisplayColorPicker = {setDisplayColorPicker}
-        currentData = {arrayDataToSend}
+        displayColorPicker={displayColorPicker}
+        setDisplayColorPicker={setDisplayColorPicker}
+        currentData={arrayDataToSend}
         isEditMode={isEditMode}
         editData={dataToEdit}
         isLoading={
@@ -133,6 +133,7 @@ function Logtime() {
           <Button
             className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
             onClick={() => handleOpenModal('Log Type', logTypes)}
+            disabled={getIsAdmin()}
           >
             Add
           </Button>
@@ -144,7 +145,7 @@ function Logtime() {
             (value) => handleDeleteClick(value, 'Log Type'),
             (value) => handleOpenEditModal(value, 'Log Type', logTypes)
           )}
-          onAddClick={() => handleOpenModal('Log Type',logTypes)}
+          onAddClick={() => handleOpenModal('Log Type', logTypes)}
           isLoading={isLoading || deleteLogTypeMutation.isLoading}
         />
       </Card>

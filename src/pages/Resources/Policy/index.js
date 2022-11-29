@@ -11,7 +11,7 @@ import {
 } from 'services/resources'
 import {notification} from 'helpers/notification'
 import CommonResourceModal from 'pages/Settings/CommonResourceModal'
-import {handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import RoleAccess from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 
@@ -133,6 +133,7 @@ function Policy() {
             <Button
               className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
               onClick={() => handleOpenModal('Policy')}
+              disabled={getIsAdmin()}
             >
               Add
             </Button>
@@ -143,7 +144,7 @@ function Policy() {
           data={data?.data?.data?.data}
           onEditClick={handleOpenEditModal}
           onDeleteClick={handleDeleteClick}
-          type='Policy'
+          type="Policy"
         />
       </Card>
     </>

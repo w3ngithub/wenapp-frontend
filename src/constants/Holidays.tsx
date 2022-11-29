@@ -2,7 +2,7 @@ import React, {ReactElement} from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
-import {dateToDateFormat} from 'helpers/utils'
+import {dateToDateFormat, getIsAdmin} from 'helpers/utils'
 
 interface holiday {
   title: string
@@ -20,7 +20,7 @@ const HOLIDAY_COLUMNS = (
   openModal: Function,
   role: string
 ): holiday[] =>
-  HOLIDAY_ACTION_NO_ACCESS.includes(role)
+  HOLIDAY_ACTION_NO_ACCESS.includes(role) || getIsAdmin()
     ? [
         {
           title: 'Title',

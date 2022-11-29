@@ -2,6 +2,7 @@ import React from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import RoleAccess, {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
+import {getIsAdmin} from 'helpers/utils'
 
 const CO_WORKERCOLUMNS = (
   sortedInfo,
@@ -60,7 +61,7 @@ const CO_WORKERCOLUMNS = (
             <CustomIcon name="view" />
           </span>
 
-          {!CO_WORKERS_TABLE_ACTION_NO_ACCESS.includes(role) && (
+          {!CO_WORKERS_TABLE_ACTION_NO_ACCESS.includes(role) && !getIsAdmin() && (
             <>
               <Divider type="vertical" />
               <Popconfirm

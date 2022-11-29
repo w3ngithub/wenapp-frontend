@@ -3,7 +3,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import '@ant-design/compatible/assets/index.css'
 import {Card, Table, Input, Button, Form} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
-import {changeDate, handleResponse, MuiFormatDate} from 'helpers/utils'
+import {changeDate, getIsAdmin, handleResponse, MuiFormatDate} from 'helpers/utils'
 import {
   addProject,
   deleteProject,
@@ -367,6 +367,7 @@ function ProjectsPage() {
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
                   onClick={handleOpenAddModal}
+                  disabled={getIsAdmin()}
                 >
                   Add New Project
                 </Button>

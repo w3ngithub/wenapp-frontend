@@ -4,6 +4,7 @@ import {Card, Table, Form, Input, Button} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {
   changeDate,
+  getIsAdmin,
   handleResponse,
   MuiFormatDate,
 } from 'helpers/utils'
@@ -274,6 +275,7 @@ function NoticeBoardPage() {
               <Button
                 className="gx-btn-form gx-btn-primary gx-text-white "
                 onClick={handleOpenAddModal}
+                disabled={getIsAdmin()}
               >
                 Add New Notice
               </Button>

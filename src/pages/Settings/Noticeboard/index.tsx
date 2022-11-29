@@ -9,7 +9,7 @@ import {
   editNoticeboardType,
   getNoticeboardTypes,
 } from 'services/settings/noticeBoard'
-import {capitalizeInput, handleResponse} from 'helpers/utils'
+import {capitalizeInput, getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonModal from '../CommonModal'
 
@@ -98,13 +98,12 @@ function Noticeboard() {
     deleteNoticeboardTypeMutation.mutate({id: data._id})
   }
 
-  const handleOpenEditModal = (data: any, type: string,currentData: any) => {
+  const handleOpenEditModal = (data: any, type: string, currentData: any) => {
     setType(type)
     setIsEditMode(true)
     setOpenModal(true)
     setDataToEdit(data)
     setArrayDataToSend(currentData)
-
   }
 
   const handleCloseModal = () => {
@@ -142,6 +141,7 @@ function Noticeboard() {
           <Button
             className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
             onClick={() => handleOpenModal('Category', noticeBoardTypes)}
+            disabled={getIsAdmin()}
           >
             Add
           </Button>

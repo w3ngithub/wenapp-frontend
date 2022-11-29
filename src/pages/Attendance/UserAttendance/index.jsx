@@ -12,6 +12,7 @@ import {
 import {searchAttendacentOfUser} from 'services/attendances'
 import {
   dateDifference,
+  getIsAdmin,
   milliSecondIntoHours,
   MuiFormatDate,
   sortFromDate,
@@ -238,7 +239,7 @@ function UserAttendance() {
           <div className="form-buttons">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white "
-              disabled={isLoading}
+              disabled={isLoading||getIsAdmin()}
               onClick={
                 data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.length >=
                   punchLimit &&

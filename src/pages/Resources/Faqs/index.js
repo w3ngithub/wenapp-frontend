@@ -3,7 +3,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Button, Card} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {addFaqs, deleteFaqs, editFaqs, getAllFaqs} from 'services/resources'
-import {handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import Collapse from 'components/Elements/Collapse'
 import CommonResourceModal from 'pages/Settings/CommonResourceModal'
@@ -123,7 +123,8 @@ function Faqs() {
       <Card
         title="FAQS"
         extra={
-          [RoleAccess.Admin, RoleAccess.HumanResource].includes(key) ? (
+          [RoleAccess.Admin, RoleAccess.HumanResource].includes(key) &&
+          !getIsAdmin() ? (
             <Button
               className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
               onClick={() => handleOpenModal('FAQ')}
@@ -137,7 +138,7 @@ function Faqs() {
           data={data?.data?.data?.data}
           onEditClick={handleOpenEditModal}
           onDeleteClick={handleDeleteClick}
-          type='FAQ'
+          type="FAQ"
         />
       </Card>
     </>
