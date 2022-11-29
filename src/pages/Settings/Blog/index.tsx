@@ -10,7 +10,7 @@ import {
   getBlogCategories,
 } from 'services/settings/blog'
 import CommonModal from '../CommonModal'
-import {capitalizeInput, handleResponse} from 'helpers/utils'
+import {capitalizeInput, getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 
 function Blog() {
@@ -137,6 +137,7 @@ function Blog() {
           <Button
             className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
             onClick={() => handleOpenModal('Category', blogCategories)}
+            disabled={getIsAdmin()}
           >
             Add
           </Button>

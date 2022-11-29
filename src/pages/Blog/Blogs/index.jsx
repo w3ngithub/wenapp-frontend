@@ -19,7 +19,7 @@ import {getBlogAuthors} from 'services/users/userDetails'
 import Select from 'components/Elements/Select'
 import {useNavigate} from 'react-router-dom'
 import {ADDBLOG} from 'helpers/routePath'
-import {handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
@@ -157,6 +157,7 @@ function Blogs() {
                   onClick={() => {
                     navigate(`${ADDBLOG}`)
                   }}
+                  disabled={getIsAdmin()}
                 >
                   Add New Blog
                 </Button>

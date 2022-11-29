@@ -7,7 +7,7 @@ import {
   inviteUsers,
 } from 'services/settings/coworkers/inviteUser'
 import {INVITED_EMPLOYEES_COLUMN, POSITION_COLUMN} from 'constants/Settings'
-import {capitalizeInput, handleResponse} from 'helpers/utils'
+import {capitalizeInput, getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonModal from '../CommonModal'
 import {
@@ -255,7 +255,7 @@ function Coworkers() {
       addPositionTypeMutation.mutate({name: input})
 
     if (type === types.ROLE)
-      addRoleMutation.mutate({value: input,key: input.toLowerCase()})
+      addRoleMutation.mutate({value: input, key: input.toLowerCase()})
   }
 
   const handleEditClick = (input: any) => {
@@ -327,7 +327,7 @@ function Coworkers() {
         onCancel={handleCloseModal}
       />
       <Row>
-        <Col span={6} xs={24} md={12} >
+        <Col span={6} xs={24} md={12}>
           <Card title="Invite A Co-worker">
             <Form
               {...layout}
@@ -379,6 +379,7 @@ function Coworkers() {
                       type="primary"
                       className=" gx-btn gx-btn-primary gx-text-white email-invite"
                       onClick={handleInviteSubmit}
+                      disabled={getIsAdmin()}
                     >
                       Invite
                     </Button>
@@ -415,6 +416,7 @@ function Coworkers() {
               <Button
                 className="gx-btn gx-btn-primary gx-text-white "
                 onClick={() => handleOpenModal('Position', positions)}
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>
@@ -444,6 +446,7 @@ function Coworkers() {
               <Button
                 className="gx-btn gx-btn-primary gx-text-white settings-add"
                 onClick={() => handleOpenModal('Position Type', positionTypes)}
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>
@@ -472,6 +475,7 @@ function Coworkers() {
               <Button
                 className="gx-btn gx-btn-primary gx-text-white settings-add"
                 onClick={() => handleOpenModal('Role', roles)}
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>

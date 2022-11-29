@@ -6,6 +6,7 @@ import {useMutation, useQueryClient} from '@tanstack/react-query'
 import LiveTime from '../LiveTime/index'
 import {
   checkIfTimeISBetweenOfficeHour,
+  getIsAdmin,
   handleResponse,
   isNotValidTimeZone,
   sortFromDate,
@@ -179,7 +180,8 @@ function PunchInOut() {
           addAttendances.isLoading ||
           punchOutAttendances.isLoading ||
           latestAttendance?.length === 0 ||
-          disableButton
+          disableButton ||
+          getIsAdmin()
         }
         style={{width: '200px'}}
       >

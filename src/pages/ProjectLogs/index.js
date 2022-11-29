@@ -9,6 +9,7 @@ import {
   filterOptions,
   roundedToFixed,
   handleResponse,
+  getIsAdmin,
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
@@ -368,6 +369,7 @@ function ProjectLogs() {
                   className="gx-btn gx-btn-primary gx-text-white "
                   onClick={handleOpenModal}
                   style={{marginBottom: '16px'}}
+                  disabled={getIsAdmin()}
                 >
                   Add New TimeLog
                 </Button>

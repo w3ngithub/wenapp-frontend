@@ -4,6 +4,7 @@ import {Button, Col, Input, Row, Select, Spin, Form, DatePicker} from 'antd'
 import {
   filterHalfDayLeaves,
   filterOptions,
+  getIsAdmin,
   handleResponse,
   MuiFormatDate,
   pendingLeaves,
@@ -592,7 +593,11 @@ function Apply({user}) {
                   <TextArea placeholder="Enter Leave Reason" rows={10} />
                 </FormItem>
                 <div>
-                  <Button type="primary" onClick={handleSubmit}>
+                  <Button
+                    type="primary"
+                    onClick={handleSubmit}
+                    disabled={getIsAdmin()}
+                  >
                     Apply
                   </Button>
                   <Button type="danger" onClick={handleFormReset}>

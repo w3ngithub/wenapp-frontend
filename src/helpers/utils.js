@@ -461,6 +461,10 @@ export const dateToDateFormat = (date) => {
   return date.toString().split('/').reverse().join('-')
 }
 
+export const getIsAdmin = () => {
+  return !!getLocalStorageData('admin')
+}
+
 //sorting through day
 export const daySorter = {
   Monday: 1,

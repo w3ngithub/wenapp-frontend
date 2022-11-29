@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react'
-import { Popconfirm, Tag} from 'antd'
+import {Popconfirm, Tag} from 'antd'
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons'
 import moment from 'moment'
 import parse from 'html-react-parser'
 
 import {Link, useNavigate} from 'react-router-dom'
+import {getIsAdmin} from 'helpers/utils'
 
 const BlogItem = ({blog, grid, removeBlog, access}) => {
   const {title, content, createdBy, createdAt, blogCategories, _id, slug} = blog
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   // var regexp = /<img([\w\W]+?)>/g
   // const text = content.match(regexp)
 
@@ -73,7 +74,12 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
         </div>
       )} */}
       <div className="gx-product-body">
-        <h3 className="gx-product-title clickable-title" onClick={() => navigate(`${_id}-${slug}`)} >{title}</h3>
+        <h3
+          className="gx-product-title clickable-title"
+          onClick={() => navigate(`${_id}-${slug}`)}
+        >
+          {title}
+        </h3>
         <div className="ant-row-flex">
           <small className="gx-text-grey">
             <EditOutlined />
@@ -93,14 +99,20 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
         </p>
       </div>
       <div className="gx-footer gx-d-flex gx-justify-content-end ">
-        {access && (
+        {access && !getIsAdmin() && (
           <Popconfirm
             title="Are you sure to delete this Blog?"
             onConfirm={() => removeBlog(_id)}
             okText="Yes"
             cancelText="No"
           >
-              <DeleteOutlined style={{color:'red', marginRight:'0.5rem', marginBottom:'0.5rem'}}/>
+            <DeleteOutlined
+              style={{
+                color: 'red',
+                marginRight: '0.5rem',
+                marginBottom: '0.5rem',
+              }}
+            />
           </Popconfirm>
         )}
       </div>

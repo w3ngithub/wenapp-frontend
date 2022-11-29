@@ -1,6 +1,7 @@
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import AccessWrapper from 'components/Modules/AccessWrapper'
+import {getIsAdmin} from 'helpers/utils'
 import React from 'react'
 import {LEAVE_TABLE_ACTION_NO_ACESS} from './RoleAccess'
 
@@ -67,43 +68,51 @@ const LEAVES_COLUMN = (
                   <AccessWrapper noAccessRoles={LEAVE_TABLE_ACTION_NO_ACESS}>
                     <>
                       <Divider type="vertical" />
-                      {![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(record.leaveStatus) && (
-                        <span
-                          onClick={() => onApproveClick(record)}
-                          className="gx-link gx-text-green"
-                        >
-                          Approve
-                        </span>
-                      )}
-
-                      {![STATUS_TYPES[3].id].includes(record.leaveStatus) && (
-                        <>
-                          <Divider type="vertical" />
+                      {!getIsAdmin() &&
+                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(
+                          record.leaveStatus
+                        ) && (
                           <span
-                            className="gx-link gx-text-danger"
-                            onClick={() =>
-                              onCancelLeave ? onCancelLeave(record) : () => {}
-                            }
+                            onClick={() => onApproveClick(record)}
+                            className="gx-link gx-text-green"
                           >
-                            Cancel
+                            Approve
                           </span>
-                        </>
-                      )}
+                        )}
 
-                      {![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(record.leaveStatus) && (
-                        <>
-                          <Divider type="vertical" />
-                          <i
-                            className="icon icon-edit gx-link"
-                            onClick={() => onEditClick(record, false)}
-                          />
-                        </>
-                      )}
+                      {![STATUS_TYPES[3].id].includes(record.leaveStatus) &&
+                        !getIsAdmin() && (
+                          <>
+                            <Divider type="vertical" />
+                            <span
+                              className="gx-link gx-text-danger"
+                              onClick={() =>
+                                onCancelLeave ? onCancelLeave(record) : () => {}
+                              }
+                            >
+                              Cancel
+                            </span>
+                          </>
+                        )}
+
+                      {!getIsAdmin() &&
+                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(
+                          record.leaveStatus
+                        ) && (
+                          <>
+                            <Divider type="vertical" />
+                            <i
+                              className="icon icon-edit gx-link"
+                              onClick={() => onEditClick(record, false)}
+                            />
+                          </>
+                        )}
                     </>
                   </AccessWrapper>
                 </div>
               )
-            return record.leaveStatus === STATUS_TYPES[2].id ? (
+            return record.leaveStatus === STATUS_TYPES[2].id &&
+              !getIsAdmin() ? (
               <span
                 className="gx-link gx-text-danger"
                 onClick={() =>
@@ -170,24 +179,27 @@ const LEAVES_COLUMN = (
                     <CustomIcon name="view" />
                   </span>
                   <Divider type="vertical" />
-                  {![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(record.leaveStatus) && (
-                    <>
-                      <Popconfirm
-                        title="Are you sure you want to approve?"
-                        onConfirm={() => onApproveClick(record)}
-                        okText="Yes"
-                        cancelText="No"
-                      >
-                        <span className="gx-link gx-text-green">Approve</span>
-                      </Popconfirm>
-                      <Divider type="vertical" />
+                  {!getIsAdmin() &&
+                    ![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(
+                      record.leaveStatus
+                    ) && (
+                      <>
+                        <Popconfirm
+                          title="Are you sure you want to approve?"
+                          onConfirm={() => onApproveClick(record)}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <span className="gx-link gx-text-green">Approve</span>
+                        </Popconfirm>
+                        <Divider type="vertical" />
 
-                      <i
-                        className="icon icon-edit gx-link"
-                        onClick={() => onEditClick(record, false)}
-                      />
-                    </>
-                  )}
+                        <i
+                          className="icon icon-edit gx-link"
+                          onClick={() => onEditClick(record, false)}
+                        />
+                      </>
+                    )}
                 </div>
               )
             return (
@@ -201,7 +213,7 @@ const LEAVES_COLUMN = (
                   <CustomIcon name="view" />
                 </span>
 
-                {record.leaveStatus === STATUS_TYPES[2].id && (
+                {record.leaveStatus === STATUS_TYPES[2].id && !getIsAdmin() && (
                   <>
                     {' '}
                     <Divider type="vertical" />{' '}

@@ -4,7 +4,7 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import LogModal from 'components/Modules/LogtimeModal'
 import '@ant-design/compatible/assets/index.css'
 import {LOGTIMES_COLUMNS} from 'constants/logTimes'
-import {changeDate, roundedToFixed, handleResponse} from 'helpers/utils'
+import {changeDate, roundedToFixed, handleResponse, getIsAdmin} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
 import React, {useState} from 'react'
@@ -241,6 +241,7 @@ function LogTime() {
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
               onClick={handleOpenModal}
+              disabled={getIsAdmin()}
             >
               Add New Log Time
             </Button>

@@ -1,6 +1,7 @@
 import React from 'react'
 import {Avatar, Divider} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
+import {getIsAdmin} from 'helpers/utils'
 
 const ProfileHeader = ({
   user,
@@ -47,11 +48,13 @@ const ProfileHeader = ({
         </div>
         <div className="gx-profile-banner-bottom">
           <span className="gx-link " onClick={() => onMoreDetailsClick(true)}>
-            <CustomIcon name="edit" />
+            {!getIsAdmin() && <CustomIcon name="edit" />}
             <Divider type="vertical" style={{backgroundColor: 'transparent'}} />
-            <span className="gx-d-inline-flex gx-vertical-align-middle gx-ml-1 gx-ml-sm-0">
-              Edit Details
-            </span>
+            {!getIsAdmin() && (
+              <span className="gx-d-inline-flex gx-vertical-align-middle gx-ml-1 gx-ml-sm-0">
+                Edit Details
+              </span>
+            )}
           </span>
         </div>
       </div>
