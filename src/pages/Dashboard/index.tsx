@@ -61,6 +61,7 @@ const Dashboard = () => {
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)
+  const [noResults, setNoResults] = useState(false)
   const darkTheme = themeType === THEME_TYPE_DARK
 
   const darkThemeTextColor = '#e0e0e0'
@@ -429,6 +430,8 @@ const Dashboard = () => {
   const isAdmin = DASHBOARD_ICON_ACCESS.includes(key)
   const width = isAdmin ? 6 : 12
 
+  console.log('chartData', chartData, chartData?.length)
+
   return (
     <Auxiliary>
       <Row>
@@ -548,7 +551,7 @@ const Dashboard = () => {
                   </FormItem>
                   <FormItem
                     name="project"
-                    // className="direct-form-item"
+                    className="direct-form-project"
                     required
                     rules={[
                       {
@@ -573,7 +576,10 @@ const Dashboard = () => {
                     <Select
                       showSearchIcon={true}
                       value={project}
-                      onChange={(c: any) => setProject(c)}
+                      onChange={(c: any) => {
+                        setProject(c)
+                        setNoResults(false)
+                      }}
                       handleSearch={optimizedFn}
                       placeholder="Search Project"
                       // options={data?.data?.data?.data?.map(
@@ -583,7 +589,7 @@ const Dashboard = () => {
                       //   })
                       // )}
 
-                      options={(projectArray || [])?.map(
+                      options={(projectArray || ['bob', 'bob2'])?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,
                           value: x.name,
@@ -592,7 +598,7 @@ const Dashboard = () => {
                       inputSelect
                     />
                   </FormItem>
-                  <FormItem name="logType" className="direct-form-item">
+                  <FormItem name="logType" className="direct-form-project">
                     <Select
                       value={logType}
                       onChange={(c: any) => setlogType(c)}
@@ -637,8 +643,12 @@ const Dashboard = () => {
                         />
                       )}
                     </div>
+                  ) : chartData === undefined ? (
+                    ''
+                  ) : chartData.length === 0 ? (
+                    'No Results Found.'
                   ) : (
-                    'No Result Found'
+                    ''
                   )}
                 </div>
               )}
