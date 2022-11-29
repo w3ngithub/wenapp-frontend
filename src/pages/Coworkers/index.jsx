@@ -5,7 +5,7 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import UserDetailForm from 'components/Modules/UserDetailModal'
 import {CO_WORKERCOLUMNS} from 'constants/CoWorkers'
 import {notification} from 'helpers/notification'
-import {changeDate, getLocalStorageData, handleResponse} from 'helpers/utils'
+import {changeDate, getIsAdmin, getLocalStorageData, handleResponse} from 'helpers/utils'
 import moment from 'moment'
 import {useEffect, useState} from 'react'
 import {CSVLink} from 'react-csv'
@@ -31,6 +31,7 @@ import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useDispatch, useSelector} from 'react-redux'
 import {switchedUser, switchUser} from 'appRedux/actions'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -65,7 +66,7 @@ function CoworkersPage() {
   const dispatch = useDispatch()
 
   // get user detail from storage
-  const {user} = useSelector((state) => state.auth?.authUser)
+  const user = useSelector(selectAuthUser)
   const [form] = Form.useForm()
 
   const {data: roleData} = useQuery(['userRoles'], getUserRoles)
@@ -290,7 +291,7 @@ function CoworkersPage() {
                 enterButton
                 className="direct-form-item"
               />
-              <AccessWrapper
+               {!getIsAdmin() &&<AccessWrapper
                 noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
               >
                 <Popconfirm
@@ -298,12 +299,13 @@ function CoworkersPage() {
                   onConfirm={handleResetAllocatedLeaves}
                   okText="Yes"
                   cancelText="No"
+
                 >
-                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
+                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1" >
                     Reset Allocated Leaves
                   </Button>
                 </Popconfirm>
-              </AccessWrapper>
+              </AccessWrapper>}
             </div>
             <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
               <Form layout="inline" form={form}>

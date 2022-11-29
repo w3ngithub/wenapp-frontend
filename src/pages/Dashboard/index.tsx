@@ -43,6 +43,7 @@ import {
 } from 'constants/RoleAccess'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -50,14 +51,14 @@ const localizer = momentLocalizer(moment)
 const Dashboard = () => {
   const {
     role: {key},
-  } = useSelector((state: any) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
   const [projectArray, setProjectArray] = useState([])
   const navigate = useNavigate()
-  const loggedInUser = useSelector((state: any) => state?.auth?.authUser?.user)
+  const loggedInUser = useSelector(selectAuthUser)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)
@@ -548,7 +549,7 @@ const Dashboard = () => {
                   </FormItem>
                   <FormItem
                     name="project"
-                    // className="direct-form-item"
+                    className="direct-form-project"
                     required
                     rules={[
                       {
@@ -592,7 +593,7 @@ const Dashboard = () => {
                       inputSelect
                     />
                   </FormItem>
-                  <FormItem name="logType" className="direct-form-item">
+                  <FormItem name="logType" className="direct-form-project">
                     <Select
                       value={logType}
                       onChange={(c: any) => setlogType(c)}
@@ -637,8 +638,12 @@ const Dashboard = () => {
                         />
                       )}
                     </div>
+                  ) : chartData === undefined ? (
+                    ''
+                  ) : chartData.length === 0 ? (
+                    'No Results Found.'
                   ) : (
-                    'No Result Found'
+                    ''
                   )}
                 </div>
               )}

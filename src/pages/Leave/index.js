@@ -24,6 +24,7 @@ import RoleAccess, {
 } from 'constants/RoleAccess'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const TabPane = Tabs.TabPane
 
@@ -38,7 +39,7 @@ function Leave() {
   const [leaveData, setLeaveData] = useState('')
   const [submittingCancelReason, setSubmittingCancelReason] = useState(false)
 
-  const loggedInUser = useSelector((state) => state?.auth?.authUser?.user)
+  const loggedInUser = useSelector(selectAuthUser)
   const {data: leaveTypes, isLoading} = useQuery(['leaveTypes'], getLeaveTypes)
 
   const leaveDaysQuery = useQuery(
@@ -46,7 +47,7 @@ function Leave() {
     () => getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
 
-  const user = useSelector((state) => state.auth?.authUser?.user)
+  const user = useSelector(selectAuthUser)
 
   const handleCloseCancelLeaveModal = () => {
     setOpenCancelLeaveModal(false)
@@ -122,7 +123,6 @@ function Leave() {
     },
     {}
   )
-
 
   let IsIntern = user?.status === EmployeeStatus?.Probation
 

@@ -111,11 +111,11 @@ function App(props: any) {
       onSuccess: (data) => {
         localStorage.setItem(
           LOCALSTORAGE_USER,
-          JSON.stringify(data.data.data.data[0]?._id)
+          JSON.stringify(data?.data?.data?.data[0]?._id)
         )
         dispatch(
           getUserProfile({
-            user: data.data.data.data[0],
+            user: data?.data?.data?.data[0],
           })
         )
       },
@@ -145,7 +145,21 @@ function App(props: any) {
     return <FallBack />
 
   return (
-    <ConfigProvider locale={currentAppLocale.antd}>
+    <ConfigProvider
+      locale={currentAppLocale.antd}
+      getPopupContainer={(node: any) => {
+        if (node && node?.classList) {
+          if (
+            Array.from(node?.classList).includes('ant-select-selector') ||
+            Array.from(node?.classList).includes('ant-picker')
+          ) {
+            return node.parentNode
+          }
+          return document.body
+        }
+        return document.body
+      }}
+    >
       {/* <ConfigProvider locale={en_GB}> */}
       <IntlProvider
         locale={currentAppLocale.locale}

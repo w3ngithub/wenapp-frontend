@@ -15,6 +15,9 @@ import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
+import { getIsAdmin } from 'helpers/utils'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
+
 
 function Detail() {
   // init hooks
@@ -25,7 +28,7 @@ function Detail() {
 
   const [blogId] = blog.split('-')
 
-  const {user: userData} = useSelector((state) => state.auth?.authUser)
+  const userData= useSelector(selectAuthUser)
 
   const {data, isLoading} = useQuery(['singleBlog', blogId], () =>
     getBlog(blogId)
@@ -69,6 +72,7 @@ function Detail() {
                   type="primary"
                   onClick={handleEdit}
                   className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                  disabled={getIsAdmin()}
                 >
                   Edit
                 </Button>

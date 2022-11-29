@@ -3,7 +3,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Button, Card, Col, Row} from 'antd'
 import SettingTable from '../CommonTable'
 import {RESOURCES_COLUMN} from 'constants/Settings'
-import {handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonResourceModal from '../CommonResourceModal'
 import {
@@ -210,6 +210,7 @@ function Resources() {
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                 onClick={() => handleOpenModal('FAQ')}
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>
@@ -233,6 +234,7 @@ function Resources() {
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                 onClick={() => handleOpenModal('Policy')}
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>

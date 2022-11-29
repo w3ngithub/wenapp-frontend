@@ -6,6 +6,7 @@ import {useMutation, useQueryClient} from '@tanstack/react-query'
 import LiveTime from '../LiveTime/index'
 import {
   checkIfTimeISBetweenOfficeHour,
+  getIsAdmin,
   handleResponse,
   isNotValidTimeZone,
   sortFromDate,
@@ -18,11 +19,11 @@ import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {Dispatch} from 'redux'
 import TmsMyAttendanceForm from 'components/Modules/TmsMyAttendanceForm'
 import getLocation, {checkLocationPermission} from 'helpers/getLocation'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {punchLimit} from 'constants/PunchLimit'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function PunchInOut() {
-  const {user} = useSelector((state: any) => state.auth?.authUser)
+  const user = useSelector(selectAuthUser)
 
   const [toogle, setToogle] = useState(false)
   const [disableButton, setdisableButton] = useState(false)
@@ -179,7 +180,8 @@ function PunchInOut() {
           addAttendances.isLoading ||
           punchOutAttendances.isLoading ||
           latestAttendance?.length === 0 ||
-          disableButton
+          disableButton ||
+          getIsAdmin()
         }
         style={{width: '200px'}}
       >

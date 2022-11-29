@@ -1,5 +1,6 @@
 import CustomIcon from 'components/Elements/Icons'
 import {Divider, Popconfirm} from 'antd'
+import {getIsAdmin} from 'helpers/utils'
 
 export const POSITION_COLUMN = (
   onDeleteClick: (param: any) => void,
@@ -18,25 +19,27 @@ export const POSITION_COLUMN = (
     width: 10,
     render: (text: any, record: any) => {
       return (
-        <div style={{display: 'flex'}}>
-          <span
-            className="gx-link gx-text-primary"
-            onClick={() => onEditClick(record, true)}
-          >
-            <CustomIcon name="edit" />
-          </span>
-          <Divider type="vertical" />
-          <Popconfirm
-            title="Are you sure you want to delete?"
-            onConfirm={() => onDeleteClick(record)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <span className="gx-link gx-text-danger">
-              <CustomIcon name="delete" />
+        !getIsAdmin() && (
+          <div style={{display: 'flex'}}>
+            <span
+              className="gx-link gx-text-primary"
+              onClick={() => onEditClick(record, true)}
+            >
+              <CustomIcon name="edit" />
             </span>
-          </Popconfirm>
-        </div>
+            <Divider type="vertical" />
+            <Popconfirm
+              title="Are you sure you want to delete?"
+              onConfirm={() => onDeleteClick(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <span className="gx-link gx-text-danger">
+                <CustomIcon name="delete" />
+              </span>
+            </Popconfirm>
+          </div>
+        )
       )
     },
   },
@@ -64,7 +67,7 @@ export const LOGTYPE_COLUMN = (
             color: record?.color,
             width: '10px',
             height: '6px',
-            borderRadius:'4px'
+            borderRadius: '4px',
           }}
         >
           Here are the colors
@@ -76,8 +79,8 @@ export const LOGTYPE_COLUMN = (
   {
     title: 'Action',
     key: 'action',
-    render: (text: any, record: any) => {
-      return (
+    render: (text: any, record: any) =>
+      !getIsAdmin() && (
         <div style={{display: 'flex'}}>
           <span
             className="gx-link gx-text-primary"
@@ -97,8 +100,7 @@ export const LOGTYPE_COLUMN = (
             </span>
           </Popconfirm>
         </div>
-      )
-    },
+      ),
   },
 ]
 
@@ -152,25 +154,27 @@ export const RESOURCES_COLUMN = (
     width: 10,
     render: (text: any, record: any) => {
       return (
-        <div style={{display: 'flex'}}>
-          <span
-            className="gx-link gx-text-primary"
-            onClick={() => onEditClick(record, true)}
-          >
-            <CustomIcon name="edit" />
-          </span>
-          <Divider type="vertical" />
-          <Popconfirm
-            title="Are you sure you want to delete?"
-            onConfirm={() => onDeleteClick(record)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <span className="gx-link gx-text-danger">
-              <CustomIcon name="delete" />
+        !getIsAdmin() && (
+          <div style={{display: 'flex'}}>
+            <span
+              className="gx-link gx-text-primary"
+              onClick={() => onEditClick(record, true)}
+            >
+              <CustomIcon name="edit" />
             </span>
-          </Popconfirm>
-        </div>
+            <Divider type="vertical" />
+            <Popconfirm
+              title="Are you sure you want to delete?"
+              onConfirm={() => onDeleteClick(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <span className="gx-link gx-text-danger">
+                <CustomIcon name="delete" />
+              </span>
+            </Popconfirm>
+          </div>
+        )
       )
     },
   },
@@ -199,28 +203,30 @@ export const LEAVES_COLUMN = (
     width: 10,
     render: (text: any, record: any) => {
       return (
-        <div className="gx-d-flex">
-          <span
-            className="gx-link gx-text-primary"
-            onClick={() => {
-              onEditClick(record, true)
-            }}
-          >
-            <CustomIcon name="edit" />
-          </span>
-          <Divider type="vertical" style={{color: 'blue'}} />
-          <Popconfirm
-            title="Are you sure you want to delete?"
-            onConfirm={() => onDeleteClick(record)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <span className="gx-link gx-text-danger">
-              {' '}
-              <CustomIcon name="delete" />
+        !getIsAdmin() && (
+          <div className="gx-d-flex">
+            <span
+              className="gx-link gx-text-primary"
+              onClick={() => {
+                onEditClick(record, true)
+              }}
+            >
+              <CustomIcon name="edit" />
             </span>
-          </Popconfirm>
-        </div>
+            <Divider type="vertical" style={{color: 'blue'}} />
+            <Popconfirm
+              title="Are you sure you want to delete?"
+              onConfirm={() => onDeleteClick(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <span className="gx-link gx-text-danger">
+                {' '}
+                <CustomIcon name="delete" />
+              </span>
+            </Popconfirm>
+          </div>
+        )
       )
     },
   },
@@ -285,25 +291,27 @@ export const EMAIL_COLUMN = (
     width: 10,
     render: (text: any, record: any) => {
       return (
-        <div style={{display: 'flex'}}>
-          <span
-            className="gx-link gx-text-primary"
-            onClick={() => onEditClick(record, true)}
-          >
-            <CustomIcon name="edit" />
-          </span>
-          <Divider type="vertical" />
-          <Popconfirm
-            title="Are you sure you want to delete?"
-            onConfirm={() => onDeleteClick(record)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <span className="gx-link gx-text-danger">
-              <CustomIcon name="delete" />
+        !getIsAdmin() && (
+          <div style={{display: 'flex'}}>
+            <span
+              className="gx-link gx-text-primary"
+              onClick={() => onEditClick(record, true)}
+            >
+              <CustomIcon name="edit" />
             </span>
-          </Popconfirm>
-        </div>
+            <Divider type="vertical" />
+            <Popconfirm
+              title="Are you sure you want to delete?"
+              onConfirm={() => onDeleteClick(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <span className="gx-link gx-text-danger">
+                <CustomIcon name="delete" />
+              </span>
+            </Popconfirm>
+          </div>
+        )
       )
     },
   },

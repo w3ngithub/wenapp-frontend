@@ -9,6 +9,7 @@ import {changeLeaveStatus, getLeavesOfAllUsers} from 'services/leaves'
 import {
   capitalizeInput,
   changeDate,
+  getIsAdmin,
   handleResponse,
   removeDash,
 } from 'helpers/utils'
@@ -320,6 +321,7 @@ function Leaves({
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                   onClick={handleOpenModal}
+                  disabled={getIsAdmin()}
                 >
                   Add Leave
                 </Button>

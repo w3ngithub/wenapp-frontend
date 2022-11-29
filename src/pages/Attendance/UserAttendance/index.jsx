@@ -12,6 +12,7 @@ import {
 import {searchAttendacentOfUser} from 'services/attendances'
 import {
   dateDifference,
+  getIsAdmin,
   milliSecondIntoHours,
   MuiFormatDate,
   sortFromDate,
@@ -26,6 +27,7 @@ import {useLocation} from 'react-router-dom'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {punchLimit} from 'constants/PunchLimit'
 import {emptyText} from 'constants/EmptySearchAntd'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -74,7 +76,7 @@ function UserAttendance() {
   const [attFilter, setAttFilter] = useState({id: '1', value: 'Daily'})
   const [toogle, setToogle] = useState(false)
 
-  const {user} = useSelector((state) => state.auth?.authUser)
+  const user = useSelector(selectAuthUser)
 
   const punchIn = useSelector((state) => state.attendance.punchIn)
 
@@ -238,7 +240,7 @@ function UserAttendance() {
           <div className="form-buttons">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white "
-              disabled={isLoading}
+              disabled={isLoading||getIsAdmin()}
               onClick={
                 data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.length >=
                   punchLimit &&

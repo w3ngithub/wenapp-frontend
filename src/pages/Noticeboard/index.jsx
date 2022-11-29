@@ -4,6 +4,7 @@ import {Card, Table, Form, Input, Button} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {
   changeDate,
+  getIsAdmin,
   handleResponse,
   MuiFormatDate,
 } from 'helpers/utils'
@@ -22,6 +23,7 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import { emptyText } from 'constants/EmptySearchAntd'
 import { useSelector } from 'react-redux'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -55,7 +57,7 @@ function NoticeBoardPage() {
 
   const {
     role: {key},
-  } = useSelector((state)=>state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   const {data, isLoading, isError, isFetching} = useQuery(
     ['notices', page, title, date,sort],
@@ -274,6 +276,7 @@ function NoticeBoardPage() {
               <Button
                 className="gx-btn-form gx-btn-primary gx-text-white "
                 onClick={handleOpenAddModal}
+                disabled={getIsAdmin()}
               >
                 Add New Notice
               </Button>

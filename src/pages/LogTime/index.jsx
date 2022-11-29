@@ -4,7 +4,7 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import LogModal from 'components/Modules/LogtimeModal'
 import '@ant-design/compatible/assets/index.css'
 import {LOGTIMES_COLUMNS} from 'constants/logTimes'
-import {changeDate, roundedToFixed, handleResponse} from 'helpers/utils'
+import {changeDate, roundedToFixed, handleResponse, getIsAdmin} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
 import React, {useState} from 'react'
@@ -21,6 +21,7 @@ import TimeSummary from './TimeSummary'
 import {useNavigate} from 'react-router-dom'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -39,7 +40,7 @@ function LogTime() {
   // init hooks
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const idUser = useSelector((state) => state?.auth?.authUser?.user)
+  const idUser = useSelector(selectAuthUser)
 
   // init states
   const [sort, setSort] = useState({})
@@ -48,12 +49,8 @@ function LogTime() {
 
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
-  const {
-    user: {
-      _id,
-      role: {key},
-    },
-  } = useSelector((state) => state.auth?.authUser)
+
+  const {_id,role: {key}} = useSelector(selectAuthUser)
 
   const {
     data: logTimeDetails,
@@ -244,6 +241,7 @@ function LogTime() {
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
               onClick={handleOpenModal}
+              disabled={getIsAdmin()}
             >
               Add New Log Time
             </Button>
