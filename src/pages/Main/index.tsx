@@ -148,7 +148,6 @@ function App(props: any) {
     <ConfigProvider
       locale={currentAppLocale.antd}
       getPopupContainer={(node: any) => {
-        console.log('n', node)
         if (node && node?.classList) {
           if (
             Array.from(node?.classList).includes('ant-select-selector') ||
