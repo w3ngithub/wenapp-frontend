@@ -8,6 +8,7 @@ import AdminAttendanceCalendar from './AdminCalendar'
 import {useLocation} from 'react-router-dom'
 import {ATTENDANCE_ALL_TAB_NO_ACCESS} from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function Attendace() {
   const {state}: {state: any} = useLocation()
@@ -16,7 +17,7 @@ function Attendace() {
 
   const {
     role: {key},
-  } = useSelector((state: any) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   useEffect(() => {
     setTabKey(state?.tab)

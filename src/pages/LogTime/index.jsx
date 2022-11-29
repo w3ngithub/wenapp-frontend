@@ -21,6 +21,7 @@ import TimeSummary from './TimeSummary'
 import {useNavigate} from 'react-router-dom'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -39,7 +40,7 @@ function LogTime() {
   // init hooks
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const idUser = useSelector((state) => state?.auth?.authUser?.user)
+  const idUser = useSelector(selectAuthUser)
 
   // init states
   const [sort, setSort] = useState({})
@@ -48,12 +49,8 @@ function LogTime() {
 
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
-  const {
-    user: {
-      _id,
-      role: {key},
-    },
-  } = useSelector((state) => state.auth?.authUser)
+
+  const {_id,role: {key}} = useSelector(selectAuthUser)
 
   const {
     data: logTimeDetails,

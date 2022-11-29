@@ -18,11 +18,11 @@ import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {Dispatch} from 'redux'
 import TmsMyAttendanceForm from 'components/Modules/TmsMyAttendanceForm'
 import getLocation, {checkLocationPermission} from 'helpers/getLocation'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {punchLimit} from 'constants/PunchLimit'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function PunchInOut() {
-  const {user} = useSelector((state: any) => state.auth?.authUser)
+  const user = useSelector(selectAuthUser)
 
   const [toogle, setToogle] = useState(false)
   const [disableButton, setdisableButton] = useState(false)

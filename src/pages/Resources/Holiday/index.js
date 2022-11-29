@@ -16,6 +16,7 @@ import {notification} from 'helpers/notification'
 import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const localizer = momentLocalizer(moment)
 
@@ -37,7 +38,7 @@ function Holiday() {
 
   const {
     role: {key},
-  } = useSelector((state) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   const {
     data: Holidays,

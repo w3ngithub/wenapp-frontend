@@ -108,4 +108,6 @@ const reducer = (state = INIT_STATE, action) => {
   }
 }
 
+export const selectAuthUser = (state) => state?.auth?.authUser?.user
+
 export default reducer

@@ -10,13 +10,14 @@ import Resources from './Resources'
 import RoleAccess, {SETTINGS_TABS_NO_ACCESS} from 'constants/RoleAccess'
 import Email from './Email'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const TabPane = Tabs.TabPane
 
 function Settings() {
   const {
     role: {key},
-  } = useSelector((state: any) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
   return (
     <Card title="Settings">
       <Tabs type="card">

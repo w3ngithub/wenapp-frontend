@@ -14,6 +14,7 @@ import {getLeaveTypes} from 'services/leaves'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const FormItem = Form.Item
 
@@ -69,7 +70,7 @@ function MyHistory({
 
   const [page, setPage] = useState(defaultPage)
 
-  const {gender} = useSelector((state: any) => state.auth?.authUser?.user)
+  const {gender} = useSelector(selectAuthUser)
 
   const userLeavesQuery = useQuery(
     ['userLeaves', leaveStatus, date, page, leaveTypeId],

@@ -14,6 +14,7 @@ import moment from 'moment'
 import {filterOptions} from 'helpers/utils'
 import {async} from '@firebase/util'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -48,7 +49,7 @@ function UserDetailForm({
     onToggleModal({})
   }
 
-  const user = useSelector((state) => state.auth?.authUser)
+  const user = useSelector(selectAuthUser)
   // const {role: user?.role} = localStorage.getItem('user_id')
   //   ? JSON.parse(localStorage.getItem('user_id')).user
   //   : {}
