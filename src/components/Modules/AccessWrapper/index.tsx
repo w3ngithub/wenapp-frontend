@@ -1,3 +1,4 @@
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 import RoleAccess from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 
@@ -9,7 +10,7 @@ interface AccessWrapperInterface {
 function AccessWrapper({noAccessRoles, children}: AccessWrapperInterface) {
   const {
     role: {key},
-  } = useSelector((state: any) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   if (!noAccessRoles.includes(key) && Object.values(RoleAccess).includes(key))
     return children

@@ -9,6 +9,7 @@ import Collapse from 'components/Elements/Collapse'
 import CommonResourceModal from 'pages/Settings/CommonResourceModal'
 import RoleAccess from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function Faqs() {
   const {data, isLoading, isError} = useQuery(['faqs'], getAllFaqs)
@@ -19,7 +20,7 @@ function Faqs() {
   const [dataToEdit, setDataToEdit] = useState({})
   const {
     role: {key},
-  } = useSelector((state) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   useEffect(() => {
     if (isError) {
@@ -137,7 +138,7 @@ function Faqs() {
           data={data?.data?.data?.data}
           onEditClick={handleOpenEditModal}
           onDeleteClick={handleDeleteClick}
-          type='FAQ'
+          type="FAQ"
         />
       </Card>
     </>

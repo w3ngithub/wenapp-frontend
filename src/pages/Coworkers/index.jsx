@@ -31,6 +31,7 @@ import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useDispatch, useSelector} from 'react-redux'
 import {switchedUser, switchUser} from 'appRedux/actions'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -65,7 +66,7 @@ function CoworkersPage() {
   const dispatch = useDispatch()
 
   // get user detail from storage
-  const {user} = useSelector((state) => state.auth?.authUser)
+  const user = useSelector(selectAuthUser)
   const [form] = Form.useForm()
 
   const {data: roleData} = useQuery(['userRoles'], getUserRoles)

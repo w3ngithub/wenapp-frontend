@@ -27,6 +27,7 @@ import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -66,11 +67,7 @@ function ProjectsPage() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-  const {
-    user: {
-      role: {key},
-    },
-  } = useSelector((state) => state.auth?.authUser)
+  const {role: {key}} = useSelector(selectAuthUser)
 
   const {data: projectTypesData} = useQuery(['projectTypes'], getProjectTypes)
   const {data: projectStatusData} = useQuery(

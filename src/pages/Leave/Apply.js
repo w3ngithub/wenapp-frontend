@@ -31,6 +31,7 @@ import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -50,9 +51,7 @@ function Apply({user}) {
   const [yearStartDate, setYearStartDate] = useState(undefined)
   const [yearEndDate, setYearEndDate] = useState(undefined)
 
-  const {name, email, gender} = useSelector(
-    (state) => state.auth?.authUser?.user
-  )
+  const {name, email, gender} = useSelector(selectAuthUser)
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -108,7 +107,7 @@ function Apply({user}) {
       getLeavesOfUser(user, '', undefined, '', '', yearStartDate, yearEndDate),
     {enabled: !!yearStartDate && !!yearEndDate}
   )
- 
+
   const onFocus = () => {
     queryClient.invalidateQueries(['userLeaves'])
   }
@@ -122,8 +121,6 @@ function Apply({user}) {
       refetch()
     }
   }, [gender])
-
- 
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {

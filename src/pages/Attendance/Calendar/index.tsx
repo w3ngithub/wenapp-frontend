@@ -12,13 +12,14 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {ATTENDANCE} from 'helpers/routePath'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const localizer = momentLocalizer(moment)
 
 function AttendanceCalendar() {
   const navigate = useNavigate()
 
-  const user = useSelector((state: any) => state?.auth?.authUser?.user)
+  const user = useSelector(selectAuthUser)
   const {innerWidth} = useWindowsSize()
   const [date, setDate] = useState(monthlyState)
   const {data, isLoading} = useQuery(['userAttendance', user, date], () =>

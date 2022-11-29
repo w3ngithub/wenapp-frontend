@@ -7,6 +7,7 @@ import RecentActivity from '../dashboard/CRM/RecentActivity'
 import moment from 'moment'
 import {useInView} from 'react-intersection-observer'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function ActivityInfo() {
   const {ref, inView} = useInView({threshold: 0.5})
@@ -15,7 +16,7 @@ function ActivityInfo() {
 
   const {
     role: {key},
-  } = useSelector((state: any) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   const handleVisibleChange = (newVisible: boolean) => {
     setVisible(newVisible)

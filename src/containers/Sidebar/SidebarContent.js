@@ -16,6 +16,7 @@ import {connect, useSelector} from 'react-redux'
 import {SIDEBAR_ITEMS} from 'constants/sideBarItems'
 import {REPORTS, RESOURCES} from 'helpers/routePath'
 import RoleAccess from 'constants/RoleAccess'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const SubMenu = Menu.SubMenu
 
@@ -25,7 +26,7 @@ function SidebarContent(props) {
   const paths = location.pathname.split('/')
   const {
     role: {key},
-  } = useSelector((state) => state.auth.authUser.user)
+  } = useSelector(selectAuthUser)
 
   const selectedOpenKeys =
     paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1]
