@@ -102,7 +102,7 @@ function App(props: any) {
   const dispatch = useDispatch()
   const userId =
     localStorage.getItem(LOCALSTORAGE_USER) &&
-    localStorage.getItem(LOCALSTORAGE_USER) !== undefined
+    localStorage.getItem(LOCALSTORAGE_USER) !== 'undefined'
       ? JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
       : ''
 
