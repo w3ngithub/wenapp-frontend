@@ -19,7 +19,7 @@ const formattedWeeklyReports = (logs: any) => {
 function ActivityLogs() {
   // init states
   const [sort, setSort] = useState<any>({})
-  const [page, setPage] = useState({page: 1, limit: 5})
+  const [page, setPage] = useState({page: 1, limit: 50})
 
   const {data, isLoading, isError, isFetching} = useQuery(
     ['activityLogs', page, sort],
@@ -72,7 +72,7 @@ function ActivityLogs() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['5', '10'],
+            pageSizeOptions: ['50', '80', '100'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
