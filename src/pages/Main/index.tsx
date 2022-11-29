@@ -111,11 +111,11 @@ function App(props: any) {
       onSuccess: (data) => {
         localStorage.setItem(
           LOCALSTORAGE_USER,
-          JSON.stringify(data.data.data.data[0]?._id)
+          JSON.stringify(data?.data?.data?.data[0]?._id)
         )
         dispatch(
           getUserProfile({
-            user: data.data.data.data[0],
+            user: data?.data?.data?.data[0],
           })
         )
       },
