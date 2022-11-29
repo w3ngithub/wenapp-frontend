@@ -99,7 +99,8 @@ const CO_WORKERCOLUMNS = (
               </span>
             </>
           )}
-          {role === RoleAccess.Admin &&
+          {!getIsAdmin() &&
+            role === RoleAccess.Admin &&
             !(
               record?._id ===
               JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))

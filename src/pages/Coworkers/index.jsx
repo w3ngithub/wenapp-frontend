@@ -12,7 +12,6 @@ import {CSVLink} from 'react-csv'
 import {
   disableUser,
   getAllUsers,
-  getMyProfile,
   getUserPosition,
   getUserPositionTypes,
   getUserRoles,
@@ -360,6 +359,7 @@ function CoworkersPage() {
                   <Button
                     className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                     onClick={() => setOpenImport(true)}
+                    disabled={getIsAdmin()}
                   >
                     Import
                   </Button>
