@@ -61,7 +61,6 @@ const Dashboard = () => {
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)
-  const [noResults, setNoResults] = useState(false)
   const darkTheme = themeType === THEME_TYPE_DARK
 
   const darkThemeTextColor = '#e0e0e0'
@@ -576,10 +575,7 @@ const Dashboard = () => {
                     <Select
                       showSearchIcon={true}
                       value={project}
-                      onChange={(c: any) => {
-                        setProject(c)
-                        setNoResults(false)
-                      }}
+                      onChange={(c: any) => setProject(c)}
                       handleSearch={optimizedFn}
                       placeholder="Search Project"
                       // options={data?.data?.data?.data?.map(
