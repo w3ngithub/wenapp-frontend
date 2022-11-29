@@ -31,6 +31,7 @@ import {LOG_TIME_ADD_NO_ACCESS} from 'constants/RoleAccess'
 import ProjectModal from 'components/Modules/ProjectModal'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -66,7 +67,7 @@ function ProjectLogs() {
   const {
     name,
     role: {key},
-  } = useSelector((state) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   const {data: projectDetail} = useQuery(['singleProject', projectId], () =>
     getProject(projectId)

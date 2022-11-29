@@ -5,6 +5,7 @@ import {changeDate, dayCheck, oneWeekFilterCheck} from 'helpers/utils'
 import {SALARY_REVIEW_ACCESS} from 'constants/RoleAccess'
 import {Collapse} from 'antd'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const TimeLineItem = Timeline.Item
 const {Panel} = Collapse
@@ -54,7 +55,7 @@ function EventsAndAnnouncements({
 }) {
   const {
     role: {key},
-  } = useSelector((state: any) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
   const announcementsData = announcements?.map((x: any) => ({
     id: x._id,
     name: x.title,

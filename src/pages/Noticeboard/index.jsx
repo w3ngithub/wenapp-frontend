@@ -23,6 +23,7 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import { emptyText } from 'constants/EmptySearchAntd'
 import { useSelector } from 'react-redux'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -56,7 +57,7 @@ function NoticeBoardPage() {
 
   const {
     role: {key},
-  } = useSelector((state)=>state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   const {data, isLoading, isError, isFetching} = useQuery(
     ['notices', page, title, date,sort],

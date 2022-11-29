@@ -5,6 +5,8 @@ import CustomIcon from '../Icons'
 import RoleAccess from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {getIsAdmin} from 'helpers/utils'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
+
 
 const Panel = Collapse.Panel
 
@@ -17,7 +19,7 @@ const Collapses = ({
 }) => {
   const {
     role: {key},
-  } = useSelector((state) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   return (
     <Collapse defaultActiveKey={defaultActiveKey}>

@@ -1,5 +1,6 @@
 import {Navigate} from 'react-router-dom'
 import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function AccessRoute({
   roles,
@@ -10,7 +11,7 @@ function AccessRoute({
 }) {
   const {
     role: {key},
-  } = useSelector((state: any) => state?.auth?.authUser?.user)
+  } = useSelector(selectAuthUser)
 
   if (roles.includes(key)) {
     return children
