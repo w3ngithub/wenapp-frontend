@@ -549,7 +549,7 @@ const Dashboard = () => {
                   </FormItem>
                   <FormItem
                     name="project"
-                    // className="direct-form-item"
+                    className="direct-form-project"
                     required
                     rules={[
                       {
@@ -593,7 +593,7 @@ const Dashboard = () => {
                       inputSelect
                     />
                   </FormItem>
-                  <FormItem name="logType" className="direct-form-item">
+                  <FormItem name="logType" className="direct-form-project">
                     <Select
                       value={logType}
                       onChange={(c: any) => setlogType(c)}
@@ -638,8 +638,12 @@ const Dashboard = () => {
                         />
                       )}
                     </div>
+                  ) : chartData === undefined ? (
+                    ''
+                  ) : chartData.length === 0 ? (
+                    'No Results Found.'
                   ) : (
-                    'No Result Found'
+                    ''
                   )}
                 </div>
               )}
