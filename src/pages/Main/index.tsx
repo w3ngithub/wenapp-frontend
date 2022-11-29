@@ -100,9 +100,11 @@ function App(props: any) {
 
   const location = useLocation()
   const dispatch = useDispatch()
-  const userId = localStorage.getItem(LOCALSTORAGE_USER)
-    ? JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
-    : ''
+  const userId =
+    localStorage.getItem(LOCALSTORAGE_USER) &&
+    localStorage.getItem(LOCALSTORAGE_USER) !== undefined
+      ? JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
+      : ''
 
   const {data: details, isFetching} = useQuery(
     ['userDetail', userId],
