@@ -5,6 +5,7 @@ import {switchedUser, switchUser, userSignOut} from 'appRedux/actions/Auth'
 import {useNavigate} from 'react-router-dom'
 import {PROFILE} from 'helpers/routePath'
 import ChangePasswordModel from 'components/Modules/ChangePasswordModel'
+import {getIsAdmin} from 'helpers/utils'
 
 function UserInfo(props) {
   const navigate = useNavigate()
@@ -50,13 +51,15 @@ function UserInfo(props) {
       >
         Profile
       </li>
-      <li
-        onClick={() => {
-          handleChangePassword()
-        }}
-      >
-        Change Password
-      </li>
+      {!getIsAdmin() && (
+        <li
+          onClick={() => {
+            handleChangePassword()
+          }}
+        >
+          Change Password
+        </li>
+      )}
       {admin && <li onClick={handleSwitchToAdmin}>Switch To Admin</li>}
       <li
         onClick={() => {

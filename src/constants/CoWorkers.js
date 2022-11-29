@@ -3,6 +3,7 @@ import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import RoleAccess, {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
 import {getIsAdmin} from 'helpers/utils'
+import {LOCALSTORAGE_USER} from './Settings'
 
 const CO_WORKERCOLUMNS = (
   sortedInfo,
@@ -98,18 +99,22 @@ const CO_WORKERCOLUMNS = (
               </span>
             </>
           )}
-          {role === RoleAccess.Admin && (
-            <>
-              <Divider type="vertical" />
+          {role === RoleAccess.Admin &&
+            !(
+              record?._id ===
+              JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
+            ) && (
+              <>
+                <Divider type="vertical" />
 
-              <span
-                className="gx-link"
-                onClick={() => handleSwitchToUser(record)}
-              >
-                <CustomIcon name="switchToUser" />
-              </span>
-            </>
-          )}
+                <span
+                  className="gx-link"
+                  onClick={() => handleSwitchToUser(record)}
+                >
+                  <CustomIcon name="switchToUser" />
+                </span>
+              </>
+            )}
         </div>
       )
     },

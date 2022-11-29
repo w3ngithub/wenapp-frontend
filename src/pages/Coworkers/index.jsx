@@ -290,7 +290,7 @@ function CoworkersPage() {
                 enterButton
                 className="direct-form-item"
               />
-              { !getIsAdmin() && <AccessWrapper
+               {!getIsAdmin() &&<AccessWrapper
                 noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
               >
                 <Popconfirm
@@ -298,8 +298,9 @@ function CoworkersPage() {
                   onConfirm={handleResetAllocatedLeaves}
                   okText="Yes"
                   cancelText="No"
+
                 >
-                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
+                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1" >
                     Reset Allocated Leaves
                   </Button>
                 </Popconfirm>

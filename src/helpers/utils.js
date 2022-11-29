@@ -462,9 +462,7 @@ export const dateToDateFormat = (date) => {
 }
 
 export const getIsAdmin = () => {
-  let isAdmin = getLocalStorageData('admin')
-  if (isAdmin) return true
-  else return false
+  return !!getLocalStorageData('admin')
 }
 
 //sorting through day
