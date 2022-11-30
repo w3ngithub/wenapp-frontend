@@ -12,7 +12,6 @@ import {CSVLink} from 'react-csv'
 import {
   disableUser,
   getAllUsers,
-  getMyProfile,
   getUserPosition,
   getUserPositionTypes,
   getUserRoles,
@@ -243,12 +242,11 @@ function CoworkersPage() {
 
   const handleSwitchToUser = async (user) => {
     dispatch(switchUser())
-    const response = await getMyProfile(user?._id)
     const adminId = getLocalStorageData('user_id')
     localStorage.setItem('admin', JSON.stringify(adminId))
     localStorage.setItem(
       'user_id',
-      JSON.stringify(response?.data?.data?.data[0]?._id)
+      JSON.stringify(user?._id)
     )
     dispatch(switchedUser())
   }
@@ -361,6 +359,7 @@ function CoworkersPage() {
                   <Button
                     className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                     onClick={() => setOpenImport(true)}
+                    disabled={getIsAdmin()}
                   >
                     Import
                   </Button>

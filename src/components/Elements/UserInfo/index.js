@@ -33,12 +33,9 @@ function UserInfo(props) {
 
   const handleSwitchToAdmin = async () => {
     dispatch(switchUser())
-    setTimeout(() => {
-      localStorage.setItem('user_id', JSON.stringify(admin))
-      localStorage.removeItem('admin')
-      dispatch(switchedUser())
-    }, 1000)
-
+    localStorage.setItem('user_id', JSON.stringify(admin))
+    localStorage.removeItem('admin')
+    dispatch(switchedUser())
     handleVisibleChange(false)
   }
   const userMenuOptions = (
