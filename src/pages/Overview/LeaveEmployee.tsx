@@ -5,8 +5,16 @@ import {changeDate} from 'helpers/utils'
 import {LATE_ARRIVAL, LEAVES_TYPES} from 'constants/Leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
 
-const formattedLeaves = (leaves: any[]) => {
-  return leaves?.map((leave) => {
+interface Leaves {
+  _id: string
+  user: [{name: string}]
+  leaveDates: string[]
+  halfDay: string
+  leaveType: [{name: string}]
+}
+
+const formattedLeaves = (leaves: Leaves[]) => {
+  return leaves?.map((leave: Leaves) => {
     return {
       ...leave,
       key: leave?._id,
@@ -37,10 +45,10 @@ const formattedLeaves = (leaves: any[]) => {
   })
 }
 
-function LeaveEmployee({leaves}: {leaves: any[]}) {
+function LeaveEmployee({leaves}: {leaves: Leaves[]}) {
   const [sort, setSort] = useState({})
 
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+  const handleTableChange = (pagination: {}, filters: {}, sorter: {}) => {
     setSort(sorter)
   }
   return (

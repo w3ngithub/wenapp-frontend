@@ -5,7 +5,26 @@ import moment from 'moment'
 import LocationMap from './LocationMap'
 import {emptyText} from 'constants/EmptySearchAntd'
 
-const formattedUsers = (users: any[]) => {
+interface formUsers {
+  data: [
+    {
+      punchInTime: string
+      attendanceDate: string
+      createdAt: string
+      punchInLocation: number[]
+      punchOutLocation: number[]
+      punchOutTime: string
+      punchInIp: string
+      punchOutIp: string
+    }
+  ]
+  _id: {
+    attendanceDate: string
+    user: string
+  }
+}
+
+const formattedUsers = (users: formUsers[]) => {
   return users?.map((user) => {
     const punchInLocation = user?.data?.[0]?.punchInLocation
     const punchOutLocation = user?.data?.at(-1)?.punchOutLocation
@@ -36,7 +55,7 @@ function CheckedInEmployee({
   checkIn,
   isLoading,
 }: {
-  checkIn: any[]
+  checkIn: formUsers[]
   isLoading: boolean
 }) {
   const [openMap, setOpenMap] = useState(false)
@@ -47,14 +66,25 @@ function CheckedInEmployee({
   })
   const [page, setPage] = useState({page: 1, limit: 20})
 
-  const [selectedCheckedInUser, setSelectedCheckedInUser] = useState([])
+  const [selectedCheckedInUser, setSelectedCheckedInUser] = useState<
+    number[] | undefined
+  >([])
   const [selectedUsername, setSelectedUserName] = useState('')
 
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+  const handleTableChange = (
+    pagination: {},
+    filters: {},
+    // sorter: {
+    //   order: string
+    //   field: string
+    //   columnKey: string
+    // }
+    sorter: any
+  ) => {
     setSort(sorter)
   }
 
-  const onShowSizeChange = (_: any, pageSize: number) => {
+  const onShowSizeChange = (_: number, pageSize: number) => {
     setPage((prev) => ({...page, limit: pageSize}))
   }
 
@@ -62,7 +92,14 @@ function CheckedInEmployee({
     setPage((prev) => ({...prev, page: pageNumber}))
   }
 
-  const handleShowMap = (record: any, PunchOut: string | undefined) => {
+  const handleShowMap = (
+    record: {
+      punchOutLocation: number[]
+      name: string
+      punchInLocation: number[]
+    },
+    PunchOut: string | undefined
+  ) => {
     if (PunchOut) {
       if (
         Array.isArray(record?.punchOutLocation) &&

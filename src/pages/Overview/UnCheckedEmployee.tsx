@@ -3,8 +3,8 @@ import {Card, Table} from 'antd'
 import {OVERVIEW_NOTCHECKEDIN} from 'constants/Overview'
 import {emptyText} from 'constants/EmptySearchAntd'
 
-const formattedUsers = (users: any[]) => {
-  return users?.map((user) => ({
+const formattedUsers = (users: {}[]) => {
+  return users?.map((user: any) => ({
     key: user._id,
     name: user.name,
     checkIn: 'N/A',
@@ -12,11 +12,11 @@ const formattedUsers = (users: any[]) => {
   }))
 }
 
-function UnCheckedInEmployee({notCheckInSection}: {notCheckInSection: any[]}) {
+function UnCheckedInEmployee({notCheckInSection}: {notCheckInSection: {}[]}) {
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 10})
 
-  const onShowSizeChange = (_: any, pageSize: number) => {
+  const onShowSizeChange = (_: number, pageSize: number) => {
     setPage((prev) => ({...page, limit: pageSize}))
   }
 
@@ -24,7 +24,7 @@ function UnCheckedInEmployee({notCheckInSection}: {notCheckInSection: any[]}) {
     setPage((prev) => ({...prev, page: pageNumber}))
   }
 
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+  const handleTableChange = (pagination: {}, filters: {}, sorter: {}) => {
     setSort(sorter)
   }
   return (

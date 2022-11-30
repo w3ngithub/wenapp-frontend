@@ -3,15 +3,15 @@ import {Card, Table} from 'antd'
 import {DEADLINE_PROJECTS} from 'constants/Overview'
 import {useNavigate} from 'react-router-dom'
 
-const DeadlineProjects = ({projects}: {projects: any[]}) => {
+const DeadlineProjects = ({projects}: {projects: {}[]}) => {
   const navigate = useNavigate()
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 10})
-  const onShowSizeChange = (_: any, pageSize: number) => {
+  const onShowSizeChange = (_: number, pageSize: number) => {
     setPage((prev) => ({...page, limit: pageSize}))
   }
 
-  const navigateToProjectLogs = (projectSlug: any) => {
+  const navigateToProjectLogs = (projectSlug: string) => {
     navigate(`/projects/${projectSlug}`)
   }
 
@@ -19,7 +19,7 @@ const DeadlineProjects = ({projects}: {projects: any[]}) => {
     setPage((prev) => ({...prev, page: pageNumber}))
   }
 
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+  const handleTableChange = (pagination: {}, filters: {}, sorter: {}) => {
     setSort(sorter)
   }
   return (

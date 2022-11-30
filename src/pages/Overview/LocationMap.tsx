@@ -10,8 +10,8 @@ function LocationMap({
 }: {
   title: string
   open: boolean
-  onClose: any
-  location: any
+  onClose: () => void
+  location: number[] | undefined
 }) {
   return (
     <Modal
