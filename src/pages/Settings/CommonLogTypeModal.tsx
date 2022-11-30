@@ -118,7 +118,6 @@ function CommonLogTypeModal({
     <Modal
       title={isEditMode ? `Update ${type}` : `Add ${type}`}
       visible={toggle}
-      
       onOk={handleSubmit}
       mask={false}
       onCancel={() => {
@@ -135,7 +134,12 @@ function CommonLogTypeModal({
         >
           Cancel
         </Button>,
-        <Button key="submit" type="primary" onClick={handleSubmit}>
+        <Button
+          key="submit"
+          type="primary"
+          onClick={handleSubmit}
+          disabled={isLoading}
+        >
           Submit
         </Button>,
       ]}

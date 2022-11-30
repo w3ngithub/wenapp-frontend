@@ -52,7 +52,12 @@ function CommonResourceModal({
         <Button key="back" onClick={onCancel}>
           Cancel
         </Button>,
-        <Button key="submit" type="primary" onClick={handleSubmit}>
+        <Button
+          key="submit"
+          type="primary"
+          onClick={handleSubmit}
+          disabled={isLoading}
+        >
           Submit
         </Button>,
       ]}
@@ -103,10 +108,14 @@ function CommonResourceModal({
                       throw new Error('Please enter a valid description.')
                     }
                     if (value?.trim()?.length < 10) {
-                      throw new Error('Description should contain atleast 10 characters.')
+                      throw new Error(
+                        'Description should contain atleast 10 characters.'
+                      )
                     }
                     if (value?.trim()?.length > 1000) {
-                      throw new Error('Description cannot exceed more than 1000 characters.')
+                      throw new Error(
+                        'Description cannot exceed more than 1000 characters.'
+                      )
                     }
                   } catch (err) {
                     throw new Error(err.message)

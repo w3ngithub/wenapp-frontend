@@ -421,7 +421,14 @@ function LeaveModal({
               >
                 Cancel
               </Button>,
-              <Button key="submit" type="primary" onClick={onFinish}>
+              <Button
+                key="submit"
+                type="primary"
+                onClick={onFinish}
+                disabled={
+                  leaveMutation.isLoading || leaveUpdateMutation.isLoading
+                }
+              >
                 Submit
               </Button>,
             ]
