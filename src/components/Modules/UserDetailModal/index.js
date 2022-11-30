@@ -151,7 +151,12 @@ function UserDetailForm({
               <Button key="back" onClick={handleCancel}>
                 Cancel
               </Button>,
-              <Button key="submit" type="primary" onClick={handleSubmit}>
+              <Button
+                key="submit"
+                type="primary"
+                onClick={handleSubmit}
+                disabled={loading}
+              >
                 Submit
               </Button>,
             ]

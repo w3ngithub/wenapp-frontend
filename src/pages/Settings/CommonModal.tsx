@@ -5,8 +5,8 @@ interface modalInterface {
   isEditMode: boolean
   toggle: boolean
   currentData: any
-  duplicateValue: boolean,
-  setDuplicateValue:(a:boolean)=>void
+  duplicateValue: boolean
+  setDuplicateValue: (a: boolean) => void
   onSubmit: (name: string) => void
   onCancel: (setDuplicateValue: any) => void
   type: string
@@ -33,13 +33,14 @@ function CommonModal({
 }: modalInterface) {
   const [form] = Form.useForm()
   const handleSubmit = () => {
-    form.validateFields();
+    form.validateFields()
     let availableData
     if (currentData?.hasOwnProperty('data')) {
       availableData = currentData?.data?.data?.data?.map(
         (item: {id: any; name: any}) => item?.name?.toLowerCase()
       )
-    } else { // this is for roles tab
+    } else {
+      // this is for roles tab
       availableData = currentData.map((item: {id: any; name: any}) =>
         item?.name?.toLowerCase()
       )
@@ -68,7 +69,12 @@ function CommonModal({
         <Button key="back" onClick={() => onCancel(setDuplicateValue)}>
           Cancel
         </Button>,
-        <Button key="submit" type="primary" onClick={handleSubmit}>
+        <Button
+          key="submit"
+          type="primary"
+          onClick={handleSubmit}
+          disabled={isLoading}
+        >
           Submit
         </Button>,
       ]}
@@ -86,7 +92,7 @@ function CommonModal({
                     if (!value) {
                       throw new Error(`${type} is required.`)
                     }
-                    if(value?.trim() === ''){
+                    if (value?.trim() === '') {
                       throw new Error(`Please enter a valid ${type}.`)
                     }
                   } catch (err) {
