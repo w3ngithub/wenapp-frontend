@@ -172,7 +172,9 @@ const updateLateAttendance = async (attendance: any) => {
 
 const getIpAddres = async () => {
   try {
-    let response = await axios.get('https://geolocation-db.com/json/')
+    let response = await axios.get(
+      'https://geolocation-db.com/json/187c4d90-701f-11ed-8f13-95359090f479'
+    )
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)
