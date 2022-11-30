@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useInfiniteQuery} from '@tanstack/react-query'
 import {getActivityLogs} from 'services/activitLogs'
 import RoleAccess from 'constants/RoleAccess'
@@ -34,7 +34,7 @@ function ActivityInfo() {
       }
     )
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       inView &&
       !(
@@ -56,6 +56,7 @@ function ActivityInfo() {
 
   const userMenuOptions = (
     <RecentActivity
+      visible={visible}
       isFetching={isFetching}
       isFetchingNextPage={isFetchingNextPage}
       showMore={
@@ -84,19 +85,12 @@ function ActivityInfo() {
   )
   return (
     <Popover
-      overlayClassName="gx-popover-horizantal"
+      overlayClassName="gx-popover-admin-notification"
       placement="bottomRight"
       content={userMenuOptions}
       trigger="click"
       visible={visible}
       onVisibleChange={handleVisibleChange}
-      overlayInnerStyle={{
-        overflowY: 'auto',
-        height: '400px',
-        padding: 0,
-        width: '400px',
-      }}
-      overlayStyle={{paddingBottom: '10px'}}
     >
       <i
         className={`icon icon-notification gx-fs-xl`}
