@@ -46,13 +46,13 @@ const Overview = () => {
     {keepPreviousData: true}
   )
 
-  const onShowSizeChange = (_: any, pageSize: number) => {
-    setPage((prev) => ({...page, limit: pageSize}))
-  }
+  // const onShowSizeChange = (_: any, pageSize: number) => {
+  //   setPage((prev) => ({...page, limit: pageSize}))
+  // }
 
-  const handlePageChange = (pageNumber: number) => {
-    setPage((prev) => ({...prev, page: pageNumber}))
-  }
+  // const handlePageChange = (pageNumber: number) => {
+  //   setPage((prev) => ({...prev, page: pageNumber}))
+  // }
 
   const {data: leaves, isLoading: leaveLoading} = useQuery(
     ['leavesOverview'],
@@ -74,15 +74,17 @@ const Overview = () => {
   )
   const leavesSection = leaves?.data?.data?.users || []
   const checkInSecition =
-    CheckedIn?.data?.data?.attendances?.[0]?.data?.map((d: any) => ({
+    CheckedIn?.data?.data?.attendances?.[0]?.data?.map((d: {data: {}[]}) => ({
       ...d,
       data: sortFromDate(d?.data, 'punchInTime'),
     })) || []
 
-  const checkInUsers = checkInSecition?.map((x: any) => x._id.user)
+  const checkInUsers = checkInSecition?.map(
+    (x: {_id: {user: string}}) => x._id.user
+  )
 
   const notCheckInSection = data?.data?.data?.data?.filter(
-    (user: any) => !checkInUsers.includes(user.name)
+    (user: {name: string}) => !checkInUsers.includes(user.name)
   )
 
   const deadlineProject = projects?.data?.data?.data || []
