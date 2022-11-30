@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Avatar, Timeline} from 'antd'
 import WidgetHeader from 'components/Elements/WidgetHeader/index'
 import ActivityItem from './ActivityItem'
@@ -23,9 +23,52 @@ function getName(task, shape) {
 }
 
 function RecentActivity(props) {
-  const {recentList, viewRef, showMore, isFetching, isFetchingNextPage} = props
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  const popUpRef = useRef()
+  const scrollRef = useRef(true)
+
+  const {
+    recentList,
+    viewRef,
+    showMore,
+    isFetching,
+    isFetchingNextPage,
+    visible,
+  } = props
+
+  useEffect(() => {
+    if (!visible) {
+      setIsScrolled(false)
+      scrollRef.current = true
+    }
+  }, [visible])
+
+  useEffect(() => {
+    const handleScrollActivityPopUP = (e) => {
+      if (scrollRef.current) {
+        setIsScrolled(true)
+        scrollRef.current = false
+      }
+    }
+    const activityLogPopUp = document.getElementById('admin-activity-icon')
+    if (activityLogPopUp) {
+      activityLogPopUp.addEventListener('scroll', handleScrollActivityPopUP)
+    }
+    return () => {
+      return activityLogPopUp.removeEventListener(
+        'scroll',
+        handleScrollActivityPopUP
+      )
+    }
+  }, [])
+
   return (
-    <div className="gx-entry-sec">
+    <div
+      className="gx-entry-sec gx-dashboard-activity-popup"
+      ref={popUpRef}
+      id="admin-activity-icon"
+    >
       <WidgetHeader title="Recent Activities" />
       {recentList?.map((activity, index) => (
         <div className="gx-timeline-info" key={'activity' + index}>
@@ -44,14 +87,24 @@ function RecentActivity(props) {
           </Timeline>
         </div>
       ))}
-      {!showMore && (
+      {!showMore && isScrolled && (
         <span className="gx-link gx-btn-link" ref={viewRef}>
           {isFetchingNextPage || isFetching ? 'Loading...' : 'Load More'}
         </span>
       )}
 
       {showMore && (
-        <span className="gx-link gx-btn-link">{'No more data available'}</span>
+        <span
+          className="gx-link gx-btn-link"
+          onClick={() => {
+            popUpRef.current.scrollTo({
+              top: 0,
+              behavior: 'smooth',
+            })
+          }}
+        >
+          {'No more data available'}
+        </span>
       )}
     </div>
   )
