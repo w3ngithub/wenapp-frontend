@@ -48,6 +48,34 @@ const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
 
+interface Style {
+  fontSize: string
+  width: string
+  margin: string
+  fontWeight: string
+  height: string
+  background: string
+  color?: string
+  marginTop?: string
+  marginBottom?: string
+  marginLeft?: string
+}
+interface Events {
+  title: string
+  type: string
+  leaveType: string
+  halfDay: string
+  startDate: any
+  id: string
+  name: string
+}
+
+interface Notices {
+  title: string
+  noticeType: {name: string}
+  startDate: string
+  endDate: string
+}
 const Dashboard = () => {
   const {
     role: {key},
@@ -61,7 +89,9 @@ const Dashboard = () => {
   const loggedInUser = useSelector(selectAuthUser)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
-  const {themeType} = useSelector((state: any) => state.settings)
+  const {themeType} = useSelector(
+    (state: {settings: {themeType: string}}) => state.settings
+  )
   const darkTheme = themeType === THEME_TYPE_DARK
 
   const darkThemeTextColor = '#e0e0e0'
@@ -108,7 +138,7 @@ const Dashboard = () => {
     {enabled: false, refetchOnWindowFocus: false}
   )
 
-  const handleSearch = async (projectName: any) => {
+  const handleSearch = async (projectName: string) => {
     if (!projectName) {
       setProjectArray([])
       return
@@ -127,69 +157,71 @@ const Dashboard = () => {
     {
       onError: (err) => console.log(err),
       select: (res) => {
-        let updateLeaves: any[] = []
+        let updateLeaves: {}[] = []
 
-        res?.data?.data?.users?.forEach((leave: any) => {
-          const isLeavePaternity =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
-          const isLeaveMaternity =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
-          const isLeavePTO =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
+        res?.data?.data?.users?.forEach(
+          (leave: {leaveType: string[]; leaveDates: string[]}) => {
+            const isLeavePaternity =
+              leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
+            const isLeaveMaternity =
+              leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
+            const isLeavePTO =
+              leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
 
-          if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
-            const weeksLastDate = new Date(
-              MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
-            )
-            const startLeaveDate = new Date(leave?.leaveDates[0])
-            const endLeaveDate = new Date(leave?.leaveDates[1])
-            const todayDate = new Date(MuiFormatDate(new Date()))
-            for (let i = 0; i < 8; i++) {
-              const isHoliday =
-                startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
+            if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
+              const weeksLastDate = new Date(
+                MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
+              )
+              const startLeaveDate = new Date(leave?.leaveDates[0])
+              const endLeaveDate = new Date(leave?.leaveDates[1])
+              const todayDate = new Date(MuiFormatDate(new Date()))
+              for (let i = 0; i < 8; i++) {
+                const isHoliday =
+                  startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
 
-              if (
-                startLeaveDate >= todayDate &&
-                startLeaveDate <= weeksLastDate &&
-                startLeaveDate <= endLeaveDate &&
-                !isHoliday
-              ) {
-                updateLeaves = [
-                  ...updateLeaves,
-                  {
-                    ...leave,
-                    date: leave?.leaveDates[0],
+                if (
+                  startLeaveDate >= todayDate &&
+                  startLeaveDate <= weeksLastDate &&
+                  startLeaveDate <= endLeaveDate &&
+                  !isHoliday
+                ) {
+                  updateLeaves = [
+                    ...updateLeaves,
+                    {
+                      ...leave,
+                      date: leave?.leaveDates[0],
 
-                    leaveDates: new Date(
-                      startLeaveDate.setDate(startLeaveDate.getDate())
-                    ).toJSON(),
-                  },
-                ]
+                      leaveDates: new Date(
+                        startLeaveDate.setDate(startLeaveDate.getDate())
+                      ).toJSON(),
+                    },
+                  ]
+                }
+
+                if (startLeaveDate < todayDate) {
+                  startLeaveDate.setMonth(todayDate.getMonth())
+                  startLeaveDate.setFullYear(todayDate.getFullYear())
+                  updateLeaves = [
+                    ...updateLeaves,
+                    {
+                      ...leave,
+                      date: leave?.leaveDates[0],
+                      leaveDates: new Date(
+                        startLeaveDate.setDate(todayDate.getDate())
+                      ).toJSON(),
+                    },
+                  ]
+                }
+                startLeaveDate.setDate(startLeaveDate.getDate() + 1)
               }
-
-              if (startLeaveDate < todayDate) {
-                startLeaveDate.setMonth(todayDate.getMonth())
-                startLeaveDate.setFullYear(todayDate.getFullYear())
-                updateLeaves = [
-                  ...updateLeaves,
-                  {
-                    ...leave,
-                    date: leave?.leaveDates[0],
-                    leaveDates: new Date(
-                      startLeaveDate.setDate(todayDate.getDate())
-                    ).toJSON(),
-                  },
-                ]
-              }
-              startLeaveDate.setDate(startLeaveDate.getDate() + 1)
+            } else {
+              updateLeaves = [
+                ...updateLeaves,
+                {...leave, date: leave?.leaveDates[0]},
+              ]
             }
-          } else {
-            updateLeaves = [
-              ...updateLeaves,
-              {...leave, date: leave?.leaveDates[0]},
-            ]
           }
-        })
+        )
         return updateLeaves
       },
     }
@@ -216,18 +248,17 @@ const Dashboard = () => {
     }
   }, [key, logTypeRefetch, projectRefetch])
 
-  const generateChart = (values: any) => {
+  const generateChart = (values: {}) => {
     if (project === '' || project === undefined) return
     chartQuery.refetch()
   }
-  const handleEventStyle = (event: any) => {
-    let style: any = {
+  const handleEventStyle = (event: {type: string}) => {
+    let style: Style = {
       fontSize: innerWidth <= 1500 ? '7px' : '9px',
       width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
       margin: '0px auto',
       fontWeight: '600',
       height: 'fit-content',
-
       background: 'transparent',
     }
     if (event.type === 'birthday')
@@ -265,11 +296,11 @@ const Dashboard = () => {
     }
   }
 
-  const CustomEvent = (props: any) => {
+  const CustomEvent = (props: {event: Events}) => {
     const nameSplitted = props?.event?.title.split(' ')
     let lastName
     if (nameSplitted.length === 1) lastName = ''
-    else lastName = `${nameSplitted.pop().substring(0, 1)}.`
+    else lastName = `${nameSplitted?.pop()?.substring(0, 1)}.`
     const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
     const style = {
@@ -386,7 +417,7 @@ const Dashboard = () => {
     id: x?._id[0],
   }))
 
-  const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
+  const noticesCalendar = notices?.data?.data?.notices?.map((x: Notices) => ({
     title: x?.noticeType?.name,
     end: x.endDate ? new Date(x.endDate) : new Date(x.startDate),
     start: new Date(x.startDate),
@@ -396,7 +427,7 @@ const Dashboard = () => {
 
   const holidaysCalendar = Holidays?.data?.data?.data?.[0]?.holidays
     ?.filter(oneWeekFilterCheck)
-    ?.map((x: any) => ({
+    ?.map((x: {title: string; date: string; type: string}) => ({
       title: x.title,
       start: new Date(x.date),
       end: new Date(x.date),
@@ -404,7 +435,7 @@ const Dashboard = () => {
     }))
 
   const BirthDayCalendar = BirthMonthUsers?.data?.data?.users?.map(
-    (x: any) => ({
+    (x: {name: string; dob: string}) => ({
       title: x.name,
       start: new Date(
         `${new Date().getFullYear()}/${
@@ -535,7 +566,7 @@ const Dashboard = () => {
                     <Select
                       style={{width: innerWidth <= 504 ? '100%' : 115}}
                       value={chart}
-                      onChange={(c: any) => setChart(c)}
+                      onChange={(c: string) => setChart(c)}
                       placeholder="Select Chart"
                       defaultValue="Bar Chart"
                       options={[
@@ -574,7 +605,7 @@ const Dashboard = () => {
                     <Select
                       showSearchIcon={true}
                       value={project}
-                      onChange={(c: any) => setProject(c)}
+                      onChange={(c: string) => setProject(c)}
                       handleSearch={optimizedFn}
                       placeholder="Search Project"
                       // options={data?.data?.data?.data?.map(
@@ -596,7 +627,7 @@ const Dashboard = () => {
                   <FormItem name="logType" className="direct-form-project">
                     <Select
                       value={logType}
-                      onChange={(c: any) => setlogType(c)}
+                      onChange={(c: string) => setlogType(c)}
                       placeholder="Select Log Types"
                       mode="tags"
                       options={logTypes?.data?.data?.data?.map(
@@ -620,21 +651,31 @@ const Dashboard = () => {
                     <div>
                       {chart === '2' ? (
                         <CustomActiveShapePieChart
-                          data={chartData?.map((x: any) => {
-                            return {
-                              name: x.logType[0].name,
-                              color: x.logType[0].color,
-                              value: +x.timeSpent?.toFixed(2),
+                          data={chartData?.map(
+                            (x: {
+                              logType: [{name: string; color: string}]
+                              timeSpent: number
+                            }) => {
+                              return {
+                                name: x.logType[0].name,
+                                color: x.logType[0].color,
+                                value: +x.timeSpent?.toFixed(2),
+                              }
                             }
-                          })}
+                          )}
                         />
                       ) : (
                         <TinyBarChart
-                          data={chartData?.map((x: any) => ({
-                            name: x.logType[0].name,
-                            color: x.logType[0].color,
-                            time: +x.timeSpent?.toFixed(2),
-                          }))}
+                          data={chartData?.map(
+                            (x: {
+                              logType: [{name: string; color: string}]
+                              timeSpent: number
+                            }) => ({
+                              name: x.logType[0].name,
+                              color: x.logType[0].color,
+                              time: +x.timeSpent?.toFixed(2),
+                            })
+                          )}
                         />
                       )}
                     </div>
