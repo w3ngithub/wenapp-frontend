@@ -17,3 +17,12 @@ export const getActivityLogs = async ({
     return getAPIResponse(err?.response)
   }
 }
+
+export const updateActivityLogs = async (payload: any) => {
+  try {
+    let response = await API.patch(`${Apis.ActivityLogs}`, payload)
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err?.response)
+  }
+}
