@@ -270,7 +270,6 @@ function CoworkersPage() {
         intialValues={userRecord}
         readOnly={readOnly}
         currentQuarter={quarterQuery}
-        loginRole={user?.role?.key}
       />
       <Card title="Co-workers">
         <AccessWrapper noAccessRoles={CO_WORKERS_SEARCH_IMPORT_NO_ACCESS}>
