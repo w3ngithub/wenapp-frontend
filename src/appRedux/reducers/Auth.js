@@ -1,22 +1,24 @@
 import {
+  UPDATE_USER_PROFILE,
   HIDE_MESSAGE,
   INIT_URL,
   ON_HIDE_LOADER,
   ON_SHOW_LOADER,
-  SET_PROFILE_PHOTO,
+  ON_SWITCHED_USER,
+  ON_SWITCH_USER,
   SHOW_MESSAGE,
   SIGNIN_USER_SUCCESS,
   SIGNOUT_USER_SUCCESS,
   SIGNUP_USER_SUCCESS,
 } from 'constants/ActionTypes'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const INIT_STATE = {
-  loader: false,
+  showLoader: false,
+  switchingUser: false,
   alertMessage: '',
   showMessage: false,
   initURL: '',
-  authUser: JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)),
+  authUser: null,
 }
 
 const reducer = (state = INIT_STATE, action) => {
@@ -24,14 +26,14 @@ const reducer = (state = INIT_STATE, action) => {
     case SIGNUP_USER_SUCCESS: {
       return {
         ...state,
-        loader: false,
+        showLoader: false,
         authUser: action.payload,
       }
     }
     case SIGNIN_USER_SUCCESS: {
       return {
         ...state,
-        loader: false,
+        showLoader: false,
         authUser: action.payload,
       }
     }
@@ -46,7 +48,7 @@ const reducer = (state = INIT_STATE, action) => {
         ...state,
         authUser: null,
         initURL: '/',
-        loader: false,
+        showLoader: false,
       }
     }
 
@@ -55,7 +57,7 @@ const reducer = (state = INIT_STATE, action) => {
         ...state,
         alertMessage: action.payload,
         showMessage: true,
-        loader: false,
+        showLoader: false,
       }
     }
     case HIDE_MESSAGE: {
@@ -63,31 +65,49 @@ const reducer = (state = INIT_STATE, action) => {
         ...state,
         alertMessage: '',
         showMessage: false,
-        loader: false,
+        showLoader: false,
       }
     }
 
     case ON_SHOW_LOADER: {
       return {
         ...state,
-        loader: true,
+        showLoader: true,
       }
     }
     case ON_HIDE_LOADER: {
       return {
         ...state,
-        loader: false,
+        showLoader: false,
       }
     }
-    case SET_PROFILE_PHOTO: {
+    case ON_SWITCH_USER: {
       return {
         ...state,
-        authUser: {...state.authUser,user: {...state.authUser.user, photoURL: action.payload}},
+        switchingUser: true,
       }
     }
+    case ON_SWITCHED_USER: {
+      return {
+        ...state,
+        switchingUser: false,
+      }
+    }
+
+    case UPDATE_USER_PROFILE:
+      return {
+        ...state,
+        authUser: {
+          ...state.authUser,
+          user: {...action.payload.user},
+        },
+      }
+
     default:
       return state
   }
 }
+
+export const selectAuthUser = (state) => state?.auth?.authUser?.user
 
 export default reducer

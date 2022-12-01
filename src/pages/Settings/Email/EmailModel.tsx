@@ -85,7 +85,12 @@ function EmailModal({
         <Button key="back" onClick={onCancel}>
           Cancel
         </Button>,
-        <Button key="submit" type="primary" onClick={handleSubmit}>
+        <Button
+          key="submit"
+          type="primary"
+          onClick={handleSubmit}
+          disabled={isLoading}
+        >
           Submit
         </Button>,
       ]}

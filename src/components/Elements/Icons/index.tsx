@@ -6,6 +6,7 @@ import {
   UserAddOutlined,
   UserDeleteOutlined,
   MinusSquareOutlined,
+  UserSwitchOutlined,
 } from '@ant-design/icons'
 
 function CustomIcon({name}: {name: string}) {
@@ -31,6 +32,9 @@ function CustomIcon({name}: {name: string}) {
       return (
         <MinusSquareOutlined style={style} className="gx-link gx-text-danger" />
       )
+
+    case 'switchToUser':
+      return <UserSwitchOutlined style={style} />
 
     default:
       return <EyeOutlined style={{fontSize: '18px'}} />

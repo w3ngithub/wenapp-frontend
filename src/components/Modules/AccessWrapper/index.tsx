@@ -1,6 +1,6 @@
-import {LOCALSTORAGE_USER} from 'constants/Settings'
-import {getLocalStorageData} from 'helpers/utils'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 import RoleAccess from 'constants/RoleAccess'
+import {useSelector} from 'react-redux'
 
 interface AccessWrapperInterface {
   noAccessRoles: string[]
@@ -10,7 +10,7 @@ interface AccessWrapperInterface {
 function AccessWrapper({noAccessRoles, children}: AccessWrapperInterface) {
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector(selectAuthUser)
 
   if (!noAccessRoles.includes(key) && Object.values(RoleAccess).includes(key))
     return children

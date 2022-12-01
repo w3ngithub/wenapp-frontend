@@ -11,6 +11,8 @@ export const SHOW_MESSAGE = 'SHOW_MESSAGE'
 export const HIDE_MESSAGE = 'HIDE_MESSAGE'
 export const ON_SHOW_LOADER = 'ON_SHOW_LOADER'
 export const ON_HIDE_LOADER = 'ON_HIDE_LOADER'
+export const ON_SWITCH_USER = 'ON_SWITCH_USER'
+export const ON_SWITCHED_USER = 'ON_SWITCHED_USER'
 
 //Auth const
 export const SIGNUP_USER = 'SIGNUP_USER'
@@ -20,7 +22,7 @@ export const SIGNIN_USER_SUCCESS = 'SIGNIN_USER_SUCCESS'
 export const SIGNOUT_USER = 'SIGNOUT_USER'
 export const SIGNOUT_USER_SUCCESS = 'SIGNOUT_USER_SUCCESS'
 export const INIT_URL = 'INIT_URL'
-export const SET_PROFILE_PHOTO = 'SET_PROFILE_PHOTO'
+export const UPDATE_USER_PROFILE = 'UPDATE_USER_PROFILE'
 
 //Sticky
 export const GET_STICKY = 'GET_STICKY'
@@ -39,6 +41,3 @@ export const GET_USER_ATTENDANCE = 'GET_USER_ATTENDACE'
 export const GET_USER_ATTENDANCE_ERROR = 'GET_USER_ATTENDACE_ERROR'
 export const PUNCH_IN = 'Punch In'
 export const PUNCH_OUT = 'Punch Out'
-
-//User Profile
-export const GET_USER_PROFILE = 'GET_USER_PROFILE'

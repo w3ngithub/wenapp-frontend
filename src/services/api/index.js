@@ -35,6 +35,9 @@ const BASE_API_PATH_SIGN_UP = `${BASE_API_PATH_USERS}/signup`
 // Email
 const BASE_API_PATH_EMAIL = `${BASE_API_PATH}emails`
 
+// Activity Logs
+const BASE_API_PATH_ACTIVITY_LOGS = `${BASE_API_PATH}activitylogs`
+
 export const Apis = {
   // Users
   Users: `${BASE_API_PATH_USERS}`,
@@ -70,4 +73,7 @@ export const Apis = {
 
   // Email
   Email: `${BASE_API_PATH_EMAIL}`,
+
+  // Activity Logs
+  ActivityLogs: `${BASE_API_PATH_ACTIVITY_LOGS}`,
 }

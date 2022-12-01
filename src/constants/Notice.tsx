@@ -2,6 +2,7 @@ import React, {ReactElement} from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import {NOTICEBOARD_ACTION_NO_ACCESS} from './RoleAccess'
+import {getIsAdmin} from 'helpers/utils'
 
 interface notice {
   title: string
@@ -56,7 +57,7 @@ const NOTICE_COLUMNS = (
           <span className="gx-link" onClick={() => openModal(record, true)}>
             <CustomIcon name="view" />
           </span>
-          {!NOTICEBOARD_ACTION_NO_ACCESS.includes(role) && (
+          {!NOTICEBOARD_ACTION_NO_ACCESS.includes(role) && !getIsAdmin() && (
             <>
               <Divider type="vertical" />
               <span

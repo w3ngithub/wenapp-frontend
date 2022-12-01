@@ -11,9 +11,10 @@ import {
 } from 'services/resources'
 import {notification} from 'helpers/notification'
 import CommonResourceModal from 'pages/Settings/CommonResourceModal'
-import {getLocalStorageData, handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import RoleAccess from 'constants/RoleAccess'
-import { LOCALSTORAGE_USER } from 'constants/Settings'
+import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function Policy() {
   const {data, isLoading, isError} = useQuery(['policies'], getAllPolicies)
@@ -24,8 +25,7 @@ function Policy() {
   const [dataToEdit, setDataToEdit] = useState({})
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER) || ''
-
+  } = useSelector(selectAuthUser)
 
   useEffect(() => {
     if (isError) {
@@ -130,22 +130,22 @@ function Policy() {
       <Card
         title="Policy"
         extra={
-          [
-            RoleAccess.Admin,
-            RoleAccess.HumanResource,
-          ].includes(key) ?
-          <Button
-            className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-            onClick={() => handleOpenModal('Policy')}
-          >
-            Add
-          </Button> : null
+          [RoleAccess.Admin, RoleAccess.HumanResource].includes(key) ? (
+            <Button
+              className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+              onClick={() => handleOpenModal('Policy')}
+              disabled={getIsAdmin()}
+            >
+              Add
+            </Button>
+          ) : null
         }
       >
         <Collapse
           data={data?.data?.data?.data}
           onEditClick={handleOpenEditModal}
           onDeleteClick={handleDeleteClick}
+          type="Policy"
         />
       </Card>
     </>

@@ -107,7 +107,13 @@ function TmsAdminAddAttendanceForm({
       onCancel={closeModel}
       footer={[
         <>
-          <Button type="primary" form="myForm" key="submit" htmlType="submit">
+          <Button
+            type="primary"
+            form="myForm"
+            key="submit"
+            htmlType="submit"
+            disabled={addAttendances.isLoading}
+          >
             Add
           </Button>
           <Button key="back" onClick={closeModel}>

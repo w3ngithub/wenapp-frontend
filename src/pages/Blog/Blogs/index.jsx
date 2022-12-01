@@ -19,11 +19,13 @@ import {getBlogAuthors} from 'services/users/userDetails'
 import Select from 'components/Elements/Select'
 import {useNavigate} from 'react-router-dom'
 import {ADDBLOG} from 'helpers/routePath'
-import {handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
+import {useSelector} from 'react-redux'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -41,10 +43,7 @@ function Blogs() {
   const [form] = Form.useForm()
 
   const [typedTitle, setTypedTitle] = useState('')
-  const {user: userData} = JSON.parse(
-    localStorage.getItem(LOCALSTORAGE_USER) || {}
-  )
-
+  const userData= useSelector(selectAuthUser)
   const {data, isLoading, isError, isFetching} = useQuery(
     ['blogs', page, title, user],
     () =>
@@ -140,7 +139,6 @@ function Blogs() {
                   }))}
                 />
               </FormItem>
-
               <FormItem style={{marginBottom: '-2px'}}>
                 <Button
                   className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
@@ -158,6 +156,7 @@ function Blogs() {
                   onClick={() => {
                     navigate(`${ADDBLOG}`)
                   }}
+                  disabled={getIsAdmin()}
                 >
                   Add New Blog
                 </Button>

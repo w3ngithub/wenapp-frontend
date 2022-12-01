@@ -7,17 +7,17 @@ import Leave from './Leave'
 import Noticeboard from './Noticeboard'
 import Blog from './Blog'
 import Resources from './Resources'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
-import {getLocalStorageData} from 'helpers/utils'
 import RoleAccess, {SETTINGS_TABS_NO_ACCESS} from 'constants/RoleAccess'
 import Email from './Email'
+import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const TabPane = Tabs.TabPane
 
 function Settings() {
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector(selectAuthUser)
   return (
     <Card title="Settings">
       <Tabs type="card">

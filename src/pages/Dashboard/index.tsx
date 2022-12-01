@@ -23,11 +23,7 @@ import {
   getTodaysUserLeaveCount,
   getWeekRangeLeaves,
 } from 'services/leaves'
-import {
-  getLocalStorageData,
-  MuiFormatDate,
-  oneWeekFilterCheck,
-} from 'helpers/utils'
+import {MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
 import {getWeeklyNotices} from 'services/noticeboard'
 import {getAllHolidays} from 'services/resources'
 import {
@@ -40,7 +36,6 @@ import {useNavigate} from 'react-router-dom'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {
   DASHBOARD_ICON_ACCESS,
@@ -48,6 +43,7 @@ import {
 } from 'constants/RoleAccess'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -55,14 +51,14 @@ const localizer = momentLocalizer(moment)
 const Dashboard = () => {
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector(selectAuthUser)
 
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
   const [projectArray, setProjectArray] = useState([])
   const navigate = useNavigate()
-  const loggedInUser = getLocalStorageData(LOCALSTORAGE_USER)
+  const loggedInUser = useSelector(selectAuthUser)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)
@@ -476,9 +472,11 @@ const Dashboard = () => {
               totalCount={PendingLeaves?.data?.data?.leaves || 0}
               label="Pending Leave Request"
               onClick={() =>
-                navigate('/leave', {
-                  state: {tabKey: '3', leaveStatus: 'pending'},
-                })
+                loggedInUser?.role?.value !== 'Admin'
+                  ? null
+                  : navigate('/leave', {
+                      state: {tabKey: '3', leaveStatus: 'pending'},
+                    })
               }
             />
           </Col>
@@ -551,7 +549,7 @@ const Dashboard = () => {
                   </FormItem>
                   <FormItem
                     name="project"
-                    // className="direct-form-item"
+                    className="direct-form-project"
                     required
                     rules={[
                       {
@@ -595,7 +593,7 @@ const Dashboard = () => {
                       inputSelect
                     />
                   </FormItem>
-                  <FormItem name="logType" className="direct-form-item">
+                  <FormItem name="logType" className="direct-form-project">
                     <Select
                       value={logType}
                       onChange={(c: any) => setlogType(c)}
@@ -640,8 +638,12 @@ const Dashboard = () => {
                         />
                       )}
                     </div>
+                  ) : chartData === undefined ? (
+                    ''
+                  ) : chartData.length === 0 ? (
+                    'No Results Found.'
                   ) : (
-                    'No Result Found'
+                    ''
                   )}
                 </div>
               )}

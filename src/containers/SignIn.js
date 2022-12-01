@@ -6,8 +6,6 @@ import {useNavigate} from 'react-router-dom'
 import {hideMessage, showAuthLoader, userSignIn} from 'appRedux/actions/Auth'
 import IntlMessages from 'util/IntlMessages'
 import {FORGOT_PASSWORD} from 'helpers/routePath'
-import {emailRegex} from 'constants/EmailTest'
-import {officeDomain} from 'constants/OfficeDomain'
 
 const FormItem = Form.Item
 
@@ -36,7 +34,7 @@ function SignIn(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.authUser, props.showMessage, navigate])
 
-  const {showMessage, loader, alertMessage} = props
+  const {showMessage, showLoader, alertMessage} = props
 
   return (
     <div className="gx-app-login-wrap">
@@ -103,16 +101,6 @@ function SignIn(props) {
               >
                 <Input.Password />
               </FormItem>
-              {/* <FormItem
-								name="remember"
-								valuePropName={"checked"}
-								initialValue={false}
-							>
-								<Checkbox>
-									<IntlMessages id="appModule.iAccept" />
-								</Checkbox>
-							</FormItem> */}
-
               <FormItem style={{marginTop: '-15px', marginBottom: '4px'}}>
                 <span
                   className="gx-link"
@@ -127,9 +115,9 @@ function SignIn(props) {
                   type="primary"
                   className="gx-mb-0"
                   htmlType="submit"
-                  disabled={loader}
+                  disabled={showLoader}
                 >
-                  {loader ? (
+                  {showLoader ? (
                     'Signing In...'
                   ) : (
                     <IntlMessages id="app.userAuth.signIn" />
@@ -149,8 +137,8 @@ function SignIn(props) {
 }
 
 const mapStateToProps = ({auth}) => {
-  const {loader, alertMessage, showMessage, authUser} = auth
-  return {loader, alertMessage, showMessage, authUser}
+  const {showLoader, alertMessage, showMessage, authUser} = auth
+  return {showLoader, alertMessage, showMessage, authUser}
 }
 
 export default connect(mapStateToProps, {

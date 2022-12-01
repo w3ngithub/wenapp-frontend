@@ -1,6 +1,12 @@
 import React, {useEffect, lazy, Suspense} from 'react'
-import {connect} from 'react-redux'
-import {Navigate, Route, Routes, useNavigate} from 'react-router-dom'
+import {connect, useDispatch} from 'react-redux'
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom'
 import {ConfigProvider} from 'antd'
 import moment from 'moment'
 import 'moment/locale/en-gb'
@@ -11,6 +17,7 @@ import SignIn from 'containers/SignIn'
 import SignUp from 'containers/SignUp'
 
 import {
+  ACTIVITY_LOGS,
   ADDBLOG,
   ATTENDANCE,
   BLOG,
@@ -64,6 +71,11 @@ import RoleAccess, {
   WORK_LOG_REPORT_ACESS,
 } from 'constants/RoleAccess'
 import Error404 from 'components/Modules/404'
+import {getMyProfile} from 'services/users/userDetails'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {useQuery} from '@tanstack/react-query'
+import {getUserProfile} from 'appRedux/actions'
+import ActivityLogs from 'pages/Reports/ActivityLogs'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -82,10 +94,36 @@ const ProjectLogs = lazy(() => import('pages/ProjectLogs'))
 moment.locale('en-gb')
 
 function App(props: any) {
-  const {locale, authUser, themeType} = props
-
+  const {locale, authUser, themeType, switchingUser} = props
   const currentAppLocale = AppLocale[locale.locale]
   const navigate = useNavigate()
+
+  const location = useLocation()
+  const dispatch = useDispatch()
+  const userId =
+    localStorage.getItem(LOCALSTORAGE_USER) &&
+    localStorage.getItem(LOCALSTORAGE_USER) !== 'undefined'
+      ? JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
+      : ''
+
+  const {data: details, isFetching} = useQuery(
+    ['userDetail', userId],
+    () => getMyProfile(userId),
+    {
+      onSuccess: (data) => {
+        localStorage.setItem(
+          LOCALSTORAGE_USER,
+          JSON.stringify(data?.data?.data?.data[0]?._id)
+        )
+        dispatch(
+          getUserProfile({
+            user: data?.data?.data?.data[0],
+          })
+        )
+      },
+      enabled: !!userId,
+    }
+  )
 
   useEffect(() => {
     if (themeType === THEME_TYPE_DARK) {
@@ -105,8 +143,25 @@ function App(props: any) {
       navigate('notAllowed')
   }, [])
 
+  if ((!location?.pathname?.includes('signin') && isFetching) || switchingUser)
+    return <FallBack />
+
   return (
-    <ConfigProvider locale={currentAppLocale.antd}>
+    <ConfigProvider
+      locale={currentAppLocale.antd}
+      getPopupContainer={(node: any) => {
+        if (node && node?.classList) {
+          if (
+            Array.from(node?.classList).includes('ant-select-selector') ||
+            Array.from(node?.classList).includes('ant-picker')
+          ) {
+            return node.parentNode
+          }
+          return document.body
+        }
+        return document.body
+      }}
+    >
       {/* <ConfigProvider locale={en_GB}> */}
       <IntlProvider
         locale={currentAppLocale.locale}
@@ -292,6 +347,14 @@ function App(props: any) {
                     </AccessRoute>
                   }
                 />
+                <Route
+                  path={ACTIVITY_LOGS}
+                  element={
+                    <AccessRoute roles={LEAVE_REPORT_REPORT_ACESS}>
+                      <ActivityLogs />
+                    </AccessRoute>
+                  }
+                />
               </Route>
               <Route
                 path={RESOURCES}
@@ -358,7 +421,7 @@ const FallBack = () => <CircularProgress className="" />
 
 const mapStateToProps = ({settings, auth}: {settings: any; auth: any}) => {
   const {locale, themeType} = settings
-  const {authUser} = auth
-  return {locale, authUser, themeType}
+  const {authUser, switchingUser} = auth
+  return {locale, authUser, themeType, switchingUser}
 }
 export default connect(mapStateToProps)(App)

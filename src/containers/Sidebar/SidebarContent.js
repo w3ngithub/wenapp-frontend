@@ -12,12 +12,11 @@ import {
   THEME_TYPE_LITE,
 } from 'constants/ThemeSetting'
 import IntlMessages from 'util/IntlMessages'
-import {connect} from 'react-redux'
+import {connect, useSelector} from 'react-redux'
 import {SIDEBAR_ITEMS} from 'constants/sideBarItems'
 import {REPORTS, RESOURCES} from 'helpers/routePath'
-import {getLocalStorageData} from 'helpers/utils'
 import RoleAccess from 'constants/RoleAccess'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const SubMenu = Menu.SubMenu
 
@@ -27,7 +26,7 @@ function SidebarContent(props) {
   const paths = location.pathname.split('/')
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector(selectAuthUser)
 
   const selectedOpenKeys =
     paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1]

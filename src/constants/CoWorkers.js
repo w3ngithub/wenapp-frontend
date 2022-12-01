@@ -1,11 +1,14 @@
 import React from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
-import {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
+import RoleAccess, {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
+import {getIsAdmin} from 'helpers/utils'
+import {LOCALSTORAGE_USER} from './Settings'
 
 const CO_WORKERCOLUMNS = (
   sortedInfo,
   openEditPopup,
+  handleSwitchToUser,
   updatMutation,
   disableMutation,
   role
@@ -59,7 +62,7 @@ const CO_WORKERCOLUMNS = (
             <CustomIcon name="view" />
           </span>
 
-          {!CO_WORKERS_TABLE_ACTION_NO_ACCESS.includes(role) && (
+          {!CO_WORKERS_TABLE_ACTION_NO_ACCESS.includes(role) && !getIsAdmin() && (
             <>
               <Divider type="vertical" />
               <Popconfirm
@@ -96,6 +99,23 @@ const CO_WORKERCOLUMNS = (
               </span>
             </>
           )}
+          {!getIsAdmin() &&
+            role === RoleAccess.Admin &&
+            !(
+              record?._id ===
+              JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
+            ) && (
+              <>
+                <Divider type="vertical" />
+
+                <span
+                  className="gx-link"
+                  onClick={() => handleSwitchToUser(record)}
+                >
+                  <CustomIcon name="switchToUser" />
+                </span>
+              </>
+            )}
         </div>
       )
     },

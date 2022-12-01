@@ -12,6 +12,7 @@ import {
 import {searchAttendacentOfUser} from 'services/attendances'
 import {
   dateDifference,
+  getIsAdmin,
   milliSecondIntoHours,
   MuiFormatDate,
   sortFromDate,
@@ -190,14 +191,14 @@ function AdminAttendance({userRole}) {
         title: 'Action',
         key: 'action',
         render: (text, record) => {
-          return (
+          return ( 
             <span>
               <span className="gx-link" onClick={() => handleView(record)}>
                 <CustomIcon name="view" />
               </span>
               {![RoleAccess.Finance, RoleAccess.TeamLead].includes(
                 userRole
-              ) && (
+              ) && !getIsAdmin() &&(
                 <>
                   <Divider type="vertical"></Divider>
                   <span className="gx-link" onClick={() => handleEdit(record)}>
@@ -301,6 +302,7 @@ function AdminAttendance({userRole}) {
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white "
               onClick={() => setToggleAdd(true)}
+              disabled={getIsAdmin()}
             >
               Add
             </Button>
