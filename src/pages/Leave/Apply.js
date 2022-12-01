@@ -398,6 +398,7 @@ function Apply({user}) {
                 <Calendar
                   className={darkCalendar ? 'bg-dark' : 'null'}
                   onChange={calendarClickHandler}
+                  disabled={getIsAdmin()}
                   numberOfMonths={1}
                   disableMonthPicker
                   disableYearPicker
@@ -483,6 +484,7 @@ function Apply({user}) {
                   rules={[{required: true, message: 'Leave Type is required.'}]}
                 >
                   <Select
+                    disabled={getIsAdmin()}
                     showSearch
                     notFoundContent={emptyText}
                     filterOption={filterOptions}
@@ -512,6 +514,7 @@ function Apply({user}) {
                       ]}
                     >
                       <Select
+                        disabled={getIsAdmin()}
                         showSearch
                         filterOption={filterOptions}
                         placeholder="Select Duration"
@@ -590,7 +593,11 @@ function Apply({user}) {
                     },
                   ]}
                 >
-                  <TextArea placeholder="Enter Leave Reason" rows={10} />
+                  <TextArea
+                    placeholder="Enter Leave Reason"
+                    rows={10}
+                    disabled={getIsAdmin()}
+                  />
                 </FormItem>
                 <div>
                   <Button
