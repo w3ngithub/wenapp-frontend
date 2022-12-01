@@ -12,6 +12,13 @@ import {getAllUsers} from 'services/users/userDetails'
 import {useNavigate} from 'react-router-dom'
 import {ATTENDANCE} from 'helpers/routePath'
 import {LEAVES_TYPES} from 'constants/Leaves'
+import {
+  EachDayLeave,
+  SelectLeaves,
+  Style,
+  CalendarLeaves,
+  Events,
+} from 'constants/Interfaces'
 
 const localizer = momentLocalizer(moment)
 const FormItem = Form.Item
@@ -65,8 +72,8 @@ function AdminAttendanceCalendar() {
     setUser(undefined)
   }
 
-  const handleEventStyle = (event: any) => {
-    let style: any = {
+  const handleEventStyle = (event: Events) => {
+    let style: Style = {
       fontSize: '14px',
       width: 'fit-content',
       margin: '0px auto',
@@ -100,9 +107,9 @@ function AdminAttendanceCalendar() {
     }
   }
 
-  let leaves: any[] = []
+  let leaves: EachDayLeave[] = []
 
-  userLeaves?.forEach((leave: any) => {
+  userLeaves?.forEach((leave: CalendarLeaves) => {
     leaves.push({
       id: leave?._id,
       title: leave?.leaveType?.name,
@@ -174,7 +181,7 @@ function AdminAttendanceCalendar() {
     }
   )
 
-  const handleSelectEvent = (data: any) => {
+  const handleSelectEvent = (data: SelectLeaves) => {
     if (data.type === 'leave' || data.type === 'longLeaves')
       navigate(`/leave`, {
         state: {
@@ -200,10 +207,12 @@ function AdminAttendanceCalendar() {
                 placeholder="Search Co-worker"
                 onChange={handleUserChange}
                 value={user}
-                options={users?.data?.data?.data?.map((x: any) => ({
-                  id: x._id,
-                  value: x.name,
-                }))}
+                options={users?.data?.data?.data?.map(
+                  (x: {_id: string; name: string}) => ({
+                    id: x._id,
+                    value: x.name,
+                  })
+                )}
               />
             </FormItem>
 

@@ -30,6 +30,14 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import LeaveCutModal from 'components/Modules/LeaveCutAttendance/LeaveCutModal'
 import CustomIcon from 'components/Elements/Icons'
 import ViewDetailModel from '../ViewDetailModel'
+import {
+  CutLeave,
+  FormattedUserData,
+  LateUsers,
+  UpdateLateLeave,
+  viewAttendance,
+  ViewLateAttendance,
+} from 'constants/Interfaces'
 
 const FormItem = Form.Item
 
@@ -41,14 +49,25 @@ interface recordAttendance {
   data: {attendanceDate: string; userId: string}[]
 }
 
-const formattedAttendances = (attendances: any) => {
-  return attendances?.map((att: any) => ({
+const viewAtt = {
+  user: '',
+  attendanceDate: '',
+  attendanceDay: '',
+  officeHour: '',
+  punchInTime: '',
+  punchOutTime: '',
+  punchInNote: '',
+  punchOutNote: '',
+}
+
+const formattedAttendances = (attendances: LateUsers[]) => {
+  return attendances?.map((att) => ({
     ...att,
     key: att._id.userId,
     user: att._id.user,
     count: att.data?.length,
     status: att.data?.every(
-      (item: any) => item.lateArrivalLeaveCut === true
+      (item: FormattedUserData) => item.lateArrivalLeaveCut === true
     ) ? (
       <span className="gx-text-danger">Leave Cut</span>
     ) : (
@@ -62,10 +81,12 @@ function LateAttendance({userRole}: {userRole: string}) {
   const [form] = Form.useForm()
   const [date, setDate] = useState(intialDate)
   const [user, setUser] = useState<undefined | string>(undefined)
-  const [attFilter, setAttFilter] = useState({id: '1', value: 'Daily'})
+  const [attFilter, setAttFilter] = useState<
+    {id: string; value: string} | number
+  >({id: '1', value: 'Daily'})
   const [leaveCut, setLeaveCut] = useState(leaveCutStatus[0].id)
   const [openView, setOpenView] = useState<boolean>(false)
-  const [attToView, setAttToView] = useState<any>({})
+  const [attToView, setAttToView] = useState<viewAttendance>(viewAtt)
   const [openLeaveCutModal, setOpenLeaveCutModal] = useState<boolean>(false)
   const [attendanceRecord, setAttendanceRecord] = useState<recordAttendance>({
     _id: {userId: '', user: ''},
@@ -92,36 +113,39 @@ function LateAttendance({userRole}: {userRole: string}) {
       })
   )
 
-  const handleChangeDate = (date: any) => {
+  const handleChangeDate = (date: []) => {
     setDate(date ? date : intialDate)
     if (date === null) {
       setAttFilter({id: '1', value: 'Daily'})
     }
   }
 
-  const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
-    onSuccess: (response) => {
-      if (response.status) {
-        setOpenLeaveCutModal(false)
-        setAttendanceRecord({
-          _id: {userId: '', user: ''},
-          data: [{attendanceDate: '', userId: ''}],
-        })
-        handleCutLeaveInAttendance(response)
-      } else {
-        notification({
-          message: `Leave creation failed !`,
-          type: 'success',
-        })
-      }
-    },
-    onError: (error) => {
-      notification({message: 'Leave creation failed!', type: 'error'})
-    },
-  })
+  const leaveMutation = useMutation(
+    (leave: CutLeave) => createLeaveOfUser(leave),
+    {
+      onSuccess: (response) => {
+        if (response.status) {
+          setOpenLeaveCutModal(false)
+          setAttendanceRecord({
+            _id: {userId: '', user: ''},
+            data: [{attendanceDate: '', userId: ''}],
+          })
+          handleCutLeaveInAttendance(response)
+        } else {
+          notification({
+            message: `Leave creation failed !`,
+            type: 'success',
+          })
+        }
+      },
+      onError: (error) => {
+        notification({message: 'Leave creation failed!', type: 'error'})
+      },
+    }
+  )
 
   const attendanceGroupMutation = useMutation(
-    (lateAttendace: any) => updateLateAttendance(lateAttendace),
+    (lateAttendace: UpdateLateLeave) => updateLateAttendance(lateAttendace),
     {
       onSuccess: (response) => {
         if (response.status) {
@@ -143,11 +167,11 @@ function LateAttendance({userRole}: {userRole: string}) {
     }
   )
 
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+  const handleTableChange = (pagination: {}, filters: {}, sorter: {}) => {
     setSort(sorter)
   }
 
-  const handleAttChnageChange = (val: any) => {
+  const handleAttChnageChange = (val: number) => {
     setAttFilter(val)
     switch (val) {
       case 1:
@@ -169,11 +193,11 @@ function LateAttendance({userRole}: {userRole: string}) {
     setUser(id)
   }
 
-  const handleLeaveCutStatusChange = (val: any) => {
+  const handleLeaveCutStatusChange = (val: string) => {
     setLeaveCut(val)
   }
 
-  const handleView = (record: any) => {
+  const handleView = (record: viewAttendance) => {
     setOpenView(true)
     setAttToView({
       ...record,
@@ -202,7 +226,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         reason: 'Leave cut due to late attendance',
         leaveType:
           leaveTypes?.data?.data?.data?.find(
-            (type: any) => type?.name === LATE_ARRIVAL
+            (type: {name: string}) => type?.name === LATE_ARRIVAL
           )?._id || LATE_ARRIVAL,
         leaveStatus: 'approved',
         halfDay: type === 2 ? 'first-half' : '',
@@ -210,7 +234,9 @@ function LateAttendance({userRole}: {userRole: string}) {
     })
   }
 
-  const handleCutLeaveInAttendance = (leaveResponse: any) => {
+  const handleCutLeaveInAttendance = (leaveResponse: {
+    data: {data: {data: {halfDay: string}}}
+  }) => {
     const payload = attendanceRecord?.data.map((x: any) => x._id) || []
 
     attendanceGroupMutation.mutate({
@@ -229,7 +255,7 @@ function LateAttendance({userRole}: {userRole: string}) {
     })
   }
 
-  const expandedRowRender = (parentRow: any) => {
+  const expandedRowRender = (parentRow: {data: FormattedUserData[]}) => {
     const columns = [
       {
         title: 'Date',
@@ -255,6 +281,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         title: 'Action',
         key: 'action',
         render: (text: any, record: any) => {
+          console.log({text, record})
           return (
             <span>
               <span className="gx-link" onClick={() => handleView(record)}>
@@ -265,7 +292,7 @@ function LateAttendance({userRole}: {userRole: string}) {
         },
       },
     ]
-    const data = parentRow?.data?.map((att: any) => ({
+    const data = parentRow?.data?.map((att: FormattedUserData) => ({
       ...att,
       key: att._id,
       date: changeDate(att.attendanceDate),

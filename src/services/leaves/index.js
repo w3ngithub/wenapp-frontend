@@ -59,7 +59,7 @@ const getLeavesOfUser = async (
   fromDate = '',
   toDate = '',
   sort = '-leaveDates',
-  type='',
+  type = ''
 ) => {
   try {
     let response = await API.get(

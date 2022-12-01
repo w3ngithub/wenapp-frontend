@@ -1,6 +1,7 @@
 import React from 'react'
 import {Button, Modal} from 'antd'
 import styles from './styles.module.css'
+import {viewAttendance} from 'constants/Interfaces'
 
 function ViewDetailModel({
   toogle,
@@ -9,8 +10,8 @@ function ViewDetailModel({
   title,
 }: {
   toogle: boolean
-  handleCancel: any
-  attendanceToview: any
+  handleCancel: () => void
+  attendanceToview: viewAttendance
   title: string
 }) {
   const {

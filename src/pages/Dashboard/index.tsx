@@ -41,6 +41,7 @@ import {
   DASHBOARD_ICON_ACCESS,
   DASHBOARD_PROJECT_LOG_NO_ACCESS,
 } from 'constants/RoleAccess'
+import {Style, Events, Notices} from 'constants/Interfaces'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -48,34 +49,6 @@ const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
 
-interface Style {
-  fontSize: string
-  width: string
-  margin: string
-  fontWeight: string
-  height: string
-  background: string
-  color?: string
-  marginTop?: string
-  marginBottom?: string
-  marginLeft?: string
-}
-interface Events {
-  title: string
-  type: string
-  leaveType: string
-  halfDay: string
-  startDate: any
-  id: string
-  name: string
-}
-
-interface Notices {
-  title: string
-  noticeType: {name: string}
-  startDate: string
-  endDate: string
-}
 const Dashboard = () => {
   const {
     role: {key},

@@ -4,27 +4,9 @@ import {OVERVIEW_CHECKEDIN} from 'constants/Overview'
 import moment from 'moment'
 import LocationMap from './LocationMap'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {UsersFormatted} from 'constants/Interfaces'
 
-interface formUsers {
-  data: [
-    {
-      punchInTime: string
-      attendanceDate: string
-      createdAt: string
-      punchInLocation: number[]
-      punchOutLocation: number[]
-      punchOutTime: string
-      punchInIp: string
-      punchOutIp: string
-    }
-  ]
-  _id: {
-    attendanceDate: string
-    user: string
-  }
-}
-
-const formattedUsers = (users: formUsers[]) => {
+const formattedUsers = (users: UsersFormatted[]) => {
   return users?.map((user) => {
     const punchInLocation = user?.data?.[0]?.punchInLocation
     const punchOutLocation = user?.data?.at(-1)?.punchOutLocation
@@ -55,7 +37,7 @@ function CheckedInEmployee({
   checkIn,
   isLoading,
 }: {
-  checkIn: formUsers[]
+  checkIn: UsersFormatted[]
   isLoading: boolean
 }) {
   const [openMap, setOpenMap] = useState(false)

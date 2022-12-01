@@ -13,6 +13,15 @@ import {ATTENDANCE} from 'helpers/routePath'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {
+  CalendarLeaves,
+  EachDayLeave,
+  Events,
+  FormattedUserData,
+  SelectLeaves,
+  Style,
+  UsersFormatted,
+} from 'constants/Interfaces'
 
 const localizer = momentLocalizer(moment)
 
@@ -40,6 +49,7 @@ function AttendanceCalendar() {
   )
 
   const handleCalendarRangeChange = (calendarDate: any) => {
+    //remaining
     const mom = moment(moment(calendarDate[0]).add(1, 'days')).utc().format()
     const filterByWeek = calendarDate.length === 7
     const filterByDay = calendarDate.length === 1
@@ -52,8 +62,8 @@ function AttendanceCalendar() {
     }
   }
 
-  const handleEventStyle = (event: any) => {
-    let style: any = {
+  const handleEventStyle = (event: Events) => {
+    let style: Style = {
       fontSize: '13px',
       width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
       margin: '0px auto',
@@ -94,9 +104,9 @@ function AttendanceCalendar() {
     }
   }
 
-  let leaves: any[] = []
+  let leaves: EachDayLeave[] = []
 
-  userLeaves?.forEach((leave: any) => {
+  userLeaves?.forEach((leave: CalendarLeaves) => {
     leaves.push({
       id: leave?._id,
       title: leave?.leaveType?.name,
@@ -118,11 +128,13 @@ function AttendanceCalendar() {
     })
   })
   const attendances = data?.data?.data?.attendances[0]?.data?.map(
-    (attendance: any) => {
+    (attendance: UsersFormatted) => {
       const sortedAttendance = sortFromDate(
         attendance?.data,
         'punchInTime'
-      ).filter((attendance: any) => attendance.punchOutTime)
+      ).filter((attendance: FormattedUserData) => {
+        return attendance.punchOutTime
+      })
 
       const totalHoursWorked = milliSecondIntoHours(
         sortedAttendance
@@ -169,7 +181,7 @@ function AttendanceCalendar() {
     }
   )
 
-  const handleSelectEvent = (data: any) => {
+  const handleSelectEvent = (data: SelectLeaves) => {
     if (data.type === 'leave' || data.type === 'longLeaves')
       navigate(`/leave`, {
         state: {tabKey: '2', date: new Date(data?.start).toJSON()},

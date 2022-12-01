@@ -4,17 +4,10 @@ import {OVERVIEW_LEAVES} from 'constants/Overview'
 import {changeDate} from 'helpers/utils'
 import {LATE_ARRIVAL, LEAVES_TYPES} from 'constants/Leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
-
-interface Leaves {
-  _id: string
-  user: [{name: string}]
-  leaveDates: string[]
-  halfDay: string
-  leaveType: [{name: string}]
-}
+import {Leaves} from 'constants/Interfaces'
 
 const formattedLeaves = (leaves: Leaves[]) => {
-  return leaves?.map((leave: Leaves) => {
+  return leaves?.map((leave) => {
     return {
       ...leave,
       key: leave?._id,
