@@ -2,6 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react'
 import {useQuery} from '@tanstack/react-query'
 import {Button, Table, Form, DatePicker, Divider} from 'antd'
 import moment from 'moment'
+import {CSVLink} from 'react-csv'
 import {
   attendanceFilter,
   ATTENDANCE_COLUMNS,
@@ -29,7 +30,7 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import RoleAccess, {
   ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS,
 } from 'constants/RoleAccess'
-import { emptyText } from 'constants/EmptySearchAntd'
+import {emptyText} from 'constants/EmptySearchAntd'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -37,35 +38,40 @@ const FormItem = Form.Item
 const formattedAttendances = (attendances) => {
   return attendances?.map((att) => {
     let timeInMilliSeconds = att?.data
-    ?.map((x) =>
-      x?.punchOutTime
-        ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
-        : ''
-    )
-    .filter(Boolean)
-    ?.reduce((accumulator, value) => {
-      return accumulator + value
-    }, 0)
+      ?.map((x) =>
+        x?.punchOutTime
+          ? new Date(x?.punchOutTime) - new Date(x?.punchInTime)
+          : ''
+      )
+      .filter(Boolean)
+      ?.reduce((accumulator, value) => {
+        return accumulator + value
+      }, 0)
 
-    return ({
-    ...att,
-    key: att._id.attendanceDate + att._id.user,
-    user: att._id.user,
-    attendanceDate: moment(att?._id.attendanceDate).format('LL'),
-    attendanceDay: moment(att?._id.attendanceDate).format('dddd'),
-    punchInTime: moment(att?.data?.[0]?.punchInTime).format('LTS'),
-    punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
-      ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
-      : '',
-    officeHour: milliSecondIntoHours(timeInMilliSeconds),
-    intHour :timeInMilliSeconds
-  })})
+    return {
+      ...att,
+      key: att._id.attendanceDate + att._id.user,
+      user: att._id.user,
+      attendanceDate: moment(att?._id.attendanceDate).format('LL'),
+      attendanceDay: moment(att?._id.attendanceDate).format('dddd'),
+      punchInTime: moment(att?.data?.[0]?.punchInTime).format('LTS'),
+      punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
+        ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
+        : '',
+      officeHour: milliSecondIntoHours(timeInMilliSeconds),
+      intHour: timeInMilliSeconds,
+    }
+  })
 }
 
 function AdminAttendance({userRole}) {
   //init hooks
   const {state} = useLocation()
-  const [sort, setSort] = useState({order: 'ascend',field:'attendanceDate',columnKey: 'attendanceDate'})
+  const [sort, setSort] = useState({
+    order: 'ascend',
+    field: 'attendanceDate',
+    columnKey: 'attendanceDate',
+  })
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
   const [openView, setOpenView] = useState(false)
@@ -76,6 +82,7 @@ function AdminAttendance({userRole}) {
   const [toggleAdd, setToggleAdd] = useState(false)
   const [toggleEdit, setToggleEdit] = useState(false)
   const [AttToEdit, setAttToEdit] = useState({})
+  const [selectedRows, setSelectedRows] = useState([])
 
   // set inital date to date selected from Co-workers attendance calendar
   useEffect(() => {
@@ -86,7 +93,7 @@ function AdminAttendance({userRole}) {
   }, [state?.date, state?.user])
 
   const {data: users} = useQuery(['userForAttendances'], () =>
-    getAllUsers({fields: 'name',active:'true',sort:'name'})
+    getAllUsers({fields: 'name', active: 'true', sort: 'name'})
   )
 
   const {data, isLoading, isFetching} = useQuery(
@@ -191,21 +198,23 @@ function AdminAttendance({userRole}) {
         title: 'Action',
         key: 'action',
         render: (text, record) => {
-          return ( 
+          return (
             <span>
               <span className="gx-link" onClick={() => handleView(record)}>
                 <CustomIcon name="view" />
               </span>
-              {![RoleAccess.Finance, RoleAccess.TeamLead].includes(
-                userRole
-              ) && !getIsAdmin() &&(
-                <>
-                  <Divider type="vertical"></Divider>
-                  <span className="gx-link" onClick={() => handleEdit(record)}>
-                    <CustomIcon name="edit" />
-                  </span>
-                </>
-              )}
+              {![RoleAccess.Finance, RoleAccess.TeamLead].includes(userRole) &&
+                !getIsAdmin() && (
+                  <>
+                    <Divider type="vertical"></Divider>
+                    <span
+                      className="gx-link"
+                      onClick={() => handleEdit(record)}
+                    >
+                      <CustomIcon name="edit" />
+                    </span>
+                  </>
+                )}
             </span>
           )
         },
@@ -299,13 +308,46 @@ function AdminAttendance({userRole}) {
           <AccessWrapper
             noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
           >
-            <Button
-              className="gx-btn-form gx-btn-primary gx-text-white "
-              onClick={() => setToggleAdd(true)}
-              disabled={getIsAdmin()}
-            >
-              Add
-            </Button>
+            <div className="gx-btn-form">
+              {sortedData && (
+                <CSVLink
+                  filename="Co-workers Attendance"
+                  data={[
+                    [
+                      'Co-worker',
+                      'Date',
+                      'Day',
+                      'Punch-in Time',
+                      'Punch-out Time',
+                      'Office hour',
+                    ],
+                    ...formattedAttendances(sortedData)?.map((d) => [
+                      d?.user,
+                      d?.attendanceDate,
+                      d?.attendanceDay,
+                      d?.punchInTime,
+                      d?.punchOutTime,
+                      d?.officeHour,
+                    ]),
+                  ]}
+                >
+                  <Button
+                    className="gx-btn-form gx-btn-primary gx-text-white "
+                    disabled={getIsAdmin() || sortedData.length === 0}
+                  >
+                    Export
+                  </Button>
+                </CSVLink>
+              )}
+              <Button
+                className="gx-btn-form gx-btn-primary gx-text-white "
+                onClick={() => setToggleAdd(true)}
+                style={{marginLeft: '10px'}}
+                disabled={getIsAdmin()}
+              >
+                Add
+              </Button>
+            </div>
           </AccessWrapper>
         </div>
       </div>
