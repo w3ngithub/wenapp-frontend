@@ -82,8 +82,12 @@ function Apply({user}) {
 
   const [leaveType, setLeaveType] = useState('')
 
-  const userLeavesQuery = useQuery(['userLeaves', fromDate, toDate], () =>
-    getLeavesOfUser(user, '', undefined, 1, 30, fromDate, toDate)
+  const userLeavesQuery = useQuery(
+    ['userLeaves', fromDate, toDate],
+    () => getLeavesOfUser(user, '', undefined, '', '', fromDate, toDate),
+    {
+      refetchOnWindowFocus: true,
+    }
   )
 
   const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
@@ -108,14 +112,6 @@ function Apply({user}) {
       getLeavesOfUser(user, '', undefined, '', '', yearStartDate, yearEndDate),
     {enabled: !!yearStartDate && !!yearEndDate}
   )
-
-  const onFocus = () => {
-    queryClient.invalidateQueries(['userLeaves'])
-  }
-
-  useEffect(() => {
-    window.addEventListener('focus', onFocus)
-  }, [])
 
   useEffect(() => {
     if (gender === 'Female') {
