@@ -15,7 +15,6 @@ import {dateToDateFormat, filterOptions} from 'helpers/utils'
 import {async} from '@firebase/util'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
-import {CO_WORKERS_JOIN_DATE_EDIT_ACCESS} from 'constants/RoleAccess'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -42,7 +41,6 @@ function UserDetailForm({
   readOnly = false,
   loading = false,
   currentQuarter,
-  loginRole,
 }) {
   const [form] = Form.useForm()
 
@@ -382,10 +380,7 @@ function UserDetailForm({
             <DatePicker
               disabledDate={disableDate}
               className=" gx-w-100"
-              disabled={
-                readOnly ||
-                !CO_WORKERS_JOIN_DATE_EDIT_ACCESS.includes(loginRole)
-              }
+              disabled={readOnly}
             />
           </FormItem>
           <FormItem

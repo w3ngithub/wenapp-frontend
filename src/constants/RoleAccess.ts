@@ -50,8 +50,6 @@ export const CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS = [
   RoleAccess.ProjectManager,
 ]
 
-export const CO_WORKERS_JOIN_DATE_EDIT_ACCESS = [RoleAccess.Admin,RoleAccess.HumanResource]
-
 // Projects
 export const PROJECTS_ADD_NEW_NO_ACCESS = [RoleAccess.Normal]
 export const PROJECTS_TABLE_ACTION_NO_ACCESS = [RoleAccess.Normal]
