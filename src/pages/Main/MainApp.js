@@ -2,6 +2,7 @@ import React, {useEffect} from 'react'
 import {Layout} from 'antd'
 import {Outlet} from 'react-router-dom'
 import {connect, useDispatch} from 'react-redux'
+import socketIOClient from 'socket.io-client'
 import Sidebar from 'containers/Sidebar/index'
 import Topbar from 'containers/Topbar/index'
 import {footerText} from 'util/config'
@@ -16,6 +17,10 @@ import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const {Content, Footer} = Layout
+
+export const socket = socketIOClient(process.env.REACT_APP_API_ENDPOINT, {
+  transports: ['websocket'],
+})
 
 export const MainApp = (props) => {
   const dispatch = useDispatch()
