@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useRef, useState} from 'react'
 import {useQuery} from '@tanstack/react-query'
 import {Button, Table, Form, DatePicker, Divider} from 'antd'
 import moment from 'moment'
@@ -10,7 +10,10 @@ import {
   monthlyState,
   weeklyState,
 } from 'constants/Attendance'
-import {searchAttendacentOfUser} from 'services/attendances'
+import {
+  searchAttendacentOfUser,
+  searchLateAttendacentOfUser,
+} from 'services/attendances'
 import {
   dateDifference,
   getIsAdmin,
@@ -82,7 +85,18 @@ function AdminAttendance({userRole}) {
   const [toggleAdd, setToggleAdd] = useState(false)
   const [toggleEdit, setToggleEdit] = useState(false)
   const [AttToEdit, setAttToEdit] = useState({})
-  const [selectedRows, setSelectedRows] = useState([])
+  const [dataToExport, setdataToExport] = useState({
+    todownload: false,
+    data: [],
+    loading: false,
+  })
+  const CSVRef = useRef()
+
+  useEffect(() => {
+    if (dataToExport.todownload) {
+      CSVRef.current.link.click()
+    }
+  }, [dataToExport])
 
   // set inital date to date selected from Co-workers attendance calendar
   useEffect(() => {
@@ -97,11 +111,11 @@ function AdminAttendance({userRole}) {
   )
 
   const {data, isLoading, isFetching} = useQuery(
-    ['adminAttendance', user, date],
+    ['adminAttendance', user, date, page],
     () =>
       searchAttendacentOfUser({
-        // page: page.page + '',
-        // limit: page.limit + '',
+        page: page.page + '',
+        limit: page.limit + '',
         userId: user || '',
         fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
         toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
@@ -116,6 +130,7 @@ function AdminAttendance({userRole}) {
   }
 
   const handleTableChange = (pagination, filters, sorter) => {
+    setPage({page: pagination?.current, limit: pagination?.pageSize})
     setSort(sorter)
   }
 
@@ -142,6 +157,30 @@ function AdminAttendance({userRole}) {
   const handleEdit = (record) => {
     setToggleEdit(true)
     setAttToEdit(record)
+  }
+
+  const handleExport = async (event, done) => {
+    setdataToExport((prev) => ({loading: true, data: []}))
+    const data = await searchAttendacentOfUser({
+      page: '',
+      limit: '',
+      userId: user || '',
+      fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
+      toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
+    })
+    const formattedData = formattedAttendances(
+      data?.data?.data?.attendances?.[0]?.data
+    ).map((d) => [
+      d?.user,
+      d?.attendanceDate,
+      d?.attendanceDay,
+      d?.punchInTime,
+      d?.punchOutTime,
+      d?.officeHour,
+    ])
+
+    setdataToExport({todownload: true, data: formattedData, loading: false})
+    done(true)
   }
 
   const handleAttChnageChange = (val) => {
@@ -309,40 +348,38 @@ function AdminAttendance({userRole}) {
             noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
           >
             <div className="gx-btn-form">
-              {sortedData && (
-                <CSVLink
-                  filename="Co-workers Attendance"
-                  data={[
-                    [
-                      'Co-worker',
-                      'Date',
-                      'Day',
-                      'Punch-in Time',
-                      'Punch-out Time',
-                      'Office hour',
-                    ],
-                    ...formattedAttendances(sortedData)?.map((d) => [
-                      d?.user,
-                      d?.attendanceDate,
-                      d?.attendanceDay,
-                      d?.punchInTime,
-                      d?.punchOutTime,
-                      d?.officeHour,
-                    ]),
-                  ]}
-                >
-                  <Button
-                    className="gx-btn-form gx-btn-primary gx-text-white "
-                    disabled={getIsAdmin() || sortedData.length === 0}
-                  >
-                    Export
-                  </Button>
-                </CSVLink>
-              )}
+              <Button
+                className="gx-btn-form gx-btn-primary gx-text-white "
+                disabled={
+                  getIsAdmin() ||
+                  sortedData?.length === 0 ||
+                  isFetching ||
+                  dataToExport.loading
+                }
+                onClick={handleExport}
+              >
+                Export
+              </Button>
+
+              <CSVLink
+                filename="Co-workers Attendance"
+                ref={CSVRef}
+                data={[
+                  [
+                    'Co-worker',
+                    'Date',
+                    'Day',
+                    'Punch-in Time',
+                    'Punch-out Time',
+                    'Office hour',
+                  ],
+                  ...dataToExport.data,
+                ]}
+              ></CSVLink>
+
               <Button
                 className="gx-btn-form gx-btn-primary gx-text-white "
                 onClick={() => setToggleAdd(true)}
-                style={{marginLeft: '10px'}}
                 disabled={getIsAdmin()}
               >
                 Add
