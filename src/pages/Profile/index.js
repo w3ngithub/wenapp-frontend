@@ -96,7 +96,7 @@ function Profile(props) {
     ...about,
     desc:
       about.name === 'dob' || about.name === 'joinDate'
-        ? props?.user[about?.name]?.split('T')[0]
+        ? moment(props?.user?.[about?.name]).format('YYYY-MM-DD')
         : props?.user[about?.name],
   }))
 
