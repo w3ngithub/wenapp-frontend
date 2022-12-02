@@ -34,7 +34,7 @@ import {
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useDispatch, useSelector} from 'react-redux'
-import {switchedUser, switchUser} from 'appRedux/actions'
+import {switchedUser, switchUser, updateJoinDate} from 'appRedux/actions'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
@@ -125,6 +125,8 @@ function CoworkersPage() {
           'Could not update User',
           [
             () => queryClient.invalidateQueries(['users']),
+            () =>
+              dispatch(updateJoinDate(response?.data?.data?.data?.joinDate)),
             () => setOpenUserDetailModal(false),
           ]
         ),
@@ -189,13 +191,11 @@ function CoworkersPage() {
         updatedData: {
           ...user,
           dob: user.dob ? userTofind.dob : undefined,
-          joinDate: user.joinDate ? userTofind.joinDate : undefined,
-          lastReviewDate: user.lastReviewDate
-            ? moment.utc(user.lastReviewDate).format()
+          joinDate: user.joinDate
+            ? moment.utc(user.joinDate).format()
             : undefined,
-          exitDate: user.exitDate
-            ? moment.utc(user.exitDate).format()
-            : undefined,
+          lastReviewDate: moment.utc(user.lastReviewDate).endOf('day').format(),
+          exitDate: user?.exitDate ? moment.utc(user.exitDate).format() : null,
         },
       })
     } catch (error) {
