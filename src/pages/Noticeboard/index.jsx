@@ -4,7 +4,7 @@ import {Card, Table, Form, Input, Button} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {
   changeDate,
-  getLocalStorageData,
+  getIsAdmin,
   handleResponse,
   MuiFormatDate,
 } from 'helpers/utils'
@@ -21,8 +21,9 @@ import NoticeBoardModal from 'components/Modules/noticeboardModal'
 import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
-import { emptyText } from 'constants/EmptySearchAntd'
+import {emptyText} from 'constants/EmptySearchAntd'
+import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -34,7 +35,7 @@ const formattedNotices = (notices) => {
     noticeType: notice.noticeType.name,
     startDate: notice.startDate ? changeDate(notice.startDate) : '',
     endDate: notice.endDate ? changeDate(notice.endDate) : '',
-    categoryId:notice?.noticeType._id
+    categoryId: notice?.noticeType._id,
   }))
 }
 
@@ -56,10 +57,10 @@ function NoticeBoardPage() {
 
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector(selectAuthUser)
 
   const {data, isLoading, isError, isFetching} = useQuery(
-    ['notices', page, title, date,sort],
+    ['notices', page, title, date, sort],
     () =>
       getAllNotices({
         ...page,
@@ -71,7 +72,7 @@ function NoticeBoardPage() {
             ? ''
             : sort.order === 'ascend'
             ? sort.field
-            : `-${sort.field}`
+            : `-${sort.field}`,
       }),
     {keepPreviousData: true}
   )
@@ -203,7 +204,7 @@ function NoticeBoardPage() {
         endDate: originalProject?.endDate ?? null,
         startTime: originalProject?.startTime ?? null,
         endTime: originalProject?.endTime ?? null,
-        categoryId:notice?.categoryId
+        categoryId: notice?.categoryId,
       },
     })
     setReadOnly(mode)
@@ -275,6 +276,7 @@ function NoticeBoardPage() {
               <Button
                 className="gx-btn-form gx-btn-primary gx-text-white "
                 onClick={handleOpenAddModal}
+                disabled={getIsAdmin()}
               >
                 Add New Notice
               </Button>
@@ -282,7 +284,7 @@ function NoticeBoardPage() {
           </div>
         </div>
         <Table
-        locale={{emptyText}}
+          locale={{emptyText}}
           className="gx-table-responsive"
           columns={NOTICE_COLUMNS(
             sort,

@@ -35,7 +35,7 @@ function* signInUserWithEmailPassword({payload}) {
       localStorage.setItem('token', signInUser.data.token)
       localStorage.setItem(
         LOCALSTORAGE_USER,
-        JSON.stringify(signInUser.data.data)
+        JSON.stringify(signInUser.data.data?.user?._id)
       )
       instance.defaults.headers[
         'Authorization'
@@ -53,6 +53,7 @@ function* signOut() {
     if (signOutUser.status) {
       localStorage.removeItem(LOCALSTORAGE_USER)
       localStorage.removeItem('token')
+      localStorage.removeItem('admin')
       yield put(userSignOutSuccess(signOutUser))
     } else {
       yield put(showAuthMessage(signOutUser.data.message))

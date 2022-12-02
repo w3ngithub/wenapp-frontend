@@ -12,7 +12,7 @@ import {PUNCH_IN, PUNCH_OUT} from 'constants/ActionTypes'
 import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {Dispatch} from 'redux'
 import getLocation, {checkLocationPermission} from 'helpers/getLocation'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function TmsMyAttendanceForm({
   title,
@@ -23,7 +23,7 @@ function TmsMyAttendanceForm({
   toogle: boolean
   handleCancel: any
 }) {
-  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
+  const user = useSelector(selectAuthUser)
 
   const [PUnchInform] = Form.useForm()
   const [PUnchOutform] = Form.useForm()

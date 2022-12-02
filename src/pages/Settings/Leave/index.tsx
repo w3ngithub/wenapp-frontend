@@ -9,7 +9,12 @@ import {
   editLeaveType,
   getLeaveTypes,
 } from 'services/settings/leaveType'
-import {capitalizeInput, changeDate, handleResponse} from 'helpers/utils'
+import {
+  capitalizeInput,
+  changeDate,
+  getIsAdmin,
+  handleResponse,
+} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import LeaveModal from './LeaveModal'
 import {
@@ -236,27 +241,29 @@ function Leave() {
 
   const Footer = () => {
     return (
-      <div style={{textAlign: 'end'}}>
-        <span
-          className="gx-link gx-text-primary gx-mr-2"
-          onClick={() => handleOpenEditQuarterModal()}
-        >
-          <CustomIcon name="edit" />
-        </span>{' '}
-        <Popconfirm
-          title="Are you sure you want to delete?"
-          onConfirm={() =>
-            onDeleteClickQuarter(leaveQuarter?.data?.data?.data[0]?._id)
-          }
-          okText="Yes"
-          cancelText="No"
-        >
-          <span className="gx-link gx-text-danger">
-            {' '}
-            <CustomIcon name="delete" />
-          </span>
-        </Popconfirm>
-      </div>
+      !getIsAdmin() && (
+        <div style={{textAlign: 'end'}}>
+          <span
+            className="gx-link gx-text-primary gx-mr-2"
+            onClick={() => handleOpenEditQuarterModal()}
+          >
+            <CustomIcon name="edit" />
+          </span>{' '}
+          <Popconfirm
+            title="Are you sure you want to delete?"
+            onConfirm={() =>
+              onDeleteClickQuarter(leaveQuarter?.data?.data?.data[0]?._id)
+            }
+            okText="Yes"
+            cancelText="No"
+          >
+            <span className="gx-link gx-text-danger">
+              {' '}
+              <CustomIcon name="delete" />
+            </span>
+          </Popconfirm>
+        </div>
+      )
     )
   }
 
@@ -345,13 +352,14 @@ function Leave() {
         onCancel={closeQuarterModel}
       />
       <Row>
-        <Col span={6} xs={24} md={12} style={{paddingLeft: 0}}>
+        <Col span={6} xs={24} md={12}>
           <Card
             title="Leave Type"
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                 onClick={() => handleOpenModal('Leave Type', leaveTypes)}
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>
@@ -379,6 +387,7 @@ function Leave() {
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                   onClick={() => handleOpenModal('Leave Quarter', '')}
+                  disabled={getIsAdmin()}
                 >
                   Add
                 </Button>

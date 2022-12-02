@@ -4,7 +4,7 @@ import CustomIcon from 'components/Elements/Icons'
 import {Popconfirm} from 'antd'
 import {NINE_HOURS} from './Common'
 import {ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS} from './RoleAccess'
-import {daySorter} from 'helpers/utils'
+import {daySorter, getIsAdmin} from 'helpers/utils'
 
 interface notice {
   title: string
@@ -266,7 +266,7 @@ const LATE_ATTENDANCE_COLUMNS = (
                   className="gx-link"
                   onClick={() => hanldeLeaveCutModal(record)}
                 >
-                  <CustomIcon name="leaveCut" />
+                  {!getIsAdmin() && <CustomIcon name="leaveCut" />}
                 </span>
               </div>
             )

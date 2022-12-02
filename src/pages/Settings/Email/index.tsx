@@ -3,7 +3,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Button, Card, Col, Row} from 'antd'
 import SettingTable from '../CommonTable'
 import {EMAIL_COLUMN} from 'constants/Settings'
-import {handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import EmailModal from './EmailModel'
 import {
@@ -29,12 +29,12 @@ function Email() {
   )
 
   const addEmailMutation = useMutation(addEmail, {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(response, 'Email added successfully', 'Email add failed', [
         handleCloseModal,
         () => queryClient.invalidateQueries(['emails']),
       ]),
-    onError: error => {
+    onError: (error) => {
       notification({
         message: 'Email add failed!',
         type: 'error',
@@ -43,14 +43,14 @@ function Email() {
   })
 
   const deleteEmailMutation = useMutation(deleteEmail, {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Email deleted successfully',
         'Email deletion failed',
         [handleCloseModal, () => queryClient.invalidateQueries(['emails'])]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({
         message: 'Email deletion failed!',
         type: 'error',
@@ -59,14 +59,14 @@ function Email() {
   })
 
   const editEmailMutation = useMutation(editEmail, {
-    onSuccess: response =>
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Email updated successfully',
         'Email update failed',
         [handleCloseModal, () => queryClient.invalidateQueries(['emails'])]
       ),
-    onError: error => {
+    onError: (error) => {
       notification({
         message: 'Email update failed!',
         type: 'error',
@@ -124,13 +124,14 @@ function Email() {
         onCancel={handleCloseModal}
       />
       <Row>
-        <Col span={6} xs={24} md={24} style={{paddingLeft: 0}}>
+        <Col span={6} xs={24} md={24}>
           <Card
             title="Emails"
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                 onClick={() => handleOpenModal()}
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>
@@ -139,8 +140,8 @@ function Email() {
             <SettingTable
               data={data?.data?.data?.data}
               columns={EMAIL_COLUMN(
-                value => handleDeleteClick(value),
-                value => handleOpenEditModal(value)
+                (value) => handleDeleteClick(value),
+                (value) => handleOpenEditModal(value)
               )}
               onAddClick={() => handleOpenModal()}
               isLoading={isLoading || deleteEmailMutation.isLoading}

@@ -19,6 +19,8 @@ const ColorPicker = ({displayColorPicker, setDisplayColorPicker, form, editData}
   useEffect(() => {
     if (editData?.hasOwnProperty('color')) {
       setColor(editData?.color)
+    }else{
+      setColor('#f17013')
     }
   }, [editData])
   return (

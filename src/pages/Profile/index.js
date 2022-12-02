@@ -18,10 +18,9 @@ import {storage} from 'firebase'
 import moment from 'moment'
 import {handleResponse} from 'helpers/utils'
 import {useDispatch} from 'react-redux'
-import {setProfilePhoto} from 'appRedux/actions'
+import {getUserProfile} from 'appRedux/actions'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {connect} from 'react-redux'
-import {getUserProfile} from 'appRedux/actions/UserProfile'
 
 export const aboutList = [
   {
@@ -57,9 +56,6 @@ export const aboutList = [
 ]
 
 function Profile(props) {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
-  )
   const dispatch = useDispatch()
   const [openModal, setOpenModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -70,20 +66,18 @@ function Profile(props) {
         'Update profile successfully',
         'Could not update profile',
         [
-          () => setUser(response.data.data),
           () =>
             dispatch(
               getUserProfile({
-                name: response.data.data.user.name,
+                user: response?.data?.data?.user,
               })
             ),
+          () => setOpenModal(false),
           () =>
             localStorage.setItem(
               LOCALSTORAGE_USER,
-              JSON.stringify({user: response.data.data.user})
+              JSON.stringify(response.data.data.user?._id)
             ),
-          () => dispatch(setProfilePhoto(response.data.data.user.photoURL)),
-          () => setOpenModal(false),
           () => setIsLoading(false),
         ]
       )
@@ -102,8 +96,8 @@ function Profile(props) {
     ...about,
     desc:
       about.name === 'dob' || about.name === 'joinDate'
-        ? user.user[about.name]?.split('T')[0]
-        : user.user[about.name],
+        ? moment(props?.user?.[about?.name]).format('YYYY-MM-DD')
+        : props?.user[about?.name],
   }))
 
   const handleProfileUpdate = async (user, removedFile) => {
@@ -159,7 +153,7 @@ function Profile(props) {
       <UserProfileModal
         toggle={openModal}
         onToggle={setOpenModal}
-        user={user.user}
+        user={props?.user}
         onSubmit={handleProfileUpdate}
         isLoading={isLoading}
       />
@@ -167,9 +161,9 @@ function Profile(props) {
       <Auxiliary>
         <ProfileHeader
           user={{
-            name: props?.name,
-            position: props?.position,
-            photoURL: user?.user?.photoURL,
+            name: props?.user?.name,
+            position: props?.user?.position?.name,
+            photoURL: props?.user?.photoURL,
           }}
           onMoreDetailsClick={setOpenModal}
         />
@@ -179,7 +173,7 @@ function Profile(props) {
               <About data={aboutData} />
             </Col>
             <Col xs={24} sm={24} md={10}>
-              <Contact user={user} />
+              <Contact user={props} />
             </Col>
           </Row>
         </div>
@@ -188,9 +182,9 @@ function Profile(props) {
   )
 }
 
-const mapStateToProps = ({userProfile}) => {
-  const {name, position} = userProfile
-  return {name, position}
+const mapStateToProps = ({auth}) => {
+  const user = auth?.authUser
+  return user
 }
 
 export default connect(mapStateToProps, null)(Profile)

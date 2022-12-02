@@ -6,6 +6,7 @@ import {
   PROJECTS_TABLE_ACTION_NO_ACCESS,
 } from './RoleAccess'
 import {Input} from 'antd'
+import {getIsAdmin} from 'helpers/utils'
 
 const PROJECT_COLUMNS = (
   sortedInfo,
@@ -97,7 +98,7 @@ const PROJECT_COLUMNS = (
           <span className="gx-link" onClick={() => openModal(record, true)}>
             <CustomIcon name="view" />
           </span>
-          {!PROJECTS_TABLE_ACTION_NO_ACCESS.includes(role) && (
+          {!PROJECTS_TABLE_ACTION_NO_ACCESS.includes(role) && !getIsAdmin() && (
             <>
               <Divider type="vertical" />
               <span

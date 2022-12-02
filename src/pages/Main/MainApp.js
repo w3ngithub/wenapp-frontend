@@ -2,6 +2,7 @@ import React, {useEffect} from 'react'
 import {Layout} from 'antd'
 import {Outlet} from 'react-router-dom'
 import {connect, useDispatch} from 'react-redux'
+import socketIOClient from 'socket.io-client'
 import Sidebar from 'containers/Sidebar/index'
 import Topbar from 'containers/Topbar/index'
 import {footerText} from 'util/config'
@@ -13,39 +14,20 @@ import {
   NAV_STYLE_INSIDE_HEADER_HORIZONTAL,
 } from 'constants/ThemeSetting'
 import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
-import {getMyProfile} from 'services/users/userDetails'
-import {useQuery} from '@tanstack/react-query'
-import {getUserProfile} from 'appRedux/actions/UserProfile'
 
 const {Content, Footer} = Layout
 
+export const socket = socketIOClient(process.env.REACT_APP_API_ENDPOINT, {
+  transports: ['websocket'],
+})
+
 export const MainApp = (props) => {
   const dispatch = useDispatch()
-  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '{}')
-
-  const {data: details} = useQuery(
-    ['userDetail', user._id],
-    () => getMyProfile(user._id),
-    {
-      onSuccess: (data) => {
-        localStorage.setItem(
-          LOCALSTORAGE_USER,
-          JSON.stringify({user: data.data.data.data[0]})
-        )
-        dispatch(
-          getUserProfile({
-            name: data.data.data.data[0].name,
-            position: data.data.data.data[0].position.name,
-          })
-        )
-      },
-    }
-  )
 
   useEffect(() => {
-    dispatch(fetchLoggedInUserAttendance(user._id))
-  }, [dispatch, user._id])
+    if (props?.authUser)
+      dispatch(fetchLoggedInUserAttendance(props?.authUser?.user?._id))
+  }, [dispatch, props?.authUser])
 
   useEffect(() => {
     const timeout = setInterval(() => {
@@ -99,8 +81,9 @@ export const MainApp = (props) => {
   )
 }
 
-const mapStateToProps = ({settings}) => {
+const mapStateToProps = ({settings, auth}) => {
   const {width, navStyle} = settings
-  return {width, navStyle}
+  const {authUser} = auth
+  return {width, navStyle, authUser}
 }
 export default connect(mapStateToProps)(MainApp)

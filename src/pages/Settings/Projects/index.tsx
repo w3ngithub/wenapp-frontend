@@ -2,7 +2,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Card, Row, Col, Button} from 'antd'
 import {POSITION_COLUMN} from 'constants/Settings'
 import {notification} from 'helpers/notification'
-import {capitalizeInput, handleResponse} from 'helpers/utils'
+import {capitalizeInput, getIsAdmin, handleResponse} from 'helpers/utils'
 import React, {useState} from 'react'
 import {
   addClient,
@@ -268,7 +268,7 @@ function Projects() {
     if (type === types.CLIENTS) addClientMutation.mutate({name: input})
   }
 
-  const handleEditClick = (input: any) => {  
+  const handleEditClick = (input: any) => {
     if (type === types.PROJECT_TYPE)
       editProjectTypeMutation.mutate({id: dataToEdit?._id, name: input})
 
@@ -302,7 +302,6 @@ function Projects() {
     setOpenModal(true)
     setDataToEdit(data)
     setArrayDataToSend(currentData)
-
   }
 
   const handleCloseModal = () => {
@@ -311,7 +310,7 @@ function Projects() {
     setDataToEdit({})
     setOpenModal(false)
   }
-  const handleOpenModal = (type: string, data:any) => {
+  const handleOpenModal = (type: string, data: any) => {
     setOpenModal(true)
     setType(type)
     setArrayDataToSend(data)
@@ -321,7 +320,7 @@ function Projects() {
       <CommonModal
         toggle={openModal}
         type={type}
-        currentData = {arrayDataToSend}
+        currentData={arrayDataToSend}
         duplicateValue={duplicateValue}
         setDuplicateValue={setDuplicateValue}
         isEditMode={isEditMode}
@@ -340,13 +339,16 @@ function Projects() {
         onCancel={handleCloseModal}
       />
       <Row>
-        <Col span={6} xs={24} md={12} style={{paddingLeft: 0}}>
+        <Col span={6} xs={24} md={12}>
           <Card
             title="Project Type"
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal(types.PROJECT_TYPE,projectTypes)}
+                onClick={() =>
+                  handleOpenModal(types.PROJECT_TYPE, projectTypes)
+                }
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>
@@ -354,10 +356,13 @@ function Projects() {
           >
             <SettingTable
               data={projectTypes?.data?.data?.data}
-              onAddClick={() => handleOpenModal(types.PROJECT_TYPE,projectTypes)}
+              onAddClick={() =>
+                handleOpenModal(types.PROJECT_TYPE, projectTypes)
+              }
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.PROJECT_TYPE),
-                (value) => handleOpenEditModal(value, types.PROJECT_TYPE, projectTypes)
+                (value) =>
+                  handleOpenEditModal(value, types.PROJECT_TYPE, projectTypes)
               )}
               isLoading={isLoading || deleteProjectTypeMutation.isLoading}
             />
@@ -369,7 +374,10 @@ function Projects() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal(types.PROJECT_STATUS,projectStatuses)}
+                onClick={() =>
+                  handleOpenModal(types.PROJECT_STATUS, projectStatuses)
+                }
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>
@@ -379,9 +387,16 @@ function Projects() {
               data={projectStatuses?.data?.data?.data}
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.PROJECT_STATUS),
-                (value) => handleOpenEditModal(value, types.PROJECT_STATUS, projectStatuses)
+                (value) =>
+                  handleOpenEditModal(
+                    value,
+                    types.PROJECT_STATUS,
+                    projectStatuses
+                  )
               )}
-              onAddClick={() => handleOpenModal(types.PROJECT_STATUS,projectStatuses)}
+              onAddClick={() =>
+                handleOpenModal(types.PROJECT_STATUS, projectStatuses)
+              }
               isLoading={isLoading || deleteProjectStatusMutation.isLoading}
             />
           </Card>
@@ -394,7 +409,8 @@ function Projects() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal(types.PROJECT_TAG,projectTags)}
+                onClick={() => handleOpenModal(types.PROJECT_TAG, projectTags)}
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>
@@ -404,7 +420,8 @@ function Projects() {
               data={projectTags?.data?.data?.data}
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.PROJECT_TAG),
-                (value) => handleOpenEditModal(value, types.PROJECT_TAG,projectTags)
+                (value) =>
+                  handleOpenEditModal(value, types.PROJECT_TAG, projectTags)
               )}
               onAddClick={() => handleOpenModal(types.PROJECT_TAG, projectTags)}
               isLoading={isLoading || deleteProjectTagMutation.isLoading}
@@ -417,7 +434,8 @@ function Projects() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={() => handleOpenModal(types.CLIENTS,clients)}
+                onClick={() => handleOpenModal(types.CLIENTS, clients)}
+                disabled={getIsAdmin()}
               >
                 Add
               </Button>
@@ -427,9 +445,9 @@ function Projects() {
               data={clients?.data?.data?.data}
               columns={POSITION_COLUMN(
                 (value) => handleDeleteClick(value, types.CLIENTS),
-                (value) => handleOpenEditModal(value, types.CLIENTS,clients)
+                (value) => handleOpenEditModal(value, types.CLIENTS, clients)
               )}
-              onAddClick={() => handleOpenModal(types.CLIENTS,clients)}
+              onAddClick={() => handleOpenModal(types.CLIENTS, clients)}
               isLoading={isLoading || deleteClientMutation.isLoading}
             />
           </Card>

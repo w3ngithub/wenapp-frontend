@@ -3,7 +3,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import '@ant-design/compatible/assets/index.css'
 import {Card, Table, Input, Button, Form} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
-import {changeDate, handleResponse, MuiFormatDate} from 'helpers/utils'
+import {changeDate, getIsAdmin, handleResponse, MuiFormatDate} from 'helpers/utils'
 import {
   addProject,
   deleteProject,
@@ -26,6 +26,8 @@ import {LOCALSTORAGE_USER} from 'constants/Settings'
 import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {useSelector} from 'react-redux'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -65,11 +67,7 @@ function ProjectsPage() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-  const {
-    user: {
-      role: {key},
-    },
-  } = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
+  const {role: {key}} = useSelector(selectAuthUser)
 
   const {data: projectTypesData} = useQuery(['projectTypes'], getProjectTypes)
   const {data: projectStatusData} = useQuery(
@@ -366,6 +364,7 @@ function ProjectsPage() {
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
                   onClick={handleOpenAddModal}
+                  disabled={getIsAdmin()}
                 >
                   Add New Project
                 </Button>

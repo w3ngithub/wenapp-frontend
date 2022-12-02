@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Avatar, Timeline} from 'antd'
 import WidgetHeader from 'components/Elements/WidgetHeader/index'
 import ActivityItem from './ActivityItem'
@@ -6,106 +6,108 @@ import ActivityItem from './ActivityItem'
 const TimeLineItem = Timeline.Item
 
 function getName(task, shape) {
-  if (task.avatar === '') {
+  if (task.avatar) {
+    return <Avatar shape={shape} className="gx-size-40" src={task.avatar} />
+  } else {
     let nameSplit = task.name.split(' ')
     if (task.name.split(' ').length === 1) {
       const initials = nameSplit[0].charAt(0).toUpperCase()
-      return (
-        <Avatar shape={shape} className="gx-size-40 gx-bg-primary">
-          {initials}
-        </Avatar>
-      )
+      return <Avatar className="gx-size-40 gx-bg-primary">{initials}</Avatar>
     } else {
       const initials =
         nameSplit[0].charAt(0).toUpperCase() +
         nameSplit[1].charAt(0).toUpperCase()
-      return (
-        <Avatar shape={shape} className="gx-size-40 gx-bg-cyan">
-          {initials}
-        </Avatar>
-      )
+      return <Avatar className="gx-size-40 gx-bg-cyan">{initials}</Avatar>
     }
-  } else {
-    return <Avatar shape={shape} className="gx-size-40" src={task.avatar} />
   }
 }
 
-class RecentActivity extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      width: 0,
-      height: 0,
-      recentList: [],
-      shape: '',
-      limit: 3,
+function RecentActivity(props) {
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  const popUpRef = useRef()
+  const scrollRef = useRef(true)
+
+  const {
+    recentList,
+    viewRef,
+    showMore,
+    isFetching,
+    isFetchingNextPage,
+    visible,
+  } = props
+
+  useEffect(() => {
+    if (!visible) {
+      setIsScrolled(false)
+      scrollRef.current = true
     }
-    this.updateWindowDimensions = this.updateWindowDimensions.bind(this)
-  }
+  }, [visible])
 
-  componentWillMount() {
-    this.setState({
-      height: window.innerHeight + 'px',
-      width: window.innerWidth + 'px',
-      recentList: this.props.recentList,
-      shape: this.props.shape,
-    })
-    if (window.innerWidth < 575) {
-      this.setState({limit: 1})
+  useEffect(() => {
+    const handleScrollActivityPopUP = (e) => {
+      if (scrollRef.current) {
+        setIsScrolled(true)
+        scrollRef.current = false
+      }
     }
-  }
+    const activityLogPopUp = document.getElementById('admin-activity-icon')
+    if (activityLogPopUp) {
+      activityLogPopUp.addEventListener('scroll', handleScrollActivityPopUP)
+    }
+    return () => {
+      return activityLogPopUp.removeEventListener(
+        'scroll',
+        handleScrollActivityPopUP
+      )
+    }
+  }, [])
 
-  componentDidMount() {
-    this.updateWindowDimensions()
-    window.addEventListener('resize', this.updateWindowDimensions)
-  }
+  return (
+    <div
+      className="gx-entry-sec gx-dashboard-activity-popup"
+      ref={popUpRef}
+      id="admin-activity-icon"
+    >
+      <WidgetHeader title="Recent Activities" />
+      {recentList?.map((activity, index) => (
+        <div className="gx-timeline-info" key={'activity' + index}>
+          <Timeline>
+            {activity?.tasks?.map((task, index) => {
+              return (
+                <TimeLineItem
+                  key={'timeline' + index}
+                  mode="alternate"
+                  dot={getName(task)}
+                >
+                  <ActivityItem task={task} />
+                </TimeLineItem>
+              )
+            })}
+          </Timeline>
+        </div>
+      ))}
+      {!showMore && isScrolled && (
+        <span className="gx-link gx-btn-link" ref={viewRef}>
+          {isFetchingNextPage || isFetching ? 'Loading...' : 'Load More'}
+        </span>
+      )}
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateWindowDimensions)
-  }
-
-  updateWindowDimensions() {
-    this.setState({width: window.innerWidth, height: window.innerHeight})
-  }
-
-  onLoadMore() {
-    this.setState((previousState) => ({
-      limit: previousState.limit + 1,
-    }))
-  }
-
-  render() {
-    const {recentList, shape, limit} = this.state
-    return (
-      <div className="gx-entry-sec">
-        <WidgetHeader title="Recent Activities" />
-        {recentList.slice(0, limit).map((activity, index) => (
-          <div className="gx-timeline-info" key={'activity' + index}>
-            <h4 className="gx-timeline-info-day">{activity.day}</h4>
-            <Timeline>
-              {activity.tasks.map((task, index) => {
-                return (
-                  <TimeLineItem
-                    key={'timeline' + index}
-                    mode="alternate"
-                    dot={getName(task, shape)}
-                  >
-                    <ActivityItem task={task} />
-                  </TimeLineItem>
-                )
-              })}
-            </Timeline>
-          </div>
-        ))}
+      {showMore && (
         <span
           className="gx-link gx-btn-link"
-          onClick={this.onLoadMore.bind(this)}
+          onClick={() => {
+            popUpRef.current.scrollTo({
+              top: 0,
+              behavior: 'smooth',
+            })
+          }}
         >
-          Load More
+          {'No more data available'}
         </span>
-      </div>
-    )
-  }
+      )}
+    </div>
+  )
 }
 
 export default RecentActivity

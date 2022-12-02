@@ -11,16 +11,12 @@ import {
 } from 'services/resources'
 import {Button, Card, Popconfirm, Spin, Table} from 'antd'
 import {HOLIDAY_COLUMNS} from 'constants/Holidays'
-import {
-  changeDate,
-  compare,
-  getLocalStorageData,
-  handleResponse,
-} from 'helpers/utils'
+import {changeDate, compare, getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const localizer = momentLocalizer(moment)
 
@@ -42,7 +38,7 @@ function Holiday() {
 
   const {
     role: {key},
-  } = getLocalStorageData(LOCALSTORAGE_USER)
+  } = useSelector(selectAuthUser)
 
   const {
     data: Holidays,
@@ -188,6 +184,7 @@ function Holiday() {
           <AccessWrapper noAccessRoles={HOLIDAY_ACTION_NO_ACCESS}>
             <Button
               className="gx-btn gx-btn-primary gx-text-white "
+              disabled={getIsAdmin()}
             >
               <Popconfirm
                 title="Adding next year's holidays will remove current year's holidays. Do you want to proceed?"
@@ -230,7 +227,7 @@ function Holiday() {
               events={holidaysCalendar}
               startAccessor="start"
               endAccessor="end"
-              views = {['month']}
+              views={['month']}
               popup
             />
           </div>

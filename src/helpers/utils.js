@@ -1,5 +1,6 @@
 import {notification} from './notification'
 import moment from 'moment'
+import {socket} from 'pages/Main/MainApp'
 
 export const handleSort = (
   currentState,
@@ -208,12 +209,12 @@ export const getLocalStorageData = (type) => {
   let storage = sessionStorage.getItem(type) || localStorage.getItem(type)
 
   try {
-    return JSON.parse(storage).user
+    return JSON.parse(storage)
   } catch (error) {
     storage = JSON.stringify(
       sessionStorage.getItem(type) || localStorage.getItem(type)
     )
-    return JSON.parse(storage)?.user
+    return JSON.parse(storage)
   }
 }
 
@@ -311,6 +312,7 @@ export const handleResponse = (
   queries
 ) => {
   if (response.status) {
+    socket.emit('CUD')
     queries.forEach((query) => {
       query()
     })
@@ -459,6 +461,10 @@ export const compare = (a, b) => {
 // dd/mm/yyyy to yyyy-mm-dd
 export const dateToDateFormat = (date) => {
   return date.toString().split('/').reverse().join('-')
+}
+
+export const getIsAdmin = () => {
+  return !!getLocalStorageData('admin')
 }
 
 //sorting through day

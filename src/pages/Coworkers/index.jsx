@@ -5,7 +5,7 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import UserDetailForm from 'components/Modules/UserDetailModal'
 import {CO_WORKERCOLUMNS} from 'constants/CoWorkers'
 import {notification} from 'helpers/notification'
-import {changeDate, handleResponse} from 'helpers/utils'
+import {changeDate, getIsAdmin, getLocalStorageData, handleResponse} from 'helpers/utils'
 import moment from 'moment'
 import {useEffect, useState} from 'react'
 import {CSVLink} from 'react-csv'
@@ -21,14 +21,16 @@ import {
 import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
 import {getQuarters} from 'services/leaves'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {
   CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS,
   CO_WORKERS_SEARCH_IMPORT_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
-import { emptyText } from 'constants/EmptySearchAntd'
+import {emptyText} from 'constants/EmptySearchAntd'
+import {useDispatch, useSelector} from 'react-redux'
+import {switchedUser, switchUser, updateJoinDate} from 'appRedux/actions'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -60,9 +62,10 @@ function CoworkersPage() {
   const [openImport, setOpenImport] = useState(false)
   const [files, setFiles] = useState([])
   const queryClient = useQueryClient()
+  const dispatch = useDispatch()
 
   // get user detail from storage
-  const {user} = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
+  const user = useSelector(selectAuthUser)
   const [form] = Form.useForm()
 
   const {data: roleData} = useQuery(['userRoles'], getUserRoles)
@@ -117,6 +120,7 @@ function CoworkersPage() {
           'Could not update User',
           [
             () => queryClient.invalidateQueries(['users']),
+            () => dispatch(updateJoinDate(response?.data?.data?.data?.joinDate)),
             () => setOpenUserDetailModal(false),
           ]
         ),
@@ -181,13 +185,11 @@ function CoworkersPage() {
         updatedData: {
           ...user,
           dob: user.dob ? userTofind.dob : undefined,
-          joinDate: user.joinDate ? userTofind.joinDate : undefined,
-          lastReviewDate: user.lastReviewDate
-            ? moment.utc(user.lastReviewDate).format()
-            : undefined,
-          exitDate: user.exitDate
+          joinDate: user.joinDate ?  moment.utc(user.joinDate).format() : undefined,
+          lastReviewDate: moment.utc(user.lastReviewDate).endOf('day').format(),
+          exitDate: user?.exitDate
             ? moment.utc(user.exitDate).format()
-            : undefined,
+            : null,
         },
       })
     } catch (error) {
@@ -236,6 +238,17 @@ function CoworkersPage() {
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
+
+  const handleSwitchToUser = async (user) => {
+    dispatch(switchUser())
+    const adminId = getLocalStorageData('user_id')
+    localStorage.setItem('admin', JSON.stringify(adminId))
+    localStorage.setItem(
+      'user_id',
+      JSON.stringify(user?._id)
+    )
+    dispatch(switchedUser())
+  }
   if (isLoading) {
     return <CircularProgress />
   }
@@ -275,7 +288,7 @@ function CoworkersPage() {
                 enterButton
                 className="direct-form-item"
               />
-              <AccessWrapper
+               {!getIsAdmin() &&<AccessWrapper
                 noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
               >
                 <Popconfirm
@@ -283,12 +296,13 @@ function CoworkersPage() {
                   onConfirm={handleResetAllocatedLeaves}
                   okText="Yes"
                   cancelText="No"
+
                 >
-                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
+                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1" >
                     Reset Allocated Leaves
                   </Button>
                 </Popconfirm>
-              </AccessWrapper>
+              </AccessWrapper>}
             </div>
             <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
               <Form layout="inline" form={form}>
@@ -344,6 +358,7 @@ function CoworkersPage() {
                   <Button
                     className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                     onClick={() => setOpenImport(true)}
+                    disabled={getIsAdmin()}
                   >
                     Import
                   </Button>
@@ -389,11 +404,12 @@ function CoworkersPage() {
           </div>
         </AccessWrapper>
         <Table
-        locale={{emptyText}}
+          locale={{emptyText}}
           className="gx-table-responsive"
           columns={CO_WORKERCOLUMNS(
             sort,
             handleToggleModal,
+            handleSwitchToUser,
             mutation,
             disableUserMmutation,
             user.role.key
