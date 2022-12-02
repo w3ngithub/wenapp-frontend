@@ -182,8 +182,6 @@ function ProjectLogs() {
     setSort(sorter)
   }
 
-  console.log({selectedLogObject})
-
   const handlePageChange = (pageNumber) => {
     setPage((prev) => ({...prev, page: pageNumber}))
   }
@@ -286,7 +284,7 @@ function ProjectLogs() {
     setOpenLogHoursModal(false)
   }
   const handleRowSelect = (selectedRowKeys, selectedRows) => {
-    // console.log({selectedRowKeys})
+    console.log({selectedRows})
     // if(constantLogs.includes())
     setSelectedLogsIds([...constantLogsIds, ...selectedRowKeys])
     setSelectedLogObject([...constantLogsObject, ...selectedRows])
@@ -307,7 +305,12 @@ function ProjectLogs() {
     //   }
     // })
   }
-  // calculateTotalHours()
+  console.log({
+    constantLogsIds,
+    constantLogsObject,
+    selectedLogsIds,
+    selectedLogObject,
+  })
 
   const handleOpenViewModal = () => {
     const detailDatas = projectDetail?.data?.data?.data[0]
