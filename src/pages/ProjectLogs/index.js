@@ -32,6 +32,7 @@ import ProjectModal from 'components/Modules/ProjectModal'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import LogHoursModal from './LogHours'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -57,11 +58,16 @@ function ProjectLogs() {
   const [logType, setLogType] = useState(undefined)
   const [author, setAuthor] = useState(undefined)
   const [openModal, setOpenModal] = useState(false)
-  const [page, setPage] = useState({page: 1, limit: 50})
+  const [page, setPage] = useState({page: 1, limit: 5})
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
+  const [totalHours, setTotalHours] = useState(0)
+  const [openLogHoursModal, setOpenLogHoursModal] = useState(false)
   const [openViewModal, setOpenViewModal] = useState(false)
   const [userRecord, setUserRecord] = useState({})
+
+  let selectedIds = []
+  let selectedRowDetails = []
 
   const [projectId] = slug.split('-')
   const {
@@ -259,6 +265,36 @@ function ProjectLogs() {
   const handleOpenModal = () => {
     setOpenModal(true)
   }
+  const calculateTotalHours = () => {
+    const totalHrsArr = selectedRowDetails?.map((item) => item?.totalHours)
+    const initial = 0
+    setTotalHours(totalHrsArr?.reduce((acc, cur) => acc + cur, initial))
+  }
+  const handleOpenLogHoursModal = () => {
+    setOpenLogHoursModal(true)
+  }
+  const handleCloseLogHoursModal = () => {
+    setOpenLogHoursModal(false)
+  }
+  const handleRowSelect = (selectedRowKeys, selectedRows) => {
+    if (selectedRows?.length === 0) {
+      selectedIds = []
+      selectedRowDetails = []
+      setTotalHours(0)
+    }
+    selectedRows.forEach((item) => {
+      if (!selectedIds?.includes(item?._id)) {
+        selectedIds?.push(item?._id)
+        selectedRowDetails?.push(item)
+      } else {
+        selectedIds = selectedIds?.filter((id) => id === item?._id)
+        selectedRowDetails = selectedRowDetails?.filter(
+          (row) => row?._id === item?._id
+        )
+      }
+      calculateTotalHours()
+    })
+  }
 
   const handleOpenViewModal = () => {
     const detailDatas = projectDetail?.data?.data?.data[0]
@@ -297,6 +333,11 @@ function ProjectLogs() {
         logTypes={logTypes}
         initialValues={timeLogToUpdate}
         isEditMode={isEditMode}
+      />
+      <LogHoursModal
+        toggle={openLogHoursModal}
+        onClose={handleCloseLogHoursModal}
+        totalHours={totalHours}
       />
       <LogsBreadCumb slug={projectSlug} />
       <div style={{marginTop: 20}}></div>
@@ -360,6 +401,14 @@ function ProjectLogs() {
               <div>
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
+                  onClick={handleOpenLogHoursModal}
+                  style={{marginBottom: '16px'}}
+                  disabled={totalHours === 0}
+                >
+                  View Log Hours
+                </Button>
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white "
                   onClick={handleOpenViewModal}
                   style={{marginBottom: '16px'}}
                 >
@@ -390,10 +439,16 @@ function ProjectLogs() {
           )}
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}
+          rowSelection={{
+            onChange: (selectedRowKeys, selectedRows, info) => {
+              handleRowSelect(selectedRowKeys, selectedRows, info)
+            },
+            // selectedRowKeys: selectedRows,
+          }}
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['50', '80', '100'],
+            pageSizeOptions: ['5', '80', '100'],
             showSizeChanger: true,
             total: logTimeDetails?.data?.data?.count || 1,
             onShowSizeChange,
