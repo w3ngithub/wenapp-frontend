@@ -32,12 +32,12 @@ const ACTIVITY_LOGS = (sortedInfo) => [
 
 const MODULES = [
   {id: 'Attendance', value: 'Attendance'},
+  {id: 'User', value: 'Co-worker'},
   {id: 'Leave', value: 'Leave'},
   {id: 'Leave Quarter', value: 'Leave Quarter'},
   {id: 'Notice', value: 'Notice'},
   {id: 'Project', value: 'Project'},
   {id: 'TimeLog', value: 'TimeLog'},
-  {id: 'User', value: 'User'},
 ]
 
 const STATUS = [
