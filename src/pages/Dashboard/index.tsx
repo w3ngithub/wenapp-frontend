@@ -281,10 +281,20 @@ const Dashboard = () => {
 
     if (props.event.type === 'birthday')
       return (
-        <p style={{...style, margin: 0, flexWrap: 'wrap'}}>
-          <i className="icon icon-birthday-new gx-fs-lg" />
-          {shortName}
-        </p>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
+          <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
+            {/* <i className="icon icon-birthday-new gx-fs-lg" /> */}
+            {shortName}
+          </p>
+        </div>
       )
     if (props.event.type === 'holiday')
       return (
@@ -335,10 +345,10 @@ const Dashboard = () => {
           }
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
-            <LeaveIcon
+            {/* <LeaveIcon
               width="18px"
               fill={darkTheme ? darkThemeTextColor : '#038fde'}
-            />
+            /> */}
             {`${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`}
             {/* {`${shortName} ${specificHalf}`} */}
           </p>

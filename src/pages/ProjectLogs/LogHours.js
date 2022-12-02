@@ -18,7 +18,7 @@ function LogHoursModal({toggle, onClose, totalHours}) {
         </Button>,
       ]}
     >
-      <h3>Total Log Hours : {totalHours}</h3>
+      <p>Total Log Hours : {totalHours}</p>
     </Modal>
   )
 }
