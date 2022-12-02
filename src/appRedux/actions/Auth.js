@@ -101,7 +101,6 @@ export const getUserProfile = (userData) => {
 }
 
 export const updateJoinDate = (joinDate) => {
-  console.log('action running')
   return {
     type: UPDATE_JOIN_DATE,
     payload: joinDate,
