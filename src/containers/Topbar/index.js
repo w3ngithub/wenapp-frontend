@@ -108,6 +108,13 @@ class Topbar extends Component {
                   />
                 </li>
 
+                <li className="gx-user-nav gx-notify li-gap">
+                  <i
+                    className={`icon icon-notification gx-fs-xl`}
+                    style={{cursor: 'pointer'}}
+                  />
+                </li>
+
                 {RoleAccess.Admin === this.state.user.role.key && (
                   <li className="gx-user-nav gx-notify li-gap">
                     <ActivityInfo />

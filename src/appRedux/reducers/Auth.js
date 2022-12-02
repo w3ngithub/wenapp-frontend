@@ -10,6 +10,7 @@ import {
   SIGNIN_USER_SUCCESS,
   SIGNOUT_USER_SUCCESS,
   SIGNUP_USER_SUCCESS,
+  UPDATE_JOIN_DATE,
 } from 'constants/ActionTypes'
 
 const INIT_STATE = {
@@ -100,6 +101,18 @@ const reducer = (state = INIT_STATE, action) => {
         authUser: {
           ...state.authUser,
           user: {...action.payload.user},
+        },
+      }
+
+    case UPDATE_JOIN_DATE:
+      return {
+        ...state,
+        authUser: {
+          ...state.authUser,
+          user: {
+            ...state.authUser.user,
+            joinDate: action.payload,
+          },
         },
       }
 

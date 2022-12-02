@@ -2,6 +2,7 @@ import React, {useEffect} from 'react'
 import {Layout} from 'antd'
 import {Outlet} from 'react-router-dom'
 import {connect, useDispatch} from 'react-redux'
+import socketIOClient from 'socket.io-client'
 import Sidebar from 'containers/Sidebar/index'
 import Topbar from 'containers/Topbar/index'
 import {footerText} from 'util/config'
@@ -13,17 +14,20 @@ import {
   NAV_STYLE_INSIDE_HEADER_HORIZONTAL,
 } from 'constants/ThemeSetting'
 import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 
 const {Content, Footer} = Layout
 
+export const socket = socketIOClient(process.env.REACT_APP_API_ENDPOINT, {
+  transports: ['websocket'],
+})
+
 export const MainApp = (props) => {
   const dispatch = useDispatch()
-  const userId = JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || null)
 
   useEffect(() => {
-    dispatch(fetchLoggedInUserAttendance(userId))
-  }, [dispatch, userId])
+    if (props?.authUser)
+      dispatch(fetchLoggedInUserAttendance(props?.authUser?.user?._id))
+  }, [dispatch, props?.authUser])
 
   useEffect(() => {
     const timeout = setInterval(() => {
@@ -77,8 +81,9 @@ export const MainApp = (props) => {
   )
 }
 
-const mapStateToProps = ({settings}) => {
+const mapStateToProps = ({settings, auth}) => {
   const {width, navStyle} = settings
-  return {width, navStyle}
+  const {authUser} = auth
+  return {width, navStyle, authUser}
 }
 export default connect(mapStateToProps)(MainApp)

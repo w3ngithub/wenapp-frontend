@@ -30,4 +30,20 @@ const ACTIVITY_LOGS = (sortedInfo) => [
   },
 ]
 
-export {ACTIVITY_LOGS}
+const MODULES = [
+  {id: 'Attendance', value: 'Attendance'},
+  {id: 'Leave', value: 'Leave'},
+  {id: 'Leave Quarter', value: 'Leave Quarter'},
+  {id: 'Notice', value: 'Notice'},
+  {id: 'Project', value: 'Project'},
+  {id: 'TimeLog', value: 'TimeLog'},
+  {id: 'User', value: 'User'},
+]
+
+const STATUS = [
+  {id: 'created', value: 'Created'},
+  {id: 'updated', value: 'Updated'},
+  {id: 'deleted', value: 'Deleted'},
+]
+
+export {ACTIVITY_LOGS, STATUS, MODULES}

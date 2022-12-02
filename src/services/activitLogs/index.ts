@@ -7,10 +7,14 @@ export const getActivityLogs = async ({
   sort = '',
   limit = 40,
   fields = '',
+  status = '',
+  module = '',
+  fromDate = '',
+  toDate = '',
 }) => {
   try {
     let response = await API.get(
-      `${Apis.ActivityLogs}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+      `${Apis.ActivityLogs}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&status=${status}&module=${module}&fromDate=${fromDate}&toDate=${toDate}`
     )
     return getAPIResponse(response)
   } catch (err) {

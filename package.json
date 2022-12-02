@@ -62,6 +62,7 @@
     "redux-thunk": "^2.3.0",
     "rheostat": "^3.0.1",
     "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.5.4",
     "source-map-explorer": "^2.5.2",
     "url-search-params": "^1.1.0",
     "victory": "^0.27.2",
