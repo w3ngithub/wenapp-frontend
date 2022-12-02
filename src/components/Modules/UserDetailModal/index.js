@@ -11,7 +11,7 @@ import {
   TimePicker,
 } from 'antd'
 import moment from 'moment'
-import {filterOptions} from 'helpers/utils'
+import {dateToDateFormat, filterOptions} from 'helpers/utils'
 import {async} from '@firebase/util'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -50,9 +50,6 @@ function UserDetailForm({
   }
 
   const user = useSelector(selectAuthUser)
-  // const {role: user?.role} = localStorage.getItem('user_id')
-  //   ? JSON.parse(localStorage.getItem('user_id')).user
-  //   : {}
 
   const handleSubmit = () => {
     const data = intialValues?.allocatedLeaves
@@ -79,7 +76,6 @@ function UserDetailForm({
       form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
     else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
   }
-
   const disableDate = (current) => {
     return current && current > moment().endOf('day')
   }
@@ -124,6 +120,9 @@ function UserDetailForm({
         bankName: intialValues.bankName && intialValues.bankName,
         lastReviewDate:
           intialValues.lastReviewDate && moment(intialValues.lastReviewDate),
+        joinDate:
+          intialValues.joinDate &&
+          moment(dateToDateFormat(intialValues.joinDate)),
         exitDate: intialValues.exitDate && moment(intialValues.exitDate),
         officeTime: intialValues?.officeTime?.utcDate
           ? moment(new Date(intialValues?.officeTime?.utcDate), 'h:mm:ss a')
@@ -368,16 +367,27 @@ function UserDetailForm({
           </FormItem>
           <FormItem
             {...formItemLayout}
+            label="Join Date"
+            hasFeedback={readOnly ? false : true}
+            name="joinDate"
+            rules={[
+              {
+                required: true,
+                message: 'Join Date is required.',
+              },
+            ]}
+          >
+            <DatePicker
+              disabledDate={disableDate}
+              className=" gx-w-100"
+              disabled={readOnly}
+            />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
             label="Exit Date"
             hasFeedback={readOnly ? false : true}
             name="exitDate"
-            rules={[
-              {
-                type: 'object',
-                message: 'Exit Date is required.',
-                whitespace: true,
-              },
-            ]}
           >
             <DatePicker
               disabledDate={disableDate}

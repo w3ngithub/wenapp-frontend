@@ -184,13 +184,11 @@ function CoworkersPage() {
         updatedData: {
           ...user,
           dob: user.dob ? userTofind.dob : undefined,
-          joinDate: user.joinDate ? userTofind.joinDate : undefined,
-          lastReviewDate: user.lastReviewDate
-            ? moment.utc(user.lastReviewDate).format()
-            : undefined,
-          exitDate: user.exitDate
+          joinDate: user.joinDate ?  moment.utc(user.joinDate).format() : undefined,
+          lastReviewDate: moment.utc(user.lastReviewDate).format(),
+          exitDate: user?.exitDate
             ? moment.utc(user.exitDate).format()
-            : undefined,
+            : null,
         },
       })
     } catch (error) {
