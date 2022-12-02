@@ -233,12 +233,19 @@ const Dashboard = () => {
     if (event.type === 'birthday')
       style = {
         ...style,
-
+        fontWeight: '400',
+        marginTop: '-4px',
+        marginBottom: '3px',
+        marginLeft: '11px',
         color: darkTheme ? darkThemeTextColor : '#FC6BAB',
       }
     if (event.type === 'holiday')
       style = {
         ...style,
+        fontWeight: '400',
+        marginTop: '-4px',
+        marginBottom: '3px',
+        marginLeft: '11px',
         color: 'rgb(235 68 68)',
       }
     if (event.type === 'leave')
@@ -279,7 +286,7 @@ const Dashboard = () => {
       margin: '0 !important',
     }
 
-    if (props.event.type === 'birthday')
+    if (props.event.type === 'birthday') {
       return (
         <div
           style={{
@@ -291,11 +298,12 @@ const Dashboard = () => {
           }}
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
-            {/* <i className="icon icon-birthday-new gx-fs-lg" /> */}
+            <i className="icon icon-birthday-new gx-fs-lg" />
             {shortName}
           </p>
         </div>
       )
+    }
     if (props.event.type === 'holiday')
       return (
         <div style={{...style, margin: 0, flexWrap: 'nowrap'}}>
@@ -345,10 +353,10 @@ const Dashboard = () => {
           }
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
-            {/* <LeaveIcon
+            <LeaveIcon
               width="18px"
               fill={darkTheme ? darkThemeTextColor : '#038fde'}
-            /> */}
+            />
             {`${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`}
             {/* {`${shortName} ${specificHalf}`} */}
           </p>
