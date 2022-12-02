@@ -61,10 +61,14 @@ function ProjectLogs() {
   const [page, setPage] = useState({page: 1, limit: 5})
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
-  const [totalHours, setTotalHours] = useState(0)
-  const [openLogHoursModal, setOpenLogHoursModal] = useState(false)
   const [openViewModal, setOpenViewModal] = useState(false)
   const [userRecord, setUserRecord] = useState({})
+  const [totalHours, setTotalHours] = useState(0)
+  const [openLogHoursModal, setOpenLogHoursModal] = useState(false)
+  const [selectedLogsIds, setSelectedLogsIds] = useState([])
+  const [constantLogsIds, setConstantLogsIds] = useState([])
+  const [selectedLogObject, setSelectedLogObject] = useState([])
+  const [constantLogsObject, setConstantLogsObject] = useState([])
 
   let selectedIds = []
   let selectedRowDetails = []
@@ -173,8 +177,12 @@ function ProjectLogs() {
   })
 
   const handleTableChange = (pagination, filters, sorter) => {
+    setConstantLogsIds(selectedLogsIds)
+    setConstantLogsObject(selectedLogObject)
     setSort(sorter)
   }
+
+  console.log({selectedLogObject})
 
   const handlePageChange = (pageNumber) => {
     setPage((prev) => ({...prev, page: pageNumber}))
@@ -266,35 +274,40 @@ function ProjectLogs() {
     setOpenModal(true)
   }
   const calculateTotalHours = () => {
-    const totalHrsArr = selectedRowDetails?.map((item) => item?.totalHours)
+    const totalHrsArr = selectedLogObject?.map((item) => item?.totalHours)
     const initial = 0
     setTotalHours(totalHrsArr?.reduce((acc, cur) => acc + cur, initial))
   }
   const handleOpenLogHoursModal = () => {
     setOpenLogHoursModal(true)
+    calculateTotalHours()
   }
   const handleCloseLogHoursModal = () => {
     setOpenLogHoursModal(false)
   }
   const handleRowSelect = (selectedRowKeys, selectedRows) => {
-    if (selectedRows?.length === 0) {
-      selectedIds = []
-      selectedRowDetails = []
-      setTotalHours(0)
-    }
-    selectedRows.forEach((item) => {
-      if (!selectedIds?.includes(item?._id)) {
-        selectedIds?.push(item?._id)
-        selectedRowDetails?.push(item)
-      } else {
-        selectedIds = selectedIds?.filter((id) => id === item?._id)
-        selectedRowDetails = selectedRowDetails?.filter(
-          (row) => row?._id === item?._id
-        )
-      }
-      calculateTotalHours()
-    })
+    // console.log({selectedRowKeys})
+    // if(constantLogs.includes())
+    setSelectedLogsIds([...constantLogsIds, ...selectedRowKeys])
+    setSelectedLogObject([...constantLogsObject, ...selectedRows])
+    // if (selectedRows?.length === 0) {
+    //   selectedIds = []
+    //   selectedRowDetails = []
+    //   setTotalHours(0)
+    // }
+    // selectedRows.forEach((item) => {
+    //   if (!selectedIds?.includes(item?._id)) {
+    //     selectedIds?.push(item?._id)
+    //     selectedRowDetails?.push(item)
+    //   } else {
+    //     selectedIds = selectedIds?.filter((id) => id === item?._id)
+    //     selectedRowDetails = selectedRowDetails?.filter(
+    //       (row) => row?._id === item?._id
+    //     )
+    //   }
+    // })
   }
+  // calculateTotalHours()
 
   const handleOpenViewModal = () => {
     const detailDatas = projectDetail?.data?.data?.data[0]
@@ -403,7 +416,7 @@ function ProjectLogs() {
                   className="gx-btn gx-btn-primary gx-text-white "
                   onClick={handleOpenLogHoursModal}
                   style={{marginBottom: '16px'}}
-                  disabled={totalHours === 0}
+                  disabled={selectedLogObject?.length === 0}
                 >
                   View Log Hours
                 </Button>
@@ -440,10 +453,8 @@ function ProjectLogs() {
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}
           rowSelection={{
-            onChange: (selectedRowKeys, selectedRows, info) => {
-              handleRowSelect(selectedRowKeys, selectedRows, info)
-            },
-            // selectedRowKeys: selectedRows,
+            onChange: handleRowSelect,
+            selectedRowKeys: selectedLogsIds,
           }}
           pagination={{
             current: page.page,
