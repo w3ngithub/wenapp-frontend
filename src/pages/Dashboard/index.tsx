@@ -298,7 +298,7 @@ const Dashboard = () => {
           }}
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
-            <i className="icon icon-birthday-new gx-fs-lg" />
+            <i className="icon icon-birthday-new gx-fs-md" />
             {shortName}
           </p>
         </div>
