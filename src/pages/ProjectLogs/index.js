@@ -259,7 +259,6 @@ function ProjectLogs() {
   const handleOpenModal = () => {
     setOpenModal(true)
   }
-
   const handleOpenViewModal = () => {
     const detailDatas = projectDetail?.data?.data?.data[0]
     setUserRecord({
