@@ -32,6 +32,7 @@ import ProjectModal from 'components/Modules/ProjectModal'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import LogHoursModal from './LogHours'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -62,6 +63,10 @@ function ProjectLogs() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [openViewModal, setOpenViewModal] = useState(false)
   const [userRecord, setUserRecord] = useState({})
+  const [totalHours, setTotalHours] = useState(0)
+  const [openLogHoursModal, setOpenLogHoursModal] = useState(false)
+  const [selectedLogsIds, setSelectedLogsIds] = useState([])
+  const [selectedLogObject, setSelectedLogObject] = useState([])
 
   const [projectId] = slug.split('-')
   const {
@@ -259,6 +264,28 @@ function ProjectLogs() {
   const handleOpenModal = () => {
     setOpenModal(true)
   }
+  const calculateTotalHours = () => {
+    const totalHrsArr = selectedLogObject?.map((item) => item?.totalHours)
+    const initial = 0
+    setTotalHours(totalHrsArr?.reduce((acc, cur) => acc + cur, initial))
+  }
+  const handleOpenLogHoursModal = () => {
+    setOpenLogHoursModal(true)
+    calculateTotalHours()
+  }
+  const handleCloseLogHoursModal = () => {
+    setOpenLogHoursModal(false)
+  }
+  const handleRowSelect = (record, isSelected) => {
+    if (isSelected) {
+      setSelectedLogsIds((prev) => [...prev, record._id])
+      setSelectedLogObject((prev) => [...prev, record])
+    } else {
+      setSelectedLogsIds((prev) => prev.filter((x) => x !== record._id))
+      setSelectedLogObject((prev) => prev.filter((x) => x._id !== record._id))
+    }
+  }
+
   const handleOpenViewModal = () => {
     const detailDatas = projectDetail?.data?.data?.data[0]
     setUserRecord({
@@ -296,6 +323,11 @@ function ProjectLogs() {
         logTypes={logTypes}
         initialValues={timeLogToUpdate}
         isEditMode={isEditMode}
+      />
+      <LogHoursModal
+        toggle={openLogHoursModal}
+        onClose={handleCloseLogHoursModal}
+        totalHours={totalHours}
       />
       <LogsBreadCumb slug={projectSlug} />
       <div style={{marginTop: 20}}></div>
@@ -359,6 +391,14 @@ function ProjectLogs() {
               <div>
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
+                  onClick={handleOpenLogHoursModal}
+                  style={{marginBottom: '16px'}}
+                  disabled={selectedLogObject?.length === 0}
+                >
+                  View Log Hours
+                </Button>
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white "
                   onClick={handleOpenViewModal}
                   style={{marginBottom: '16px'}}
                 >
@@ -389,6 +429,11 @@ function ProjectLogs() {
           )}
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}
+          rowSelection={{
+            // onChange: handleRowSelect,
+            onSelect: handleRowSelect,
+            selectedRowKeys: selectedLogsIds,
+          }}
           pagination={{
             current: page.page,
             pageSize: page.limit,
