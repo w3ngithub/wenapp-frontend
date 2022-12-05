@@ -13,6 +13,7 @@ import {
   SIGNOUT_USER_SUCCESS,
   SIGNUP_USER,
   SIGNUP_USER_SUCCESS,
+  UPDATE_JOIN_DATE,
 } from 'constants/ActionTypes'
 
 export const userSignUp = (user) => {
@@ -96,5 +97,12 @@ export const getUserProfile = (userData) => {
   return {
     type: UPDATE_USER_PROFILE,
     payload: userData,
+  }
+}
+
+export const updateJoinDate = (joinDate) => {
+  return {
+    type: UPDATE_JOIN_DATE,
+    payload: joinDate,
   }
 }

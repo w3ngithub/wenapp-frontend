@@ -23,6 +23,7 @@ export const SIGNOUT_USER = 'SIGNOUT_USER'
 export const SIGNOUT_USER_SUCCESS = 'SIGNOUT_USER_SUCCESS'
 export const INIT_URL = 'INIT_URL'
 export const UPDATE_USER_PROFILE = 'UPDATE_USER_PROFILE'
+export const UPDATE_JOIN_DATE = 'UPDATE_JOIN_DATE'
 
 //Sticky
 export const GET_STICKY = 'GET_STICKY'

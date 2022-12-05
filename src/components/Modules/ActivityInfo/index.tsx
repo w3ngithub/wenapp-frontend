@@ -8,6 +8,7 @@ import moment from 'moment'
 import {useInView} from 'react-intersection-observer'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {socket} from 'pages/Main/MainApp'
 
 const notificationCountStyle: any = {
   position: 'absolute',
@@ -26,8 +27,6 @@ const notificationCountStyle: any = {
 
 function ActivityInfo() {
   const {ref, inView} = useInView({threshold: 0.5})
-  const isNotificationViewedRef = useRef(true)
-  const blockNotificationUpdateRef = useRef(true)
 
   const [visible, setVisible] = useState<boolean>(false)
   const [showBellCount, setShowBellCount] = useState<boolean>(false)
@@ -35,14 +34,13 @@ function ActivityInfo() {
 
   const {
     role: {key},
-    _id: userId,
   } = useSelector(selectAuthUser)
 
   const handleVisibleChange = (newVisible: boolean) => {
     setVisible(newVisible)
   }
 
-  const {data, isFetching, isFetchingNextPage, fetchNextPage} =
+  const {data, isFetching, isFetchingNextPage, fetchNextPage, refetch} =
     useInfiniteQuery(
       ['activityLogsInfo'],
       async ({pageParam = 1}) => {
@@ -53,10 +51,6 @@ function ActivityInfo() {
         enabled: key === RoleAccess.Admin,
       }
     )
-
-  const updateViewofActivityLog: any = useMutation((payload) =>
-    updateActivityLogs(payload)
-  )
 
   // fecth next page on scroll of activities
   useEffect(() => {
@@ -79,38 +73,22 @@ function ActivityInfo() {
     isFetchingNextPage,
   ])
 
-  // check to show count in notitifcation bell icon once
   useEffect(() => {
-    if (data?.pages?.length && isNotificationViewedRef.current) {
-      const countOfNotViewNotification =
-        data?.pages?.[0]?.data?.data?.data?.filter(
-          (log: any) => !log.viewedBy || !log.viewedBy.includes(userId)
-        )?.length
-      setNotificationCount(countOfNotViewNotification)
+    socket.on('countActivity', (response) => {
+      refetch()
+      setNotificationCount(response)
       setShowBellCount(true)
-      isNotificationViewedRef.current = false
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.pages?.length, userId])
+    })
 
-  // update viewBy in activity log when notification is visible only once
+    socket.emit('CUD')
+  }, [])
+
   useEffect(() => {
-    if (visible && blockNotificationUpdateRef.current) {
+    if (visible) {
+      socket.emit('notification-visible')
       setShowBellCount(false)
-      const notViewdNotification = data?.pages?.[0]?.data?.data?.data
-        ?.filter((log: any) => !log.viewedBy || !log.viewedBy.includes(userId))
-        ?.map((x: any) => x._id)
-
-      if (notViewdNotification && notViewdNotification?.length > 0) {
-        updateViewofActivityLog.mutate({
-          user: userId,
-          activities: notViewdNotification,
-        })
-      }
-      blockNotificationUpdateRef.current = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, userId])
+  }, [visible])
 
   const userMenuOptions = (
     <RecentActivity
@@ -152,7 +130,7 @@ function ActivityInfo() {
     >
       <div style={{position: 'relative'}}>
         <i
-          className={`icon icon-notification gx-fs-xl`}
+          className={`icon icon-chat-new gx-fs-xl`}
           style={{cursor: 'pointer'}}
         />
         {showBellCount && notificationCount > 0 && (

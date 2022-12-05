@@ -5,7 +5,12 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import UserDetailForm from 'components/Modules/UserDetailModal'
 import {CO_WORKERCOLUMNS} from 'constants/CoWorkers'
 import {notification} from 'helpers/notification'
-import {changeDate, getIsAdmin, getLocalStorageData, handleResponse} from 'helpers/utils'
+import {
+  changeDate,
+  getIsAdmin,
+  getLocalStorageData,
+  handleResponse,
+} from 'helpers/utils'
 import moment from 'moment'
 import {useEffect, useState} from 'react'
 import {CSVLink} from 'react-csv'
@@ -29,8 +34,8 @@ import {
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useDispatch, useSelector} from 'react-redux'
-import {switchedUser, switchUser} from 'appRedux/actions'
-import { selectAuthUser } from 'appRedux/reducers/Auth'
+import {switchedUser, switchUser, updateJoinDate} from 'appRedux/actions'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -120,6 +125,8 @@ function CoworkersPage() {
           'Could not update User',
           [
             () => queryClient.invalidateQueries(['users']),
+            () =>
+              dispatch(updateJoinDate(response?.data?.data?.data?.joinDate)),
             () => setOpenUserDetailModal(false),
           ]
         ),
@@ -184,13 +191,11 @@ function CoworkersPage() {
         updatedData: {
           ...user,
           dob: user.dob ? userTofind.dob : undefined,
-          joinDate: user.joinDate ? userTofind.joinDate : undefined,
-          lastReviewDate: user.lastReviewDate
-            ? moment.utc(user.lastReviewDate).format()
+          joinDate: user.joinDate
+            ? moment.utc(user.joinDate).format()
             : undefined,
-          exitDate: user.exitDate
-            ? moment.utc(user.exitDate).format()
-            : undefined,
+          lastReviewDate: moment.utc(user.lastReviewDate).endOf('day').format(),
+          exitDate: user?.exitDate ? moment.utc(user.exitDate).format() : null,
         },
       })
     } catch (error) {
@@ -244,10 +249,7 @@ function CoworkersPage() {
     dispatch(switchUser())
     const adminId = getLocalStorageData('user_id')
     localStorage.setItem('admin', JSON.stringify(adminId))
-    localStorage.setItem(
-      'user_id',
-      JSON.stringify(user?._id)
-    )
+    localStorage.setItem('user_id', JSON.stringify(user?._id))
     dispatch(switchedUser())
   }
   if (isLoading) {
@@ -289,21 +291,22 @@ function CoworkersPage() {
                 enterButton
                 className="direct-form-item"
               />
-               {!getIsAdmin() &&<AccessWrapper
-                noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
-              >
-                <Popconfirm
-                  title={`Are you sure to reset allocated leaves?`}
-                  onConfirm={handleResetAllocatedLeaves}
-                  okText="Yes"
-                  cancelText="No"
-
+              {!getIsAdmin() && (
+                <AccessWrapper
+                  noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
                 >
-                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1" >
-                    Reset Allocated Leaves
-                  </Button>
-                </Popconfirm>
-              </AccessWrapper>}
+                  <Popconfirm
+                    title={`Are you sure to reset allocated leaves?`}
+                    onConfirm={handleResetAllocatedLeaves}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
+                      Reset Allocated Leaves
+                    </Button>
+                  </Popconfirm>
+                </AccessWrapper>
+              )}
             </div>
             <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
               <Form layout="inline" form={form}>
