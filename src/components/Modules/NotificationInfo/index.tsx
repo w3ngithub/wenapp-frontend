@@ -1,55 +1,34 @@
-import React, {useEffect, useState, useRef} from 'react'
-import {useInfiniteQuery, useMutation} from '@tanstack/react-query'
-import {getActivityLogs, updateActivityLogs} from 'services/activitLogs'
-import RoleAccess from 'constants/RoleAccess'
+import React, {useState, useEffect} from 'react'
 import {Popover} from 'antd'
-import RecentActivity from '../dashboard/CRM/RecentActivity'
-import moment from 'moment'
-import {useInView} from 'react-intersection-observer'
-import {useSelector} from 'react-redux'
-import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
+import {useInfiniteQuery} from '@tanstack/react-query'
+import {useInView} from 'react-intersection-observer'
+import {getNotifications} from 'services/notifications'
+import {notificationCountStyle} from '../ActivityInfo'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {useSelector} from 'react-redux'
+import moment from 'moment'
+import RecentActivity from '../dashboard/CRM/RecentActivity'
 
-export const notificationCountStyle: any = {
-  position: 'absolute',
-  top: '-7px',
-  right: '-6px',
-  backgroundColor: '#f44336',
-  color: 'white',
-  width: '15px',
-  height: '15px',
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '12px',
-}
-
-function ActivityInfo() {
-  const {ref, inView} = useInView({threshold: 0.5})
-
+function NotificationInfo() {
   const [visible, setVisible] = useState<boolean>(false)
+  const {ref, inView} = useInView({threshold: 0.5})
   const [showBellCount, setShowBellCount] = useState<boolean>(false)
   const [notificationCount, setNotificationCount] = useState<number>(0)
 
   const {
     role: {key},
+    _id,
   } = useSelector(selectAuthUser)
-
-  const handleVisibleChange = (newVisible: boolean) => {
-    setVisible(newVisible)
-  }
 
   const {data, isFetching, isFetchingNextPage, fetchNextPage, refetch} =
     useInfiniteQuery(
-      ['activityLogsInfo'],
+      ['notificationInfo'],
       async ({pageParam = 1}) => {
-        const res = await getActivityLogs({page: pageParam, limit: 6})
+        const res = await getNotifications({page: pageParam, limit: 6})
         return res
       },
-      {
-        enabled: key === RoleAccess.Admin,
-      }
+      {enabled: false}
     )
 
   // fecth next page on scroll of activities
@@ -73,64 +52,80 @@ function ActivityInfo() {
     isFetchingNextPage,
   ])
 
+  const handleVisibleChange = (newVisible: boolean) => {
+    setVisible(newVisible)
+  }
+
   useEffect(() => {
-    socket.on('countActivity', (response) => {
-      refetch()
-      setNotificationCount(response)
-      setShowBellCount(true)
+    socket.on('bell-notification', (response) => {
+      if (response && response?.showTo?.includes(key)) {
+        setShowBellCount(true)
+        setNotificationCount((prev) => prev + 1)
+      }
     })
 
-    socket.emit('CUD')
-  }, [])
+    socket.on('bell-notification-for-user', (response) => {
+      if (response && response?.showTo?.includes(_id)) {
+        setShowBellCount(true)
+        setNotificationCount((prev) => prev + 1)
+      }
+    })
+  }, [key, _id])
 
   useEffect(() => {
     if (visible) {
-      socket.emit('notification-visible')
       setShowBellCount(false)
+      setNotificationCount(0)
+      refetch()
     }
   }, [visible])
 
-  const userMenuOptions = (
+  const notificationContent = (
     <RecentActivity
+      title="Notifications"
       visible={visible}
       isFetching={isFetching}
       isFetchingNextPage={isFetchingNextPage}
       showMore={
         (data?.pageParams.length || 1) * 6 >= data?.pages[0]?.data?.data?.count
       }
+      iconIdName="general-notification-icon"
       viewRef={ref}
       recentList={data?.pages.map((page, i) => ({
         id: i,
-        tasks: page?.data?.data?.data?.map((log: any) => ({
-          id: log._id,
-          name: log.user.name || '',
-          title: [
-            <span className="gx-link" key={1}>
-              {log?.activity}
-            </span>,
-            <p style={{opacity: 0.6}}>
-              {moment(log?.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')}
-            </p>,
-          ],
-          avatar: log.user.photo || '',
-          imageList: [],
-        })),
+        tasks: page?.data?.data?.data
+          ?.filter((x: any) => x?.showTo?.includes(key || _id))
+          ?.map((log: any) => ({
+            id: log._id,
+            name: '',
+            title: [
+              <span className="gx-link" key={1}>
+                {log?.remarks}
+              </span>,
+              <p style={{opacity: 0.6}}>
+                {moment(log?.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')}
+              </p>,
+            ],
+            avatar: '',
+            imageList: [],
+          })),
       }))}
       shape="circle"
     />
   )
+
   return (
     <Popover
       overlayClassName="gx-popover-admin-notification"
       placement="bottomRight"
-      content={userMenuOptions}
+      content={notificationContent}
       trigger="click"
       visible={visible}
       onVisibleChange={handleVisibleChange}
     >
       <div style={{position: 'relative'}}>
         <i
-          className={`icon icon-chat-new gx-fs-xl`}
+          className={`icon icon-notification gx-fs-xl`}
           style={{cursor: 'pointer'}}
         />
         {showBellCount && notificationCount > 0 && (
@@ -141,4 +136,4 @@ function ActivityInfo() {
   )
 }
 
-export default ActivityInfo
+export default NotificationInfo

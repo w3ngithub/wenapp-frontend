@@ -13,6 +13,8 @@ import {officeDomain} from 'constants/OfficeDomain'
 import {emailRegex} from 'constants/EmailTest'
 import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import {storage} from 'firebase'
+import RoleAccess from 'constants/RoleAccess'
+import {socket} from 'pages/Main'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -89,7 +91,20 @@ function InviteUserSignup(props) {
                       response,
                       'Sign up successfull',
                       'Could not sign up',
-                      [() => navigate(`/${SIGNIN}`), () => setIsLoading(false)]
+                      [
+                        () => {
+                          socket.emit('signup-user', {
+                            showTo: [
+                              RoleAccess.Admin,
+                              RoleAccess.HumanResource,
+                            ],
+                            remarks: `${response?.data?.user?.name} has signed up.`,
+                            module: 'User',
+                          })
+                        },
+                        // () => navigate(`/${SIGNIN}`),
+                        () => setIsLoading(false),
+                      ]
                     )
                   })
                   .catch((error) => {

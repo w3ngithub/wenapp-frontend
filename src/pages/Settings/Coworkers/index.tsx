@@ -30,6 +30,8 @@ import {
 } from 'services/settings/coworkers/roles'
 import {officeDomain} from 'constants/OfficeDomain'
 import {emailRegex} from 'constants/EmailTest'
+import {socket} from 'pages/Main'
+import RoleAccess from 'constants/RoleAccess'
 
 const layout = {
   // labelCol: { span: 8 },
@@ -90,7 +92,16 @@ function Coworkers() {
         response,
         'User invited successfully',
         'User invite failed',
-        [handleUserInviteSuccess]
+        [
+          handleUserInviteSuccess,
+          () => {
+            socket.emit('invite-user', {
+              showTo: [RoleAccess.Admin, RoleAccess.HumanResource],
+              remarks: `${email} has been invited`,
+              module: 'User',
+            })
+          },
+        ]
       ),
     onError: (error) => {
       notification({message: 'User invite failed!', type: 'error'})

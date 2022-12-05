@@ -30,6 +30,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import LeaveCutModal from 'components/Modules/LeaveCutAttendance/LeaveCutModal'
 import CustomIcon from 'components/Elements/Icons'
 import ViewDetailModel from '../ViewDetailModel'
+import {socket} from 'pages/Main'
 
 const FormItem = Form.Item
 
@@ -38,7 +39,8 @@ interface recordAttendance {
     userId: string
     user: string
   }
-  data: {attendanceDate: string; userId: string}[]
+  user?: any
+  data: {attendanceDate: string; userId: string; user?: String}[]
 }
 
 const formattedAttendances = (attendances: any) => {
@@ -213,6 +215,8 @@ function LateAttendance({userRole}: {userRole: string}) {
   const handleCutLeaveInAttendance = (leaveResponse: any) => {
     const payload = attendanceRecord?.data.map((x: any) => x._id) || []
 
+    console.log(attendanceRecord?.data[0])
+
     attendanceGroupMutation.mutate({
       leaveType:
         leaveResponse?.data?.data?.data?.halfDay === ''
@@ -226,6 +230,12 @@ function LateAttendance({userRole}: {userRole: string}) {
       )
         .startOf('day')
         .format(),
+    })
+
+    socket.emit('late-attendance', {
+      showTo: [attendanceRecord?.data[0].userId],
+      remarks: `${attendanceRecord?.data?.[0]?.user} has signed up.`,
+      module: 'Attendance',
     })
   }
 

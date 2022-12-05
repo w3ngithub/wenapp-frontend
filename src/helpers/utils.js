@@ -1,6 +1,6 @@
 import {notification} from './notification'
 import moment from 'moment'
-import {socket} from 'pages/Main/MainApp'
+import {socket} from 'pages/Main'
 
 export const handleSort = (
   currentState,
