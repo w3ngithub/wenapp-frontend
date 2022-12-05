@@ -18,6 +18,7 @@ import {
   Style,
   CalendarLeaves,
   Events,
+  UsersFormatted,
 } from 'constants/Interfaces'
 
 const localizer = momentLocalizer(moment)
@@ -52,6 +53,7 @@ function AdminAttendanceCalendar() {
   )
 
   const handleCalendarRangeChange = (calendarDate: any) => {
+    //remaining to convert
     const mom = moment(moment(calendarDate[0]).add(1, 'days')).utc().format()
     const filterByWeek = calendarDate.length === 7
     const filterByDay = calendarDate.length === 1
@@ -132,7 +134,8 @@ function AdminAttendanceCalendar() {
   })
 
   const attendances = data?.data?.data?.attendances?.[0]?.data?.map(
-    (attendance: any) => {
+    (attendance: UsersFormatted) => {
+      console.log('attendance', attendance)
       let sortedAttendance = sortFromDate(
         attendance?.data,
         'punchInTime'
