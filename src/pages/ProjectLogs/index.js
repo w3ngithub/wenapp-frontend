@@ -184,11 +184,15 @@ function ProjectLogs() {
   }
 
   const handlelogTypeChange = (log) => {
+    setSelectedLogsIds([])
+    setSelectedLogObject([])
     setLogType(log)
     setPage({page: 1, limit: 50})
   }
 
   const handleAuthorChange = (logAuthor) => {
+    setSelectedLogsIds([])
+    setSelectedLogObject([])
     setAuthor(logAuthor)
     setPage({page: 1, limit: 50})
   }
@@ -430,9 +434,9 @@ function ProjectLogs() {
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}
           rowSelection={{
-            // onChange: handleRowSelect,
             onSelect: handleRowSelect,
             selectedRowKeys: selectedLogsIds,
+            hideSelectAll: true,
           }}
           pagination={{
             current: page.page,
