@@ -57,7 +57,9 @@
   border-color: white;
 }
 .ant-radio-group-solid
-  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):focus-within {
+  .ant-radio-button-wrapper-checked:not(
+    .ant-radio-button-wrapper-disabled
+  ):focus-within {
   color: #fff;
   background: #038fde;
   border-color: #038fde;
@@ -177,24 +179,24 @@
   margin-left: none;
 }
 
-.rounded-modal .ant-form-item{
-  margin-bottom:10px;
+.rounded-modal .ant-form-item {
+  margin-bottom: 10px;
 }
-.rounded-modal .ant-form-item-control-input-content{
-  padding-left:27px ;
+.rounded-modal .ant-form-item-control-input-content {
+  padding-left: 27px;
 }
-.rounded-modal .ant-modal-body{
-  padding:10px 0 0 10px;
+.rounded-modal .ant-modal-body {
+  padding: 10px 0 0 10px;
 }
 
-.align-longtext .gx-mr-5{
-  flex:0.1 !important;
+.align-longtext .gx-mr-5 {
+  flex: 0.1 !important;
   word-break: break-word;
 }
 
-.align-longtext .gx-d-flex{
+.align-longtext .gx-d-flex {
   span:nth-child(2) {
-    flex:0.9 !important;
+    flex: 0.9 !important;
   }
 }
 
@@ -525,23 +527,32 @@
   display: inline-block;
 }
 .suggestion-text {
-  color:red
+  color: red;
 }
-.rdw-embedded-modal{
+.rdw-embedded-modal {
   width: 241px !important;
   height: 200px !important;
 }
-.rdw-embedded-modal-btn-section{
+.rdw-embedded-modal-btn-section {
   margin-bottom: -4px !important;
 }
 .rdw-link-modal {
   height: 215px !important;
 }
-.rbc-ellipsis, .rbc-show-more, .rbc-row-segment .rbc-event-content, .rbc-event-label {
+.rbc-ellipsis,
+.rbc-show-more,
+.rbc-row-segment .rbc-event-content,
+.rbc-event-label {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
+}
+.latest-events {
+  background-color: rgb(142 209 252 / 54%) !important;
+}
+.old-events {
+  background-color: #fff;
 }
 /* Remove weekends in month view */
 // .rbc-month-header > :nth-child(6),
