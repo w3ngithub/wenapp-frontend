@@ -23,6 +23,7 @@ import {
   getLogTypes,
   getTodayTimeLogSummary,
   updateTimeLog,
+  WeeklyProjectTimeLogSummary,
 } from 'services/timeLogs'
 import LogsBreadCumb from './LogsBreadCumb'
 import TimeSummary from './TimeSummary'
@@ -109,6 +110,11 @@ function ProjectLogs() {
     getTodayTimeLogSummary
   )
 
+  const {data: projectTimeSpent, isLoading: projectTimeLoading} = useQuery(
+    ['projectWeeklyTime', projectId],
+    () => WeeklyProjectTimeLogSummary(projectId)
+  )
+
   const addLogTimeMutation = useMutation((details) => addLogTime(details), {
     onSuccess: (response) =>
       handleResponse(
@@ -118,6 +124,7 @@ function ProjectLogs() {
         [
           () => queryClient.invalidateQueries(['timeLogs']),
           () => queryClient.invalidateQueries(['singleProject']),
+          () => queryClient.invalidateQueries(['projectWeeklyTime']),
           () => handleCloseTimelogModal(),
         ]
       ),
@@ -335,7 +342,11 @@ function ProjectLogs() {
         <TimeSummary
           est={roundedToFixed(estimatedHours || 0, 2)}
           ts={roundedToFixed(totalTimeSpent || 0, 2)}
-          tsw={roundedToFixed(weeklyTimeSpent || 0, 2)}
+          tsw={roundedToFixed(
+            projectTimeSpent?.data?.data?.weeklySummary[0]?.timeSpentThisWeek ||
+              0,
+            2
+          )}
         />
       </Card>
       <Card title={projectSlug + ' Logs'}>

@@ -61,7 +61,7 @@ const formattedAttendances = (attendances) => {
       punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
         ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
         : '',
-      officeHour: milliSecondIntoHours(timeInMilliSeconds),
+      officeHour: milliSecondIntoHours(att?.officehour),
       intHour: timeInMilliSeconds,
     }
   })
@@ -71,9 +71,9 @@ function AdminAttendance({userRole}) {
   //init hooks
   const {state} = useLocation()
   const [sort, setSort] = useState({
-    order: 'ascend',
-    field: 'attendanceDate',
-    columnKey: 'attendanceDate',
+    order: undefined,
+    field: undefined,
+    columnKey: undefined,
   })
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
@@ -111,15 +111,23 @@ function AdminAttendance({userRole}) {
   )
 
   const {data, isLoading, isFetching} = useQuery(
-    ['adminAttendance', user, date, page],
-    () =>
-      searchAttendacentOfUser({
+    ['adminAttendance', user, date, page, sort],
+    () => {
+      let sortField = ''
+      if (sort?.order) {
+        const order = sort.order === 'ascend' ? '' : '-'
+        sortField = `${order}${sort.columnKey}`
+      }
+
+      return searchAttendacentOfUser({
         page: page.page + '',
         limit: page.limit + '',
         userId: user || '',
         fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
         toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
+        sort: sortField,
       })
+    }
   )
 
   const handleChangeDate = (date) => {
@@ -131,6 +139,7 @@ function AdminAttendance({userRole}) {
 
   const handleTableChange = (pagination, filters, sorter) => {
     setPage({page: pagination?.current, limit: pagination?.pageSize})
+
     setSort(sorter)
   }
 
@@ -157,30 +166,6 @@ function AdminAttendance({userRole}) {
   const handleEdit = (record) => {
     setToggleEdit(true)
     setAttToEdit(record)
-  }
-
-  const handleExport = async (event, done) => {
-    setdataToExport((prev) => ({loading: true, data: []}))
-    const data = await searchAttendacentOfUser({
-      page: '',
-      limit: '',
-      userId: user || '',
-      fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
-      toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
-    })
-    const formattedData = formattedAttendances(
-      data?.data?.data?.attendances?.[0]?.data
-    ).map((d) => [
-      d?.user,
-      d?.attendanceDate,
-      d?.attendanceDay,
-      d?.punchInTime,
-      d?.punchOutTime,
-      d?.officeHour,
-    ])
-
-    setdataToExport({todownload: true, data: formattedData, loading: false})
-    done(true)
   }
 
   const handleAttChnageChange = (val) => {
@@ -281,6 +266,37 @@ function AdminAttendance({userRole}) {
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data?.data?.attendances?.[0]?.data])
+
+  const handleExport = async (event, done) => {
+    setdataToExport((prev) => ({loading: true, data: []}))
+    const data = await searchAttendacentOfUser({
+      page: '',
+      limit: '',
+      userId: user || '',
+      fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
+      toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
+      sort: 'csv-import',
+    })
+
+    const sortedIntermediate = data?.data?.data?.attendances?.[0]?.data?.map(
+      (d) => ({
+        ...d,
+        data: sortFromDate(d?.data, 'punchInTime'),
+      })
+    )
+
+    const formattedData = formattedAttendances(sortedIntermediate).map((d) => [
+      d?.user,
+      d?.attendanceDate,
+      d?.attendanceDay,
+      d?.punchInTime,
+      d?.punchOutTime,
+      d?.officeHour,
+    ])
+
+    setdataToExport({todownload: true, data: formattedData, loading: false})
+    done(true)
+  }
 
   return (
     <div>
