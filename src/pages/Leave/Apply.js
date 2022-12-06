@@ -201,7 +201,7 @@ function Apply({user}) {
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
       user:
-        res.data.data.data.leaveStatus === STATUS_TYPES[0].id
+        res.data.data.data.leaveStatus === STATUS_TYPES[1].id
           ? {name, email}
           : res.data.data.data.user,
       leaveReason: res.data.data.data.reason,
