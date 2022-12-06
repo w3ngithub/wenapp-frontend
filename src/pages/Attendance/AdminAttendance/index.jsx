@@ -81,9 +81,9 @@ function AdminAttendance({userRole}) {
   //init hooks
   const {state} = useLocation()
   const [sort, setSort] = useState({
-    order: undefined,
-    field: undefined,
-    columnKey: undefined,
+    order: 'ascend',
+    field: 'attendanceDate',
+    columnKey: 'attendanceDate',
   })
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
