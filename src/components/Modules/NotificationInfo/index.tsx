@@ -94,7 +94,9 @@ function NotificationInfo() {
       recentList={data?.pages.map((page, i) => ({
         id: i,
         tasks: page?.data?.data?.data
-          ?.filter((x: any) => x?.showTo?.includes(key || _id))
+          ?.filter(
+            (x: any) => x?.showTo?.includes(key) || x?.showTo?.includes(_id)
+          )
           ?.map((log: any) => ({
             id: log._id,
             name: '',

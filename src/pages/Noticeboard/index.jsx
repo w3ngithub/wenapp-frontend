@@ -20,10 +20,11 @@ import {NOTICE_COLUMNS} from 'constants/Notice'
 import NoticeBoardModal from 'components/Modules/noticeboardModal'
 import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
+import RoleAccess, {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {socket} from 'pages/Main'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -86,6 +87,17 @@ function NoticeBoardPage() {
         [
           () => queryClient.invalidateQueries(['notices']),
           () => handleCloseModal(),
+          () => {
+            console.log(
+              response.data.data.data,
+              response.data.data.data.noticeType
+            )
+            socket.emit('add-notice', {
+              showTo: Object.values(RoleAccess),
+              noticeTypeId: response.data.data.data.noticeType,
+              module: 'Leave',
+            })
+          },
         ]
       ),
     onError: (error) => {

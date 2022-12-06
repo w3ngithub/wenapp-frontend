@@ -149,7 +149,7 @@ function CoworkersPage() {
           () => {
             socket.emit('disable-user', {
               showTo: [RoleAccess.Admin, RoleAccess.HumanResource],
-              remarks: `${response?.data?.data?.data?.name} has been disabled`,
+              remarks: `${response?.data?.data?.data?.name} has been disabled.`,
               module: 'User',
             })
           },

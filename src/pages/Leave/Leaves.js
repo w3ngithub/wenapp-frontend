@@ -27,6 +27,7 @@ import {
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {sendEmailforLeave} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {socket} from 'pages/Main'
 
 const FormItem = Form.Item
 
@@ -147,6 +148,13 @@ function Leaves({
               queryClient.invalidateQueries([
                 'quartertakenAndRemainingLeaveDays',
               ]),
+            () => {
+              socket.emit('approve-leave', {
+                showTo: [response.data.data.data.user._id],
+                remarks: 'Your leave has been approved.',
+                module: 'Leave',
+              })
+            },
           ]
         ),
       onError: (error) => {

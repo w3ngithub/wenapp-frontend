@@ -97,7 +97,7 @@ function Coworkers() {
           () => {
             socket.emit('invite-user', {
               showTo: [RoleAccess.Admin, RoleAccess.HumanResource],
-              remarks: `${email} has been invited`,
+              remarks: `${email} has been invited.`,
               module: 'User',
             })
           },
