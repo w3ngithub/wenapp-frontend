@@ -25,6 +25,7 @@ import RoleAccess, {
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {socket} from 'pages/Main'
 
 const TabPane = Tabs.TabPane
 
@@ -75,6 +76,16 @@ function Leave() {
             () => sendEmailNotification(response),
             () => queryClient.invalidateQueries(['userLeaves']),
             () => queryClient.invalidateQueries(['leaves']),
+            () => {
+              socket.emit('CUD')
+            },
+            () => {
+              socket.emit('cancel-leave', {
+                showTo: [response.data.data.data.user._id],
+                remarks: 'Your leave has been cancelled.',
+                module: 'Leave',
+              })
+            },
           ]
         ),
       onError: (error) => {

@@ -23,6 +23,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import getLocation from 'helpers/getLocation'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {socket} from 'pages/Main'
 
 function TmsAdminAddAttendanceForm({
   toogle,
@@ -51,6 +52,9 @@ function TmsAdminAddAttendanceForm({
           [
             () => queryClient.invalidateQueries(['adminAttendance']),
             () => queryClient.invalidateQueries(['userAttendance']),
+            () => {
+              socket.emit('CUD')
+            },
           ]
         )
       },

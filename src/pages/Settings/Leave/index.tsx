@@ -26,6 +26,7 @@ import {
 import CustomIcon from 'components/Elements/Icons'
 import LeaveQuarterModal from './LeaveQuarterModal'
 import moment from 'moment'
+import {socket} from 'pages/Main'
 
 interface leaveType {
   name: string
@@ -56,6 +57,9 @@ function Leave() {
         [
           closeQuarterModel,
           () => queryClient.invalidateQueries(['leaveQuarter']),
+          () => {
+            socket.emit('CUD')
+          },
         ]
       ),
     onError: (error) => {
@@ -75,6 +79,9 @@ function Leave() {
         [
           closeQuarterModel,
           () => queryClient.invalidateQueries(['leaveQuarter']),
+          () => {
+            socket.emit('CUD')
+          },
         ]
       ),
     onError: (error) => {
@@ -147,6 +154,9 @@ function Leave() {
         [
           handleCloseModal,
           () => queryClient.invalidateQueries(['leaveQuarter']),
+          () => {
+            socket.emit('CUD')
+          },
         ]
       ),
     onError: (error) => {
