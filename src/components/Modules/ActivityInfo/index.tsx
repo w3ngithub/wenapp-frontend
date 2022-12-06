@@ -105,7 +105,7 @@ function ActivityInfo() {
           id: log._id,
           name: log.user.name || '',
           title: [
-            <span className="gx-link" key={1}>
+            <span className="" key={1}>
               {log?.activity}
             </span>,
             <p style={{opacity: 0.6}}>
