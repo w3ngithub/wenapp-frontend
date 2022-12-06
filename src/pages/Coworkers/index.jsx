@@ -129,6 +129,9 @@ function CoworkersPage() {
             () =>
               dispatch(updateJoinDate(response?.data?.data?.data?.joinDate)),
             () => setOpenUserDetailModal(false),
+            () => {
+              socket.emit('CUD')
+            },
           ]
         ),
       onError: (error) => {
@@ -146,6 +149,9 @@ function CoworkersPage() {
         [
           () => queryClient.invalidateQueries(['users']),
           () => setOpenUserDetailModal(false),
+          () => {
+            socket.emit('CUD')
+          },
           () => {
             socket.emit('disable-user', {
               showTo: [RoleAccess.Admin, RoleAccess.HumanResource],
@@ -168,7 +174,12 @@ function CoworkersPage() {
           response,
           'Allocated leaves reset of all user Successfully',
           'Could not reset allocated leaves',
-          [() => refetch()]
+          [
+            () => refetch(),
+            () => {
+              socket.emit('CUD')
+            },
+          ]
         ),
       onError: (error) => {
         notification({

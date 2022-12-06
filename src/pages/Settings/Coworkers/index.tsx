@@ -95,6 +95,9 @@ function Coworkers() {
         [
           handleUserInviteSuccess,
           () => {
+            socket.emit('CUD')
+          },
+          () => {
             socket.emit('invite-user', {
               showTo: [RoleAccess.Admin, RoleAccess.HumanResource],
               remarks: `${email} has been invited.`,

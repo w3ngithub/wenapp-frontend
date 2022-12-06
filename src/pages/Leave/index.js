@@ -77,6 +77,9 @@ function Leave() {
             () => queryClient.invalidateQueries(['userLeaves']),
             () => queryClient.invalidateQueries(['leaves']),
             () => {
+              socket.emit('CUD')
+            },
+            () => {
               socket.emit('cancel-leave', {
                 showTo: [response.data.data.data.user._id],
                 remarks: 'Your leave has been cancelled.',

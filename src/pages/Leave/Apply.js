@@ -167,6 +167,9 @@ function Apply({user}) {
           () => queryClient.invalidateQueries(['leaves']),
           () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
           () => {
+            socket.emit('CUD')
+          },
+          () => {
             socket.emit('apply-leave', {
               showTo: [
                 RoleAccess.Admin,

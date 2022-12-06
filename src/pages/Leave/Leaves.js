@@ -149,6 +149,9 @@ function Leaves({
                 'quartertakenAndRemainingLeaveDays',
               ]),
             () => {
+              socket.emit('CUD')
+            },
+            () => {
               socket.emit('approve-leave', {
                 showTo: [response.data.data.data.user._id],
                 remarks: 'Your leave has been approved.',

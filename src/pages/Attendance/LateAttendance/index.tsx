@@ -215,8 +215,6 @@ function LateAttendance({userRole}: {userRole: string}) {
   const handleCutLeaveInAttendance = (leaveResponse: any) => {
     const payload = attendanceRecord?.data.map((x: any) => x._id) || []
 
-    console.log(attendanceRecord?.data[0])
-
     attendanceGroupMutation.mutate({
       leaveType:
         leaveResponse?.data?.data?.data?.halfDay === ''
@@ -241,6 +239,8 @@ function LateAttendance({userRole}: {userRole: string}) {
       } leave has been cut due to late arrival.`,
       module: 'Attendance',
     })
+
+    socket.emit('CUD')
   }
 
   const expandedRowRender = (parentRow: any) => {

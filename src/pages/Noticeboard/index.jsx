@@ -88,10 +88,9 @@ function NoticeBoardPage() {
           () => queryClient.invalidateQueries(['notices']),
           () => handleCloseModal(),
           () => {
-            console.log(
-              response.data.data.data,
-              response.data.data.data.noticeType
-            )
+            socket.emit('CUD')
+          },
+          () => {
             socket.emit('add-notice', {
               showTo: Object.values(RoleAccess),
               noticeTypeId: response.data.data.data.noticeType,
@@ -116,6 +115,9 @@ function NoticeBoardPage() {
           [
             () => queryClient.invalidateQueries(['notices']),
             () => handleCloseModal(),
+            () => {
+              socket.emit('CUD')
+            },
           ]
         ),
       onError: (error) => {
@@ -132,7 +134,12 @@ function NoticeBoardPage() {
           response,
           'Notice removed Successfully',
           'Notice deletion failed',
-          [() => queryClient.invalidateQueries(['notices'])]
+          [
+            () => queryClient.invalidateQueries(['notices']),
+            () => {
+              socket.emit('CUD')
+            },
+          ]
         ),
       onError: (error) => {
         notification({message: 'Notice deletion failed', type: 'error'})
