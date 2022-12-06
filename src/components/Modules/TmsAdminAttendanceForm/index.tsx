@@ -12,7 +12,7 @@ import {
   TimePicker,
 } from 'antd'
 import moment, {Moment} from 'moment'
-import type { Moment as Moments } from 'moment';
+import type {Moment as Moments} from 'moment'
 import {FieldTimeOutlined} from '@ant-design/icons'
 import LiveTime from 'components/Elements/LiveTime'
 import {useMutation, useQueryClient} from '@tanstack/react-query'
@@ -23,6 +23,7 @@ import Select from 'components/Elements/Select'
 import getLocation from 'helpers/getLocation'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
+import {socket} from 'pages/Main'
 
 function TmsAdminAttendanceForm({
   toogle,
@@ -41,13 +42,11 @@ function TmsAdminAttendanceForm({
   const [user, setUser] = useState(undefined)
   const [date, setDate] = useState<null | Moment>(null)
 
-
   useEffect(() => {
     if (AttToEdit) {
       setDate(moment(AttToEdit.attendanceDate))
       setUser(AttToEdit.user)
 
-      
       PUnchInform.resetFields()
       PUnchOutform.resetFields()
     }
@@ -66,6 +65,9 @@ function TmsAdminAttendanceForm({
           [
             () => queryClient.invalidateQueries(['adminAttendance']),
             () => queryClient.invalidateQueries(['userAttendance']),
+            () => {
+              socket.emit('CUD')
+            },
           ]
         )
       },
@@ -116,13 +118,19 @@ function TmsAdminAttendanceForm({
       user === AttToEdit?.user
         ? {
             attendanceDate: moment(date).startOf('day').format().split('T')[0],
-            punchOutTime:  moment(date).startOf('day').format().split('T')[0] + 'T' + punchOutTime.split('T')[1],
+            punchOutTime:
+              moment(date).startOf('day').format().split('T')[0] +
+              'T' +
+              punchOutTime.split('T')[1],
             punchOutNote: values.punchOutNote,
             midDayExit: values.midDayExit ? true : false,
           }
         : {
             attendanceDate: moment(date).startOf('day').format().split('T')[0],
-            punchOutTime:  moment(date).startOf('day').format().split('T')[0] + 'T' + punchOutTime.split('T')[1],
+            punchOutTime:
+              moment(date).startOf('day').format().split('T')[0] +
+              'T' +
+              punchOutTime.split('T')[1],
             punchOutNote: values.punchOutNote,
             midDayExit: values.midDayExit ? true : false,
             punchOutLocation: await getLocation(),
@@ -147,7 +155,9 @@ function TmsAdminAttendanceForm({
         <div className="gx-d-flex gx-flex-row">
           <FieldTimeOutlined style={{fontSize: '24px'}} />
           <LiveTime />
-          <span style={{marginLeft:'0.5rem'}}>{moment().format('dddd, MMMM D, YYYY')}</span>
+          <span style={{marginLeft: '0.5rem'}}>
+            {moment().format('dddd, MMMM D, YYYY')}
+          </span>
         </div>
       }
       mask={false}
@@ -195,35 +205,41 @@ function TmsAdminAttendanceForm({
                 punchInNote: AttToEdit?.punchInNote,
               }}
             >
-  
               <Form.Item
                 name="punchInTime"
-                rules={[ 
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if(!value){
-                      return Promise.reject('Required!')
-                    }
-                    if(value && !PUnchOutform.getFieldValue('punchOutTime')){
-                      return Promise.resolve()
-                    }
+                rules={[
+                  ({getFieldValue}) => ({
+                    validator(_, value) {
+                      if (!value) {
+                        return Promise.reject('Required!')
+                      }
+                      if (
+                        value &&
+                        !PUnchOutform.getFieldValue('punchOutTime')
+                      ) {
+                        return Promise.resolve()
+                      }
 
-                    if (value.isBefore(PUnchOutform.getFieldValue('punchOutTime'))) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Punch In Time should be before Punch Out Time'));
-                  },
-                }),
-              ]}
-             
-
+                      if (
+                        value.isBefore(
+                          PUnchOutform.getFieldValue('punchOutTime')
+                        )
+                      ) {
+                        return Promise.resolve()
+                      }
+                      return Promise.reject(
+                        new Error(
+                          'Punch In Time should be before Punch Out Time'
+                        )
+                      )
+                    },
+                  }),
+                ]}
                 hasFeedback
               >
                 <TimePicker use12Hours format="h:mm:ss A" />
               </Form.Item>
-              <Form.Item label="Punch In Note" name="punchInNote" hasFeedback
-          >
-
+              <Form.Item label="Punch In Note" name="punchInNote" hasFeedback>
                 <Input.TextArea rows={5} />
               </Form.Item>
               <Form.Item>
@@ -249,21 +265,27 @@ function TmsAdminAttendanceForm({
               <div className="gx-d-flex" style={{gap: 20}}>
                 <Form.Item
                   name="punchOutTime"
-                  
-                  rules={[ 
-                    ({ getFieldValue }) => ({
+                  rules={[
+                    ({getFieldValue}) => ({
                       validator(_, value) {
-                        if(!value){
-                         return Promise.reject(new Error('Required!'))
+                        if (!value) {
+                          return Promise.reject(new Error('Required!'))
                         }
-                        if (value.isBefore(PUnchInform.getFieldValue('punchInTime'))) {
-                          return Promise.reject(new Error('Punch Out Time should not be before Punch In Time'));
+                        if (
+                          value.isBefore(
+                            PUnchInform.getFieldValue('punchInTime')
+                          )
+                        ) {
+                          return Promise.reject(
+                            new Error(
+                              'Punch Out Time should not be before Punch In Time'
+                            )
+                          )
                         }
-                        return Promise.resolve();
+                        return Promise.resolve()
                       },
                     }),
-                    ]}  
-                  
+                  ]}
                   hasFeedback
                 >
                   <TimePicker use12Hours format="h:mm:ss A" />

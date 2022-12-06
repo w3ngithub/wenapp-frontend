@@ -1,5 +1,6 @@
 import React, {useEffect, lazy, Suspense} from 'react'
 import {connect, useDispatch} from 'react-redux'
+import socketIOClient from 'socket.io-client'
 import {
   Navigate,
   Route,
@@ -92,6 +93,10 @@ const Settings = lazy(() => import('pages/Settings'))
 const ProjectLogs = lazy(() => import('pages/ProjectLogs'))
 
 moment.locale('en-gb')
+
+export const socket = socketIOClient(process.env.REACT_APP_API_ENDPOINT || '', {
+  transports: ['websocket'],
+})
 
 function App(props: any) {
   const {locale, authUser, themeType, switchingUser} = props

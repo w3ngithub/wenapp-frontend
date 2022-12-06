@@ -99,6 +99,8 @@ const searchAttendacentOfUser = async ({
   sort = '',
   limit = '',
   fields = '',
+  officehourop = '',
+  officehourValue = '',
 }: {
   userId?: any
   fromDate?: any
@@ -107,11 +109,21 @@ const searchAttendacentOfUser = async ({
   sort?: any
   limit?: number | any
   fields?: any
+  officehourop?: any
+  officehourValue?: any
 }) => {
   try {
-    let response = await API.get(
-      `${Apis.Attendances}/search?user=${userId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
-    )
+    let response
+    if (officehourop && officehourValue) {
+      response = await API.get(
+        `${Apis.Attendances}/search?user=${userId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&officehour[${officehourop}]=${officehourValue}`
+      )
+    } else {
+      response = await API.get(
+        `${Apis.Attendances}/search?user=${userId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+      )
+    }
+
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)

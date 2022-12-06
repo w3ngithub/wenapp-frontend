@@ -154,6 +154,17 @@ const getWorkLogReport = async ({
   }
 }
 
+const WeeklyProjectTimeLogSummary = async (projectId) => {
+  try {
+    let response = await API.get(
+      `${Apis.TimeLogs}/users/weeklytimeproject/?projectId=${projectId}`
+    )
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err.response)
+  }
+}
+
 export {
   getAllTimeLogs,
   getLogTypes,
@@ -167,4 +178,5 @@ export {
   getTimeLogChart,
   getWeeklyTimeLogs,
   getWorkLogReport,
+  WeeklyProjectTimeLogSummary,
 }

@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react'
-import {useQuery} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Button, Table, Form, DatePicker} from 'antd'
 import moment from 'moment'
 import {
@@ -9,10 +9,13 @@ import {
   monthlyState,
   weeklyState,
 } from 'constants/Attendance'
-import {searchAttendacentOfUser} from 'services/attendances'
+import {addAttendance, getIpAddres, searchAttendacentOfUser, updatePunchout} from 'services/attendances'
 import {
+  checkIfTimeISBetweenOfficeHour,
   dateDifference,
   getIsAdmin,
+  handleResponse,
+  isNotValidTimeZone,
   milliSecondIntoHours,
   MuiFormatDate,
   sortFromDate,
@@ -21,13 +24,15 @@ import ViewDetailModel from '../ViewDetailModel'
 import {notification} from 'helpers/notification'
 import Select from 'components/Elements/Select'
 import TmsMyAttendanceForm from 'components/Modules/TmsMyAttendanceForm'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import CustomIcon from 'components/Elements/Icons'
 import {useLocation} from 'react-router-dom'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {punchLimit} from 'constants/PunchLimit'
 import {emptyText} from 'constants/EmptySearchAntd'
 import { selectAuthUser } from 'appRedux/reducers/Auth'
+import getLocation, { checkLocationPermission } from 'helpers/getLocation'
+import { PUNCH_IN, PUNCH_OUT } from 'constants/ActionTypes'
+import { fetchLoggedInUserAttendance } from 'appRedux/actions/Attendance'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -61,6 +66,8 @@ const formattedAttendances = (attendances) => {
 }
 
 function UserAttendance() {
+  const queryClient = useQueryClient()
+
   //init hooks
   const {state} = useLocation()
   const [sort, setSort] = useState({
@@ -68,7 +75,9 @@ function UserAttendance() {
     field: 'attendanceDate',
     columnKey: 'attendanceDate',
   })
-  const [form] = Form.useForm()
+  const [form] = Form.useForm()  
+  const dispatch = useDispatch()
+  const [disableButton,setDisableButton] =useState(false)
   const [page, setPage] = useState({page: 1, limit: 10})
   const [openView, setOpenView] = useState(false)
   const [attToView, setAttToView] = useState({})
@@ -78,7 +87,8 @@ function UserAttendance() {
 
   const user = useSelector(selectAuthUser)
 
-  const punchIn = useSelector((state) => state.attendance.punchIn)
+  // const punchIn = useSelector((state) => state.attendance.punchIn)
+  const {punchIn, latestAttendance} = useSelector((state) => state.attendance)
 
   // set inital date to date selected from my attendance calendar
   useEffect(() => {
@@ -130,6 +140,46 @@ function UserAttendance() {
       officeHour: record?.officeHour ? record?.officeHour : '',
     })
   }
+
+  const addAttendances = useMutation((payload) => addAttendance(payload), {
+    onSuccess: (response) => {
+      handleResponse(response, 'Punched Successfully', 'Punch  failed', [
+        () => {
+          dispatch({type: PUNCH_OUT})
+        },
+        () => queryClient.invalidateQueries(['adminAttendance']),
+        () => queryClient.invalidateQueries(['userAttendance']),
+        () => {
+          dispatch(fetchLoggedInUserAttendance(user._id))
+        },
+      ])
+    },
+    onError: (error) => {
+      notification({message: 'Punch  failed', type: 'error'})
+    },
+  })
+
+  const punchOutAttendances = useMutation(
+    (payload) =>
+      updatePunchout(payload?.userId, payload.payload),
+    {
+      onSuccess: (response) => {
+        handleResponse(response, 'Punched Successfully', 'Punch  failed', [
+          () => {
+            dispatch(fetchLoggedInUserAttendance(user._id))
+          },
+          () => {
+            dispatch({type: PUNCH_IN})
+          },
+          () => queryClient.invalidateQueries(['userAttendance']),
+          () => queryClient.invalidateQueries(['adminAttendance']),
+        ])
+      },
+      onError: (error) => {
+        notification({message: 'Punch  failed', type: 'error'})
+      },
+    }
+  )
 
   const handleAttChnageChange = (val) => {
     setAttFilter(val)
@@ -209,6 +259,72 @@ function UserAttendance() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data?.data?.attendances?.[0]?.data])
 
+  const handlePunch = async () => {
+    let latestPunchInTime =
+      latestAttendance?.[latestAttendance.length - 1]?.punchInTime
+    if (
+      latestPunchInTime &&
+      moment() < moment(latestPunchInTime).add(10, 'm')
+    ) {
+      notification({
+        message: 'You have just Punched In !',
+        type: 'info',
+      })
+      return
+    }
+    if (isNotValidTimeZone()) {
+      notification({
+        message: 'Your timezone is not a valid timezone',
+        type: 'error',
+      })
+      return
+    }
+
+    if (
+      checkIfTimeISBetweenOfficeHour(
+        moment(user?.officeTime?.utcDate).add(10, 'm').format('h:mm:ss')
+      )
+    ) {
+      setToogle(true)
+      return
+    }
+    setDisableButton(true)
+    const location = await getLocation()
+    if (await checkLocationPermission()) {
+      const IP = await getIpAddres()
+
+      if (!punchIn) {
+        const lastattendace = sortFromDate(latestAttendance, 'punchInTime').at(
+          -1
+        )
+
+        punchOutAttendances.mutate({
+          userId: lastattendace?._id,
+          payload: {
+            punchOutNote: '',
+            midDayExit: false,
+            punchOutTime: moment.utc().format(),
+            punchOutLocation: location,
+            punchOutIp: IP?.data?.IPv4,
+          },
+        })
+      } else {
+        addAttendances.mutate({
+          punchInTime: moment.utc().format(),
+          punchInLocation: location,
+          attendanceDate: moment.utc().startOf('day').format(),
+          punchInIp: IP?.data?.IPv4,
+        })
+      }
+    } else {
+      notification({
+        message: 'Please allow Location Access to Punch for Attendance',
+        type: 'error',
+      })
+    }
+    setDisableButton(false)
+  }
+
   return (
     <div>
       <TmsMyAttendanceForm
@@ -240,7 +356,7 @@ function UserAttendance() {
           <div className="form-buttons">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white "
-              disabled={isLoading||getIsAdmin()}
+              disabled={isLoading||getIsAdmin()||disableButton}
               onClick={
                 data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.length >=
                   punchLimit &&
@@ -253,9 +369,7 @@ function UserAttendance() {
                         type: 'error',
                       })
                     }
-                  : () => {
-                      setToogle(true)
-                    }
+                  : handlePunch
               }
             >
               {punchIn ? 'Punch In' : 'Punch Out'}

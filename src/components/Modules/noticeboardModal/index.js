@@ -44,7 +44,7 @@ function NoticeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      onSubmit(values)
+      onSubmit(values, noticeTypesQuery?.data?.data?.data?.data)
     })
   }
   const dateFormat = 'YYYY/MM/DD'

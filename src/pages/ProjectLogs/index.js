@@ -23,6 +23,7 @@ import {
   getLogTypes,
   getTodayTimeLogSummary,
   updateTimeLog,
+  WeeklyProjectTimeLogSummary,
 } from 'services/timeLogs'
 import LogsBreadCumb from './LogsBreadCumb'
 import TimeSummary from './TimeSummary'
@@ -32,6 +33,8 @@ import ProjectModal from 'components/Modules/ProjectModal'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import LogHoursModal from './LogHours'
+import {socket} from 'pages/Main'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -62,6 +65,10 @@ function ProjectLogs() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [openViewModal, setOpenViewModal] = useState(false)
   const [userRecord, setUserRecord] = useState({})
+  const [totalHours, setTotalHours] = useState(0)
+  const [openLogHoursModal, setOpenLogHoursModal] = useState(false)
+  const [selectedLogsIds, setSelectedLogsIds] = useState([])
+  const [selectedLogObject, setSelectedLogObject] = useState([])
 
   const [projectId] = slug.split('-')
   const {
@@ -104,6 +111,11 @@ function ProjectLogs() {
     getTodayTimeLogSummary
   )
 
+  const {data: projectTimeSpent, isLoading: projectTimeLoading} = useQuery(
+    ['projectWeeklyTime', projectId],
+    () => WeeklyProjectTimeLogSummary(projectId)
+  )
+
   const addLogTimeMutation = useMutation((details) => addLogTime(details), {
     onSuccess: (response) =>
       handleResponse(
@@ -113,6 +125,7 @@ function ProjectLogs() {
         [
           () => queryClient.invalidateQueries(['timeLogs']),
           () => queryClient.invalidateQueries(['singleProject']),
+          () => queryClient.invalidateQueries(['projectWeeklyTime']),
           () => handleCloseTimelogModal(),
         ]
       ),
@@ -135,6 +148,7 @@ function ProjectLogs() {
           [
             () => queryClient.invalidateQueries(['timeLogs']),
             () => queryClient.invalidateQueries(['singleProject']),
+            () => queryClient.invalidateQueries(['projectWeeklyTime']),
             () => handleCloseTimelogModal(),
           ]
         ),
@@ -156,6 +170,9 @@ function ProjectLogs() {
         [
           () => queryClient.invalidateQueries(['timeLogs']),
           () => queryClient.invalidateQueries(['singleProject']),
+          () => {
+            socket.emit('CUD')
+          },
         ]
       ),
 
@@ -179,11 +196,15 @@ function ProjectLogs() {
   }
 
   const handlelogTypeChange = (log) => {
+    setSelectedLogsIds([])
+    setSelectedLogObject([])
     setLogType(log)
     setPage({page: 1, limit: 50})
   }
 
   const handleAuthorChange = (logAuthor) => {
+    setSelectedLogsIds([])
+    setSelectedLogObject([])
     setAuthor(logAuthor)
     setPage({page: 1, limit: 50})
   }
@@ -259,6 +280,28 @@ function ProjectLogs() {
   const handleOpenModal = () => {
     setOpenModal(true)
   }
+  const calculateTotalHours = () => {
+    const totalHrsArr = selectedLogObject?.map((item) => item?.totalHours)
+    const initial = 0
+    setTotalHours(totalHrsArr?.reduce((acc, cur) => acc + cur, initial))
+  }
+  const handleOpenLogHoursModal = () => {
+    setOpenLogHoursModal(true)
+    calculateTotalHours()
+  }
+  const handleCloseLogHoursModal = () => {
+    setOpenLogHoursModal(false)
+  }
+  const handleRowSelect = (record, isSelected) => {
+    if (isSelected) {
+      setSelectedLogsIds((prev) => [...prev, record._id])
+      setSelectedLogObject((prev) => [...prev, record])
+    } else {
+      setSelectedLogsIds((prev) => prev.filter((x) => x !== record._id))
+      setSelectedLogObject((prev) => prev.filter((x) => x._id !== record._id))
+    }
+  }
+
   const handleOpenViewModal = () => {
     const detailDatas = projectDetail?.data?.data?.data[0]
     setUserRecord({
@@ -297,13 +340,22 @@ function ProjectLogs() {
         initialValues={timeLogToUpdate}
         isEditMode={isEditMode}
       />
+      <LogHoursModal
+        toggle={openLogHoursModal}
+        onClose={handleCloseLogHoursModal}
+        totalHours={totalHours}
+      />
       <LogsBreadCumb slug={projectSlug} />
       <div style={{marginTop: 20}}></div>
       <Card title={projectSlug + ' Time Summary'}>
         <TimeSummary
           est={roundedToFixed(estimatedHours || 0, 2)}
           ts={roundedToFixed(totalTimeSpent || 0, 2)}
-          tsw={roundedToFixed(weeklyTimeSpent || 0, 2)}
+          tsw={roundedToFixed(
+            projectTimeSpent?.data?.data?.weeklySummary[0]?.timeSpentThisWeek ||
+              0,
+            2
+          )}
         />
       </Card>
       <Card title={projectSlug + ' Logs'}>
@@ -359,6 +411,14 @@ function ProjectLogs() {
               <div>
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
+                  onClick={handleOpenLogHoursModal}
+                  style={{marginBottom: '16px'}}
+                  disabled={selectedLogObject?.length === 0}
+                >
+                  View Log Hours
+                </Button>
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white "
                   onClick={handleOpenViewModal}
                   style={{marginBottom: '16px'}}
                 >
@@ -389,6 +449,11 @@ function ProjectLogs() {
           )}
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}
+          rowSelection={{
+            onSelect: handleRowSelect,
+            selectedRowKeys: selectedLogsIds,
+            hideSelectAll: true,
+          }}
           pagination={{
             current: page.page,
             pageSize: page.limit,
