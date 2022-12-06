@@ -106,7 +106,7 @@ function Leaves({
         date?.utc ? date?.utc : '',
         page.page,
         page.limit,
-        '-leaveDates',
+        '-leaveDates,_id',
         leaveId
       ),
     {
