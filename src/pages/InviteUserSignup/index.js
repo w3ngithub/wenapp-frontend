@@ -98,11 +98,11 @@ function InviteUserSignup(props) {
                               RoleAccess.Admin,
                               RoleAccess.HumanResource,
                             ],
-                            remarks: `${response?.data?.user?.name} has signed up.`,
+                            remarks: `${response.data?.data?.user?.name} has signed up.`,
                             module: 'User',
                           })
                         },
-                        // () => navigate(`/${SIGNIN}`),
+                        () => navigate(`/${SIGNIN}`),
                         () => setIsLoading(false),
                       ]
                     )
@@ -118,6 +118,13 @@ function InviteUserSignup(props) {
           const response = await signUp(updatedUser, params?.token)
 
           handleResponse(response, 'Sign up successfull', 'Could not sign up', [
+            () => {
+              socket.emit('signup-user', {
+                showTo: [RoleAccess.Admin, RoleAccess.HumanResource],
+                remarks: `${response.data?.data?.user?.name} has signed up.`,
+                module: 'User',
+              })
+            },
             () => navigate(`/${SIGNIN}`),
             () => setIsLoading(false),
           ])

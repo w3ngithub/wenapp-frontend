@@ -7,10 +7,12 @@ export const getNotifications = async ({
   sort = '',
   limit = 40,
   fields = '',
+  role = '',
+  userId = '',
 }) => {
   try {
     let response = await API.get(
-      `${Apis.Notification}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}`
+      `${Apis.Notification}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&role=${role}&userId=${userId}`
     )
     return getAPIResponse(response)
   } catch (err) {

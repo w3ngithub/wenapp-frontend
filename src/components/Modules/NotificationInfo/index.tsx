@@ -23,9 +23,14 @@ function NotificationInfo() {
 
   const {data, isFetching, isFetchingNextPage, fetchNextPage, refetch} =
     useInfiniteQuery(
-      ['notificationInfo'],
+      ['notificationInfo', key, _id],
       async ({pageParam = 1}) => {
-        const res = await getNotifications({page: pageParam, limit: 6})
+        const res = await getNotifications({
+          page: pageParam,
+          limit: 6,
+          role: key,
+          userId: _id,
+        })
         return res
       },
       {enabled: false}
@@ -57,6 +62,8 @@ function NotificationInfo() {
   }
 
   useEffect(() => {
+    socket.emit('get-notification-count', {_id, key})
+
     socket.on('bell-notification', (response) => {
       if (response && response?.showTo?.includes(key)) {
         setShowBellCount(true)
@@ -70,15 +77,22 @@ function NotificationInfo() {
         setNotificationCount((prev) => prev + 1)
       }
     })
+
+    socket.on('send-notViewed-notification-count', (response) => {
+      setShowBellCount(true)
+      setNotificationCount(response)
+    })
   }, [key, _id])
 
   useEffect(() => {
     if (visible) {
+      notificationCount > 0 && socket.emit('viewed-notification', {_id, key})
       setShowBellCount(false)
       setNotificationCount(0)
       refetch()
     }
-  }, [visible])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, notificationCount, _id, key])
 
   const notificationContent = (
     <RecentActivity
@@ -93,24 +107,20 @@ function NotificationInfo() {
       viewRef={ref}
       recentList={data?.pages.map((page, i) => ({
         id: i,
-        tasks: page?.data?.data?.data
-          ?.filter(
-            (x: any) => x?.showTo?.includes(key) || x?.showTo?.includes(_id)
-          )
-          ?.map((log: any) => ({
-            id: log._id,
-            name: '',
-            title: [
-              <span className="gx-link" key={1}>
-                {log?.remarks}
-              </span>,
-              <p style={{opacity: 0.6}}>
-                {moment(log?.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')}
-              </p>,
-            ],
-            avatar: '',
-            imageList: [],
-          })),
+        tasks: page?.data?.data?.data?.map((log: any) => ({
+          id: log._id,
+          name: '',
+          title: [
+            <span className="gx-link" key={1}>
+              {log?.remarks}
+            </span>,
+            <p style={{opacity: 0.6}}>
+              {moment(log?.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')}
+            </p>,
+          ],
+          avatar: '',
+          imageList: [],
+        })),
       }))}
       shape="circle"
     />
