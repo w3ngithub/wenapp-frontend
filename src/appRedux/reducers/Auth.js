@@ -121,6 +121,9 @@ const reducer = (state = INIT_STATE, action) => {
   }
 }
 
-export const selectAuthUser = (state) => state?.auth?.authUser?.user
+export const selectAuthUser = (state) =>
+  state?.auth?.authUser?.user
+    ? state?.auth?.authUser?.user
+    : {role: {key: null}}
 
 export default reducer
