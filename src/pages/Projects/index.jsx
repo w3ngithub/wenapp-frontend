@@ -3,7 +3,12 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import '@ant-design/compatible/assets/index.css'
 import {Card, Table, Input, Button, Form} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
-import {changeDate, getIsAdmin, handleResponse, MuiFormatDate} from 'helpers/utils'
+import {
+  changeDate,
+  getIsAdmin,
+  handleResponse,
+  MuiFormatDate,
+} from 'helpers/utils'
 import {
   addProject,
   deleteProject,
@@ -27,7 +32,8 @@ import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
-import { selectAuthUser } from 'appRedux/reducers/Auth'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {socket} from 'pages/Main'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -67,7 +73,9 @@ function ProjectsPage() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-  const {role: {key}} = useSelector(selectAuthUser)
+  const {
+    role: {key},
+  } = useSelector(selectAuthUser)
 
   const {data: projectTypesData} = useQuery(['projectTypes'], getProjectTypes)
   const {data: projectStatusData} = useQuery(
@@ -136,6 +144,9 @@ function ProjectsPage() {
         [
           () => queryClient.invalidateQueries(['projects']),
           () => handleCloseModal(),
+          () => {
+            socket.emit('CUD')
+          },
         ]
       ),
     onError: (error) => {
@@ -153,6 +164,9 @@ function ProjectsPage() {
           [
             () => queryClient.invalidateQueries(['projects']),
             () => handleCloseModal(),
+            () => {
+              socket.emit('CUD')
+            },
           ]
         ),
       onError: (error) => {
@@ -169,7 +183,12 @@ function ProjectsPage() {
           response,
           'Project removed Successfully',
           'Project deletion failed',
-          [() => queryClient.invalidateQueries(['projects'])]
+          [
+            () => queryClient.invalidateQueries(['projects']),
+            () => {
+              socket.emit('CUD')
+            },
+          ]
         ),
       onError: (error) => {
         notification({message: 'Project deletion failed', type: 'error'})

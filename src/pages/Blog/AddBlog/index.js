@@ -18,6 +18,8 @@ import CircularProgress from 'components/Elements/CircularProgress/index'
 import {storage} from 'firebase'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
+import {socket} from 'pages/Main'
+import RoleAccess from 'constants/RoleAccess'
 
 function AddBlog() {
   // init state
@@ -58,6 +60,13 @@ function AddBlog() {
         'Added Blog successfully',
         'Could not add Blog',
         [
+          () => {
+            socket.emit('add-blog', {
+              showTo: Object.values(RoleAccess),
+              remarks: `New blog has been added.`,
+              module: 'Leave',
+            })
+          },
           () => {
             navigate(`/${BLOG}`)
           },

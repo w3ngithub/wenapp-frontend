@@ -33,6 +33,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import LogHoursModal from './LogHours'
+import {socket} from 'pages/Main'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -161,6 +162,9 @@ function ProjectLogs() {
         [
           () => queryClient.invalidateQueries(['timeLogs']),
           () => queryClient.invalidateQueries(['singleProject']),
+          () => {
+            socket.emit('CUD')
+          },
         ]
       ),
 

@@ -41,6 +41,7 @@ import {disabledDate} from 'util/antDatePickerDisabled'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {socket} from 'pages/Main'
 
 const {Option} = Select
 
@@ -153,6 +154,9 @@ function LeaveModal({
         [
           () => queryClient.invalidateQueries(['leaves']),
           () => queryClient.invalidateQueries(['leavesCalendar']),
+          () => {
+            socket.emit('CUD')
+          },
           () =>
             onClose(
               setSpecificHalf,
