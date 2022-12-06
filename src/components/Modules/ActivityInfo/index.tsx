@@ -74,7 +74,7 @@ function ActivityInfo() {
   ])
 
   useEffect(() => {
-    socket.on('countActivity', (response) => {
+    socket.on('countActivity', (response: any) => {
       refetch()
       setNotificationCount(response)
       setShowBellCount(true)

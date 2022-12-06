@@ -61,8 +61,13 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
   return (
     <div
       className={`gx-product-item  ${
-        grid ? 'gx-product-vertical' : 'gx-product-horizontal'
-      }`}
+        grid ? 'gx-product-vertical ' : 'gx-product-horizontal '
+      } ${
+        moment() < moment(createdAt).add(1, 'days')
+          ? 'latest-events'
+          : 'old-events'
+      }
+      `}
     >
       {/* {imgSrc && (
         <div className="gx-product-image" >
