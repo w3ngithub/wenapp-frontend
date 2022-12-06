@@ -111,7 +111,7 @@ function NotificationInfo() {
           id: log._id,
           name: '',
           title: [
-            <span className="gx-link" key={1}>
+            <span className="" key={1}>
               {log?.remarks}
             </span>,
             <p style={{opacity: 0.6}}>

@@ -112,6 +112,13 @@ function RecentActivity(props) {
           {'No more data available'}
         </span>
       )}
+
+      {!recentList ||
+        (recentList?.length === 0 && (
+          <span className="gx-link gx-btn-link">
+            {'No  any notification to show'}
+          </span>
+        ))}
     </div>
   )
 }
