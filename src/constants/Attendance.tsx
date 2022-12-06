@@ -268,3 +268,26 @@ export const leaveCutStatus = [
   {id: '1', value: 'Leave Not Cut '},
   {id: '2', value: 'Leave Cut '},
 ]
+
+export const OfficeHourFilter = [
+  {
+    value: 'Is Equal to',
+    id: 'eq',
+  },
+  {
+    value: 'Is greater than',
+    id: 'gt',
+  },
+  {
+    value: 'Is Greater than or Equal to',
+    id: 'gte',
+  },
+  {
+    value: 'Is Less than or equal to',
+    id: 'lte',
+  },
+  {
+    value: 'Is Lesser than',
+    id: 'lt',
+  },
+]
