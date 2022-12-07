@@ -21,20 +21,26 @@ function NotificationInfo() {
     _id,
   } = useSelector(selectAuthUser)
 
-  const {data, isFetching, isFetchingNextPage, fetchNextPage, refetch} =
-    useInfiniteQuery(
-      ['notificationInfo', key, _id],
-      async ({pageParam = 1}) => {
-        const res = await getNotifications({
-          page: pageParam,
-          limit: 6,
-          role: key,
-          userId: _id,
-        })
-        return res
-      },
-      {enabled: false}
-    )
+  const {
+    data,
+    isFetching,
+    isFetchingNextPage,
+    isLoading,
+    fetchNextPage,
+    refetch,
+  } = useInfiniteQuery(
+    ['notificationInfo', key, _id],
+    async ({pageParam = 1}) => {
+      const res = await getNotifications({
+        page: pageParam,
+        limit: 6,
+        role: key,
+        userId: _id,
+      })
+      return res
+    },
+    {enabled: false}
+  )
 
   // fecth next page on scroll of activities
   useEffect(() => {
@@ -99,6 +105,7 @@ function NotificationInfo() {
       title="Notifications"
       visible={visible}
       isFetching={isFetching}
+      isLoading={isLoading}
       isFetchingNextPage={isFetchingNextPage}
       showMore={
         (data?.pageParams.length || 1) * 6 >= data?.pages[0]?.data?.data?.count
