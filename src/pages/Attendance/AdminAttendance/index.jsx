@@ -8,6 +8,8 @@ import {
   Divider,
   Input,
   InputNumber,
+  Row,
+  Col,
 } from 'antd'
 import moment from 'moment'
 import {CSVLink} from 'react-csv'
@@ -87,7 +89,7 @@ function AdminAttendance({userRole}) {
   })
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
-  const [defaultFilter, setDefaultFilter] = useState({op: 'gte', num: 9})
+  const [defaultFilter, setDefaultFilter] = useState(undefined)
   const [openView, setOpenView] = useState(false)
   const [attToView, setAttToView] = useState({})
   const [date, setDate] = useState(intialDate)
@@ -206,7 +208,7 @@ function AdminAttendance({userRole}) {
     setUser(undefined)
     setAttFilter(1)
     setDate(intialDate)
-    setDefaultFilter({op: 'gte', num: 9})
+    setDefaultFilter(null)
   }
 
   useEffect(() => {
@@ -345,64 +347,69 @@ function AdminAttendance({userRole}) {
       <div className="components-table-demo-control-bar">
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
-            <FormItem>
-              <RangePicker onChange={handleChangeDate} value={date} />
-            </FormItem>
-            <FormItem className="direct-form-item">
-              <Select
-                onChange={handleAttChnageChange}
-                value={attFilter}
-                options={attendanceFilter}
-              />
-            </FormItem>
-            <FormItem className="direct-form-item">
-              <Select
-                placeholder="Select Co-worker"
-                onChange={handleUserChange}
-                value={user}
-                options={users?.data?.data?.data?.map((x) => ({
-                  id: x._id,
-                  value: x.name,
-                }))}
-              />
-            </FormItem>
+            <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+              <FormItem>
+                <RangePicker onChange={handleChangeDate} value={date} />
+              </FormItem>
+              <FormItem className="direct-form-item">
+                <Select
+                  onChange={handleAttChnageChange}
+                  value={attFilter}
+                  options={attendanceFilter}
+                />
+              </FormItem>
+              <FormItem className="direct-form-item">
+                <Select
+                  placeholder="Select Co-worker"
+                  onChange={handleUserChange}
+                  value={user}
+                  options={users?.data?.data?.data?.map((x) => ({
+                    id: x._id,
+                    value: x.name,
+                  }))}
+                />
+              </FormItem>
+            </div>
 
-            <FormItem style={{marginLeft: '40px'}}>
-              <Input
-                defaultValue="Office hour"
-                disabled="true"
-                style={{width: '120px'}}
-              />
-            </FormItem>
-            <FormItem>
-              <Select
-                options={OfficeHourFilter}
-                onChange={(value) =>
-                  setDefaultFilter((prev) => ({...prev, op: value}))
-                }
-                value={defaultFilter.op}
-                style={{width: '220px'}}
-              />
-            </FormItem>
-
-            <FormItem>
-              <InputNumber
-                defaultValue={defaultFilter.num}
-                onChange={(value) =>
-                  setDefaultFilter((prev) => ({...prev, num: value}))
-                }
-                style={{width: '80px'}}
-              />
-            </FormItem>
-
-            <FormItem style={{marginBottom: '1px'}}>
-              <Button
-                className="gx-btn-form gx-btn-primary gx-text-white "
-                onClick={() => handleReset()}
-              >
-                Reset
-              </Button>
-            </FormItem>
+            <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+              {' '}
+              <FormItem>
+                <Input
+                  defaultValue="Office hour"
+                  disabled={true}
+                  style={{width: '120px'}}
+                />
+              </FormItem>
+              <FormItem>
+                <Select
+                  options={OfficeHourFilter}
+                  onChange={(value) =>
+                    setDefaultFilter((prev) => ({...prev, op: value}))
+                  }
+                  value={defaultFilter?.op}
+                  style={{width: '220px'}}
+                  placeholder="Select condition"
+                />
+              </FormItem>
+              <FormItem>
+                <InputNumber
+                  value={defaultFilter?.num}
+                  onChange={(value) =>
+                    setDefaultFilter((prev) => ({...prev, num: value}))
+                  }
+                  style={{width: '80px'}}
+                  placeholder="Hours"
+                />
+              </FormItem>
+              <FormItem style={{marginBottom: '1px'}}>
+                <Button
+                  className="gx-btn-form gx-btn-primary gx-text-white "
+                  onClick={() => handleReset()}
+                >
+                  Reset
+                </Button>
+              </FormItem>
+            </div>
           </Form>
 
           <AccessWrapper
