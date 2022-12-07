@@ -41,6 +41,7 @@ function RecentActivity(props) {
     visible,
     iconIdName = 'admin-activity-icon',
     title = 'Recent Activities',
+    isLoading = false,
   } = props
 
   useEffect(() => {
@@ -93,6 +94,12 @@ function RecentActivity(props) {
           </Timeline>
         </div>
       ))}
+
+      {isLoading && (
+        <div style={{marginLeft: '12px'}}>
+          <Spin></Spin>
+        </div>
+      )}
       {!showMore && isScrolled && (
         <span className="gx-link gx-btn-link" ref={viewRef}>
           {isFetchingNextPage || isFetching ? (
