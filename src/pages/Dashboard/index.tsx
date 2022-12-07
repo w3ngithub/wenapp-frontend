@@ -136,14 +136,14 @@ const Dashboard = () => {
             leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
           const isLeavePTO =
             leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
+          const weeksLastDate = new Date(
+            MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
+          )
+          const todayDate = new Date(MuiFormatDate(new Date()))
 
           if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
-            const weeksLastDate = new Date(
-              MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
-            )
             const startLeaveDate = new Date(leave?.leaveDates[0])
             const endLeaveDate = new Date(leave?.leaveDates[1])
-            const todayDate = new Date(MuiFormatDate(new Date()))
             for (let i = 0; i < 8; i++) {
               const isHoliday =
                 startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
@@ -184,10 +184,14 @@ const Dashboard = () => {
               startLeaveDate.setDate(startLeaveDate.getDate() + 1)
             }
           } else {
-            updateLeaves = [
-              ...updateLeaves,
-              {...leave, date: leave?.leaveDates[0]},
-            ]
+            leave?.leaveDates.forEach((date: string) => {
+              const leaveDate = new Date(date)
+              if (leaveDate >= todayDate && leaveDate <= weeksLastDate)
+                updateLeaves = [
+                  ...updateLeaves,
+                  {...leave, date: date, leaveDates: date},
+                ]
+            })
           }
         })
         return updateLeaves

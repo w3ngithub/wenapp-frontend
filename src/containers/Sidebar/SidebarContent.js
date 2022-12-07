@@ -7,7 +7,6 @@ import SidebarLogo from './SidebarLogo'
 
 import Auxiliary from 'util/Auxiliary'
 import {
-  NAV_STYLE_NO_HEADER_EXPANDED_SIDEBAR,
   NAV_STYLE_NO_HEADER_MINI_SIDEBAR,
   THEME_TYPE_LITE,
 } from 'constants/ThemeSetting'
@@ -32,15 +31,6 @@ function SidebarContent(props) {
     paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1]
 
   const collapseNav = collapse ? collapse : () => {}
-  const getNoHeaderClass = (navStyle) => {
-    if (
-      navStyle === NAV_STYLE_NO_HEADER_MINI_SIDEBAR ||
-      navStyle === NAV_STYLE_NO_HEADER_EXPANDED_SIDEBAR
-    ) {
-      return 'gx-no-header-notifications'
-    }
-    return ''
-  }
 
   const getNavStyleSubMenuClass = (navStyle) => {
     if (navStyle === NAV_STYLE_NO_HEADER_MINI_SIDEBAR) {
