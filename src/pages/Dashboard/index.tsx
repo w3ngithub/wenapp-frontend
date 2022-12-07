@@ -44,6 +44,7 @@ import {
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {notification} from 'helpers/notification'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -57,6 +58,7 @@ const Dashboard = () => {
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
   const [projectArray, setProjectArray] = useState([])
+  const [chartData, setChartData] = useState([])
   const navigate = useNavigate()
   const loggedInUser = useSelector(selectAuthUser)
   const {innerWidth} = useWindowsSize()
@@ -102,11 +104,19 @@ const Dashboard = () => {
     getAllHolidays({sort: '-createdAt', limit: '1'})
   )
 
-  const chartQuery = useQuery(
-    ['projectChart', project, logType],
-    () => getTimeLogChart({project, logType}),
-    {enabled: false, refetchOnWindowFocus: false}
-  )
+  const fetchChartQuery = useCallback(async (project: any, logType: any) => {
+    try {
+      const response = await getTimeLogChart({project, logType})
+
+      if (response?.status) {
+        setChartData(response?.data?.data?.chart || [])
+      } else {
+        notification({type: 'error', message: 'Failed to generate chart !'})
+      }
+    } catch (error) {
+      notification({type: 'error', message: 'Failed to generate chart !'})
+    }
+  }, [])
 
   const handleSearch = async (projectName: any) => {
     if (!projectName) {
@@ -222,7 +232,7 @@ const Dashboard = () => {
 
   const generateChart = (values: any) => {
     if (project === '' || project === undefined) return
-    chartQuery.refetch()
+    fetchChartQuery(project, logType)
   }
   const handleEventStyle = (event: any) => {
     let style: any = {
@@ -451,7 +461,6 @@ const Dashboard = () => {
     ...(leaveUsers || []),
   ]
 
-  const chartData = chartQuery?.data?.data?.data?.chart
   const isAdmin = DASHBOARD_ICON_ACCESS.includes(key)
   const width = isAdmin ? 6 : 12
 
@@ -623,7 +632,7 @@ const Dashboard = () => {
                       value={logType}
                       onChange={(c: any) => setlogType(c)}
                       placeholder="Select Log Types"
-                      mode="tags"
+                      mode="multiple"
                       options={logTypes?.data?.data?.data?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,
