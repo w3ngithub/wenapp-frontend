@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Avatar, Timeline} from 'antd'
+import {Avatar, Spin, Timeline} from 'antd'
 import WidgetHeader from 'components/Elements/WidgetHeader/index'
 import ActivityItem from './ActivityItem'
 
@@ -95,13 +95,20 @@ function RecentActivity(props) {
       ))}
       {!showMore && isScrolled && (
         <span className="gx-link gx-btn-link" ref={viewRef}>
-          {isFetchingNextPage || isFetching ? 'Loading...' : 'Load More'}
+          {isFetchingNextPage || isFetching ? (
+            <div style={{marginLeft: '12px'}}>
+              <Spin></Spin>
+            </div>
+          ) : (
+            'Load More'
+          )}
         </span>
       )}
 
       {showMore && (
         <span
           className="gx-link gx-btn-link"
+          style={{float: 'right'}}
           onClick={() => {
             popUpRef.current.scrollTo({
               top: 0,
@@ -109,7 +116,7 @@ function RecentActivity(props) {
             })
           }}
         >
-          {'No more data available'}
+          <i className={`icon icon-chevron-up gx-fs-xl`} />
         </span>
       )}
 
