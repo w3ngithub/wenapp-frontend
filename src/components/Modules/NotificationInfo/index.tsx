@@ -9,6 +9,7 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {useSelector} from 'react-redux'
 import moment from 'moment'
 import RecentActivity from '../dashboard/CRM/RecentActivity'
+import {getIsAdmin} from 'helpers/utils'
 
 function NotificationInfo() {
   const [visible, setVisible] = useState<boolean>(false)
@@ -64,7 +65,7 @@ function NotificationInfo() {
   ])
 
   const handleVisibleChange = (newVisible: boolean) => {
-    setVisible(newVisible)
+    !getIsAdmin() && setVisible(newVisible)
   }
 
   useEffect(() => {

@@ -62,11 +62,7 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
     <div
       className={`gx-product-item  ${
         grid ? 'gx-product-vertical ' : 'gx-product-horizontal '
-      } ${
-        moment() < moment(createdAt).add(1, 'days')
-          ? 'latest-events'
-          : 'old-events'
-      }
+      } ${moment() < moment(createdAt).add(1, 'days') ? 'latest-events' : ''}
       `}
     >
       {/* {imgSrc && (

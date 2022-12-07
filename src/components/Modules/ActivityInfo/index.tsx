@@ -9,6 +9,7 @@ import {useInView} from 'react-intersection-observer'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
+import {getIsAdmin} from 'helpers/utils'
 
 export const notificationCountStyle: any = {
   position: 'absolute',
@@ -37,7 +38,7 @@ function ActivityInfo() {
   } = useSelector(selectAuthUser)
 
   const handleVisibleChange = (newVisible: boolean) => {
-    setVisible(newVisible)
+    !getIsAdmin() && setVisible(newVisible)
   }
 
   const {data, isFetching, isFetchingNextPage, fetchNextPage, refetch} =

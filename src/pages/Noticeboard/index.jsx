@@ -308,7 +308,7 @@ function NoticeBoardPage() {
           rowClassName={(record, index) =>
             moment() < moment(record?.createdAt).add(1, 'days')
               ? 'latest-events'
-              : 'old-events'
+              : ''
           }
           columns={NOTICE_COLUMNS(
             sort,
