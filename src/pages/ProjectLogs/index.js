@@ -407,7 +407,6 @@ function ProjectLogs() {
               </FormItem>
             </Form>
             <AccessWrapper noAccessRoles={[]}>
-              {' '}
               <div>
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
@@ -415,7 +414,7 @@ function ProjectLogs() {
                   style={{marginBottom: '16px'}}
                   disabled={selectedLogObject?.length === 0}
                 >
-                  View Log Hours
+                  Calculate Hours
                 </Button>
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
