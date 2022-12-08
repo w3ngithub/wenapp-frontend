@@ -64,7 +64,7 @@ function AddBlog() {
             socket.emit('add-blog', {
               showTo: Object.values(RoleAccess),
               remarks: `New blog has been added.`,
-              module: 'Leave',
+              module: 'Blog',
             })
           },
           () => {

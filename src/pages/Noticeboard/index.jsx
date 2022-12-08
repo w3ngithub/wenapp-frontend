@@ -94,7 +94,7 @@ function NoticeBoardPage() {
             socket.emit('add-notice', {
               showTo: Object.values(RoleAccess),
               noticeTypeId: response.data.data.data.noticeType,
-              module: 'Leave',
+              module: 'Notice',
             })
           },
         ]
