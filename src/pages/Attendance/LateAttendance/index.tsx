@@ -232,10 +232,10 @@ function LateAttendance({userRole}: {userRole: string}) {
 
     socket.emit('late-attendance', {
       showTo: [attendanceRecord?.data[0].userId],
-      remarks: `${attendanceRecord?.data?.[0]?.user} ${
+      remarks: `Your ${
         leaveResponse?.data?.data?.data?.halfDay === ''
-          ? 'Full Day'
-          : 'First Half'
+          ? 'full Day'
+          : 'half Day'
       } leave has been cut due to late arrival.`,
       module: 'Attendance',
     })

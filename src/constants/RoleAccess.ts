@@ -27,6 +27,11 @@ export const DASHBOARD_PROJECT_LOG_NO_ACCESS = [
   RoleAccess.Subscriber,
 ]
 
+export const DASHBOARD_CARD_CLICKABLE_ACCESS = [
+  RoleAccess.Admin,
+  RoleAccess.HumanResource,
+]
+
 export const SALARY_REVIEW_ACCESS = [RoleAccess.HumanResource, RoleAccess.Admin]
 
 export const DASHBOARD_ICON_ACCESS = [

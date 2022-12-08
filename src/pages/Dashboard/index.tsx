@@ -38,6 +38,7 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {
+  DASHBOARD_CARD_CLICKABLE_ACCESS,
   DASHBOARD_ICON_ACCESS,
   DASHBOARD_PROJECT_LOG_NO_ACCESS,
 } from 'constants/RoleAccess'
@@ -483,12 +484,16 @@ const Dashboard = () => {
       <Row>
         <Col xl={width} lg={12} md={12} sm={12} xs={24}>
           <TotalCountCard
-            isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+            isLink={
+              DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
+                ? true
+                : false
+            }
             className="gx-bg-cyan-green-gradient"
             totalCount={ActiveUsers?.data?.data?.user || 0}
             label="Total Co-workers"
             onClick={
-              loggedInUser?.role?.value !== 'Admin'
+              !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
                 ? null
                 : () => navigate('/coworkers')
             }
@@ -498,13 +503,21 @@ const Dashboard = () => {
         {DASHBOARD_ICON_ACCESS.includes(key) && (
           <Col xl={width} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
-              isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+              isLink={
+                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
+                  ? true
+                  : false
+              }
               icon={LoginOutlined}
               className="gx-bg-pink-purple-corner-gradient"
               totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
               label="Co-workers Punched In Today"
               onClick={
-                loggedInUser?.role?.value !== 'Admin'
+                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
                   ? null
                   : () => navigate('/todays-overview', {state: true})
               }
@@ -514,7 +527,13 @@ const Dashboard = () => {
         {DASHBOARD_ICON_ACCESS.includes(key) && (
           <Col xl={6} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
-              isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+              isLink={
+                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
+                  ? true
+                  : false
+              }
               icon={ExceptionOutlined}
               className="gx-bg-pink-orange-corner-gradient"
               totalCount={
@@ -524,7 +543,9 @@ const Dashboard = () => {
               }
               label="Pending Leave Request"
               onClick={() =>
-                loggedInUser?.role?.value !== 'Admin'
+                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
                   ? null
                   : navigate('/leave', {
                       state: {tabKey: '3', leaveStatus: 'pending'},
@@ -535,7 +556,11 @@ const Dashboard = () => {
         )}
         <Col xl={width} lg={12} md={12} sm={12} xs={24}>
           <TotalCountCard
-            isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+            isLink={
+              DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
+                ? true
+                : false
+            }
             totalCount={
               socketApprovedLeaveCount === 0 || !socketApprovedLeaveCount
                 ? TodaysLeave?.data?.leaves?.[0]?.count || 0
@@ -544,7 +569,7 @@ const Dashboard = () => {
             label="Co-workers On Leave"
             icon={LogoutOutlined}
             onClick={
-              loggedInUser?.role?.value !== 'Admin'
+              !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
                 ? null
                 : () => navigate('/todays-overview')
             }
