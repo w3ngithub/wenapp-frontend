@@ -243,7 +243,11 @@ function AdminAttendance({userRole}) {
               <span className="gx-link" onClick={() => handleView(record)}>
                 <CustomIcon name="view" />
               </span>
-              {![RoleAccess.Finance, RoleAccess.TeamLead].includes(userRole) &&
+              {![
+                RoleAccess.Finance,
+                RoleAccess.TeamLead,
+                RoleAccess.OfficeAdmin,
+              ].includes(userRole) &&
                 !getIsAdmin() && (
                   <>
                     <Divider type="vertical"></Divider>

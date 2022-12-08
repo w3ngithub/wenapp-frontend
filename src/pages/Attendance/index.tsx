@@ -6,7 +6,10 @@ import LateAttendance from './LateAttendance'
 import AttendanceCalendar from './Calendar'
 import AdminAttendanceCalendar from './AdminCalendar'
 import {useLocation} from 'react-router-dom'
-import {ATTENDANCE_ALL_TAB_NO_ACCESS} from 'constants/RoleAccess'
+import {
+  ATTENDANCE_ALL_TAB_NO_ACCESS,
+  ATTENDANCE_LATE_ARRIVAL_ADMIN_CALENDAR_NO_ACCESS,
+} from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
@@ -43,12 +46,18 @@ function Attendace() {
             <Tabs.TabPane key="3" tab="Co-workers Attendance">
               <AdminAttendance userRole={key} />
             </Tabs.TabPane>
-            <Tabs.TabPane key="4" tab="Co-workers Late Attendance">
-              <LateAttendance userRole={key} />
-            </Tabs.TabPane>
-            <Tabs.TabPane key="5" tab="Co-workers Attendance Calendar">
-              <AdminAttendanceCalendar />
-            </Tabs.TabPane>
+            {!ATTENDANCE_LATE_ARRIVAL_ADMIN_CALENDAR_NO_ACCESS.includes(
+              key
+            ) && (
+              <>
+                <Tabs.TabPane key="4" tab="Co-workers Late Attendance">
+                  <LateAttendance userRole={key} />
+                </Tabs.TabPane>
+                <Tabs.TabPane key="5" tab="Co-workers Attendance Calendar">
+                  <AdminAttendanceCalendar />
+                </Tabs.TabPane>
+              </>
+            )}
           </>
         )}
       </Tabs>

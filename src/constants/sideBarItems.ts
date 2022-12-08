@@ -47,6 +47,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
       RoleAccess.ProjectManager,
       RoleAccess.TeamLead,
       RoleAccess.HumanResource,
+      RoleAccess.OfficeAdmin,
     ],
   },
   {
@@ -61,6 +62,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
       RoleAccess.TeamLead,
       RoleAccess.HumanResource,
       RoleAccess.Finance,
+      RoleAccess.OfficeAdmin,
     ],
   },
   {
@@ -129,6 +131,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
       RoleAccess.Editor,
       RoleAccess.Normal,
       RoleAccess.Subscriber,
+      RoleAccess.OfficeAdmin,
     ],
   },
   {
@@ -212,6 +215,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
       RoleAccess.ProjectManager,
       RoleAccess.TeamLead,
       RoleAccess.HumanResource,
+      RoleAccess.OfficeAdmin,
     ],
   },
 ]
