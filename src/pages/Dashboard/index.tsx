@@ -38,6 +38,7 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {
+  DASHBOARD_CARD_CLICKABLE_ACCESS,
   DASHBOARD_ICON_ACCESS,
   DASHBOARD_PROJECT_LOG_NO_ACCESS,
 } from 'constants/RoleAccess'
@@ -45,6 +46,7 @@ import {LEAVES_TYPES} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
+import {socket} from 'pages/Main'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -57,6 +59,9 @@ const Dashboard = () => {
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
+  const [socketPendingLeaveCount, setSocketPendingLeaveCount] = useState(0)
+  const [socketApprovedLeaveCount, setSocketApprovedLeaveCount] = useState(0)
+
   const [projectArray, setProjectArray] = useState([])
   const [chartData, setChartData] = useState([])
   const navigate = useNavigate()
@@ -67,6 +72,16 @@ const Dashboard = () => {
   const darkTheme = themeType === THEME_TYPE_DARK
 
   const darkThemeTextColor = '#e0e0e0'
+
+  useEffect(() => {
+    socket.on('pending-leave-count', (response: number) => {
+      setSocketPendingLeaveCount(response)
+    })
+    socket.on('today-leave-count', (response: number) => {
+      setSocketApprovedLeaveCount(response)
+      setSocketPendingLeaveCount((prev) => prev - 1)
+    })
+  }, [])
 
   const {data: salaryReview} = useQuery(
     ['usersSalaryReview'],
@@ -290,7 +305,7 @@ const Dashboard = () => {
     const nameSplitted = props?.event?.title.split(' ')
     let lastName
     if (nameSplitted.length === 1) lastName = ''
-    else lastName = `${nameSplitted.pop().substring(0, 1)}.`
+    else lastName = `${nameSplitted.pop().substring(0, 1)}. `
     const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
     const style = {
@@ -469,12 +484,16 @@ const Dashboard = () => {
       <Row>
         <Col xl={width} lg={12} md={12} sm={12} xs={24}>
           <TotalCountCard
-            isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+            isLink={
+              DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
+                ? true
+                : false
+            }
             className="gx-bg-cyan-green-gradient"
             totalCount={ActiveUsers?.data?.data?.user || 0}
             label="Total Co-workers"
             onClick={
-              loggedInUser?.role?.value !== 'Admin'
+              !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
                 ? null
                 : () => navigate('/coworkers')
             }
@@ -484,13 +503,21 @@ const Dashboard = () => {
         {DASHBOARD_ICON_ACCESS.includes(key) && (
           <Col xl={width} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
-              isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+              isLink={
+                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
+                  ? true
+                  : false
+              }
               icon={LoginOutlined}
               className="gx-bg-pink-purple-corner-gradient"
               totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
               label="Co-workers Punched In Today"
               onClick={
-                loggedInUser?.role?.value !== 'Admin'
+                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
                   ? null
                   : () => navigate('/todays-overview', {state: true})
               }
@@ -500,13 +527,25 @@ const Dashboard = () => {
         {DASHBOARD_ICON_ACCESS.includes(key) && (
           <Col xl={6} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
-              isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+              isLink={
+                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
+                  ? true
+                  : false
+              }
               icon={ExceptionOutlined}
               className="gx-bg-pink-orange-corner-gradient"
-              totalCount={PendingLeaves?.data?.data?.leaves || 0}
+              totalCount={
+                socketPendingLeaveCount === 0 || !socketPendingLeaveCount
+                  ? PendingLeaves?.data?.data?.leaves || 0
+                  : socketPendingLeaveCount
+              }
               label="Pending Leave Request"
               onClick={() =>
-                loggedInUser?.role?.value !== 'Admin'
+                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
                   ? null
                   : navigate('/leave', {
                       state: {tabKey: '3', leaveStatus: 'pending'},
@@ -517,12 +556,20 @@ const Dashboard = () => {
         )}
         <Col xl={width} lg={12} md={12} sm={12} xs={24}>
           <TotalCountCard
-            isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
-            totalCount={TodaysLeave?.data?.leaves?.[0]?.count || 0}
+            isLink={
+              DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
+                ? true
+                : false
+            }
+            totalCount={
+              socketApprovedLeaveCount === 0 || !socketApprovedLeaveCount
+                ? TodaysLeave?.data?.leaves?.[0]?.count || 0
+                : socketApprovedLeaveCount
+            }
             label="Co-workers On Leave"
             icon={LogoutOutlined}
             onClick={
-              loggedInUser?.role?.value !== 'Admin'
+              !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
                 ? null
                 : () => navigate('/todays-overview')
             }

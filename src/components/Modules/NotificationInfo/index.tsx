@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {Popover} from 'antd'
+import {useNavigate} from 'react-router-dom'
 import {socket} from 'pages/Main'
 import {useInfiniteQuery} from '@tanstack/react-query'
 import {useInView} from 'react-intersection-observer'
@@ -10,12 +11,17 @@ import {useSelector} from 'react-redux'
 import moment from 'moment'
 import RecentActivity from '../dashboard/CRM/RecentActivity'
 import {getIsAdmin} from 'helpers/utils'
+import {BLOG, NOTICEBOARD} from 'helpers/routePath'
+
+const NOTIFICATION_TO_CLICK = ['Blog', 'Notice']
 
 function NotificationInfo() {
   const [visible, setVisible] = useState<boolean>(false)
   const {ref, inView} = useInView({threshold: 0.5})
   const [showBellCount, setShowBellCount] = useState<boolean>(false)
   const [notificationCount, setNotificationCount] = useState<number>(0)
+
+  const navigate = useNavigate()
 
   const {
     role: {key},
@@ -101,6 +107,21 @@ function NotificationInfo() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, notificationCount, _id, key])
 
+  const handleNotificationClick = (module: String) => {
+    switch (module) {
+      case 'Blog':
+        navigate(BLOG)
+        setVisible(false)
+        return
+      case 'Notice':
+        navigate(NOTICEBOARD)
+        setVisible(false)
+        return
+      default:
+        return
+    }
+  }
+
   const notificationContent = (
     <RecentActivity
       title="Notifications"
@@ -119,7 +140,15 @@ function NotificationInfo() {
           id: log._id,
           name: '',
           title: [
-            <span className="" key={1}>
+            <span
+              className={
+                NOTIFICATION_TO_CLICK.includes(log?.module) ? 'gx-link' : ''
+              }
+              onClick={() => {
+                handleNotificationClick(log?.module)
+              }}
+              key={1}
+            >
               {log?.remarks}
             </span>,
             <p style={{opacity: 0.6}}>
