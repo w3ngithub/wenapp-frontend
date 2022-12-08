@@ -7,7 +7,6 @@ import {useSelector} from 'react-redux'
 import {getIsAdmin} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
-
 const Panel = Collapse.Panel
 
 const Collapses = ({
@@ -28,7 +27,11 @@ const Collapses = ({
           header={
             <div className="gx-d-flex gx-justify-content-between">
               {item?.title}{' '}
-              {[RoleAccess.Admin, RoleAccess.HumanResource].includes(key) &&
+              {[
+                RoleAccess.Admin,
+                RoleAccess.HumanResource,
+                RoleAccess.OfficeAdmin,
+              ].includes(key) &&
                 !getIsAdmin() && (
                   <div className="gx-d-flex">
                     <span

@@ -200,6 +200,7 @@ function App(props: any) {
                         RoleAccess.ProjectManager,
                         RoleAccess.TeamLead,
                         RoleAccess.HumanResource,
+                        RoleAccess.OfficeAdmin,
                       ]}
                     >
                       <Overview />
@@ -218,6 +219,7 @@ function App(props: any) {
                         RoleAccess.TeamLead,
                         RoleAccess.HumanResource,
                         RoleAccess.Finance,
+                        RoleAccess.OfficeAdmin,
                       ]}
                     >
                       <Coworkers />
@@ -298,6 +300,7 @@ function App(props: any) {
                         RoleAccess.Editor,
                         RoleAccess.Normal,
                         RoleAccess.Subscriber,
+                        RoleAccess.OfficeAdmin,
                       ]}
                     >
                       <Blog />
@@ -383,6 +386,7 @@ function App(props: any) {
                         RoleAccess.ProjectManager,
                         RoleAccess.TeamLead,
                         RoleAccess.HumanResource,
+                        RoleAccess.OfficeAdmin,
                       ]}
                     >
                       <Settings />

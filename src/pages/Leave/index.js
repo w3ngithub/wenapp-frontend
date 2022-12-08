@@ -21,6 +21,7 @@ import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingA
 import RoleAccess, {
   LEAVE_TABS_NO_ACCESS,
   EmployeeStatus,
+  LEAVE_ADMIN_TAB_NO_ACCESS,
 } from 'constants/RoleAccess'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {useSelector} from 'react-redux'
@@ -226,21 +227,23 @@ function Leave() {
           )}
           {!LEAVE_TABS_NO_ACCESS.includes(loggedInUser?.role?.key) && (
             <>
-              <TabPane tab="Leaves" key="3">
-                <Leaves
-                  selectedUser={location?.state?.user}
-                  status={location?.state?.leaveStatus}
-                  selectedDate={location?.state?.date}
-                  selectedRows={selectedRows}
-                  handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
-                  rowSelection={{
-                    onChange: handleRowSelect,
-                    selectedRowKeys: selectedRows,
-                  }}
-                  isExportDisabled={selectedRows.length === 0}
-                  userRole={loggedInUser?.role?.key}
-                />
-              </TabPane>
+              {!LEAVE_ADMIN_TAB_NO_ACCESS.includes(loggedInUser?.role?.key) && (
+                <TabPane tab="Leaves" key="3">
+                  <Leaves
+                    selectedUser={location?.state?.user}
+                    status={location?.state?.leaveStatus}
+                    selectedDate={location?.state?.date}
+                    selectedRows={selectedRows}
+                    handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
+                    rowSelection={{
+                      onChange: handleRowSelect,
+                      selectedRowKeys: selectedRows,
+                    }}
+                    isExportDisabled={selectedRows.length === 0}
+                    userRole={loggedInUser?.role?.key}
+                  />
+                </TabPane>
+              )}
               <TabPane tab="Leaves Calendar" key="4">
                 <LeavesCalendar />
               </TabPane>

@@ -7,7 +7,10 @@ import Leave from './Leave'
 import Noticeboard from './Noticeboard'
 import Blog from './Blog'
 import Resources from './Resources'
-import RoleAccess, {SETTINGS_TABS_NO_ACCESS} from 'constants/RoleAccess'
+import RoleAccess, {
+  SETTINGS_TABS_NO_ACCESS,
+  SETTINGS_TABS_NO_ACCESSTO_EMAIL,
+} from 'constants/RoleAccess'
 import Email from './Email'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -21,24 +24,31 @@ function Settings() {
   return (
     <Card title="Settings">
       <Tabs type="card">
-        {![RoleAccess.TeamLead].includes(key) && (
+        {![RoleAccess.TeamLead, RoleAccess.OfficeAdmin].includes(key) && (
           <TabPane tab="Co-Workers" key="1">
             <Coworkers />
           </TabPane>
         )}
 
-        <TabPane tab="Projects" key="2">
-          <Projects />
-        </TabPane>
-        <TabPane tab="Log Time" key="3">
-          <Logtime />
-        </TabPane>
+        {![RoleAccess.TeamLead, RoleAccess.OfficeAdmin].includes(key) && (
+          <>
+            {' '}
+            <TabPane tab="Projects" key="2">
+              <Projects />
+            </TabPane>
+            <TabPane tab="Log Time" key="3">
+              <Logtime />
+            </TabPane>
+          </>
+        )}
 
         {!SETTINGS_TABS_NO_ACCESS.includes(key) && (
           <>
-            <TabPane tab="Leave Management" key="4">
-              <Leave />
-            </TabPane>
+            {![RoleAccess.OfficeAdmin].includes(key) && (
+              <TabPane tab="Leave Management" key="4">
+                <Leave />
+              </TabPane>
+            )}
             <TabPane tab="Notice Board" key="5">
               <Noticeboard />
             </TabPane>
@@ -55,7 +65,7 @@ function Settings() {
           </TabPane>
         )}
 
-        {!SETTINGS_TABS_NO_ACCESS.includes(key) && (
+        {!SETTINGS_TABS_NO_ACCESSTO_EMAIL.includes(key) && (
           <TabPane tab="Emails" key="8">
             <Email />
           </TabPane>
