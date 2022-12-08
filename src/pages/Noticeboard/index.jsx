@@ -20,10 +20,11 @@ import {NOTICE_COLUMNS} from 'constants/Notice'
 import NoticeBoardModal from 'components/Modules/noticeboardModal'
 import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
+import RoleAccess, {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {socket} from 'pages/Main'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -86,6 +87,16 @@ function NoticeBoardPage() {
         [
           () => queryClient.invalidateQueries(['notices']),
           () => handleCloseModal(),
+          () => {
+            socket.emit('CUD')
+          },
+          () => {
+            socket.emit('add-notice', {
+              showTo: Object.values(RoleAccess),
+              noticeTypeId: response.data.data.data.noticeType,
+              module: 'Notice',
+            })
+          },
         ]
       ),
     onError: (error) => {
@@ -104,6 +115,9 @@ function NoticeBoardPage() {
           [
             () => queryClient.invalidateQueries(['notices']),
             () => handleCloseModal(),
+            () => {
+              socket.emit('CUD')
+            },
           ]
         ),
       onError: (error) => {
@@ -120,7 +134,12 @@ function NoticeBoardPage() {
           response,
           'Notice removed Successfully',
           'Notice deletion failed',
-          [() => queryClient.invalidateQueries(['notices'])]
+          [
+            () => queryClient.invalidateQueries(['notices']),
+            () => {
+              socket.emit('CUD')
+            },
+          ]
         ),
       onError: (error) => {
         notification({message: 'Notice deletion failed', type: 'error'})
@@ -289,7 +308,7 @@ function NoticeBoardPage() {
           rowClassName={(record, index) =>
             moment() < moment(record?.createdAt).add(1, 'days')
               ? 'latest-events'
-              : 'old-events'
+              : ''
           }
           columns={NOTICE_COLUMNS(
             sort,

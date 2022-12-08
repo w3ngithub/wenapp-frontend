@@ -12,7 +12,6 @@ import {
 } from 'antd'
 import moment from 'moment'
 import {dateToDateFormat, filterOptions} from 'helpers/utils'
-import {async} from '@firebase/util'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
@@ -78,6 +77,13 @@ function UserDetailForm({
   }
   const disableDate = (current) => {
     return current && current > moment().endOf('day')
+  }
+
+  const disableJoinDate = (current) => {
+    return (
+      (current && current < moment('2012-1-2')) ||
+      (current && current > moment().endOf('day'))
+    )
   }
 
   const handlePositionChange = (value) => {
@@ -378,7 +384,7 @@ function UserDetailForm({
             ]}
           >
             <DatePicker
-              disabledDate={disableDate}
+              disabledDate={disableJoinDate}
               className=" gx-w-100"
               disabled={readOnly}
             />

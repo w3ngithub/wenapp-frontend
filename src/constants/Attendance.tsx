@@ -4,14 +4,14 @@ import CustomIcon from 'components/Elements/Icons'
 import {Popconfirm} from 'antd'
 import {NINE_HOURS} from './Common'
 import {ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS} from './RoleAccess'
-import {daySorter, getIsAdmin} from 'helpers/utils'
+import {getIsAdmin} from 'helpers/utils'
 
 interface notice {
   title: string
   dataIndex?: string
   key: any
   width?: number
-  sorter?: (a: any, b: any) => any
+  sorter?: boolean | ((a: any, b: any) => any)
   sortOrder?: any
   render?: (text: any, record: any) => ReactElement | null
 }
@@ -36,18 +36,14 @@ const ATTENDANCE_COLUMNS = (
           title: 'Co-worker',
           dataIndex: 'user',
           key: 'user',
-          sorter: (a, b) => {
-            return a.user.toString().localeCompare(b.user.toString())
-          },
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'user' && sortedInfo.order,
         },
         {
           title: 'Date',
           dataIndex: 'attendanceDate',
           key: 'attendanceDate',
-          sorter: (a, b) =>
-            +new Date(a.attendanceDate) - +new Date(b.attendanceDate) ||
-            a.user.toString().localeCompare(b.user.toString()),
+          sorter: true,
           sortOrder:
             sortedInfo.columnKey === 'attendanceDate' && sortedInfo.order,
         },
@@ -55,11 +51,7 @@ const ATTENDANCE_COLUMNS = (
           title: 'Day',
           dataIndex: 'attendanceDay',
           key: 'attendanceDay',
-          sorter: (a, b) => {
-            let first: days = a?.attendanceDay
-            let second: days = b?.attendanceDay
-            return daySorter[first] - daySorter[second]
-          },
+          sorter: true,
           sortOrder:
             sortedInfo.columnKey === 'attendanceDay' && sortedInfo.order,
         },
@@ -67,18 +59,14 @@ const ATTENDANCE_COLUMNS = (
           title: 'Punch-in Time',
           dataIndex: 'punchInTime',
           key: 'punchInTime',
-          sorter: (a, b) =>
-            a.punchInTime?.toString().localeCompare(b.punchInTime?.toString()),
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'punchInTime' && sortedInfo.order,
         },
         {
           title: 'Punch-out Time',
           dataIndex: 'punchOutTime',
           key: 'punchOutTime',
-          sorter: (a, b) =>
-            a.punchOutTime
-              ?.toString()
-              .localeCompare(b.punchOutTime?.toString()),
+          sorter: true,
           sortOrder:
             sortedInfo.columnKey === 'punchOutTime' && sortedInfo.order,
         },
@@ -86,7 +74,7 @@ const ATTENDANCE_COLUMNS = (
           title: 'Office hour',
           dataIndex: 'officeHour',
           key: 'officeHour',
-          sorter: (a, b) => a?.intHour - b?.intHour,
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'officeHour' && sortedInfo.order,
           render: (text: string, record) => {
             return (
@@ -118,8 +106,7 @@ const ATTENDANCE_COLUMNS = (
           title: 'Date',
           dataIndex: 'attendanceDate',
           key: 'attendanceDate',
-          sorter: (a, b) =>
-            +new Date(a.attendanceDate) - +new Date(b.attendanceDate),
+          sorter: true,
           sortOrder:
             sortedInfo.columnKey === 'attendanceDate' && sortedInfo.order,
         },
@@ -127,11 +114,7 @@ const ATTENDANCE_COLUMNS = (
           title: 'Day',
           dataIndex: 'attendanceDay',
           key: 'attendanceDay',
-          sorter: (a, b) => {
-            let first: days = a?.attendanceDay
-            let second: days = b?.attendanceDay
-            return daySorter[first] - daySorter[second]
-          },
+          sorter: true,
           sortOrder:
             sortedInfo.columnKey === 'attendanceDay' && sortedInfo.order,
         },
@@ -139,18 +122,13 @@ const ATTENDANCE_COLUMNS = (
           title: 'Punch-in Time',
           dataIndex: 'punchInTime',
           key: 'punchInTime',
-          sorter: (a, b) =>
-            a.punchInTime?.toString().localeCompare(b.punchInTime?.toString()),
-          sortOrder: sortedInfo.columnKey === 'punchInTime' && sortedInfo.order,
+          sorter: true,
         },
         {
           title: 'Punch-out Time',
           dataIndex: 'punchOutTime',
           key: 'punchOutTime',
-          sorter: (a, b) =>
-            a.punchOutTime
-              ?.toString()
-              .localeCompare(b.punchOutTime?.toString()),
+          sorter: true,
           sortOrder:
             sortedInfo.columnKey === 'punchOutTime' && sortedInfo.order,
         },
@@ -158,7 +136,7 @@ const ATTENDANCE_COLUMNS = (
           title: 'Office hour',
           dataIndex: 'officeHour',
           key: 'officeHour',
-          sorter: (a, b) => a?.intHour - b?.intHour,
+          sorter: true,
           sortOrder: sortedInfo.columnKey === 'officeHour' && sortedInfo.order,
           render: (text: string, record) => {
             return (
@@ -289,4 +267,27 @@ export {ATTENDANCE_COLUMNS, attendanceFilter, LATE_ATTENDANCE_COLUMNS}
 export const leaveCutStatus = [
   {id: '1', value: 'Leave Not Cut '},
   {id: '2', value: 'Leave Cut '},
+]
+
+export const OfficeHourFilter = [
+  {
+    value: 'Is Equal to',
+    id: 'eq',
+  },
+  {
+    value: 'Is Greater than',
+    id: 'gt',
+  },
+  {
+    value: 'Is Greater than or Equal to',
+    id: 'gte',
+  },
+  {
+    value: 'Is Less than or Equal to',
+    id: 'lte',
+  },
+  {
+    value: 'Is Lesser than',
+    id: 'lt',
+  },
 ]

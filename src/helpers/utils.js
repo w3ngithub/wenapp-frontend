@@ -1,6 +1,5 @@
 import {notification} from './notification'
 import moment from 'moment'
-import {socket} from 'pages/Main/MainApp'
 
 export const handleSort = (
   currentState,
@@ -266,6 +265,10 @@ export const milliSecondIntoHours = (milliSec) => {
   } `
 }
 
+export const hourIntoMilliSecond = (hour) => {
+  return hour * 60 * 60 * 1000
+}
+
 export function toRoundoff(number) {
   const toSingle = Number.isInteger(number) ? number : +number.toFixed(1)
   return toSingle
@@ -312,7 +315,6 @@ export const handleResponse = (
   queries
 ) => {
   if (response.status) {
-    socket.emit('CUD')
     queries.forEach((query) => {
       query()
     })

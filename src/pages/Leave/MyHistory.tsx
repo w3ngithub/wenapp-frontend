@@ -83,7 +83,7 @@ function MyHistory({
         page.limit,
         '',
         '',
-        '-leaveDates',
+        '-leaveDates,_id',
         leaveTypeId
       )
   )

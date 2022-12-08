@@ -17,6 +17,7 @@ const FormItem = Form.Item
 const formattedWeeklyReports = (logs: any) => {
   return logs?.map((log: any) => ({
     ...log,
+    module: log?.module === 'User' ? 'Co-worker' : log?.module,
     createdAt: isoDateWithoutTimeZone(log.createdAt),
     status: capitalizeInput(log.status),
   }))

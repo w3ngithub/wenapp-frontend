@@ -38,6 +38,7 @@ import {
   viewAttendance,
   ViewLateAttendance,
 } from 'constants/Interfaces'
+import {socket} from 'pages/Main'
 
 const FormItem = Form.Item
 
@@ -46,7 +47,8 @@ interface recordAttendance {
     userId: string
     user: string
   }
-  data: {attendanceDate: string; userId: string}[]
+  user?: any
+  data: {attendanceDate: string; userId: string; user?: String}[]
 }
 
 const viewAtt = {
@@ -253,6 +255,18 @@ function LateAttendance({userRole}: {userRole: string}) {
         .startOf('day')
         .format(),
     })
+
+    socket.emit('late-attendance', {
+      showTo: [attendanceRecord?.data[0].userId],
+      remarks: `Your ${
+        leaveResponse?.data?.data?.data?.halfDay === ''
+          ? 'full Day'
+          : 'half Day'
+      } leave has been cut due to late arrival.`,
+      module: 'Attendance',
+    })
+
+    socket.emit('CUD')
   }
 
   const expandedRowRender = (parentRow: {data: FormattedUserData[]}) => {

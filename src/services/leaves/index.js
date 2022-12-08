@@ -58,7 +58,7 @@ const getLeavesOfUser = async (
   limit = 30,
   fromDate = '',
   toDate = '',
-  sort = '-leaveDates',
+  sort = '-leaveDates,_id',
   type = ''
 ) => {
   try {

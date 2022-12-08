@@ -38,6 +38,7 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {
+  DASHBOARD_CARD_CLICKABLE_ACCESS,
   DASHBOARD_ICON_ACCESS,
   DASHBOARD_PROJECT_LOG_NO_ACCESS,
 } from 'constants/RoleAccess'
@@ -45,6 +46,8 @@ import {Style, Events, Notices} from 'constants/Interfaces'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {notification} from 'helpers/notification'
+import {socket} from 'pages/Main'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -57,7 +60,11 @@ const Dashboard = () => {
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
+  const [socketPendingLeaveCount, setSocketPendingLeaveCount] = useState(0)
+  const [socketApprovedLeaveCount, setSocketApprovedLeaveCount] = useState(0)
+
   const [projectArray, setProjectArray] = useState([])
+  const [chartData, setChartData] = useState([])
   const navigate = useNavigate()
   const loggedInUser = useSelector(selectAuthUser)
   const {innerWidth} = useWindowsSize()
@@ -68,6 +75,16 @@ const Dashboard = () => {
   const darkTheme = themeType === THEME_TYPE_DARK
 
   const darkThemeTextColor = '#e0e0e0'
+
+  useEffect(() => {
+    socket.on('pending-leave-count', (response: number) => {
+      setSocketPendingLeaveCount(response)
+    })
+    socket.on('today-leave-count', (response: number) => {
+      setSocketApprovedLeaveCount(response)
+      setSocketPendingLeaveCount((prev) => prev - 1)
+    })
+  }, [])
 
   const {data: salaryReview} = useQuery(
     ['usersSalaryReview'],
@@ -105,11 +122,19 @@ const Dashboard = () => {
     getAllHolidays({sort: '-createdAt', limit: '1'})
   )
 
-  const chartQuery = useQuery(
-    ['projectChart', project, logType],
-    () => getTimeLogChart({project, logType}),
-    {enabled: false, refetchOnWindowFocus: false}
-  )
+  const fetchChartQuery = useCallback(async (project: any, logType: any) => {
+    try {
+      const response = await getTimeLogChart({project, logType})
+
+      if (response?.status) {
+        setChartData(response?.data?.data?.chart || [])
+      } else {
+        notification({type: 'error', message: 'Failed to generate chart !'})
+      }
+    } catch (error) {
+      notification({type: 'error', message: 'Failed to generate chart !'})
+    }
+  }, [])
 
   const handleSearch = async (projectName: string) => {
     if (!projectName) {
@@ -132,25 +157,24 @@ const Dashboard = () => {
       select: (res) => {
         let updateLeaves: {}[] = []
 
-        res?.data?.data?.users?.forEach(
-          (leave: {leaveType: string[]; leaveDates: string[]}) => {
-            const isLeavePaternity =
-              leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
-            const isLeaveMaternity =
-              leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
-            const isLeavePTO =
-              leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
+        res?.data?.data?.users?.forEach((leave: any) => {
+          const isLeavePaternity =
+            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
+          const isLeaveMaternity =
+            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
+          const isLeavePTO =
+            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
+          const weeksLastDate = new Date(
+            MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
+          )
+          const todayDate = new Date(MuiFormatDate(new Date()))
 
-            if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
-              const weeksLastDate = new Date(
-                MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
-              )
-              const startLeaveDate = new Date(leave?.leaveDates[0])
-              const endLeaveDate = new Date(leave?.leaveDates[1])
-              const todayDate = new Date(MuiFormatDate(new Date()))
-              for (let i = 0; i < 8; i++) {
-                const isHoliday =
-                  startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
+          if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
+            const startLeaveDate = new Date(leave?.leaveDates[0])
+            const endLeaveDate = new Date(leave?.leaveDates[1])
+            for (let i = 0; i < 8; i++) {
+              const isHoliday =
+                startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
 
                 if (
                   startLeaveDate >= todayDate &&
@@ -193,6 +217,18 @@ const Dashboard = () => {
                 {...leave, date: leave?.leaveDates[0]},
               ]
             }
+<<<<<<< HEAD
+=======
+          } else {
+            leave?.leaveDates.forEach((date: string) => {
+              const leaveDate = new Date(date)
+              if (leaveDate >= todayDate && leaveDate <= weeksLastDate)
+                updateLeaves = [
+                  ...updateLeaves,
+                  {...leave, date: date, leaveDates: date},
+                ]
+            })
+>>>>>>> af174dbf0f39b9911aef9608a47cc056d546b2f8
           }
         )
         return updateLeaves
@@ -223,7 +259,7 @@ const Dashboard = () => {
 
   const generateChart = (values: {}) => {
     if (project === '' || project === undefined) return
-    chartQuery.refetch()
+    fetchChartQuery(project, logType)
   }
   const handleEventStyle = (event: {type: string}) => {
     let style: Style = {
@@ -280,7 +316,11 @@ const Dashboard = () => {
     const nameSplitted = props?.event?.title.split(' ')
     let lastName
     if (nameSplitted.length === 1) lastName = ''
+<<<<<<< HEAD
     else lastName = `${nameSplitted?.pop()?.substring(0, 1)}.`
+=======
+    else lastName = `${nameSplitted.pop().substring(0, 1)}. `
+>>>>>>> af174dbf0f39b9911aef9608a47cc056d546b2f8
     const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
     const style = {
@@ -451,7 +491,6 @@ const Dashboard = () => {
     ...(leaveUsers || []),
   ]
 
-  const chartData = chartQuery?.data?.data?.data?.chart
   const isAdmin = DASHBOARD_ICON_ACCESS.includes(key)
   const width = isAdmin ? 6 : 12
 
@@ -460,12 +499,16 @@ const Dashboard = () => {
       <Row>
         <Col xl={width} lg={12} md={12} sm={12} xs={24}>
           <TotalCountCard
-            isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+            isLink={
+              DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
+                ? true
+                : false
+            }
             className="gx-bg-cyan-green-gradient"
             totalCount={ActiveUsers?.data?.data?.user || 0}
             label="Total Co-workers"
             onClick={
-              loggedInUser?.role?.value !== 'Admin'
+              !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
                 ? null
                 : () => navigate('/coworkers')
             }
@@ -475,13 +518,21 @@ const Dashboard = () => {
         {DASHBOARD_ICON_ACCESS.includes(key) && (
           <Col xl={width} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
-              isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+              isLink={
+                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
+                  ? true
+                  : false
+              }
               icon={LoginOutlined}
               className="gx-bg-pink-purple-corner-gradient"
               totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
               label="Co-workers Punched In Today"
               onClick={
-                loggedInUser?.role?.value !== 'Admin'
+                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
                   ? null
                   : () => navigate('/todays-overview', {state: true})
               }
@@ -491,13 +542,25 @@ const Dashboard = () => {
         {DASHBOARD_ICON_ACCESS.includes(key) && (
           <Col xl={6} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
-              isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
+              isLink={
+                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
+                  ? true
+                  : false
+              }
               icon={ExceptionOutlined}
               className="gx-bg-pink-orange-corner-gradient"
-              totalCount={PendingLeaves?.data?.data?.leaves || 0}
+              totalCount={
+                socketPendingLeaveCount === 0 || !socketPendingLeaveCount
+                  ? PendingLeaves?.data?.data?.leaves || 0
+                  : socketPendingLeaveCount
+              }
               label="Pending Leave Request"
               onClick={() =>
-                loggedInUser?.role?.value !== 'Admin'
+                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
                   ? null
                   : navigate('/leave', {
                       state: {tabKey: '3', leaveStatus: 'pending'},
@@ -508,12 +571,20 @@ const Dashboard = () => {
         )}
         <Col xl={width} lg={12} md={12} sm={12} xs={24}>
           <TotalCountCard
-            isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
-            totalCount={TodaysLeave?.data?.leaves?.[0]?.count || 0}
+            isLink={
+              DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
+                ? true
+                : false
+            }
+            totalCount={
+              socketApprovedLeaveCount === 0 || !socketApprovedLeaveCount
+                ? TodaysLeave?.data?.leaves?.[0]?.count || 0
+                : socketApprovedLeaveCount
+            }
             label="Co-workers On Leave"
             icon={LogoutOutlined}
             onClick={
-              loggedInUser?.role?.value !== 'Admin'
+              !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
                 ? null
                 : () => navigate('/todays-overview')
             }
@@ -623,7 +694,7 @@ const Dashboard = () => {
                       value={logType}
                       onChange={(c: string) => setlogType(c)}
                       placeholder="Select Log Types"
-                      mode="tags"
+                      mode="multiple"
                       options={logTypes?.data?.data?.data?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,

@@ -1,6 +1,16 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react'
 import {useQuery} from '@tanstack/react-query'
-import {Button, Table, Form, DatePicker, Divider} from 'antd'
+import {
+  Button,
+  Table,
+  Form,
+  DatePicker,
+  Divider,
+  Input,
+  InputNumber,
+  Row,
+  Col,
+} from 'antd'
 import moment from 'moment'
 import {CSVLink} from 'react-csv'
 import {
@@ -8,6 +18,7 @@ import {
   ATTENDANCE_COLUMNS,
   intialDate,
   monthlyState,
+  OfficeHourFilter,
   weeklyState,
 } from 'constants/Attendance'
 import {
@@ -17,6 +28,7 @@ import {
 import {
   dateDifference,
   getIsAdmin,
+  hourIntoMilliSecond,
   milliSecondIntoHours,
   MuiFormatDate,
   sortFromDate,
@@ -61,7 +73,7 @@ const formattedAttendances = (attendances) => {
       punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
         ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
         : '',
-      officeHour: milliSecondIntoHours(timeInMilliSeconds),
+      officeHour: milliSecondIntoHours(att?.officehour),
       intHour: timeInMilliSeconds,
     }
   })
@@ -77,6 +89,7 @@ function AdminAttendance({userRole}) {
   })
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
+  const [defaultFilter, setDefaultFilter] = useState(undefined)
   const [openView, setOpenView] = useState(false)
   const [attToView, setAttToView] = useState({})
   const [date, setDate] = useState(intialDate)
@@ -111,15 +124,25 @@ function AdminAttendance({userRole}) {
   )
 
   const {data, isLoading, isFetching} = useQuery(
-    ['adminAttendance', user, date, page],
-    () =>
-      searchAttendacentOfUser({
+    ['adminAttendance', user, date, page, sort, defaultFilter],
+    () => {
+      let sortField = ''
+      if (sort?.order) {
+        const order = sort.order === 'ascend' ? '' : '-'
+        sortField = `${order}${sort.columnKey}`
+      }
+
+      return searchAttendacentOfUser({
         page: page.page + '',
         limit: page.limit + '',
         userId: user || '',
         fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
         toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
+        sort: sortField,
+        officehourop: defaultFilter?.op,
+        officehourValue: hourIntoMilliSecond(defaultFilter?.num),
       })
+    }
   )
 
   const handleChangeDate = (date) => {
@@ -131,6 +154,7 @@ function AdminAttendance({userRole}) {
 
   const handleTableChange = (pagination, filters, sorter) => {
     setPage({page: pagination?.current, limit: pagination?.pageSize})
+
     setSort(sorter)
   }
 
@@ -159,30 +183,6 @@ function AdminAttendance({userRole}) {
     setAttToEdit(record)
   }
 
-  const handleExport = async (event, done) => {
-    setdataToExport((prev) => ({loading: true, data: []}))
-    const data = await searchAttendacentOfUser({
-      page: '',
-      limit: '',
-      userId: user || '',
-      fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
-      toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
-    })
-    const formattedData = formattedAttendances(
-      data?.data?.data?.attendances?.[0]?.data
-    ).map((d) => [
-      d?.user,
-      d?.attendanceDate,
-      d?.attendanceDay,
-      d?.punchInTime,
-      d?.punchOutTime,
-      d?.officeHour,
-    ])
-
-    setdataToExport({todownload: true, data: formattedData, loading: false})
-    done(true)
-  }
-
   const handleAttChnageChange = (val) => {
     setAttFilter(val)
     switch (val) {
@@ -208,6 +208,7 @@ function AdminAttendance({userRole}) {
     setUser(undefined)
     setAttFilter(1)
     setDate(intialDate)
+    setDefaultFilter(null)
   }
 
   useEffect(() => {
@@ -242,7 +243,11 @@ function AdminAttendance({userRole}) {
               <span className="gx-link" onClick={() => handleView(record)}>
                 <CustomIcon name="view" />
               </span>
-              {![RoleAccess.Finance, RoleAccess.TeamLead].includes(userRole) &&
+              {![
+                RoleAccess.Finance,
+                RoleAccess.TeamLead,
+                RoleAccess.OfficeAdmin,
+              ].includes(userRole) &&
                 !getIsAdmin() && (
                   <>
                     <Divider type="vertical"></Divider>
@@ -282,6 +287,39 @@ function AdminAttendance({userRole}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data?.data?.attendances?.[0]?.data])
 
+  const handleExport = async (event, done) => {
+    setdataToExport((prev) => ({loading: true, data: []}))
+    const data = await searchAttendacentOfUser({
+      page: '',
+      limit: '',
+      userId: user || '',
+      fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
+      toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
+      sort: 'csv-import',
+      officehourop: defaultFilter?.op,
+      officehourValue: hourIntoMilliSecond(defaultFilter?.num),
+    })
+
+    const sortedIntermediate = data?.data?.data?.attendances?.[0]?.data?.map(
+      (d) => ({
+        ...d,
+        data: sortFromDate(d?.data, 'punchInTime'),
+      })
+    )
+
+    const formattedData = formattedAttendances(sortedIntermediate).map((d) => [
+      d?.user,
+      d?.attendanceDate,
+      d?.attendanceDay,
+      d?.punchInTime,
+      d?.punchOutTime,
+      d?.officeHour,
+    ])
+
+    setdataToExport({todownload: true, data: formattedData, loading: false})
+    done(true)
+  }
+
   return (
     <div>
       <TmsAdminAddAttendanceForm
@@ -313,37 +351,71 @@ function AdminAttendance({userRole}) {
       <div className="components-table-demo-control-bar">
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
-            <FormItem>
-              <RangePicker onChange={handleChangeDate} value={date} />
-            </FormItem>
-            <FormItem className="direct-form-item">
-              <Select
-                onChange={handleAttChnageChange}
-                value={attFilter}
-                options={attendanceFilter}
-              />
-            </FormItem>
-            <FormItem className="direct-form-item">
-              <Select
-                placeholder="Select Co-worker"
-                onChange={handleUserChange}
-                value={user}
-                options={users?.data?.data?.data?.map((x) => ({
-                  id: x._id,
-                  value: x.name,
-                }))}
-              />
-            </FormItem>
+            <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+              <FormItem>
+                <RangePicker onChange={handleChangeDate} value={date} />
+              </FormItem>
+              <FormItem className="direct-form-item">
+                <Select
+                  onChange={handleAttChnageChange}
+                  value={attFilter}
+                  options={attendanceFilter}
+                />
+              </FormItem>
+              <FormItem className="direct-form-item">
+                <Select
+                  placeholder="Select Co-worker"
+                  onChange={handleUserChange}
+                  value={user}
+                  options={users?.data?.data?.data?.map((x) => ({
+                    id: x._id,
+                    value: x.name,
+                  }))}
+                />
+              </FormItem>
+            </div>
 
-            <FormItem style={{marginBottom: '1px'}}>
-              <Button
-                className="gx-btn-form gx-btn-primary gx-text-white "
-                onClick={() => handleReset()}
-              >
-                Reset
-              </Button>
-            </FormItem>
+            <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+              {' '}
+              <FormItem>
+                <Input
+                  defaultValue="Office hour"
+                  disabled={true}
+                  style={{width: '120px'}}
+                />
+              </FormItem>
+              <FormItem>
+                <Select
+                  options={OfficeHourFilter}
+                  onChange={(value) =>
+                    setDefaultFilter((prev) => ({...prev, op: value}))
+                  }
+                  value={defaultFilter?.op}
+                  style={{width: '220px'}}
+                  placeholder="Select condition"
+                />
+              </FormItem>
+              <FormItem>
+                <InputNumber
+                  value={defaultFilter?.num}
+                  onChange={(value) =>
+                    setDefaultFilter((prev) => ({...prev, num: value}))
+                  }
+                  style={{width: '80px'}}
+                  placeholder="Hours"
+                />
+              </FormItem>
+              <FormItem style={{marginBottom: '1px'}}>
+                <Button
+                  className="gx-btn-form gx-btn-primary gx-text-white "
+                  onClick={() => handleReset()}
+                >
+                  Reset
+                </Button>
+              </FormItem>
+            </div>
           </Form>
+
           <AccessWrapper
             noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
           >
