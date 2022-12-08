@@ -149,6 +149,9 @@ function Leaves({
                 'quartertakenAndRemainingLeaveDays',
               ]),
             () => {
+              socket.emit('dashboard-leave')
+            },
+            () => {
               socket.emit('CUD')
             },
             () => {

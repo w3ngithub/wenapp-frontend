@@ -45,6 +45,7 @@ import {LEAVES_TYPES} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
+import {socket} from 'pages/Main'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -57,6 +58,9 @@ const Dashboard = () => {
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
+  const [socketPendingLeaveCount, setSocketPendingLeaveCount] = useState(0)
+  const [socketApprovedLeaveCount, setSocketApprovedLeaveCount] = useState(0)
+
   const [projectArray, setProjectArray] = useState([])
   const [chartData, setChartData] = useState([])
   const navigate = useNavigate()
@@ -67,6 +71,15 @@ const Dashboard = () => {
   const darkTheme = themeType === THEME_TYPE_DARK
 
   const darkThemeTextColor = '#e0e0e0'
+
+  useEffect(() => {
+    socket.on('pending-leave-count', (response: number) => {
+      setSocketPendingLeaveCount(response)
+    })
+    socket.on('today-leave-count', (response: number) => {
+      setSocketApprovedLeaveCount(response)
+    })
+  }, [])
 
   const {data: salaryReview} = useQuery(
     ['usersSalaryReview'],
@@ -503,7 +516,11 @@ const Dashboard = () => {
               isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
               icon={ExceptionOutlined}
               className="gx-bg-pink-orange-corner-gradient"
-              totalCount={PendingLeaves?.data?.data?.leaves || 0}
+              totalCount={
+                socketPendingLeaveCount === 0 || !socketPendingLeaveCount
+                  ? PendingLeaves?.data?.data?.leaves || 0
+                  : socketPendingLeaveCount
+              }
               label="Pending Leave Request"
               onClick={() =>
                 loggedInUser?.role?.value !== 'Admin'
@@ -518,7 +535,11 @@ const Dashboard = () => {
         <Col xl={width} lg={12} md={12} sm={12} xs={24}>
           <TotalCountCard
             isLink={loggedInUser?.role?.value === 'Admin' ? true : false}
-            totalCount={TodaysLeave?.data?.leaves?.[0]?.count || 0}
+            totalCount={
+              socketApprovedLeaveCount === 0 || !socketApprovedLeaveCount
+                ? TodaysLeave?.data?.leaves?.[0]?.count || 0
+                : socketApprovedLeaveCount
+            }
             label="Co-workers On Leave"
             icon={LogoutOutlined}
             onClick={

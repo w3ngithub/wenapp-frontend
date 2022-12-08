@@ -170,6 +170,9 @@ function Apply({user}) {
             socket.emit('CUD')
           },
           () => {
+            socket.emit('dashboard-pending')
+          },
+          () => {
             socket.emit('apply-leave', {
               showTo: [
                 RoleAccess.Admin,
