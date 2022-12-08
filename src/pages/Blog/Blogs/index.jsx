@@ -21,11 +21,10 @@ import {useNavigate} from 'react-router-dom'
 import {ADDBLOG} from 'helpers/routePath'
 import {getIsAdmin, handleResponse} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
-import { selectAuthUser } from 'appRedux/reducers/Auth'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -43,7 +42,7 @@ function Blogs() {
   const [form] = Form.useForm()
 
   const [typedTitle, setTypedTitle] = useState('')
-  const userData= useSelector(selectAuthUser)
+  const userData = useSelector(selectAuthUser)
   const {data, isLoading, isError, isFetching} = useQuery(
     ['blogs', page, title, user],
     () =>
@@ -164,7 +163,7 @@ function Blogs() {
             </AccessWrapper>
           </div>
         </div>
-        <Spin spinning={isFetching}>
+        <Spin spinning={isFetching || deleteBlogMutation.isLoading}>
           {data?.data?.data?.data && data?.data?.data?.data?.length ? (
             <>
               {' '}

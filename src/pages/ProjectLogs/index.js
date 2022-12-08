@@ -170,6 +170,7 @@ function ProjectLogs() {
         [
           () => queryClient.invalidateQueries(['timeLogs']),
           () => queryClient.invalidateQueries(['singleProject']),
+          () => queryClient.invalidateQueries(['projectWeeklyTime']),
           () => {
             socket.emit('CUD')
           },

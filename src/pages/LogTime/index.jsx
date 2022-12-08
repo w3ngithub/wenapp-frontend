@@ -4,7 +4,12 @@ import CircularProgress from 'components/Elements/CircularProgress'
 import LogModal from 'components/Modules/LogtimeModal'
 import '@ant-design/compatible/assets/index.css'
 import {LOGTIMES_COLUMNS} from 'constants/logTimes'
-import {changeDate, roundedToFixed, handleResponse, getIsAdmin} from 'helpers/utils'
+import {
+  changeDate,
+  roundedToFixed,
+  handleResponse,
+  getIsAdmin,
+} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
 import React, {useState} from 'react'
@@ -21,7 +26,8 @@ import TimeSummary from './TimeSummary'
 import {useNavigate} from 'react-router-dom'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
-import { selectAuthUser } from 'appRedux/reducers/Auth'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {socket} from 'pages/Main'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -50,7 +56,10 @@ function LogTime() {
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
 
-  const {_id,role: {key}} = useSelector(selectAuthUser)
+  const {
+    _id,
+    role: {key},
+  } = useSelector(selectAuthUser)
 
   const {
     data: logTimeDetails,
@@ -134,6 +143,9 @@ function LogTime() {
           () => queryClient.invalidateQueries(['UsertimeLogs']),
           () => queryClient.invalidateQueries(['userTodayTimeSpent']),
           () => queryClient.invalidateQueries(['userweeklyTimeSpent']),
+          () => {
+            socket.emit('CUD')
+          },
         ]
       ),
     onError: (error) => {
