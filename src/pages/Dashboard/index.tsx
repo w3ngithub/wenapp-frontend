@@ -78,6 +78,7 @@ const Dashboard = () => {
     })
     socket.on('today-leave-count', (response: number) => {
       setSocketApprovedLeaveCount(response)
+      setSocketPendingLeaveCount((prev) => prev - 1)
     })
   }, [])
 
@@ -303,7 +304,7 @@ const Dashboard = () => {
     const nameSplitted = props?.event?.title.split(' ')
     let lastName
     if (nameSplitted.length === 1) lastName = ''
-    else lastName = `${nameSplitted.pop().substring(0, 1)}.`
+    else lastName = `${nameSplitted.pop().substring(0, 1)}. `
     const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
     const style = {
