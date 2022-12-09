@@ -44,6 +44,14 @@ export const DASHBOARD_ICON_ACCESS = [
   RoleAccess.HumanResource,
 ]
 
+export const DASHBOARD_PUNCH_IN_TODAY_CARD_ACCESS = [
+  RoleAccess.Admin,
+  RoleAccess.TeamLead,
+  RoleAccess.ProjectManager,
+  RoleAccess.HumanResource,
+  RoleAccess.OfficeAdmin,
+]
+
 // Co-workers
 export const CO_WORKERS_TABLE_ACTION_NO_ACCESS = [
   RoleAccess.ProjectManager,
