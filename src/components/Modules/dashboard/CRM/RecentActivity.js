@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Avatar, Divider, Spin, Timeline} from 'antd'
+import {Avatar, Spin, Timeline} from 'antd'
 import WidgetHeader from 'components/Elements/WidgetHeader/index'
 import ActivityItem from './ActivityItem'
 import {selectThemeType} from 'appRedux/reducers/Settings'
@@ -99,6 +99,7 @@ function RecentActivity(props) {
       )
     }
   }, [])
+  console.log('recent list', recentList)
 
   return (
     <div
