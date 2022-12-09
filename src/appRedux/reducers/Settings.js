@@ -73,4 +73,6 @@ const settings = (state = initialSettings, action) => {
   }
 }
 
+export const selectThemeType = (state) => state.settings.themeType
+
 export default settings

@@ -12,6 +12,7 @@ import moment from 'moment'
 import RecentActivity from '../dashboard/CRM/RecentActivity'
 import {getIsAdmin} from 'helpers/utils'
 import {BLOG, NOTICEBOARD} from 'helpers/routePath'
+import {NOTIFICATION_ICONS} from 'constants/notification'
 
 const NOTIFICATION_TO_CLICK = ['Blog', 'Notice']
 
@@ -139,7 +140,9 @@ function NotificationInfo() {
         tasks: page?.data?.data?.data?.map((log: any) => ({
           id: log._id,
           name: '',
+          module: log?.module,
           title: [
+            <p className="gx-notification-list-header">{log?.module || ''}</p>,
             <span
               className={
                 NOTIFICATION_TO_CLICK.includes(log?.module) ? 'gx-link' : ''
@@ -155,7 +158,7 @@ function NotificationInfo() {
               {moment(log?.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')}
             </p>,
           ],
-          avatar: '',
+          icon: NOTIFICATION_ICONS[log?.module] || '',
           imageList: [],
         })),
       }))}

@@ -7,7 +7,7 @@ const RoleAccess = {
   Finance: 'finance',
   TeamLead: 'lead',
   Subscriber: 'subscriber',
-  OfficeAdmin: 'officeAdmin',
+  OfficeAdmin: 'officeadmin',
   All: 'all',
 }
 
