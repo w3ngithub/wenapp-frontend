@@ -13,18 +13,20 @@ function getName(task, themeType) {
     return (
       <Avatar
         shape={'circle'}
-        className="gx-size-40 gx-d-flex gx-align-items-center gx-justify-content-center"
+        className="gx-d-flex gx-align-items-center gx-justify-content-center"
         style={
           themeType === THEME_TYPE_SEMI_DARK
             ? {
                 color: '#787575',
                 background: '#f1f1f1',
                 border: '1.5px solid #ccc',
+                padding: '20px',
               }
             : {
                 background: '#787575',
                 color: '#f1f1f1',
                 border: '1.5px solid #ccc',
+                padding: '20px',
               }
         }
         icon={task.icon}
