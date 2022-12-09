@@ -109,11 +109,7 @@ function RecentActivity(props) {
     >
       <WidgetHeader title={title} />
       {recentList?.map((activity, index) => (
-        <div
-          className="gx-timeline-info"
-          key={'activity' + index}
-          style={{marginBottom: '3rem'}}
-        >
+        <div className="gx-timeline-info" key={'activity' + index}>
           <Timeline>
             {activity?.tasks?.map((task, index) => {
               return (
