@@ -104,6 +104,7 @@ function ActivityInfo() {
         id: i,
         tasks: page?.data?.data?.data?.map((log: any) => ({
           id: log._id,
+          module: log?.module,
           name: log.user.name || '',
           title: [
             <span className="" key={1}>

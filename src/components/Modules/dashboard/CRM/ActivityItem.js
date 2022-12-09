@@ -1,5 +1,5 @@
 import React from 'react'
-import {Avatar} from 'antd'
+import {Avatar, Divider} from 'antd'
 import Auxiliary from 'util/Auxiliary'
 
 const ActivityItem = ({task}) => {
@@ -30,6 +30,7 @@ const ActivityItem = ({task}) => {
           })}
         </ul>
       ) : null}
+      <Divider />
     </Auxiliary>
   )
 }
