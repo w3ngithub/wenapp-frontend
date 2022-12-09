@@ -118,7 +118,7 @@ function RecentActivity(props) {
                   mode="alternate"
                   dot={getName(task, themeType)}
                 >
-                  <ActivityItem task={task} />
+                  <ActivityItem task={task} title={title} />
                 </TimeLineItem>
               )
             })}
