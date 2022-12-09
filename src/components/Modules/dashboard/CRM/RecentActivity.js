@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Avatar, Divider, Spin, Timeline} from 'antd'
+import {Avatar, Spin, Timeline} from 'antd'
 import WidgetHeader from 'components/Elements/WidgetHeader/index'
 import ActivityItem from './ActivityItem'
 import {selectThemeType} from 'appRedux/reducers/Settings'
@@ -99,6 +99,7 @@ function RecentActivity(props) {
       )
     }
   }, [])
+  console.log('recent list', recentList)
 
   return (
     <div
@@ -158,7 +159,9 @@ function RecentActivity(props) {
       )}
 
       {!recentList ||
-        (recentList?.length === 0 && (
+        recentList?.length === 0 ||
+        !recentList?.[0]?.tasks ||
+        (recentList?.[0]?.tasks?.length === 0 && (
           <span className="gx-link gx-btn-link">
             {'No  any notification to show'}
           </span>

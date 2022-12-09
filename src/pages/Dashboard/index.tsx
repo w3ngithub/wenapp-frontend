@@ -37,7 +37,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {
+import RoleAccess, {
   DASHBOARD_CARD_CLICKABLE_ACCESS,
   DASHBOARD_ICON_ACCESS,
   DASHBOARD_PROJECT_LOG_NO_ACCESS,
@@ -83,9 +83,10 @@ const Dashboard = () => {
     })
   }, [])
 
-  const {data: salaryReview} = useQuery(
+  const {data: salaryReview, refetch: salaryRefetch} = useQuery(
     ['usersSalaryReview'],
-    getSalaryReviewUsers
+    getSalaryReviewUsers,
+    {enabled: false}
   )
 
   const {data: AttendanceCount} = useQuery(
@@ -244,6 +245,12 @@ const Dashboard = () => {
       Promise.all([logTypeRefetch(), projectRefetch()])
     }
   }, [key, logTypeRefetch, projectRefetch])
+
+  useEffect(() => {
+    if ([RoleAccess.Admin, RoleAccess.HumanResource].includes(key)) {
+      Promise.all([salaryRefetch()])
+    }
+  }, [key, salaryRefetch])
 
   const generateChart = (values: any) => {
     if (project === '' || project === undefined) return

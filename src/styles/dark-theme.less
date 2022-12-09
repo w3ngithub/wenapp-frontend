@@ -42,6 +42,12 @@ body.dark-theme {
   & .ant-form-item-with-help .ant-form-item-explain {
     color: @dark-theme-text-color;
   }
+  & .ant-timeline-item-content{
+
+    & .ant-divider{
+      background-color: @dark-theme-text-color;
+    }
+  }
 
   & .@{class-prefix}-link {
     color: darken(@dark-theme-text-color, 10%);
@@ -740,17 +746,21 @@ body.dark-theme {
     height:14px;
 }
 
+& .ant-input-clear-icon ,.ant-input-clear-icon:hover{
+  background: @dark-theme-secondary-color ;
+  color: @dark-theme-text-color ;
+
+}
     & .ant-select-clear {
     background: @dark-theme-secondary-color !important;
     .anticon{
       color: @dark-theme-text-color !important;
     }
   }
-  & .ant-picker-clear{
+  & .ant-picker-clear, .ant-picker-clear:hover{
     background: @dark-theme-secondary-color;
     color: @dark-theme-text-color  ;
   }
-
 
   & .ant-layout-sider,
   & .@{class-prefix}-layout-sider-dark {
