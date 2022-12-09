@@ -42,12 +42,20 @@ body.dark-theme {
   & .ant-form-item-with-help .ant-form-item-explain {
     color: @dark-theme-text-color;
   }
-  & .ant-timeline-item-content{
 
-    & .ant-divider{
-      background-color: @dark-theme-text-color;
+
+    & .notificationDivider{
+      & .ant-divider{
+        background-color: @dark-theme-text-color;
+      }
     }
-  }
+    // & .ant-timeline-item-content{
+    //   & .ant-divider{
+    //     background-color: blue;
+
+    //   }
+    // }
+  
 
   & .@{class-prefix}-link {
     color: darken(@dark-theme-text-color, 10%);
