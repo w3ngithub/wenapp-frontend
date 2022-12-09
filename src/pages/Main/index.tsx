@@ -94,9 +94,12 @@ const ProjectLogs = lazy(() => import('pages/ProjectLogs'))
 
 moment.locale('en-gb')
 
-export const socket = socketIOClient(process.env.REACT_APP_API_ENDPOINT || '', {
-  transports: ['websocket'],
-})
+export const socket = socketIOClient(
+  process.env.REACT_APP_SOCKET_API_ENDPOINT || '',
+  {
+    transports: ['websocket'],
+  }
+)
 
 function App(props: any) {
   const {locale, authUser, themeType, switchingUser} = props
