@@ -42,7 +42,6 @@ export const DASHBOARD_ICON_ACCESS = [
   RoleAccess.TeamLead,
   RoleAccess.ProjectManager,
   RoleAccess.HumanResource,
-  RoleAccess.OfficeAdmin,
 ]
 
 // Co-workers
