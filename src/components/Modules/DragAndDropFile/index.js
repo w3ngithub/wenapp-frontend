@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {InboxOutlined} from '@ant-design/icons'
 import {Upload, Modal} from 'antd'
-import { notification } from 'helpers/notification'
+import {notification} from 'helpers/notification'
 
 const Dragger = Upload.Dragger
 
@@ -28,7 +28,7 @@ function DragAndDropFile({
   displayType = 'text',
   allowMultiple = true,
   accept = '',
-  maxSize = 3
+  maxSize = 3,
 }) {
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
@@ -48,12 +48,12 @@ function DragAndDropFile({
 
   const handleChange = (info) => {
     const file = info.file
-    const isLt3M = file.size/1024/1024 < maxSize
-    let fileList = [...info.fileList];
+    const isLt3M = file.size / 1024 / 1024 < maxSize
+    let fileList = [...info.fileList]
 
-    if(!isLt3M){
-      notification({message:`Cannot Upload size of above ${maxSize}MB `})
-      fileList = info.fileList.filter((i)=>i.uid!==file.uid)
+    if (!isLt3M && fileList.length) {
+      notification({message: `Cannot Upload size of above ${maxSize}MB `})
+      fileList = info.fileList.filter((i) => i.uid !== file.uid)
     }
 
     if (allowMultiple) setFiles(fileList)
@@ -67,7 +67,7 @@ function DragAndDropFile({
 
   const handleRemove = (removed) => {
     if (!removed.url) return
- 
+
     if (allowMultiple) {
       onRemove((prev) => [...prev, removed.url])
     } else onRemove(removed.url)
