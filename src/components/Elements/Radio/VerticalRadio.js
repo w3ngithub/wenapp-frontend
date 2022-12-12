@@ -8,7 +8,6 @@ class VerticalRadio extends React.Component {
     value: 1,
   }
   onChange = (e) => {
-    console.log('radio checked', e.target.value)
     this.setState({
       value: e.target.value,
     })

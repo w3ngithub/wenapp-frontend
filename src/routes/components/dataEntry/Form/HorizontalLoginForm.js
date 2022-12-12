@@ -15,7 +15,6 @@ class HorizontalLoginForm extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
-      console.log('values', values)
       if (!err) {
         this.props.showAuthLoader()
         this.props.userSignIn(values)
