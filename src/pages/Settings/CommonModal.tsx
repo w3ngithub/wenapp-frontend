@@ -11,7 +11,7 @@ interface modalInterface {
   onCancel: (setDuplicateValue: any) => void
   type: string
   isLoading: boolean
-  editData: any
+  editData: {name: string}
 }
 
 const layout = {
@@ -37,11 +37,11 @@ function CommonModal({
     let availableData
     if (currentData?.hasOwnProperty('data')) {
       availableData = currentData?.data?.data?.data?.map(
-        (item: {id: any; name: any}) => item?.name?.toLowerCase()
+        (item: {id: string; name: string}) => item?.name?.toLowerCase()
       )
     } else {
       // this is for roles tab
-      availableData = currentData.map((item: {id: any; name: any}) =>
+      availableData = currentData.map((item: {id: string; name: string}) =>
         item?.name?.toLowerCase()
       )
     }

@@ -141,6 +141,7 @@ function NotificationInfo() {
           id: log._id,
           name: '',
           module: log?.module,
+          viewedBy: log?.viewedBy,
           title: [
             <p className="gx-notification-list-header">{log?.module || ''}</p>,
             <span

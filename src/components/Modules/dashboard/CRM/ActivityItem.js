@@ -2,10 +2,26 @@ import React from 'react'
 import {Avatar, Divider} from 'antd'
 import Auxiliary from 'util/Auxiliary'
 
-const ActivityItem = ({task, title = ''}) => {
+const ActivityItem = ({task, title = '', viewedBy = []}) => {
+  let currentUser = localStorage.getItem('user_id') || ''
+  currentUser = currentUser.replaceAll('"', '')
+
+  console.log({currentUser, viewedBy})
+
   return (
     <Auxiliary>
-      <div>{task?.title}</div>
+      <div
+        style={{
+          backgroundColor:
+            title === 'Notifications'
+              ? viewedBy?.includes(currentUser) || viewedBy?.length !== 0
+                ? 'red'
+                : 'blue'
+              : '',
+        }}
+      >
+        {task?.title}
+      </div>
       {task?.imageList?.length > 0 ? (
         <ul className="gx-list-inline gx-mb-3 gx-mt-2">
           {task?.imageList?.map((image, index) => {

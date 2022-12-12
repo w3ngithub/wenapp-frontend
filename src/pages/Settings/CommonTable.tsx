@@ -1,4 +1,4 @@
-import {Button, Table} from 'antd'
+import {Button, Table, TablePaginationConfig} from 'antd'
 import React from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 
@@ -11,8 +11,8 @@ function CommonTable({
   pagination = true,
   footer = undefined,
 }: {
-  data: any
-  columns: any
+  data: {}[]
+  columns: {}[]
   isLoading?: boolean
   onAddClick?: React.MouseEventHandler<HTMLElement>
   hideAddButton?: boolean

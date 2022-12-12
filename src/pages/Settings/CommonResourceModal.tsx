@@ -8,7 +8,7 @@ interface modalInterface {
   onCancel: React.MouseEventHandler<HTMLElement>
   type: string
   isLoading: boolean
-  editData: any
+  editData: {title: string; content: string}
 }
 
 const layout = {
