@@ -13,8 +13,8 @@ import {getIsAdmin} from 'helpers/utils'
 
 export const notificationCountStyle: any = {
   position: 'absolute',
-  top: '-7px',
-  right: '-6px',
+  bottom: '2px',
+  right: '-8px',
   backgroundColor: '#f44336',
   color: 'white',
   width: '15px',
@@ -23,7 +23,8 @@ export const notificationCountStyle: any = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  fontSize: '12px',
+  fontSize: '8px',
+  padding: '9px',
 }
 
 function ActivityInfo() {
@@ -104,6 +105,7 @@ function ActivityInfo() {
         id: i,
         tasks: page?.data?.data?.data?.map((log: any) => ({
           id: log._id,
+          module: log?.module,
           name: log.user.name || '',
           title: [
             <span className="" key={1}>

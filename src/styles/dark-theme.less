@@ -43,6 +43,20 @@ body.dark-theme {
     color: @dark-theme-text-color;
   }
 
+
+    & .notificationDivider{
+      & .ant-divider{
+        background-color: @dark-theme-text-color;
+      }
+    }
+    // & .ant-timeline-item-content{
+    //   & .ant-divider{
+    //     background-color: blue;
+
+    //   }
+    // }
+  
+
   & .@{class-prefix}-link {
     color: darken(@dark-theme-text-color, 10%);
   }
@@ -460,6 +474,13 @@ body.dark-theme {
     border-bottom-color: @dark-theme-border-color;
   }
 
+  & .latest-events  .read-more-dark{
+    color:white
+  }
+  & .latest-events  .read-more-dark:hover{
+    color:#60b7ea
+  }
+
   & .ant-menu {
     color: @dark-theme-text-color;
     background: @dark-theme-sidebar-dark-bg;
@@ -733,10 +754,21 @@ body.dark-theme {
     height:14px;
 }
 
-    & .ant-select-clear {
-    background: @dark-theme-secondary-color;
-  }
+& .ant-input-clear-icon ,.ant-input-clear-icon:hover{
+  background: @dark-theme-secondary-color ;
+  color: @dark-theme-text-color ;
 
+}
+    & .ant-select-clear {
+    background: @dark-theme-secondary-color !important;
+    .anticon{
+      color: @dark-theme-text-color !important;
+    }
+  }
+  & .ant-picker-clear, .ant-picker-clear:hover{
+    background: @dark-theme-secondary-color;
+    color: @dark-theme-text-color  ;
+  }
 
   & .ant-layout-sider,
   & .@{class-prefix}-layout-sider-dark {

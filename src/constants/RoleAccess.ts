@@ -7,7 +7,7 @@ const RoleAccess = {
   Finance: 'finance',
   TeamLead: 'lead',
   Subscriber: 'subscriber',
-  OfficeAdmin: 'officeAdmin',
+  OfficeAdmin: 'officeadmin',
   All: 'all',
 }
 
@@ -38,6 +38,13 @@ export const DASHBOARD_CARD_CLICKABLE_ACCESS = [
 export const SALARY_REVIEW_ACCESS = [RoleAccess.HumanResource, RoleAccess.Admin]
 
 export const DASHBOARD_ICON_ACCESS = [
+  RoleAccess.Admin,
+  RoleAccess.TeamLead,
+  RoleAccess.ProjectManager,
+  RoleAccess.HumanResource,
+]
+
+export const DASHBOARD_PUNCH_IN_TODAY_CARD_ACCESS = [
   RoleAccess.Admin,
   RoleAccess.TeamLead,
   RoleAccess.ProjectManager,
@@ -81,7 +88,6 @@ export const ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS = [
   RoleAccess.ProjectManager,
   RoleAccess.TeamLead,
   RoleAccess.Finance,
-  RoleAccess.OfficeAdmin,
 ]
 export const ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS = [
   RoleAccess.ProjectManager,

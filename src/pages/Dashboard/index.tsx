@@ -37,10 +37,11 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {
+import RoleAccess, {
   DASHBOARD_CARD_CLICKABLE_ACCESS,
   DASHBOARD_ICON_ACCESS,
   DASHBOARD_PROJECT_LOG_NO_ACCESS,
+  DASHBOARD_PUNCH_IN_TODAY_CARD_ACCESS,
 } from 'constants/RoleAccess'
 import {Style, Events, Notices} from 'constants/Interfaces'
 import {LEAVES_TYPES} from 'constants/Leaves'
@@ -86,9 +87,10 @@ const Dashboard = () => {
     })
   }, [])
 
-  const {data: salaryReview} = useQuery(
+  const {data: salaryReview, refetch: salaryRefetch} = useQuery(
     ['usersSalaryReview'],
-    getSalaryReviewUsers
+    getSalaryReviewUsers,
+    {enabled: false}
   )
 
   const {data: AttendanceCount} = useQuery(
@@ -176,49 +178,41 @@ const Dashboard = () => {
               const isHoliday =
                 startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
 
-                if (
-                  startLeaveDate >= todayDate &&
-                  startLeaveDate <= weeksLastDate &&
-                  startLeaveDate <= endLeaveDate &&
-                  !isHoliday
-                ) {
-                  updateLeaves = [
-                    ...updateLeaves,
-                    {
-                      ...leave,
-                      date: leave?.leaveDates[0],
+              if (
+                startLeaveDate >= todayDate &&
+                startLeaveDate <= weeksLastDate &&
+                startLeaveDate <= endLeaveDate &&
+                !isHoliday
+              ) {
+                updateLeaves = [
+                  ...updateLeaves,
+                  {
+                    ...leave,
+                    date: leave?.leaveDates[0],
 
-                      leaveDates: new Date(
-                        startLeaveDate.setDate(startLeaveDate.getDate())
-                      ).toJSON(),
-                    },
-                  ]
-                }
-
-                if (startLeaveDate < todayDate) {
-                  startLeaveDate.setMonth(todayDate.getMonth())
-                  startLeaveDate.setFullYear(todayDate.getFullYear())
-                  updateLeaves = [
-                    ...updateLeaves,
-                    {
-                      ...leave,
-                      date: leave?.leaveDates[0],
-                      leaveDates: new Date(
-                        startLeaveDate.setDate(todayDate.getDate())
-                      ).toJSON(),
-                    },
-                  ]
-                }
-                startLeaveDate.setDate(startLeaveDate.getDate() + 1)
+                    leaveDates: new Date(
+                      startLeaveDate.setDate(startLeaveDate.getDate())
+                    ).toJSON(),
+                  },
+                ]
               }
-            } else {
-              updateLeaves = [
-                ...updateLeaves,
-                {...leave, date: leave?.leaveDates[0]},
-              ]
+
+              if (startLeaveDate < todayDate) {
+                startLeaveDate.setMonth(todayDate.getMonth())
+                startLeaveDate.setFullYear(todayDate.getFullYear())
+                updateLeaves = [
+                  ...updateLeaves,
+                  {
+                    ...leave,
+                    date: leave?.leaveDates[0],
+                    leaveDates: new Date(
+                      startLeaveDate.setDate(todayDate.getDate())
+                    ).toJSON(),
+                  },
+                ]
+              }
+              startLeaveDate.setDate(startLeaveDate.getDate() + 1)
             }
-<<<<<<< HEAD
-=======
           } else {
             leave?.leaveDates.forEach((date: string) => {
               const leaveDate = new Date(date)
@@ -228,9 +222,8 @@ const Dashboard = () => {
                   {...leave, date: date, leaveDates: date},
                 ]
             })
->>>>>>> af174dbf0f39b9911aef9608a47cc056d546b2f8
           }
-        )
+        })
         return updateLeaves
       },
     }
@@ -257,7 +250,13 @@ const Dashboard = () => {
     }
   }, [key, logTypeRefetch, projectRefetch])
 
-  const generateChart = (values: {}) => {
+  useEffect(() => {
+    if ([RoleAccess.Admin, RoleAccess.HumanResource].includes(key)) {
+      Promise.all([salaryRefetch()])
+    }
+  }, [key, salaryRefetch])
+
+  const generateChart = (values: any) => {
     if (project === '' || project === undefined) return
     fetchChartQuery(project, logType)
   }
@@ -316,11 +315,7 @@ const Dashboard = () => {
     const nameSplitted = props?.event?.title.split(' ')
     let lastName
     if (nameSplitted.length === 1) lastName = ''
-<<<<<<< HEAD
-    else lastName = `${nameSplitted?.pop()?.substring(0, 1)}.`
-=======
-    else lastName = `${nameSplitted.pop().substring(0, 1)}. `
->>>>>>> af174dbf0f39b9911aef9608a47cc056d546b2f8
+    else lastName = `${nameSplitted?.pop()?.substring(0, 1)}. `
     const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
     const style = {
@@ -492,12 +487,19 @@ const Dashboard = () => {
   ]
 
   const isAdmin = DASHBOARD_ICON_ACCESS.includes(key)
+
   const width = isAdmin ? 6 : 12
 
   return (
     <Auxiliary>
       <Row>
-        <Col xl={width} lg={12} md={12} sm={12} xs={24}>
+        <Col
+          xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+          lg={12}
+          md={12}
+          sm={12}
+          xs={24}
+        >
           <TotalCountCard
             isLink={
               DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
@@ -515,8 +517,14 @@ const Dashboard = () => {
           />
         </Col>
 
-        {DASHBOARD_ICON_ACCESS.includes(key) && (
-          <Col xl={width} lg={12} md={12} sm={12} xs={24}>
+        {DASHBOARD_PUNCH_IN_TODAY_CARD_ACCESS.includes(key) && (
+          <Col
+            xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+            lg={12}
+            md={12}
+            sm={12}
+            xs={24}
+          >
             <TotalCountCard
               isLink={
                 DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
@@ -569,7 +577,13 @@ const Dashboard = () => {
             />
           </Col>
         )}
-        <Col xl={width} lg={12} md={12} sm={12} xs={24}>
+        <Col
+          xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+          lg={12}
+          md={12}
+          sm={12}
+          xs={24}
+        >
           <TotalCountCard
             isLink={
               DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)

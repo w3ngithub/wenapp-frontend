@@ -2,15 +2,43 @@ import React, {useEffect, useRef, useState} from 'react'
 import {Avatar, Spin, Timeline} from 'antd'
 import WidgetHeader from 'components/Elements/WidgetHeader/index'
 import ActivityItem from './ActivityItem'
+import {selectThemeType} from 'appRedux/reducers/Settings'
+import {useSelector} from 'react-redux'
+import {THEME_TYPE_SEMI_DARK} from 'constants/ThemeSetting'
 
 const TimeLineItem = Timeline.Item
 
-function getName(task, shape) {
-  if (!task.avatar && !task.name) {
+function getName(task, themeType) {
+  if (task.icon) {
+    return (
+      <Avatar
+        shape={'circle'}
+        className="gx-d-flex gx-align-items-center gx-justify-content-center"
+        style={
+          themeType === THEME_TYPE_SEMI_DARK
+            ? {
+                color: '#787575',
+                background: '#f1f1f1',
+                border: '1.5px solid #ccc',
+                padding: '20px',
+              }
+            : {
+                background: '#787575',
+                color: '#f1f1f1',
+                border: '1.5px solid #ccc',
+                padding: '20px',
+              }
+        }
+        icon={task.icon}
+      />
+    )
+  } else if (!task.avatar && !task.name) {
     return <span></span>
   } else {
     if (task.avatar) {
-      return <Avatar shape={shape} className="gx-size-40" src={task.avatar} />
+      return (
+        <Avatar shape={'circle'} className="gx-size-40" src={task.avatar} />
+      )
     } else {
       let nameSplit = task.name.split(' ')
       if (task.name.split(' ').length === 1) {
@@ -31,6 +59,8 @@ function RecentActivity(props) {
 
   const popUpRef = useRef()
   const scrollRef = useRef(true)
+
+  const themeType = useSelector(selectThemeType)
 
   const {
     recentList,
@@ -85,9 +115,9 @@ function RecentActivity(props) {
                 <TimeLineItem
                   key={'timeline' + index}
                   mode="alternate"
-                  dot={getName(task)}
+                  dot={getName(task, themeType)}
                 >
-                  <ActivityItem task={task} />
+                  <ActivityItem task={task} title={title} />
                 </TimeLineItem>
               )
             })}
@@ -128,7 +158,9 @@ function RecentActivity(props) {
       )}
 
       {!recentList ||
-        (recentList?.length === 0 && (
+        recentList?.length === 0 ||
+        !recentList?.[0]?.tasks ||
+        (recentList?.[0]?.tasks?.length === 0 && (
           <span className="gx-link gx-btn-link">
             {'No  any notification to show'}
           </span>
