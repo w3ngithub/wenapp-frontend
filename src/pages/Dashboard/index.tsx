@@ -37,10 +37,11 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {
+import RoleAccess, {
   DASHBOARD_CARD_CLICKABLE_ACCESS,
   DASHBOARD_ICON_ACCESS,
   DASHBOARD_PROJECT_LOG_NO_ACCESS,
+  DASHBOARD_PUNCH_IN_TODAY_CARD_ACCESS,
 } from 'constants/RoleAccess'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
@@ -83,9 +84,10 @@ const Dashboard = () => {
     })
   }, [])
 
-  const {data: salaryReview} = useQuery(
+  const {data: salaryReview, refetch: salaryRefetch} = useQuery(
     ['usersSalaryReview'],
-    getSalaryReviewUsers
+    getSalaryReviewUsers,
+    {enabled: false}
   )
 
   const {data: AttendanceCount} = useQuery(
@@ -244,6 +246,12 @@ const Dashboard = () => {
       Promise.all([logTypeRefetch(), projectRefetch()])
     }
   }, [key, logTypeRefetch, projectRefetch])
+
+  useEffect(() => {
+    if ([RoleAccess.Admin, RoleAccess.HumanResource].includes(key)) {
+      Promise.all([salaryRefetch()])
+    }
+  }, [key, salaryRefetch])
 
   const generateChart = (values: any) => {
     if (project === '' || project === undefined) return
@@ -477,12 +485,19 @@ const Dashboard = () => {
   ]
 
   const isAdmin = DASHBOARD_ICON_ACCESS.includes(key)
+
   const width = isAdmin ? 6 : 12
 
   return (
     <Auxiliary>
       <Row>
-        <Col xl={width} lg={12} md={12} sm={12} xs={24}>
+        <Col
+          xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+          lg={12}
+          md={12}
+          sm={12}
+          xs={24}
+        >
           <TotalCountCard
             isLink={
               DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
@@ -500,8 +515,14 @@ const Dashboard = () => {
           />
         </Col>
 
-        {DASHBOARD_ICON_ACCESS.includes(key) && (
-          <Col xl={width} lg={12} md={12} sm={12} xs={24}>
+        {DASHBOARD_PUNCH_IN_TODAY_CARD_ACCESS.includes(key) && (
+          <Col
+            xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+            lg={12}
+            md={12}
+            sm={12}
+            xs={24}
+          >
             <TotalCountCard
               isLink={
                 DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
@@ -554,7 +575,13 @@ const Dashboard = () => {
             />
           </Col>
         )}
-        <Col xl={width} lg={12} md={12} sm={12} xs={24}>
+        <Col
+          xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+          lg={12}
+          md={12}
+          sm={12}
+          xs={24}
+        >
           <TotalCountCard
             isLink={
               DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)

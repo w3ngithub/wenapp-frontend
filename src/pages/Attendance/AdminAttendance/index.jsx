@@ -423,10 +423,7 @@ function AdminAttendance({userRole}) {
               <Button
                 className="gx-btn-form gx-btn-primary gx-text-white "
                 disabled={
-                  getIsAdmin() ||
-                  sortedData?.length === 0 ||
-                  isFetching ||
-                  dataToExport.loading
+                  sortedData?.length === 0 || isFetching || dataToExport.loading
                 }
                 onClick={handleExport}
               >
@@ -449,13 +446,15 @@ function AdminAttendance({userRole}) {
                 ]}
               ></CSVLink>
 
-              <Button
-                className="gx-btn-form gx-btn-primary gx-text-white "
-                onClick={() => setToggleAdd(true)}
-                disabled={getIsAdmin()}
-              >
-                Add
-              </Button>
+              <AccessWrapper noAccessRoles={[RoleAccess.OfficeAdmin]}>
+                <Button
+                  className="gx-btn-form gx-btn-primary gx-text-white "
+                  onClick={() => setToggleAdd(true)}
+                  disabled={getIsAdmin()}
+                >
+                  Add
+                </Button>
+              </AccessWrapper>
             </div>
           </AccessWrapper>
         </div>

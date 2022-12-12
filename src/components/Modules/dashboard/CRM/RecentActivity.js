@@ -158,7 +158,9 @@ function RecentActivity(props) {
       )}
 
       {!recentList ||
-        (recentList?.length === 0 && (
+        recentList?.length === 0 ||
+        !recentList?.[0]?.tasks ||
+        (recentList?.[0]?.tasks?.length === 0 && (
           <span className="gx-link gx-btn-link">
             {'No  any notification to show'}
           </span>
