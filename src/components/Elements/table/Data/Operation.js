@@ -42,7 +42,6 @@ class Operation extends React.Component {
     }, 1000)
   }
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys)
     this.setState({selectedRowKeys})
   }
 

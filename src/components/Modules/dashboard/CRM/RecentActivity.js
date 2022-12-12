@@ -99,7 +99,6 @@ function RecentActivity(props) {
       )
     }
   }, [])
-  console.log('recent list', recentList)
 
   return (
     <div

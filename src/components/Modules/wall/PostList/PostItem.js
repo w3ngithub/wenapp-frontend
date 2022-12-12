@@ -23,7 +23,6 @@ class PostItem extends Component {
   }
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      console.log('user --->', this.state.user)
       const commentData = {
         user: this.state.user,
         comment: this.state.message,

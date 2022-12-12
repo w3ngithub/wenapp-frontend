@@ -3,12 +3,10 @@ import {DownOutlined} from '@ant-design/icons'
 import {Button, Card, Dropdown, Menu, message} from 'antd'
 
 function handleButtonClick(e) {
-  message.info('Click on left button.')
   console.log('click left button', e)
 }
 
 function handleMenuClick(e) {
-  message.info('Click on menu item.')
   console.log('click', e)
 }
 
