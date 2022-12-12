@@ -23,9 +23,7 @@ function SidebarContent(props) {
   const {themeType, navStyle, collapse} = props
   const location = useLocation()
   const paths = location.pathname.split('/')
-  const {
-    role: {key},
-  } = useSelector(selectAuthUser)
+  const {role: {key} = {}} = useSelector(selectAuthUser)
 
   const selectedOpenKeys =
     paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1]
