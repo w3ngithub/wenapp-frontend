@@ -69,7 +69,6 @@ class Customizer extends Component {
   handleColorChange = (varname, color) => {
     const {vars} = this.state
     if (varname) vars[varname] = color
-    console.log('vars: ', vars)
     window.less
       .modifyVars(vars)
       .then(() => {

@@ -7,7 +7,6 @@ class Basic extends React.Component {
   }
 
   onChange = (time) => {
-    console.log(time)
     this.setState({value: time})
   }
 
