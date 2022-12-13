@@ -123,6 +123,7 @@ const ATTENDANCE_COLUMNS = (
           dataIndex: 'punchInTime',
           key: 'punchInTime',
           sorter: true,
+          sortOrder: sortedInfo.columnKey === 'punchInTime' && sortedInfo.order,
         },
         {
           title: 'Punch-out Time',
