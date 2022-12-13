@@ -16,7 +16,8 @@ export const ProtectedRoute = ({
 }: protectedRouteInterface) => {
   let location = useLocation()
   const authUser = auth
-  if (!authUser || authUser === null || authUser === undefined) {
+  const token = localStorage.getItem('token')
+  if (!token) {
     return <Navigate to="/signin" state={{from: location}} replace />
   }
 
