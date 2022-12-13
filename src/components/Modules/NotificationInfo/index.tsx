@@ -45,6 +45,9 @@ function NotificationInfo() {
         role: key,
         userId: _id,
       })
+      if (res?.status) {
+        notificationCount > 0 && socket.emit('viewed-notification', {_id, key})
+      }
       return res
     },
     {enabled: false}
@@ -100,7 +103,6 @@ function NotificationInfo() {
 
   useEffect(() => {
     if (visible) {
-      notificationCount > 0 && socket.emit('viewed-notification', {_id, key})
       setShowBellCount(false)
       setNotificationCount(0)
       refetch()
@@ -141,6 +143,7 @@ function NotificationInfo() {
           id: log._id,
           name: '',
           module: log?.module,
+          viewedBy: log?.viewedBy,
           title: [
             <p className="gx-notification-list-header">{log?.module || ''}</p>,
             <span
