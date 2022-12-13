@@ -57,9 +57,7 @@
   border-color: white;
 }
 .ant-radio-group-solid
-  .ant-radio-button-wrapper-checked:not(
-    .ant-radio-button-wrapper-disabled
-  ):focus-within {
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):focus-within {
   color: #fff;
   background: #038fde;
   border-color: #038fde;
@@ -550,9 +548,22 @@
 }
 .latest-events {
   background-color: rgb(142 209 252 / 54%) !important;
+  td.ant-table-column-sort {
+    background-color: rgb(142 209 252 / 54%) !important;
+  }
 }
 .old-events {
   background-color: #fff;
+}
+
+.ant-timeline-item {
+  padding-bottom: 0px !important;
+}
+#general-notification-icon,
+#admin-activity-icon {
+  .gx-timeline-info:not(:last-child) {
+    padding-bottom: 0 !important;
+  }
 }
 /* Remove weekends in month view */
 // .rbc-month-header > :nth-child(6),
@@ -574,3 +585,7 @@
 // .rbc-row-content > .rbc-row > .rbc-date-cell:last-child {
 //   display:none;
 // }
+
+.center-text {
+  text-align: center;
+}

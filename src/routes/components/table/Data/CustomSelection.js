@@ -31,7 +31,6 @@ class CustomSelection extends React.Component {
     selectedRowKeys: [], // Check here to configure the CRM column
   }
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys)
     this.setState({selectedRowKeys})
   }
 

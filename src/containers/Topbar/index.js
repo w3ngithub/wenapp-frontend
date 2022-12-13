@@ -19,6 +19,8 @@ import PunchInOut from 'components/Elements/PunchInOut'
 import {setThemeType} from 'appRedux/actions/Setting'
 import ActivityInfo from 'components/Modules/ActivityInfo'
 import RoleAccess from 'constants/RoleAccess'
+import NotificationInfo from 'components/Modules/NotificationInfo'
+import {getIsAdmin} from 'helpers/utils'
 
 const {Header} = Layout
 
@@ -108,12 +110,11 @@ class Topbar extends Component {
                   />
                 </li>
 
-                <li className="gx-user-nav gx-notify li-gap">
-                  <i
-                    className={`icon icon-notification gx-fs-xl`}
-                    style={{cursor: 'pointer'}}
-                  />
-                </li>
+                {!getIsAdmin() && (
+                  <li className="gx-user-nav gx-notify li-gap">
+                    <NotificationInfo />
+                  </li>
+                )}
 
                 {RoleAccess.Admin === this.state.user.role.key && (
                   <li className="gx-user-nav gx-notify li-gap">

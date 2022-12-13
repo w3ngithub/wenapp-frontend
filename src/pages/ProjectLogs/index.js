@@ -34,6 +34,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import LogHoursModal from './LogHours'
+import {socket} from 'pages/Main'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -169,6 +170,10 @@ function ProjectLogs() {
         [
           () => queryClient.invalidateQueries(['timeLogs']),
           () => queryClient.invalidateQueries(['singleProject']),
+          () => queryClient.invalidateQueries(['projectWeeklyTime']),
+          () => {
+            socket.emit('CUD')
+          },
         ]
       ),
 
@@ -192,11 +197,15 @@ function ProjectLogs() {
   }
 
   const handlelogTypeChange = (log) => {
+    setSelectedLogsIds([])
+    setSelectedLogObject([])
     setLogType(log)
     setPage({page: 1, limit: 50})
   }
 
   const handleAuthorChange = (logAuthor) => {
+    setSelectedLogsIds([])
+    setSelectedLogObject([])
     setAuthor(logAuthor)
     setPage({page: 1, limit: 50})
   }
@@ -399,7 +408,6 @@ function ProjectLogs() {
               </FormItem>
             </Form>
             <AccessWrapper noAccessRoles={[]}>
-              {' '}
               <div>
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
@@ -407,7 +415,7 @@ function ProjectLogs() {
                   style={{marginBottom: '16px'}}
                   disabled={selectedLogObject?.length === 0}
                 >
-                  View Log Hours
+                  Calculate Hours
                 </Button>
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
@@ -442,9 +450,9 @@ function ProjectLogs() {
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}
           rowSelection={{
-            // onChange: handleRowSelect,
             onSelect: handleRowSelect,
             selectedRowKeys: selectedLogsIds,
+            hideSelectAll: true,
           }}
           pagination={{
             current: page.page,

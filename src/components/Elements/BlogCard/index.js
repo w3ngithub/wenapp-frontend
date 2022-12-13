@@ -62,11 +62,7 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
     <div
       className={`gx-product-item  ${
         grid ? 'gx-product-vertical ' : 'gx-product-horizontal '
-      } ${
-        moment() < moment(createdAt).add(1, 'days')
-          ? 'latest-events'
-          : 'old-events'
-      }
+      } ${moment() < moment(createdAt).add(1, 'days') ? 'latest-events' : ''}
       `}
     >
       {/* {imgSrc && (
@@ -100,7 +96,11 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
         </div>
 
         <p>
-          {filteredContent}...<Link to={`${_id}-${slug}`}> Read More</Link>
+          {filteredContent}...
+          <Link to={`${_id}-${slug}`} className="read-more-dark">
+            {' '}
+            Read More
+          </Link>
         </p>
       </div>
       <div className="gx-footer gx-d-flex gx-justify-content-end ">

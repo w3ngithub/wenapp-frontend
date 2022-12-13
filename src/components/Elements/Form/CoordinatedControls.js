@@ -16,7 +16,6 @@ class CoordinatedControls extends Component {
     })
   }
   handleSelectChange = (value) => {
-    console.log(value)
     this.props.form.setFieldsValue({
       note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
     })

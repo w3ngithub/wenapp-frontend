@@ -15,7 +15,6 @@ class HotTag extends React.Component {
     const nextSelectedTags = checked
       ? [...selectedTags, tag]
       : selectedTags.filter((t) => t !== tag)
-    console.log('You are interested in: ', nextSelectedTags)
     this.setState({selectedTags: nextSelectedTags})
   }
 

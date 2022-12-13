@@ -27,7 +27,7 @@ import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
 import {getQuarters} from 'services/leaves'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {
+import RoleAccess, {
   CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS,
   CO_WORKERS_SEARCH_IMPORT_NO_ACCESS,
 } from 'constants/RoleAccess'
@@ -36,6 +36,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {useDispatch, useSelector} from 'react-redux'
 import {switchedUser, switchUser, updateJoinDate} from 'appRedux/actions'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {socket} from 'pages/Main'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -128,6 +129,9 @@ function CoworkersPage() {
             () =>
               dispatch(updateJoinDate(response?.data?.data?.data?.joinDate)),
             () => setOpenUserDetailModal(false),
+            () => {
+              socket.emit('CUD')
+            },
           ]
         ),
       onError: (error) => {
@@ -145,6 +149,16 @@ function CoworkersPage() {
         [
           () => queryClient.invalidateQueries(['users']),
           () => setOpenUserDetailModal(false),
+          () => {
+            socket.emit('CUD')
+          },
+          () => {
+            socket.emit('disable-user', {
+              showTo: [RoleAccess.Admin, RoleAccess.HumanResource],
+              remarks: `${response?.data?.data?.data?.name} has been disabled.`,
+              module: 'User',
+            })
+          },
         ]
       ),
     onError: (error) => {
@@ -160,7 +174,12 @@ function CoworkersPage() {
           response,
           'Allocated leaves reset of all user Successfully',
           'Could not reset allocated leaves',
-          [() => refetch()]
+          [
+            () => refetch(),
+            () => {
+              socket.emit('CUD')
+            },
+          ]
         ),
       onError: (error) => {
         notification({

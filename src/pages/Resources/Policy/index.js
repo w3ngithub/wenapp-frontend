@@ -130,7 +130,11 @@ function Policy() {
       <Card
         title="Policy"
         extra={
-          [RoleAccess.Admin, RoleAccess.HumanResource].includes(key) ? (
+          [
+            RoleAccess.Admin,
+            RoleAccess.HumanResource,
+            RoleAccess.OfficeAdmin,
+          ].includes(key) ? (
             <Button
               className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
               onClick={() => handleOpenModal('Policy')}

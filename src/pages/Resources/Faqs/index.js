@@ -124,8 +124,11 @@ function Faqs() {
       <Card
         title="FAQS"
         extra={
-          [RoleAccess.Admin, RoleAccess.HumanResource].includes(key) &&
-          !getIsAdmin() ? (
+          [
+            RoleAccess.Admin,
+            RoleAccess.HumanResource,
+            RoleAccess.OfficeAdmin,
+          ].includes(key) && !getIsAdmin() ? (
             <Button
               className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
               onClick={() => handleOpenModal('FAQ')}

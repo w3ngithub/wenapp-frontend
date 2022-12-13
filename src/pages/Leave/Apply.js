@@ -33,6 +33,8 @@ import {leaveInterval} from 'constants/LeaveDuration'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {socket} from 'pages/Main'
+import RoleAccess from 'constants/RoleAccess'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -164,6 +166,24 @@ function Apply({user}) {
           () => queryClient.invalidateQueries(['userLeaves']),
           () => queryClient.invalidateQueries(['leaves']),
           () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
+          () => {
+            socket.emit('CUD')
+          },
+          () => {
+            socket.emit('dashboard-pending')
+          },
+          () => {
+            socket.emit('apply-leave', {
+              showTo: [
+                RoleAccess.Admin,
+                RoleAccess.HumanResource,
+                RoleAccess.ProjectManager,
+                RoleAccess.TeamLead,
+              ],
+              remarks: `${name} has applied for leave. Please review.`,
+              module: 'Leave',
+            })
+          },
         ]
       ),
     onError: (error) => {
@@ -184,7 +204,7 @@ function Apply({user}) {
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
       user:
-        res.data.data.data.leaveStatus === STATUS_TYPES[0].id
+        res.data.data.data.leaveStatus === STATUS_TYPES[1].id
           ? {name, email}
           : res.data.data.data.user,
       leaveReason: res.data.data.data.reason,

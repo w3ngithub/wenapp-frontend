@@ -275,7 +275,7 @@ export const OfficeHourFilter = [
     id: 'eq',
   },
   {
-    value: 'Is greater than',
+    value: 'Is Greater than',
     id: 'gt',
   },
   {
@@ -283,7 +283,7 @@ export const OfficeHourFilter = [
     id: 'gte',
   },
   {
-    value: 'Is Less than or equal to',
+    value: 'Is Less than or Equal to',
     id: 'lte',
   },
   {

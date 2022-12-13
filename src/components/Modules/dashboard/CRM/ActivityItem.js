@@ -1,8 +1,8 @@
 import React from 'react'
-import {Avatar} from 'antd'
+import {Avatar, Divider} from 'antd'
 import Auxiliary from 'util/Auxiliary'
 
-const ActivityItem = ({task}) => {
+const ActivityItem = ({task, title = ''}) => {
   return (
     <Auxiliary>
       <div>{task?.title}</div>
@@ -30,6 +30,15 @@ const ActivityItem = ({task}) => {
           })}
         </ul>
       ) : null}
+      <p
+        className={
+          title === 'Notifications' || title === 'Recent Activities'
+            ? 'notificationDivider'
+            : ''
+        }
+      >
+        <Divider />
+      </p>
     </Auxiliary>
   )
 }

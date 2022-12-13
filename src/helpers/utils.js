@@ -1,6 +1,5 @@
 import {notification} from './notification'
 import moment from 'moment'
-import {socket} from 'pages/Main/MainApp'
 
 export const handleSort = (
   currentState,
@@ -316,7 +315,6 @@ export const handleResponse = (
   queries
 ) => {
   if (response.status) {
-    socket.emit('CUD')
     queries.forEach((query) => {
       query()
     })
@@ -366,7 +364,6 @@ export const pendingLeaves = (leaves) => {
 }
 
 export const specifyParticularHalf = (leaves) => {
-  // console.log('to disable halves', leaves);
   const approvedLeaves = leaves.filter(
     (leave) => leave.leaveStatus === 'approved'
   )

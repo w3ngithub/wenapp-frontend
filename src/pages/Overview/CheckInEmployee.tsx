@@ -12,7 +12,7 @@ const formattedUsers = (users: any[]) => {
     const checkIn = user?.data?.[0]?.punchInTime
     const checkOut = user?.data?.at(-1)?.punchOutTime
     const punchInIp = user?.data?.[0]?.punchInIp || ''
-    const punchOutIp = user?.data?.[0]?.punchOutIp || ''
+    const punchOutIp = user?.data?.at(-1)?.punchOutIp || ''
 
     return {
       ...user,

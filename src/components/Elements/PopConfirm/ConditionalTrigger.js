@@ -23,7 +23,6 @@ class ConditionalTrigger extends React.Component {
       return
     }
     // Determining condition before show the popconfirm.
-    console.log(this.state.condition)
     if (this.state.condition) {
       this.confirm() // next step
     } else {

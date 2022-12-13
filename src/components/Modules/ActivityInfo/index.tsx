@@ -8,12 +8,13 @@ import moment from 'moment'
 import {useInView} from 'react-intersection-observer'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
-import {socket} from 'pages/Main/MainApp'
+import {socket} from 'pages/Main'
+import {getIsAdmin} from 'helpers/utils'
 
-const notificationCountStyle: any = {
+export const notificationCountStyle: any = {
   position: 'absolute',
-  top: '-7px',
-  right: '-6px',
+  bottom: '2px',
+  right: '-8px',
   backgroundColor: '#f44336',
   color: 'white',
   width: '15px',
@@ -22,7 +23,8 @@ const notificationCountStyle: any = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  fontSize: '12px',
+  fontSize: '8px',
+  padding: '9px',
 }
 
 function ActivityInfo() {
@@ -37,7 +39,7 @@ function ActivityInfo() {
   } = useSelector(selectAuthUser)
 
   const handleVisibleChange = (newVisible: boolean) => {
-    setVisible(newVisible)
+    !getIsAdmin() && setVisible(newVisible)
   }
 
   const {data, isFetching, isFetchingNextPage, fetchNextPage, refetch} =
@@ -103,9 +105,10 @@ function ActivityInfo() {
         id: i,
         tasks: page?.data?.data?.data?.map((log: any) => ({
           id: log._id,
+          module: log?.module,
           name: log.user.name || '',
           title: [
-            <span className="gx-link" key={1}>
+            <span className="" key={1}>
               {log?.activity}
             </span>,
             <p style={{opacity: 0.6}}>
