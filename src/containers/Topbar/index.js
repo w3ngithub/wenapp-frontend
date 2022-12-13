@@ -84,7 +84,9 @@ class Topbar extends Component {
                 className="gx-header-notifications gx-ml-auto gx-d-flex"
                 style={{flexWrap: 'nowrap'}}
               >
-                <MaintainanceBar />
+                <li className="gx-notify">
+                  <MaintainanceBar />
+                </li>
 
                 <li className="gx-notify">
                   <Switch
