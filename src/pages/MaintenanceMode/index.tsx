@@ -3,7 +3,6 @@ import {ReactComponent as MaintenanceModeIcon} from 'assets/images/maintenance.s
 import MaintainanceBar from 'components/Modules/Maintainance'
 
 function MaintenanceMode() {
-  console.log('hello world')
   return (
     <div
       className="center-text"
