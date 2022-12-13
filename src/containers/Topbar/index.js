@@ -21,6 +21,7 @@ import ActivityInfo from 'components/Modules/ActivityInfo'
 import RoleAccess from 'constants/RoleAccess'
 import NotificationInfo from 'components/Modules/NotificationInfo'
 import {getIsAdmin} from 'helpers/utils'
+import MaintainanceBar from 'components/Modules/Maintainance'
 
 const {Header} = Layout
 
@@ -83,6 +84,8 @@ class Topbar extends Component {
                 className="gx-header-notifications gx-ml-auto gx-d-flex"
                 style={{flexWrap: 'nowrap'}}
               >
+                <MaintainanceBar />
+
                 <li className="gx-notify">
                   <Switch
                     unCheckedChildren={

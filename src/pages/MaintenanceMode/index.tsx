@@ -1,7 +1,18 @@
 import React from 'react'
 import {ReactComponent as MaintenanceModeIcon} from 'assets/images/maintenance.svg'
+import {Switch} from 'antd'
+import {useNavigate} from 'react-router-dom'
+import {DASHBOARD} from 'helpers/routePath'
 
 function MaintenanceMode() {
+  const checkAdmin = localStorage.getItem('isAdmin')
+  const navigate = useNavigate()
+  const handleChange = (e: boolean) => {
+    if (!e) {
+      localStorage.removeItem('isAdmin')
+      navigate(`../${DASHBOARD}`)
+    }
+  }
   return (
     <div
       className="center-text"
@@ -21,6 +32,21 @@ function MaintenanceMode() {
         We apologize for any inconvenience caused. Meanwhile you can reload the
         page or try again later
       </p>
+      <div>
+        {checkAdmin && (
+          <>
+            <span style={{fontSize: '19px', marginRight: '5px'}}>
+              Maintenance
+            </span>
+            <Switch
+              checkedChildren="ON"
+              unCheckedChildren="OFF"
+              defaultChecked
+              onChange={handleChange}
+            />
+          </>
+        )}
+      </div>
       <MaintenanceModeIcon style={{width: '450px'}} />
     </div>
   )
