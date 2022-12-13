@@ -11,7 +11,12 @@ const routeMiddleware = routerMiddleware(history)
 const sagaMiddleware = createSagaMiddleware()
 
 const middlewares = [thunk, sagaMiddleware, routeMiddleware]
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
+const composeEnhancers =
+  (process.env.NODE_ENV !== 'production' &&
+    typeof window !== 'undefined' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose
 
 export default function configureStore(initialState) {
   const store = createStore(

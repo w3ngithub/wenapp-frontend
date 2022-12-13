@@ -13,7 +13,6 @@ class ControlledCheckbox extends Component {
     this.setState({disabled: !this.state.disabled})
   }
   onChange = (e) => {
-    console.log('checked = ', e.target.checked)
     this.setState({
       checked: e.target.checked,
     })

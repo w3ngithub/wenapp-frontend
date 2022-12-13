@@ -9,7 +9,12 @@ import {
   monthlyState,
   weeklyState,
 } from 'constants/Attendance'
-import {addAttendance, getIpAddres, searchAttendacentOfUser, updatePunchout} from 'services/attendances'
+import {
+  addAttendance,
+  getIpAddres,
+  searchAttendacentOfUser,
+  updatePunchout,
+} from 'services/attendances'
 import {
   checkIfTimeISBetweenOfficeHour,
   dateDifference,
@@ -29,10 +34,10 @@ import CustomIcon from 'components/Elements/Icons'
 import {useLocation} from 'react-router-dom'
 import {punchLimit} from 'constants/PunchLimit'
 import {emptyText} from 'constants/EmptySearchAntd'
-import { selectAuthUser } from 'appRedux/reducers/Auth'
-import getLocation, { checkLocationPermission } from 'helpers/getLocation'
-import { PUNCH_IN, PUNCH_OUT } from 'constants/ActionTypes'
-import { fetchLoggedInUserAttendance } from 'appRedux/actions/Attendance'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
+import getLocation, {checkLocationPermission} from 'helpers/getLocation'
+import {PUNCH_IN, PUNCH_OUT} from 'constants/ActionTypes'
+import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -59,7 +64,7 @@ const formattedAttendances = (attendances) => {
       punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
         ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
         : '',
-      officeHour: milliSecondIntoHours(timeToMilliSeconds),
+      officeHour: milliSecondIntoHours(att?.officehour),
       intHour: timeToMilliSeconds,
     }
   })
@@ -75,9 +80,9 @@ function UserAttendance() {
     field: 'attendanceDate',
     columnKey: 'attendanceDate',
   })
-  const [form] = Form.useForm()  
+  const [form] = Form.useForm()
   const dispatch = useDispatch()
-  const [disableButton,setDisableButton] =useState(false)
+  const [disableButton, setDisableButton] = useState(false)
   const [page, setPage] = useState({page: 1, limit: 10})
   const [openView, setOpenView] = useState(false)
   const [attToView, setAttToView] = useState({})
@@ -98,15 +103,23 @@ function UserAttendance() {
   }, [state?.date])
 
   const {data, isLoading, isFetching} = useQuery(
-    ['userAttendance', user, date],
-    () =>
-      searchAttendacentOfUser({
-        // page: page.page + ',
-        // limit: page.limit + '','
+    ['userAttendance', user, date, page, sort],
+    () => {
+      let sortField = ''
+      if (sort?.order) {
+        const order = sort.order === 'ascend' ? '' : '-'
+        sortField = `${order}${sort.columnKey}`
+      }
+
+      return searchAttendacentOfUser({
+        page: page.page + '',
+        limit: page.limit + '',
         userId: user._id,
         fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
         toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
+        sort: sortField,
       })
+    }
   )
 
   const handleChangeDate = (date) => {
@@ -160,8 +173,7 @@ function UserAttendance() {
   })
 
   const punchOutAttendances = useMutation(
-    (payload) =>
-      updatePunchout(payload?.userId, payload.payload),
+    (payload) => updatePunchout(payload?.userId, payload.payload),
     {
       onSuccess: (response) => {
         handleResponse(response, 'Punched Successfully', 'Punch  failed', [
@@ -356,7 +368,7 @@ function UserAttendance() {
           <div className="form-buttons">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white "
-              disabled={isLoading||getIsAdmin()||disableButton}
+              disabled={isLoading || getIsAdmin() || disableButton}
               onClick={
                 data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.length >=
                   punchLimit &&

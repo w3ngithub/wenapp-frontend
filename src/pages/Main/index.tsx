@@ -34,6 +34,7 @@ import {
   LEAVE,
   LEAVE_REPORT,
   LOGTIME,
+  MAINTAINANCE_MODE,
   NOTICEBOARD,
   OVERVIEW,
   POLICY,
@@ -77,6 +78,7 @@ import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {useQuery} from '@tanstack/react-query'
 import {getUserProfile} from 'appRedux/actions'
 import ActivityLogs from 'pages/Reports/ActivityLogs'
+import MaintenanceMode from 'pages/MaintenanceMode'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -415,6 +417,7 @@ function App(props: any) {
               <Route path={PROFILE} element={<Profile />} />
             </Route>
           </Route>
+          <Route path={MAINTAINANCE_MODE} element={<MaintenanceMode />} />
           <Route path="*" element={<Error404 />} />
           <Route
             path="notAllowed"

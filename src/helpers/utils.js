@@ -364,7 +364,6 @@ export const pendingLeaves = (leaves) => {
 }
 
 export const specifyParticularHalf = (leaves) => {
-  // console.log('to disable halves', leaves);
   const approvedLeaves = leaves.filter(
     (leave) => leave.leaveStatus === 'approved'
   )

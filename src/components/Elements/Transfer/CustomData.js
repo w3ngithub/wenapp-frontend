@@ -24,7 +24,6 @@ class CustomData extends React.Component {
     this.setState({mockData, targetKeys})
   }
   handleChange = (targetKeys, direction, moveKeys) => {
-    console.log(targetKeys, direction, moveKeys)
     this.setState({targetKeys})
   }
   renderItem = (item) => {

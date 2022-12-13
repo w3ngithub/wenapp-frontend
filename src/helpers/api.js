@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {SIGNIN} from './routePath'
+import {MAINTAINANCE_MODE, SIGNIN} from './routePath'
 
 export const BASE_API_PATH = '/api/v1/'
 
@@ -25,6 +25,9 @@ instance.interceptors.response.use(
     return response
   },
   async (error) => {
+    if (error.response.status === 503) {
+      window.location = `/${MAINTAINANCE_MODE}`
+    }
     if (
       error.config.url.split('/').at(-1) === 'login' ||
       error.config.url.split('/').at(-1) === 'updateMyPassword'
