@@ -107,17 +107,21 @@ function App(props: any) {
 
   const location = useLocation()
   const dispatch = useDispatch()
+  console.log('hum first hum first')
   const userId =
     localStorage.getItem(LOCALSTORAGE_USER) &&
     localStorage.getItem(LOCALSTORAGE_USER) !== 'undefined'
       ? JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
       : ''
 
+  console.log('second hum', userId)
+
   const {data: details, isFetching} = useQuery(
     ['userDetail', userId],
     () => getMyProfile(userId),
     {
       onSuccess: (data) => {
+        console.log('hello world from main page')
         localStorage.setItem(
           LOCALSTORAGE_USER,
           JSON.stringify(data?.data?.data?.data[0]?._id)
