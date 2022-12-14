@@ -51,9 +51,6 @@ const ATTENDANCE_COLUMNS = (
           title: 'Day',
           dataIndex: 'attendanceDay',
           key: 'attendanceDay',
-          sorter: true,
-          sortOrder:
-            sortedInfo.columnKey === 'attendanceDay' && sortedInfo.order,
         },
         {
           title: 'Punch-in Time',
@@ -114,9 +111,6 @@ const ATTENDANCE_COLUMNS = (
           title: 'Day',
           dataIndex: 'attendanceDay',
           key: 'attendanceDay',
-          sorter: true,
-          sortOrder:
-            sortedInfo.columnKey === 'attendanceDay' && sortedInfo.order,
         },
         {
           title: 'Punch-in Time',
