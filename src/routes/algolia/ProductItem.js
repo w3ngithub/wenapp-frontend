@@ -2,7 +2,6 @@ import React from 'react'
 import {Highlight} from 'react-instantsearch-dom'
 
 const ProductItem = ({item}) => {
-  console.log(item)
   const icons = []
   for (let i = 0; i < 5; i++) {
     const suffixClassName = i >= item.rating ? '--empty' : ''
