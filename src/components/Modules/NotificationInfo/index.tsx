@@ -41,7 +41,7 @@ function NotificationInfo() {
     async ({pageParam = 1}) => {
       const res = await getNotifications({
         page: pageParam,
-        limit: 6,
+        limit: 10,
         role: key,
         userId: _id,
       })
@@ -99,14 +99,18 @@ function NotificationInfo() {
   }, [key, _id])
 
   useEffect(() => {
-    if (visible) {
-      notificationCount > 0 && socket.emit('viewed-notification', {_id, key})
-      setShowBellCount(false)
-      setNotificationCount(0)
-      refetch()
+    const fetchNotifications = async () => {
+      if (visible) {
+        await refetch()
+        notificationCount > 0 && socket.emit('viewed-notification', {_id, key})
+        setShowBellCount(false)
+        setNotificationCount(0)
+      }
     }
+    fetchNotifications()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, notificationCount, _id, key])
+  }, [visible, _id, key])
 
   const handleNotificationClick = (module: String) => {
     switch (module) {
@@ -141,6 +145,7 @@ function NotificationInfo() {
           id: log._id,
           name: '',
           module: log?.module,
+          viewedBy: log?.viewedBy,
           title: [
             <p className="gx-notification-list-header">{log?.module || ''}</p>,
             <span

@@ -34,6 +34,12 @@ body.dark-theme {
   color: @dark-theme-text-color;
   background-color: @dark-theme-primary-color;
 
+  & .latest-notifications {
+    background-color: @dark-theme-component-background;
+    font-weight: 500;
+    color: @dark-theme-text-color;
+  }
+
   & .leaflet-container {
     filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg)
       saturate(0.3) brightness(0.7);
@@ -59,6 +65,18 @@ body.dark-theme {
 
   & .@{class-prefix}-link {
     color: darken(@dark-theme-text-color, 10%);
+  }
+  & .unseen-Notifications {
+    font-weight: 600 !important;
+    color: @dark-theme-text-color;
+  }
+  & .unseen-Notifications {
+    & .gx-link,
+    & .gx-notification-list-header {
+      opacity: 1 !important;
+      font-weight: 600 !important;
+      color: @dark-theme-text-color !important;
+    }
   }
 
   & .@{class-prefix}-link:hover,
