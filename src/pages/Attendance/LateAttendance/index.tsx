@@ -60,7 +60,11 @@ const formattedAttendances = (attendances: any) => {
 }
 
 function LateAttendance({userRole}: {userRole: string}) {
-  const [sort, setSort] = useState({})
+  const [sort, setSort] = useState({
+    order: 'ascend',
+    field: 'count',
+    columnKey: 'count',
+  })
   const [form] = Form.useForm()
   const [date, setDate] = useState(intialDate)
   const [user, setUser] = useState<undefined | string>(undefined)
@@ -305,14 +309,14 @@ function LateAttendance({userRole}: {userRole: string}) {
     }, {})
 
     // sort  by earliest punchInTime
-    Object.keys(groupByAttendance)?.forEach((x) => {
-      groupByAttendance[x] = sortFromDate(groupByAttendance[x], 'punchInTime')
-    })
+    // Object.keys(groupByAttendance)?.forEach((x) => {
+    //   groupByAttendance[x] = sortFromDate(groupByAttendance[x], 'punchInTime')
+    // })
 
     // get first punchInTime Attendance  a day
     return Object.values(groupByAttendance)?.reduce((acc: any, x: any) => {
       acc.push(x[0])
-      return acc
+      return sortFromDate(acc, 'attendanceDate')
     }, [])
   }
 
