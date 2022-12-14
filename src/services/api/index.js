@@ -41,6 +41,9 @@ const BASE_API_PATH_ACTIVITY_LOGS = `${BASE_API_PATH}activitylogs`
 // Notification
 const BASE_API_PATH_NOTIFICATION = `${BASE_API_PATH}notifications`
 
+//Maintenance
+const BASE_API_PATH_CONFIGURATIONS = `${BASE_API_PATH}configurations`
+
 export const Apis = {
   // Users
   Users: `${BASE_API_PATH_USERS}`,
@@ -82,4 +85,7 @@ export const Apis = {
 
   // Notification
   Notification: `${BASE_API_PATH_NOTIFICATION}`,
+
+  //Configurations
+  Configurations: `${BASE_API_PATH_CONFIGURATIONS}`,
 }
