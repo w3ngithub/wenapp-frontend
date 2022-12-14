@@ -61,7 +61,7 @@ const formattedAttendances = (attendances: any) => {
 
 function LateAttendance({userRole}: {userRole: string}) {
   const [sort, setSort] = useState({
-    order: 'ascend',
+    order: 'descend',
     field: 'count',
     columnKey: 'count',
   })
