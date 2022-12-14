@@ -121,7 +121,7 @@ class Topbar extends Component {
                   </li>
                 )}
 
-                {RoleAccess.Admin === this.state.user.role.key && (
+                {RoleAccess.Admin === this.state.user?.role?.key && (
                   <li className="gx-user-nav gx-notify li-gap">
                     <ActivityInfo />
                   </li>
@@ -141,10 +141,8 @@ class Topbar extends Component {
 
 const mapStateToProps = ({settings, auth}) => {
   const {navStyle, navCollapsed, width, themeType} = settings
-  const {
-    authUser: {user},
-  } = auth
-  return {navStyle, navCollapsed, width, themeType, user}
+
+  return {navStyle, navCollapsed, width, themeType, user: auth?.authUser?.user}
 }
 
 export default connect(mapStateToProps, {
