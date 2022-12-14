@@ -83,14 +83,20 @@ function RecentActivity(props) {
 
   useEffect(() => {
     const handleScrollActivityPopUP = (e) => {
+      console.log('scrolling')
       if (scrollRef.current) {
+        console.log('scrolling inside')
         setIsScrolled(true)
         scrollRef.current = false
       }
     }
     const activityLogPopUp = document.getElementById(iconIdName)
     if (activityLogPopUp) {
+      console.log('popup')
       activityLogPopUp.addEventListener('scroll', handleScrollActivityPopUP)
+    }
+    if (!visible) {
+      activityLogPopUp.removeEventListener('scroll', handleScrollActivityPopUP)
     }
     return () => {
       return activityLogPopUp.removeEventListener(
