@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {Popover} from 'antd'
 import {useNavigate} from 'react-router-dom'
 import {socket} from 'pages/Main'
-import {useInfiniteQuery} from '@tanstack/react-query'
+import {useInfiniteQuery, useQueryClient} from '@tanstack/react-query'
 import {useInView} from 'react-intersection-observer'
 import {getNotifications} from 'services/notifications'
 import {notificationCountStyle} from '../ActivityInfo'
@@ -47,7 +47,7 @@ function NotificationInfo() {
       })
       return res
     },
-    {enabled: false}
+    {enabled: false, keepPreviousData: false, cacheTime: 0, staleTime: 0}
   )
 
   // fecth next page on scroll of activities
@@ -101,7 +101,7 @@ function NotificationInfo() {
   useEffect(() => {
     const fetchNotifications = async () => {
       if (visible) {
-        await refetch()
+        await refetch({refetchPage: (page, index) => index === 0})
         notificationCount > 0 && socket.emit('viewed-notification', {_id, key})
         setShowBellCount(false)
         setNotificationCount(0)
