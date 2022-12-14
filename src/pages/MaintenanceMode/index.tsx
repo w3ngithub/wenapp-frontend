@@ -11,7 +11,10 @@ function MaintenanceMode() {
   const navigate = useNavigate()
   const configurations = useQuery(['configurations'], getMaintenance, {
     onSuccess: (configurations) => {
-      if (!configurations?.data?.data?.data?.[0]?.isMaintenanceEnabled) {
+      if (
+        configurations?.status &&
+        !configurations?.data?.data?.data?.[0]?.isMaintenanceEnabled
+      ) {
         navigate(`/${DASHBOARD}`)
       }
     },
