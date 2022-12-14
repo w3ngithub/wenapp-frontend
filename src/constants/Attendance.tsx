@@ -180,17 +180,13 @@ const LATE_ATTENDANCE_COLUMNS = (
           title: 'Count',
           dataIndex: 'count',
           key: 'count',
-          sorter: (a, b) =>
-            a.count?.toString().localeCompare(b.count?.toString()),
+          sorter: (a, b) => a.count - b.count,
           sortOrder: sortedInfo.columnKey === 'count' && sortedInfo.order,
         },
         {
           title: 'Status',
           dataIndex: 'status',
           key: 'status',
-          sorter: (a, b) =>
-            a.status?.toString().localeCompare(b.status?.toString()),
-          sortOrder: sortedInfo.columnKey === 'status' && sortedInfo.order,
         },
       ]
     : [
@@ -208,17 +204,13 @@ const LATE_ATTENDANCE_COLUMNS = (
           title: 'Count',
           dataIndex: 'count',
           key: 'count',
-          sorter: (a, b) =>
-            a.count?.toString().localeCompare(b.count?.toString()),
+          sorter: (a, b) => a.count - b.count,
           sortOrder: sortedInfo.columnKey === 'count' && sortedInfo.order,
         },
         {
           title: 'Status',
           dataIndex: 'status',
           key: 'status',
-          sorter: (a, b) =>
-            a.status?.toString().localeCompare(b.status?.toString()),
-          sortOrder: sortedInfo.columnKey === 'status' && sortedInfo.order,
         },
         {
           title: 'Action',

@@ -1,5 +1,6 @@
 import React from 'react'
 import {ReactComponent as MaintenanceModeIcon} from 'assets/images/maintenance.svg'
+import MaintainanceBar from 'components/Modules/Maintainance'
 
 function MaintenanceMode() {
   return (
@@ -21,6 +22,9 @@ function MaintenanceMode() {
         We apologize for any inconvenience caused. Meanwhile you can reload the
         page or try again later
       </p>
+      <div>
+        <MaintainanceBar />
+      </div>
       <MaintenanceModeIcon style={{width: '450px'}} />
     </div>
   )
