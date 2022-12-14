@@ -1,4 +1,3 @@
-import {isAdmin} from '@firebase/util'
 import {Switch} from 'antd'
 import React, {useState} from 'react'
 import {useSelector} from 'react-redux'
@@ -12,7 +11,7 @@ const MaintainanceBar = () => {
 
   const handleMaintainance = async (e) => {
     if (e) {
-      localStorage.setItem('isAdmin', isAdmin)
+      localStorage.setItem('isAdmin', userDetail?.role?.key === 'admin')
       setIsOn(e)
     } else {
       setIsOn(e)

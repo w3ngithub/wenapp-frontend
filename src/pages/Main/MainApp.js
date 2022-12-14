@@ -13,11 +13,42 @@ import {
   NAV_STYLE_INSIDE_HEADER_HORIZONTAL,
 } from 'constants/ThemeSetting'
 import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {useQuery} from '@tanstack/react-query'
+import {getUserProfile} from 'appRedux/actions'
+import {getMyProfile} from 'services/users/userDetails'
+import CircularProgress from 'components/Elements/CircularProgress'
 
 const {Content, Footer} = Layout
 
 export const MainApp = (props) => {
   const dispatch = useDispatch()
+  const userId =
+    localStorage.getItem(LOCALSTORAGE_USER) &&
+    localStorage.getItem(LOCALSTORAGE_USER) !== 'undefined'
+      ? JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
+      : ''
+
+  const {data: details, isFetching} = useQuery(
+    ['userDetail', userId],
+    () => getMyProfile(userId),
+    {
+      onSuccess: (data) => {
+        if (data.status) {
+          localStorage.setItem(
+            LOCALSTORAGE_USER,
+            JSON.stringify(data?.data?.data?.data[0]?._id)
+          )
+          dispatch(
+            getUserProfile({
+              user: data?.data?.data?.data[0],
+            })
+          )
+        }
+      },
+      enabled: !!userId,
+    }
+  )
 
   useEffect(() => {
     if (props?.authUser)
@@ -54,7 +85,8 @@ export const MainApp = (props) => {
     }
   }
 
-  const {navStyle} = props
+  const {navStyle, switchingUser} = props
+  if (isFetching || switchingUser) return <CircularProgress />
 
   return (
     <Layout className="gx-app-layout">
@@ -78,7 +110,7 @@ export const MainApp = (props) => {
 
 const mapStateToProps = ({settings, auth}) => {
   const {width, navStyle} = settings
-  const {authUser} = auth
-  return {width, navStyle, authUser}
+  const {authUser, switchingUser} = auth
+  return {width, navStyle, authUser, switchingUser}
 }
 export default connect(mapStateToProps)(MainApp)
