@@ -280,8 +280,6 @@ function ProjectsPage() {
 
   const handleTableChange = (pagination, filters, sorter) => {
     setSort(sorter)
-
-    console.log(sorter)
   }
 
   const handlePageChange = (pageNumber) => {

@@ -93,79 +93,91 @@ function RecentActivity(props) {
       activityLogPopUp.addEventListener('scroll', handleScrollActivityPopUP)
     }
     return () => {
-      return activityLogPopUp.removeEventListener(
-        'scroll',
-        handleScrollActivityPopUP
-      )
+      if (activityLogPopUp) {
+        return activityLogPopUp.removeEventListener(
+          'scroll',
+          handleScrollActivityPopUP
+        )
+      }
     }
+<<<<<<< HEAD
   }, [])
+=======
+  }, [visible])
+>>>>>>> 309d7dacf2ba851ad0e44e29a8b077ba3dbd018e
 
   return (
-    <div
-      className="gx-entry-sec gx-dashboard-activity-popup"
-      ref={popUpRef}
-      id={iconIdName}
-    >
-      <WidgetHeader title={title} />
-      {recentList?.map((activity, index) => (
-        <div className="gx-timeline-info" key={'activity' + index}>
-          <Timeline>
-            {activity?.tasks?.map((task, index) => {
-              return (
-                <TimeLineItem
-                  key={'timeline' + index}
-                  mode="alternate"
-                  dot={getName(task, themeType)}
-                >
-                  <ActivityItem task={task} title={title} />
-                </TimeLineItem>
-              )
-            })}
-          </Timeline>
-        </div>
-      ))}
-
-      {isLoading && (
-        <div style={{marginLeft: '12px'}}>
-          <Spin></Spin>
-        </div>
-      )}
-      {!showMore && isScrolled && (
-        <span className="gx-link gx-btn-link" ref={viewRef}>
-          {isFetchingNextPage || isFetching ? (
-            <div style={{marginLeft: '12px'}}>
-              <Spin></Spin>
-            </div>
-          ) : (
-            'Load More'
-          )}
-        </span>
-      )}
-
-      {showMore && (
-        <span
-          className="gx-link gx-btn-link"
-          style={{float: 'right'}}
-          onClick={() => {
-            popUpRef.current.scrollTo({
-              top: 0,
-              behavior: 'smooth',
-            })
-          }}
-        >
-          <i className={`icon icon-chevron-up gx-fs-xl`} />
-        </span>
-      )}
-
-      {!recentList ||
-        recentList?.length === 0 ||
-        !recentList?.[0]?.tasks ||
-        (recentList?.[0]?.tasks?.length === 0 && (
-          <span className="gx-link gx-btn-link">
-            {'No  any notification to show'}
-          </span>
+    visible && (
+      <div
+        className="gx-entry-sec gx-dashboard-activity-popup"
+        ref={popUpRef}
+        id={iconIdName}
+      >
+        <WidgetHeader title={title} />
+        {recentList?.map((activity, index) => (
+          <div className="gx-timeline-info" key={'activity' + index}>
+            <Timeline>
+              {activity?.tasks?.map((task, index) => {
+                return (
+                  <TimeLineItem
+                    key={'timeline' + index}
+                    mode="alternate"
+                    dot={getName(task, themeType)}
+                  >
+                    <ActivityItem
+                      task={task}
+                      title={title}
+                      viewedBy={task?.viewedBy}
+                    />
+                  </TimeLineItem>
+                )
+              })}
+            </Timeline>
+          </div>
         ))}
-    </div>
+
+        {isLoading && (
+          <div style={{marginLeft: '12px'}}>
+            <Spin></Spin>
+          </div>
+        )}
+        {!showMore && isScrolled && (
+          <span className="gx-link gx-btn-link" ref={viewRef}>
+            {isFetchingNextPage || isFetching ? (
+              <div style={{marginLeft: '12px'}}>
+                <Spin></Spin>
+              </div>
+            ) : (
+              'Load More'
+            )}
+          </span>
+        )}
+
+        {showMore && (
+          <span
+            className="gx-link gx-btn-link"
+            style={{float: 'right'}}
+            onClick={() => {
+              popUpRef.current.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+              })
+            }}
+          >
+            <i className={`icon icon-chevron-up gx-fs-xl`} />
+          </span>
+        )}
+
+        {!recentList ||
+          recentList?.length === 0 ||
+          !recentList?.[0]?.tasks ||
+          (recentList?.[0]?.tasks?.length === 0 && (
+            <span className="gx-link gx-btn-link">
+              {'No  any notification to show'}
+            </span>
+          ))}
+      </div>
+    )
   )
 }
 

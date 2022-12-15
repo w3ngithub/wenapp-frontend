@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {Popover} from 'antd'
 import {useNavigate} from 'react-router-dom'
 import {socket} from 'pages/Main'
-import {useInfiniteQuery} from '@tanstack/react-query'
+import {useInfiniteQuery, useQueryClient} from '@tanstack/react-query'
 import {useInView} from 'react-intersection-observer'
 import {getNotifications} from 'services/notifications'
 import {notificationCountStyle} from '../ActivityInfo'
@@ -41,13 +41,13 @@ function NotificationInfo() {
     async ({pageParam = 1}) => {
       const res = await getNotifications({
         page: pageParam,
-        limit: 6,
+        limit: 10,
         role: key,
         userId: _id,
       })
       return res
     },
-    {enabled: false}
+    {enabled: false, keepPreviousData: false, cacheTime: 0, staleTime: 0}
   )
 
   // fecth next page on scroll of activities
@@ -99,14 +99,18 @@ function NotificationInfo() {
   }, [key, _id])
 
   useEffect(() => {
-    if (visible) {
-      notificationCount > 0 && socket.emit('viewed-notification', {_id, key})
-      setShowBellCount(false)
-      setNotificationCount(0)
-      refetch()
+    const fetchNotifications = async () => {
+      if (visible) {
+        await refetch({refetchPage: (page, index) => index === 0})
+        notificationCount > 0 && socket.emit('viewed-notification', {_id, key})
+        setShowBellCount(false)
+        setNotificationCount(0)
+      }
     }
+    fetchNotifications()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, notificationCount, _id, key])
+  }, [visible, _id, key])
 
   const handleNotificationClick = (module: String) => {
     switch (module) {
@@ -141,6 +145,7 @@ function NotificationInfo() {
           id: log._id,
           name: '',
           module: log?.module,
+          viewedBy: log?.viewedBy,
           title: [
             <p className="gx-notification-list-header">{log?.module || ''}</p>,
             <span

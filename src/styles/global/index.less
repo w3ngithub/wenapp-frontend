@@ -559,10 +559,38 @@
 .ant-timeline-item {
   padding-bottom: 0px !important;
 }
-#general-notification-icon {
+#general-notification-icon,
+#admin-activity-icon {
   .gx-timeline-info:not(:last-child) {
     padding-bottom: 0 !important;
   }
+}
+.latest-notifications {
+  background-color: #90e7e5;
+  font-weight: 500;
+}
+.circle {
+  display: flex;
+  width: 15px;
+  height: 15px;
+  background-color: #15bef9;
+  border-radius: 50%;
+  margin-top: 1.5rem;
+}
+.unseen-Notifications {
+  font-weight: 600 !important;
+}
+.unseen-Notifications {
+  .gx-link {
+    opacity: 1 !important;
+    font-weight: 600 !important;
+    color: #020000 !important;
+  }
+}
+.ant-notification-topRight {
+  right: 0px;
+  top: 72px !important;
+  bottom: auto;
 }
 /* Remove weekends in month view */
 // .rbc-month-header > :nth-child(6),
@@ -584,3 +612,7 @@
 // .rbc-row-content > .rbc-row > .rbc-date-cell:last-child {
 //   display:none;
 // }
+
+.center-text {
+  text-align: center;
+}

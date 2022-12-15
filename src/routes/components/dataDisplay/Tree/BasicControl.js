@@ -63,11 +63,9 @@ class BasicControl extends React.Component {
     })
   }
   onCheck = (checkedKeys) => {
-    console.log('onCheck', checkedKeys)
     this.setState({checkedKeys})
   }
   onSelect = (selectedKeys, info) => {
-    console.log('onSelect', info)
     this.setState({selectedKeys})
   }
   renderTreeNodes = (data) => {
