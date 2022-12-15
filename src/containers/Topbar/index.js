@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Layout, Switch} from 'antd'
 import {FaMoon} from 'react-icons/fa'
 import {BsFillSunFill} from 'react-icons/bs'
@@ -30,6 +30,8 @@ const Topbar = (props) => {
   const [user, setUser] = useState(props?.user)
   const {width, navCollapsed, navStyle, themeType} = props
   const {innerWidth} = useWindowsSize()
+  const [notificationArrowPosition, setnotificationArrowPosition] = useState(0)
+  const [activityArrowPosition, setactivityArrowPosition] = useState(0)
 
   const handleThemeChange = (e) => {
     if (e) {
@@ -40,6 +42,25 @@ const Topbar = (props) => {
       localStorage.setItem('theme', THEME_TYPE_SEMI_DARK)
     }
   }
+  useEffect(() => {
+    const notificationIconPosition = document.getElementById(
+      'mobile-screen-notification'
+    )
+    const activityIconPosition = document.getElementById(
+      'mobile-screen-activity'
+    )
+    if (notificationIconPosition) {
+      setnotificationArrowPosition(
+        notificationIconPosition?.getBoundingClientRect()?.right
+      )
+    }
+    if (activityIconPosition) {
+      setactivityArrowPosition(
+        activityIconPosition?.getBoundingClientRect()?.right
+      )
+    }
+  }, [])
+
   return (
     <div>
       <Auxiliary>
@@ -72,7 +93,7 @@ const Topbar = (props) => {
             </div>
             <div>
               <ul
-                className="gx-header-notifications gx-ml-auto gx-d-flex"
+                className="gx-header-notifications gx-ml-auto gx-d-flex "
                 style={{flexWrap: 'nowrap'}}
               >
                 {innerWidth > 650 && (
@@ -138,11 +159,11 @@ const Topbar = (props) => {
               style={{flexWrap: 'nowrap'}}
             >
               <>
-                <li className="gx-notify">
+                <li>
                   <MaintainanceBar />
                 </li>
 
-                <li className="gx-notify">
+                <li>
                   <Switch
                     unCheckedChildren={
                       <FaMoon
@@ -170,14 +191,22 @@ const Topbar = (props) => {
                 </li>
 
                 {!getIsAdmin() && (
-                  <li className="gx-user-nav gx-notify li-gap">
-                    <NotificationInfo />
+                  <li
+                    className="gx-user-nav li-gap"
+                    id="mobile-screen-notification"
+                  >
+                    <NotificationInfo
+                      arrowPosition={notificationArrowPosition}
+                    />
                   </li>
                 )}
 
                 {RoleAccess.Admin === user?.role?.key && (
-                  <li className="gx-user-nav gx-notify li-gap">
-                    <ActivityInfo />
+                  <li
+                    className="gx-user-nav li-gap"
+                    id="mobile-screen-activity"
+                  >
+                    <ActivityInfo arrowPosition={activityArrowPosition} />
                   </li>
                 )}
               </>

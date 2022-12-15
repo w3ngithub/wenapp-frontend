@@ -10,6 +10,7 @@ import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
 import {getIsAdmin} from 'helpers/utils'
+import useWindowsSize from 'hooks/useWindowsSize'
 
 export const notificationCountStyle: any = {
   position: 'absolute',
@@ -27,12 +28,13 @@ export const notificationCountStyle: any = {
   padding: '9px',
 }
 
-function ActivityInfo() {
+function ActivityInfo({arrowPosition}: {arrowPosition: number}) {
   const {ref, inView} = useInView({threshold: 0.5})
 
   const [visible, setVisible] = useState<boolean>(false)
   const [showBellCount, setShowBellCount] = useState<boolean>(false)
   const [notificationCount, setNotificationCount] = useState<number>(0)
+  const {innerWidth} = useWindowsSize()
 
   const {
     role: {key},
@@ -91,6 +93,16 @@ function ActivityInfo() {
       setShowBellCount(false)
     }
   }, [visible])
+  useEffect(() => {
+    if (innerWidth < 650 && visible) {
+      const popOverArrow: HTMLElement | null = document.querySelector(
+        '.activity-icon-mobile-screen > .ant-popover-content > .ant-popover-arrow'
+      )
+      if (popOverArrow) {
+        popOverArrow.style.right = `${innerWidth - arrowPosition + 20}px`
+      }
+    }
+  }, [visible])
 
   const userMenuOptions = (
     <RecentActivity
@@ -124,7 +136,7 @@ function ActivityInfo() {
   )
   return (
     <Popover
-      overlayClassName="gx-popover-admin-notification"
+      overlayClassName="gx-popover-admin-notification activity-icon-mobile-screen"
       placement="bottomRight"
       content={userMenuOptions}
       trigger="click"
