@@ -18,7 +18,6 @@ import useWindowsSize from 'hooks/useWindowsSize'
 const NOTIFICATION_TO_CLICK = ['Blog', 'Notice']
 
 function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
-  console.log({arrowPosition})
   const [visible, setVisible] = useState<boolean>(false)
   const {ref, inView} = useInView({threshold: 0.5})
   const [showBellCount, setShowBellCount] = useState<boolean>(false)
