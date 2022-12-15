@@ -100,11 +100,7 @@ function RecentActivity(props) {
         )
       }
     }
-<<<<<<< HEAD
-  }, [])
-=======
   }, [visible])
->>>>>>> 309d7dacf2ba851ad0e44e29a8b077ba3dbd018e
 
   return (
     visible && (
