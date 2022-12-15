@@ -3,8 +3,16 @@ import {Card, Table} from 'antd'
 import {OVERVIEW_NOTCHECKEDIN} from 'constants/Overview'
 import {emptyText} from 'constants/EmptySearchAntd'
 
-const formattedUsers = (users: {}[]) => {
-  return users?.map((user: any) => ({
+interface Users {
+  _id: string
+  key: string
+  name: string
+  checkIn: string
+  checkOut: string
+}
+
+const formattedUsers = (users: Users[]) => {
+  return users?.map((user) => ({
     key: user._id,
     name: user.name,
     checkIn: 'N/A',
@@ -12,7 +20,11 @@ const formattedUsers = (users: {}[]) => {
   }))
 }
 
-function UnCheckedInEmployee({notCheckInSection}: {notCheckInSection: {}[]}) {
+function UnCheckedInEmployee({
+  notCheckInSection,
+}: {
+  notCheckInSection: Users[]
+}) {
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 10})
 

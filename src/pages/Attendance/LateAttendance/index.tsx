@@ -173,7 +173,7 @@ function LateAttendance({userRole}: {userRole: string}) {
     }
   )
 
-  const handleTableChange = (pagination: {}, filters: {}, sorter: {}) => {
+  const handleTableChange = (pagination: {}, filters: {}, sorter: any) => {
     setSort(sorter)
   }
 
@@ -299,7 +299,6 @@ function LateAttendance({userRole}: {userRole: string}) {
         title: 'Action',
         key: 'action',
         render: (text: any, record: any) => {
-          console.log({text, record})
           return (
             <span>
               <span className="gx-link" onClick={() => handleView(record)}>
