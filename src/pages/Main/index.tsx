@@ -88,7 +88,6 @@ moment.locale('en-gb')
 
 export const socket = socketIOClient(process.env.REACT_APP_API_ENDPOINT || '', {
   transports: ['websocket'],
-  path: '/api',
 })
 
 function App(props: any) {
