@@ -107,7 +107,6 @@ function ChangePasswordModel({open, onClose}: {open: boolean; onClose: any}) {
               {
                 message: 'Must match Password',
                 validator: (_, val) => {
-                  console.log(form.getFieldValue('password'))
                   if (form.getFieldValue('password') === val || !val) {
                     return Promise.resolve()
                   } else {

@@ -70,7 +70,6 @@ class WithTabs extends React.Component {
     noTitleKey: 'article',
   }
   onTabChange = (key, type) => {
-    console.log(key, type)
     this.setState({[type]: key})
   }
 

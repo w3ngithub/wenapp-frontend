@@ -16,7 +16,6 @@ class WriteBox extends Component {
   handleCancel = () => this.setState({previewVisible: false})
 
   handlePreview = (file) => {
-    console.log('previewImage', file)
     this.setState({
       previewImage: file.url || file.thumbUrl,
       previewVisible: true,
@@ -24,7 +23,6 @@ class WriteBox extends Component {
   }
 
   handleChange = ({fileList}) => {
-    console.log('fileList', fileList)
     this.setState({fileList})
   }
 

@@ -57,7 +57,6 @@ function CommonLogTypeModal({
   }
 
   const handleSubmit = () => {
-    console.log('currentData', currentData)
     form.validateFields()
     let availableData
     if (currentData?.hasOwnProperty('data')) {

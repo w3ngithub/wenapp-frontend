@@ -43,3 +43,6 @@ export const BLOGS = ''
 export const BLOGDETAIL = ':blog'
 export const ADDBLOG = 'add-blog'
 export const EDITBLOG = 'edit-blog/:blogId'
+
+// Maintenance Mode
+export const MAINTAINANCE_MODE = 'maintenance'

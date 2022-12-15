@@ -81,10 +81,13 @@ const Dashboard = () => {
     socket.on('pending-leave-count', (response: number) => {
       setSocketPendingLeaveCount(response)
     })
-    socket.on('today-leave-count', (response: number) => {
-      setSocketApprovedLeaveCount(response)
-      setSocketPendingLeaveCount((prev) => prev - 1)
-    })
+    socket.on(
+      'today-leave-count',
+      (approvedCount: number, pendingCount: number) => {
+        setSocketApprovedLeaveCount(approvedCount)
+        setSocketPendingLeaveCount(pendingCount)
+      }
+    )
   }, [])
 
   const {data: salaryReview, refetch: salaryRefetch} = useQuery(

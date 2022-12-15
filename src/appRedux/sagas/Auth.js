@@ -9,6 +9,10 @@ import {
 import {loginInUsers, logoutUser} from 'services/users/userDetails'
 import instance from 'helpers/api'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {
+  ADMIN_KEY,
+  SHOW_MAINTENANCE_BUTTON_TO_ADMIN_ONLY,
+} from 'constants/Common'
 
 const signInUserWithEmailPasswordRequest = async (email, password) =>
   await loginInUsers({email, password})
@@ -37,6 +41,12 @@ function* signInUserWithEmailPassword({payload}) {
         LOCALSTORAGE_USER,
         JSON.stringify(signInUser.data.data?.user?._id)
       )
+
+      if (signInUser.data.data?.user?.role?.key === 'admin')
+        localStorage.setItem(
+          SHOW_MAINTENANCE_BUTTON_TO_ADMIN_ONLY,
+          signInUser.data.data?.user?._id + ADMIN_KEY
+        )
       instance.defaults.headers[
         'Authorization'
       ] = `Bearer ${signInUser.data.token}`
@@ -51,9 +61,10 @@ function* signOut() {
   try {
     const signOutUser = yield call(signOutRequest)
     if (signOutUser.status) {
-      localStorage.removeItem(LOCALSTORAGE_USER)
-      localStorage.removeItem('token')
-      localStorage.removeItem('admin')
+      // localStorage.removeItem(LOCALSTORAGE_USER)
+      // localStorage.removeItem('token')
+      // localStorage.removeItem('admin')
+      localStorage.clear()
       yield put(userSignOutSuccess(signOutUser))
     } else {
       yield put(showAuthMessage(signOutUser.data.message))

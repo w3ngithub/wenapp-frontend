@@ -1,13 +1,7 @@
 import React, {useEffect, lazy, Suspense} from 'react'
-import {connect, useDispatch} from 'react-redux'
+import {connect} from 'react-redux'
 import socketIOClient from 'socket.io-client'
-import {
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom'
+import {Navigate, Route, Routes, useNavigate} from 'react-router-dom'
 import {ConfigProvider} from 'antd'
 import moment from 'moment'
 import 'moment/locale/en-gb'
@@ -34,6 +28,7 @@ import {
   LEAVE,
   LEAVE_REPORT,
   LOGTIME,
+  MAINTAINANCE_MODE,
   NOTICEBOARD,
   OVERVIEW,
   POLICY,
@@ -72,11 +67,8 @@ import RoleAccess, {
   WORK_LOG_REPORT_ACESS,
 } from 'constants/RoleAccess'
 import Error404 from 'components/Modules/404'
-import {getMyProfile} from 'services/users/userDetails'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
-import {useQuery} from '@tanstack/react-query'
-import {getUserProfile} from 'appRedux/actions'
 import ActivityLogs from 'pages/Reports/ActivityLogs'
+import MaintenanceMode from 'pages/MaintenanceMode'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -99,36 +91,9 @@ export const socket = socketIOClient(process.env.REACT_APP_API_ENDPOINT || '', {
 })
 
 function App(props: any) {
-  const {locale, authUser, themeType, switchingUser} = props
+  const {locale, authUser, themeType} = props
   const currentAppLocale = AppLocale[locale.locale]
   const navigate = useNavigate()
-
-  const location = useLocation()
-  const dispatch = useDispatch()
-  const userId =
-    localStorage.getItem(LOCALSTORAGE_USER) &&
-    localStorage.getItem(LOCALSTORAGE_USER) !== 'undefined'
-      ? JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
-      : ''
-
-  const {data: details, isFetching} = useQuery(
-    ['userDetail', userId],
-    () => getMyProfile(userId),
-    {
-      onSuccess: (data) => {
-        localStorage.setItem(
-          LOCALSTORAGE_USER,
-          JSON.stringify(data?.data?.data?.data[0]?._id)
-        )
-        dispatch(
-          getUserProfile({
-            user: data?.data?.data?.data[0],
-          })
-        )
-      },
-      enabled: !!userId,
-    }
-  )
 
   useEffect(() => {
     if (themeType === THEME_TYPE_DARK) {
@@ -147,9 +112,6 @@ function App(props: any) {
     )
       navigate('notAllowed')
   }, [])
-
-  if ((!location?.pathname?.includes('signin') && isFetching) || switchingUser)
-    return <FallBack />
 
   return (
     <ConfigProvider
@@ -415,6 +377,7 @@ function App(props: any) {
               <Route path={PROFILE} element={<Profile />} />
             </Route>
           </Route>
+          <Route path={MAINTAINANCE_MODE} element={<MaintenanceMode />} />
           <Route path="*" element={<Error404 />} />
           <Route
             path="notAllowed"
@@ -430,7 +393,7 @@ const FallBack = () => <CircularProgress className="" />
 
 const mapStateToProps = ({settings, auth}: {settings: any; auth: any}) => {
   const {locale, themeType} = settings
-  const {authUser, switchingUser} = auth
-  return {locale, authUser, themeType, switchingUser}
+  const {authUser} = auth
+  return {locale, authUser, themeType}
 }
 export default connect(mapStateToProps)(App)

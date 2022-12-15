@@ -28,8 +28,6 @@ class PostList extends Component {
       commentCount: 0,
       commentList: [],
     }
-    console.log('Post Data :==()==>', post)
-
     let postArray = this.state.postList
     postArray.unshift(post)
     this.setState({
