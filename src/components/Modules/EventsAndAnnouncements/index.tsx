@@ -86,10 +86,14 @@ function EventsAndAnnouncements({
 
   const sortedBirthdays = birthdays
     ?.map((birthday: any) => {
-      const monthAndDay = birthday.dob.split('T')[0].split('-')
-      return {...birthday, monthDay: monthAndDay[1] + monthAndDay[2]}
+      const yearMonthAndDay = birthday.dob.split('T')[0].split('-')
+      return {
+        ...birthday,
+        yearMonthDay:
+          yearMonthAndDay[0] + yearMonthAndDay[1] + yearMonthAndDay[2],
+      }
     })
-    ?.sort((a, b) => (a?.monthDay > b?.monthDay ? 1 : -1))
+    ?.sort((a, b) => (a?.yearMonthDay > b?.yearMonthDay ? 1 : -1))
 
   const birthdayData = sortedBirthdays?.map((x: any) => ({
     id: x._id,
