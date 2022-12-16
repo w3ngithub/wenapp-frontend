@@ -1,4 +1,4 @@
-import {Switch} from 'antd'
+import {Popconfirm, Switch} from 'antd'
 import React, {useState} from 'react'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -11,13 +11,13 @@ import {
   ADMIN_KEY,
   SHOW_MAINTENANCE_BUTTON_TO_ADMIN_ONLY,
 } from 'constants/Common'
-import {DASHBOARD} from 'helpers/routePath'
+import {DASHBOARD, MAINTAINANCE_MODE} from 'helpers/routePath'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 
-const MaintainanceBar = () => {
+const MaintainanceBar = ({showPopupConfirm = false}) => {
   const userDetail = useSelector(selectAuthUser)
-  const [isOn, setIsOn] = useState(false)
   const location = useLocation()
+  const [isOn, setIsOn] = useState(location.pathname.includes('maintenance'))
   const navigate = useNavigate()
   const maintenanceMutation = useMutation(
     (payload) => updateMaintenance(payload),
@@ -35,8 +35,10 @@ const MaintainanceBar = () => {
             SHOW_MAINTENANCE_BUTTON_TO_ADMIN_ONLY,
             JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)) + ADMIN_KEY
           )
+          setIsOn(res?.isMaintenanceEnabled)
+
+          navigate(`/${MAINTAINANCE_MODE}`)
         } else {
-          localStorage.removeItem(SHOW_MAINTENANCE_BUTTON_TO_ADMIN_ONLY)
           navigate(`/${DASHBOARD}`)
         }
       },
@@ -46,9 +48,9 @@ const MaintainanceBar = () => {
     }
   )
 
-  const handleMaintainance = (isActive) => {
+  const handleMaintainance = (event) => {
+    const isActive = typeof event !== 'boolean'
     maintenanceMutation.mutate({isMaintenanceEnabled: isActive})
-    setIsOn(isActive)
   }
 
   const showMaintenanceButton = () => {
@@ -57,8 +59,35 @@ const MaintainanceBar = () => {
       JSON.parse(localStorage.getItem(LOCALSTORAGE_USER)) + ADMIN_KEY
     )
   }
+  if (!showMaintenanceButton() && userDetail?.role?.key !== 'admin') {
+    return null
+  }
 
-  return userDetail?.role?.key === 'admin' || showMaintenanceButton() ? (
+  return showPopupConfirm ? (
+    <Popconfirm
+      title={`Are you sure you want to turn on Maintenance mode?`}
+      onConfirm={handleMaintainance}
+      okText="Yes"
+      cancelText="No"
+    >
+      <span
+        style={{
+          fontSize: '17px',
+          marginRight: '5px',
+          fontWeight: '500',
+        }}
+      >
+        Maintenance
+      </span>
+      <Switch
+        className="maintain-dark"
+        checkedChildren="ON"
+        unCheckedChildren="OFF"
+        checked={isOn}
+        loading={maintenanceMutation.isLoading}
+      />
+    </Popconfirm>
+  ) : (
     <>
       <span
         style={{
@@ -72,13 +101,11 @@ const MaintainanceBar = () => {
         className="maintain-dark"
         checkedChildren="ON"
         unCheckedChildren="OFF"
-        defaultChecked={location.pathname.includes('maintenance')}
+        checked={isOn}
         onChange={handleMaintainance}
         loading={maintenanceMutation.isLoading}
       />
     </>
-  ) : (
-    <></>
   )
 }
 
