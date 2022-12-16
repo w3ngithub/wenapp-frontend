@@ -180,6 +180,9 @@ function LeaveModal({
         'Leave update failed',
         [
           () => queryClient.invalidateQueries(['leaves']),
+          () => {
+            socket.emit('CUD')
+          },
           () =>
             onClose(
               setSpecificHalf,
