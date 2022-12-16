@@ -17,20 +17,32 @@ import {emptyText} from 'constants/EmptySearchAntd'
 const FormItem = Form.Item
 let screenWidth: number
 
-const formattedWorkLogReport: any = (logs: any) => {
-  return logs?.map((log: any) => ({
+const formattedWorkLogReport = (
+  logs: {
+    timeLogs: any
+    totalTimeSpent: number
+    _id: {_id: string; name: string}[]
+  }[]
+) => {
+  return logs?.map((log) => ({
     ...log,
     user: log?._id?.[0]?.name,
     timeSpent: +log?.totalTimeSpent,
-    details: Object.values(log?.timeLogs)?.map(
-      (x: any, i: number, totalTimeLogs: any) => (
-        <>
-          {' '}
-          <div key={i}>
-            <span style={{marginLeft: '-1px'}}>
-              <Tag color="">{changeDate(x?.[0]?.logDate)}</Tag>
-            </span>
-            {x.map((item: any) => (
+    details: Object.values(log?.timeLogs)?.map((x: any, i: number) => (
+      <>
+        {' '}
+        <div key={i}>
+          <span style={{marginLeft: '-1px'}}>
+            <Tag color="">{changeDate(x?.[0]?.logDate)}</Tag>
+          </span>
+          {x.map(
+            (item: {
+              project: {_id: string; name: string}[]
+              logType: string
+              logDate: string
+              totalHours: number
+              remarks: string
+            }) => (
               <div className=" gx-d-flex" key={item.remarks + item.totalHours}>
                 <span className="gx-mr-5" style={{width: '100px'}}>
                   {item.project?.[0]?.name || 'Other'}
@@ -45,12 +57,12 @@ const formattedWorkLogReport: any = (logs: any) => {
                   </Tag>
                 </span>
               </div>
-            ))}
-          </div>
-          <Divider type="horizontal" />
-        </>
-      )
-    ),
+            )
+          )}
+        </div>
+        <Divider type="horizontal" />
+      </>
+    )),
   }))
 }
 
@@ -89,7 +101,7 @@ function WorkLogReport() {
   //   })
   // )
 
-  const handleSearch = async (projectName: any) => {
+  const handleSearch = async (projectName: string) => {
     if (!projectName) {
       setProjectData([])
       return
@@ -125,7 +137,7 @@ function WorkLogReport() {
     setUser(userId)
   }
 
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+  const handleTableChange = (pagination: {}, filters: {}, sorter: {}) => {
     setSort(sorter)
   }
 

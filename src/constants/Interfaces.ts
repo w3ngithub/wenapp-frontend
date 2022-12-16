@@ -153,3 +153,14 @@ export interface SelectLeaves extends EachDay {
 }
 
 //attendance calendar-end
+
+export interface WeeklyReport {
+  activity: string
+  createdAt: string
+  isViewed: boolean
+  module: string
+  status: string
+  updatedAt: string
+  user: {name: string; photo: string}
+  _id: string
+}

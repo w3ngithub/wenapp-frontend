@@ -7,10 +7,10 @@ function Third({
   quarter,
   positions,
 }: {
-  fromDate: any
-  toDate: any
+  fromDate: string
+  toDate: string
   quarter: number
-  positions: any
+  positions: {_id: string; name: string}
 }) {
   return (
     <CommonQuarters

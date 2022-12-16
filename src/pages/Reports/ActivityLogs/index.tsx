@@ -11,11 +11,12 @@ import RangePicker from 'components/Elements/RangePicker'
 import {intialDate} from 'constants/Attendance'
 import Select from 'components/Elements/Select'
 import moment from 'moment'
+import {WeeklyReport} from 'constants/Interfaces'
 
 const FormItem = Form.Item
 
-const formattedWeeklyReports = (logs: any) => {
-  return logs?.map((log: any) => ({
+const formattedWeeklyReports = (logs: WeeklyReport[]) => {
+  return logs?.map((log) => ({
     ...log,
     module: log?.module === 'User' ? 'Co-worker' : log?.module,
     createdAt: isoDateWithoutTimeZone(log.createdAt),
@@ -25,7 +26,7 @@ const formattedWeeklyReports = (logs: any) => {
 
 function ActivityLogs() {
   // init states
-  const [sort, setSort] = useState<any>({})
+  const [sort, setSort] = useState<any>({}) //remaining
   const [page, setPage] = useState({page: 1, limit: 50})
   const [date, setDate] = useState(intialDate)
   const [status, setStatus] = useState<string | undefined>(undefined)
@@ -58,15 +59,15 @@ function ActivityLogs() {
     }
   }, [isError, data])
 
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+  const handleTableChange = (pagination: {}, filters: {}, sorter: {}) => {
     setSort(sorter)
   }
 
-  const handlePageChange = (pageNumber: any) => {
+  const handlePageChange = (pageNumber: number) => {
     setPage((prev) => ({...prev, page: pageNumber}))
   }
 
-  const onShowSizeChange = (_: any, pageSize: any) => {
+  const onShowSizeChange = (_: number, pageSize: number) => {
     setPage((prev) => ({...prev, limit: pageSize}))
   }
 
