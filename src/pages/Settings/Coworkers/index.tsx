@@ -32,6 +32,8 @@ import {officeDomain} from 'constants/OfficeDomain'
 import {emailRegex} from 'constants/EmailTest'
 import {socket} from 'pages/Main'
 import RoleAccess from 'constants/RoleAccess'
+import RolePermissionModal from '../RolePermissionModal'
+import {RolePermissionProvider} from 'context/RolePermissionConext'
 
 const layout = {
   // labelCol: { span: 8 },
@@ -55,6 +57,7 @@ function Coworkers() {
   const [dataToEdit, setDataToEdit] = useState<any>({})
   const [arrayDataToSend, setArrayDataToSend] = useState<any>([])
   const [duplicateValue, setDuplicateValue] = useState<boolean>(false)
+  const [openRole, setOpenRole] = useState<boolean>(false)
 
   const handleUserInviteSuccess = () => {
     form.resetFields()
@@ -268,8 +271,16 @@ function Coworkers() {
     if (type === types.POSITION_TYPE)
       addPositionTypeMutation.mutate({name: input})
 
-    if (type === types.ROLE)
-      addRoleMutation.mutate({value: input, key: input.toLowerCase()})
+    // if (type === types.ROLE)
+    //   addRoleMutation.mutate({value: input, key: input.toLowerCase()})
+  }
+
+  const handleAddRolePermission = (payload: any) => {
+    addRoleMutation.mutate(payload)
+  }
+
+  const handleEditRolePermission = (payload: any) => {
+    addRoleMutation.mutate(payload)
   }
 
   const handleEditClick = (input: any) => {
@@ -278,9 +289,6 @@ function Coworkers() {
 
     if (type === types.POSITION_TYPE)
       editPositionTypeMutation.mutate({id: dataToEdit?._id, name: input})
-
-    if (type === types.ROLE)
-      editRoleMutation.mutate({id: dataToEdit?._id, value: input})
   }
 
   const handleDeleteClick = (data: any, type: string) => {
@@ -298,9 +306,10 @@ function Coworkers() {
   const handleOpenEditModal = (data: any, type: string, currentData: any) => {
     setIsEditMode(true)
     setType(type)
-    setOpenModal(true)
     setDataToEdit(data)
     setArrayDataToSend(currentData)
+    if (type === 'Role') setOpenRole(true)
+    else setOpenModal(true)
   }
 
   const handleCloseModal = () => {
@@ -308,6 +317,7 @@ function Coworkers() {
     setDuplicateValue(false)
     setDataToEdit({})
     setOpenModal(false)
+    setOpenRole(false)
   }
   const handleOpenModal = (type: string, data: any) => {
     setOpenModal(true)
@@ -340,6 +350,29 @@ function Coworkers() {
         onSubmit={isEditMode ? handleEditClick : handleAddClick}
         onCancel={handleCloseModal}
       />
+      <RolePermissionProvider>
+        <RolePermissionModal
+          toggle={openRole}
+          onSubmit={
+            isEditMode ? handleEditRolePermission : handleAddRolePermission
+          }
+          onCancel={handleCloseModal}
+          duplicateValue={duplicateValue}
+          setDuplicateValue={setDuplicateValue}
+          width={1400}
+          currentData={arrayDataToSend}
+          isEditMode={isEditMode}
+          editData={dataToEdit}
+          isLoading={
+            addPositionMutation.isLoading ||
+            addPositionTypeMutation.isLoading ||
+            addRoleMutation.isLoading ||
+            editPositionMutation.isLoading ||
+            editRoleMutation.isLoading ||
+            editPositionTypeMutation.isLoading
+          }
+        />
+      </RolePermissionProvider>
       <Row>
         <Col span={6} xs={24} md={12}>
           <Card title="Invite A Co-worker">
@@ -488,7 +521,8 @@ function Coworkers() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white settings-add"
-                onClick={() => handleOpenModal('Role', roles)}
+                // onClick={() => handleOpenModal('Role', roles)}
+                onClick={() => setOpenRole(true)}
                 disabled={getIsAdmin()}
               >
                 Add
@@ -502,7 +536,7 @@ function Coworkers() {
                 (value) => handleOpenEditModal(value, types.ROLE, roles)
               )}
               isLoading={deleteRoleMutation.isLoading || isLoading}
-              onAddClick={() => handleOpenModal('Role', roles)}
+              onAddClick={() => setOpenRole(true)}
             />
           </Card>
         </Col>
