@@ -69,10 +69,10 @@ const ATTENDANCE_COLUMNS = (
         },
         {
           title: 'Office hour',
-          dataIndex: 'officeHour',
-          key: 'officeHour',
+          dataIndex: 'officehour',
+          key: 'officehour',
           sorter: true,
-          sortOrder: sortedInfo.columnKey === 'officeHour' && sortedInfo.order,
+          sortOrder: sortedInfo.columnKey === 'officehour' && sortedInfo.order,
           render: (text: string, record) => {
             return (
               <span
@@ -129,10 +129,10 @@ const ATTENDANCE_COLUMNS = (
         },
         {
           title: 'Office hour',
-          dataIndex: 'officeHour',
-          key: 'officeHour',
+          dataIndex: 'officehour',
+          key: 'officehour',
           sorter: true,
-          sortOrder: sortedInfo.columnKey === 'officeHour' && sortedInfo.order,
+          sortOrder: sortedInfo.columnKey === 'officehour' && sortedInfo.order,
           render: (text: string, record) => {
             return (
               <span
