@@ -24,11 +24,11 @@ function MaintenanceMode() {
 
   return (
     <div
-      className="center-text"
+      className="center-text gx-d-flex gx-flex-column gx-justify-content-center gx-align-items-center"
       style={{
         margin: 'auto',
         width: '30%',
-        paddingTop: '50px',
+        height: '100vh',
       }}
     >
       <h1
