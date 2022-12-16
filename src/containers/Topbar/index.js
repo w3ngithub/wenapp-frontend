@@ -107,7 +107,7 @@ const Topbar = (props) => {
                 {innerWidth > 650 && (
                   <>
                     <li className="gx-notify">
-                      <MaintainanceBar />
+                      <MaintainanceBar showPopupConfirm={true} />
                     </li>
 
                     <li className="gx-notify">
