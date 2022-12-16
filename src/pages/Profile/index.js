@@ -104,7 +104,7 @@ function Profile(props) {
     setIsLoading(true)
     let updatedUser = {
       ...user,
-      dob: moment.utc(user.dob._d).format(),
+      dob: moment.utc(user.dob._d).endOf('day').format().split('T')[0],
       joinDate: moment.utc(user.joinDate._d).format(),
       primaryPhone: +user.primaryPhone,
       secondaryPhone: +user.secondaryPhone || null,
