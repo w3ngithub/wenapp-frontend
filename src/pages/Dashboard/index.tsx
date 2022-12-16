@@ -468,12 +468,12 @@ const Dashboard = () => {
     (x: any) => ({
       title: x.name,
       start: new Date(
-        `${new Date().getFullYear()}/${
+        `${new Date(x?.dob).getFullYear()}/${
           new Date(x.dob).getMonth() + 1
         }/${new Date(x.dob).getDate()}`
       ),
       end: new Date(
-        `${new Date().getFullYear()}/${
+        `${new Date(x?.dob).getFullYear()}/${
           new Date(x.dob).getMonth() + 1
         }/${new Date(x.dob).getDate()}`
       ),
