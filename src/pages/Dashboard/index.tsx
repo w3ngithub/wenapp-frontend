@@ -464,8 +464,11 @@ const Dashboard = () => {
       type: 'holiday',
     }))
 
-  const BirthDayCalendar = BirthMonthUsers?.data?.data?.users?.map(
-    (x: any) => ({
+  const BirthDayCalendar = BirthMonthUsers?.data?.data?.users
+    ?.sort(function (a: any, b: any) {
+      return a?.name < b?.name ? -1 : 1
+    })
+    ?.map((x: any) => ({
       title: x.name,
       start: new Date(
         `${new Date(x?.dob).getFullYear()}/${
@@ -478,8 +481,7 @@ const Dashboard = () => {
         }/${new Date(x.dob).getDate()}`
       ),
       type: 'birthday',
-    })
-  )
+    }))
   const calendarEvents = [
     ...(holidaysCalendar || []),
     ...(noticesCalendar || []),

@@ -93,7 +93,18 @@ function EventsAndAnnouncements({
           yearMonthAndDay[0] + yearMonthAndDay[1] + yearMonthAndDay[2],
       }
     })
-    ?.sort((a, b) => (a?.yearMonthDay > b?.yearMonthDay ? 1 : -1))
+    ?.sort(function (a, b) {
+      var af = a?.yearMonthDay
+      var bf = b?.yearMonthDay
+      var as = a?.name
+      var bs = b?.name
+
+      if (af === bf) {
+        return as < bs ? -1 : as > bs ? 1 : 0
+      } else {
+        return af < bf ? -1 : 1
+      }
+    })
 
   const birthdayData = sortedBirthdays?.map((x: any) => ({
     id: x._id,
