@@ -29,7 +29,7 @@ const formattedWorkLogReport: any = (logs: any) => {
     timeSpent: +log?.totalTimeSpent,
     details: Object.values(log?.timeLogs)?.map(
       (x: any, i: number, totalTimeLogs: any) => {
-        const totalTimeOfAllProjects = totalTimeLogs[0]?.map((log: any) => {
+        const totalTimeOfAllProjects = x?.map((log: any) => {
           return log?.totalHours
         })
         const iniVal = 0
@@ -48,7 +48,7 @@ const formattedWorkLogReport: any = (logs: any) => {
                 </span>
                 <Tag color="cyan" className="gx-ml-1">
                   {' '}
-                  {sumHours} Hours
+                  Time Spent : {sumHours} Hours
                 </Tag>
               </div>
               {x.map((item: any) => (
@@ -156,6 +156,7 @@ function WorkLogReport() {
   }
 
   const handleResetFilter = () => {
+    setDateFilter({id: '1', value: 'Daily'})
     setDate(intialDate)
     setLogType(undefined)
     setProject(undefined)
