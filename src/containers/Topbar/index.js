@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Layout, Switch} from 'antd'
 import {FaMoon} from 'react-icons/fa'
 import {BsFillSunFill} from 'react-icons/bs'
@@ -22,35 +22,47 @@ import RoleAccess from 'constants/RoleAccess'
 import NotificationInfo from 'components/Modules/NotificationInfo'
 import {getIsAdmin} from 'helpers/utils'
 import MaintainanceBar from 'components/Modules/Maintainance'
+import useWindowsSize from 'hooks/useWindowsSize'
 
 const {Header} = Layout
 
-class Topbar extends Component {
-  state = {
-    searchText: '',
-    user: this.props.user,
-  }
+const Topbar = (props) => {
+  const [user, setUser] = useState(props?.user)
+  const {width, navCollapsed, navStyle, themeType} = props
+  const {innerWidth} = useWindowsSize()
+  const [notificationArrowPosition, setnotificationArrowPosition] = useState(0)
+  const [activityArrowPosition, setactivityArrowPosition] = useState(0)
 
-  updateSearchChatUser = (evt) => {
-    this.setState({
-      searchText: evt.target.value,
-    })
-  }
-
-  handleThemeChange = (e) => {
+  const handleThemeChange = (e) => {
     if (e) {
-      this.props.setThemeType(THEME_TYPE_DARK)
+      props.setThemeType(THEME_TYPE_DARK)
       localStorage.setItem('theme', THEME_TYPE_DARK)
     } else {
-      this.props.setThemeType(THEME_TYPE_SEMI_DARK)
+      props.setThemeType(THEME_TYPE_SEMI_DARK)
       localStorage.setItem('theme', THEME_TYPE_SEMI_DARK)
     }
   }
+  useEffect(() => {
+    const notificationIconPosition = document.getElementById(
+      'mobile-screen-notification'
+    )
+    const activityIconPosition = document.getElementById(
+      'mobile-screen-activity'
+    )
+    if (notificationIconPosition) {
+      setnotificationArrowPosition(
+        notificationIconPosition?.getBoundingClientRect()?.right
+      )
+    }
+    if (activityIconPosition) {
+      setactivityArrowPosition(
+        activityIconPosition?.getBoundingClientRect()?.right
+      )
+    }
+  }, [])
 
-  render() {
-    const {width, navCollapsed, navStyle, themeType} = this.props
-
-    return (
+  return (
+    <div>
       <Auxiliary>
         <Header>
           <div
@@ -66,29 +78,100 @@ class Topbar extends Component {
             ((navStyle === NAV_STYLE_FIXED ||
               navStyle === NAV_STYLE_MINI_SIDEBAR) &&
               width < TAB_SIZE) ? (
-              <div className="gx-linebar gx-mr-3">
+              <div
+                className={`gx-linebar ${
+                  innerWidth < 650 ? 'gx-mr-0' : 'gx-mr-3'
+                }`}
+              >
                 <i
                   className="gx-icon-btn icon icon-menu"
                   onClick={() => {
-                    this.props.toggleCollapsedSideNav(!navCollapsed)
+                    props.toggleCollapsedSideNav(!navCollapsed)
                   }}
                 />
               </div>
             ) : null}
 
-            <div className="gx-header-notifications gx-mt-2">
+            <div
+              className={`gx-header-notifications ${
+                innerWidth < 650 ? 'gx-mt-0 gx-mr-1-5rem' : 'gx-mt-2'
+              }`}
+            >
               <PunchInOut />
             </div>
             <div>
               <ul
-                className="gx-header-notifications gx-ml-auto gx-d-flex"
+                className="gx-header-notifications gx-ml-auto gx-d-flex "
                 style={{flexWrap: 'nowrap'}}
               >
-                <li className="gx-notify">
+                {innerWidth > 650 && (
+                  <>
+                    <li className="gx-notify">
+                      <MaintainanceBar showPopupConfirm={true} />
+                    </li>
+
+                    <li className="gx-notify">
+                      <Switch
+                        unCheckedChildren={
+                          <FaMoon
+                            style={{
+                              fontSize: '15px',
+                              color: '#3a3939',
+                              marginTop: '3px',
+                            }}
+                          />
+                        }
+                        checkedChildren={
+                          <BsFillSunFill
+                            style={{
+                              color: 'yellow',
+                              fontSize: '18px',
+                              marginTop: '2px',
+                            }}
+                          />
+                        }
+                        defaultChecked={
+                          themeType === THEME_TYPE_DARK ? true : false
+                        }
+                        onChange={handleThemeChange}
+                      />
+                    </li>
+
+                    {!getIsAdmin() && (
+                      <li className="gx-user-nav gx-notify li-gap">
+                        <NotificationInfo />
+                      </li>
+                    )}
+
+                    {RoleAccess.Admin === user?.role?.key && (
+                      <li className="gx-user-nav gx-notify li-gap">
+                        <ActivityInfo />
+                      </li>
+                    )}
+                  </>
+                )}
+
+                <li className="gx-user-nav li-gap">
+                  <UserInfo />
+                </li>
+              </ul>
+            </div>
+          </div>
+        </Header>
+      </Auxiliary>
+      {innerWidth < 650 && (
+        <div className="mobile-screen-topbar">
+          <Header>
+            <ul
+              className="gx-header-notifications gx-ml-auto gx-d-flex"
+              style={{flexWrap: 'nowrap'}}
+            >
+              <>
+                <li>
                   <MaintainanceBar />
                 </li>
 
-                <li className="gx-notify">
+                <li>
                   <Switch
                     unCheckedChildren={
                       <FaMoon
@@ -111,32 +194,36 @@ class Topbar extends Component {
                     defaultChecked={
                       themeType === THEME_TYPE_DARK ? true : false
                     }
-                    onChange={this.handleThemeChange}
+                    onChange={handleThemeChange}
                   />
                 </li>
 
                 {!getIsAdmin() && (
-                  <li className="gx-user-nav gx-notify li-gap">
-                    <NotificationInfo />
+                  <li
+                    className="gx-user-nav li-gap"
+                    id="mobile-screen-notification"
+                  >
+                    <NotificationInfo
+                      arrowPosition={notificationArrowPosition}
+                    />
                   </li>
                 )}
 
-                {RoleAccess.Admin === this.state.user?.role?.key && (
-                  <li className="gx-user-nav gx-notify li-gap">
-                    <ActivityInfo />
+                {RoleAccess.Admin === user?.role?.key && (
+                  <li
+                    className="gx-user-nav li-gap"
+                    id="mobile-screen-activity"
+                  >
+                    <ActivityInfo arrowPosition={activityArrowPosition} />
                   </li>
                 )}
-
-                <li className="gx-user-nav li-gap">
-                  <UserInfo />
-                </li>
-              </ul>
-            </div>
-          </div>
-        </Header>
-      </Auxiliary>
-    )
-  }
+              </>
+            </ul>
+          </Header>
+        </div>
+      )}
+    </div>
+  )
 }
 
 const mapStateToProps = ({settings, auth}) => {

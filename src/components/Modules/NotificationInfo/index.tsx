@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {Popover} from 'antd'
 import {useNavigate} from 'react-router-dom'
 import {socket} from 'pages/Main'
-import {useInfiniteQuery} from '@tanstack/react-query'
+import {useInfiniteQuery, useQueryClient} from '@tanstack/react-query'
 import {useInView} from 'react-intersection-observer'
 import {getNotifications} from 'services/notifications'
 import {notificationCountStyle} from '../ActivityInfo'
@@ -13,15 +13,16 @@ import RecentActivity from '../dashboard/CRM/RecentActivity'
 import {getIsAdmin} from 'helpers/utils'
 import {BLOG, NOTICEBOARD} from 'helpers/routePath'
 import {NOTIFICATION_ICONS} from 'constants/notification'
+import useWindowsSize from 'hooks/useWindowsSize'
 
 const NOTIFICATION_TO_CLICK = ['Blog', 'Notice']
 
-function NotificationInfo() {
+function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
   const [visible, setVisible] = useState<boolean>(false)
   const {ref, inView} = useInView({threshold: 0.5})
   const [showBellCount, setShowBellCount] = useState<boolean>(false)
   const [notificationCount, setNotificationCount] = useState<number>(0)
-
+  const {innerWidth} = useWindowsSize()
   const navigate = useNavigate()
 
   const {
@@ -47,7 +48,7 @@ function NotificationInfo() {
       })
       return res
     },
-    {enabled: false}
+    {enabled: false, keepPreviousData: false, cacheTime: 0, staleTime: 0}
   )
 
   // fecth next page on scroll of activities
@@ -101,7 +102,7 @@ function NotificationInfo() {
   useEffect(() => {
     const fetchNotifications = async () => {
       if (visible) {
-        await refetch()
+        await refetch({refetchPage: (page, index) => index === 0})
         notificationCount > 0 && socket.emit('viewed-notification', {_id, key})
         setShowBellCount(false)
         setNotificationCount(0)
@@ -111,6 +112,18 @@ function NotificationInfo() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, _id, key])
+
+  useEffect(() => {
+    if (innerWidth < 650 && visible) {
+      const popOverArrow: HTMLElement | null = document.querySelector(
+        '.notification-icon-mobile-screen > .ant-popover-content > .ant-popover-arrow'
+      )
+
+      if (popOverArrow) {
+        popOverArrow.style.right = `${innerWidth - arrowPosition + 20}px`
+      }
+    }
+  }, [visible])
 
   const handleNotificationClick = (module: String) => {
     switch (module) {
@@ -173,7 +186,7 @@ function NotificationInfo() {
 
   return (
     <Popover
-      overlayClassName="gx-popover-admin-notification"
+      overlayClassName="gx-popover-admin-notification notification-icon-mobile-screen"
       placement="bottomRight"
       content={notificationContent}
       trigger="click"
