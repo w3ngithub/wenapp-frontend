@@ -78,7 +78,11 @@ const Topbar = (props) => {
             ((navStyle === NAV_STYLE_FIXED ||
               navStyle === NAV_STYLE_MINI_SIDEBAR) &&
               width < TAB_SIZE) ? (
-              <div className="gx-linebar gx-mr-3">
+              <div
+                className={`gx-linebar ${
+                  innerWidth < 650 ? 'gx-mr-0' : 'gx-mr-3'
+                }`}
+              >
                 <i
                   className="gx-icon-btn icon icon-menu"
                   onClick={() => {
@@ -88,7 +92,11 @@ const Topbar = (props) => {
               </div>
             ) : null}
 
-            <div className="gx-header-notifications gx-mt-2">
+            <div
+              className={`gx-header-notifications ${
+                innerWidth < 650 ? 'gx-mt-0 gx-mr-1-5rem' : 'gx-mt-2'
+              }`}
+            >
               <PunchInOut />
             </div>
             <div>
