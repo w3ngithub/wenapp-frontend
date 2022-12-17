@@ -1,17 +1,11 @@
-import React, {useState} from 'react'
-import {Button, Form, Input, Col, Row} from 'antd'
+import React from 'react'
+import {Form, Col, Row} from 'antd'
 import RolePermissionBox from './RolePermissionBox'
 import {permissionRole} from 'constants/RolePermission'
 
-const CommonRolePermission = ({
-  setEmptyObj,
-  checkedAllRoles,
-  allAccess,
-  toggle,
-}) => {
+const CommonRolePermission = ({checkedAllRoles, allAccess}) => {
   const [form] = Form.useForm()
   let titleName = Object.keys(permissionRole)
-  console.log('commonerolepermission', toggle)
 
   return (
     <Form form={form}>
@@ -21,10 +15,8 @@ const CommonRolePermission = ({
             <RolePermissionBox
               data={permissionRole[title]}
               title={title}
-              setEmptyObj={setEmptyObj}
               checkedAllRoles={checkedAllRoles}
               allAccess={allAccess}
-              toggle={toggle}
             />
           </Col>
         ))}

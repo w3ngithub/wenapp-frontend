@@ -1,24 +1,86 @@
+import {
+  CHANGE_SINGLE_CHECKBOX,
+  GLOBAL_SELECT_ALL,
+  RESET,
+  SELECT_ALL_CHECKBOX,
+  SET_EDIT_DATA,
+} from 'constants/RolePermission'
 import React, {useReducer} from 'react'
 
 const initialState = {
-  checkAll: false,
-  indeterminate: false,
-  checkedList: [],
-  emptyObj: [],
+  checkAll: {},
+  indeterminate: {},
+  checkedList: {},
 }
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'RESET':
+    case RESET:
       return initialState
-    case 'CHANGE_SINGLE_CHECKBOX':
+
+    case CHANGE_SINGLE_CHECKBOX:
+      return {
+        ...state,
+        checkedList: {
+          ...state.checkedList,
+          [action.payload.checkedList.title]: action.payload.checkedList.list,
+        },
+        indeterminate: {
+          ...state.indeterminate,
+          [action.payload.indeterminate.title]:
+            action.payload.indeterminate.check,
+        },
+        checkAll: {
+          ...state.checkAll,
+          [action.payload.checkAll.title]: action.payload.checkAll.check,
+        },
+      }
+
+    case SELECT_ALL_CHECKBOX:
+      return {
+        ...state,
+        checkedList: {
+          ...state.checkedList,
+          [action.payload.checkedList.title]: action.payload.checkedList.list,
+        },
+        indeterminate: {
+          ...state.indeterminate,
+          [action.payload.indeterminate.title]:
+            action.payload.indeterminate.check,
+        },
+        checkAll: {
+          ...state.checkAll,
+          [action.payload.checkAll.title]: action.payload.checkAll.check,
+        },
+      }
+
+    case GLOBAL_SELECT_ALL:
+      return {
+        ...state,
+        checkedList: {
+          ...state.checkedList,
+          [action.payload.checkedList.title]: action.payload.checkedList.list,
+        },
+        indeterminate: {
+          ...state.indeterminate,
+          [action.payload.indeterminate.title]:
+            action.payload.indeterminate.check,
+        },
+        checkAll: {
+          ...state.checkAll,
+          [action.payload.checkAll.title]: action.payload.checkAll.check,
+        },
+      }
+
+    case SET_EDIT_DATA: {
       return {
         ...state,
         checkedList: action.payload.checkedList,
-        emptyObj: [...state.emptyObj, action.payload.emptyObj],
-        indeterminate: action.payload.indeterminate,
         checkAll: action.payload.checkAll,
+        indeterminate: action.payload.indeterminate,
       }
+    }
+
     default:
       return state
   }
@@ -28,7 +90,6 @@ const RolePermissionContext = React.createContext()
 
 const RolePermissionProvider = ({children}) => {
   const [state, dispatch] = useReducer(reducer, initialState)
-  // console.log(watch)
   return (
     <RolePermissionContext.Provider value={{state, dispatch}}>
       {children}

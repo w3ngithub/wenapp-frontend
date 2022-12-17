@@ -187,3 +187,10 @@ export const permissionRole = {
     {name: 'emails', label: 'Emails', rule: []},
   ],
 }
+
+export const CHANGE_SINGLE_CHECKBOX = 'CHANGE_SINGLE_CHECKBOX'
+export const RESET = 'RESET'
+export const SELECT_ALL_CHECKBOX = 'SELECT_ALL_CHECKBOX'
+export const GLOBAL_SELECT_ALL = 'GLOBAL_SELECT_ALL'
+export const GLOBAL_REMOVE_ALL = 'GLOBAL_REMOVE_ALL'
+export const SET_EDIT_DATA = 'SET_EDIT_DATA'

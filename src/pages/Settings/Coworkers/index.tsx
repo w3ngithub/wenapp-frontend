@@ -64,6 +64,8 @@ function Coworkers() {
     queryClient.invalidateQueries(['inviteUsers'])
   }
 
+  console.log('dataToEdit', dataToEdit)
+
   const {
     data: positions,
     isFetching: isPositionsFetching,
@@ -280,7 +282,7 @@ function Coworkers() {
   }
 
   const handleEditRolePermission = (payload: any) => {
-    addRoleMutation.mutate(payload)
+    editRoleMutation.mutate({id: dataToEdit?._id, payload: payload})
   }
 
   const handleEditClick = (input: any) => {

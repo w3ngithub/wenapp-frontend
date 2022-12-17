@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {Button, Form, Input, Modal, Spin, Checkbox} from 'antd'
 import CommonRolePermission from './CommonRolePermission'
-import {permissionRole} from 'constants/RolePermission'
+import {permissionRole, RESET, SET_EDIT_DATA} from 'constants/RolePermission'
 import {RolePermissionContext} from 'context/RolePermissionConext'
 
 interface modalInterface {
@@ -29,33 +29,43 @@ const RolePermissionModal = ({
   isLoading,
 }: modalInterface) => {
   const [form] = Form.useForm()
-  const [emptyObj, setEmptyObj] = useState<any>({})
   const [checkedAllRoles, setCheckedAllRoles] = useState<boolean>(false)
   const [allAccess, setAllAccess] = useState<boolean>(false)
   const {state, dispatch} = useContext(RolePermissionContext)
 
   let rolePermissions: any = permissionRole
 
+  const formattingFunc = (data: any) => {
+    let formattedData: any
+    data.forEach((d: any) => {
+      formattedData = {
+        ...formattedData,
+        ...d,
+      }
+    })
+    return formattedData
+  }
+
   useEffect(() => {
     let data = Object.keys(rolePermissions)
     let allRoles: any = []
     data.forEach((d) => {
-      if (rolePermissions[d]?.length !== emptyObj[d]?.length) {
+      if (rolePermissions[d]?.length !== state.checkedList[d]?.length) {
         allRoles.push(true)
       }
     })
     if (allRoles.includes(true)) {
       setAllAccess(false)
     } else setAllAccess(true)
-  }, [emptyObj])
+  }, [state.checkedList])
 
   const handleSubmit = () => {
-    let PayloadData = Object.keys(rolePermissions)
-    let finalObj = PayloadData.map((d) => {
+    let payloadData = Object.keys(rolePermissions)
+    let finalObj = payloadData.map((d) => {
       return rolePermissions[d].reduce((prevObj: any, currentObj: any) => {
-        if (d in emptyObj) {
+        if (d in state.checkedList) {
           return Object.assign(prevObj, {
-            [currentObj.name]: emptyObj[d]?.includes(currentObj.label),
+            [currentObj.name]: state.checkedList[d]?.includes(currentObj.name),
           })
         } else {
           return Object.assign(prevObj, {
@@ -66,34 +76,77 @@ const RolePermissionModal = ({
     })
 
     let permission = {}
-    PayloadData.forEach((d, i) => {
+    payloadData.forEach((d, i) => {
       permission = {
         ...permission,
         [d]: finalObj[i],
       }
     })
-    let payloadData: any = {
+
+    let payloadDatas: any = {
       key: form.getFieldValue('name').toLowerCase().replaceAll(' ', ''),
       value: form.getFieldValue('name'),
       permission: JSON.stringify([permission]),
     }
-    form.validateFields().then(() => onSubmit(payloadData))
+
+    form.validateFields().then(() => onSubmit(payloadDatas))
   }
 
   useEffect(() => {
     if (toggle) {
-      if (isEditMode) form.setFieldValue('name', editData?.name)
+      if (isEditMode) {
+        const permission = JSON.parse(editData.permission)
+        console.log('permission', permission)
+        let editedCheckData = Object.keys(permission[0]).map((d) => {
+          const editCheck = Object.keys(permission[0][d]).filter((x) => {
+            if (permission[0][d][x]) return x
+          })
+          return {
+            [d]: editCheck,
+          }
+        })
+
+        let editCheckAllData = Object.keys(permission[0]).map((d) => {
+          const editCheck = Object.keys(permission[0][d]).filter((x) => {
+            if (permission[0][d][x]) return x
+          })
+          return {
+            [d]: Object.keys(permission[0][d]).length === editCheck.length,
+          }
+        })
+
+        let editIndeterminate = Object.keys(permission[0]).map((d) => {
+          const editCheck = Object.keys(permission[0][d]).filter((x) => {
+            if (permission[0][d][x]) return x
+          })
+          return {
+            [d]:
+              !!editCheck.length &&
+              editCheck.length < Object.keys(permission[0][d]).length,
+          }
+        })
+
+        let dataChecked = formattingFunc(editedCheckData)
+        let dataCheckedAll = formattingFunc(editCheckAllData)
+        let dataIndeterminate = formattingFunc(editIndeterminate)
+
+        dispatch({
+          type: SET_EDIT_DATA,
+          payload: {
+            checkedList: dataChecked,
+            checkAll: dataCheckedAll,
+            indeterminate: dataIndeterminate,
+          },
+        })
+
+        form.setFieldValue('name', editData?.name)
+      }
     }
     if (!toggle) {
       form.resetFields()
-      setEmptyObj([])
-      setCheckedAllRoles(false)
+      dispatch({type: RESET})
     }
   }, [toggle])
-
-  // console.log('checkedAllRoles', checkedAllRoles)
-  // console.log('toggle', toggle)
-  // console.log('empty', emptyObj)
 
   return (
     <Modal
@@ -103,7 +156,6 @@ const RolePermissionModal = ({
       mask={false}
       width={width}
       onCancel={(value) => {
-        console.log('cancel value', value)
         onCancel(setDuplicateValue)
       }}
       footer={[
@@ -161,10 +213,8 @@ const RolePermissionModal = ({
       </Form>
       <div>
         <CommonRolePermission
-          setEmptyObj={setEmptyObj}
           checkedAllRoles={checkedAllRoles}
           allAccess={allAccess}
-          toggle={toggle}
         />
       </div>
 
