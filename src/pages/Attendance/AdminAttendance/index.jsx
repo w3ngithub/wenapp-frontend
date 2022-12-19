@@ -73,7 +73,7 @@ const formattedAttendances = (attendances) => {
       punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
         ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
         : '',
-      officeHour: milliSecondIntoHours(att?.officehour),
+      officehour: milliSecondIntoHours(att?.officehour),
       intHour: timeInMilliSeconds,
     }
   })
@@ -129,7 +129,10 @@ function AdminAttendance({userRole}) {
       let sortField = ''
       if (sort?.order) {
         const order = sort.order === 'ascend' ? '' : '-'
-        sortField = `${order}${sort.columnKey}`
+        sortField =
+          sort.columnKey === 'user'
+            ? `${order}${sort.columnKey}`
+            : `${order}${sort.columnKey},user`
       }
 
       return searchAttendacentOfUser({
@@ -295,7 +298,7 @@ function AdminAttendance({userRole}) {
       userId: user || '',
       fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
       toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
-      sort: 'csv-import',
+      sort: 'user,attendanceDate',
       officehourop: defaultFilter?.op,
       officehourValue: hourIntoMilliSecond(defaultFilter?.num),
     })

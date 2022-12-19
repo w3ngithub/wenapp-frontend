@@ -64,7 +64,7 @@ const formattedAttendances = (attendances) => {
       punchOutTime: att?.data?.[att?.data.length - 1]?.punchOutTime
         ? moment(att?.data?.[att?.data.length - 1]?.punchOutTime).format('LTS')
         : '',
-      officeHour: milliSecondIntoHours(att?.officehour),
+      officehour: milliSecondIntoHours(att?.officehour),
       intHour: timeToMilliSeconds,
     }
   })

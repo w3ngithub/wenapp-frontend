@@ -349,6 +349,10 @@
   }
 }
 
+.table-longtext {
+  word-break: break-word;
+}
+
 @media (max-width: 614px) {
   .ant-form-item {
     width: 100%;
@@ -595,6 +599,15 @@
 .mobile-screen-topbar {
   margin: auto;
   width: fit-content;
+  margin-top: 3px;
+}
+.mobile-screen-topbar-ul {
+  gap: 25px;
+}
+.mobile-screen-topbar {
+  .gx-header-notifications > li:not(:last-child) {
+    margin-right: 24px;
+  }
 }
 /* Remove weekends in month view */
 // .rbc-month-header > :nth-child(6),

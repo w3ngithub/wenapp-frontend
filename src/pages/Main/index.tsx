@@ -89,7 +89,6 @@ moment.locale('en-gb')
 
 export const socket = socketIOClient(process.env.REACT_APP_API_ENDPOINT || '', {
   transports: ['websocket'],
-  path: '/api',
 })
 
 function App(props: any) {
@@ -315,7 +314,7 @@ function App(props: any) {
               <Route path={PROFILE} element={<Profile />} />
             </Route>
           </Route>
-          <Route path={MAINTAINANCE_MODE} element={<MaintenanceMode />} />
+          {/* <Route path={MAINTAINANCE_MODE} element={<MaintenanceMode />} /> */}
           <Route path="*" element={<Error404 />} />
           <Route
             path="notAllowed"
