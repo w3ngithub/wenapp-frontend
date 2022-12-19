@@ -47,6 +47,7 @@ import RoleAccess, {
   ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {emptyText} from 'constants/EmptySearchAntd'
+import useWindowsSize from 'hooks/useWindowsSize'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -106,6 +107,9 @@ function AdminAttendance({userRole}) {
     loading: false,
   })
   const CSVRef = useRef()
+
+  const {innerWidth, innerHeight} = useWindowsSize()
+  console.log(innerWidth)
 
   useEffect(() => {
     if (dataToExport.todownload) {
@@ -370,142 +374,292 @@ function AdminAttendance({userRole}) {
       />
       <div className="gx-mt-2"></div>
       <div className="components-table-demo-control-bar">
-        <div className="gx-d-flex gx-justify-content-between gx-flex-row">
-          <Form layout="inline" form={form}>
-            <div className="gx-d-flex gx-justify-content-between gx-flex-row">
-              <FormItem>
-                <RangePicker onChange={handleChangeDate} value={date} />
-              </FormItem>
-              <FormItem className="direct-form-item">
-                <Select
-                  onChange={handleAttChnageChange}
-                  value={attFilter}
-                  options={attendanceFilter}
-                />
-              </FormItem>
-              <FormItem className="direct-form-item">
-                <Select
-                  placeholder="Select Co-worker"
-                  onChange={handleUserChange}
-                  value={user}
-                  options={users?.data?.data?.data?.map((x) => ({
-                    id: x._id,
-                    value: x.name,
-                  }))}
-                />
-              </FormItem>
-            </div>
+        {innerWidth > 1600 ? (
+          <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+            <Form layout="inline" form={form}>
+              <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+                <FormItem>
+                  <RangePicker onChange={handleChangeDate} value={date} />
+                </FormItem>
+                <FormItem className="direct-form-item">
+                  <Select
+                    onChange={handleAttChnageChange}
+                    value={attFilter}
+                    options={attendanceFilter}
+                  />
+                </FormItem>
+                <FormItem className="direct-form-item">
+                  <Select
+                    placeholder="Select Co-worker"
+                    onChange={handleUserChange}
+                    value={user}
+                    options={users?.data?.data?.data?.map((x) => ({
+                      id: x._id,
+                      value: x.name,
+                    }))}
+                  />
+                </FormItem>
+              </div>
 
-            <div className="gx-d-flex gx-justify-content-between gx-flex-row">
-              {' '}
-              <FormItem>
-                <Input
-                  defaultValue="Office hour"
-                  disabled={true}
-                  style={{width: '120px'}}
-                />
-              </FormItem>
-              <FormItem>
-                <Select
-                  options={OfficeHourFilter}
-                  onChange={(value) =>
-                    setDefaultFilter((prev) => ({...prev, op: value}))
-                  }
-                  value={defaultFilter?.op}
-                  style={{width: '220px'}}
-                  placeholder="Select condition"
-                />
-              </FormItem>
-              <FormItem>
-                <InputNumber
-                  value={defaultFilter?.num}
-                  onChange={(value) =>
-                    setDefaultFilter((prev) => ({...prev, num: value}))
-                  }
-                  style={{width: '80px'}}
-                  placeholder="Hours"
-                />
-              </FormItem>
-              <FormItem style={{marginBottom: '1px'}}>
-                <Button
-                  className="gx-btn-form gx-btn-primary gx-text-white "
-                  onClick={() => handleReset()}
-                >
-                  Reset
-                </Button>
-              </FormItem>
-            </div>
-          </Form>
+              <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+                {' '}
+                <FormItem>
+                  <Input
+                    defaultValue="Office Hour"
+                    disabled={true}
+                    style={{width: '120px'}}
+                  />
+                </FormItem>
+                <FormItem>
+                  <Select
+                    options={OfficeHourFilter}
+                    onChange={(value) =>
+                      setDefaultFilter((prev) => ({...prev, op: value}))
+                    }
+                    value={defaultFilter?.op}
+                    style={{width: '220px'}}
+                    placeholder="Select condition"
+                  />
+                </FormItem>
+                <FormItem>
+                  <InputNumber
+                    value={defaultFilter?.num}
+                    onChange={(value) =>
+                      setDefaultFilter((prev) => ({...prev, num: value}))
+                    }
+                    style={{width: '80px'}}
+                    placeholder="Hours"
+                  />
+                </FormItem>
+                <FormItem style={{marginBottom: '1px'}}>
+                  <Button
+                    className="gx-btn-form gx-btn-primary gx-text-white "
+                    onClick={() => handleReset()}
+                  >
+                    Reset
+                  </Button>
+                </FormItem>
+              </div>
+            </Form>
 
-          <div style={{display: 'flex'}}>
-            <Button
-              className="gx-btn-form gx-btn-primary gx-text-white "
-              onClick={() => {
-                setbtnClick(true)
-                refetch()
-              }}
-              disabled={!user || isFetching}
-            >
-              Calculate office Hour
-            </Button>
-
-            <Input
-              value={
-                user && btnClick
-                  ? isFetching
-                    ? 'Calculating...'
-                    : timedata?.data?.data[0]?.totalhours
-                    ? milliSecondIntoHours(timedata?.data?.data[0]?.totalhours)
-                    : 0
-                  : ''
-              }
-              style={{height: '36px'}}
-              placeholder="totalhour"
-            />
-          </div>
-
-          <AccessWrapper
-            noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
-          >
-            <div className="gx-btn-form">
+            <div style={{display: 'flex'}}>
               <Button
                 className="gx-btn-form gx-btn-primary gx-text-white "
-                disabled={
-                  sortedData?.length === 0 || isFetching || dataToExport.loading
-                }
-                onClick={handleExport}
+                onClick={() => {
+                  setbtnClick(true)
+                  refetch()
+                }}
+                disabled={!user || isFetching}
               >
-                Export
+                Calculate Office Hour
               </Button>
 
-              <CSVLink
-                filename="Co-workers Attendance"
-                ref={CSVRef}
-                data={[
-                  [
-                    'Co-worker',
-                    'Date',
-                    'Day',
-                    'Punch-in Time',
-                    'Punch-out Time',
-                    'Office hour',
-                  ],
-                  ...dataToExport.data,
-                ]}
-              ></CSVLink>
+              <Input
+                value={
+                  user && btnClick
+                    ? isFetching
+                      ? 'Calculating...'
+                      : timedata?.data?.data[0]?.totalhours
+                      ? milliSecondIntoHours(
+                          timedata?.data?.data[0]?.totalhours
+                        )
+                      : 0
+                    : ''
+                }
+                style={{height: '36px'}}
+                placeholder="totalhour"
+              />
 
-              <AccessWrapper noAccessRoles={[RoleAccess.OfficeAdmin]}>
-                <Button
-                  className="gx-btn-form gx-btn-primary gx-text-white "
-                  onClick={() => setToggleAdd(true)}
-                  disabled={getIsAdmin()}
+              <AccessWrapper
+                noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
+              >
+                <div
+                  className="gx-btn-form"
+                  style={{marginLeft: '20px', display: 'flex'}}
                 >
-                  Add
-                </Button>
+                  <Button
+                    className="gx-btn-form gx-btn-primary gx-text-white "
+                    disabled={
+                      sortedData?.length === 0 ||
+                      isFetching ||
+                      dataToExport.loading
+                    }
+                    onClick={handleExport}
+                  >
+                    Export
+                  </Button>
+
+                  <CSVLink
+                    filename="Co-workers Attendance"
+                    ref={CSVRef}
+                    data={[
+                      [
+                        'Co-worker',
+                        'Date',
+                        'Day',
+                        'Punch-in Time',
+                        'Punch-out Time',
+                        'Office hour',
+                      ],
+                      ...dataToExport.data,
+                    ]}
+                  ></CSVLink>
+
+                  <AccessWrapper noAccessRoles={[RoleAccess.OfficeAdmin]}>
+                    <Button
+                      className="gx-btn-form gx-btn-primary gx-text-white "
+                      onClick={() => setToggleAdd(true)}
+                      disabled={getIsAdmin()}
+                    >
+                      Add
+                    </Button>
+                  </AccessWrapper>
+                </div>
               </AccessWrapper>
             </div>
-          </AccessWrapper>
-        </div>
+          </div>
+        ) : (
+          <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+            <Form layout="inline" form={form}>
+              <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+                <FormItem>
+                  <RangePicker onChange={handleChangeDate} value={date} />
+                </FormItem>
+                <FormItem className="direct-form-item">
+                  <Select
+                    onChange={handleAttChnageChange}
+                    value={attFilter}
+                    options={attendanceFilter}
+                  />
+                </FormItem>
+                <FormItem className="direct-form-item">
+                  <Select
+                    placeholder="Select Co-worker"
+                    onChange={handleUserChange}
+                    value={user}
+                    options={users?.data?.data?.data?.map((x) => ({
+                      id: x._id,
+                      value: x.name,
+                    }))}
+                  />
+                </FormItem>
+              </div>
+
+              <div style={{display: 'flex'}}>
+                <Button
+                  className="gx-btn-form gx-btn-primary gx-text-white "
+                  onClick={() => {
+                    setbtnClick(true)
+                    refetch()
+                  }}
+                  disabled={!user || isFetching}
+                >
+                  Calculate Office Hour
+                </Button>
+
+                <Input
+                  value={
+                    user && btnClick
+                      ? isFetching
+                        ? 'Calculating...'
+                        : timedata?.data?.data[0]?.totalhours
+                        ? milliSecondIntoHours(
+                            timedata?.data?.data[0]?.totalhours
+                          )
+                        : 0
+                      : ''
+                  }
+                  style={{height: '36px'}}
+                  placeholder="totalhour"
+                />
+              </div>
+            </Form>
+            <div style={{display: 'flex'}}>
+              <Form layout="inline">
+                <FormItem>
+                  <Input
+                    defaultValue="Office Hour"
+                    disabled={true}
+                    style={{width: '120px'}}
+                  />
+                </FormItem>
+                <FormItem>
+                  <Select
+                    options={OfficeHourFilter}
+                    onChange={(value) =>
+                      setDefaultFilter((prev) => ({...prev, op: value}))
+                    }
+                    value={defaultFilter?.op}
+                    style={{width: '220px'}}
+                    placeholder="Select condition"
+                  />
+                </FormItem>
+                <FormItem>
+                  <InputNumber
+                    value={defaultFilter?.num}
+                    onChange={(value) =>
+                      setDefaultFilter((prev) => ({...prev, num: value}))
+                    }
+                    style={{width: '80px'}}
+                    placeholder="Hours"
+                  />
+                </FormItem>
+                <FormItem style={{marginBottom: '1px'}}>
+                  <Button
+                    className="gx-btn-form gx-btn-primary gx-text-white "
+                    onClick={() => handleReset()}
+                  >
+                    Reset
+                  </Button>
+                </FormItem>
+              </Form>
+
+              <AccessWrapper
+                noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
+              >
+                <div className="gx-btn-form" style={{marginLeft: '20px'}}>
+                  <Button
+                    className="gx-btn-form gx-btn-primary gx-text-white "
+                    disabled={
+                      sortedData?.length === 0 ||
+                      isFetching ||
+                      dataToExport.loading
+                    }
+                    onClick={handleExport}
+                  >
+                    Export
+                  </Button>
+
+                  <CSVLink
+                    filename="Co-workers Attendance"
+                    ref={CSVRef}
+                    data={[
+                      [
+                        'Co-worker',
+                        'Date',
+                        'Day',
+                        'Punch-in Time',
+                        'Punch-out Time',
+                        'Office hour',
+                      ],
+                      ...dataToExport.data,
+                    ]}
+                  ></CSVLink>
+
+                  <AccessWrapper noAccessRoles={[RoleAccess.OfficeAdmin]}>
+                    <Button
+                      className="gx-btn-form gx-btn-primary gx-text-white "
+                      onClick={() => setToggleAdd(true)}
+                      disabled={getIsAdmin()}
+                    >
+                      Add
+                    </Button>
+                  </AccessWrapper>
+                </div>
+              </AccessWrapper>
+            </div>
+          </div>
+        )}
       </div>
       <Table
         locale={{emptyText}}
