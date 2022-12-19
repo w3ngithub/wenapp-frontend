@@ -11,7 +11,6 @@ import {
   SIGNOUT_USER_SUCCESS,
   SIGNUP_USER_SUCCESS,
   UPDATE_JOIN_DATE,
-  USER_ROLE_PERMISSION,
 } from 'constants/ActionTypes'
 
 const INIT_STATE = {
@@ -117,15 +116,13 @@ const reducer = (state = INIT_STATE, action) => {
         },
       }
 
-    case USER_ROLE_PERMISSION:
-      return {}
-
     default:
       return state
   }
 }
 
-export const selectAuthUser = (state) =>
-  state?.auth?.authUser?.user ?? {role: {key: null}}
+export const selectAuthUser = (state) => {
+  return state?.auth?.authUser?.user ?? {role: {key: null}}
+}
 
 export default reducer

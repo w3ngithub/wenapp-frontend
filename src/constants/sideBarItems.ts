@@ -20,21 +20,15 @@ import {
   WORK_LOG_REPORT,
 } from '../helpers/routePath'
 import sidebarItemsInterface from '../types/sideBar'
-import RoleAccess, {
-  LEAVE_REPORT_REPORT_ACESS,
-  WEEKLY_REPORT_ACCESS,
-  WORK_LOG_REPORT_ACESS,
-  ACTIVITY_LOGS_ACCESS,
-} from './RoleAccess'
 
-export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
+export const SIDEBAR_ITEMS = ({Navigation, Reports}:any) : sidebarItemsInterface[]=> [
   {
     icon: 'dasbhoard',
     name: 'sidebar.dashboard',
     url: DASHBOARD,
     isExpandable: false,
     id: 1,
-    roles: [RoleAccess.All],
+    roles: Navigation.dashboard,
   },
   {
     icon: 'view-o',
@@ -42,13 +36,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: OVERVIEW,
     isExpandable: false,
     id: 12,
-    roles: [
-      RoleAccess.Admin,
-      RoleAccess.ProjectManager,
-      RoleAccess.TeamLead,
-      RoleAccess.HumanResource,
-      RoleAccess.OfficeAdmin,
-    ],
+    roles: Navigation?.todaysOverview
   },
   {
     icon: 'contacts',
@@ -56,14 +44,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: COWORKERS,
     isExpandable: false,
     id: 2,
-    roles: [
-      RoleAccess.Admin,
-      RoleAccess.ProjectManager,
-      RoleAccess.TeamLead,
-      RoleAccess.HumanResource,
-      RoleAccess.Finance,
-      RoleAccess.OfficeAdmin,
-    ],
+    roles: Navigation?.coWorkers
   },
   {
     icon: 'folder-o',
@@ -71,13 +52,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: PROJECTS,
     isExpandable: false,
     id: 3,
-    roles: [
-      RoleAccess.Admin,
-      RoleAccess.ProjectManager,
-      RoleAccess.TeamLead,
-      RoleAccess.Editor,
-      RoleAccess.Normal,
-    ],
+    roles:Navigation?.projects
   },
   {
     icon: 'select',
@@ -85,7 +60,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: ATTENDANCE,
     isExpandable: false,
     id: 4,
-    roles: [RoleAccess.All],
+    roles: true,
   },
   {
     icon: 'ckeditor',
@@ -93,13 +68,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: LOGTIME,
     isExpandable: false,
     id: 5,
-    roles: [
-      RoleAccess.Admin,
-      RoleAccess.ProjectManager,
-      RoleAccess.TeamLead,
-      RoleAccess.Editor,
-      RoleAccess.Normal,
-    ],
+    roles: Navigation?.logTime
   },
   {
     icon: 'hotel-booking',
@@ -107,7 +76,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: LEAVE,
     isExpandable: false,
     id: 6,
-    roles: [RoleAccess.All],
+    roles: true,
   },
   {
     icon: 'calendar-new',
@@ -115,7 +84,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: NOTICEBOARD,
     isExpandable: false,
     id: 7,
-    roles: [RoleAccess.All],
+    roles: true,
   },
   {
     icon: 'chat-new',
@@ -123,16 +92,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: BLOG,
     isExpandable: false,
     id: 8,
-    roles: [
-      RoleAccess.Admin,
-      RoleAccess.ProjectManager,
-      RoleAccess.TeamLead,
-      RoleAccess.HumanResource,
-      RoleAccess.Editor,
-      RoleAccess.Normal,
-      RoleAccess.Subscriber,
-      RoleAccess.OfficeAdmin,
-    ],
+    roles: Navigation?.blog
   },
   {
     icon: 'chart-line',
@@ -140,37 +100,31 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: REPORTS,
     isExpandable: true,
     id: 9,
-    roles: [
-      RoleAccess.Admin,
-      RoleAccess.ProjectManager,
-      RoleAccess.TeamLead,
-      RoleAccess.HumanResource,
-      RoleAccess.Finance,
-    ],
+    roles: Navigation?.reports,
     subItems: [
       {
         name: 'sidebar.reports.weeklyreport',
         url: WEEKLY_REPORT,
         id: 1,
-        roles: WEEKLY_REPORT_ACCESS,
+        roles: Reports?.viewWeeklyReport,
       },
       {
         name: 'sidebar.reports.worklogreport',
         url: WORK_LOG_REPORT,
         id: 2,
-        roles: WORK_LOG_REPORT_ACESS,
+        roles: Reports?.viewWorkLogReport,
       },
       {
         name: 'sidebar.reports.leavereport',
         url: LEAVE_REPORT,
         id: 3,
-        roles: LEAVE_REPORT_REPORT_ACESS,
+        roles: Reports?.viewLeaveReport,
       },
       {
         name: 'sidebar.reports.activitylogs',
         url: ACTIVITY_LOGS,
         id: 4,
-        roles: ACTIVITY_LOGS_ACCESS,
+        roles: Reports?.viewActivityLog,
       },
     ],
   },
@@ -180,7 +134,7 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: RESOURCES,
     isExpandable: true,
     id: 10,
-    roles: [RoleAccess.All],
+    roles: true,
     subItems: [
       {
         name: 'sidebar.resources.faq',
@@ -210,12 +164,6 @@ export const SIDEBAR_ITEMS: sidebarItemsInterface[] = [
     url: SETTINGS,
     isExpandable: false,
     id: 11,
-    roles: [
-      RoleAccess.Admin,
-      RoleAccess.ProjectManager,
-      RoleAccess.TeamLead,
-      RoleAccess.HumanResource,
-      RoleAccess.OfficeAdmin,
-    ],
+    roles: Navigation?.settings
   },
 ]

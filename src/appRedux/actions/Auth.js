@@ -14,7 +14,6 @@ import {
   SIGNUP_USER,
   SIGNUP_USER_SUCCESS,
   UPDATE_JOIN_DATE,
-  USER_ROLE_PERMISSION,
 } from 'constants/ActionTypes'
 
 export const userSignUp = (user) => {
@@ -95,9 +94,15 @@ export const switchedUser = () => {
   }
 }
 export const getUserProfile = (userData) => {
+  const data = JSON.parse(userData?.user?.role?.permission)
   return {
     type: UPDATE_USER_PROFILE,
-    payload: userData,
+    payload: {
+      user: {
+        ...userData.user,
+        role: {...userData.user.role, permission: data[0]},
+      },
+    },
   }
 }
 
@@ -107,10 +112,3 @@ export const updateJoinDate = (joinDate) => {
     payload: joinDate,
   }
 }
-
-// export const getUserRolePermission = (rolePermission) => {
-//   return {
-//     type:USER_ROLE_PERMISSION,
-//     payload:
-//   }
-// }
