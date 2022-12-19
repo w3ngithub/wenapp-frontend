@@ -68,7 +68,7 @@ const ATTENDANCE_COLUMNS = (
             sortedInfo.columnKey === 'punchOutTime' && sortedInfo.order,
         },
         {
-          title: 'Office hour',
+          title: 'Office Hour',
           dataIndex: 'officehour',
           key: 'officehour',
           sorter: true,
@@ -128,7 +128,7 @@ const ATTENDANCE_COLUMNS = (
             sortedInfo.columnKey === 'punchOutTime' && sortedInfo.order,
         },
         {
-          title: 'Office hour',
+          title: 'Office Hour',
           dataIndex: 'officehour',
           key: 'officehour',
           sorter: true,
