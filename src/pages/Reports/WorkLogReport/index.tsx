@@ -46,7 +46,7 @@ const formattedWorkLogReport: any = (logs: any) => {
                 <span style={{marginLeft: '-1px'}}>
                   <Tag color="">{changeDate(x?.[0]?.logDate)}</Tag>
                 </span>
-                <Tag color="cyan" className="gx-ml-1">
+                <Tag color="cyan" className="gx-ml-4r">
                   {' '}
                   Time Spent : {sumHours} Hours
                 </Tag>
@@ -56,7 +56,7 @@ const formattedWorkLogReport: any = (logs: any) => {
                   className=" gx-d-flex"
                   key={item.remarks + item.totalHours}
                 >
-                  <span className="gx-mr-5" style={{width: '100px'}}>
+                  <span className="table-longtext" style={{width: '10rem'}}>
                     {item.project?.[0]?.name || 'Other'}
                   </span>
                   <span
