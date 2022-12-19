@@ -14,6 +14,7 @@ import {
   SIGNUP_USER,
   SIGNUP_USER_SUCCESS,
   UPDATE_JOIN_DATE,
+  USER_ROLE_PERMISSION,
 } from 'constants/ActionTypes'
 
 export const userSignUp = (user) => {
@@ -106,3 +107,10 @@ export const updateJoinDate = (joinDate) => {
     payload: joinDate,
   }
 }
+
+// export const getUserRolePermission = (rolePermission) => {
+//   return {
+//     type:USER_ROLE_PERMISSION,
+//     payload:
+//   }
+// }
