@@ -24,6 +24,7 @@ import {
 import {
   searchAttendacentOfUser,
   searchLateAttendacentOfUser,
+  UserTotalofficehour,
 } from 'services/attendances'
 import {
   dateDifference,
@@ -98,6 +99,7 @@ function AdminAttendance({userRole}) {
   const [toggleAdd, setToggleAdd] = useState(false)
   const [toggleEdit, setToggleEdit] = useState(false)
   const [AttToEdit, setAttToEdit] = useState({})
+  const [btnClick, setbtnClick] = useState(false)
   const [dataToExport, setdataToExport] = useState({
     todownload: false,
     data: [],
@@ -134,7 +136,7 @@ function AdminAttendance({userRole}) {
             ? `${order}${sort.columnKey}`
             : `${order}${sort.columnKey},user`
       }
-
+      setbtnClick(false)
       return searchAttendacentOfUser({
         page: page.page + '',
         limit: page.limit + '',
@@ -146,6 +148,21 @@ function AdminAttendance({userRole}) {
         officehourValue: hourIntoMilliSecond(defaultFilter?.num),
       })
     }
+  )
+
+  const {
+    data: timedata,
+    refetch,
+    status,
+  } = useQuery(
+    ['usertotalhour', user, date],
+    () =>
+      UserTotalofficehour({
+        userId: user,
+        fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
+        toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
+      }),
+    {enabled: false}
   )
 
   const handleChangeDate = (date) => {
@@ -212,6 +229,7 @@ function AdminAttendance({userRole}) {
     setAttFilter(1)
     setDate(intialDate)
     setDefaultFilter(null)
+    setbtnClick(false)
   }
 
   useEffect(() => {
@@ -418,6 +436,33 @@ function AdminAttendance({userRole}) {
               </FormItem>
             </div>
           </Form>
+
+          <div style={{display: 'flex'}}>
+            <Button
+              className="gx-btn-form gx-btn-primary gx-text-white "
+              onClick={() => {
+                setbtnClick(true)
+                refetch()
+              }}
+              disabled={!user || isFetching}
+            >
+              Calculate office Hour
+            </Button>
+
+            <Input
+              value={
+                user && btnClick
+                  ? isFetching
+                    ? 'Calculating...'
+                    : timedata?.data?.data[0]?.totalhours
+                    ? milliSecondIntoHours(timedata?.data?.data[0]?.totalhours)
+                    : 0
+                  : ''
+              }
+              style={{height: '36px'}}
+              placeholder="totalhour"
+            />
+          </div>
 
           <AccessWrapper
             noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
