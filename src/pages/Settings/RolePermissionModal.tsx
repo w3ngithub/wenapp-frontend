@@ -47,50 +47,6 @@ const RolePermissionModal = ({
   }
 
   useEffect(() => {
-    let data = Object.keys(rolePermissions)
-    let allRoles: any = []
-    data.forEach((d) => {
-      if (rolePermissions[d]?.length !== state?.checkedList?.[d]?.length) {
-        allRoles.push(true)
-      }
-    })
-    if (allRoles.includes(true)) {
-      setAllAccess(false)
-    } else setAllAccess(true)
-  }, [state.checkedList])
-
-  const handleSubmit = () => {
-    let payloadData = Object.keys(rolePermissions)
-    let finalObj = payloadData.map((d) => {
-      return {
-        [d]: rolePermissions[d].reduce((prevObj: any, currentObj: any) => {
-          if (d in state.checkedList) {
-            return Object.assign(prevObj, {
-              [currentObj.name]: state.checkedList[d]?.includes(
-                currentObj.name
-              ),
-            })
-          } else {
-            return Object.assign(prevObj, {
-              [currentObj.name]: false,
-            })
-          }
-        }, {}),
-      }
-    })
-
-    let permission = formattingFunc(finalObj)
-
-    let payloadDatas: any = {
-      key: form.getFieldValue('name').toLowerCase().replaceAll(' ', ''),
-      value: form.getFieldValue('name'),
-      permission: JSON.stringify([permission]),
-    }
-
-    form.validateFields().then(() => onSubmit(payloadDatas))
-  }
-
-  useEffect(() => {
     if (toggle) {
       if (isEditMode) {
         const permission = editData?.hasOwnProperty('permission')
@@ -147,6 +103,50 @@ const RolePermissionModal = ({
       dispatch({type: RESET})
     }
   }, [toggle])
+
+  useEffect(() => {
+    let data = Object.keys(rolePermissions)
+    let allRoles: any = []
+    data.forEach((d) => {
+      if (rolePermissions[d]?.length !== state?.checkedList?.[d]?.length) {
+        allRoles.push(true)
+      }
+    })
+    if (allRoles.includes(true)) {
+      setAllAccess(false)
+    } else setAllAccess(true)
+  }, [state.checkedList])
+
+  const handleSubmit = () => {
+    let payloadData = Object.keys(rolePermissions)
+    let finalObj = payloadData.map((d) => {
+      return {
+        [d]: rolePermissions[d].reduce((prevObj: any, currentObj: any) => {
+          if (d in state.checkedList) {
+            return Object.assign(prevObj, {
+              [currentObj.name]: state.checkedList[d]?.includes(
+                currentObj.name
+              ),
+            })
+          } else {
+            return Object.assign(prevObj, {
+              [currentObj.name]: false,
+            })
+          }
+        }, {}),
+      }
+    })
+
+    let permission = formattingFunc(finalObj)
+
+    let payloadDatas: any = {
+      key: form.getFieldValue('name').toLowerCase().replaceAll(' ', ''),
+      value: form.getFieldValue('name'),
+      permission: JSON.stringify([permission]),
+    }
+
+    form.validateFields().then(() => onSubmit(payloadDatas))
+  }
 
   return (
     <Modal
