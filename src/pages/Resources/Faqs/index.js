@@ -19,9 +19,7 @@ function Faqs() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
   const {
-    role: {
-      permission: {Resources},
-    },
+    role: {permission: {Resources} = {}},
   } = useSelector(selectAuthUser)
 
   useEffect(() => {
