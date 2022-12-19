@@ -25,9 +25,9 @@ instance.interceptors.response.use(
     return response
   },
   async (error) => {
-    if (error.response.status === 503) {
-      window.location = `/${MAINTAINANCE_MODE}`
-    }
+    // if (error.response.status === 503) {
+    //   window.location = `/${MAINTAINANCE_MODE}`
+    // }
     if (
       error.config.url.split('/').at(-1) === 'login' ||
       error.config.url.split('/').at(-1) === 'updateMyPassword'
