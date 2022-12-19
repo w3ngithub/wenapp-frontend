@@ -115,7 +115,13 @@ function App(props: any) {
   }, [])
 
   const {
-    role: {permission: {Navigation = {}, Reports = {}} = {}},
+    role: {
+      permission: {
+        Navigation = {},
+        Reports: NavigationReports = {},
+        Resources: NavigationResources = {},
+      } = {},
+    },
   } = useSelector(selectAuthUser) || {}
 
   return (
@@ -249,7 +255,7 @@ function App(props: any) {
                 <Route
                   path={WEEKLY_REPORT}
                   element={
-                    <AccessRoute roles={Reports?.viewWeeklyReport}>
+                    <AccessRoute roles={NavigationReports?.viewWeeklyReport}>
                       <WeeklyReport />
                     </AccessRoute>
                   }
@@ -257,7 +263,7 @@ function App(props: any) {
                 <Route
                   path={WORK_LOG_REPORT}
                   element={
-                    <AccessRoute roles={Reports?.viewWorkLogReport}>
+                    <AccessRoute roles={NavigationReports?.viewWorkLogReport}>
                       <WorkLogReport />
                     </AccessRoute>
                   }
@@ -265,7 +271,7 @@ function App(props: any) {
                 <Route
                   path={LEAVE_REPORT}
                   element={
-                    <AccessRoute roles={Reports?.viewLeaveReport}>
+                    <AccessRoute roles={NavigationReports?.viewLeaveReport}>
                       <LeaveReport />
                     </AccessRoute>
                   }
@@ -273,7 +279,7 @@ function App(props: any) {
                 <Route
                   path={ACTIVITY_LOGS}
                   element={
-                    <AccessRoute roles={Reports?.viewActivityLog}>
+                    <AccessRoute roles={NavigationReports?.viewActivityLog}>
                       <ActivityLogs />
                     </AccessRoute>
                   }
