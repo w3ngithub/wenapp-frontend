@@ -106,9 +106,9 @@ const Topbar = (props) => {
               >
                 {innerWidth > 650 && (
                   <>
-                    <li className="gx-notify">
-                      <MaintainanceBar />
-                    </li>
+                    {/* <li className="gx-notify">
+                      <MaintainanceBar showPopupConfirm={true} />
+                    </li> */}
 
                     <li className="gx-notify">
                       <Switch
@@ -167,9 +167,9 @@ const Topbar = (props) => {
               style={{flexWrap: 'nowrap'}}
             >
               <>
-                <li>
+                {/* <li>
                   <MaintainanceBar />
-                </li>
+                </li> */}
 
                 <li>
                   <Switch

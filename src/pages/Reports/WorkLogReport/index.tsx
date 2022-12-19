@@ -1,7 +1,6 @@
 import React, {useState, useCallback} from 'react'
 import {Button, Card, Divider, Form, Table, Tag} from 'antd'
 import RangePicker from 'components/Elements/RangePicker'
-import {intialDate} from 'constants/Attendance'
 import Select from 'components/Elements/Select'
 import {useQuery} from '@tanstack/react-query'
 import {getLogTypes, getWorkLogReport} from 'services/timeLogs'
@@ -9,7 +8,13 @@ import {getAllProjects} from 'services/projects'
 import {getAllUsers} from 'services/users/userDetails'
 import {WORK_LOG_REPORT_COLUMNS} from 'constants/WorkLogReport'
 import moment from 'moment'
-import {changeDate, toRoundoff} from 'helpers/utils'
+import {
+  attendanceFilter,
+  intialDate,
+  monthlyState,
+  weeklyState,
+} from 'constants/Attendance'
+import {changeDate} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {debounce} from 'helpers/utils'
 import {emptyText} from 'constants/EmptySearchAntd'
@@ -23,33 +28,53 @@ const formattedWorkLogReport: any = (logs: any) => {
     user: log?._id?.[0]?.name,
     timeSpent: +log?.totalTimeSpent,
     details: Object.values(log?.timeLogs)?.map(
-      (x: any, i: number, totalTimeLogs: any) => (
-        <>
-          {' '}
-          <div key={i}>
-            <span style={{marginLeft: '-1px'}}>
-              <Tag color="">{changeDate(x?.[0]?.logDate)}</Tag>
-            </span>
-            {x.map((item: any) => (
-              <div className=" gx-d-flex" key={item.remarks + item.totalHours}>
-                <span className="gx-mr-5" style={{width: '100px'}}>
-                  {item.project?.[0]?.name || 'Other'}
+      (x: any, i: number, totalTimeLogs: any) => {
+        const totalTimeOfAllProjects = x?.map((log: any) => {
+          return log?.totalHours
+        })
+        const iniVal = 0
+        const sumHours = totalTimeOfAllProjects.reduce(
+          (accumulator: number, currentValue: number) =>
+            accumulator + currentValue,
+          iniVal
+        )
+        return (
+          <>
+            {' '}
+            <div key={i}>
+              <div>
+                <span style={{marginLeft: '-1px'}}>
+                  <Tag color="">{changeDate(x?.[0]?.logDate)}</Tag>
                 </span>
-                <span
-                  style={{maxWidth: screenWidth < 1808 ? '54rem' : '74rem'}}
-                >
-                  {item.remarks}
-                  <Tag color="cyan" className="gx-ml-1">
-                    {' '}
-                    {+item.totalHours}hrs
-                  </Tag>
-                </span>
+                <Tag color="cyan" className="gx-ml-4r">
+                  {' '}
+                  Time Spent : {sumHours} Hours
+                </Tag>
               </div>
-            ))}
-          </div>
-          <Divider type="horizontal" />
-        </>
-      )
+              {x.map((item: any) => (
+                <div
+                  className=" gx-d-flex"
+                  key={item.remarks + item.totalHours}
+                >
+                  <span className="table-longtext" style={{width: '10rem'}}>
+                    {item.project?.[0]?.name || 'Other'}
+                  </span>
+                  <span
+                    style={{maxWidth: screenWidth < 1808 ? '54rem' : '74rem'}}
+                  >
+                    {item.remarks}
+                    <Tag color="cyan" className="gx-ml-1">
+                      {' '}
+                      {+item.totalHours} Hours
+                    </Tag>
+                  </span>
+                </div>
+              ))}
+            </div>
+            <Divider type="horizontal" />
+          </>
+        )
+      }
     ),
   }))
 }
@@ -64,6 +89,7 @@ function WorkLogReport() {
   const [project, setProject] = useState<string | undefined>(undefined)
   const [user, setUser] = useState<string | undefined>(undefined)
   const [projectData, setProjectData] = useState([])
+  const [dateFilter, setDateFilter] = useState({id: '1', value: 'Daily'})
 
   screenWidth = innerWidth
   //init hooks
@@ -130,6 +156,7 @@ function WorkLogReport() {
   }
 
   const handleResetFilter = () => {
+    setDateFilter({id: '1', value: 'Daily'})
     setDate(intialDate)
     setLogType(undefined)
     setProject(undefined)
@@ -146,6 +173,24 @@ function WorkLogReport() {
       }, {}),
     })) || []
 
+  const handleOptionChnageChange = (val: any) => {
+    setDateFilter(val)
+    switch (val) {
+      case 1:
+        setDate(intialDate)
+        break
+      case 2:
+        setDate(weeklyState)
+        break
+      case 3:
+        setDate(monthlyState)
+        break
+
+      default:
+        break
+    }
+  }
+
   return (
     <Card title="Work Log Report">
       <div className="components-table-demo-control-bar">
@@ -153,6 +198,13 @@ function WorkLogReport() {
           <Form layout="inline" form={form}>
             <FormItem>
               <RangePicker handleChangeDate={handleChangeDate} date={date} />
+            </FormItem>
+            <FormItem className="direct-form-item">
+              <Select
+                onChange={handleOptionChnageChange}
+                value={dateFilter}
+                options={attendanceFilter}
+              />
             </FormItem>
             <FormItem className="direct-form-item">
               <Select

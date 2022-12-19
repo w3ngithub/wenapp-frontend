@@ -379,7 +379,7 @@ export const specifyParticularHalf = (leaves) => {
 }
 
 export function dayCheck(date) {
-  var thisYear = moment().year()
+  var thisYear = moment(date).year()
   var mom = moment(date).year(thisYear)
   return mom.calendar(null, {
     sameDay: '[Today]',
