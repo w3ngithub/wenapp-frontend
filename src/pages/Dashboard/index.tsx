@@ -339,7 +339,7 @@ const Dashboard = () => {
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
             <i
-              className="icon icon-birthday-new gx-fs-md"
+              className="icon icon-birthday-new gx-fs-md "
               style={{width: '18px'}}
             />
             {shortName}
@@ -350,8 +350,8 @@ const Dashboard = () => {
     if (props.event.type === 'holiday')
       return (
         <div style={{...style, margin: 0, flexWrap: 'nowrap'}}>
-          <i className="icon icon-calendar gx-fs-md" />
-          <p style={{...style}}>{props?.event?.title}</p>
+          <i className="icon icon-calendar gx-fs-md gx-ml-3p" />
+          <p style={{...style, marginTop: '8px'}}>{props?.event?.title}</p>
         </div>
       )
 
