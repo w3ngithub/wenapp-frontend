@@ -51,13 +51,6 @@ export const MainApp = (props) => {
     }
   )
 
-  const {data: roles} = useQuery(['roles'], getRoles, {
-    // onSuccess: (data) => {
-    //   console.log(data)
-    //   dispatch(getUserRolePermission())
-    // },
-  })
-
   useEffect(() => {
     if (props?.authUser)
       dispatch(fetchLoggedInUserAttendance(props?.authUser?.user?._id))
