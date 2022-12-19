@@ -60,17 +60,10 @@ const RolePermissionBox = ({data, title, checkedAllRoles, allAccess}) => {
   }, [checkedAllRoles, allAccess])
 
   return (
-    <div
-      style={{
-        backgroundColor: 'rgb(3 143 222 / 10%)',
-        padding: '20px',
-        borderRadius: '4px',
-      }}
-    >
-      <div style={{display: 'flex', justifyContent: 'space-between'}}>
+    <div className="role-box">
+      <div className="role-box-header">
         <p>
-          <span style={{fontWeight: '500', fontSize: '16px'}}>{title}</span>{' '}
-          permisson
+          <span className="role-box-title">{title}</span> permisson
         </p>
         <Checkbox
           indeterminate={state.indeterminate[title]}

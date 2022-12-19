@@ -62,26 +62,24 @@ const RolePermissionModal = ({
   const handleSubmit = () => {
     let payloadData = Object.keys(rolePermissions)
     let finalObj = payloadData.map((d) => {
-      return rolePermissions[d].reduce((prevObj: any, currentObj: any) => {
-        if (d in state.checkedList) {
-          return Object.assign(prevObj, {
-            [currentObj.name]: state.checkedList[d]?.includes(currentObj.name),
-          })
-        } else {
-          return Object.assign(prevObj, {
-            [currentObj.name]: false,
-          })
-        }
-      }, {})
-    })
-
-    let permission = {}
-    payloadData.forEach((d, i) => {
-      permission = {
-        ...permission,
-        [d]: finalObj[i],
+      return {
+        [d]: rolePermissions[d].reduce((prevObj: any, currentObj: any) => {
+          if (d in state.checkedList) {
+            return Object.assign(prevObj, {
+              [currentObj.name]: state.checkedList[d]?.includes(
+                currentObj.name
+              ),
+            })
+          } else {
+            return Object.assign(prevObj, {
+              [currentObj.name]: false,
+            })
+          }
+        }, {}),
       }
     })
+
+    let permission = formattingFunc(finalObj)
 
     let payloadDatas: any = {
       key: form.getFieldValue('name').toLowerCase().replaceAll(' ', ''),
@@ -96,7 +94,7 @@ const RolePermissionModal = ({
     if (toggle) {
       if (isEditMode) {
         const permission = JSON.parse(editData.permission)
-        console.log('permission', permission)
+
         let editedCheckData = Object.keys(permission[0]).map((d) => {
           const editCheck = Object.keys(permission[0][d]).filter((x) => {
             if (permission[0][d][x]) return x
@@ -172,44 +170,42 @@ const RolePermissionModal = ({
         </Button>,
       ]}
     >
-      <Form
-        form={form}
-        name="control-hooks"
-        layout="vertical"
-        style={{width: '500'}}
-      >
-        <Form.Item
-          name="name"
-          label="Role"
-          rules={[
-            {
-              required: true,
-              validator: async (rule, value) => {
-                try {
-                  if (!value) {
-                    throw new Error(`Role is required.`)
+      <Form form={form} name="control-hooks" style={{width: '500'}}>
+        <div className="role-box-header">
+          <Form.Item
+            name="name"
+            label="Role"
+            style={{width: '20%', marginLeft: '15px'}}
+            rules={[
+              {
+                required: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error(`Role is required.`)
+                    }
+                    if (value?.trim() === '') {
+                      throw new Error(`Please enter a valid role.`)
+                    }
+                  } catch (err) {
+                    throw new Error(err.message)
                   }
-                  if (value?.trim() === '') {
-                    throw new Error(`Please enter a valid role.`)
-                  }
-                } catch (err) {
-                  throw new Error(err.message)
-                }
+                },
               },
-            },
-          ]}
-        >
-          <Input placeholder={'Enter Role'} />
-        </Form.Item>
-        <Checkbox
-          onChange={() => {
-            setCheckedAllRoles(!allAccess)
-            setAllAccess(!allAccess)
-          }}
-          checked={allAccess}
-        >
-          Select All
-        </Checkbox>
+            ]}
+          >
+            <Input placeholder={'Enter Role'} />
+          </Form.Item>
+          <Checkbox
+            onChange={() => {
+              setCheckedAllRoles(!allAccess)
+              setAllAccess(!allAccess)
+            }}
+            checked={allAccess}
+          >
+            Select All
+          </Checkbox>
+        </div>
       </Form>
       <div>
         <CommonRolePermission
@@ -217,7 +213,6 @@ const RolePermissionModal = ({
           allAccess={allAccess}
         />
       </div>
-
       {duplicateValue && (
         <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>
       )}

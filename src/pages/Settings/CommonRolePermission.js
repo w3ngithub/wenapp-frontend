@@ -11,7 +11,7 @@ const CommonRolePermission = ({checkedAllRoles, allAccess}) => {
     <Form form={form}>
       <Row gutter={[12, 12]}>
         {titleName?.map((title) => (
-          <Col span={12}>
+          <Col span={8}>
             <RolePermissionBox
               data={permissionRole[title]}
               title={title}

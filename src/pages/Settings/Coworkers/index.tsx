@@ -64,8 +64,6 @@ function Coworkers() {
     queryClient.invalidateQueries(['inviteUsers'])
   }
 
-  console.log('dataToEdit', dataToEdit)
-
   const {
     data: positions,
     isFetching: isPositionsFetching,
@@ -272,9 +270,6 @@ function Coworkers() {
 
     if (type === types.POSITION_TYPE)
       addPositionTypeMutation.mutate({name: input})
-
-    // if (type === types.ROLE)
-    //   addRoleMutation.mutate({value: input, key: input.toLowerCase()})
   }
 
   const handleAddRolePermission = (payload: any) => {
@@ -282,7 +277,7 @@ function Coworkers() {
   }
 
   const handleEditRolePermission = (payload: any) => {
-    editRoleMutation.mutate({id: dataToEdit?._id, payload: payload})
+    editRoleMutation.mutate({id: dataToEdit?._id, ...payload, key: undefined})
   }
 
   const handleEditClick = (input: any) => {
