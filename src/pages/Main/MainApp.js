@@ -15,9 +15,10 @@ import {
 import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {useQuery} from '@tanstack/react-query'
-import {getUserProfile} from 'appRedux/actions'
+import {getUserProfile, getUserRolePermission} from 'appRedux/actions'
 import {getMyProfile} from 'services/users/userDetails'
 import CircularProgress from 'components/Elements/CircularProgress'
+import {getRoles} from 'services/settings/coworkers/roles'
 
 const {Content, Footer} = Layout
 
@@ -49,6 +50,13 @@ export const MainApp = (props) => {
       enabled: !!userId,
     }
   )
+
+  const {data: roles} = useQuery(['roles'], getRoles, {
+    // onSuccess: (data) => {
+    //   console.log(data)
+    //   dispatch(getUserRolePermission())
+    // },
+  })
 
   useEffect(() => {
     if (props?.authUser)

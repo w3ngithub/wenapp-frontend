@@ -66,15 +66,17 @@ const RolePermissionBox = ({data, title, checkedAllRoles, allAccess}) => {
           <span className="role-box-title">{title}</span> permisson
         </p>
         <Checkbox
-          indeterminate={state.indeterminate[title]}
+          indeterminate={
+            state?.indeterminate?.[title] ? state?.indeterminate[title] : false
+          }
           onChange={onCheckAllChange}
-          checked={state.checkAll[title]}
+          checked={state?.checkAll?.[title] ?? false}
         >
           Select All
         </Checkbox>
       </div>
       <Divider />
-      <Checkbox.Group value={state.checkedList[title]} onChange={onChange}>
+      <Checkbox.Group value={state?.checkedList?.[title]} onChange={onChange}>
         <Row gutter={[6, 10]}>
           {data?.map((d) => (
             <Col span={12} spacing>

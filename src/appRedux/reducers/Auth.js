@@ -11,6 +11,7 @@ import {
   SIGNOUT_USER_SUCCESS,
   SIGNUP_USER_SUCCESS,
   UPDATE_JOIN_DATE,
+  USER_ROLE_PERMISSION,
 } from 'constants/ActionTypes'
 
 const INIT_STATE = {
@@ -115,6 +116,9 @@ const reducer = (state = INIT_STATE, action) => {
           },
         },
       }
+
+    case USER_ROLE_PERMISSION:
+      return {}
 
     default:
       return state

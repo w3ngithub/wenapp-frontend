@@ -277,7 +277,12 @@ function Coworkers() {
   }
 
   const handleEditRolePermission = (payload: any) => {
-    editRoleMutation.mutate({id: dataToEdit?._id, ...payload, key: undefined})
+    let editData = {
+      id: dataToEdit?._id,
+      value: payload?.value,
+      permission: payload?.permission,
+    }
+    editRoleMutation.mutate(editData)
   }
 
   const handleEditClick = (input: any) => {

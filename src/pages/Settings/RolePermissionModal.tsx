@@ -50,7 +50,7 @@ const RolePermissionModal = ({
     let data = Object.keys(rolePermissions)
     let allRoles: any = []
     data.forEach((d) => {
-      if (rolePermissions[d]?.length !== state.checkedList[d]?.length) {
+      if (rolePermissions[d]?.length !== state?.checkedList?.[d]?.length) {
         allRoles.push(true)
       }
     })
@@ -93,9 +93,11 @@ const RolePermissionModal = ({
   useEffect(() => {
     if (toggle) {
       if (isEditMode) {
-        const permission = JSON.parse(editData.permission)
+        const permission = editData?.hasOwnProperty('permission')
+          ? JSON.parse(editData?.permission || '{}')
+          : ''
 
-        let editedCheckData = Object.keys(permission[0]).map((d) => {
+        let editedCheckData = Object.keys(permission[0] || []).map((d) => {
           const editCheck = Object.keys(permission[0][d]).filter((x) => {
             if (permission[0][d][x]) return x
           })
@@ -104,7 +106,7 @@ const RolePermissionModal = ({
           }
         })
 
-        let editCheckAllData = Object.keys(permission[0]).map((d) => {
+        let editCheckAllData = Object.keys(permission[0] || []).map((d) => {
           const editCheck = Object.keys(permission[0][d]).filter((x) => {
             if (permission[0][d][x]) return x
           })
@@ -113,7 +115,7 @@ const RolePermissionModal = ({
           }
         })
 
-        let editIndeterminate = Object.keys(permission[0]).map((d) => {
+        let editIndeterminate = Object.keys(permission[0] || []).map((d) => {
           const editCheck = Object.keys(permission[0][d]).filter((x) => {
             if (permission[0][d][x]) return x
           })
