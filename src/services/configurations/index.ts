@@ -10,9 +10,9 @@ export const updateMaintenance = async (payload: any) => {
     return getAPIResponse(err?.response)
   }
 }
-export const getMaintenance = async (payload: any) => {
+export const getMaintenance = async () => {
   try {
-    let response = await API.get(`${Apis.Configurations}`, payload)
+    let response = await API.get(`${Apis.Configurations}`)
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)
