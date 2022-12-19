@@ -157,7 +157,7 @@ function AdminAttendance({userRole}) {
   const {
     data: timedata,
     refetch,
-    status,
+    isFetching: timeFetching,
   } = useQuery(
     ['usertotalhour', user, date],
     () =>
@@ -449,7 +449,7 @@ function AdminAttendance({userRole}) {
                   setbtnClick(true)
                   refetch()
                 }}
-                disabled={!user || isFetching}
+                disabled={!user}
               >
                 Calculate Office Hour
               </Button>
@@ -457,7 +457,7 @@ function AdminAttendance({userRole}) {
               <Input
                 value={
                   user && btnClick
-                    ? isFetching
+                    ? timeFetching
                       ? 'Calculating...'
                       : timedata?.data?.data[0]?.totalhours
                       ? milliSecondIntoHours(
@@ -552,7 +552,7 @@ function AdminAttendance({userRole}) {
                     setbtnClick(true)
                     refetch()
                   }}
-                  disabled={!user || isFetching}
+                  disabled={!user}
                 >
                   Calculate Office Hour
                 </Button>
@@ -560,7 +560,7 @@ function AdminAttendance({userRole}) {
                 <Input
                   value={
                     user && btnClick
-                      ? isFetching
+                      ? timeFetching
                         ? 'Calculating...'
                         : timedata?.data?.data[0]?.totalhours
                         ? milliSecondIntoHours(
