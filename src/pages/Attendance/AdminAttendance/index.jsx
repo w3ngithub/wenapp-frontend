@@ -467,7 +467,7 @@ function AdminAttendance({userRole}) {
                     : ''
                 }
                 style={{height: '36px'}}
-                placeholder="totalhour"
+                placeholder="Total Office Hour"
               />
 
               <AccessWrapper
@@ -570,7 +570,7 @@ function AdminAttendance({userRole}) {
                       : ''
                   }
                   style={{height: '36px'}}
-                  placeholder="totalhour"
+                  placeholder="Total Office Hour"
                 />
               </div>
             </Form>
