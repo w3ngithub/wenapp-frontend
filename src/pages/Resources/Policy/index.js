@@ -24,7 +24,9 @@ function Policy() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
   const {
-    role: {key},
+    role: {
+      permission: {Resources},
+    },
   } = useSelector(selectAuthUser)
 
   useEffect(() => {
@@ -130,11 +132,7 @@ function Policy() {
       <Card
         title="Policy"
         extra={
-          [
-            RoleAccess.Admin,
-            RoleAccess.HumanResource,
-            RoleAccess.OfficeAdmin,
-          ].includes(key) ? (
+          Resources?.createPolicy && !getIsAdmin() ? (
             <Button
               className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
               onClick={() => handleOpenModal('Policy')}
@@ -150,6 +148,8 @@ function Policy() {
           onEditClick={handleOpenEditModal}
           onDeleteClick={handleDeleteClick}
           type="Policy"
+          isEditable={Resources?.editPolicy}
+          isDeletable={Resources?.deletePolicy}
         />
       </Card>
     </>

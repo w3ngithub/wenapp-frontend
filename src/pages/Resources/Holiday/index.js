@@ -37,8 +37,13 @@ function Holiday() {
   const [dataToEdit, setDataToEdit] = useState({})
 
   const {
-    role: {key},
+    role: {
+      key,
+      permission: {Resources},
+    },
   } = useSelector(selectAuthUser)
+
+  const isMutable = Resources?.deleteHoliday || Resources?.editHoliday
 
   const {
     data: Holidays,
@@ -181,7 +186,7 @@ function Holiday() {
       <Card
         title="Holidays"
         extra={
-          <AccessWrapper noAccessRoles={HOLIDAY_ACTION_NO_ACCESS}>
+          Resources?.createHoliday ? (
             <Button
               className="gx-btn gx-btn-primary gx-text-white "
               disabled={getIsAdmin()}
@@ -195,7 +200,7 @@ function Holiday() {
                 Add Next Year's Holidays
               </Popconfirm>
             </Button>
-          </AccessWrapper>
+          ) : null
         }
       >
         <Table
@@ -204,7 +209,8 @@ function Holiday() {
             sort,
             handleDeleteClick,
             handleOpenEditModal,
-            key
+            Resources,
+            isMutable
           )}
           dataSource={formattedHoliday(
             Holidays?.data?.data?.data?.[0]?.holidays
