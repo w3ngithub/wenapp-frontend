@@ -46,6 +46,8 @@ import RoleAccess, {
   ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {emptyText} from 'constants/EmptySearchAntd'
+import { useSelector } from 'react-redux'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -85,7 +87,7 @@ function AdminAttendance({userRole}) {
   const [sort, setSort] = useState({
     order: 'ascend',
     field: 'attendanceDate',
-    columnKey: 'attendanceDate',
+    columnKey: 'attendanceDate',    
   })
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
@@ -246,11 +248,7 @@ function AdminAttendance({userRole}) {
               <span className="gx-link" onClick={() => handleView(record)}>
                 <CustomIcon name="view" />
               </span>
-              {![
-                RoleAccess.Finance,
-                RoleAccess.TeamLead,
-                RoleAccess.OfficeAdmin,
-              ].includes(userRole) &&
+              {userRole?.editCoworkersAttendance &&
                 !getIsAdmin() && (
                   <>
                     <Divider type="vertical"></Divider>
@@ -419,19 +417,21 @@ function AdminAttendance({userRole}) {
             </div>
           </Form>
 
-          <AccessWrapper
-            noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
-          >
+          {/* <AccessWrapper
+            role={true}
+          > */}
             <div className="gx-btn-form">
-              <Button
-                className="gx-btn-form gx-btn-primary gx-text-white "
-                disabled={
-                  sortedData?.length === 0 || isFetching || dataToExport.loading
-                }
-                onClick={handleExport}
-              >
-                Export
-              </Button>
+              <AccessWrapper role={userRole?.exportCoworkersAttendance}>
+                <Button
+                  className="gx-btn-form gx-btn-primary gx-text-white "
+                  disabled={
+                    sortedData?.length === 0 || isFetching || dataToExport.loading
+                  }
+                  onClick={handleExport}
+                >
+                  Export
+                </Button>
+              </AccessWrapper>
 
               <CSVLink
                 filename="Co-workers Attendance"
@@ -449,7 +449,7 @@ function AdminAttendance({userRole}) {
                 ]}
               ></CSVLink>
 
-              <AccessWrapper noAccessRoles={[RoleAccess.OfficeAdmin]}>
+              <AccessWrapper role={userRole?.addCoworkersAttendance}>
                 <Button
                   className="gx-btn-form gx-btn-primary gx-text-white "
                   onClick={() => setToggleAdd(true)}
@@ -459,7 +459,7 @@ function AdminAttendance({userRole}) {
                 </Button>
               </AccessWrapper>
             </div>
-          </AccessWrapper>
+          {/* </AccessWrapper> */}
         </div>
       </div>
       <Table
