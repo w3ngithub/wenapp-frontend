@@ -56,11 +56,11 @@ const Dashboard = () => {
   const {
     role: {
       key,
-      permission: {Dashboard},
+      permission: {Dashboard: NavigationDashboard},
     },
   } = useSelector(selectAuthUser)
 
-  console.log('dashboard', Dashboard)
+  console.log('dashboard', NavigationDashboard)
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
@@ -249,16 +249,20 @@ const Dashboard = () => {
   )
 
   useEffect(() => {
-    if (Dashboard?.viewProjectTimeLogReport) {
+    if (NavigationDashboard?.viewProjectTimeLogReport) {
       Promise.all([logTypeRefetch(), projectRefetch()])
     }
-  }, [Dashboard?.viewProjectTimeLogReport, logTypeRefetch, projectRefetch])
+  }, [
+    NavigationDashboard?.viewProjectTimeLogReport,
+    logTypeRefetch,
+    projectRefetch,
+  ])
 
   useEffect(() => {
-    if (Dashboard?.viewSalaryReview) {
+    if (NavigationDashboard?.viewSalaryReview) {
       Promise.all([salaryRefetch()])
     }
-  }, [Dashboard?.viewSalaryReview, salaryRefetch])
+  }, [NavigationDashboard?.viewSalaryReview, salaryRefetch])
 
   const generateChart = (values: any) => {
     if (project === '' || project === undefined) return
@@ -500,31 +504,37 @@ const Dashboard = () => {
   return (
     <Auxiliary>
       <Row>
-        <Col
-          xl={key === RoleAccess.OfficeAdmin ? 8 : width}
-          lg={12}
-          md={12}
-          sm={12}
-          xs={24}
-        >
-          <TotalCountCard
-            isLink={
-              DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
-                ? true
-                : false
-            }
-            className="gx-bg-cyan-green-gradient"
-            totalCount={ActiveUsers?.data?.data?.user || 0}
-            label="Total Co-workers"
-            onClick={
-              !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
-                ? null
-                : () => navigate('/coworkers')
-            }
-          />
-        </Col>
+        {NavigationDashboard?.viewTotalCoworkers && (
+          <Col
+            xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+            lg={12}
+            md={12}
+            sm={12}
+            xs={24}
+          >
+            <TotalCountCard
+              isLink={
+                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
+                  ? true
+                  : false
+              }
+              className="gx-bg-cyan-green-gradient"
+              totalCount={ActiveUsers?.data?.data?.user || 0}
+              label="Total Co-workers"
+              onClick={
+                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
+                  ? null
+                  : () => navigate('/coworkers')
+              }
+            />
+          </Col>
+        )}
 
-        {Dashboard?.viewCoworkersPunhedInToday && (
+        {NavigationDashboard?.viewCoworkersPunhedInToday && (
           <Col
             xl={key === RoleAccess.OfficeAdmin ? 8 : width}
             lg={12}
@@ -554,7 +564,7 @@ const Dashboard = () => {
             />
           </Col>
         )}
-        {Dashboard?.viewPendingLeaveRequest && (
+        {NavigationDashboard?.viewPendingLeaveRequest && (
           <Col xl={6} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
               isLink={
@@ -584,67 +594,77 @@ const Dashboard = () => {
             />
           </Col>
         )}
-        <Col
-          xl={key === RoleAccess.OfficeAdmin ? 8 : width}
-          lg={12}
-          md={12}
-          sm={12}
-          xs={24}
-        >
-          <TotalCountCard
-            isLink={
-              DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
-                ? true
-                : false
-            }
-            totalCount={
-              socketApprovedLeaveCount === 0 || !socketApprovedLeaveCount
-                ? TodaysLeave?.data?.leaves?.[0]?.count || 0
-                : socketApprovedLeaveCount
-            }
-            label="Co-workers On Leave"
-            icon={LogoutOutlined}
-            onClick={
-              !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(loggedInUser?.role?.key)
-                ? null
-                : () => navigate('/todays-overview')
-            }
-          />
-        </Col>
-
-        <Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
-          <Widget>
-            <EventsAndAnnouncements
-              announcements={notices?.data?.data?.notices}
-              holidays={Holidays?.data?.data?.data?.[0]?.holidays}
-              birthdays={BirthMonthUsers?.data?.data?.users}
-              salaryReview={salaryReview?.data?.data?.users}
+        {NavigationDashboard?.viewCoworkersOnLeave && (
+          <Col
+            xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+            lg={12}
+            md={12}
+            sm={12}
+            xs={24}
+          >
+            <TotalCountCard
+              isLink={
+                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
+                  ? true
+                  : false
+              }
+              totalCount={
+                socketApprovedLeaveCount === 0 || !socketApprovedLeaveCount
+                  ? TodaysLeave?.data?.leaves?.[0]?.count || 0
+                  : socketApprovedLeaveCount
+              }
+              label="Co-workers On Leave"
+              icon={LogoutOutlined}
+              onClick={
+                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
+                  loggedInUser?.role?.key
+                )
+                  ? null
+                  : () => navigate('/todays-overview')
+              }
             />
-          </Widget>
-        </Col>
+          </Col>
+        )}
+
+        {NavigationDashboard?.viewRecentActivities && (
+          <Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
+            <Widget>
+              <EventsAndAnnouncements
+                announcements={notices?.data?.data?.notices}
+                holidays={Holidays?.data?.data?.data?.[0]?.holidays}
+                birthdays={BirthMonthUsers?.data?.data?.users}
+                salaryReview={salaryReview?.data?.data?.users}
+              />
+            </Widget>
+          </Col>
+        )}
 
         <Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
-          <Card className="gx-card dashboard-calendar" title="Calendar">
-            {leavesQuery?.isLoading ? (
-              <div className="gx-d-flex gx-justify-content-around">
-                <Spin />
-              </div>
-            ) : (
-              <div className="gx-rbc-calendar">
-                <Calendar
-                  components={components}
-                  localizer={localizer}
-                  events={calendarEvents}
-                  startAccessor="start"
-                  endAccessor="end"
-                  popup
-                  eventPropGetter={handleEventStyle}
-                  views={['month', 'week', 'day']}
-                />
-              </div>
-            )}
-          </Card>
-          <AccessWrapper noAccessRoles={DASHBOARD_PROJECT_LOG_NO_ACCESS}>
+          {NavigationDashboard?.viewCalendar && (
+            <Card className="gx-card dashboard-calendar" title="Calendar">
+              {leavesQuery?.isLoading ? (
+                <div className="gx-d-flex gx-justify-content-around">
+                  <Spin />
+                </div>
+              ) : (
+                <div className="gx-rbc-calendar">
+                  <Calendar
+                    components={components}
+                    localizer={localizer}
+                    events={calendarEvents}
+                    startAccessor="start"
+                    endAccessor="end"
+                    popup
+                    eventPropGetter={handleEventStyle}
+                    views={['month', 'week', 'day']}
+                  />
+                </div>
+              )}
+            </Card>
+          )}
+          <AccessWrapper role={!NavigationDashboard?.viewProjectTimeLogReport}>
             <Card className="gx-card" title="Project Time Log Report">
               <div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
                 <Form layout="inline" onFinish={generateChart} form={form}>
