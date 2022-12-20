@@ -60,7 +60,6 @@ const Dashboard = () => {
     },
   } = useSelector(selectAuthUser)
 
-  console.log('dashboard', NavigationDashboard)
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
@@ -664,7 +663,7 @@ const Dashboard = () => {
               )}
             </Card>
           )}
-          <AccessWrapper role={!NavigationDashboard?.viewProjectTimeLogReport}>
+          <AccessWrapper role={NavigationDashboard?.viewProjectTimeLogReport}>
             <Card className="gx-card" title="Project Time Log Report">
               <div className="gx-d-flex gx-justify-content-between gx-flex-row gx-mb-3">
                 <Form layout="inline" onFinish={generateChart} form={form}>

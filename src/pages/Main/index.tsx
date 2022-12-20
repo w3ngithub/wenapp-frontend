@@ -124,8 +124,6 @@ function App(props: any) {
     },
   } = useSelector(selectAuthUser) || {}
 
-  console.log('Reports', NavigationResources)
-
   return (
     <ConfigProvider
       locale={currentAppLocale.antd}

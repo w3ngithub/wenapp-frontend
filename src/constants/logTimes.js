@@ -91,31 +91,31 @@ const LOGTIMES_COLUMNS = (
             return (
               !getIsAdmin() && (
                 <span>
-                  {(moment(sendDate) >=
-                    moment().subtract(1, 'days').startOf('day') ||
-                    role[`Log Time`].editLogTime) && (
-                    <span
-                      className="gx-link"
-                      onClick={() => onOpenEditModal(record)}
-                    >
-                      <CustomIcon name="edit" />
-                    </span>
-                  )}
-                  {role[`Log Time`].deleteLogTime && (
-                    <>
-                      <Divider type="vertical" />
-                      <Popconfirm
-                        title="Are you sure to delete this Log?"
-                        onConfirm={() => confirmDelete(record)}
-                        okText="Yes"
-                        cancelText="No"
+                  {moment(sendDate) >=
+                    moment().subtract(1, 'days').startOf('day') && (
+                    <AccessWrapper role={!role?.[`Log Time`]?.editLogTime}>
+                      <span
+                        className="gx-link"
+                        onClick={() => onOpenEditModal(record)}
                       >
-                        <span className="gx-link gx-text-danger">
-                          <CustomIcon name="delete" />
-                        </span>
-                      </Popconfirm>
-                    </>
+                        <CustomIcon name="edit" />
+                      </span>
+                    </AccessWrapper>
                   )}
+
+                  <AccessWrapper role={!role?.[`Log Time`]?.deleteLogTime}>
+                    <Divider type="vertical" />
+                    <Popconfirm
+                      title="Are you sure to delete this Log?"
+                      onConfirm={() => confirmDelete(record)}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <span className="gx-link gx-text-danger">
+                        <CustomIcon name="delete" />
+                      </span>
+                    </Popconfirm>
+                  </AccessWrapper>
                 </span>
               )
             )
@@ -179,36 +179,34 @@ const LOGTIMES_COLUMNS = (
             return (
               !getIsAdmin() && (
                 <span style={{display: 'flex'}}>
-                  {(record.user === user &&
+                  {record.user === user &&
                     moment(sendDate) >=
-                      moment().subtract(1, 'days').startOf('day')) ||
-                  role[`Log Time`]?.editLogTime === true ? (
-                    <span
-                      className="gx-link"
-                      onClick={() => onOpenEditModal(record)}
-                    >
-                      <CustomIcon name="edit" />
-                    </span>
-                  ) : (
-                    ''
-                  )}
-
-                  {role[`Log Time`]?.deleteLogTime && (
-                    <>
-                      <Divider type="vertical" />
-
-                      <Popconfirm
-                        title="Are you sure to delete this Log?"
-                        onConfirm={() => confirmDelete(record)}
-                        okText="Yes"
-                        cancelText="No"
+                      moment().subtract(1, 'days').startOf('day') && (
+                      <AccessWrapper
+                        role={role[`Log Time`]?.editLogTime === true}
                       >
-                        <span className="gx-link gx-text-danger">
-                          <CustomIcon name="delete" />
+                        <span
+                          className="gx-link"
+                          onClick={() => onOpenEditModal(record)}
+                        >
+                          <CustomIcon name="edit" />
                         </span>
-                      </Popconfirm>
-                    </>
-                  )}
+                      </AccessWrapper>
+                    )}
+
+                  <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
+                    <Divider type="vertical" />
+                    <Popconfirm
+                      title="Are you sure to delete this Log?"
+                      onConfirm={() => confirmDelete(record)}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <span className="gx-link gx-text-danger">
+                        <CustomIcon name="delete" />
+                      </span>
+                    </Popconfirm>
+                  </AccessWrapper>
                 </span>
               )
             )
