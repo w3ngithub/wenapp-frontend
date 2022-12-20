@@ -58,9 +58,10 @@ function LogTime() {
 
   const {
     _id,
-    role: {key},
+    role: {key,permission}
   } = useSelector(selectAuthUser)
 
+  console.log("lgo time",permission[`Log Time`])
   const {
     data: logTimeDetails,
     isLoading: timelogLoading,
@@ -230,7 +231,7 @@ function LogTime() {
         initialValues={timeLogToUpdate}
         isEditMode={isEditMode}
         isUserLogtime={true}
-        role={key}
+        role={permission}
       />
       <div style={{marginTop: 20}}></div>
       <Card title={' Time Summary'}>
@@ -248,6 +249,7 @@ function LogTime() {
         />
       </Card>
       <Card title={'Time Logs'}>
+        {permission[`Log Time`]?.createLogTime && 
         <div className="components-table-demo-control-bar">
           <div className="gx-d-flex gx-justify-content-between gx-flex-row">
             <Button
@@ -258,7 +260,7 @@ function LogTime() {
               Add New Log Time
             </Button>
           </div>
-        </div>
+        </div>}
         <Table
           locale={{emptyText}}
           className="gx-table-responsive"
@@ -268,7 +270,7 @@ function LogTime() {
             confirmDelete,
             true,
             undefined,
-            key,
+            permission,
             navigateToProjectLogs
           )}
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}

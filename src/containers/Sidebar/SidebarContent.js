@@ -23,9 +23,12 @@ function SidebarContent(props) {
   const {themeType, navStyle, collapse} = props
   const location = useLocation()
   const paths = location.pathname.split('/')
-  const {role: {permission: {Navigation, Reports}} = {}} =
-    useSelector(selectAuthUser)
-
+  const {
+    role: {
+      permission: {Navigation, Reports, Resources: NavigationResources},
+    } = {},
+  } = useSelector(selectAuthUser)
+  // console.log('resources', Resources)
   const selectedOpenKeys =
     paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1]
 
@@ -48,7 +51,7 @@ function SidebarContent(props) {
             theme={themeType === THEME_TYPE_LITE ? 'lite' : 'dark'}
             mode="inline"
           >
-            {SIDEBAR_ITEMS({Navigation, Reports})
+            {SIDEBAR_ITEMS({Navigation, Reports, NavigationResources})
               .filter((item) => item.roles === true)
               .map((item) =>
                 item.isExpandable ? (

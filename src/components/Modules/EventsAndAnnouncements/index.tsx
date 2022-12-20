@@ -54,7 +54,9 @@ function EventsAndAnnouncements({
   salaryReview: any[]
 }) {
   const {
-    role: {key},
+    role: {
+      permission: {Dashboard},
+    },
   } = useSelector(selectAuthUser)
   const announcementsData = announcements?.map((x: any) => ({
     id: x._id,
@@ -184,7 +186,7 @@ function EventsAndAnnouncements({
       })
         ?.filter((data: any) => {
           if (data?.day === 'Salary Review') {
-            if (SALARY_REVIEW_ACCESS.includes(key)) return true
+            if (Dashboard?.viewSalaryReview) return true
             else return false
           } else return true
         })

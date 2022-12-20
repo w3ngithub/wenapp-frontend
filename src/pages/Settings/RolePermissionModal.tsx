@@ -29,7 +29,6 @@ const RolePermissionModal = ({
   isLoading,
 }: modalInterface) => {
   const [form] = Form.useForm()
-  const [checkedAllRoles, setCheckedAllRoles] = useState<boolean>(false)
   const [allAccess, setAllAccess] = useState<boolean>(false)
   const {state, dispatch} = useContext(RolePermissionContext)
 
@@ -105,6 +104,7 @@ const RolePermissionModal = ({
   }, [toggle])
 
   useEffect(() => {
+    console.log('running from the useeffect')
     let data = Object.keys(rolePermissions)
     let allRoles: any = []
     data.forEach((d) => {
@@ -116,6 +116,12 @@ const RolePermissionModal = ({
       setAllAccess(false)
     } else setAllAccess(true)
   }, [state.checkedList])
+
+  const handleSelectAllChange = (e: any) => {
+    console.log('runnig may b', e.target.checked)
+    setAllAccess(e.target.checked)
+    if (!e.target.checked) dispatch({type: RESET})
+  }
 
   const handleSubmit = () => {
     let payloadData = Object.keys(rolePermissions)
@@ -198,22 +204,13 @@ const RolePermissionModal = ({
           >
             <Input placeholder={'Enter Role'} />
           </Form.Item>
-          <Checkbox
-            onChange={() => {
-              setCheckedAllRoles(!allAccess)
-              setAllAccess(!allAccess)
-            }}
-            checked={allAccess}
-          >
+          <Checkbox onChange={handleSelectAllChange} checked={allAccess}>
             Select All
           </Checkbox>
         </div>
       </Form>
       <div>
-        <CommonRolePermission
-          checkedAllRoles={checkedAllRoles}
-          allAccess={allAccess}
-        />
+        <CommonRolePermission allAccess={allAccess} />
       </div>
       {duplicateValue && (
         <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>

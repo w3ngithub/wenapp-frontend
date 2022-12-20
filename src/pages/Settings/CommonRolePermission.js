@@ -4,7 +4,7 @@ import RolePermissionBox from './RolePermissionBox'
 import {permissionRole} from 'constants/RolePermission'
 import useWindowsSize from 'hooks/useWindowsSize'
 
-const CommonRolePermission = ({checkedAllRoles, allAccess}) => {
+const CommonRolePermission = ({allAccess}) => {
   const [form] = Form.useForm()
   let titleName = Object.keys(permissionRole)
   const {innerWidth} = useWindowsSize()
@@ -19,7 +19,6 @@ const CommonRolePermission = ({checkedAllRoles, allAccess}) => {
                 <RolePermissionBox
                   data={permissionRole[title]}
                   title={title}
-                  checkedAllRoles={checkedAllRoles}
                   allAccess={allAccess}
                 />
               )
@@ -28,7 +27,6 @@ const CommonRolePermission = ({checkedAllRoles, allAccess}) => {
                 <RolePermissionBox
                   data={permissionRole[title]}
                   title={title}
-                  checkedAllRoles={checkedAllRoles}
                   allAccess={allAccess}
                 />
               )
@@ -37,7 +35,6 @@ const CommonRolePermission = ({checkedAllRoles, allAccess}) => {
                 <RolePermissionBox
                   data={permissionRole[title]}
                   title={title}
-                  checkedAllRoles={checkedAllRoles}
                   allAccess={allAccess}
                 />
               )
@@ -53,7 +50,6 @@ const CommonRolePermission = ({checkedAllRoles, allAccess}) => {
                 <RolePermissionBox
                   data={permissionRole[title]}
                   title={title}
-                  checkedAllRoles={checkedAllRoles}
                   allAccess={allAccess}
                 />
               )
@@ -66,7 +62,6 @@ const CommonRolePermission = ({checkedAllRoles, allAccess}) => {
                 <RolePermissionBox
                   data={permissionRole[title]}
                   title={title}
-                  checkedAllRoles={checkedAllRoles}
                   allAccess={allAccess}
                 />
               )
@@ -86,7 +81,6 @@ const CommonRolePermission = ({checkedAllRoles, allAccess}) => {
                 <RolePermissionBox
                   data={permissionRole[title]}
                   title={title}
-                  checkedAllRoles={checkedAllRoles}
                   allAccess={allAccess}
                 />
               )

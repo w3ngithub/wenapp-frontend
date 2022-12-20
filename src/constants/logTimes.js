@@ -93,7 +93,7 @@ const LOGTIMES_COLUMNS = (
                 <span>
                   {(moment(sendDate) >=
                     moment().subtract(1, 'days').startOf('day') ||
-                    LOG_TIME_OLD_EDIT.includes(role)) && (
+                    role[`Log Time`].editLogTime) && (
                     <span
                       className="gx-link"
                       onClick={() => onOpenEditModal(record)}
@@ -101,19 +101,21 @@ const LOGTIMES_COLUMNS = (
                       <CustomIcon name="edit" />
                     </span>
                   )}
-                  <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
-                    <Divider type="vertical" />
-                    <Popconfirm
-                      title="Are you sure to delete this Log?"
-                      onConfirm={() => confirmDelete(record)}
-                      okText="Yes"
-                      cancelText="No"
-                    >
-                      <span className="gx-link gx-text-danger">
-                        <CustomIcon name="delete" />
-                      </span>
-                    </Popconfirm>
-                  </AccessWrapper>
+                  {role[`Log Time`].deleteLogTime && (
+                    <>
+                      <Divider type="vertical" />
+                      <Popconfirm
+                        title="Are you sure to delete this Log?"
+                        onConfirm={() => confirmDelete(record)}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <span className="gx-link gx-text-danger">
+                          <CustomIcon name="delete" />
+                        </span>
+                      </Popconfirm>
+                    </>
+                  )}
                 </span>
               )
             )
@@ -177,13 +179,10 @@ const LOGTIMES_COLUMNS = (
             return (
               !getIsAdmin() && (
                 <span style={{display: 'flex'}}>
-                  {/* <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}> */}
                   {(record.user === user &&
                     moment(sendDate) >=
                       moment().subtract(1, 'days').startOf('day')) ||
-                  [RoleAccess.Admin, RoleAccess.ProjectManager].includes(
-                    role
-                  ) ? (
+                  role[`Log Time`]?.editLogTime === true ? (
                     <span
                       className="gx-link"
                       onClick={() => onOpenEditModal(record)}
@@ -193,23 +192,23 @@ const LOGTIMES_COLUMNS = (
                   ) : (
                     ''
                   )}
-                  {/* </AccessWrapper> */}
-                  <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
-                    {(role === RoleAccess.Admin ||
-                      role === RoleAccess.ProjectManager) && (
+
+                  {role[`Log Time`]?.deleteLogTime && (
+                    <>
                       <Divider type="vertical" />
-                    )}
-                    <Popconfirm
-                      title="Are you sure to delete this Log?"
-                      onConfirm={() => confirmDelete(record)}
-                      okText="Yes"
-                      cancelText="No"
-                    >
-                      <span className="gx-link gx-text-danger">
-                        <CustomIcon name="delete" />
-                      </span>
-                    </Popconfirm>
-                  </AccessWrapper>
+
+                      <Popconfirm
+                        title="Are you sure to delete this Log?"
+                        onConfirm={() => confirmDelete(record)}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <span className="gx-link gx-text-danger">
+                          <CustomIcon name="delete" />
+                        </span>
+                      </Popconfirm>
+                    </>
+                  )}
                 </span>
               )
             )

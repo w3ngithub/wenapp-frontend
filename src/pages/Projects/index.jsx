@@ -74,7 +74,7 @@ function ProjectsPage() {
   const navigate = useNavigate()
 
   const {
-    role: {key},
+    role: {key,permission:{Projects}},
   } = useSelector(selectAuthUser)
 
   const {data: projectTypesData} = useQuery(['projectTypes'], getProjectTypes)
@@ -371,7 +371,7 @@ function ProjectsPage() {
               allowClear
               className="direct-form-item"
             />
-            <AccessWrapper noAccessRoles={PROJECTS_ADD_NEW_NO_ACCESS}>
+            <AccessWrapper role={Projects?.createProjects}>
               <div
                 style={{
                   marginBottom: '1rem',
@@ -386,7 +386,7 @@ function ProjectsPage() {
                   Add New Project
                 </Button>
               </div>
-            </AccessWrapper>
+              </AccessWrapper>      
           </div>
           <Form layout="inline" className="gx-d-flex gx-flex-row" form={form}>
             <FormItem className="direct-form-search">
@@ -479,7 +479,7 @@ function ProjectsPage() {
             handleOpenEditModal,
             confirmDeleteProject,
             navigateToProjectLogs,
-            key
+            Projects
           )}
           dataSource={formattedProjects(data?.data?.data?.data)}
           onChange={handleTableChange}
