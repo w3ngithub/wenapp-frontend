@@ -263,6 +263,17 @@ const Dashboard = () => {
     }
   }, [NavigationDashboard?.viewSalaryReview, salaryRefetch])
 
+  // const calCulateWidth = (roles: any) => {
+  //   const roleArray = [
+  //     roles?.viewCoworkersOnLeave,
+  //     roles?.viewCoworkersPunhedInToday,
+  //     roles?.viewTotalCoworkers,
+  //     roles?.viewPendingLeaveRequest,
+  //   ]
+  //   let count = roleArray?.filter((d) => d === true)?.length
+  //   return 24 / count
+  // }
+
   const generateChart = (values: any) => {
     if (project === '' || project === undefined) return
     fetchChartQuery(project, logType)
