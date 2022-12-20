@@ -20,7 +20,7 @@ import {NOTICE_COLUMNS} from 'constants/Notice'
 import NoticeBoardModal from 'components/Modules/noticeboardModal'
 import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import RoleAccess, {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
+import RoleAccess from 'constants/RoleAccess'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -291,7 +291,7 @@ function NoticeBoardPage() {
                 </Button>
               </FormItem>
             </Form>
-            {NoticeBoard?.createNotice && (
+            <AccessWrapper role={NoticeBoard?.createNotice}>
               <Button
                 className="gx-btn-form gx-btn-primary gx-text-white "
                 onClick={handleOpenAddModal}
@@ -299,7 +299,7 @@ function NoticeBoardPage() {
               >
                 Add New Notice
               </Button>
-            )}
+            </AccessWrapper>
           </div>
         </div>
         <Table

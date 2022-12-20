@@ -13,7 +13,6 @@ import {Button, Card, Popconfirm, Spin, Table} from 'antd'
 import {HOLIDAY_COLUMNS} from 'constants/Holidays'
 import {changeDate, compare, getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
-import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -38,7 +37,6 @@ function Holiday() {
 
   const {
     role: {
-      key,
       permission: {Resources},
     },
   } = useSelector(selectAuthUser)
@@ -186,7 +184,7 @@ function Holiday() {
       <Card
         title="Holidays"
         extra={
-          Resources?.createHoliday ? (
+          <AccessWrapper roles={Resources?.createHoliday}>
             <Button
               className="gx-btn gx-btn-primary gx-text-white "
               disabled={getIsAdmin()}
@@ -200,7 +198,7 @@ function Holiday() {
                 Add Next Year's Holidays
               </Popconfirm>
             </Button>
-          ) : null
+          </AccessWrapper>
         }
       >
         <Table

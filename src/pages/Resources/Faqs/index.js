@@ -7,7 +7,6 @@ import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import Collapse from 'components/Elements/Collapse'
 import CommonResourceModal from 'pages/Settings/CommonResourceModal'
-import RoleAccess from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 

@@ -12,7 +12,6 @@ import {
 import {notification} from 'helpers/notification'
 import CommonResourceModal from 'pages/Settings/CommonResourceModal'
 import {getIsAdmin, handleResponse} from 'helpers/utils'
-import RoleAccess from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
