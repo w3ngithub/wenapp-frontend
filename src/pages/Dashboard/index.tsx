@@ -263,6 +263,17 @@ const Dashboard = () => {
     }
   }, [NavigationDashboard?.viewSalaryReview, salaryRefetch])
 
+  const calCulateWidth = (roles: any) => {
+    const roleArray = [
+      roles?.viewCoworkersOnLeave,
+      roles?.viewCoworkersPunhedInToday,
+      roles?.viewTotalCoworkers,
+      roles?.viewPendingLeaveRequest,
+    ]
+    let count = roleArray?.filter((d) => d === true)?.length
+    return 24 / count
+  }
+
   const generateChart = (values: any) => {
     if (project === '' || project === undefined) return
     fetchChartQuery(project, logType)
@@ -505,7 +516,7 @@ const Dashboard = () => {
       <Row>
         {NavigationDashboard?.viewTotalCoworkers && (
           <Col
-            xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+            xl={calCulateWidth(NavigationDashboard)}
             lg={12}
             md={12}
             sm={12}
@@ -527,7 +538,7 @@ const Dashboard = () => {
 
         {NavigationDashboard?.viewCoworkersPunhedInToday && (
           <Col
-            xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+            xl={calCulateWidth(NavigationDashboard)}
             lg={12}
             md={12}
             sm={12}
@@ -548,7 +559,13 @@ const Dashboard = () => {
           </Col>
         )}
         {NavigationDashboard?.viewPendingLeaveRequest && (
-          <Col xl={6} lg={12} md={12} sm={12} xs={24}>
+          <Col
+            xl={calCulateWidth(NavigationDashboard)}
+            lg={12}
+            md={12}
+            sm={12}
+            xs={24}
+          >
             <TotalCountCard
               isLink={NavigationDashboard?.makeclickableLeavePendingRequest}
               icon={ExceptionOutlined}
@@ -571,7 +588,7 @@ const Dashboard = () => {
         )}
         {NavigationDashboard?.viewCoworkersOnLeave && (
           <Col
-            xl={key === RoleAccess.OfficeAdmin ? 8 : width}
+            xl={calCulateWidth(NavigationDashboard)}
             lg={12}
             md={12}
             sm={12}

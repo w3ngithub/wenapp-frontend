@@ -64,7 +64,7 @@ export const SIDEBAR_ITEMS = ({
     url: ATTENDANCE,
     isExpandable: false,
     id: 4,
-    roles: true,
+    roles: Navigation?.attendance,
   },
   {
     icon: 'ckeditor',
@@ -80,7 +80,7 @@ export const SIDEBAR_ITEMS = ({
     url: LEAVE,
     isExpandable: false,
     id: 6,
-    roles: true,
+    roles: Navigation?.leaveManagement,
   },
   {
     icon: 'calendar-new',
@@ -88,7 +88,7 @@ export const SIDEBAR_ITEMS = ({
     url: NOTICEBOARD,
     isExpandable: false,
     id: 7,
-    roles: true,
+    roles: Navigation?.noticeBoard,
   },
   {
     icon: 'chat-new',
@@ -138,7 +138,7 @@ export const SIDEBAR_ITEMS = ({
     url: RESOURCES,
     isExpandable: true,
     id: 10,
-    roles: true,
+    roles: Navigation?.resources,
     subItems: [
       {
         name: 'sidebar.resources.faq',
