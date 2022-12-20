@@ -113,7 +113,9 @@ const Topbar = (props) => {
                 {innerWidth > 650 && (
                   <>
                     <li className="gx-notify">
-                      <MaintainanceBar showPopupConfirm={true} />
+                      {Dashboard?.enableMaintenanceMode && (
+                        <MaintainanceBar showPopupConfirm={true} />
+                      )}
                     </li>
 
                     <li className="gx-notify">
@@ -149,11 +151,9 @@ const Topbar = (props) => {
                       </li>
                     )}
 
-                    {RoleAccess.Admin === user?.role?.key && (
-                      <li className="gx-user-nav gx-notify li-gap">
-                        {Dashboard?.viewRecentActivities && <ActivityInfo />}
-                      </li>
-                    )}
+                    <li className="gx-user-nav gx-notify li-gap">
+                      {Dashboard?.viewRecentActivities && <ActivityInfo />}
+                    </li>
                   </>
                 )}
 
