@@ -25,7 +25,10 @@ const PROJECT_COLUMNS = (
     render: (text, record) => {
       return (
         <div>
-          <p className="project-name" onClick={() => openModal(record, true)}>
+          <p
+            className="project-name"
+            onClick={() => role?.viewProjects && openModal(record, true)}
+          >
             {record.name}
           </p>
         </div>
@@ -94,11 +97,14 @@ const PROJECT_COLUMNS = (
           >
             Log Time
           </span>
-          <Divider type="vertical" />
+
           {role?.viewProjects && (
-            <span className="gx-link" onClick={() => openModal(record, true)}>
-              <CustomIcon name="view" />
-            </span>
+            <>
+              <Divider type="vertical" />
+              <span className="gx-link" onClick={() => openModal(record, true)}>
+                <CustomIcon name="view" />
+              </span>
+            </>
           )}
           {role?.editProjects && !getIsAdmin() && (
             <>
