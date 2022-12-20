@@ -179,17 +179,19 @@ const LOGTIMES_COLUMNS = (
             return (
               !getIsAdmin() && (
                 <span style={{display: 'flex'}}>
-                  {record.user === user &&
-                    (moment(sendDate) >=
-                      moment().subtract(1, 'days').startOf('day') ||
-                      role?.[`Log Time`]?.editLogTime) && (
-                      <span
-                        className="gx-link"
-                        onClick={() => onOpenEditModal(record)}
-                      >
-                        <CustomIcon name="edit" />
-                      </span>
-                    )}
+                  {(record.user === user &&
+                    moment(sendDate) >=
+                      moment().subtract(1, 'days').startOf('day')) ||
+                  role?.[`Log Time`]?.editLogTime ? (
+                    <span
+                      className="gx-link"
+                      onClick={() => onOpenEditModal(record)}
+                    >
+                      <CustomIcon name="edit" />
+                    </span>
+                  ) : (
+                    ''
+                  )}
 
                   <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
                     <Divider type="vertical" />
