@@ -40,7 +40,7 @@ function Attendace() {
       >
         {NavigationAttendance?.viewMyAttendance && (
           <Tabs.TabPane key="1" tab="My Attendance">
-            <UserAttendance />
+            <UserAttendance userRole={NavigationAttendance} />
           </Tabs.TabPane>
         )}
         {NavigationAttendance?.viewMyAttendanceCalendar && (
