@@ -21,7 +21,7 @@ import {
 } from '../helpers/routePath'
 import sidebarItemsInterface from '../types/sideBar'
 
-export const SIDEBAR_ITEMS = ({Navigation, Reports}:any) : sidebarItemsInterface[]=> [
+export const SIDEBAR_ITEMS = ({Navigation, Reports,NavigationResources}:any) : sidebarItemsInterface[]=> [
   {
     icon: 'dasbhoard',
     name: 'sidebar.dashboard',
@@ -140,21 +140,25 @@ export const SIDEBAR_ITEMS = ({Navigation, Reports}:any) : sidebarItemsInterface
         name: 'sidebar.resources.faq',
         url: FAQS,
         id: 1,
+        roles: NavigationResources?.viewFAQ
       },
       {
         name: 'sidebar.resources.policy',
         url: POLICY,
         id: 2,
+        roles: NavigationResources?.viewPolicy
       },
       {
         name: 'sidebar.resources.holiday',
         url: HOLIDAY,
         id: 3,
+        roles: NavigationResources?.viewHoliday
       },
       {
         name: 'sidebar.resources.ir',
         url: 'ir',
         id: 4,
+        // roles: Resources?.viewActivityLog
       },
     ],
   },

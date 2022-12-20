@@ -54,9 +54,13 @@ const localizer = momentLocalizer(moment)
 
 const Dashboard = () => {
   const {
-    role: {key},
+    role: {
+      key,
+      permission: {Dashboard},
+    },
   } = useSelector(selectAuthUser)
 
+  console.log('dashboard', Dashboard)
   const [chart, setChart] = useState('1')
   const [project, setProject] = useState('')
   const [logType, setlogType] = useState('')
@@ -245,16 +249,16 @@ const Dashboard = () => {
   )
 
   useEffect(() => {
-    if (!DASHBOARD_PROJECT_LOG_NO_ACCESS.includes(key)) {
+    if (Dashboard?.viewProjectTimeLogReport) {
       Promise.all([logTypeRefetch(), projectRefetch()])
     }
-  }, [key, logTypeRefetch, projectRefetch])
+  }, [Dashboard?.viewProjectTimeLogReport, logTypeRefetch, projectRefetch])
 
   useEffect(() => {
-    if ([RoleAccess.Admin, RoleAccess.HumanResource].includes(key)) {
+    if (Dashboard?.viewSalaryReview) {
       Promise.all([salaryRefetch()])
     }
-  }, [key, salaryRefetch])
+  }, [Dashboard?.viewSalaryReview, salaryRefetch])
 
   const generateChart = (values: any) => {
     if (project === '' || project === undefined) return
@@ -520,7 +524,7 @@ const Dashboard = () => {
           />
         </Col>
 
-        {DASHBOARD_PUNCH_IN_TODAY_CARD_ACCESS.includes(key) && (
+        {Dashboard?.viewCoworkersPunhedInToday && (
           <Col
             xl={key === RoleAccess.OfficeAdmin ? 8 : width}
             lg={12}
@@ -550,7 +554,7 @@ const Dashboard = () => {
             />
           </Col>
         )}
-        {DASHBOARD_ICON_ACCESS.includes(key) && (
+        {Dashboard?.viewPendingLeaveRequest && (
           <Col xl={6} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
               isLink={

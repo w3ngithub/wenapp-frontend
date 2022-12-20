@@ -73,7 +73,7 @@ function ProjectLogs() {
   const [projectId] = slug.split('-')
   const {
     name,
-    role: {key},
+    role: {key, permission},
   } = useSelector(selectAuthUser)
 
   const {data: projectDetail} = useQuery(['singleProject', projectId], () =>
@@ -417,21 +417,25 @@ function ProjectLogs() {
                 >
                   Calculate Hours
                 </Button>
-                <Button
-                  className="gx-btn gx-btn-primary gx-text-white "
-                  onClick={handleOpenViewModal}
-                  style={{marginBottom: '16px'}}
-                >
-                  View Project
-                </Button>
-                <Button
-                  className="gx-btn gx-btn-primary gx-text-white "
-                  onClick={handleOpenModal}
-                  style={{marginBottom: '16px'}}
-                  disabled={getIsAdmin()}
-                >
-                  Add New TimeLog
-                </Button>
+                {permission?.Projects?.viewProjects && (
+                  <Button
+                    className="gx-btn gx-btn-primary gx-text-white "
+                    onClick={handleOpenViewModal}
+                    style={{marginBottom: '16px'}}
+                  >
+                    View Project
+                  </Button>
+                )}
+                {permission['Log Time']?.createLogTime && (
+                  <Button
+                    className="gx-btn gx-btn-primary gx-text-white "
+                    onClick={handleOpenModal}
+                    style={{marginBottom: '16px'}}
+                    disabled={getIsAdmin()}
+                  >
+                    Add New TimeLog
+                  </Button>
+                )}
               </div>
             </AccessWrapper>
           </div>
@@ -445,7 +449,7 @@ function ProjectLogs() {
             confirmDelete,
             false,
             name,
-            key
+            permission
           )}
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}

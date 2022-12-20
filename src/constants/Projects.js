@@ -95,10 +95,12 @@ const PROJECT_COLUMNS = (
             Log Time
           </span>
           <Divider type="vertical" />
-          <span className="gx-link" onClick={() => openModal(record, true)}>
-            <CustomIcon name="view" />
-          </span>
-          {!PROJECTS_TABLE_ACTION_NO_ACCESS.includes(role) && !getIsAdmin() && (
+          {role?.viewProjects && (
+            <span className="gx-link" onClick={() => openModal(record, true)}>
+              <CustomIcon name="view" />
+            </span>
+          )}
+          {role?.editProjects && !getIsAdmin() && (
             <>
               <Divider type="vertical" />
               <span
@@ -107,7 +109,7 @@ const PROJECT_COLUMNS = (
               >
                 <CustomIcon name="edit" />
               </span>
-              {!PROJECTS_TABLE_ACTION_DELETE_NO_ACCESS.includes(role) && (
+              {role?.deleteProjects && (
                 <>
                   <Divider type="vertical" />
                   <Popconfirm

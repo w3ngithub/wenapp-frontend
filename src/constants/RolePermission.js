@@ -23,8 +23,8 @@ export const permissionRole = {
     {name: 'viewTotalCoworkers', label: `View Total Co-workers`, rule: []},
     {name: `viewAnnouncement`, label: `View Announcement `, rule: []},
     {
-      name: 'viewCoworkersPunhedInTime',
-      label: `View Co-workers Punhed In Time`,
+      name: 'viewCoworkersPunhedInToday',
+      label: `View Co-workers Punhed In Today`,
       rule: [],
     },
     {name: `viewHolidays`, label: `View Holidays `, rule: []},
@@ -44,6 +44,26 @@ export const permissionRole = {
     {
       name: `enableMaintenanceMode`,
       label: `Enable Maintenance Mode `,
+      rule: [],
+    },
+    {
+      name: `makeclicakbleTotalCoworkers`,
+      label: `Make Clickable Total Co-workers`,
+      rule: [],
+    },
+    {
+      name: `makeclickableCoworkersPunchIn`,
+      label: `Make Clickable Co-workers Punch In`,
+      rule: [],
+    },
+    {
+      name: `makeclickableLeavePendingRequest`,
+      label: `Make Clickable Leave Pending Request `,
+      rule: [],
+    },
+    {
+      name: `makeclickableCoworkersOnLeave`,
+      label: `Make Clickable Co-workers On Leave `,
       rule: [],
     },
   ],

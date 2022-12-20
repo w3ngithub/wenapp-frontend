@@ -8,7 +8,7 @@ import {
   SELECT_ALL_CHECKBOX,
 } from 'constants/RolePermission'
 
-const RolePermissionBox = ({data, title, checkedAllRoles, allAccess}) => {
+const RolePermissionBox = ({data, title, allAccess}) => {
   const arrayDatas = data?.map((d) => d.name)
   let emptyArray = []
   const {state, dispatch} = useContext(RolePermissionContext)
@@ -44,7 +44,7 @@ const RolePermissionBox = ({data, title, checkedAllRoles, allAccess}) => {
   }
 
   useEffect(() => {
-    if (checkedAllRoles && allAccess) {
+    if (allAccess) {
       dispatch({
         type: GLOBAL_SELECT_ALL,
         payload: {
@@ -54,10 +54,8 @@ const RolePermissionBox = ({data, title, checkedAllRoles, allAccess}) => {
           emptyObj: {[title]: arrayDatas},
         },
       })
-    } else if (!checkedAllRoles) {
-      dispatch({type: RESET})
     }
-  }, [checkedAllRoles, allAccess])
+  }, [allAccess])
 
   return (
     <div className="role-box">
