@@ -104,7 +104,6 @@ const RolePermissionModal = ({
   }, [toggle])
 
   useEffect(() => {
-    console.log('running from the useeffect')
     let data = Object.keys(rolePermissions)
     let allRoles: any = []
     data.forEach((d) => {
@@ -118,7 +117,6 @@ const RolePermissionModal = ({
   }, [state.checkedList])
 
   const handleSelectAllChange = (e: any) => {
-    console.log('runnig may b', e.target.checked)
     setAllAccess(e.target.checked)
     if (!e.target.checked) dispatch({type: RESET})
   }

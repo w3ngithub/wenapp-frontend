@@ -185,10 +185,15 @@ function EventsAndAnnouncements({
         SalaryReviewData,
       })
         ?.filter((data: any) => {
-          if (data?.day === 'Salary Review') {
-            if (Dashboard?.viewSalaryReview) return true
-            else return false
-          } else return true
+          if (data?.day === 'Salary Review' && Dashboard?.viewSalaryReview)
+            return true
+          else if (data?.day === 'Announcements' && Dashboard?.viewAnnouncement)
+            return true
+          else if (data?.day === 'Holidays' && Dashboard?.viewHolidays)
+            return true
+          else if (data?.day === 'Birthdays' && Dashboard?.viewBirthdays)
+            return true
+          else return false
         })
         .map((activity: any, index: number) => (
           <div className="gx-timeline-info" key={'activity' + index}>

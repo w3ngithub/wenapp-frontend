@@ -61,7 +61,6 @@ function LogTime() {
     role: {key,permission}
   } = useSelector(selectAuthUser)
 
-  console.log("lgo time",permission[`Log Time`])
   const {
     data: logTimeDetails,
     isLoading: timelogLoading,
