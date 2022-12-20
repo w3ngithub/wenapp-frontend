@@ -512,20 +512,12 @@ const Dashboard = () => {
             xs={24}
           >
             <TotalCountCard
-              isLink={
-                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
-                  ? true
-                  : false
-              }
+              isLink={NavigationDashboard?.makeclicakbleTotalCoworkers}
               className="gx-bg-cyan-green-gradient"
               totalCount={ActiveUsers?.data?.data?.user || 0}
               label="Total Co-workers"
               onClick={
-                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
+                !NavigationDashboard?.makeclicakbleTotalCoworkers
                   ? null
                   : () => navigate('/coworkers')
               }
@@ -542,21 +534,13 @@ const Dashboard = () => {
             xs={24}
           >
             <TotalCountCard
-              isLink={
-                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
-                  ? true
-                  : false
-              }
+              isLink={NavigationDashboard?.makeclickableCoworkersPunchIn}
               icon={LoginOutlined}
               className="gx-bg-pink-purple-corner-gradient"
               totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
               label="Co-workers Punched In Today"
               onClick={
-                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
+                !NavigationDashboard?.makeclickableCoworkersPunchIn
                   ? null
                   : () => navigate('/todays-overview', {state: true})
               }
@@ -566,13 +550,7 @@ const Dashboard = () => {
         {NavigationDashboard?.viewPendingLeaveRequest && (
           <Col xl={6} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
-              isLink={
-                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
-                  ? true
-                  : false
-              }
+              isLink={NavigationDashboard?.makeclickableLeavePendingRequest}
               icon={ExceptionOutlined}
               className="gx-bg-pink-orange-corner-gradient"
               totalCount={
@@ -582,9 +560,7 @@ const Dashboard = () => {
               }
               label="Pending Leave Request"
               onClick={() =>
-                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
+                !NavigationDashboard?.makeclickableLeavePendingRequest
                   ? null
                   : navigate('/leave', {
                       state: {tabKey: '3', leaveStatus: 'pending'},
@@ -602,13 +578,7 @@ const Dashboard = () => {
             xs={24}
           >
             <TotalCountCard
-              isLink={
-                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
-                  ? true
-                  : false
-              }
+              isLink={NavigationDashboard?.makeclickableCoworkersOnLeave}
               totalCount={
                 socketApprovedLeaveCount === 0 || !socketApprovedLeaveCount
                   ? TodaysLeave?.data?.leaves?.[0]?.count || 0
@@ -617,9 +587,7 @@ const Dashboard = () => {
               label="Co-workers On Leave"
               icon={LogoutOutlined}
               onClick={
-                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
+                !NavigationDashboard?.makeclickableCoworkersOnLeave
                   ? null
                   : () => navigate('/todays-overview')
               }
