@@ -57,7 +57,7 @@ function NoticeBoardPage() {
   const queryClient = useQueryClient()
 
   const {
-    role: {key},
+    role: {permission: {NoticeBoard} = {}},
   } = useSelector(selectAuthUser)
 
   const {data, isLoading, isError, isFetching} = useQuery(
@@ -291,7 +291,7 @@ function NoticeBoardPage() {
                 </Button>
               </FormItem>
             </Form>
-            <AccessWrapper noAccessRoles={NOTICEBOARD_ACTION_NO_ACCESS}>
+            {NoticeBoard?.createNotice && (
               <Button
                 className="gx-btn-form gx-btn-primary gx-text-white "
                 onClick={handleOpenAddModal}
@@ -299,7 +299,7 @@ function NoticeBoardPage() {
               >
                 Add New Notice
               </Button>
-            </AccessWrapper>
+            )}
           </div>
         </div>
         <Table
@@ -314,7 +314,7 @@ function NoticeBoardPage() {
             sort,
             handleOpenEditModal,
             confirmDeleteProject,
-            key
+            NoticeBoard
           )}
           dataSource={formattedNotices(data?.data?.data?.data)}
           onChange={handleTableChange}
