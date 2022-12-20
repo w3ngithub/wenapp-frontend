@@ -89,12 +89,6 @@ function AdminAttendance({userRole}) {
     field: 'attendanceDate',
     columnKey: 'attendanceDate',    
   })
-  const {
-    role: {
-      key,
-      permission: {Attendance: NavigationAttendance},
-    },
-  } = useSelector(selectAuthUser)
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
   const [defaultFilter, setDefaultFilter] = useState(undefined)
@@ -254,7 +248,7 @@ function AdminAttendance({userRole}) {
               <span className="gx-link" onClick={() => handleView(record)}>
                 <CustomIcon name="view" />
               </span>
-              {NavigationAttendance?.editCoworkersAttendance &&
+              {userRole?.editCoworkersAttendance &&
                 !getIsAdmin() && (
                   <>
                     <Divider type="vertical"></Divider>
@@ -423,19 +417,21 @@ function AdminAttendance({userRole}) {
             </div>
           </Form>
 
-          <AccessWrapper
-            role={NavigationAttendance?.}
-          >
+          {/* <AccessWrapper
+            role={true}
+          > */}
             <div className="gx-btn-form">
-              <Button
-                className="gx-btn-form gx-btn-primary gx-text-white "
-                disabled={
-                  sortedData?.length === 0 || isFetching || dataToExport.loading
-                }
-                onClick={handleExport}
-              >
-                Export
-              </Button>
+              <AccessWrapper role={userRole?.exportCoworkersAttendance}>
+                <Button
+                  className="gx-btn-form gx-btn-primary gx-text-white "
+                  disabled={
+                    sortedData?.length === 0 || isFetching || dataToExport.loading
+                  }
+                  onClick={handleExport}
+                >
+                  Export
+                </Button>
+              </AccessWrapper>
 
               <CSVLink
                 filename="Co-workers Attendance"
@@ -453,7 +449,7 @@ function AdminAttendance({userRole}) {
                 ]}
               ></CSVLink>
 
-              <AccessWrapper role={NavigationAttendance?.addCoworkersAttendance}>
+              <AccessWrapper role={userRole?.addCoworkersAttendance}>
                 <Button
                   className="gx-btn-form gx-btn-primary gx-text-white "
                   onClick={() => setToggleAdd(true)}
@@ -463,7 +459,7 @@ function AdminAttendance({userRole}) {
                 </Button>
               </AccessWrapper>
             </div>
-          </AccessWrapper>
+          {/* </AccessWrapper> */}
         </div>
       </div>
       <Table

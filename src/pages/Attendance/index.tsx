@@ -51,13 +51,13 @@ function Attendace() {
 
         {NavigationAttendance?.viewCoworkersAttendance && (
           <Tabs.TabPane key="3" tab="Co-workers Attendance">
-            <AdminAttendance userRole={key} />
+            <AdminAttendance userRole={NavigationAttendance} />
           </Tabs.TabPane>
         )}
 
         {NavigationAttendance?.viewCoworkersLateAttendance && (
           <Tabs.TabPane key="4" tab="Co-workers Late Attendance">
-            <LateAttendance userRole={key} />
+            <LateAttendance userRole={NavigationAttendance} />
           </Tabs.TabPane>
         )}
         {NavigationAttendance?.viewCoworkersAttendanceCalendar && (
