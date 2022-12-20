@@ -93,7 +93,7 @@ const LOGTIMES_COLUMNS = (
                 <span>
                   {moment(sendDate) >=
                     moment().subtract(1, 'days').startOf('day') && (
-                    <AccessWrapper role={!role?.[`Log Time`]?.editLogTime}>
+                    <AccessWrapper role={role?.[`Log Time`]?.editLogTime}>
                       <span
                         className="gx-link"
                         onClick={() => onOpenEditModal(record)}
@@ -103,7 +103,7 @@ const LOGTIMES_COLUMNS = (
                     </AccessWrapper>
                   )}
 
-                  <AccessWrapper role={!role?.[`Log Time`]?.deleteLogTime}>
+                  <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
                     <Divider type="vertical" />
                     <Popconfirm
                       title="Are you sure to delete this Log?"

@@ -14,7 +14,7 @@ import {
   THEME_TYPE_DARK,
   THEME_TYPE_SEMI_DARK,
 } from 'constants/ThemeSetting'
-import {connect} from 'react-redux'
+import {connect, useSelector} from 'react-redux'
 import PunchInOut from 'components/Elements/PunchInOut'
 import {setThemeType} from 'appRedux/actions/Setting'
 import ActivityInfo from 'components/Modules/ActivityInfo'
@@ -23,6 +23,7 @@ import NotificationInfo from 'components/Modules/NotificationInfo'
 import {getIsAdmin} from 'helpers/utils'
 import MaintainanceBar from 'components/Modules/Maintainance'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const {Header} = Layout
 
@@ -32,6 +33,11 @@ const Topbar = (props) => {
   const {innerWidth} = useWindowsSize()
   const [notificationArrowPosition, setnotificationArrowPosition] = useState(0)
   const [activityArrowPosition, setactivityArrowPosition] = useState(0)
+  const {
+    role: {permission: {Dashboard = {}, Attendance = {}} = {}},
+  } = useSelector(selectAuthUser) || {}
+
+  console.log('Dashboard', Dashboard?.viewRecentActivities)
 
   const handleThemeChange = (e) => {
     if (e) {
@@ -97,7 +103,7 @@ const Topbar = (props) => {
                 innerWidth < 650 ? 'gx-mt-0 gx-mr-1-5rem' : 'gx-mt-2'
               }`}
             >
-              <PunchInOut />
+              {Attendance?.createMyAttendance && <PunchInOut />}
             </div>
             <div>
               <ul
@@ -145,7 +151,7 @@ const Topbar = (props) => {
 
                     {RoleAccess.Admin === user?.role?.key && (
                       <li className="gx-user-nav gx-notify li-gap">
-                        <ActivityInfo />
+                        {Dashboard?.viewRecentActivities && <ActivityInfo />}
                       </li>
                     )}
                   </>
@@ -209,14 +215,11 @@ const Topbar = (props) => {
                   </li>
                 )}
 
-                {RoleAccess.Admin === user?.role?.key && (
-                  <li
-                    className="gx-user-nav li-gap"
-                    id="mobile-screen-activity"
-                  >
+                <li className="gx-user-nav li-gap" id="mobile-screen-activity">
+                  {Dashboard?.viewRecentActivities && (
                     <ActivityInfo arrowPosition={activityArrowPosition} />
-                  </li>
-                )}
+                  )}
+                </li>
               </>
             </ul>
           </Header>
