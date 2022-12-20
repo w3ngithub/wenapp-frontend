@@ -22,7 +22,6 @@ import {ADDBLOG} from 'helpers/routePath'
 import {getIsAdmin, handleResponse} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
@@ -42,7 +41,9 @@ function Blogs() {
   const [form] = Form.useForm()
 
   const [typedTitle, setTypedTitle] = useState('')
-  const userData = useSelector(selectAuthUser)
+  const {
+    role: {permission: {Blog} = {}},
+  } = useSelector(selectAuthUser)
   const {data, isLoading, isError, isFetching} = useQuery(
     ['blogs', page, title, user],
     () =>
@@ -147,21 +148,19 @@ function Blogs() {
                 </Button>
               </FormItem>
             </Form>
-
-            <AccessWrapper noAccessRoles={BLOGS_ACTION_NO_ACCESS}>
-              <div className="margin-1r">
-                <Button
-                  className="gx-btn gx-btn-primary gx-text-white "
-                  onClick={() => {
-                    navigate(`${ADDBLOG}`)
-                  }}
-                  disabled={getIsAdmin()}
-                >
-                  Add New Blog
-                </Button>
-              </div>
+            <AccessWrapper role={Blog?.createBlog}>
+              <Button
+                className="gx-btn gx-btn-primary gx-text-white "
+                onClick={() => {
+                  navigate(`${ADDBLOG}`)
+                }}
+                disabled={getIsAdmin()}
+              >
+                Add New Blog
+              </Button>
             </AccessWrapper>
           </div>
+          <div className="margin-1r"></div>
         </div>
         <Spin spinning={isFetching || deleteBlogMutation.isLoading}>
           {data?.data?.data?.data && data?.data?.data?.data?.length ? (
@@ -177,9 +176,7 @@ function Blogs() {
                           grid={true}
                           blog={blog}
                           removeBlog={removeBlog}
-                          access={
-                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                          }
+                          access={Blog?.deleteBlog}
                         />
                       )
                     } else if (innerWidth < 1200 && (index + 1) % 2 !== 0) {
@@ -189,9 +186,7 @@ function Blogs() {
                           grid={true}
                           blog={blog}
                           removeBlog={removeBlog}
-                          access={
-                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                          }
+                          access={Blog?.deleteBlog}
                         />
                       )
                     } else if (innerWidth < 765) {
@@ -201,9 +196,7 @@ function Blogs() {
                           grid={true}
                           blog={blog}
                           removeBlog={removeBlog}
-                          access={
-                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                          }
+                          access={Blog?.deleteBlog}
                         />
                       )
                     } else return null
@@ -218,9 +211,7 @@ function Blogs() {
                           grid={true}
                           blog={blog}
                           removeBlog={removeBlog}
-                          access={
-                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                          }
+                          access={Blog?.deleteBlog}
                         />
                       )
                     } else if (
@@ -234,9 +225,7 @@ function Blogs() {
                           grid={true}
                           blog={blog}
                           removeBlog={removeBlog}
-                          access={
-                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                          }
+                          access={Blog?.deleteBlog}
                         />
                       )
                     } else if (innerWidth < 765) {
@@ -257,9 +246,7 @@ function Blogs() {
                           grid={true}
                           blog={blog}
                           removeBlog={removeBlog}
-                          access={
-                            !BLOGS_ACTION_NO_ACCESS.includes(userData?.role.key)
-                          }
+                          access={Blog?.deleteBlog}
                         />
                       )
                     } else if (innerWidth < 765) {

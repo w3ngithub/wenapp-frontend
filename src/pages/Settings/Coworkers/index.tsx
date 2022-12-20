@@ -523,7 +523,6 @@ function Coworkers() {
             extra={
               <Button
                 className="gx-btn gx-btn-primary gx-text-white settings-add"
-                // onClick={() => handleOpenModal('Role', roles)}
                 onClick={() => setOpenRole(true)}
                 disabled={getIsAdmin()}
               >

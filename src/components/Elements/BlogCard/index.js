@@ -6,6 +6,8 @@ import parse from 'html-react-parser'
 
 import {Link, useNavigate} from 'react-router-dom'
 import {getIsAdmin} from 'helpers/utils'
+import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const BlogItem = ({blog, grid, removeBlog, access}) => {
   const {title, content, createdBy, createdAt, blogCategories, _id, slug} = blog
@@ -22,6 +24,9 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
   const [parsedContent, setParsedContent] = useState(
     parse(content.substring(0, 400))
   )
+  const {
+    role: {permission: {Blog} = {}},
+  } = useSelector(selectAuthUser)
   const [filteredContent, setFilteredContent] = useState('')
   const [parserResetter, setParserResetter] = useState(true)
   const parser = () => {
@@ -77,7 +82,7 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
       <div className="gx-product-body">
         <h3
           className="gx-product-title clickable-title"
-          onClick={() => navigate(`${_id}-${slug}`)}
+          onClick={Blog?.viewBlog ? () => navigate(`${_id}-${slug}`) : () => {}}
         >
           {title}
         </h3>
@@ -97,10 +102,12 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
 
         <p>
           {filteredContent}...
-          <Link to={`${_id}-${slug}`} className="read-more-dark">
-            {' '}
-            Read More
-          </Link>
+          {Blog?.viewBlog && (
+            <Link to={`${_id}-${slug}`} className="read-more-dark">
+              {' '}
+              Read More
+            </Link>
+          )}
         </p>
       </div>
       <div className="gx-footer gx-d-flex gx-justify-content-end ">
