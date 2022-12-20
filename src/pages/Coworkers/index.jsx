@@ -74,6 +74,8 @@ function CoworkersPage() {
   } = useSelector(selectAuthUser)
   const [form] = Form.useForm()
 
+  const coWorkersPermissions = permission?.['Co-Workers']
+
   const {data: roleData} = useQuery(['userRoles'], getUserRoles)
   const {data: positionData} = useQuery(['userPositions'], getUserPosition)
   const {data: positionTypes} = useQuery(
@@ -310,9 +312,7 @@ function CoworkersPage() {
               className="direct-form-item"
             />
             {!getIsAdmin() && (
-              <AccessWrapper
-                role={permission?.['Co-Workers']?.resetAllocatedLeaves}
-              >
+              <AccessWrapper role={coWorkersPermissions?.resetAllocatedLeaves}>
                 <Popconfirm
                   title={`Are you sure to reset allocated leaves?`}
                   onConfirm={handleResetAllocatedLeaves}
@@ -375,14 +375,12 @@ function CoworkersPage() {
             </Form>
             <AccessWrapper
               role={
-                permission?.['Co-Workers']?.importCoworkers ||
-                permission?.['Co-Workers']?.exportCoworkers
+                coWorkersPermissions?.importCoworkers ||
+                coWorkersPermissions?.exportCoworkers
               }
             >
               <div className="gx-btn-form">
-                <AccessWrapper
-                  role={permission?.['Co-Workers']?.importCoworkers}
-                >
+                <AccessWrapper role={coWorkersPermissions?.importCoworkers}>
                   <Button
                     className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                     onClick={() => setOpenImport(true)}
@@ -391,7 +389,7 @@ function CoworkersPage() {
                     Import
                   </Button>
                 </AccessWrapper>
-                {data?.status && permission?.['Co-Workers']?.exportCoworkers && (
+                {data?.status && coWorkersPermissions?.exportCoworkers && (
                   <CSVLink
                     filename={'co-workers'}
                     data={[
