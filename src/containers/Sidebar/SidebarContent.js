@@ -25,7 +25,11 @@ function SidebarContent(props) {
   const paths = location.pathname.split('/')
   const {
     role: {
-      permission: {Navigation, Reports, Resources: NavigationResources},
+      permission: {
+        Navigation = {},
+        Reports = {},
+        Resources: NavigationResources = {},
+      },
     } = {},
   } = useSelector(selectAuthUser)
 

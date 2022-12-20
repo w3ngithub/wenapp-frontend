@@ -72,6 +72,9 @@ function CoworkersPage() {
 
   // get user detail from storage
   const user = useSelector(selectAuthUser)
+  const {
+    role: {permission},
+  } = useSelector(selectAuthUser)
   const [form] = Form.useForm()
 
   const {data: roleData} = useQuery(['userRoles'], getUserRoles)
@@ -295,7 +298,7 @@ function CoworkersPage() {
         currentQuarter={quarterQuery}
       />
       <Card title="Co-workers">
-        <AccessWrapper noAccessRoles={CO_WORKERS_SEARCH_IMPORT_NO_ACCESS}>
+        <AccessWrapper role={true}>
           <div className="components-table-demo-control-bar">
             <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
               <Search
@@ -312,7 +315,7 @@ function CoworkersPage() {
               />
               {!getIsAdmin() && (
                 <AccessWrapper
-                  noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
+                  role={permission?.['Co-Workers']?.resetAllocatedLeaves}
                 >
                   <Popconfirm
                     title={`Are you sure to reset allocated leaves?`}
@@ -375,17 +378,24 @@ function CoworkersPage() {
                 </FormItem>
               </Form>
               <AccessWrapper
-                noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
+                role={
+                  permission?.['Co-Workers']?.importCoworkers ||
+                  permission?.['Co-Workers']?.exportCoworkers
+                }
               >
                 <div className="gx-btn-form">
-                  <Button
-                    className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                    onClick={() => setOpenImport(true)}
-                    disabled={getIsAdmin()}
+                  <AccessWrapper
+                    role={permission?.['Co-Workers']?.importCoworkers}
                   >
-                    Import
-                  </Button>
-                  {data?.status && (
+                    <Button
+                      className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                      onClick={() => setOpenImport(true)}
+                      disabled={getIsAdmin()}
+                    >
+                      Import
+                    </Button>
+                  </AccessWrapper>
+                  {data?.status && permission?.['Co-Workers']?.exportCoworkers && (
                     <CSVLink
                       filename={'co-workers'}
                       data={[
@@ -435,7 +445,7 @@ function CoworkersPage() {
             handleSwitchToUser,
             mutation,
             disableUserMmutation,
-            user.role.key
+            permission
           )}
           dataSource={formattedUsers(
             data?.data?.data?.data,

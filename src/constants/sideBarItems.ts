@@ -21,14 +21,18 @@ import {
 } from '../helpers/routePath'
 import sidebarItemsInterface from '../types/sideBar'
 
-export const SIDEBAR_ITEMS = ({Navigation, Reports,NavigationResources}:any) : sidebarItemsInterface[]=> [
+export const SIDEBAR_ITEMS = ({
+  Navigation,
+  Reports,
+  NavigationResources,
+}: any): sidebarItemsInterface[] => [
   {
     icon: 'dasbhoard',
     name: 'sidebar.dashboard',
     url: DASHBOARD,
     isExpandable: false,
     id: 1,
-    roles: Navigation.dashboard,
+    roles: Navigation?.dashboard,
   },
   {
     icon: 'view-o',
@@ -36,7 +40,7 @@ export const SIDEBAR_ITEMS = ({Navigation, Reports,NavigationResources}:any) : s
     url: OVERVIEW,
     isExpandable: false,
     id: 12,
-    roles: Navigation?.todaysOverview
+    roles: Navigation?.todaysOverview,
   },
   {
     icon: 'contacts',
@@ -44,7 +48,7 @@ export const SIDEBAR_ITEMS = ({Navigation, Reports,NavigationResources}:any) : s
     url: COWORKERS,
     isExpandable: false,
     id: 2,
-    roles: Navigation?.coWorkers
+    roles: Navigation?.coWorkers,
   },
   {
     icon: 'folder-o',
@@ -52,7 +56,7 @@ export const SIDEBAR_ITEMS = ({Navigation, Reports,NavigationResources}:any) : s
     url: PROJECTS,
     isExpandable: false,
     id: 3,
-    roles:Navigation?.projects
+    roles: Navigation?.projects,
   },
   {
     icon: 'select',
@@ -68,7 +72,7 @@ export const SIDEBAR_ITEMS = ({Navigation, Reports,NavigationResources}:any) : s
     url: LOGTIME,
     isExpandable: false,
     id: 5,
-    roles: Navigation?.logTime
+    roles: Navigation?.logTime,
   },
   {
     icon: 'hotel-booking',
@@ -92,7 +96,7 @@ export const SIDEBAR_ITEMS = ({Navigation, Reports,NavigationResources}:any) : s
     url: BLOG,
     isExpandable: false,
     id: 8,
-    roles: Navigation?.blog
+    roles: Navigation?.blog,
   },
   {
     icon: 'chart-line',
@@ -140,19 +144,19 @@ export const SIDEBAR_ITEMS = ({Navigation, Reports,NavigationResources}:any) : s
         name: 'sidebar.resources.faq',
         url: FAQS,
         id: 1,
-        roles: NavigationResources?.viewFAQ
+        roles: NavigationResources?.viewFAQ,
       },
       {
         name: 'sidebar.resources.policy',
         url: POLICY,
         id: 2,
-        roles: NavigationResources?.viewPolicy
+        roles: NavigationResources?.viewPolicy,
       },
       {
         name: 'sidebar.resources.holiday',
         url: HOLIDAY,
         id: 3,
-        roles: NavigationResources?.viewHoliday
+        roles: NavigationResources?.viewHoliday,
       },
       {
         name: 'sidebar.resources.ir',
@@ -168,6 +172,6 @@ export const SIDEBAR_ITEMS = ({Navigation, Reports,NavigationResources}:any) : s
     url: SETTINGS,
     isExpandable: false,
     id: 11,
-    roles: Navigation?.settings
+    roles: Navigation?.settings,
   },
 ]
