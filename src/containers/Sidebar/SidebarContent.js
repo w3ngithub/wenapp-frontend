@@ -28,7 +28,7 @@ function SidebarContent(props) {
       permission: {Navigation, Reports, Resources: NavigationResources},
     } = {},
   } = useSelector(selectAuthUser)
-  // console.log('resources', Resources)
+
   const selectedOpenKeys =
     paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1]
 
