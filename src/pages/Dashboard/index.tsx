@@ -517,7 +517,6 @@ const Dashboard = () => {
         {NavigationDashboard?.viewTotalCoworkers && (
           <Col
             xl={calCulateWidth(NavigationDashboard)}
-            // xl={key === RoleAccess.OfficeAdmin ? 8 : width}
             lg={12}
             md={12}
             sm={12}
