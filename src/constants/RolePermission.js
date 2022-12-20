@@ -91,7 +91,7 @@ export const permissionRole = {
     },
     {name: 'viewMyAttendance', label: 'View My Attendance', rule: []},
     {
-      name: 'Export Co-workers Attendance',
+      name: 'exportCoworkersAttendance',
       label: 'Export Co-workers Attendance',
       rule: [],
     },
