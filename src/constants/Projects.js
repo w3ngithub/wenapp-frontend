@@ -109,21 +109,21 @@ const PROJECT_COLUMNS = (
               >
                 <CustomIcon name="edit" />
               </span>
-              {role?.deleteProjects && (
-                <>
-                  <Divider type="vertical" />
-                  <Popconfirm
-                    title="Are you sure to delete this project?"
-                    onConfirm={() => confirmDelete(record)}
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <span className="gx-link gx-text-danger">
-                      <CustomIcon name="delete" />
-                    </span>
-                  </Popconfirm>
-                </>
-              )}
+            </>
+          )}
+          {role?.deleteProjects && (
+            <>
+              <Divider type="vertical" />
+              <Popconfirm
+                title="Are you sure to delete this project?"
+                onConfirm={() => confirmDelete(record)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <span className="gx-link gx-text-danger">
+                  <CustomIcon name="delete" />
+                </span>
+              </Popconfirm>
             </>
           )}
         </div>

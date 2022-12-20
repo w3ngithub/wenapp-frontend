@@ -346,7 +346,7 @@ const Dashboard = () => {
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
             <i
-              className="icon icon-birthday-new gx-fs-md"
+              className="icon icon-birthday-new gx-fs-md "
               style={{width: '18px'}}
             />
             {shortName}
@@ -357,8 +357,8 @@ const Dashboard = () => {
     if (props.event.type === 'holiday')
       return (
         <div style={{...style, margin: 0, flexWrap: 'nowrap'}}>
-          <i className="icon icon-calendar gx-fs-md" />
-          <p style={{...style}}>{props?.event?.title}</p>
+          <i className="icon icon-calendar gx-fs-md gx-ml-3p" />
+          <p style={{...style, marginTop: '8px'}}>{props?.event?.title}</p>
         </div>
       )
 
@@ -512,20 +512,12 @@ const Dashboard = () => {
             xs={24}
           >
             <TotalCountCard
-              isLink={
-                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
-                  ? true
-                  : false
-              }
+              isLink={NavigationDashboard?.makeclicakbleTotalCoworkers}
               className="gx-bg-cyan-green-gradient"
               totalCount={ActiveUsers?.data?.data?.user || 0}
               label="Total Co-workers"
               onClick={
-                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
+                !NavigationDashboard?.makeclicakbleTotalCoworkers
                   ? null
                   : () => navigate('/coworkers')
               }
@@ -542,21 +534,13 @@ const Dashboard = () => {
             xs={24}
           >
             <TotalCountCard
-              isLink={
-                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
-                  ? true
-                  : false
-              }
+              isLink={NavigationDashboard?.makeclickableCoworkersPunchIn}
               icon={LoginOutlined}
               className="gx-bg-pink-purple-corner-gradient"
               totalCount={AttendanceCount?.data?.attendance?.[0]?.count || 0}
               label="Co-workers Punched In Today"
               onClick={
-                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
+                !NavigationDashboard?.makeclickableCoworkersPunchIn
                   ? null
                   : () => navigate('/todays-overview', {state: true})
               }
@@ -566,13 +550,7 @@ const Dashboard = () => {
         {NavigationDashboard?.viewPendingLeaveRequest && (
           <Col xl={6} lg={12} md={12} sm={12} xs={24}>
             <TotalCountCard
-              isLink={
-                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
-                  ? true
-                  : false
-              }
+              isLink={NavigationDashboard?.makeclickableLeavePendingRequest}
               icon={ExceptionOutlined}
               className="gx-bg-pink-orange-corner-gradient"
               totalCount={
@@ -582,9 +560,7 @@ const Dashboard = () => {
               }
               label="Pending Leave Request"
               onClick={() =>
-                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
+                !NavigationDashboard?.makeclickableLeavePendingRequest
                   ? null
                   : navigate('/leave', {
                       state: {tabKey: '3', leaveStatus: 'pending'},
@@ -602,13 +578,7 @@ const Dashboard = () => {
             xs={24}
           >
             <TotalCountCard
-              isLink={
-                DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
-                  ? true
-                  : false
-              }
+              isLink={NavigationDashboard?.makeclickableCoworkersOnLeave}
               totalCount={
                 socketApprovedLeaveCount === 0 || !socketApprovedLeaveCount
                   ? TodaysLeave?.data?.leaves?.[0]?.count || 0
@@ -617,9 +587,7 @@ const Dashboard = () => {
               label="Co-workers On Leave"
               icon={LogoutOutlined}
               onClick={
-                !DASHBOARD_CARD_CLICKABLE_ACCESS.includes(
-                  loggedInUser?.role?.key
-                )
+                !NavigationDashboard?.makeclickableCoworkersOnLeave
                   ? null
                   : () => navigate('/todays-overview')
               }
@@ -627,18 +595,16 @@ const Dashboard = () => {
           </Col>
         )}
 
-        {NavigationDashboard?.viewRecentActivities && (
-          <Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
-            <Widget>
-              <EventsAndAnnouncements
-                announcements={notices?.data?.data?.notices}
-                holidays={Holidays?.data?.data?.data?.[0]?.holidays}
-                birthdays={BirthMonthUsers?.data?.data?.users}
-                salaryReview={salaryReview?.data?.data?.users}
-              />
-            </Widget>
-          </Col>
-        )}
+        <Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
+          <Widget>
+            <EventsAndAnnouncements
+              announcements={notices?.data?.data?.notices}
+              holidays={Holidays?.data?.data?.data?.[0]?.holidays}
+              birthdays={BirthMonthUsers?.data?.data?.users}
+              salaryReview={salaryReview?.data?.data?.users}
+            />
+          </Widget>
+        </Col>
 
         <Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
           {NavigationDashboard?.viewCalendar && (

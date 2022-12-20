@@ -131,7 +131,7 @@ export const permissionRole = {
 
   'Leave Management': [
     {name: 'applyLeave', label: 'Apply Leave', rule: []},
-    {name: 'viewcoworkersLeaves', label: 'View Co-workers Leaves', rule: []},
+    {name: 'viewCoworkersLeaves', label: 'View Co-workers Leaves', rule: []},
     {name: 'viewMyHistory', label: 'View My History', rule: []},
     {
       name: 'approveCoworkersLeaves',
