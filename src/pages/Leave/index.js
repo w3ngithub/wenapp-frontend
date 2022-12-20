@@ -161,8 +161,12 @@ function Leave() {
         <Row>
           <AccessWrapper role={leavePermissions?.showQuarterlyLeaveDetails}>
             <Col
-              xl={IsIntern ? 24 : 12}
-              lg={IsIntern ? 24 : 12}
+              xl={
+                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 12
+              }
+              lg={
+                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 12
+              }
               md={24}
               sm={24}
               xs={24}
@@ -189,7 +193,13 @@ function Leave() {
           <AccessWrapper
             role={!IsIntern && leavePermissions?.showAnnualLeaveDetails}
           >
-            <Col xl={12} lg={12} md={24} sm={24} xs={24}>
+            <Col
+              xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 12}
+              lg={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 12}
+              md={24}
+              sm={24}
+              xs={24}
+            >
               <Card
                 title="Annual Leave"
                 style={{background: 'rgb(232 232 232 / 26%)'}}
