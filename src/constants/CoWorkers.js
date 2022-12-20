@@ -97,11 +97,12 @@ const CO_WORKERCOLUMNS = (
                   )}
                 </span>
               </Popconfirm>
-              <Divider type="vertical" />
             </>
           )}
           {role?.['Co-Workers']?.editCoworkers && !getIsAdmin() && (
             <>
+              <Divider type="vertical" />
+
               <span
                 className="gx-link"
                 onClick={() => openEditPopup(record, false)}

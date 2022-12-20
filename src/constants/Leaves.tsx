@@ -80,7 +80,6 @@ const LEAVES_COLUMN = ({
                       >
                         <CustomIcon name="view" />
                       </span>
-                      <Divider type="vertical" />
                     </>
                   </AccessWrapper>
 
@@ -95,13 +94,14 @@ const LEAVES_COLUMN = ({
                       }
                     >
                       <>
+                        <Divider type="vertical" />
+
                         <span
                           onClick={() => onApproveClick(record)}
                           className="gx-link gx-text-green"
                         >
                           Approve
                         </span>
-                        <Divider type="vertical" />
                       </>
                     </AccessWrapper>
 
@@ -113,6 +113,8 @@ const LEAVES_COLUMN = ({
                       }
                     >
                       <>
+                        <Divider type="vertical" />
+
                         <span
                           className="gx-link gx-text-danger"
                           onClick={() =>
