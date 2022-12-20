@@ -27,8 +27,6 @@ import {
 } from 'services/timeLogs'
 import LogsBreadCumb from './LogsBreadCumb'
 import TimeSummary from './TimeSummary'
-import AccessWrapper from './../../components/Modules/AccessWrapper/index'
-import {LOG_TIME_ADD_NO_ACCESS} from 'constants/RoleAccess'
 import ProjectModal from 'components/Modules/ProjectModal'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
@@ -407,37 +405,35 @@ function ProjectLogs() {
                 </Button>
               </FormItem>
             </Form>
-            <AccessWrapper noAccessRoles={[]}>
-              <div>
+            <div>
+              <Button
+                className="gx-btn gx-btn-primary gx-text-white "
+                onClick={handleOpenLogHoursModal}
+                style={{marginBottom: '16px'}}
+                disabled={selectedLogObject?.length === 0}
+              >
+                Calculate Hours
+              </Button>
+              {permission?.Projects?.viewProjects && (
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
-                  onClick={handleOpenLogHoursModal}
+                  onClick={handleOpenViewModal}
                   style={{marginBottom: '16px'}}
-                  disabled={selectedLogObject?.length === 0}
                 >
-                  Calculate Hours
+                  View Project
                 </Button>
-                {permission?.Projects?.viewProjects && (
-                  <Button
-                    className="gx-btn gx-btn-primary gx-text-white "
-                    onClick={handleOpenViewModal}
-                    style={{marginBottom: '16px'}}
-                  >
-                    View Project
-                  </Button>
-                )}
-                {permission['Log Time']?.createLogTime && (
-                  <Button
-                    className="gx-btn gx-btn-primary gx-text-white "
-                    onClick={handleOpenModal}
-                    style={{marginBottom: '16px'}}
-                    disabled={getIsAdmin()}
-                  >
-                    Add New TimeLog
-                  </Button>
-                )}
-              </div>
-            </AccessWrapper>
+              )}
+              {permission['Log Time']?.createLogTime && (
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white "
+                  onClick={handleOpenModal}
+                  style={{marginBottom: '16px'}}
+                  disabled={getIsAdmin()}
+                >
+                  Add New TimeLog
+                </Button>
+              )}
+            </div>
           </div>
         </div>
         <Table

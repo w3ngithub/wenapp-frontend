@@ -184,7 +184,7 @@ function Holiday() {
       <Card
         title="Holidays"
         extra={
-          <AccessWrapper roles={Resources?.createHoliday}>
+          <AccessWrapper role={Resources?.createHoliday}>
             <Button
               className="gx-btn gx-btn-primary gx-text-white "
               disabled={getIsAdmin()}
