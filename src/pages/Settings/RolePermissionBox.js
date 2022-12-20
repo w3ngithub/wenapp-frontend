@@ -4,7 +4,6 @@ import {RolePermissionContext} from 'context/RolePermissionConext'
 import {
   CHANGE_SINGLE_CHECKBOX,
   GLOBAL_SELECT_ALL,
-  RESET,
   SELECT_ALL_CHECKBOX,
 } from 'constants/RolePermission'
 
@@ -61,7 +60,7 @@ const RolePermissionBox = ({data, title, allAccess}) => {
     <div className="role-box">
       <div className="role-box-header">
         <p>
-          <span className="role-box-title">{title}</span> permisson
+          <span className="role-box-title">{title} permisson</span>
         </p>
         <Checkbox
           indeterminate={
