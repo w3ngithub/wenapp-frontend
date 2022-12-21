@@ -353,7 +353,7 @@ function ProjectModal({
                         if (!value) {
                           throw new Error('Name is required.')
                         }
-                        const regex = /^[A-Za-z ]+$/
+                        const regex = /^[A-Za-z-()]+$/
                         const isValid = regex.test(value)
                         if (value.trim().length === 0) {
                           throw new Error('Please enter a valid Name.')
