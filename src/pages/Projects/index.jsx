@@ -26,8 +26,6 @@ import {notification} from 'helpers/notification'
 import {getAllUsers, getUserPositionTypes} from 'services/users/userDetails'
 import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {PROJECTS_ADD_NEW_NO_ACCESS} from 'constants/RoleAccess'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
@@ -74,7 +72,10 @@ function ProjectsPage() {
   const navigate = useNavigate()
 
   const {
-    role: {key},
+    role: {
+      key,
+      permission: {Projects},
+    },
   } = useSelector(selectAuthUser)
 
   const {data: projectTypesData} = useQuery(['projectTypes'], getProjectTypes)
@@ -371,7 +372,7 @@ function ProjectsPage() {
               allowClear
               className="direct-form-item"
             />
-            <AccessWrapper noAccessRoles={PROJECTS_ADD_NEW_NO_ACCESS}>
+            <AccessWrapper role={Projects?.createProjects}>
               <div
                 style={{
                   marginBottom: '1rem',
@@ -479,7 +480,7 @@ function ProjectsPage() {
             handleOpenEditModal,
             confirmDeleteProject,
             navigateToProjectLogs,
-            key
+            Projects
           )}
           dataSource={formattedProjects(data?.data?.data?.data)}
           onChange={handleTableChange}

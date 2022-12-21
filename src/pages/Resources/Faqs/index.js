@@ -7,7 +7,6 @@ import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import Collapse from 'components/Elements/Collapse'
 import CommonResourceModal from 'pages/Settings/CommonResourceModal'
-import RoleAccess from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
@@ -19,7 +18,7 @@ function Faqs() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
   const {
-    role: {key},
+    role: {permission: {Resources} = {}},
   } = useSelector(selectAuthUser)
 
   useEffect(() => {
@@ -124,11 +123,7 @@ function Faqs() {
       <Card
         title="FAQS"
         extra={
-          [
-            RoleAccess.Admin,
-            RoleAccess.HumanResource,
-            RoleAccess.OfficeAdmin,
-          ].includes(key) && !getIsAdmin() ? (
+          Resources?.createFAQ && !getIsAdmin() ? (
             <Button
               className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
               onClick={() => handleOpenModal('FAQ')}
@@ -143,6 +138,8 @@ function Faqs() {
           onEditClick={handleOpenEditModal}
           onDeleteClick={handleDeleteClick}
           type="FAQ"
+          isEditable={Resources?.editFAQ}
+          isDeletable={Resources?.deleteFAQ}
         />
       </Card>
     </>

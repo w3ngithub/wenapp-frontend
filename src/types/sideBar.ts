@@ -10,5 +10,5 @@ export default interface sidebarItemsInterface {
     id: any
     roles?: string[]
   }[]
-  roles: string[]
+  roles: boolean
 }

@@ -1,19 +1,13 @@
 import {Navigate} from 'react-router-dom'
-import {useSelector} from 'react-redux'
-import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function AccessRoute({
   roles,
   children,
 }: {
-  roles: string[]
+  roles: boolean
   children: JSX.Element
 }) {
-  const {
-    role: {key},
-  } = useSelector(selectAuthUser)
-
-  if (roles.includes(key)) {
+  if (roles === true) {
     return children
   }
   return <Navigate to="/" />

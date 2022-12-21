@@ -20,7 +20,7 @@ import {NOTICE_COLUMNS} from 'constants/Notice'
 import NoticeBoardModal from 'components/Modules/noticeboardModal'
 import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import RoleAccess, {NOTICEBOARD_ACTION_NO_ACCESS} from 'constants/RoleAccess'
+import RoleAccess from 'constants/RoleAccess'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -57,8 +57,10 @@ function NoticeBoardPage() {
   const queryClient = useQueryClient()
 
   const {
-    role: {key},
+    role: {permission = {}},
   } = useSelector(selectAuthUser)
+
+  const noticeBoardPermissions = permission?.['Notice Board']
 
   const {data, isLoading, isError, isFetching} = useQuery(
     ['notices', page, title, date, sort],
@@ -291,7 +293,7 @@ function NoticeBoardPage() {
                 </Button>
               </FormItem>
             </Form>
-            <AccessWrapper noAccessRoles={NOTICEBOARD_ACTION_NO_ACCESS}>
+            <AccessWrapper role={noticeBoardPermissions?.createNotice}>
               <Button
                 className="gx-btn-form gx-btn-primary gx-text-white "
                 onClick={handleOpenAddModal}
@@ -314,7 +316,7 @@ function NoticeBoardPage() {
             sort,
             handleOpenEditModal,
             confirmDeleteProject,
-            key
+            noticeBoardPermissions
           )}
           dataSource={formattedNotices(data?.data?.data?.data)}
           onChange={handleTableChange}

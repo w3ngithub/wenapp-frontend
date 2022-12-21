@@ -47,6 +47,8 @@ import RoleAccess, {
   ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS,
 } from 'constants/RoleAccess'
 import {emptyText} from 'constants/EmptySearchAntd'
+import { useSelector } from 'react-redux'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
 import useWindowsSize from 'hooks/useWindowsSize'
 
 const {RangePicker} = DatePicker
@@ -87,7 +89,7 @@ function AdminAttendance({userRole}) {
   const [sort, setSort] = useState({
     order: 'ascend',
     field: 'attendanceDate',
-    columnKey: 'attendanceDate',
+    columnKey: 'attendanceDate',    
   })
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
@@ -268,11 +270,7 @@ function AdminAttendance({userRole}) {
               <span className="gx-link" onClick={() => handleView(record)}>
                 <CustomIcon name="view" />
               </span>
-              {![
-                RoleAccess.Finance,
-                RoleAccess.TeamLead,
-                RoleAccess.OfficeAdmin,
-              ].includes(userRole) &&
+              {userRole?.editCoworkersAttendance &&
                 !getIsAdmin() && (
                   <>
                     <Divider type="vertical"></Divider>
@@ -470,13 +468,13 @@ function AdminAttendance({userRole}) {
                 placeholder="Total Office Hour"
               />
 
-              <AccessWrapper
-                noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
-              >
                 <div
                   className="gx-btn-form"
                   style={{marginLeft: '20px', display: 'flex'}}
                 >
+              <AccessWrapper
+                role={userRole?.exportCoworkersAttendance}
+              >
                   <Button
                     className="gx-btn-form gx-btn-primary gx-text-white "
                     disabled={
@@ -504,8 +502,8 @@ function AdminAttendance({userRole}) {
                       ...dataToExport.data,
                     ]}
                   ></CSVLink>
-
-                  <AccessWrapper noAccessRoles={[RoleAccess.OfficeAdmin]}>
+                  </AccessWrapper>
+                  <AccessWrapper role={userRole?.addCoworkersAttendance}>
                     <Button
                       className="gx-btn-form gx-btn-primary gx-text-white "
                       onClick={() => setToggleAdd(true)}
@@ -515,7 +513,7 @@ function AdminAttendance({userRole}) {
                     </Button>
                   </AccessWrapper>
                 </div>
-              </AccessWrapper>
+              
             </div>
           </div>
         ) : (
@@ -615,7 +613,7 @@ function AdminAttendance({userRole}) {
               </Form>
 
               <AccessWrapper
-                noAccessRoles={ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS}
+                role={userRole?.exportCoworkersAttendance}
               >
                 <div className="gx-btn-form" style={{marginLeft: '20px'}}>
                   <Button
@@ -646,7 +644,7 @@ function AdminAttendance({userRole}) {
                     ]}
                   ></CSVLink>
 
-                  <AccessWrapper noAccessRoles={[RoleAccess.OfficeAdmin]}>
+                  <AccessWrapper role={userRole?.addCoworkersAttendance}>
                     <Button
                       className="gx-btn-form gx-btn-primary gx-text-white "
                       onClick={() => setToggleAdd(true)}

@@ -27,10 +27,7 @@ import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
 import {getQuarters} from 'services/leaves'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import RoleAccess, {
-  CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS,
-  CO_WORKERS_SEARCH_IMPORT_NO_ACCESS,
-} from 'constants/RoleAccess'
+import RoleAccess from 'constants/RoleAccess'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useDispatch, useSelector} from 'react-redux'
@@ -71,8 +68,13 @@ function CoworkersPage() {
   const dispatch = useDispatch()
 
   // get user detail from storage
-  const user = useSelector(selectAuthUser)
+
+  const {
+    role: {key, permission},
+  } = useSelector(selectAuthUser)
   const [form] = Form.useForm()
+
+  const coWorkersPermissions = permission?.['Co-Workers']
 
   const {data: roleData} = useQuery(['userRoles'], getUserRoles)
   const {data: positionData} = useQuery(['userPositions'], getUserPosition)
@@ -295,89 +297,90 @@ function CoworkersPage() {
         currentQuarter={quarterQuery}
       />
       <Card title="Co-workers">
-        <AccessWrapper noAccessRoles={CO_WORKERS_SEARCH_IMPORT_NO_ACCESS}>
-          <div className="components-table-demo-control-bar">
-            <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
-              <Search
-                allowClear
-                placeholder="Search Co-workers"
-                onSearch={(value) => {
-                  setPage((prev) => ({...prev, page: 1}))
-                  setName(value)
-                }}
-                onChange={(e) => setTypedName(e.target.value)}
-                value={typedName}
-                enterButton
-                className="direct-form-item"
-              />
-              {!getIsAdmin() && (
-                <AccessWrapper
-                  noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
+        <div className="components-table-demo-control-bar">
+          <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
+            <Search
+              allowClear
+              placeholder="Search Co-workers"
+              onSearch={(value) => {
+                setPage((prev) => ({...prev, page: 1}))
+                setName(value)
+              }}
+              onChange={(e) => setTypedName(e.target.value)}
+              value={typedName}
+              enterButton
+              className="direct-form-item"
+            />
+            {!getIsAdmin() && (
+              <AccessWrapper role={coWorkersPermissions?.resetAllocatedLeaves}>
+                <Popconfirm
+                  title={`Are you sure to reset allocated leaves?`}
+                  onConfirm={handleResetAllocatedLeaves}
+                  okText="Yes"
+                  cancelText="No"
                 >
-                  <Popconfirm
-                    title={`Are you sure to reset allocated leaves?`}
-                    onConfirm={handleResetAllocatedLeaves}
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
-                      Reset Allocated Leaves
-                    </Button>
-                  </Popconfirm>
-                </AccessWrapper>
-              )}
-            </div>
-            <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
-              <Form layout="inline" form={form}>
-                <FormItem className="direct-form-search margin-1r">
-                  <Select
-                    placeholderClass={PLACE_HOLDER_CLASS}
-                    placeholder="Select Role"
-                    onChange={handleRoleChange}
-                    value={role}
-                    options={roleData?.data?.data?.data?.map((x) => ({
-                      ...x,
-                      id: x._id,
-                    }))}
-                  />
-                </FormItem>
-                <FormItem className="direct-form-search">
-                  <Select
-                    placeholderClass={PLACE_HOLDER_CLASS}
-                    placeholder="Select Position"
-                    className="margin-1r"
-                    onChange={handlePositionChange}
-                    value={position}
-                    options={positionData?.data?.data?.data?.map((x) => ({
-                      id: x._id,
-                      value: x.name,
-                    }))}
-                  />
-                </FormItem>
-                <FormItem style={{marginBottom: '10px'}}>
-                  <Radio.Group
-                    buttonStyle="solid"
-                    value={defaultUser}
-                    onChange={setActiveInActiveUsers}
-                    id="radio"
-                  >
-                    <Radio.Button value="active">Active</Radio.Button>
-                    <Radio.Button value="inactive">Inactive</Radio.Button>
-                  </Radio.Group>
-                </FormItem>
-                <FormItem>
-                  <Button
-                    className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                    onClick={handleResetFilter}
-                  >
-                    Reset
+                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
+                    Reset Allocated Leaves
                   </Button>
-                </FormItem>
-              </Form>
-              <AccessWrapper
-                noAccessRoles={CO_WORKERS_RESET_ALLOCATEDLEAVES_NO_ACCESS}
-              >
-                <div className="gx-btn-form">
+                </Popconfirm>
+              </AccessWrapper>
+            )}
+          </div>
+          <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
+            <Form layout="inline" form={form}>
+              <FormItem className="direct-form-search margin-1r">
+                <Select
+                  placeholderClass={PLACE_HOLDER_CLASS}
+                  placeholder="Select Role"
+                  onChange={handleRoleChange}
+                  value={role}
+                  options={roleData?.data?.data?.data?.map((x) => ({
+                    ...x,
+                    id: x._id,
+                  }))}
+                />
+              </FormItem>
+              <FormItem className="direct-form-search">
+                <Select
+                  placeholderClass={PLACE_HOLDER_CLASS}
+                  placeholder="Select Position"
+                  className="margin-1r"
+                  onChange={handlePositionChange}
+                  value={position}
+                  options={positionData?.data?.data?.data?.map((x) => ({
+                    id: x._id,
+                    value: x.name,
+                  }))}
+                />
+              </FormItem>
+              <FormItem style={{marginBottom: '10px'}}>
+                <Radio.Group
+                  buttonStyle="solid"
+                  value={defaultUser}
+                  onChange={setActiveInActiveUsers}
+                  id="radio"
+                >
+                  <Radio.Button value="active">Active</Radio.Button>
+                  <Radio.Button value="inactive">Inactive</Radio.Button>
+                </Radio.Group>
+              </FormItem>
+              <FormItem>
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                  onClick={handleResetFilter}
+                >
+                  Reset
+                </Button>
+              </FormItem>
+            </Form>
+            <AccessWrapper
+              role={
+                coWorkersPermissions?.importCoworkers ||
+                coWorkersPermissions?.exportCoworkers
+              }
+            >
+              <div className="gx-btn-form">
+                <AccessWrapper role={coWorkersPermissions?.importCoworkers}>
                   <Button
                     className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
                     onClick={() => setOpenImport(true)}
@@ -385,47 +388,47 @@ function CoworkersPage() {
                   >
                     Import
                   </Button>
-                  {data?.status && (
-                    <CSVLink
-                      filename={'co-workers'}
-                      data={[
-                        [
-                          'Name',
-                          'Email',
-                          'Role',
-                          'RoleId',
-                          'Position',
-                          'PositionId',
-                          'DOB',
-                          'Join Date',
-                        ],
-                        ...data?.data?.data?.data
-                          ?.filter((x) => selectedRows.includes(x?._id))
-                          ?.map((d) => [
-                            d?.name,
-                            d?.email,
-                            d?.role?.value,
-                            d?.role?._id,
-                            d?.position?.name,
-                            d?.position?._id,
-                            changeDate(d?.dob),
-                            changeDate(d?.joinDate),
-                          ]),
-                      ]}
+                </AccessWrapper>
+                {data?.status && coWorkersPermissions?.exportCoworkers && (
+                  <CSVLink
+                    filename={'co-workers'}
+                    data={[
+                      [
+                        'Name',
+                        'Email',
+                        'Role',
+                        'RoleId',
+                        'Position',
+                        'PositionId',
+                        'DOB',
+                        'Join Date',
+                      ],
+                      ...data?.data?.data?.data
+                        ?.filter((x) => selectedRows.includes(x?._id))
+                        ?.map((d) => [
+                          d?.name,
+                          d?.email,
+                          d?.role?.value,
+                          d?.role?._id,
+                          d?.position?.name,
+                          d?.position?._id,
+                          changeDate(d?.dob),
+                          changeDate(d?.joinDate),
+                        ]),
+                    ]}
+                  >
+                    <Button
+                      className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                      disabled={selectedRows.length === 0}
                     >
-                      <Button
-                        className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                        disabled={selectedRows.length === 0}
-                      >
-                        Export
-                      </Button>
-                    </CSVLink>
-                  )}
-                </div>
-              </AccessWrapper>
-            </div>
+                      Export
+                    </Button>
+                  </CSVLink>
+                )}
+              </div>
+            </AccessWrapper>
           </div>
-        </AccessWrapper>
+        </div>
         <Table
           locale={{emptyText}}
           className="gx-table-responsive"
@@ -435,12 +438,9 @@ function CoworkersPage() {
             handleSwitchToUser,
             mutation,
             disableUserMmutation,
-            user.role.key
+            permission
           )}
-          dataSource={formattedUsers(
-            data?.data?.data?.data,
-            user?.role?.key === 'admin'
-          )}
+          dataSource={formattedUsers(data?.data?.data?.data, key === 'admin')}
           onChange={handleTableChange}
           rowSelection={{
             onChange: handleRowSelect,
