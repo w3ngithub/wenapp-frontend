@@ -261,6 +261,10 @@ function AddBlog() {
                   validator: async (rule, value) => {
                     try {
                       if (!value) {
+                        form.scrollToField('title', {
+                          behavior: 'smooth',
+                          block: 'end',
+                        })
                         throw new Error(`Title is required.`)
                       }
                       if (value?.trim() === '') {
