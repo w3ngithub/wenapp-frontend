@@ -3,7 +3,7 @@ export const permissionRole = {
     {name: 'dashboard', label: 'Dashboard', rule: []},
     {name: `leaveManagement`, label: `Leave Management`, rule: []},
     {name: 'todaysOverview', label: `Today's Overview`, rule: []},
-    {name: `noticeBoard`, label: `Notice Board `, rule: []},
+    {name: `noticeBoard`, label: `Notice Board`, rule: []},
     {name: 'coWorkers', label: `Co-Workers`, rule: []},
     {name: `blog`, label: `Blog `, rule: []},
     {name: `projects`, label: `Projects `, rule: []},
@@ -166,7 +166,7 @@ export const permissionRole = {
     },
   ],
 
-  NoticeBoard: [
+  'Notice Board': [
     {name: 'createNotice', label: 'Create Notice', rule: []},
     {name: 'editNotice', label: 'Edit Notice', rule: []},
     {name: 'viewNotice', label: 'View Notice', rule: []},

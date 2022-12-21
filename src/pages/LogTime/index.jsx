@@ -58,8 +58,10 @@ function LogTime() {
 
   const {
     _id,
-    role: {key,permission}
+    role: {key, permission},
   } = useSelector(selectAuthUser)
+
+  const logPermissions = permission?.[`Log Time`]
 
   const {
     data: logTimeDetails,
@@ -248,18 +250,19 @@ function LogTime() {
         />
       </Card>
       <Card title={'Time Logs'}>
-        {permission[`Log Time`]?.createLogTime && 
-        <div className="components-table-demo-control-bar">
-          <div className="gx-d-flex gx-justify-content-between gx-flex-row">
-            <Button
-              className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
-              onClick={handleOpenModal}
-              disabled={getIsAdmin()}
-            >
-              Add New Log Time
-            </Button>
+        {logPermissions?.createLogTime && (
+          <div className="components-table-demo-control-bar">
+            <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+              <Button
+                className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
+                onClick={handleOpenModal}
+                disabled={getIsAdmin()}
+              >
+                Add New Log Time
+              </Button>
+            </div>
           </div>
-        </div>}
+        )}
         <Table
           locale={{emptyText}}
           className="gx-table-responsive"

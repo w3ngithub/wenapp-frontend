@@ -71,8 +71,10 @@ function ProjectLogs() {
   const [projectId] = slug.split('-')
   const {
     name,
-    role: {key, permission},
+    role: {permission},
   } = useSelector(selectAuthUser)
+
+  const logPermissions = permission?.['Log Time']
 
   const {data: projectDetail} = useQuery(['singleProject', projectId], () =>
     getProject(projectId)
@@ -423,7 +425,7 @@ function ProjectLogs() {
                   View Project
                 </Button>
               )}
-              {permission['Log Time']?.createLogTime && (
+              {logPermissions?.createLogTime && (
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
                   onClick={handleOpenModal}

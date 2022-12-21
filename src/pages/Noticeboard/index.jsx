@@ -57,8 +57,10 @@ function NoticeBoardPage() {
   const queryClient = useQueryClient()
 
   const {
-    role: {permission: {NoticeBoard} = {}},
+    role: {permission = {}},
   } = useSelector(selectAuthUser)
+
+  const noticeBoardPermissions = permission?.['Notice Board']
 
   const {data, isLoading, isError, isFetching} = useQuery(
     ['notices', page, title, date, sort],
@@ -291,7 +293,7 @@ function NoticeBoardPage() {
                 </Button>
               </FormItem>
             </Form>
-            <AccessWrapper role={NoticeBoard?.createNotice}>
+            <AccessWrapper role={noticeBoardPermissions?.createNotice}>
               <Button
                 className="gx-btn-form gx-btn-primary gx-text-white "
                 onClick={handleOpenAddModal}
@@ -314,7 +316,7 @@ function NoticeBoardPage() {
             sort,
             handleOpenEditModal,
             confirmDeleteProject,
-            NoticeBoard
+            noticeBoardPermissions
           )}
           dataSource={formattedNotices(data?.data?.data?.data)}
           onChange={handleTableChange}
