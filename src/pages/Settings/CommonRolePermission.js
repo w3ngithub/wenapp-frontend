@@ -1,10 +1,13 @@
-import React, {useState} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import {Form, Col, Row} from 'antd'
 import RolePermissionBox from './RolePermissionBox'
 import {permissionRole} from 'constants/RolePermission'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {RolePermissionContext} from 'context/RolePermissionConext'
 
-const CommonRolePermission = ({allAccess}) => {
+const CommonRolePermission = ({allAccess, isEditMode}) => {
+  const {state, dispatch} = useContext(RolePermissionContext)
+  console.log('state', state)
   const [form] = Form.useForm()
   let titleName = Object.keys(permissionRole)
   const {innerWidth} = useWindowsSize()
@@ -31,6 +34,22 @@ const CommonRolePermission = ({allAccess}) => {
   const handleOpenCollapse = (key) => {
     setActiveKey(key)
   }
+
+  const handleEditCollapse = () => {
+    const activeKeys = permissionRole['Navigation']
+      .filter((d) => state?.checkedList?.Navigation.includes(d.name))
+      .map((d) => d.label)
+
+    console.log(activeKeys)
+    let dataaaa = [...activeKeys, 'Navigation', 'Dashboard']
+    setActiveKey(dataaaa)
+  }
+
+  useEffect(() => {
+    if (isEditMode) {
+      handleEditCollapse()
+    }
+  }, [state?.checkedList])
 
   return (
     <Form form={form}>

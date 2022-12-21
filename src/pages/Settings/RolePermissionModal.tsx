@@ -208,7 +208,7 @@ const RolePermissionModal = ({
         </div>
       </Form>
       <div>
-        <CommonRolePermission allAccess={allAccess} />
+        <CommonRolePermission allAccess={allAccess} isEditMode={isEditMode} />
       </div>
       {duplicateValue && (
         <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>
