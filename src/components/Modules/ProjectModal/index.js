@@ -72,7 +72,7 @@ function ProjectModal({
     })
     return newList
   }
-
+  console.log('first')
   const handleSubmit = (type) => {
     form.validateFields().then((values) => {
       const updatedDesigners = changedRoleChecker(
