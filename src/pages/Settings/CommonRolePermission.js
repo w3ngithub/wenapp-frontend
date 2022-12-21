@@ -1,13 +1,39 @@
-import React from 'react'
+import React, {useState, useContext} from 'react'
 import {Form, Col, Row} from 'antd'
 import RolePermissionBox from './RolePermissionBox'
 import {permissionRole} from 'constants/RolePermission'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {RolePermissionContext} from 'context/RolePermissionConext'
 
 const CommonRolePermission = ({allAccess}) => {
   const [form] = Form.useForm()
   let titleName = Object.keys(permissionRole)
   const {innerWidth} = useWindowsSize()
+  const [activeKey, setActiveKey] = useState([
+    'Navigation',
+    'Dashboard',
+    'Attendance',
+    'Leave Management',
+    'Blog',
+    'Notice Board',
+  ])
+
+  const handleDefaultKeys = (title, data) => {
+    if (title === 'Navigation') {
+      console.log(title, data)
+      const activeKeys = permissionRole['Navigation']
+        .filter((d) => data.includes(d.name))
+        .map((d) => d.label)
+      let dataaaa = [...activeKeys, 'Navigation', 'Dashboard']
+      console.log('activekeys', activeKeys)
+      setActiveKey(dataaaa)
+    }
+  }
+
+  const handleOpenCollapse = (key) => {
+    console.log('handleKeys0,', key)
+    setActiveKey(key)
+  }
 
   return (
     <Form form={form}>
@@ -20,6 +46,9 @@ const CommonRolePermission = ({allAccess}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
+                  activeKey={activeKey}
+                  handleDefaultKeys={handleDefaultKeys}
+                  handleOpenCollapse={handleOpenCollapse}
                 />
               )
             } else if (innerWidth < 1200 && (index + 1) % 2 !== 0) {
@@ -28,6 +57,9 @@ const CommonRolePermission = ({allAccess}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
+                  activeKey={activeKey}
+                  handleDefaultKeys={handleDefaultKeys}
+                  handleOpenCollapse={handleOpenCollapse}
                 />
               )
             } else if (innerWidth < 765) {
@@ -36,6 +68,9 @@ const CommonRolePermission = ({allAccess}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
+                  activeKey={activeKey}
+                  handleDefaultKeys={handleDefaultKeys}
+                  handleOpenCollapse={handleOpenCollapse}
                 />
               )
             } else {
@@ -51,6 +86,9 @@ const CommonRolePermission = ({allAccess}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
+                  activeKey={activeKey}
+                  handleDefaultKeys={handleDefaultKeys}
+                  handleOpenCollapse={handleOpenCollapse}
                 />
               )
             } else if (
@@ -63,6 +101,9 @@ const CommonRolePermission = ({allAccess}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
+                  activeKey={activeKey}
+                  handleDefaultKeys={handleDefaultKeys}
+                  handleOpenCollapse={handleOpenCollapse}
                 />
               )
             } else if (innerWidth < 765) {
@@ -82,6 +123,9 @@ const CommonRolePermission = ({allAccess}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
+                  activeKey={activeKey}
+                  handleDefaultKeys={handleDefaultKeys}
+                  handleOpenCollapse={handleOpenCollapse}
                 />
               )
             } else if (innerWidth < 765) {

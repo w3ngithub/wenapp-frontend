@@ -197,9 +197,7 @@ function App(props: any) {
                 path={ATTENDANCE}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute roles={Navigation?.attendance}>
-                      <Attendace />
-                    </AccessRoute>
+                    <Attendace />
                   </Suspense>
                 }
               />
@@ -217,9 +215,7 @@ function App(props: any) {
                 path={LEAVE}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute roles={Navigation?.leaveManagement}>
-                      <Leave />
-                    </AccessRoute>
+                    <Leave />
                   </Suspense>
                 }
               />
@@ -227,9 +223,7 @@ function App(props: any) {
                 path={NOTICEBOARD}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute roles={Navigation?.noticeBoard}>
-                      <Noticeboard />
-                    </AccessRoute>
+                    <Noticeboard />
                   </Suspense>
                 }
               />
@@ -237,9 +231,7 @@ function App(props: any) {
                 path={BLOG}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute roles={Navigation?.blog}>
-                      <Blog />
-                    </AccessRoute>
+                    <Blog />
                   </Suspense>
                 }
               >
@@ -295,36 +287,13 @@ function App(props: any) {
                 path={RESOURCES}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute roles={Navigation?.resources}>
-                      <Resources />
-                    </AccessRoute>
+                    <Resources />
                   </Suspense>
                 }
               >
-                <Route
-                  path={FAQS}
-                  element={
-                    <AccessRoute roles={NavigationResources?.viewFAQ}>
-                      <Faqs />
-                    </AccessRoute>
-                  }
-                />
-                <Route
-                  path={POLICY}
-                  element={
-                    <AccessRoute roles={NavigationResources?.viewPolicy}>
-                      <Policy />
-                    </AccessRoute>
-                  }
-                />
-                <Route
-                  path={HOLIDAY}
-                  element={
-                    <AccessRoute roles={NavigationResources?.viewHoliday}>
-                      <Holiday />
-                    </AccessRoute>
-                  }
-                />
+                <Route path={FAQS} element={<Faqs />} />
+                <Route path={POLICY} element={<Policy />} />
+                <Route path={HOLIDAY} element={<Holiday />} />
               </Route>
               <Route
                 path={SETTINGS}

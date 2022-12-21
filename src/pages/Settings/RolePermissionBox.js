@@ -1,5 +1,5 @@
-import React, {useEffect, useContext} from 'react'
-import {Checkbox, Col, Divider, Row} from 'antd'
+import React, {useEffect, useContext, useState} from 'react'
+import {Checkbox, Col, Collapse, Divider, Row} from 'antd'
 import {RolePermissionContext} from 'context/RolePermissionConext'
 import {
   CHANGE_SINGLE_CHECKBOX,
@@ -7,12 +7,32 @@ import {
   SELECT_ALL_CHECKBOX,
 } from 'constants/RolePermission'
 
-const RolePermissionBox = ({data, title, allAccess}) => {
+const {Panel} = Collapse
+
+const RolePermissionBox = ({
+  data,
+  title,
+  allAccess,
+  activeKey,
+  handleDefaultKeys,
+  handleOpenCollapse,
+}) => {
   const arrayDatas = data?.map((d) => d.name)
   let emptyArray = []
   const {state, dispatch} = useContext(RolePermissionContext)
+  // const [open, setOpen] = useState([
+  //   'Navigation',
+  //   'Blog',
+  //   'Attendance',
+  //   'Noticeboard',
+  //   'Resources',
+  // ])
+
+  // console.log(state)
+  // console.log('data', data)
 
   const onChange = (list) => {
+    handleDefaultKeys(title, list)
     dispatch({
       type: CHANGE_SINGLE_CHECKBOX,
       payload: {
@@ -27,6 +47,7 @@ const RolePermissionBox = ({data, title, allAccess}) => {
     })
   }
   const onCheckAllChange = (e) => {
+    handleDefaultKeys(title, data)
     dispatch({
       type: SELECT_ALL_CHECKBOX,
       payload: {
@@ -57,32 +78,41 @@ const RolePermissionBox = ({data, title, allAccess}) => {
   }, [allAccess])
 
   return (
-    <div className="role-box">
-      <div className="role-box-header">
-        <p>
-          <span className="role-box-title">{title} permisson</span>
-        </p>
-        <Checkbox
-          indeterminate={
-            state?.indeterminate?.[title] ? state?.indeterminate[title] : false
-          }
-          onChange={onCheckAllChange}
-          checked={state?.checkAll?.[title] ?? false}
-        >
-          Select All
-        </Checkbox>
-      </div>
-      <Divider />
-      <Checkbox.Group value={state?.checkedList?.[title]} onChange={onChange}>
-        <Row gutter={[6, 10]}>
-          {data?.map((d) => (
-            <Col span={12} spacing>
-              <Checkbox value={d.name}>{d.label}</Checkbox>
-            </Col>
-          ))}
-        </Row>
-      </Checkbox.Group>
-    </div>
+    <Collapse activeKey={activeKey} onChange={(key) => handleOpenCollapse(key)}>
+      <Panel header={`${title} permisson`} key={`${title}`}>
+        <div className="role-box">
+          <div className="role-box-header">
+            <p>
+              <span className="role-box-title">{title} permisson</span>
+            </p>
+            <Checkbox
+              indeterminate={
+                state?.indeterminate?.[title]
+                  ? state?.indeterminate[title]
+                  : false
+              }
+              onChange={onCheckAllChange}
+              checked={state?.checkAll?.[title] ?? false}
+            >
+              Select All
+            </Checkbox>
+          </div>
+          <Divider />
+          <Checkbox.Group
+            value={state?.checkedList?.[title]}
+            onChange={onChange}
+          >
+            <Row gutter={[6, 10]}>
+              {data?.map((d) => (
+                <Col span={12} spacing>
+                  <Checkbox value={d.name}>{d.label}</Checkbox>
+                </Col>
+              ))}
+            </Row>
+          </Checkbox.Group>
+        </div>
+      </Panel>
+    </Collapse>
   )
 }
 
