@@ -13,7 +13,6 @@ import {Button, Card, Popconfirm, Spin, Table} from 'antd'
 import {HOLIDAY_COLUMNS} from 'constants/Holidays'
 import {changeDate, compare, getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
-import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -37,8 +36,12 @@ function Holiday() {
   const [dataToEdit, setDataToEdit] = useState({})
 
   const {
-    role: {key},
+    role: {
+      permission: {Resources},
+    },
   } = useSelector(selectAuthUser)
+
+  const isMutable = Resources?.deleteHoliday || Resources?.editHoliday
 
   const {
     data: Holidays,
@@ -181,7 +184,7 @@ function Holiday() {
       <Card
         title="Holidays"
         extra={
-          <AccessWrapper noAccessRoles={HOLIDAY_ACTION_NO_ACCESS}>
+          <AccessWrapper role={Resources?.createHoliday}>
             <Button
               className="gx-btn gx-btn-primary gx-text-white "
               disabled={getIsAdmin()}
@@ -204,7 +207,8 @@ function Holiday() {
             sort,
             handleDeleteClick,
             handleOpenEditModal,
-            key
+            Resources,
+            isMutable
           )}
           dataSource={formattedHoliday(
             Holidays?.data?.data?.data?.[0]?.holidays

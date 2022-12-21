@@ -3,11 +3,6 @@ import {Divider, Popconfirm} from 'antd'
 import {getIsAdmin, roundedToFixed} from 'helpers/utils'
 import CustomIcon from 'components/Elements/Icons'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import RoleAccess, {
-  LOG_TIME_ADD_NO_ACCESS,
-  LOG_TIME_DELETE_NO_ACCESS,
-  LOG_TIME_OLD_EDIT,
-} from './RoleAccess'
 import moment from 'moment'
 
 const LOGTIMES_COLUMNS = (
@@ -91,17 +86,19 @@ const LOGTIMES_COLUMNS = (
             return (
               !getIsAdmin() && (
                 <span>
-                  {(moment(sendDate) >=
-                    moment().subtract(1, 'days').startOf('day') ||
-                    LOG_TIME_OLD_EDIT.includes(role)) && (
-                    <span
-                      className="gx-link"
-                      onClick={() => onOpenEditModal(record)}
-                    >
-                      <CustomIcon name="edit" />
-                    </span>
+                  {moment(sendDate) >=
+                    moment().subtract(1, 'days').startOf('day') && (
+                    <AccessWrapper role={role?.[`Log Time`]?.editLogTime}>
+                      <span
+                        className="gx-link"
+                        onClick={() => onOpenEditModal(record)}
+                      >
+                        <CustomIcon name="edit" />
+                      </span>
+                    </AccessWrapper>
                   )}
-                  <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
+
+                  <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
                     <Divider type="vertical" />
                     <Popconfirm
                       title="Are you sure to delete this Log?"
@@ -177,13 +174,10 @@ const LOGTIMES_COLUMNS = (
             return (
               !getIsAdmin() && (
                 <span style={{display: 'flex'}}>
-                  {/* <AccessWrapper noAccessRoles={LOG_TIME_ADD_NO_ACCESS}> */}
                   {(record.user === user &&
                     moment(sendDate) >=
                       moment().subtract(1, 'days').startOf('day')) ||
-                  [RoleAccess.Admin, RoleAccess.ProjectManager].includes(
-                    role
-                  ) ? (
+                  role?.[`Log Time`]?.editLogTime ? (
                     <span
                       className="gx-link"
                       onClick={() => onOpenEditModal(record)}
@@ -193,12 +187,9 @@ const LOGTIMES_COLUMNS = (
                   ) : (
                     ''
                   )}
-                  {/* </AccessWrapper> */}
-                  <AccessWrapper noAccessRoles={LOG_TIME_DELETE_NO_ACCESS}>
-                    {(role === RoleAccess.Admin ||
-                      role === RoleAccess.ProjectManager) && (
-                      <Divider type="vertical" />
-                    )}
+
+                  <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
+                    <Divider type="vertical" />
                     <Popconfirm
                       title="Are you sure to delete this Log?"
                       onConfirm={() => confirmDelete(record)}

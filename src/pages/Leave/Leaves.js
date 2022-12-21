@@ -69,6 +69,7 @@ function Leaves({
   rowSelection,
   isExportDisabled,
   userRole,
+  permissions,
 }) {
   const queryClient = useQueryClient()
   let approveReason
@@ -329,17 +330,17 @@ function Leaves({
               </Button>
             </FormItem>
           </Form>
-          <AccessWrapper noAccessRoles={LEAVES_TAB_ACTIONS_NO_ACCESS}>
-            <div className="gx-btn-form">
-              <AccessWrapper noAccessRoles={LEAVE_TAB_ADD_LEAVE_NO_ACCESS}>
-                <Button
-                  className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                  onClick={handleOpenModal}
-                  disabled={getIsAdmin()}
-                >
-                  Add Leave
-                </Button>
-              </AccessWrapper>
+          <div className="gx-btn-form">
+            <AccessWrapper role={permissions?.addCoworkersLeaves}>
+              <Button
+                className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                onClick={handleOpenModal}
+                disabled={getIsAdmin()}
+              >
+                Add Leave
+              </Button>
+            </AccessWrapper>
+            <AccessWrapper role={permissions?.exportCoworkersLeaves}>
               <CSVLink
                 filename={'Leaves'}
                 data={
@@ -367,20 +368,24 @@ function Leaves({
                   Export
                 </Button>
               </CSVLink>
-            </div>
-          </AccessWrapper>
+            </AccessWrapper>
+          </div>
         </div>
       </div>
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        columns={LEAVES_COLUMN(
-          handleOpenCancelLeaveModal,
-          handleOpenApproveModal,
-          handleOpenEditModal,
-          true,
-          userRole
-        )}
+        columns={LEAVES_COLUMN({
+          onCancelLeave: handleOpenCancelLeaveModal,
+          onApproveClick: handleOpenApproveModal,
+          onEditClick: handleOpenEditModal,
+          isAdmin: true,
+          role: userRole,
+          viewLeave: permissions?.viewCoworkersLeaves,
+          cancelLeave: permissions?.cancelCoworkersLeaves,
+          approveLeave: permissions?.approveCoworkersLeaves,
+          editLeave: permissions?.editCoworkersLeaves,
+        })}
         dataSource={data}
         // onChange={handleTableChange}
         rowSelection={rowSelection}

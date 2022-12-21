@@ -1,5 +1,5 @@
 import React, {useEffect, lazy, Suspense} from 'react'
-import {connect} from 'react-redux'
+import {connect, useSelector} from 'react-redux'
 import socketIOClient from 'socket.io-client'
 import {Navigate, Route, Routes, useNavigate} from 'react-router-dom'
 import {ConfigProvider} from 'antd'
@@ -69,6 +69,7 @@ import RoleAccess, {
 import Error404 from 'components/Modules/404'
 import ActivityLogs from 'pages/Reports/ActivityLogs'
 import MaintenanceMode from 'pages/MaintenanceMode'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -113,6 +114,16 @@ function App(props: any) {
       navigate('notAllowed')
   }, [])
 
+  const {
+    role: {
+      permission: {
+        Navigation = {},
+        Reports: NavigationReports = {},
+        Resources: NavigationResources = {},
+      } = {},
+    },
+  } = useSelector(selectAuthUser) || {}
+
   return (
     <ConfigProvider
       locale={currentAppLocale.antd}
@@ -156,15 +167,7 @@ function App(props: any) {
                 path={OVERVIEW}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute
-                      roles={[
-                        RoleAccess.Admin,
-                        RoleAccess.ProjectManager,
-                        RoleAccess.TeamLead,
-                        RoleAccess.HumanResource,
-                        RoleAccess.OfficeAdmin,
-                      ]}
-                    >
+                    <AccessRoute roles={Navigation?.todaysOverview}>
                       <Overview />
                     </AccessRoute>
                   </Suspense>
@@ -174,16 +177,7 @@ function App(props: any) {
                 path={COWORKERS}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute
-                      roles={[
-                        RoleAccess.Admin,
-                        RoleAccess.ProjectManager,
-                        RoleAccess.TeamLead,
-                        RoleAccess.HumanResource,
-                        RoleAccess.Finance,
-                        RoleAccess.OfficeAdmin,
-                      ]}
-                    >
+                    <AccessRoute roles={Navigation?.coWorkers}>
                       <Coworkers />
                     </AccessRoute>
                   </Suspense>
@@ -193,15 +187,7 @@ function App(props: any) {
                 path={PROJECTS}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute
-                      roles={[
-                        RoleAccess.Admin,
-                        RoleAccess.ProjectManager,
-                        RoleAccess.TeamLead,
-                        RoleAccess.Editor,
-                        RoleAccess.Normal,
-                      ]}
-                    >
+                    <AccessRoute roles={Navigation?.projects}>
                       <Projects />
                     </AccessRoute>
                   </Suspense>
@@ -219,15 +205,7 @@ function App(props: any) {
                 path={LOGTIME}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute
-                      roles={[
-                        RoleAccess.Admin,
-                        RoleAccess.ProjectManager,
-                        RoleAccess.TeamLead,
-                        RoleAccess.Editor,
-                        RoleAccess.Normal,
-                      ]}
-                    >
+                    <AccessRoute roles={Navigation?.logTime}>
                       <LogTime />
                     </AccessRoute>
                   </Suspense>
@@ -253,20 +231,7 @@ function App(props: any) {
                 path={BLOG}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute
-                      roles={[
-                        RoleAccess.Admin,
-                        RoleAccess.ProjectManager,
-                        RoleAccess.TeamLead,
-                        RoleAccess.HumanResource,
-                        RoleAccess.Editor,
-                        RoleAccess.Normal,
-                        RoleAccess.Subscriber,
-                        RoleAccess.OfficeAdmin,
-                      ]}
-                    >
-                      <Blog />
-                    </AccessRoute>
+                    <Blog />
                   </Suspense>
                 }
               >
@@ -279,15 +244,7 @@ function App(props: any) {
                 path={REPORTS}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute
-                      roles={[
-                        RoleAccess.Admin,
-                        RoleAccess.ProjectManager,
-                        RoleAccess.TeamLead,
-                        RoleAccess.HumanResource,
-                        RoleAccess.Finance,
-                      ]}
-                    >
+                    <AccessRoute roles={Navigation?.reports}>
                       <Reports />
                     </AccessRoute>
                   </Suspense>
@@ -296,7 +253,7 @@ function App(props: any) {
                 <Route
                   path={WEEKLY_REPORT}
                   element={
-                    <AccessRoute roles={WEEKLY_REPORT_ACCESS}>
+                    <AccessRoute roles={NavigationReports?.viewWeeklyReport}>
                       <WeeklyReport />
                     </AccessRoute>
                   }
@@ -304,7 +261,7 @@ function App(props: any) {
                 <Route
                   path={WORK_LOG_REPORT}
                   element={
-                    <AccessRoute roles={WORK_LOG_REPORT_ACESS}>
+                    <AccessRoute roles={NavigationReports?.viewWorkLogReport}>
                       <WorkLogReport />
                     </AccessRoute>
                   }
@@ -312,7 +269,7 @@ function App(props: any) {
                 <Route
                   path={LEAVE_REPORT}
                   element={
-                    <AccessRoute roles={LEAVE_REPORT_REPORT_ACESS}>
+                    <AccessRoute roles={NavigationReports?.viewLeaveReport}>
                       <LeaveReport />
                     </AccessRoute>
                   }
@@ -320,7 +277,7 @@ function App(props: any) {
                 <Route
                   path={ACTIVITY_LOGS}
                   element={
-                    <AccessRoute roles={LEAVE_REPORT_REPORT_ACESS}>
+                    <AccessRoute roles={NavigationReports?.viewActivityLog}>
                       <ActivityLogs />
                     </AccessRoute>
                   }
@@ -342,15 +299,7 @@ function App(props: any) {
                 path={SETTINGS}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute
-                      roles={[
-                        RoleAccess.Admin,
-                        RoleAccess.ProjectManager,
-                        RoleAccess.TeamLead,
-                        RoleAccess.HumanResource,
-                        RoleAccess.OfficeAdmin,
-                      ]}
-                    >
+                    <AccessRoute roles={Navigation?.settings}>
                       <Settings />
                     </AccessRoute>
                   </Suspense>
@@ -360,15 +309,7 @@ function App(props: any) {
                 path={PROJECT_LOG}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute
-                      roles={[
-                        RoleAccess.Admin,
-                        RoleAccess.ProjectManager,
-                        RoleAccess.TeamLead,
-                        RoleAccess.Editor,
-                        RoleAccess.Normal,
-                      ]}
-                    >
+                    <AccessRoute roles={Navigation?.logTime}>
                       <ProjectLogs />
                     </AccessRoute>
                   </Suspense>

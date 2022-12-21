@@ -11,7 +11,6 @@ import {getLeavesOfUser} from 'services/leaves'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {getLeaveTypes} from 'services/leaves'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -49,11 +48,13 @@ function MyHistory({
   userId,
   handleOpenCancelLeaveModal,
   isLoading,
+  permissions,
 }: {
   userId: string
   handleCancelLeave: (leave: any) => void
   handleOpenCancelLeaveModal: (param: any) => void
   isLoading: boolean
+  permissions: any
 }) {
   const [form] = Form.useForm()
   const location: any = useLocation()
@@ -206,11 +207,13 @@ function MyHistory({
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        columns={LEAVES_COLUMN(
-          handleOpenCancelLeaveModal,
-          () => {},
-          handleShow
-        ).filter((item, index) => index !== 0)}
+        columns={LEAVES_COLUMN({
+          onCancelLeave: handleOpenCancelLeaveModal,
+          onApproveClick: () => {},
+          onEditClick: handleShow,
+          viewLeave: permissions?.viewMyLeaveDetails,
+          cancelLeave: permissions?.cancelMyLeaves,
+        }).filter((item, index) => index !== 0)}
         dataSource={formattedLeaves(userLeavesQuery?.data?.data?.data?.data)}
         pagination={{
           current: page.page,

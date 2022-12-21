@@ -18,7 +18,7 @@ const NOTICE_COLUMNS = (
   sortedInfo: any,
   openModal: Function,
   confirmDelete: Function,
-  role: string
+  role: any
 ): notice[] => [
   {
     title: 'Title',
@@ -54,30 +54,43 @@ const NOTICE_COLUMNS = (
     render: (text, record) => {
       return (
         <div style={{display: 'flex'}}>
-          <span className="gx-link" onClick={() => openModal(record, true)}>
-            <CustomIcon name="view" />
-          </span>
-          {!NOTICEBOARD_ACTION_NO_ACCESS.includes(role) && !getIsAdmin() && (
+          {role?.viewNotice && (
             <>
-              <Divider type="vertical" />
-              <span
-                className="gx-link"
-                onClick={() => openModal(record, false)}
-              >
-                <CustomIcon name="edit" />
+              <span className="gx-link" onClick={() => openModal(record, true)}>
+                <CustomIcon name="view" />
               </span>
               <Divider type="vertical" />
-              <Popconfirm
-                title="Are you sure to delete this notice?"
-                onConfirm={() => confirmDelete(record)}
-                okText="Yes"
-                cancelText="No"
-              >
-                <span className="gx-link gx-text-danger">
-                  {' '}
-                  <CustomIcon name="delete" />
-                </span>
-              </Popconfirm>
+            </>
+          )}
+
+          {!getIsAdmin() && (
+            <>
+              {role?.editNotice && (
+                <>
+                  <span
+                    className="gx-link"
+                    onClick={() => openModal(record, false)}
+                  >
+                    <CustomIcon name="edit" />
+                  </span>
+                  <Divider type="vertical" />
+                </>
+              )}
+              {role?.deleteNotice && (
+                <>
+                  <Popconfirm
+                    title="Are you sure to delete this notice?"
+                    onConfirm={() => confirmDelete(record)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <span className="gx-link gx-text-danger">
+                      {' '}
+                      <CustomIcon name="delete" />
+                    </span>
+                  </Popconfirm>
+                </>
+              )}
             </>
           )}
         </div>
