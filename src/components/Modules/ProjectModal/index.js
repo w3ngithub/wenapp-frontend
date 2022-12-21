@@ -72,8 +72,6 @@ function ProjectModal({
     })
     return newList
   }
-  console.log('first')
-  console.log(designers)
   const handleSubmit = (type) => {
     form.validateFields().then((values) => {
       const updatedDesigners = changedRoleChecker(
