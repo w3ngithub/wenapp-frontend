@@ -64,7 +64,7 @@ export const SIDEBAR_ITEMS = ({
     url: ATTENDANCE,
     isExpandable: false,
     id: 4,
-    roles: true,
+    roles: Navigation?.attendance,
   },
   {
     icon: 'ckeditor',
@@ -80,7 +80,7 @@ export const SIDEBAR_ITEMS = ({
     url: LEAVE,
     isExpandable: false,
     id: 6,
-    roles: true,
+    roles: Navigation?.leaveManagement,
   },
   {
     icon: 'calendar-new',
@@ -88,7 +88,7 @@ export const SIDEBAR_ITEMS = ({
     url: NOTICEBOARD,
     isExpandable: false,
     id: 7,
-    roles: true,
+    roles: Navigation?.noticeBoard,
   },
   {
     icon: 'chat-new',
@@ -96,7 +96,7 @@ export const SIDEBAR_ITEMS = ({
     url: BLOG,
     isExpandable: false,
     id: 8,
-    roles: true,
+    roles: Navigation?.blog,
   },
   {
     icon: 'chart-line',
@@ -138,31 +138,30 @@ export const SIDEBAR_ITEMS = ({
     url: RESOURCES,
     isExpandable: true,
     id: 10,
-    roles: true,
+    roles: Navigation?.resources,
     subItems: [
       {
         name: 'sidebar.resources.faq',
         url: FAQS,
         id: 1,
-        // roles: true,
+        roles: NavigationResources?.viewFAQ,
       },
       {
         name: 'sidebar.resources.policy',
         url: POLICY,
         id: 2,
-        // roles: true,
+        roles: NavigationResources?.viewPolicy,
       },
       {
         name: 'sidebar.resources.holiday',
         url: HOLIDAY,
         id: 3,
-        // roles: true,
+        roles: NavigationResources?.viewHoliday,
       },
       {
         name: 'sidebar.resources.ir',
         url: 'ir',
         id: 4,
-        // roles: Resources?.viewActivityLog
       },
     ],
   },

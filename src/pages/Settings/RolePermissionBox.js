@@ -13,7 +13,6 @@ const RolePermissionBox = ({
   data,
   title,
   allAccess,
-  activeKey,
   handleDefaultKeys,
   handleOpenCollapse,
 }) => {
@@ -21,8 +20,7 @@ const RolePermissionBox = ({
   let emptyArray = []
   const {state, dispatch} = useContext(RolePermissionContext)
 
-  const onChange = (list, item) => {
-    handleDefaultKeys(title, list)
+  const onChange = (list) => {
     dispatch({
       type: CHANGE_SINGLE_CHECKBOX,
       payload: {
@@ -35,9 +33,11 @@ const RolePermissionBox = ({
         checkAll: {title, check: list.length === arrayDatas.length},
       },
     })
+    handleDefaultKeys(title, list)
   }
   const onCheckAllChange = (e) => {
-    handleDefaultKeys(title, data)
+    let activeData = data.map((d) => d.name)
+    handleDefaultKeys(title, activeData)
     dispatch({
       type: SELECT_ALL_CHECKBOX,
       payload: {
@@ -55,6 +55,8 @@ const RolePermissionBox = ({
 
   useEffect(() => {
     if (allAccess) {
+      let activeData = data.map((d) => d.name)
+      handleDefaultKeys(title, activeData)
       dispatch({
         type: GLOBAL_SELECT_ALL,
         payload: {
@@ -69,7 +71,7 @@ const RolePermissionBox = ({
 
   return (
     <Collapse
-      activeKey={activeKey}
+      activeKey={state?.defauleCollapseOpen}
       onChange={(key) => handleOpenCollapse(key)}
       style={{marginBottom: '20px'}}
     >

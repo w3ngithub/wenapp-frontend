@@ -1,7 +1,12 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {Button, Form, Input, Modal, Spin, Checkbox} from 'antd'
 import CommonRolePermission from './CommonRolePermission'
-import {permissionRole, RESET, SET_EDIT_DATA} from 'constants/RolePermission'
+import {
+  DESELECT_ALL,
+  permissionRole,
+  RESET,
+  SET_EDIT_DATA,
+} from 'constants/RolePermission'
 import {RolePermissionContext} from 'context/RolePermissionConext'
 
 interface modalInterface {
@@ -118,7 +123,7 @@ const RolePermissionModal = ({
 
   const handleSelectAllChange = (e: any) => {
     setAllAccess(e.target.checked)
-    if (!e.target.checked) dispatch({type: RESET})
+    if (!e.target.checked) dispatch({type: DESELECT_ALL})
   }
 
   const handleSubmit = () => {
@@ -143,13 +148,14 @@ const RolePermissionModal = ({
 
     let permission = formattingFunc(finalObj)
 
-    let payloadDatas: any = {
-      key: form.getFieldValue('name').toLowerCase().replaceAll(' ', ''),
-      value: form.getFieldValue('name'),
-      permission: JSON.stringify([permission]),
-    }
-
-    form.validateFields().then(() => onSubmit(payloadDatas))
+    form.validateFields().then(() => {
+      let payloadDatas: any = {
+        key: form.getFieldValue('name').toLowerCase().replaceAll(' ', ''),
+        value: form.getFieldValue('name'),
+        permission: JSON.stringify([permission]),
+      }
+      onSubmit(payloadDatas)
+    })
   }
 
   return (
@@ -208,7 +214,7 @@ const RolePermissionModal = ({
         </div>
       </Form>
       <div>
-        <CommonRolePermission allAccess={allAccess} />
+        <CommonRolePermission allAccess={allAccess} isEditMode={isEditMode} />
       </div>
       {duplicateValue && (
         <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>

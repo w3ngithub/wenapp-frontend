@@ -1,15 +1,17 @@
 import {
   CHANGE_SINGLE_CHECKBOX,
+  DESELECT_ALL,
   GLOBAL_SELECT_ALL,
   RESET,
   SELECT_ALL_CHECKBOX,
   SET_EDIT_DATA,
 } from 'constants/RolePermission'
 import React, {useReducer} from 'react'
+import {SET_COLLAPSE_OPEN} from '../constants/RolePermission'
 
 const initialState = {
   checkAll: {},
-  indeterminate: {},
+  indeterminate: {Navigation: true},
   checkedList: {
     Navigation: [
       'attendance',
@@ -19,12 +21,29 @@ const initialState = {
       'blog',
     ],
   },
+  defauleCollapseOpen: [
+    'Navigation',
+    'Dashboard',
+    'Attendance',
+    'Leave Management',
+    'Blog',
+    'Notice Board',
+    'Resources',
+  ],
 }
 
 const reducer = (state, action) => {
   switch (action.type) {
     case RESET:
       return initialState
+
+    case DESELECT_ALL:
+      return {
+        ...initialState,
+        checkedList: [],
+        defauleCollapseOpen: ['Navigation', 'Dashboard'],
+        indeterminate: {},
+      }
 
     case CHANGE_SINGLE_CHECKBOX:
       return {
@@ -80,14 +99,19 @@ const reducer = (state, action) => {
         },
       }
 
-    case SET_EDIT_DATA: {
+    case SET_EDIT_DATA:
       return {
         ...state,
         checkedList: action.payload.checkedList,
         checkAll: action.payload.checkAll,
         indeterminate: action.payload.indeterminate,
       }
-    }
+
+    case SET_COLLAPSE_OPEN:
+      return {
+        ...state,
+        defauleCollapseOpen: action.payload,
+      }
 
     default:
       return state
