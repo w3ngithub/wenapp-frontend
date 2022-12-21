@@ -1,5 +1,6 @@
 import {
   CHANGE_SINGLE_CHECKBOX,
+  DESELECT_ALL,
   GLOBAL_SELECT_ALL,
   RESET,
   SELECT_ALL_CHECKBOX,
@@ -25,6 +26,9 @@ const reducer = (state, action) => {
   switch (action.type) {
     case RESET:
       return initialState
+
+    case DESELECT_ALL:
+      return {...initialState, checkedList: []}
 
     case CHANGE_SINGLE_CHECKBOX:
       return {

@@ -22,7 +22,6 @@ const RolePermissionBox = ({
   const {state, dispatch} = useContext(RolePermissionContext)
 
   const onChange = (list, item) => {
-    handleDefaultKeys(title, list)
     dispatch({
       type: CHANGE_SINGLE_CHECKBOX,
       payload: {
@@ -35,6 +34,7 @@ const RolePermissionBox = ({
         checkAll: {title, check: list.length === arrayDatas.length},
       },
     })
+    handleDefaultKeys(title, list)
   }
   const onCheckAllChange = (e) => {
     handleDefaultKeys(title, data)

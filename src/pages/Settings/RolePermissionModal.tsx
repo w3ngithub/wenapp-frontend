@@ -1,7 +1,12 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {Button, Form, Input, Modal, Spin, Checkbox} from 'antd'
 import CommonRolePermission from './CommonRolePermission'
-import {permissionRole, RESET, SET_EDIT_DATA} from 'constants/RolePermission'
+import {
+  DESELECT_ALL,
+  permissionRole,
+  RESET,
+  SET_EDIT_DATA,
+} from 'constants/RolePermission'
 import {RolePermissionContext} from 'context/RolePermissionConext'
 
 interface modalInterface {
@@ -118,7 +123,7 @@ const RolePermissionModal = ({
 
   const handleSelectAllChange = (e: any) => {
     setAllAccess(e.target.checked)
-    if (!e.target.checked) dispatch({type: RESET})
+    if (!e.target.checked) dispatch({type: DESELECT_ALL})
   }
 
   const handleSubmit = () => {
