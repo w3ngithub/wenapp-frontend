@@ -18,7 +18,6 @@ import {connect, useSelector} from 'react-redux'
 import PunchInOut from 'components/Elements/PunchInOut'
 import {setThemeType} from 'appRedux/actions/Setting'
 import ActivityInfo from 'components/Modules/ActivityInfo'
-import RoleAccess from 'constants/RoleAccess'
 import NotificationInfo from 'components/Modules/NotificationInfo'
 import {getIsAdmin} from 'helpers/utils'
 import MaintainanceBar from 'components/Modules/Maintainance'
@@ -28,7 +27,6 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 const {Header} = Layout
 
 const Topbar = (props) => {
-  const [user, setUser] = useState(props?.user)
   const {width, navCollapsed, navStyle, themeType} = props
   const {innerWidth} = useWindowsSize()
   const [notificationArrowPosition, setnotificationArrowPosition] = useState(0)
@@ -36,8 +34,6 @@ const Topbar = (props) => {
   const {
     role: {permission: {Dashboard = {}, Attendance = {}} = {}},
   } = useSelector(selectAuthUser) || {}
-
-  console.log('Dashboard', Dashboard?.viewRecentActivities)
 
   const handleThemeChange = (e) => {
     if (e) {
