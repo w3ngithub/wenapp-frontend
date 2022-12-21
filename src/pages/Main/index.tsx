@@ -159,9 +159,7 @@ function App(props: any) {
                 path={DASHBOARD}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute roles={Navigation?.dashboard}>
-                      <Dashboard />
-                    </AccessRoute>
+                    <Dashboard />
                   </Suspense>
                 }
               />

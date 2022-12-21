@@ -10,7 +10,7 @@ import React, {useReducer} from 'react'
 const initialState = {
   checkAll: {},
   indeterminate: {},
-  checkedList: {},
+  checkedList: {Navigation: ['attendance', 'noticeBoard', 'resources']},
 }
 
 const reducer = (state, action) => {

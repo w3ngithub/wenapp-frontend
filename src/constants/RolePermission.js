@@ -1,16 +1,15 @@
 export const permissionRole = {
   Navigation: [
-    {name: 'dashboard', label: 'Dashboard', rule: []},
-    {name: `leaveManagement`, label: `Leave Management`, rule: []},
     {name: 'todaysOverview', label: `Today's Overview`, rule: []},
-    {name: `noticeBoard`, label: `Notice Board `, rule: []},
     {name: 'coWorkers', label: `Co-Workers`, rule: []},
-    {name: `blog`, label: `Blog `, rule: []},
     {name: `projects`, label: `Projects `, rule: []},
-    {name: 'reports', label: `Reports`, rule: []},
     {name: `attendance`, label: `Attendance `, rule: []},
-    {name: `resources`, label: `Resources `, rule: []},
     {name: 'logTime', label: `Log Time`, rule: []},
+    {name: `leaveManagement`, label: `Leave Management`, rule: []},
+    {name: `noticeBoard`, label: `Notice Board `, rule: []},
+    {name: `blog`, label: `Blog `, rule: []},
+    {name: 'reports', label: `Reports`, rule: []},
+    {name: `resources`, label: `Resources `, rule: []},
     {name: `settings`, label: `Settings `, rule: []},
   ],
   Dashboard: [

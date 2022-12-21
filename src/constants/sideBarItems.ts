@@ -32,7 +32,7 @@ export const SIDEBAR_ITEMS = ({
     url: DASHBOARD,
     isExpandable: false,
     id: 1,
-    roles: Navigation?.dashboard,
+    roles: true,
   },
   {
     icon: 'view-o',
