@@ -36,7 +36,7 @@ const RolePermissionBox = ({
     handleDefaultKeys(title, list)
   }
   const onCheckAllChange = (e) => {
-    let activeData = data.map((d) => d.name)
+    let activeData = e.target.checked ? data.map((d) => d.name) : []
     handleDefaultKeys(title, activeData)
     dispatch({
       type: SELECT_ALL_CHECKBOX,
