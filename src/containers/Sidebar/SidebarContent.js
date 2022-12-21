@@ -29,7 +29,7 @@ function SidebarContent(props) {
         Navigation = {},
         Reports = {},
         Resources: NavigationResources = {},
-      },
+      } = {},
     } = {},
   } = useSelector(selectAuthUser)
 
