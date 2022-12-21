@@ -11,7 +11,7 @@ import {SET_COLLAPSE_OPEN} from '../constants/RolePermission'
 
 const initialState = {
   checkAll: {},
-  indeterminate: {},
+  indeterminate: {Navigation: true},
   checkedList: {
     Navigation: [
       'attendance',
@@ -38,7 +38,12 @@ const reducer = (state, action) => {
       return initialState
 
     case DESELECT_ALL:
-      return {...initialState, checkedList: []}
+      return {
+        ...initialState,
+        checkedList: [],
+        defauleCollapseOpen: ['Navigation', 'Dashboard'],
+        indeterminate: {},
+      }
 
     case CHANGE_SINGLE_CHECKBOX:
       return {
@@ -107,12 +112,6 @@ const reducer = (state, action) => {
         ...state,
         defauleCollapseOpen: action.payload,
       }
-
-    // case RESET_COLLAPSE_KEY:
-    //   return {
-    //     ...state,
-
-    //   }
 
     default:
       return state
