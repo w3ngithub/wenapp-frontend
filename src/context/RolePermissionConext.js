@@ -7,6 +7,7 @@ import {
   SET_EDIT_DATA,
 } from 'constants/RolePermission'
 import React, {useReducer} from 'react'
+import {SET_COLLAPSE_OPEN} from '../constants/RolePermission'
 
 const initialState = {
   checkAll: {},
@@ -20,6 +21,15 @@ const initialState = {
       'blog',
     ],
   },
+  defauleCollapseOpen: [
+    'Navigation',
+    'Dashboard',
+    'Attendance',
+    'Leave Management',
+    'Blog',
+    'Notice Board',
+    'Resources',
+  ],
 }
 
 const reducer = (state, action) => {
@@ -84,14 +94,25 @@ const reducer = (state, action) => {
         },
       }
 
-    case SET_EDIT_DATA: {
+    case SET_EDIT_DATA:
       return {
         ...state,
         checkedList: action.payload.checkedList,
         checkAll: action.payload.checkAll,
         indeterminate: action.payload.indeterminate,
       }
-    }
+
+    case SET_COLLAPSE_OPEN:
+      return {
+        ...state,
+        defauleCollapseOpen: action.payload,
+      }
+
+    // case RESET_COLLAPSE_KEY:
+    //   return {
+    //     ...state,
+
+    //   }
 
     default:
       return state
