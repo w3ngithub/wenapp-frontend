@@ -26,8 +26,6 @@ import {notification} from 'helpers/notification'
 import {getAllUsers, getUserPositionTypes} from 'services/users/userDetails'
 import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {PROJECTS_ADD_NEW_NO_ACCESS} from 'constants/RoleAccess'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
@@ -74,7 +72,10 @@ function ProjectsPage() {
   const navigate = useNavigate()
 
   const {
-    role: {key,permission:{Projects}},
+    role: {
+      key,
+      permission: {Projects},
+    },
   } = useSelector(selectAuthUser)
 
   const {data: projectTypesData} = useQuery(['projectTypes'], getProjectTypes)
@@ -386,7 +387,7 @@ function ProjectsPage() {
                   Add New Project
                 </Button>
               </div>
-              </AccessWrapper>      
+            </AccessWrapper>
           </div>
           <Form layout="inline" className="gx-d-flex gx-flex-row" form={form}>
             <FormItem className="direct-form-search">

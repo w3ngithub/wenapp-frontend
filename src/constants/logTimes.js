@@ -3,11 +3,6 @@ import {Divider, Popconfirm} from 'antd'
 import {getIsAdmin, roundedToFixed} from 'helpers/utils'
 import CustomIcon from 'components/Elements/Icons'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import RoleAccess, {
-  LOG_TIME_ADD_NO_ACCESS,
-  LOG_TIME_DELETE_NO_ACCESS,
-  LOG_TIME_OLD_EDIT,
-} from './RoleAccess'
 import moment from 'moment'
 
 const LOGTIMES_COLUMNS = (
