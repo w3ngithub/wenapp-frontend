@@ -94,7 +94,7 @@ export const switchedUser = () => {
   }
 }
 export const getUserProfile = (userData) => {
-  const data = JSON.parse(userData?.user?.role?.permission || '{}')
+  const data = JSON.parse(userData?.user?.role?.permission || '[{}]')
   return {
     type: UPDATE_USER_PROFILE,
     payload: {
