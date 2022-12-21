@@ -7,7 +7,6 @@ import {RolePermissionContext} from 'context/RolePermissionConext'
 
 const CommonRolePermission = ({allAccess, isEditMode}) => {
   const {state, dispatch} = useContext(RolePermissionContext)
-  console.log('state', state)
   const [form] = Form.useForm()
   let titleName = Object.keys(permissionRole)
   const {innerWidth} = useWindowsSize()
@@ -40,7 +39,6 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
       .filter((d) => state?.checkedList?.Navigation.includes(d.name))
       .map((d) => d.label)
 
-    console.log(activeKeys)
     let dataaaa = [...activeKeys, 'Navigation', 'Dashboard']
     setActiveKey(dataaaa)
   }

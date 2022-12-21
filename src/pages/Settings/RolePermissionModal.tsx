@@ -143,13 +143,14 @@ const RolePermissionModal = ({
 
     let permission = formattingFunc(finalObj)
 
-    let payloadDatas: any = {
-      key: form.getFieldValue('name').toLowerCase().replaceAll(' ', ''),
-      value: form.getFieldValue('name'),
-      permission: JSON.stringify([permission]),
-    }
-
-    form.validateFields().then(() => onSubmit(payloadDatas))
+    form.validateFields().then(() => {
+      let payloadDatas: any = {
+        key: form.getFieldValue('name').toLowerCase().replaceAll(' ', ''),
+        value: form.getFieldValue('name'),
+        permission: JSON.stringify([permission]),
+      }
+      onSubmit(payloadDatas)
+    })
   }
 
   return (
