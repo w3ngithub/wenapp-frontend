@@ -11,13 +11,11 @@ import {getBlog} from 'services/blog'
 import BlogsBreadCumb from './BlogsBreadCumb'
 import CircularProgress from 'components/Elements/CircularProgress'
 import moment from 'moment'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
-import { getIsAdmin } from 'helpers/utils'
-import { selectAuthUser } from 'appRedux/reducers/Auth'
-
+import {getIsAdmin} from 'helpers/utils'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function Detail() {
   // init hooks
@@ -28,7 +26,7 @@ function Detail() {
 
   const [blogId] = blog.split('-')
 
-  const userData= useSelector(selectAuthUser)
+  const userData = useSelector(selectAuthUser)
 
   const {data, isLoading} = useQuery(['singleBlog', blogId], () =>
     getBlog(blogId)
