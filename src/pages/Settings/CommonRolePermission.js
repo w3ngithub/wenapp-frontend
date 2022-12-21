@@ -10,31 +10,32 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
   const [form] = Form.useForm()
   let titleName = Object.keys(permissionRole)
   const {innerWidth} = useWindowsSize()
-  const [activeKey, setActiveKey] = useState(state?.defauleCollapseOpen)
+  // const [activeKey, setActiveKey] = useState(state?.defauleCollapseOpen)
 
   const handleDefaultKeys = (title, checkedList) => {
     if (title === 'Navigation') {
       const activeKeys = permissionRole['Navigation']
-        .filter((d) => checkedList.includes(d.name))
+        .filter((d) => checkedList?.includes(d.name))
         .map((d) => d.label)
       let dataaaa = [...activeKeys, 'Navigation', 'Dashboard']
-      // dispatch({type: SET_COLLAPSE_OPEN, payload: dataaaa})
-      setActiveKey(dataaaa)
+      dispatch({type: SET_COLLAPSE_OPEN, payload: dataaaa})
+      // setActiveKey(dataaaa)
     }
   }
 
   const handleOpenCollapse = (key) => {
-    setActiveKey(key)
+    dispatch({type: SET_COLLAPSE_OPEN, payload: key})
+    // setActiveKey(key)
   }
 
   const handleEditCollapse = () => {
     const activeKeys = permissionRole['Navigation']
-      .filter((d) => state?.checkedList?.Navigation.includes(d.name))
+      .filter((d) => state?.checkedList?.Navigation?.includes(d.name))
       .map((d) => d.label)
 
     let dataaaa = [...activeKeys, 'Navigation', 'Dashboard']
-    // dispatch({type: SET_COLLAPSE_OPEN, payload: dataaaa})
-    setActiveKey(dataaaa)
+    dispatch({type: SET_COLLAPSE_OPEN, payload: dataaaa})
+    // setActiveKey(dataaaa)
   }
 
   useEffect(() => {
@@ -54,7 +55,7 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
-                  activeKey={activeKey}
+                  // activeKey={activeKey}
                   handleDefaultKeys={handleDefaultKeys}
                   handleOpenCollapse={handleOpenCollapse}
                 />
@@ -65,7 +66,7 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
-                  activeKey={activeKey}
+                  // activeKey={activeKey}
                   handleDefaultKeys={handleDefaultKeys}
                   handleOpenCollapse={handleOpenCollapse}
                 />
@@ -76,7 +77,7 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
-                  activeKey={activeKey}
+                  // activeKey={activeKey}
                   handleDefaultKeys={handleDefaultKeys}
                   handleOpenCollapse={handleOpenCollapse}
                 />
@@ -94,7 +95,7 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
-                  activeKey={activeKey}
+                  // activeKey={activeKey}
                   handleDefaultKeys={handleDefaultKeys}
                   handleOpenCollapse={handleOpenCollapse}
                 />
@@ -109,7 +110,7 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
-                  activeKey={activeKey}
+                  // activeKey={activeKey}
                   handleDefaultKeys={handleDefaultKeys}
                   handleOpenCollapse={handleOpenCollapse}
                 />
@@ -131,7 +132,7 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
                   data={permissionRole[title]}
                   title={title}
                   allAccess={allAccess}
-                  activeKey={activeKey}
+                  // activeKey={activeKey}
                   handleDefaultKeys={handleDefaultKeys}
                   handleOpenCollapse={handleOpenCollapse}
                 />

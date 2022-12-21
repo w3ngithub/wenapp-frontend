@@ -69,8 +69,8 @@ const RolePermissionBox = ({
 
   return (
     <Collapse
-      // activeKey={state?.defauleCollapseOpen}
-      activeKey={activeKey}
+      activeKey={state?.defauleCollapseOpen}
+      // activeKey={activeKey}
       onChange={(key) => handleOpenCollapse(key)}
       style={{marginBottom: '20px'}}
     >
