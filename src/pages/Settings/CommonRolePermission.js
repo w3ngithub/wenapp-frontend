@@ -1,9 +1,8 @@
-import React, {useState, useContext} from 'react'
+import React, {useState} from 'react'
 import {Form, Col, Row} from 'antd'
 import RolePermissionBox from './RolePermissionBox'
 import {permissionRole} from 'constants/RolePermission'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {RolePermissionContext} from 'context/RolePermissionConext'
 
 const CommonRolePermission = ({allAccess}) => {
   const [form] = Form.useForm()
@@ -16,22 +15,20 @@ const CommonRolePermission = ({allAccess}) => {
     'Leave Management',
     'Blog',
     'Notice Board',
+    'Resources',
   ])
 
-  const handleDefaultKeys = (title, data) => {
+  const handleDefaultKeys = (title, checkedList) => {
     if (title === 'Navigation') {
-      console.log(title, data)
       const activeKeys = permissionRole['Navigation']
-        .filter((d) => data.includes(d.name))
+        .filter((d) => checkedList.includes(d.name))
         .map((d) => d.label)
       let dataaaa = [...activeKeys, 'Navigation', 'Dashboard']
-      console.log('activekeys', activeKeys)
       setActiveKey(dataaaa)
     }
   }
 
   const handleOpenCollapse = (key) => {
-    console.log('handleKeys0,', key)
     setActiveKey(key)
   }
 

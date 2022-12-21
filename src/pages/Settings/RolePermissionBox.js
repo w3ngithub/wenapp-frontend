@@ -20,18 +20,8 @@ const RolePermissionBox = ({
   const arrayDatas = data?.map((d) => d.name)
   let emptyArray = []
   const {state, dispatch} = useContext(RolePermissionContext)
-  // const [open, setOpen] = useState([
-  //   'Navigation',
-  //   'Blog',
-  //   'Attendance',
-  //   'Noticeboard',
-  //   'Resources',
-  // ])
 
-  // console.log(state)
-  // console.log('data', data)
-
-  const onChange = (list) => {
+  const onChange = (list, item) => {
     handleDefaultKeys(title, list)
     dispatch({
       type: CHANGE_SINGLE_CHECKBOX,
@@ -78,7 +68,11 @@ const RolePermissionBox = ({
   }, [allAccess])
 
   return (
-    <Collapse activeKey={activeKey} onChange={(key) => handleOpenCollapse(key)}>
+    <Collapse
+      activeKey={activeKey}
+      onChange={(key) => handleOpenCollapse(key)}
+      style={{marginBottom: '20px'}}
+    >
       <Panel header={`${title} permisson`} key={`${title}`}>
         <div className="role-box">
           <div className="role-box-header">

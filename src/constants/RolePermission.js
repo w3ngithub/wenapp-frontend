@@ -1,7 +1,6 @@
 export const permissionRole = {
   Navigation: [
     {name: 'todaysOverview', label: `Today's Overview`, rule: []},
-    {name: `noticeBoard`, label: `Notice Board`, rule: []},
     {name: 'coWorkers', label: `Co-Workers`, rule: []},
     {name: `projects`, label: `Projects`, rule: []},
     {name: `attendance`, label: `Attendance`, rule: []},
