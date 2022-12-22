@@ -13,7 +13,8 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
   const {innerWidth} = useWindowsSize()
 
   const handleDefaultKeys = (title, checkedList) => {
-    if (title === 'Navigation') {
+    if (title === 'Navigation' && !state?.checkAll?.Navigation) {
+      console.log('checkedList', checkedList)
       const activeKeys = permissionRole['Navigation']
         .filter((d) => checkedList?.includes(d.name))
         .map((d) => d.label)
@@ -54,14 +55,15 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
       .filter((d) => state?.checkedList?.Navigation?.includes(d.name))
       .map((d) => d.label)
     let activeKeyArray = [...activeKeys, 'Navigation', 'Dashboard']
-    dispatch({type: SET_COLLAPSE_OPEN, payload: activeKeyArray})
+    !state?.checkAll?.Navigation &&
+      dispatch({type: SET_COLLAPSE_OPEN, payload: activeKeyArray})
   }
 
   useEffect(() => {
     if (isEditMode) {
       handleEditCollapse()
     }
-  }, [state?.checkedList])
+  }, [state?.checkedList?.Navigation])
 
   return (
     <Form form={form}>
