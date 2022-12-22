@@ -54,15 +54,14 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
       .filter((d) => state?.checkedList?.Navigation?.includes(d.name))
       .map((d) => d.label)
     let activeKeyArray = [...activeKeys, 'Navigation', 'Dashboard']
-    !state?.checkAll?.Navigation &&
-      dispatch({type: SET_COLLAPSE_OPEN, payload: activeKeyArray})
+    dispatch({type: SET_COLLAPSE_OPEN, payload: activeKeyArray})
   }
 
   useEffect(() => {
     if (isEditMode) {
       handleEditCollapse()
     }
-  }, [state?.checkedList?.Navigation])
+  }, [state?.checkAll?.Navigation])
 
   return (
     <Form form={form}>
