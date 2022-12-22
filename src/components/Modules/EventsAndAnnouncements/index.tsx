@@ -202,7 +202,7 @@ function EventsAndAnnouncements({
               activity?.tasks?.map((task: any, index: number) => {
                 return (
                   <Collapse
-                    expandIconPosition="right"
+                    expandIconPosition="end"
                     bordered={false}
                     className="gx-dashboard-collapse"
                   >

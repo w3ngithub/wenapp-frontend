@@ -26,13 +26,9 @@ function Detail() {
 
   const [blogId] = blog.split('-')
 
-<<<<<<< HEAD
-  const userData = useSelector(selectAuthUser)
-=======
   const {
     role: {permission: {Blog} = {}},
   } = useSelector(selectAuthUser)
->>>>>>> 20330d6dfc59b7a248b163b52205d106ed9bd17f
 
   const {data, isLoading} = useQuery(['singleBlog', blogId], () =>
     getBlog(blogId)
