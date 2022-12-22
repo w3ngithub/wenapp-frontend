@@ -70,7 +70,7 @@ const formattedAttendances = (attendances) => {
   })
 }
 
-function UserAttendance() {
+function UserAttendance({userRole}) {
   const queryClient = useQueryClient()
 
   //init hooks
@@ -365,6 +365,7 @@ function UserAttendance() {
               />
             </FormItem>
           </Form>
+          {userRole?.createMyAttendance &&
           <div className="form-buttons">
             <Button
               className="gx-btn-form gx-btn-primary gx-text-white "
@@ -386,7 +387,7 @@ function UserAttendance() {
             >
               {punchIn ? 'Punch In' : 'Punch Out'}
             </Button>
-          </div>
+          </div>}
         </div>
       </div>
       <Table

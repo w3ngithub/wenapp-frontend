@@ -33,6 +33,7 @@ function AddBlog() {
   const {themeType} = useSelector((state) => state.settings)
   const darkMode = themeType === THEME_TYPE_DARK
 
+  const [form] = Form.useForm()
   // init hooks
   const navigate = useNavigate()
   const {blogId} = useParams()
@@ -249,6 +250,7 @@ function AddBlog() {
                 data?.data?.data?.data?.[0].blogCategories.map((x) => x._id) ||
                 undefined,
             }}
+            form={form}
           >
             <Form.Item
               name="title"
@@ -259,6 +261,10 @@ function AddBlog() {
                   validator: async (rule, value) => {
                     try {
                       if (!value) {
+                        form.scrollToField('title', {
+                          behavior: 'smooth',
+                          block: 'end',
+                        })
                         throw new Error(`Title is required.`)
                       }
                       if (value?.trim() === '') {

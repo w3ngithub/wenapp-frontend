@@ -68,7 +68,7 @@ const ATTENDANCE_COLUMNS = (
             sortedInfo.columnKey === 'punchOutTime' && sortedInfo.order,
         },
         {
-          title: 'Office hour',
+          title: 'Office Hour',
           dataIndex: 'officehour',
           key: 'officehour',
           sorter: true,
@@ -128,7 +128,7 @@ const ATTENDANCE_COLUMNS = (
             sortedInfo.columnKey === 'punchOutTime' && sortedInfo.order,
         },
         {
-          title: 'Office hour',
+          title: 'Office Hour',
           dataIndex: 'officehour',
           key: 'officehour',
           sorter: true,
@@ -162,9 +162,9 @@ const ATTENDANCE_COLUMNS = (
 const LATE_ATTENDANCE_COLUMNS = (
   sortedInfo: any,
   hanldeLeaveCutModal: Function,
-  role: string
+  role: any
 ): notice[] =>
-  ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS.includes(role)
+  role?.cutLateArrivalLeave === false
     ? [
         {
           title: 'Co-worker',

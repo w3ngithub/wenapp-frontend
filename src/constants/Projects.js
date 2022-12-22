@@ -25,7 +25,10 @@ const PROJECT_COLUMNS = (
     render: (text, record) => {
       return (
         <div>
-          <p className="project-name" onClick={() => openModal(record, true)}>
+          <p
+            className="project-name"
+            onClick={() => role?.viewProjects && openModal(record, true)}
+          >
             {record.name}
           </p>
         </div>
@@ -94,11 +97,16 @@ const PROJECT_COLUMNS = (
           >
             Log Time
           </span>
-          <Divider type="vertical" />
-          <span className="gx-link" onClick={() => openModal(record, true)}>
-            <CustomIcon name="view" />
-          </span>
-          {!PROJECTS_TABLE_ACTION_NO_ACCESS.includes(role) && !getIsAdmin() && (
+
+          {role?.viewProjects && (
+            <>
+              <Divider type="vertical" />
+              <span className="gx-link" onClick={() => openModal(record, true)}>
+                <CustomIcon name="view" />
+              </span>
+            </>
+          )}
+          {role?.editProjects && !getIsAdmin() && (
             <>
               <Divider type="vertical" />
               <span
@@ -107,21 +115,21 @@ const PROJECT_COLUMNS = (
               >
                 <CustomIcon name="edit" />
               </span>
-              {!PROJECTS_TABLE_ACTION_DELETE_NO_ACCESS.includes(role) && (
-                <>
-                  <Divider type="vertical" />
-                  <Popconfirm
-                    title="Are you sure to delete this project?"
-                    onConfirm={() => confirmDelete(record)}
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <span className="gx-link gx-text-danger">
-                      <CustomIcon name="delete" />
-                    </span>
-                  </Popconfirm>
-                </>
-              )}
+            </>
+          )}
+          {role?.deleteProjects && (
+            <>
+              <Divider type="vertical" />
+              <Popconfirm
+                title="Are you sure to delete this project?"
+                onConfirm={() => confirmDelete(record)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <span className="gx-link gx-text-danger">
+                  <CustomIcon name="delete" />
+                </span>
+              </Popconfirm>
             </>
           )}
         </div>

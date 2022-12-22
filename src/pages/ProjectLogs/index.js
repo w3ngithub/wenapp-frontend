@@ -27,8 +27,6 @@ import {
 } from 'services/timeLogs'
 import LogsBreadCumb from './LogsBreadCumb'
 import TimeSummary from './TimeSummary'
-import AccessWrapper from './../../components/Modules/AccessWrapper/index'
-import {LOG_TIME_ADD_NO_ACCESS} from 'constants/RoleAccess'
 import ProjectModal from 'components/Modules/ProjectModal'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
@@ -73,8 +71,10 @@ function ProjectLogs() {
   const [projectId] = slug.split('-')
   const {
     name,
-    role: {key},
+    role: {permission},
   } = useSelector(selectAuthUser)
+
+  const logPermissions = permission?.['Log Time']
 
   const {data: projectDetail} = useQuery(['singleProject', projectId], () =>
     getProject(projectId)
@@ -407,16 +407,16 @@ function ProjectLogs() {
                 </Button>
               </FormItem>
             </Form>
-            <AccessWrapper noAccessRoles={[]}>
-              <div>
-                <Button
-                  className="gx-btn gx-btn-primary gx-text-white "
-                  onClick={handleOpenLogHoursModal}
-                  style={{marginBottom: '16px'}}
-                  disabled={selectedLogObject?.length === 0}
-                >
-                  Calculate Hours
-                </Button>
+            <div>
+              <Button
+                className="gx-btn gx-btn-primary gx-text-white "
+                onClick={handleOpenLogHoursModal}
+                style={{marginBottom: '16px'}}
+                disabled={selectedLogObject?.length === 0}
+              >
+                Calculate Hours
+              </Button>
+              {permission?.Projects?.viewProjects && (
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
                   onClick={handleOpenViewModal}
@@ -424,6 +424,8 @@ function ProjectLogs() {
                 >
                   View Project
                 </Button>
+              )}
+              {logPermissions?.createLogTime && (
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white "
                   onClick={handleOpenModal}
@@ -432,8 +434,8 @@ function ProjectLogs() {
                 >
                   Add New TimeLog
                 </Button>
-              </div>
-            </AccessWrapper>
+              )}
+            </div>
           </div>
         </div>
         <Table
@@ -445,7 +447,7 @@ function ProjectLogs() {
             confirmDelete,
             false,
             name,
-            key
+            permission
           )}
           dataSource={formattedLogs(logTimeDetails?.data?.data?.data)}
           onChange={handleTableChange}

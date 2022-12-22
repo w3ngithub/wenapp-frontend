@@ -130,6 +130,21 @@ const searchAttendacentOfUser = async ({
   }
 }
 
+const UserTotalofficehour = async ({
+  userId = '',
+  fromDate = '',
+  toDate = '',
+}) => {
+  try {
+    let response = await API.get(
+      `${Apis.Attendances}/totalofficehour?user=${userId}&fromDate=${fromDate}&toDate=${toDate}`
+    )
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err?.response)
+  }
+}
+
 const searchLateAttendacentOfUser = async ({
   userId = '',
   fromDate = '',
@@ -195,6 +210,7 @@ const getIpAddres = async () => {
 
 export {
   getAllAttendances,
+  UserTotalofficehour,
   getAttendance,
   deleteAttendance,
   addAttendance,

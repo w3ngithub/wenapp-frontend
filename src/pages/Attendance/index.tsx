@@ -19,7 +19,10 @@ function Attendace() {
   const [tabKey, setTabKey] = useState('1')
 
   const {
-    role: {key},
+    role: {
+      key,
+      permission: {Attendance: NavigationAttendance},
+    },
   } = useSelector(selectAuthUser)
 
   useEffect(() => {
@@ -35,30 +38,32 @@ function Attendace() {
           setTabKey(tab)
         }}
       >
-        <Tabs.TabPane key="1" tab="My Attendance">
-          <UserAttendance />
-        </Tabs.TabPane>
-        <Tabs.TabPane key="2" tab="My Attendance Calendar">
-          <AttendanceCalendar />
-        </Tabs.TabPane>
-        {!ATTENDANCE_ALL_TAB_NO_ACCESS.includes(key) && (
-          <>
-            <Tabs.TabPane key="3" tab="Co-workers Attendance">
-              <AdminAttendance userRole={key} />
-            </Tabs.TabPane>
-            {!ATTENDANCE_LATE_ARRIVAL_ADMIN_CALENDAR_NO_ACCESS.includes(
-              key
-            ) && (
-              <>
-                <Tabs.TabPane key="4" tab="Co-workers Late Attendance">
-                  <LateAttendance userRole={key} />
-                </Tabs.TabPane>
-                <Tabs.TabPane key="5" tab="Co-workers Attendance Calendar">
-                  <AdminAttendanceCalendar />
-                </Tabs.TabPane>
-              </>
-            )}
-          </>
+        {NavigationAttendance?.viewMyAttendance && (
+          <Tabs.TabPane key="1" tab="My Attendance">
+            <UserAttendance userRole={NavigationAttendance} />
+          </Tabs.TabPane>
+        )}
+        {NavigationAttendance?.viewMyAttendanceCalendar && (
+          <Tabs.TabPane key="2" tab="My Attendance Calendar">
+            <AttendanceCalendar />
+          </Tabs.TabPane>
+        )}
+
+        {NavigationAttendance?.viewCoworkersAttendance && (
+          <Tabs.TabPane key="3" tab="Co-workers Attendance">
+            <AdminAttendance userRole={NavigationAttendance} />
+          </Tabs.TabPane>
+        )}
+
+        {NavigationAttendance?.viewCoworkersLateAttendance && (
+          <Tabs.TabPane key="4" tab="Co-workers Late Attendance">
+            <LateAttendance userRole={NavigationAttendance} />
+          </Tabs.TabPane>
+        )}
+        {NavigationAttendance?.viewCoworkersAttendanceCalendar && (
+          <Tabs.TabPane key="5" tab="Co-workers Attendance Calendar">
+            <AdminAttendanceCalendar />
+          </Tabs.TabPane>
         )}
       </Tabs>
     </Card>
