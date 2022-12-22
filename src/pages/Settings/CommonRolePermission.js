@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, {useContext, useEffect} from 'react'
 import {Form, Col, Row} from 'antd'
 import RolePermissionBox from './RolePermissionBox'
 import {permissionRole, SET_COLLAPSE_OPEN} from 'constants/RolePermission'
@@ -22,15 +22,29 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
   }
 
   const handleOpenCollapse = (key) => {
-    dispatch({type: SET_COLLAPSE_OPEN, payload: key})
+    let activeKeyData = []
+    const activeKeys = permissionRole['Navigation']
+      .filter((d) => state?.checkedList?.Navigation?.includes(d.name))
+      .map((d) => d.label)
+    const selectedActivekeys = key.filter((d) => activeKeys.includes(d))
+
+    if (!key.includes('Dashboard') && !key.includes('Navigation')) {
+      activeKeyData = [...selectedActivekeys]
+    } else if (!key.includes('Navigation') && key.includes('Dashboard')) {
+      activeKeyData = [...selectedActivekeys, 'Dashboard']
+    } else if (key.includes('Navigation') && !key.includes('Dashboard')) {
+      activeKeyData = [...selectedActivekeys, 'Navigation']
+    } else activeKeyData = [...selectedActivekeys, 'Navigation', 'Dashboard']
+
+    dispatch({type: SET_COLLAPSE_OPEN, payload: activeKeyData})
   }
 
   const handleEditCollapse = () => {
     const activeKeys = permissionRole['Navigation']
       .filter((d) => state?.checkedList?.Navigation?.includes(d.name))
       .map((d) => d.label)
-    let dataaaa = [...activeKeys, 'Navigation', 'Dashboard']
-    dispatch({type: SET_COLLAPSE_OPEN, payload: dataaaa})
+    let activeKeyArray = [...activeKeys, 'Navigation', 'Dashboard']
+    dispatch({type: SET_COLLAPSE_OPEN, payload: activeKeyArray})
   }
 
   useEffect(() => {
