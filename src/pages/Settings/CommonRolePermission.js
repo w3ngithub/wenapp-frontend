@@ -13,7 +13,7 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
   const {innerWidth} = useWindowsSize()
 
   const handleDefaultKeys = (title, checkedList) => {
-    if (title === 'Navigation' && !state?.checkAll?.Navigation) {
+    if (title === 'Navigation') {
       const activeKeys = permissionRole['Navigation']
         .filter((d) => checkedList?.includes(d.name))
         .map((d) => d.label)
