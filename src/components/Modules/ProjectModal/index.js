@@ -56,6 +56,12 @@ function ProjectModal({
     form.resetFields()
     onClose()
   }
+  const currentDesigners = designers?.data?.data?.data?.map((item) => item?._id)
+  const currentDevelopers = developers?.data?.data?.data?.map(
+    (item) => item?._id
+  )
+  const currentQas = qas?.data?.data?.data?.map((item) => item?._id)
+  const currentDevOps = devops?.data?.data?.data?.map((item) => item?._id)
 
   const changedRoleChecker = (type, key) => {
     const newList = type?.map((item) => {
@@ -66,7 +72,6 @@ function ProjectModal({
     })
     return newList
   }
-
   const handleSubmit = (type) => {
     form.validateFields().then((values) => {
       const updatedDesigners = changedRoleChecker(
@@ -153,7 +158,8 @@ function ProjectModal({
           developers:
             initialValues.developers?.length > 0
               ? initialValues.developers?.map((developer) =>
-                  developer?.positionType?.name === 'Developer'
+                  developer?.positionType?.name === 'Developer' &&
+                  currentDevelopers?.includes(developer?._id)
                     ? developer._id
                     : developer.name
                 )
@@ -161,7 +167,8 @@ function ProjectModal({
           designers:
             initialValues.designers?.length > 0
               ? initialValues.designers?.map((designer) =>
-                  designer?.positionType?.name === 'Designer'
+                  designer?.positionType?.name === 'Designer' &&
+                  currentDesigners?.includes(designer?._id)
                     ? designer._id
                     : designer.name
                 )
@@ -169,7 +176,8 @@ function ProjectModal({
           devOps:
             initialValues.devOps?.length > 0
               ? initialValues.devOps?.map((devop) =>
-                  devop?.positionType?.name === 'devOps'
+                  devop?.positionType?.name === 'devOps' &&
+                  currentDevOps?.includes(devop?._id)
                     ? devop._id
                     : devop.name
                 )
@@ -177,7 +185,9 @@ function ProjectModal({
           qa:
             initialValues.qa?.length > 0
               ? initialValues.qa?.map((q) =>
-                  q?.positionType?.name === 'QA' ? q._id : q.name
+                  q?.positionType?.name === 'QA' && currentQas?.includes(q?._id)
+                    ? q._id
+                    : q.name
                 )
               : undefined,
           stagingUrls:
@@ -353,7 +363,7 @@ function ProjectModal({
                         if (!value) {
                           throw new Error('Name is required.')
                         }
-                        const regex = /^[A-Za-z ]+$/
+                        const regex = /^[A-Za-z-()]+$/
                         const isValid = regex.test(value)
                         if (value.trim().length === 0) {
                           throw new Error('Please enter a valid Name.')
