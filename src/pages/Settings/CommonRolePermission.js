@@ -17,8 +17,8 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
       const activeKeys = permissionRole['Navigation']
         .filter((d) => checkedList?.includes(d.name))
         .map((d) => d.label)
-      let dataaaa = [...activeKeys, 'Navigation', 'Dashboard']
-      dispatch({type: SET_COLLAPSE_OPEN, payload: dataaaa})
+      let activeKeyArray = [...activeKeys, 'Navigation', 'Dashboard']
+      dispatch({type: SET_COLLAPSE_OPEN, payload: activeKeyArray})
     }
   }
 
