@@ -4,6 +4,7 @@ import RolePermissionBox from './RolePermissionBox'
 import {permissionRole, SET_COLLAPSE_OPEN} from 'constants/RolePermission'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {RolePermissionContext} from 'context/RolePermissionConext'
+import {notification} from 'helpers/notification'
 
 const CommonRolePermission = ({allAccess, isEditMode}) => {
   const {state, dispatch} = useContext(RolePermissionContext)
@@ -28,6 +29,15 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
       .map((d) => d.label)
     const selectedActivekeys = key.filter((d) => activeKeys.includes(d))
 
+    let keyTitle = key.filter(
+      (d) => ![...activeKeys, 'Dashboard', 'Navigation'].includes(d)
+    )
+    if (keyTitle?.length > 0) {
+      return notification({
+        type: 'info',
+        message: `Select ${keyTitle} Checkbox In Navigation Permission`,
+      })
+    }
     if (!key.includes('Dashboard') && !key.includes('Navigation')) {
       activeKeyData = [...selectedActivekeys]
     } else if (!key.includes('Navigation') && key.includes('Dashboard')) {
