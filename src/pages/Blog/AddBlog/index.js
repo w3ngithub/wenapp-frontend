@@ -9,7 +9,7 @@ import {CameraOutlined, RollbackOutlined} from '@ant-design/icons'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import {useMutation, useQuery} from '@tanstack/react-query'
 import {addBlog, getBlog, getBlogCatogories, updateBlog} from 'services/blog'
-import {filterOptions, handleResponse} from 'helpers/utils'
+import {filterOptions, handleResponse, scrollForm} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {Link, useNavigate, useParams} from 'react-router-dom'
 import {BLOG} from 'helpers/routePath'
@@ -33,6 +33,7 @@ function AddBlog() {
   const {themeType} = useSelector((state) => state.settings)
   const darkMode = themeType === THEME_TYPE_DARK
 
+  const [form] = Form.useForm()
   // init hooks
   const navigate = useNavigate()
   const {blogId} = useParams()
@@ -249,6 +250,7 @@ function AddBlog() {
                 data?.data?.data?.data?.[0].blogCategories.map((x) => x._id) ||
                 undefined,
             }}
+            form={form}
           >
             <Form.Item
               name="title"
@@ -265,6 +267,7 @@ function AddBlog() {
                         throw new Error(`Please enter a valid title.`)
                       }
                     } catch (err) {
+                      scrollForm(form, 'title')
                       throw new Error(err.message)
                     }
                   },

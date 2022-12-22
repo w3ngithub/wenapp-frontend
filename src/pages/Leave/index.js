@@ -18,15 +18,12 @@ import MyHistory from './MyHistory'
 import {getLeaveTypes} from 'services/settings/leaveType'
 import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
 import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingAndAppliedCards'
-import RoleAccess, {
-  LEAVE_TABS_NO_ACCESS,
-  EmployeeStatus,
-  LEAVE_ADMIN_TAB_NO_ACCESS,
-} from 'constants/RoleAccess'
+import {EmployeeStatus} from 'constants/RoleAccess'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
+import AccessWrapper from 'components/Modules/AccessWrapper'
 
 const TabPane = Tabs.TabPane
 
@@ -50,6 +47,12 @@ function Leave() {
   )
 
   const user = useSelector(selectAuthUser)
+
+  const {
+    role: {key, permission},
+  } = useSelector(selectAuthUser)
+
+  const leavePermissions = permission?.['Leave Management']
 
   const handleCloseCancelLeaveModal = () => {
     setOpenCancelLeaveModal(false)
@@ -156,32 +159,47 @@ function Leave() {
 
       <Card title="Leave Management System">
         <Row>
-          <Col
-            xl={IsIntern ? 24 : 12}
-            lg={IsIntern ? 24 : 12}
-            md={24}
-            sm={24}
-            xs={24}
-          >
-            <Card
-              title="Quarterly Leave"
-              style={{background: 'rgb(232 232 232 / 26%)'}}
+          <AccessWrapper role={leavePermissions?.showQuarterlyLeaveDetails}>
+            <Col
+              xl={
+                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 12
+              }
+              lg={
+                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 12
+              }
+              md={24}
+              sm={24}
+              xs={24}
             >
-              <QuarterlyLeavesRemainingAndAppliedCards
-                firstType="Days Remaining"
-                secondType="Days Approved"
-                firstNumber={
-                  quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves || 0
-                }
-                secondNumber={
-                  quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0
-                }
-              />
-            </Card>
-          </Col>
+              <Card
+                title="Quarterly Leave"
+                style={{background: 'rgb(232 232 232 / 26%)'}}
+              >
+                <QuarterlyLeavesRemainingAndAppliedCards
+                  firstType="Days Remaining"
+                  secondType="Days Approved"
+                  firstNumber={
+                    quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves ||
+                    0
+                  }
+                  secondNumber={
+                    quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0
+                  }
+                />
+              </Card>
+            </Col>
+          </AccessWrapper>
 
-          {!IsIntern && (
-            <Col xl={12} lg={12} md={24} sm={24} xs={24}>
+          <AccessWrapper
+            role={!IsIntern && leavePermissions?.showAnnualLeaveDetails}
+          >
+            <Col
+              xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 12}
+              lg={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 12}
+              md={24}
+              sm={24}
+              xs={24}
+            >
               <Card
                 title="Annual Leave"
                 style={{background: 'rgb(232 232 232 / 26%)'}}
@@ -208,46 +226,49 @@ function Leave() {
                 />
               </Card>
             </Col>
-          )}
+          </AccessWrapper>
         </Row>
 
         <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
-          {loggedInUser?.role?.key !== RoleAccess.Finance && (
-            <>
-              <TabPane tab="Apply" key="1">
-                <LeavesApply user={loggedInUser?._id} />
-              </TabPane>
-              <TabPane tab="My History" key="2">
-                <MyHistory
-                  userId={loggedInUser?._id}
-                  handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
-                />
-              </TabPane>
-            </>
+          {leavePermissions?.applyLeave && (
+            <TabPane tab="Apply" key="1">
+              <LeavesApply
+                user={loggedInUser?._id}
+                permissions={leavePermissions}
+              />
+            </TabPane>
           )}
-          {!LEAVE_TABS_NO_ACCESS.includes(loggedInUser?.role?.key) && (
-            <>
-              {!LEAVE_ADMIN_TAB_NO_ACCESS.includes(loggedInUser?.role?.key) && (
-                <TabPane tab="Leaves" key="3">
-                  <Leaves
-                    selectedUser={location?.state?.user}
-                    status={location?.state?.leaveStatus}
-                    selectedDate={location?.state?.date}
-                    selectedRows={selectedRows}
-                    handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
-                    rowSelection={{
-                      onChange: handleRowSelect,
-                      selectedRowKeys: selectedRows,
-                    }}
-                    isExportDisabled={selectedRows.length === 0}
-                    userRole={loggedInUser?.role?.key}
-                  />
-                </TabPane>
-              )}
-              <TabPane tab="Leaves Calendar" key="4">
-                <LeavesCalendar />
-              </TabPane>
-            </>
+          {leavePermissions?.viewMyHistory && (
+            <TabPane tab="My History" key="2">
+              <MyHistory
+                userId={loggedInUser?._id}
+                permissions={leavePermissions}
+                handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
+              />
+            </TabPane>
+          )}
+          {leavePermissions?.viewLeaves && (
+            <TabPane tab="Leaves" key="3">
+              <Leaves
+                selectedUser={location?.state?.user}
+                status={location?.state?.leaveStatus}
+                selectedDate={location?.state?.date}
+                selectedRows={selectedRows}
+                handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
+                rowSelection={{
+                  onChange: handleRowSelect,
+                  selectedRowKeys: selectedRows,
+                }}
+                isExportDisabled={selectedRows.length === 0}
+                userRole={loggedInUser?.role?.key}
+                permissions={leavePermissions}
+              />
+            </TabPane>
+          )}
+          {leavePermissions?.viewLeavesCalendar && (
+            <TabPane tab="Leaves Calendar" key="4">
+              <LeavesCalendar />
+            </TabPane>
           )}
         </Tabs>
       </Card>

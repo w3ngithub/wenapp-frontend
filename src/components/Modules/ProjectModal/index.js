@@ -14,7 +14,7 @@ import {
   Spin,
 } from 'antd'
 import {emptyText} from 'constants/EmptySearchAntd'
-import {capitalizeInput, filterOptions} from 'helpers/utils'
+import {filterOptions, scrollForm} from 'helpers/utils'
 import moment from 'moment'
 import Maintenance from 'pages/Projects/Maintainance'
 import {useEffect, useState} from 'react'
@@ -56,6 +56,12 @@ function ProjectModal({
     form.resetFields()
     onClose()
   }
+  const currentDesigners = designers?.data?.data?.data?.map((item) => item?._id)
+  const currentDevelopers = developers?.data?.data?.data?.map(
+    (item) => item?._id
+  )
+  const currentQas = qas?.data?.data?.data?.map((item) => item?._id)
+  const currentDevOps = devops?.data?.data?.data?.map((item) => item?._id)
 
   const changedRoleChecker = (type, key) => {
     const newList = type?.map((item) => {
@@ -66,7 +72,6 @@ function ProjectModal({
     })
     return newList
   }
-
   const handleSubmit = (type) => {
     form.validateFields().then((values) => {
       const updatedDesigners = changedRoleChecker(
@@ -82,7 +87,7 @@ function ProjectModal({
           : values?.liveUrl?.join('')
       onSubmit({
         ...values,
-        name: values?.name[0].toUpperCase() + values?.name?.slice(1),
+        name: values?.name?.trim()?.[0].toUpperCase() + values?.name?.trim()?.slice(1),
         designers: updatedDesigners,
         qa: updatedQAs,
         developers: updatedDevelopers,
@@ -153,7 +158,8 @@ function ProjectModal({
           developers:
             initialValues.developers?.length > 0
               ? initialValues.developers?.map((developer) =>
-                  developer?.positionType?.name === 'Developer'
+                  developer?.positionType?.name === 'Developer' &&
+                  currentDevelopers?.includes(developer?._id)
                     ? developer._id
                     : developer.name
                 )
@@ -161,7 +167,8 @@ function ProjectModal({
           designers:
             initialValues.designers?.length > 0
               ? initialValues.designers?.map((designer) =>
-                  designer?.positionType?.name === 'Designer'
+                  designer?.positionType?.name === 'Designer' &&
+                  currentDesigners?.includes(designer?._id)
                     ? designer._id
                     : designer.name
                 )
@@ -169,7 +176,8 @@ function ProjectModal({
           devOps:
             initialValues.devOps?.length > 0
               ? initialValues.devOps?.map((devop) =>
-                  devop?.positionType?.name === 'devOps'
+                  devop?.positionType?.name === 'devOps' &&
+                  currentDevOps?.includes(devop?._id)
                     ? devop._id
                     : devop.name
                 )
@@ -177,7 +185,9 @@ function ProjectModal({
           qa:
             initialValues.qa?.length > 0
               ? initialValues.qa?.map((q) =>
-                  q?.positionType?.name === 'QA' ? q._id : q.name
+                  q?.positionType?.name === 'QA' && currentQas?.includes(q?._id)
+                    ? q._id
+                    : q.name
                 )
               : undefined,
           stagingUrls:
@@ -348,21 +358,33 @@ function ProjectModal({
                 rules={[
                   {
                     required: true,
-                    validator: async (_, value) => {
+                    validator: async (rule, value) => {
                       try {
                         if (!value) {
                           throw new Error('Name is required.')
                         }
-                        const regex = /^[A-Za-z ]+$/
+                        const regex = /^[^*|\":<>[\]{}`\\';@&$!#%^]+$/
                         const isValid = regex.test(value)
                         if (value.trim().length === 0) {
                           throw new Error('Please enter a valid Name.')
                         }
+                        if (
+                          value?.split('')[0] === '-' ||
+                          value?.split('')[0] === '(' ||
+                          value?.split('')[0] === ')'
+                        ) {
+                          throw new Error(
+                            'Please do not use special characters before project name.'
+                          )
+                        }
 
                         if (!isValid) {
-                          throw new Error('Please enter a valid Name.')
+                          throw new Error(
+                            'Please do not use special characters.'
+                          )
                         }
                       } catch (err) {
+                        scrollForm(form, 'name')
                         throw new Error(err.message)
                       }
                     },
@@ -387,7 +409,24 @@ function ProjectModal({
                 label="Path"
                 hasFeedback={readOnly ? false : true}
                 name="path"
-                rules={[{required: true, message: 'Path is required.'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Path is required.')
+                        }
+                        if (value.trim().length === 0) {
+                          throw new Error('Please enter a valid Path.')
+                        }
+                      } catch (err) {
+                        scrollForm(form, 'path')
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <Input
                   className={`${readOnly ? 'path-disabled' : ''}`}
@@ -433,7 +472,21 @@ function ProjectModal({
                 label="Start Date"
                 hasFeedback={readOnly ? false : true}
                 name="startDate"
-                rules={[{required: true, message: 'Start Date is required.'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Start Date is required.')
+                        }
+                      } catch (err) {
+                        scrollForm(form, 'startDate')
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <DatePicker
                   onChange={(e) => handleDateChange(e, 'start')}
@@ -493,7 +546,16 @@ function ProjectModal({
                 rules={[
                   {
                     required: true,
-                    message: 'Status is required.',
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Status is required.')
+                        }
+                      } catch (err) {
+                        scrollForm(form, 'projectStatus')
+                        throw new Error(err.message)
+                      }
+                    },
                   },
                 ]}
               >

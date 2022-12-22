@@ -15,11 +15,9 @@ const Collapses = ({
   onEditClick,
   onDeleteClick,
   type,
+  isEditable,
+  isDeletable,
 }) => {
-  const {
-    role: {key},
-  } = useSelector(selectAuthUser)
-
   return (
     <Collapse defaultActiveKey={defaultActiveKey}>
       {data?.map((item, index) => (
@@ -27,23 +25,23 @@ const Collapses = ({
           header={
             <div className="gx-d-flex gx-justify-content-between">
               {item?.title}{' '}
-              {[
-                RoleAccess.Admin,
-                RoleAccess.HumanResource,
-                RoleAccess.OfficeAdmin,
-              ].includes(key) &&
-                !getIsAdmin() && (
-                  <div className="gx-d-flex">
-                    <span
-                      className="gx-link gx-text-primary"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onEditClick(item, type)
-                      }}
-                    >
-                      <CustomIcon name="edit" />
-                    </span>
-                    <Divider type="vertical" style={{color: 'blue'}} />
+              {!getIsAdmin() && (
+                <div className="gx-d-flex">
+                  {isEditable && (
+                    <>
+                      <span
+                        className="gx-link gx-text-primary"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onEditClick(item, type)
+                        }}
+                      >
+                        <CustomIcon name="edit" />
+                      </span>
+                      <Divider type="vertical" style={{color: 'blue'}} />
+                    </>
+                  )}
+                  {isDeletable && (
                     <Popconfirm
                       title="Are you sure you want to delete?"
                       onConfirm={(e) => {
@@ -64,8 +62,9 @@ const Collapses = ({
                         <CustomIcon name="delete" />
                       </span>
                     </Popconfirm>
-                  </div>
-                )}
+                  )}
+                </div>
+              )}
             </div>
           }
           key={index}

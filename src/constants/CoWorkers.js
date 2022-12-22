@@ -1,7 +1,6 @@
 import React from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
-import RoleAccess, {CO_WORKERS_TABLE_ACTION_NO_ACCESS} from './RoleAccess'
 import {getIsAdmin} from 'helpers/utils'
 import {LOCALSTORAGE_USER} from './Settings'
 
@@ -58,11 +57,18 @@ const CO_WORKERCOLUMNS = (
     render: (text, record) => {
       return (
         <div style={{display: 'flex'}}>
-          <span className="gx-link" onClick={() => openEditPopup(record, true)}>
-            <CustomIcon name="view" />
-          </span>
+          {role?.['Co-Workers']?.viewCoworkers && (
+            <>
+              <span
+                className="gx-link"
+                onClick={() => openEditPopup(record, true)}
+              >
+                <CustomIcon name="view" />
+              </span>
+            </>
+          )}
 
-          {!CO_WORKERS_TABLE_ACTION_NO_ACCESS.includes(role) && !getIsAdmin() && (
+          {role?.['Co-Workers']?.disableCoworkers && !getIsAdmin() && (
             <>
               <Divider type="vertical" />
               <Popconfirm
@@ -90,7 +96,12 @@ const CO_WORKERCOLUMNS = (
                   )}
                 </span>
               </Popconfirm>
+            </>
+          )}
+          {role?.['Co-Workers']?.editCoworkers && !getIsAdmin() && (
+            <>
               <Divider type="vertical" />
+
               <span
                 className="gx-link"
                 onClick={() => openEditPopup(record, false)}
@@ -99,15 +110,15 @@ const CO_WORKERCOLUMNS = (
               </span>
             </>
           )}
+
           {!getIsAdmin() &&
-            role === RoleAccess.Admin &&
+            role?.['Co-Workers']?.switchCoworkers &&
             !(
               record?._id ===
               JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
             ) && (
               <>
                 <Divider type="vertical" />
-
                 <span
                   className="gx-link"
                   onClick={() => handleSwitchToUser(record)}

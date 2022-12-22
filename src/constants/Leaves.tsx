@@ -3,15 +3,28 @@ import CustomIcon from 'components/Elements/Icons'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {getIsAdmin} from 'helpers/utils'
 import React from 'react'
-import {LEAVE_TABLE_ACTION_NO_ACESS} from './RoleAccess'
 
-const LEAVES_COLUMN = (
-  onCancelLeave?: (param: any) => void,
-  onApproveClick?: (param: any) => void,
-  onEditClick?: (param: any, param2: any) => void,
-  isAdmin: boolean = false,
+const LEAVES_COLUMN = ({
+  onCancelLeave,
+  onApproveClick,
+  onEditClick,
+  viewLeave = false,
+  cancelLeave = false,
+  isAdmin = false,
+  approveLeave = false,
+  editLeave = false,
+  role,
+}: {
+  onCancelLeave?: (param: any) => void
+  onApproveClick?: (param: any) => void
+  onEditClick?: (param: any, param2: any) => void
+  isAdmin?: boolean
   role?: any
-) =>
+  viewLeave?: boolean
+  cancelLeave?: boolean
+  approveLeave?: boolean
+  editLeave?: boolean
+}) =>
   role
     ? [
         {
@@ -56,62 +69,86 @@ const LEAVES_COLUMN = (
           key: 'action',
           width: 10,
           render: (text: any, record: any) => {
-            if (isAdmin && onEditClick && onApproveClick)
+            if (isAdmin && onEditClick && onApproveClick) {
               return (
                 <div style={{display: 'flex'}}>
-                  <span
-                    className="gx-link gx-text-primary"
-                    onClick={() => onEditClick(record, true)}
-                  >
-                    <CustomIcon name="view" />
-                  </span>
-                  <AccessWrapper noAccessRoles={LEAVE_TABLE_ACTION_NO_ACESS}>
+                  <AccessWrapper role={viewLeave}>
                     <>
-                      <Divider type="vertical" />
-                      {!getIsAdmin() &&
-                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(
-                          record.leaveStatus
-                        ) && (
-                          <span
-                            onClick={() => onApproveClick(record)}
-                            className="gx-link gx-text-green"
-                          >
-                            Approve
-                          </span>
-                        )}
-
-                      {![STATUS_TYPES[3].id].includes(record.leaveStatus) &&
-                        !getIsAdmin() && (
-                          <>
-                            <Divider type="vertical" />
-                            <span
-                              className="gx-link gx-text-danger"
-                              onClick={() =>
-                                onCancelLeave ? onCancelLeave(record) : () => {}
-                              }
-                            >
-                              Cancel
-                            </span>
-                          </>
-                        )}
-
-                      {!getIsAdmin() &&
-                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(
-                          record.leaveStatus
-                        ) && (
-                          <>
-                            <Divider type="vertical" />
-                            <i
-                              className="icon icon-edit gx-link"
-                              onClick={() => onEditClick(record, false)}
-                            />
-                          </>
-                        )}
+                      <span
+                        className="gx-link gx-text-primary"
+                        onClick={() => onEditClick(record, true)}
+                      >
+                        <CustomIcon name="view" />
+                      </span>
                     </>
                   </AccessWrapper>
+
+                  <>
+                    <AccessWrapper
+                      role={
+                        !getIsAdmin() &&
+                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(
+                          record.leaveStatus
+                        ) &&
+                        approveLeave
+                      }
+                    >
+                      <>
+                        <Divider type="vertical" />
+
+                        <span
+                          onClick={() => onApproveClick(record)}
+                          className="gx-link gx-text-green"
+                        >
+                          Approve
+                        </span>
+                      </>
+                    </AccessWrapper>
+
+                    <AccessWrapper
+                      role={
+                        ![STATUS_TYPES[3].id].includes(record.leaveStatus) &&
+                        !getIsAdmin() &&
+                        cancelLeave
+                      }
+                    >
+                      <>
+                        <Divider type="vertical" />
+
+                        <span
+                          className="gx-link gx-text-danger"
+                          onClick={() =>
+                            onCancelLeave ? onCancelLeave(record) : () => {}
+                          }
+                        >
+                          Cancel
+                        </span>
+                      </>
+                    </AccessWrapper>
+
+                    <AccessWrapper
+                      role={
+                        !getIsAdmin() &&
+                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(
+                          record.leaveStatus
+                        ) &&
+                        editLeave
+                      }
+                    >
+                      <>
+                        <Divider type="vertical" />
+                        <i
+                          className="icon icon-edit gx-link"
+                          onClick={() => onEditClick(record, false)}
+                        />
+                      </>
+                    </AccessWrapper>
+                  </>
                 </div>
               )
+            }
             return record.leaveStatus === STATUS_TYPES[2].id &&
+              cancelLeave &&
               !getIsAdmin() ? (
               <span
                 className="gx-link gx-text-danger"
@@ -204,16 +241,24 @@ const LEAVES_COLUMN = (
               )
             return (
               <div style={{display: 'flex'}}>
-                <span
-                  className="gx-link gx-text-primary"
-                  onClick={() =>
-                    onEditClick ? onEditClick(record, true) : () => {}
+                <AccessWrapper role={viewLeave}>
+                  <span
+                    className="gx-link gx-text-primary"
+                    onClick={() =>
+                      onEditClick ? onEditClick(record, true) : () => {}
+                    }
+                  >
+                    <CustomIcon name="view" />
+                  </span>
+                </AccessWrapper>
+
+                <AccessWrapper
+                  role={
+                    cancelLeave &&
+                    record.leaveStatus === STATUS_TYPES[2].id &&
+                    !getIsAdmin()
                   }
                 >
-                  <CustomIcon name="view" />
-                </span>
-
-                {record.leaveStatus === STATUS_TYPES[2].id && !getIsAdmin() && (
                   <>
                     {' '}
                     <Divider type="vertical" />{' '}
@@ -226,7 +271,7 @@ const LEAVES_COLUMN = (
                       Cancel
                     </span>{' '}
                   </>
-                )}
+                </AccessWrapper>
               </div>
             )
           },
