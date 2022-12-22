@@ -44,6 +44,59 @@ function SidebarContent(props) {
     }
     return ''
   }
+  const items = [
+    {
+      label: 'Navigation One',
+      key: 'mail',
+    },
+    {
+      label: 'Navigation Two',
+      key: 'app',
+      disabled: true,
+    },
+    {
+      label: 'Navigation Three - Submenu',
+      key: 'SubMenu',
+      children: [
+        {
+          type: 'group',
+          label: 'Item 1',
+          children: [
+            {
+              label: 'Option 1',
+              key: 'setting:1',
+            },
+            {
+              label: 'Option 2',
+              key: 'setting:2',
+            },
+          ],
+        },
+        {
+          type: 'group',
+          label: 'Item 2',
+          children: [
+            {
+              label: 'Option 3',
+              key: 'setting:3',
+            },
+            {
+              label: 'Option 4',
+              key: 'setting:4',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      label: (
+        <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
+          Navigation Four - Link
+        </a>
+      ),
+      key: 'alipay',
+    },
+  ]
 
   return (
     <Auxiliary>
@@ -54,8 +107,9 @@ function SidebarContent(props) {
             selectedKeys={[selectedOpenKeys]}
             theme={themeType === THEME_TYPE_LITE ? 'lite' : 'dark'}
             mode="inline"
-          >
-            {SIDEBAR_ITEMS({Navigation, Reports, NavigationResources})
+            items={items}
+          />
+          {/* {SIDEBAR_ITEMS({Navigation, Reports, NavigationResources})
               .filter((item) => item.roles === true)
               .map((item) =>
                 item.isExpandable ? (
@@ -97,7 +151,6 @@ function SidebarContent(props) {
                               to={`${item.url}/${subItem.url}`}
                               onClick={collapseNav}
                             >
-                              {/* <i className={`icon ${item.icon}`} /> */}
                               <IntlMessages id={subItem.name} />
                             </Link>
                           </Menu.Item>
@@ -117,7 +170,7 @@ function SidebarContent(props) {
                   </Menu.Item>
                 )
               )}
-          </Menu>
+          </Menu> */}
         </CustomScrollbars>
       </div>
     </Auxiliary>

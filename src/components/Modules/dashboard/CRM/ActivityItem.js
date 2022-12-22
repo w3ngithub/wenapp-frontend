@@ -52,7 +52,7 @@ const ActivityItem = ({task, title = '', viewedBy = []}) => {
           <div className="circle"></div>
         )}
       </div>
-      <p
+      <div
         className={
           title === 'Notifications' || title === 'Recent Activities'
             ? 'notificationDivider'
@@ -60,7 +60,7 @@ const ActivityItem = ({task, title = '', viewedBy = []}) => {
         }
       >
         <Divider />
-      </p>
+      </div>
     </Auxiliary>
   )
 }
