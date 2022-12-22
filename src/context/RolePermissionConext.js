@@ -2,6 +2,7 @@ import {
   CHANGE_SINGLE_CHECKBOX,
   DESELECT_ALL,
   GLOBAL_SELECT_ALL,
+  REMOVE_CHECKBOX_SELECTION,
   RESET,
   SELECT_ALL_CHECKBOX,
   SET_EDIT_DATA,
@@ -111,6 +112,13 @@ const reducer = (state, action) => {
       return {
         ...state,
         defauleCollapseOpen: action.payload,
+      }
+
+    case REMOVE_CHECKBOX_SELECTION:
+      return {
+        ...state,
+        checkedList: action.payload.checkedList,
+        checkAll: action.payload.checkAll,
       }
 
     default:

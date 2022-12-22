@@ -46,9 +46,6 @@ const RolePermissionBox = ({
           : {title, list: emptyArray},
         indeterminate: {title, check: false},
         checkAll: {title, check: e.target.checked},
-        emptyObj: e.target.checked
-          ? {[title]: arrayDatas}
-          : {[title]: emptyArray},
       },
     })
   }
@@ -63,7 +60,6 @@ const RolePermissionBox = ({
           checkAll: {title, check: true},
           indeterminate: {title, check: false},
           checkedList: {title, list: arrayDatas},
-          emptyObj: {[title]: arrayDatas},
         },
       })
     }
