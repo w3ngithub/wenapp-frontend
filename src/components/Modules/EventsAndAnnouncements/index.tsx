@@ -53,11 +53,8 @@ function EventsAndAnnouncements({
   birthdays: any[]
   salaryReview: any[]
 }) {
-  const {
-    role: {
-      permission: {Dashboard},
-    },
-  } = useSelector(selectAuthUser)
+  const {role: {permission: {Dashboard = {}} = {}} = {}} =
+    useSelector(selectAuthUser)
   const announcementsData = announcements?.map((x: any) => ({
     id: x._id,
     name: x.title,

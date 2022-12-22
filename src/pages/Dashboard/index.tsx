@@ -55,9 +55,9 @@ const localizer = momentLocalizer(moment)
 const Dashboard = () => {
   const {
     role: {
-      key,
-      permission: {Dashboard: NavigationDashboard},
-    },
+      key = '',
+      permission: {Dashboard: NavigationDashboard = {}} = {},
+    } = {},
   } = useSelector(selectAuthUser)
 
   const [chart, setChart] = useState('1')
