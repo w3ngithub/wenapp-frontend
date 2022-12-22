@@ -363,7 +363,7 @@ function ProjectModal({
                         if (!value) {
                           throw new Error('Name is required.')
                         }
-                        const regex = /^[^*|\":<>[\]{}`\\';@&$!#%^0123456789]+$/
+                        const regex = /^[^*|\":<>[\]{}`\\';@&$!#%^\d]+$/
                         // const regex = /^[A-Za-z]+[-()\s]+$/
                         const isValid = regex.test(value)
                         if (value.trim().length === 0) {
