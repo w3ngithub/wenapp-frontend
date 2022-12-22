@@ -478,3 +478,11 @@ export const daySorter = {
   Saturday: 6,
   Sunday: 7,
 }
+
+//scrolling the form to the part that shows error
+export const scrollForm = (form, name) => {
+  form.scrollToField(name, {
+    behavior: 'smooth',
+    block: 'end',
+  })
+}

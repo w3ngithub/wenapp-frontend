@@ -1,13 +1,13 @@
 import React, {ChangeEvent, useState} from 'react'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {Button, Card, Form, Input, Col, Row, Divider, Spin} from 'antd'
+import {Button, Card, Form, Input, Col, Row, Spin} from 'antd'
 import SettingTable from '../CommonTable'
 import {
   getInvitedUsers,
   inviteUsers,
 } from 'services/settings/coworkers/inviteUser'
 import {INVITED_EMPLOYEES_COLUMN, POSITION_COLUMN} from 'constants/Settings'
-import {capitalizeInput, getIsAdmin, handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonModal from '../CommonModal'
 import {

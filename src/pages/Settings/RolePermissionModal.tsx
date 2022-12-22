@@ -8,6 +8,7 @@ import {
   SET_EDIT_DATA,
 } from 'constants/RolePermission'
 import {RolePermissionContext} from 'context/RolePermissionConext'
+import {scrollForm} from 'helpers/utils'
 
 interface modalInterface {
   toggle: boolean
@@ -200,6 +201,7 @@ const RolePermissionModal = ({
                       throw new Error(`Please enter a valid role.`)
                     }
                   } catch (err) {
+                    scrollForm(form, 'name')
                     throw new Error(err.message)
                   }
                 },
