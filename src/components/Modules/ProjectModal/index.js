@@ -87,7 +87,7 @@ function ProjectModal({
           : values?.liveUrl?.join('')
       onSubmit({
         ...values,
-        name: values?.name?.[0].toUpperCase() + values?.name?.slice(1),
+        name: values?.name?.trim()?.[0].toUpperCase() + values?.name?.trim()?.slice(1),
         designers: updatedDesigners,
         qa: updatedQAs,
         developers: updatedDevelopers,
@@ -363,26 +363,24 @@ function ProjectModal({
                         if (!value) {
                           throw new Error('Name is required.')
                         }
-                        const regex = /^[^*|\":<>[\]{}`\\';@&$!#%^\d]+$/
-                        // const regex = /^[A-Za-z]+[-()\s]+$/
+                        const regex = /^[^*|\":<>[\]{}`\\';@&$!#%^]+$/
                         const isValid = regex.test(value)
                         if (value.trim().length === 0) {
                           throw new Error('Please enter a valid Name.')
                         }
                         if (
-                          value?.split('')[0] === ' ' ||
                           value?.split('')[0] === '-' ||
                           value?.split('')[0] === '(' ||
                           value?.split('')[0] === ')'
                         ) {
                           throw new Error(
-                            'Please do not use special characters or numbers before project name.'
+                            'Please do not use special characters before project name.'
                           )
                         }
 
                         if (!isValid) {
                           throw new Error(
-                            'Please do not use special characters or numbers.'
+                            'Please do not use special characters.'
                           )
                         }
                       } catch (err) {
