@@ -14,7 +14,7 @@ import {
   Spin,
 } from 'antd'
 import {emptyText} from 'constants/EmptySearchAntd'
-import {filterOptions} from 'helpers/utils'
+import {filterOptions, scrollForm} from 'helpers/utils'
 import moment from 'moment'
 import Maintenance from 'pages/Projects/Maintainance'
 import {useEffect, useState} from 'react'
@@ -386,6 +386,7 @@ function ProjectModal({
                           )
                         }
                       } catch (err) {
+                        scrollForm(form, 'name')
                         throw new Error(err.message)
                       }
                     },
@@ -410,7 +411,24 @@ function ProjectModal({
                 label="Path"
                 hasFeedback={readOnly ? false : true}
                 name="path"
-                rules={[{required: true, message: 'Path is required.'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Path is required.')
+                        }
+                        if (value.trim().length === 0) {
+                          throw new Error('Please enter a valid Path.')
+                        }
+                      } catch (err) {
+                        scrollForm(form, 'path')
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <Input
                   className={`${readOnly ? 'path-disabled' : ''}`}
@@ -456,7 +474,21 @@ function ProjectModal({
                 label="Start Date"
                 hasFeedback={readOnly ? false : true}
                 name="startDate"
-                rules={[{required: true, message: 'Start Date is required.'}]}
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Start Date is required.')
+                        }
+                      } catch (err) {
+                        scrollForm(form, 'startDate')
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
               >
                 <DatePicker
                   onChange={(e) => handleDateChange(e, 'start')}
@@ -516,7 +548,16 @@ function ProjectModal({
                 rules={[
                   {
                     required: true,
-                    message: 'Status is required.',
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) {
+                          throw new Error('Status is required.')
+                        }
+                      } catch (err) {
+                        scrollForm(form, 'projectStatus')
+                        throw new Error(err.message)
+                      }
+                    },
                   },
                 ]}
               >

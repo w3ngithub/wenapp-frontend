@@ -11,7 +11,7 @@ import {
   TimePicker,
 } from 'antd'
 import moment from 'moment'
-import {dateToDateFormat, filterOptions} from 'helpers/utils'
+import {dateToDateFormat, filterOptions, scrollForm} from 'helpers/utils'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
@@ -191,6 +191,7 @@ function UserDetailForm({
                       throw new Error('Please enter a valid Name.')
                     }
                   } catch (err) {
+                    scrollForm(form, 'name')
                     throw new Error(err.message)
                   }
                 },
@@ -232,7 +233,19 @@ function UserDetailForm({
             label="Office Start Time"
             name="officeTime"
             rules={[
-              {required: true, message: 'Office Start Time is required.'},
+              {
+                required: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Office Start Time is required.')
+                    }
+                  } catch (err) {
+                    scrollForm(form, 'officeTime')
+                    throw new Error(err.message)
+                  }
+                },
+              },
             ]}
             hasFeedback={readOnly ? false : true}
           >
@@ -344,6 +357,7 @@ function UserDetailForm({
                       throw new Error('Allocated Leaves must be a number')
                     }
                   } catch (error) {
+                    scrollForm(form, 'allocatedLeaves')
                     throw new Error(error.message)
                   }
                 },
@@ -379,7 +393,16 @@ function UserDetailForm({
             rules={[
               {
                 required: true,
-                message: 'Join Date is required.',
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Join Date is required.')
+                    }
+                  } catch (err) {
+                    scrollForm(form, 'joinDate')
+                    throw new Error(err.message)
+                  }
+                },
               },
             ]}
           >

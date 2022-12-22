@@ -9,7 +9,7 @@ import {CameraOutlined, RollbackOutlined} from '@ant-design/icons'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import {useMutation, useQuery} from '@tanstack/react-query'
 import {addBlog, getBlog, getBlogCatogories, updateBlog} from 'services/blog'
-import {filterOptions, handleResponse} from 'helpers/utils'
+import {filterOptions, handleResponse, scrollForm} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {Link, useNavigate, useParams} from 'react-router-dom'
 import {BLOG} from 'helpers/routePath'
@@ -261,16 +261,13 @@ function AddBlog() {
                   validator: async (rule, value) => {
                     try {
                       if (!value) {
-                        form.scrollToField('title', {
-                          behavior: 'smooth',
-                          block: 'end',
-                        })
                         throw new Error(`Title is required.`)
                       }
                       if (value?.trim() === '') {
                         throw new Error(`Please enter a valid title.`)
                       }
                     } catch (err) {
+                      scrollForm(form, 'title')
                       throw new Error(err.message)
                     }
                   },
