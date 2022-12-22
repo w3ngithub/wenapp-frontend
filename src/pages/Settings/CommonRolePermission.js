@@ -14,7 +14,6 @@ const CommonRolePermission = ({allAccess, isEditMode}) => {
 
   const handleDefaultKeys = (title, checkedList) => {
     if (title === 'Navigation' && !state?.checkAll?.Navigation) {
-      console.log('checkedList', checkedList)
       const activeKeys = permissionRole['Navigation']
         .filter((d) => checkedList?.includes(d.name))
         .map((d) => d.label)
