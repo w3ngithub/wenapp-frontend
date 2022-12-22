@@ -295,7 +295,7 @@ function App(props: any) {
                 path={RESOURCES}
                 element={
                   <Suspense fallback={<FallBack />}>
-                    <AccessRoute roles={NavigationReports?.resources}>
+                    <AccessRoute roles={Navigation?.resources}>
                       <Resources />
                     </AccessRoute>
                   </Suspense>
