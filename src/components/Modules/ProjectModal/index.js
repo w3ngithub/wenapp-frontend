@@ -14,7 +14,7 @@ import {
   Spin,
 } from 'antd'
 import {emptyText} from 'constants/EmptySearchAntd'
-import {capitalizeInput, filterOptions} from 'helpers/utils'
+import {filterOptions} from 'helpers/utils'
 import moment from 'moment'
 import Maintenance from 'pages/Projects/Maintainance'
 import {useEffect, useState} from 'react'
@@ -363,18 +363,27 @@ function ProjectModal({
                         if (!value) {
                           throw new Error('Name is required.')
                         }
-                        const regex = /^[^*|\":<>[\]{}`\\';@&$!#%^]+$/
+                        const regex = /^[^*|\":<>[\]{}`\\';@&$!#%^0123456789]+$/
+                        // const regex = /^[A-Za-z]+[-()\s]+$/
                         const isValid = regex.test(value)
                         if (value.trim().length === 0) {
                           throw new Error('Please enter a valid Name.')
                         }
-                        if (value?.split('')[0] === ' ') {
+                        if (
+                          value?.split('')[0] === ' ' ||
+                          value?.split('')[0] === '-' ||
+                          value?.split('')[0] === '(' ||
+                          value?.split('')[0] === ')'
+                        ) {
                           throw new Error(
-                            'Please do not use space characters before project name.'
+                            'Please do not use special characters or numbers before project name.'
                           )
                         }
+
                         if (!isValid) {
-                          throw new Error('Special characters issue.')
+                          throw new Error(
+                            'Please do not use special characters or numbers.'
+                          )
                         }
                       } catch (err) {
                         throw new Error(err.message)
