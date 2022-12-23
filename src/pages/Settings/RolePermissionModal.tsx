@@ -5,6 +5,7 @@ import {Menu} from 'antd'
 import CommonRolePermission from './CommonRolePermission'
 import {
   DESELECT_ALL,
+  GLOBAL_SELECT_ALL,
   permissionRole,
   RESET,
   SET_EDIT_DATA,
@@ -159,8 +160,24 @@ const RolePermissionModal = ({
   }, [state.checkedList])
 
   const handleSelectAllChange = (e: any) => {
-    setAllAccess(e.target.checked)
-    if (!e.target.checked) dispatch({type: DESELECT_ALL})
+    // setAllAccess(e.target.checked)
+    if (e.target.checked) {
+      const activeKeys = Object.keys(permissionRole)
+      let temp: any = permissionRole
+
+      const checkedList = activeKeys.reduce((prev: any, current: any) => {
+        let data = temp?.[current].map((d: any) => d.name)
+        return Object.assign(prev, {[current]: data})
+      }, {})
+
+      const checkAll = activeKeys.reduce((prev: any, current: any) => {
+        return Object.assign(prev, {[current]: true})
+      }, {})
+
+      dispatch({type: GLOBAL_SELECT_ALL, payload: {checkedList, checkAll}})
+    } else {
+      dispatch({type: DESELECT_ALL})
+    }
   }
 
   const handleSubmit = () => {

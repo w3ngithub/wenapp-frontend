@@ -84,19 +84,8 @@ const reducer = (state, action) => {
     case GLOBAL_SELECT_ALL:
       return {
         ...state,
-        checkedList: {
-          ...state.checkedList,
-          [action.payload.checkedList.title]: action.payload.checkedList.list,
-        },
-        indeterminate: {
-          ...state.indeterminate,
-          [action.payload.indeterminate.title]:
-            action.payload.indeterminate.check,
-        },
-        checkAll: {
-          ...state.checkAll,
-          [action.payload.checkAll.title]: action.payload.checkAll.check,
-        },
+        checkedList: action.payload.checkedList,
+        checkAll: action.payload.checkAll,
       }
 
     case SET_EDIT_DATA:
@@ -108,6 +97,7 @@ const reducer = (state, action) => {
       }
 
     case REMOVE_CHECKBOX_SELECTION:
+      console.log('hiii',action.payload)
       return {
         ...state,
         checkedList: action.payload.checkedList,

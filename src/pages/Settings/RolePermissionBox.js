@@ -3,7 +3,6 @@ import {Checkbox, Col, Divider, Row} from 'antd'
 import {RolePermissionContext} from 'context/RolePermissionConext'
 import {
   CHANGE_SINGLE_CHECKBOX,
-  GLOBAL_SELECT_ALL,
   SELECT_ALL_CHECKBOX,
 } from 'constants/RolePermission'
 
@@ -13,8 +12,6 @@ const RolePermissionBox = ({data, title, allAccess, handleDefaultKeys}) => {
   const {state, dispatch} = useContext(RolePermissionContext)
 
   const onChange = (list) => {
-    console.log(list)
-
     dispatch({
       type: CHANGE_SINGLE_CHECKBOX,
       payload: {
@@ -44,21 +41,6 @@ const RolePermissionBox = ({data, title, allAccess, handleDefaultKeys}) => {
     })
   }
 
-  useEffect(() => {
-    if (allAccess) {
-      let activeData = data.map((d) => d.name)
-      handleDefaultKeys(title, activeData)
-      dispatch({
-        type: GLOBAL_SELECT_ALL,
-        payload: {
-          checkAll: {title, check: true},
-          indeterminate: {title, check: false},
-          checkedList: {title, list: arrayDatas},
-        },
-      })
-    }
-  }, [allAccess])
-  console.log(state?.checkedList?.[title])
   return (
     <div className="role-box">
       <div className="role-box-header">
