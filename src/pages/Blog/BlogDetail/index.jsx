@@ -11,7 +11,6 @@ import {getBlog} from 'services/blog'
 import BlogsBreadCumb from './BlogsBreadCumb'
 import CircularProgress from 'components/Elements/CircularProgress'
 import moment from 'moment'
-import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {getIsAdmin} from 'helpers/utils'
@@ -82,7 +81,7 @@ function Detail() {
         {mainArray?.map((item, index) => {
           if (index % 2 !== 0) {
             return (
-              <div>
+              <div key={index}>
                 <SyntaxHighlighter
                   language="javascript"
                   style={darkTheme ? docco : prism}
@@ -93,7 +92,7 @@ function Detail() {
               </div>
             )
           } else {
-            return <div>{HTMLReactParser(item || '')}</div>
+            return <div key={index}>{HTMLReactParser(item || '')}</div>
           }
         })}
       </Card>
