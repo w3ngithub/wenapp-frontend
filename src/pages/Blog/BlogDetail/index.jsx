@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
-import {dark, prism} from 'react-syntax-highlighter/dist/esm/styles/prism'
+import {prism} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import {docco} from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import {useNavigate, useParams} from 'react-router-dom'
 import {useQuery} from '@tanstack/react-query'
