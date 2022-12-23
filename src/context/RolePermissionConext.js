@@ -97,7 +97,6 @@ const reducer = (state, action) => {
       }
 
     case REMOVE_CHECKBOX_SELECTION:
-      console.log('hiii',action.payload)
       return {
         ...state,
         checkedList: action.payload.checkedList,

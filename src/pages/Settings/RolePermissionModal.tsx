@@ -176,6 +176,7 @@ const RolePermissionModal = ({
 
       dispatch({type: GLOBAL_SELECT_ALL, payload: {checkedList, checkAll}})
     } else {
+      setCurrent('Navigation')
       dispatch({type: DESELECT_ALL})
     }
   }

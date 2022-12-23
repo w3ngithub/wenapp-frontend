@@ -14,7 +14,7 @@ const CommonRolePermission = ({allAccess, title}) => {
       const activeKeys = permissionRole['Navigation']
         .filter((d) => checkedList?.includes(d.name))
         .map((d) => d.label)
-      const testingData = Object.keys(state?.checkedList)
+      const testingData = Object.keys(permissionRole)
 
       //removing checbox selection for deselected title in navigation
       const checkListSelection = testingData.reduce((prev, curr) => {
