@@ -64,7 +64,6 @@ const Dashboard = () => {
   const [projectArray, setProjectArray] = useState([])
   const [chartData, setChartData] = useState([])
   const navigate = useNavigate()
-  const loggedInUser = useSelector(selectAuthUser)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)
@@ -503,8 +502,6 @@ const Dashboard = () => {
   ]
 
   const isAdmin = DASHBOARD_ICON_ACCESS.includes(key)
-
-  const width = isAdmin ? 6 : 12
 
   return (
     <Auxiliary>

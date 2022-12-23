@@ -6,6 +6,14 @@ const Contact = ({user}) => {
   return (
     <Widget title="Contact" styleName="gx-card-profile-sm">
       {contactList(user).map((data, index) => {
+        let actualData = 0
+        if (typeof data?.value === 'number') {
+          actualData = data?.value
+        } else {
+          actualData = data?.value?.map((item, ind) => (
+            <span key={ind}>{item}</span>
+          ))
+        }
         if (!data.value) {
           return null
         }
@@ -21,7 +29,7 @@ const Contact = ({user}) => {
               <span className="gx-mb-0 gx-text-grey gx-fs-sm">
                 {data?.title}
               </span>
-              <p className="gx-mb-0">{data?.value}</p>
+              <p className="gx-mb-0">{actualData}</p>
             </div>
           </div>
         )
