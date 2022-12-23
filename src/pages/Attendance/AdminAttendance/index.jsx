@@ -8,8 +8,6 @@ import {
   Divider,
   Input,
   InputNumber,
-  Row,
-  Col,
 } from 'antd'
 import moment from 'moment'
 import {CSVLink} from 'react-csv'
@@ -23,7 +21,6 @@ import {
 } from 'constants/Attendance'
 import {
   searchAttendacentOfUser,
-  searchLateAttendacentOfUser,
   UserTotalofficehour,
 } from 'services/attendances'
 import {
@@ -43,12 +40,7 @@ import TmsAdminAddAttendanceForm from 'components/Modules/TmsAdminAttendanceForm
 import CustomIcon from 'components/Elements/Icons'
 import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import RoleAccess, {
-  ATTENDANCE_CO_WORKER_ATTENDANCE_ADD_NO_ACCESS,
-} from 'constants/RoleAccess'
 import {emptyText} from 'constants/EmptySearchAntd'
-import { useSelector } from 'react-redux'
-import { selectAuthUser } from 'appRedux/reducers/Auth'
 import useWindowsSize from 'hooks/useWindowsSize'
 
 const {RangePicker} = DatePicker
@@ -89,7 +81,7 @@ function AdminAttendance({userRole}) {
   const [sort, setSort] = useState({
     order: 'ascend',
     field: 'attendanceDate',
-    columnKey: 'attendanceDate',    
+    columnKey: 'attendanceDate',
   })
   const [form] = Form.useForm()
   const [page, setPage] = useState({page: 1, limit: 10})
@@ -110,8 +102,7 @@ function AdminAttendance({userRole}) {
   })
   const CSVRef = useRef()
 
-  const {innerWidth, innerHeight} = useWindowsSize()
-  console.log(innerWidth)
+  const {innerWidth} = useWindowsSize()
 
   useEffect(() => {
     if (dataToExport.todownload) {
@@ -270,18 +261,14 @@ function AdminAttendance({userRole}) {
               <span className="gx-link" onClick={() => handleView(record)}>
                 <CustomIcon name="view" />
               </span>
-              {userRole?.editCoworkersAttendance &&
-                !getIsAdmin() && (
-                  <>
-                    <Divider type="vertical"></Divider>
-                    <span
-                      className="gx-link"
-                      onClick={() => handleEdit(record)}
-                    >
-                      <CustomIcon name="edit" />
-                    </span>
-                  </>
-                )}
+              {userRole?.editCoworkersAttendance && !getIsAdmin() && (
+                <>
+                  <Divider type="vertical"></Divider>
+                  <span className="gx-link" onClick={() => handleEdit(record)}>
+                    <CustomIcon name="edit" />
+                  </span>
+                </>
+              )}
             </span>
           )
         },
@@ -345,22 +332,26 @@ function AdminAttendance({userRole}) {
 
   return (
     <div>
-      <TmsAdminAddAttendanceForm
-        toogle={toggleAdd}
-        handleCancel={() => {
-          setToggleAdd(false)
-        }}
-        users={users?.data?.data?.data}
-      />
-      <TmsAdminAttendanceForm
-        toogle={toggleEdit}
-        handleCancel={() => {
-          setToggleEdit(false)
-          setAttToEdit({})
-        }}
-        users={users?.data?.data?.data}
-        AttToEdit={AttToEdit}
-      />
+      {toggleAdd && (
+        <TmsAdminAddAttendanceForm
+          toogle={toggleAdd}
+          handleCancel={() => {
+            setToggleAdd(false)
+          }}
+          users={users?.data?.data?.data}
+        />
+      )}
+      {toggleEdit && (
+        <TmsAdminAttendanceForm
+          toogle={toggleEdit}
+          handleCancel={() => {
+            setToggleEdit(false)
+            setAttToEdit({})
+          }}
+          users={users?.data?.data?.data}
+          AttToEdit={AttToEdit}
+        />
+      )}
       <ViewDetailModel
         toogle={openView}
         title={attToView.user ? attToView.user : 'Attendance Details'}
@@ -468,13 +459,11 @@ function AdminAttendance({userRole}) {
                 placeholder="Total Office Hour"
               />
 
-                <div
-                  className="gx-btn-form"
-                  style={{marginLeft: '20px', display: 'flex'}}
-                >
-              <AccessWrapper
-                role={userRole?.exportCoworkersAttendance}
+              <div
+                className="gx-btn-form"
+                style={{marginLeft: '20px', display: 'flex'}}
               >
+                <AccessWrapper role={userRole?.exportCoworkersAttendance}>
                   <Button
                     className="gx-btn-form gx-btn-primary gx-text-white "
                     disabled={
@@ -502,18 +491,17 @@ function AdminAttendance({userRole}) {
                       ...dataToExport.data,
                     ]}
                   ></CSVLink>
-                  </AccessWrapper>
-                  <AccessWrapper role={userRole?.addCoworkersAttendance}>
-                    <Button
-                      className="gx-btn-form gx-btn-primary gx-text-white "
-                      onClick={() => setToggleAdd(true)}
-                      disabled={getIsAdmin()}
-                    >
-                      Add
-                    </Button>
-                  </AccessWrapper>
-                </div>
-              
+                </AccessWrapper>
+                <AccessWrapper role={userRole?.addCoworkersAttendance}>
+                  <Button
+                    className="gx-btn-form gx-btn-primary gx-text-white "
+                    onClick={() => setToggleAdd(true)}
+                    disabled={getIsAdmin()}
+                  >
+                    Add
+                  </Button>
+                </AccessWrapper>
+              </div>
             </div>
           </div>
         ) : (
@@ -612,9 +600,7 @@ function AdminAttendance({userRole}) {
                 </FormItem>
               </Form>
 
-              <AccessWrapper
-                role={userRole?.exportCoworkersAttendance}
-              >
+              <AccessWrapper role={userRole?.exportCoworkersAttendance}>
                 <div className="gx-btn-form" style={{marginLeft: '20px'}}>
                   <Button
                     className="gx-btn-form gx-btn-primary gx-text-white "
