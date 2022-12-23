@@ -100,7 +100,7 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
           </h6>
         </div>
 
-        <p>
+        <div>
           {filteredContent}...
           {Blog?.viewBlog && (
             <Link to={`${_id}-${slug}`} className="read-more-dark">
@@ -108,7 +108,7 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
               Read More
             </Link>
           )}
-        </p>
+        </div>
       </div>
       <div className="gx-footer gx-d-flex gx-justify-content-end ">
         {access && !getIsAdmin() && (
