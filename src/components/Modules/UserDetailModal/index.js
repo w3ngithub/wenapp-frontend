@@ -197,14 +197,12 @@ function UserDetailForm({
                 },
               },
             ]}
-            hasFeedback={readOnly ? false : true}
           >
             <Input placeholder="Enter Name" disabled={readOnly} />
           </FormItem>
           <FormItem
             {...formItemLayout}
             label="Role"
-            hasFeedback={readOnly ? false : true}
             name="role"
             rules={[{required: true, message: 'Role is required.'}]}
           >
@@ -247,19 +245,17 @@ function UserDetailForm({
                 },
               },
             ]}
-            hasFeedback={readOnly ? false : true}
           >
             <TimePicker
               disabled={readOnly}
               style={{width: '100%'}}
               format="h:mm:ss A"
-              defaultValue={moment('09:00:00 AM', 'HH:mm:ss a')}
+              initialValues={moment('09:00:00 AM', 'HH:mm:ss a')}
             />
           </FormItem>
           <FormItem
             {...formItemLayout}
             label="Position"
-            hasFeedback={readOnly ? false : true}
             name="position"
             rules={[
               {
@@ -272,7 +268,6 @@ function UserDetailForm({
               showSearch
               placeholder="Select Position"
               disabled={readOnly}
-              hasFeedback={readOnly ? false : true}
               filterOption={filterOptions}
               onChange={handlePositionChange}
             >
@@ -287,7 +282,6 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="Position Type"
-            hasFeedback={readOnly ? false : true}
             name="positionType"
             rules={[
               {
@@ -300,7 +294,6 @@ function UserDetailForm({
               showSearch
               placeholder="Select Position Type"
               disabled={readOnly}
-              hasFeedback={readOnly ? false : true}
               filterOption={filterOptions}
             >
               {positionTypes &&
@@ -314,7 +307,6 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="Status"
-            hasFeedback={readOnly ? false : true}
             name="status"
             rules={[
               {
@@ -327,7 +319,6 @@ function UserDetailForm({
               showSearch
               placeholder="Select Status"
               disabled={readOnly}
-              hasFeedback={readOnly ? false : true}
               filterOption={filterOptions}
               onChange={handleStatusChange}
             >
@@ -341,7 +332,6 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="Allocated Leaves"
-            hasFeedback={readOnly ? false : true}
             name="allocatedLeaves"
             rules={[
               {
@@ -369,7 +359,6 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="Last Review Date"
-            hasFeedback={readOnly ? false : true}
             name="lastReviewDate"
             rules={[
               {
@@ -388,7 +377,6 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="Join Date"
-            hasFeedback={readOnly ? false : true}
             name="joinDate"
             rules={[
               {
@@ -412,12 +400,7 @@ function UserDetailForm({
               disabled={readOnly}
             />
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Exit Date"
-            hasFeedback={readOnly ? false : true}
-            name="exitDate"
-          >
+          <FormItem {...formItemLayout} label="Exit Date" name="exitDate">
             <DatePicker
               disabledDate={disableDate}
               className=" gx-w-100"
@@ -427,7 +410,6 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="PAN Number"
-            hasFeedback={readOnly ? false : true}
             name="panNumber"
             rules={[
               {
@@ -445,7 +427,6 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="CIT Number"
-            hasFeedback={readOnly ? false : true}
             name="citNumber"
             rules={[
               {
@@ -460,18 +441,12 @@ function UserDetailForm({
               disabled={readOnly}
             />
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Bank Name"
-            hasFeedback={readOnly ? false : true}
-            name="bankName"
-          >
+          <FormItem {...formItemLayout} label="Bank Name" name="bankName">
             <Input placeholder="Enter Bank Name" disabled={readOnly} />
           </FormItem>
           <FormItem
             {...formItemLayout}
             label="Bank Account Number"
-            hasFeedback={readOnly ? false : true}
             name="bankAccNumber"
           >
             <Input
