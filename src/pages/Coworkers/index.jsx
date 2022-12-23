@@ -276,10 +276,18 @@ function CoworkersPage() {
       setSelectedIds((prev)=>prev.filter((d)=>d!==record?._id))
       setSelectedRows((prev)=>prev.filter((d)=>d?._id!==record?._id))
     }
-    console.log(record,selected,selectedRows)
   }
-console.log("heha",selectedIds)
-console.log("heha",selectedRows)
+
+  const handleSelectAll = (selected,selectedRows,changeRows)=>{
+    if(selected){
+      setSelectedIds(prev=>[...prev,...changeRows?.map((d)=>d?._id)])
+      setSelectedRows((prev)=>[...prev,...changeRows])
+    }else{
+      let changeRowsId = changeRows?.map((d)=>d?._id)
+      setSelectedIds(prev=>prev.filter((d)=>!changeRowsId.includes(d)))
+      setSelectedRows(prev=>prev.filter((d)=>!changeRows.includes(d?._id)))
+    }
+  }
 
   const handleSwitchToUser = async (user) => {
     dispatch(switchUser())
@@ -418,8 +426,7 @@ console.log("heha",selectedRows)
                         'DOB',
                         'Join Date',
                       ],
-                      ...data?.data?.data?.data
-                        ?.filter((x) => selectedRows.includes(x?._id))
+                      ...selectedRows
                         ?.map((d) => [
                           d?.name,
                           d?.email,
@@ -427,8 +434,8 @@ console.log("heha",selectedRows)
                           d?.role?._id,
                           d?.position?.name,
                           d?.position?._id,
-                          changeDate(d?.dob),
-                          changeDate(d?.joinDate),
+                          d?.dob,
+                          d?.joinDate
                         ]),
                     ]}
                   >
@@ -458,10 +465,9 @@ console.log("heha",selectedRows)
           dataSource={formattedUsers(data?.data?.data?.data, key === 'admin')}
           onChange={handleTableChange}
           rowSelection={{
-            // onChange: handleRowSelect,
             onSelect: handleSelectRow,
             selectedRowKeys: selectedIds,
-            // selectedRowKeys: selectedRows,
+            onSelectAll:handleSelectAll,
           }}
           pagination={{
             current: page.page,
