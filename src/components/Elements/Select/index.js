@@ -16,7 +16,7 @@ const Select = ({
   style,
   mode,
   inputSelect = false,
-  defaultValue = '',
+  initialValues = '',
   width = 200,
   placeholderClass = false,
   handleSearch,
@@ -35,8 +35,8 @@ const Select = ({
         placeholder={placeholderClass ? null : placeholder}
         style={style}
         onChange={onChange}
-        defaultValue={defaultValue ? defaultValue : undefined}
-        // defaultValue={null}
+        defaultValue={initialValues ? initialValues : undefined}
+        // initialValues={null}
 
         onSearch={(e) => {
           inputSelect && setSearchValue(e)

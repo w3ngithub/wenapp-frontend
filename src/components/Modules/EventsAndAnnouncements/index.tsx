@@ -2,7 +2,6 @@ import {Avatar, Timeline} from 'antd'
 import React from 'react'
 import ActivityItem from '../dashboard/CRM/ActivityItem'
 import {changeDate, dayCheck, oneWeekFilterCheck} from 'helpers/utils'
-import {SALARY_REVIEW_ACCESS} from 'constants/RoleAccess'
 import {Collapse} from 'antd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -205,13 +204,11 @@ function EventsAndAnnouncements({
                     expandIconPosition="end"
                     bordered={false}
                     className="gx-dashboard-collapse"
+                    key={'timeline' + index}
                   >
                     <Panel
                       header={
-                        <TimeLineItem
-                          key={'timeline' + index}
-                          dot={getName(task, '')}
-                        >
+                        <TimeLineItem dot={getName(task, '')}>
                           <ActivityItem task={task} />
                         </TimeLineItem>
                       }
@@ -230,7 +227,8 @@ function EventsAndAnnouncements({
                       key={'timeline' + index}
                       dot={getName(task, '')}
                     >
-                      <ActivityItem task={task} />
+                      <ActivityItem task={task} key={'timeline' + index} />
+                      {/* <p>bob2</p> */}
                     </TimeLineItem>
                   )
                 })}
