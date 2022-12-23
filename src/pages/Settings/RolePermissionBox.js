@@ -12,9 +12,9 @@ const RolePermissionBox = ({data, title, allAccess, handleDefaultKeys}) => {
   let emptyArray = []
   const {state, dispatch} = useContext(RolePermissionContext)
 
-  console.log(data)
-
   const onChange = (list) => {
+    console.log(list)
+
     dispatch({
       type: CHANGE_SINGLE_CHECKBOX,
       payload: {
@@ -58,7 +58,7 @@ const RolePermissionBox = ({data, title, allAccess, handleDefaultKeys}) => {
       })
     }
   }, [allAccess])
-
+  console.log(state?.checkedList?.[title])
   return (
     <div className="role-box">
       <div className="role-box-header">

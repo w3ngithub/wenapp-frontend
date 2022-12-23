@@ -1,5 +1,4 @@
 import React, {useContext, useEffect} from 'react'
-import {Form, Col, Row} from 'antd'
 import RolePermissionBox from './RolePermissionBox'
 import {
   permissionRole,
@@ -9,8 +8,6 @@ import {RolePermissionContext} from 'context/RolePermissionConext'
 
 const CommonRolePermission = ({allAccess, title}) => {
   const {state, dispatch} = useContext(RolePermissionContext)
-  const [form] = Form.useForm()
-  console.log(state)
 
   const handleDefaultKeys = (title, checkedList) => {
     if (title === 'Navigation') {
@@ -57,14 +54,12 @@ const CommonRolePermission = ({allAccess, title}) => {
   }
 
   return (
-    <Form form={form}>
-      <RolePermissionBox
-        data={permissionRole[title]}
-        title={title}
-        allAccess={allAccess}
-        handleDefaultKeys={handleDefaultKeys}
-      />
-    </Form>
+    <RolePermissionBox
+      data={permissionRole[title]}
+      title={title}
+      allAccess={allAccess}
+      handleDefaultKeys={handleDefaultKeys}
+    />
   )
 }
 
