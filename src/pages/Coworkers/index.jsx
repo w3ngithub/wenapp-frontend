@@ -62,6 +62,7 @@ function CoworkersPage() {
   const [userRecord, setUserRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
+  const [selectedIds,setSelectedIds] = useState([])
   const [openImport, setOpenImport] = useState(false)
   const [files, setFiles] = useState([])
   const queryClient = useQueryClient()
@@ -266,6 +267,20 @@ function CoworkersPage() {
     setSelectedRows(rows)
   }
 
+  const handleSelectRow=(record,selected,selectedRows)=>{
+    if(selected) {
+      setSelectedIds((prev)=>[...prev,record?._id])
+      setSelectedRows((prev)=>[...prev,record])
+    }
+    else {
+      setSelectedIds((prev)=>prev.filter((d)=>d!==record?._id))
+      setSelectedRows((prev)=>prev.filter((d)=>d?._id!==record?._id))
+    }
+    console.log(record,selected,selectedRows)
+  }
+console.log("heha",selectedIds)
+console.log("heha",selectedRows)
+
   const handleSwitchToUser = async (user) => {
     dispatch(switchUser())
     const adminId = getLocalStorageData('user_id')
@@ -443,8 +458,10 @@ function CoworkersPage() {
           dataSource={formattedUsers(data?.data?.data?.data, key === 'admin')}
           onChange={handleTableChange}
           rowSelection={{
-            onChange: handleRowSelect,
-            selectedRowKeys: selectedRows,
+            // onChange: handleRowSelect,
+            onSelect: handleSelectRow,
+            selectedRowKeys: selectedIds,
+            // selectedRowKeys: selectedRows,
           }}
           pagination={{
             current: page.page,
