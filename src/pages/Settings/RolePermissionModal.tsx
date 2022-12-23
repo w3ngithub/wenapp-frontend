@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react'
-import {Button, Form, Input, Modal, Spin, Checkbox} from 'antd'
+import {Button, Form, Input, Modal, Checkbox} from 'antd'
+import {MenuProps} from 'antd'
+import {Menu} from 'antd'
 import CommonRolePermission from './CommonRolePermission'
 import {
   DESELECT_ALL,
@@ -37,6 +39,35 @@ const RolePermissionModal = ({
   const [form] = Form.useForm()
   const [allAccess, setAllAccess] = useState<boolean>(false)
   const {state, dispatch} = useContext(RolePermissionContext)
+  const [current, setCurrent] = useState('Navigation')
+  const [items, setItems] = useState<MenuProps['items']>([
+    {
+      label: 'Navigation',
+      key: 'Navigation',
+    },
+  ])
+
+  useEffect(() => {
+    const activeKeys = permissionRole?.Navigation.filter(
+      (d) =>
+        state?.checkedList?.Navigation?.includes(d.name) &&
+        d.name !== 'todaysOverview'
+    ).map((d) => d.label)
+
+    const MenuItems = activeKeys.map((d) => {
+      return {
+        label: d,
+        key: d,
+      }
+    })
+    setItems([
+      {
+        label: 'Navigation',
+        key: 'Navigation',
+      },
+      ...MenuItems,
+    ])
+  }, [state?.checkedList])
 
   let rolePermissions: any = permissionRole
 
@@ -49,6 +80,11 @@ const RolePermissionModal = ({
       }
     })
     return formattedData
+  }
+
+  const onClick: MenuProps['onClick'] = (e) => {
+    console.log('click ', e)
+    setCurrent(e.key)
   }
 
   useEffect(() => {
@@ -105,6 +141,7 @@ const RolePermissionModal = ({
     }
     if (!toggle) {
       form.resetFields()
+      setCurrent('Navigation')
       dispatch({type: RESET})
     }
   }, [toggle])
@@ -215,8 +252,19 @@ const RolePermissionModal = ({
           </Checkbox>
         </div>
       </Form>
-      <div>
-        <CommonRolePermission allAccess={allAccess} isEditMode={isEditMode} />
+      <div className="role-content">
+        <div className="role-left-container">
+          <Menu
+            onClick={onClick}
+            selectedKeys={[current]}
+            mode="vertical"
+            items={items}
+          />
+        </div>
+
+        <div className="role-right-container">
+          <CommonRolePermission allAccess={allAccess} title={current} />
+        </div>
       </div>
       {duplicateValue && (
         <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>

@@ -8,7 +8,6 @@ import {
   SET_EDIT_DATA,
 } from 'constants/RolePermission'
 import React, {useReducer} from 'react'
-import {SET_COLLAPSE_OPEN} from '../constants/RolePermission'
 
 const initialState = {
   checkAll: {},
@@ -106,12 +105,6 @@ const reducer = (state, action) => {
         checkedList: action.payload.checkedList,
         checkAll: action.payload.checkAll,
         indeterminate: action.payload.indeterminate,
-      }
-
-    case SET_COLLAPSE_OPEN:
-      return {
-        ...state,
-        defauleCollapseOpen: action.payload,
       }
 
     case REMOVE_CHECKBOX_SELECTION:
