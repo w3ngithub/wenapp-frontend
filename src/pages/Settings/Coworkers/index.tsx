@@ -333,35 +333,12 @@ function Coworkers() {
 
   return (
     <>
-      <CommonModal
-        toggle={openModal}
-        type={type}
-        duplicateValue={duplicateValue}
-        setDuplicateValue={setDuplicateValue}
-        currentData={arrayDataToSend}
-        isEditMode={isEditMode}
-        editData={dataToEdit}
-        isLoading={
-          addPositionMutation.isLoading ||
-          addPositionTypeMutation.isLoading ||
-          addRoleMutation.isLoading ||
-          editPositionMutation.isLoading ||
-          editRoleMutation.isLoading ||
-          editPositionTypeMutation.isLoading
-        }
-        onSubmit={isEditMode ? handleEditClick : handleAddClick}
-        onCancel={handleCloseModal}
-      />
-      <RolePermissionProvider>
-        <RolePermissionModal
-          toggle={openRole}
-          onSubmit={
-            isEditMode ? handleEditRolePermission : handleAddRolePermission
-          }
-          onCancel={handleCloseModal}
+      {openModal && (
+        <CommonModal
+          toggle={openModal}
+          type={type}
           duplicateValue={duplicateValue}
           setDuplicateValue={setDuplicateValue}
-          width={1400}
           currentData={arrayDataToSend}
           isEditMode={isEditMode}
           editData={dataToEdit}
@@ -373,8 +350,36 @@ function Coworkers() {
             editRoleMutation.isLoading ||
             editPositionTypeMutation.isLoading
           }
+          onSubmit={isEditMode ? handleEditClick : handleAddClick}
+          onCancel={handleCloseModal}
         />
-      </RolePermissionProvider>
+      )}
+      {openRole && (
+        <RolePermissionProvider>
+          <RolePermissionModal
+            toggle={openRole}
+            onSubmit={
+              isEditMode ? handleEditRolePermission : handleAddRolePermission
+            }
+            onCancel={handleCloseModal}
+            duplicateValue={duplicateValue}
+            setDuplicateValue={setDuplicateValue}
+            width={1400}
+            currentData={arrayDataToSend}
+            isEditMode={isEditMode}
+            editData={dataToEdit}
+            isLoading={
+              addPositionMutation.isLoading ||
+              addPositionTypeMutation.isLoading ||
+              addRoleMutation.isLoading ||
+              editPositionMutation.isLoading ||
+              editRoleMutation.isLoading ||
+              editPositionTypeMutation.isLoading
+            }
+          />
+        </RolePermissionProvider>
+      )}
+
       <Row>
         <Col span={6} xs={24} md={12}>
           <Card title="Invite A Co-worker">

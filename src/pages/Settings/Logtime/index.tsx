@@ -9,7 +9,7 @@ import {
   editLogType,
   getLogtypes,
 } from 'services/settings/logTime'
-import {capitalizeInput, getIsAdmin, handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonLogTypeModal from '../CommonLogTypeModal'
 
@@ -109,24 +109,27 @@ function Logtime() {
 
   return (
     <>
-      <CommonLogTypeModal
-        toggle={openModal}
-        type={type}
-        duplicateValue={duplicateValue}
-        hexCode={hexCode}
-        setHexCode={setHexCode}
-        setDuplicateValue={setDuplicateValue}
-        displayColorPicker={displayColorPicker}
-        setDisplayColorPicker={setDisplayColorPicker}
-        currentData={arrayDataToSend}
-        isEditMode={isEditMode}
-        editData={dataToEdit}
-        isLoading={
-          addLogTypeMutation.isLoading || editLogTypeMutation.isLoading
-        }
-        onSubmit={isEditMode ? handleEditClick : handleAddClick}
-        onCancel={handleCloseModal}
-      />
+      {openModal && (
+        <CommonLogTypeModal
+          toggle={openModal}
+          type={type}
+          duplicateValue={duplicateValue}
+          hexCode={hexCode}
+          setHexCode={setHexCode}
+          setDuplicateValue={setDuplicateValue}
+          displayColorPicker={displayColorPicker}
+          setDisplayColorPicker={setDisplayColorPicker}
+          currentData={arrayDataToSend}
+          isEditMode={isEditMode}
+          editData={dataToEdit}
+          isLoading={
+            addLogTypeMutation.isLoading || editLogTypeMutation.isLoading
+          }
+          onSubmit={isEditMode ? handleEditClick : handleAddClick}
+          onCancel={handleCloseModal}
+        />
+      )}
+
       <Card
         title="Log Type"
         extra={
