@@ -59,7 +59,7 @@ const RolePermissionBox = ({data, title, allAccess, handleDefaultKeys}) => {
       </div>
       <Divider />
       <Checkbox.Group value={state?.checkedList?.[title]} onChange={onChange}>
-        <Row gutter={[6, 10]}>
+        <Row gutter={[6, 25]}>
           {data?.map((d) => (
             <Col span={12} spacing>
               <Checkbox value={d.name}>{d.label}</Checkbox>

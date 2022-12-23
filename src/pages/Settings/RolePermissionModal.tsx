@@ -32,7 +32,6 @@ const RolePermissionModal = ({
   duplicateValue,
   setDuplicateValue,
   width,
-  currentData,
   isEditMode,
   editData,
   isLoading,
@@ -223,6 +222,7 @@ const RolePermissionModal = ({
       onCancel={(value) => {
         onCancel(setDuplicateValue)
       }}
+      bodyStyle={{paddingBottom: 0}}
       footer={[
         <Button key="back" onClick={() => onCancel(setDuplicateValue)}>
           Cancel
