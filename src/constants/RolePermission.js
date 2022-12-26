@@ -1,3 +1,18 @@
+export const permissionRoleLogo = {
+  Navigation:'navigation',
+  Dashboard:'dasbhoard',
+  'Co-Workers':'view-o',
+  Projects:'folder-o',
+  Attendance:'select',
+  'Log Time':'ckeditor',
+  'Leave Management':'hotel-booking',
+  'Notice Board':'calendar-new',
+  Blog:'chat-new',
+  Reports:'chart-line',
+  Resources:'editor',
+  Settings: 'setting'
+}
+
 export const permissionRole = {
   Navigation: [
     {name: 'todaysOverview', label: `Today's Overview`, rule: []},
@@ -185,16 +200,18 @@ export const permissionRole = {
   ],
   Resources: [
     {name: 'createFAQ', label: 'Create FAQ', rule: []},
-    {name: 'createPolicy', label: 'Create Policy', rule: []},
-    {name: 'createHoliday', label: 'Create Holiday', rule: []},
-    {name: 'editFAQ', label: 'Edit FAQ', rule: []},
-    {name: 'editPolicy', label: 'Edit Policy', rule: []},
-    {name: 'editHoliday', label: 'Edit Holiday', rule: []},
     {name: 'viewFAQ', label: 'View FAQ', rule: []},
-    {name: 'viewPolicy', label: 'View Policy', rule: []},
-    {name: 'viewHoliday', label: 'View Holiday', rule: []},
+    {name: 'editFAQ', label: 'Edit FAQ', rule: []},
     {name: 'deleteFAQ', label: 'Delete FAQ', rule: []},
+
+    {name: 'createPolicy', label: 'Create Policy', rule: []},
+    {name: 'viewPolicy', label: 'View Policy', rule: []},
+    {name: 'editPolicy', label: 'Edit Policy', rule: []},
     {name: 'deletePolicy', label: 'Delete Policy', rule: []},
+
+    {name: 'createHoliday', label: 'Create Holiday', rule: []},
+    {name: 'viewHoliday', label: 'View Holiday', rule: []},
+    {name: 'editHoliday', label: 'Edit Holiday', rule: []},
     {name: 'deleteHoliday', label: 'Delete Holiday', rule: []},
   ],
   Settings: [

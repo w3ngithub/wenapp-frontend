@@ -7,6 +7,7 @@ import {
   DESELECT_ALL,
   GLOBAL_SELECT_ALL,
   permissionRole,
+  permissionRoleLogo,
   RESET,
   SET_EDIT_DATA,
 } from 'constants/RolePermission'
@@ -54,20 +55,24 @@ const RolePermissionModal = ({
         d.name !== 'todaysOverview'
     ).map((d) => d.label)
 
-    const MenuItems = activeKeys.map((d) => {
+    const MenuItems = activeKeys.map((d:string) => {
+      const logo:any = permissionRoleLogo 
       return {
         label: d,
         key: d,
+        icon:<i className={`icon icon-${logo[d]} gx-fs-xlxl`}/>
       }
     })
     setItems([
       {
         label: 'Navigation',
         key: 'Navigation',
+        icon:<i className={`icon icon-${permissionRoleLogo['Navigation']} gx-fs-xlxl`}/>
       },
       {
         label:'Dashboard',
-        key:'Dashboard'
+        key:'Dashboard',
+        icon:<i className={`icon icon-${permissionRoleLogo['Dashboard']} gx-fs-xlxl`}/>
       },
       ...MenuItems,
     ])

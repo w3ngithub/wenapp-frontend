@@ -45,7 +45,8 @@ const RolePermissionBox = ({data, title, allAccess, handleDefaultKeys}) => {
     <div className="role-box">
       <div className="role-box-header">
         <p>
-          <span className="role-box-title">{title} permission</span>
+          <span className="role-box-title">{title} </span>
+         <span className='role-permission'>permission</span>
         </p>
         <Checkbox
           indeterminate={
