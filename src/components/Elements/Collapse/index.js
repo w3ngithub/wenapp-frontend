@@ -38,7 +38,9 @@ const Collapses = ({
                       >
                         <CustomIcon name="edit" />
                       </span>
-                      <Divider type="vertical" style={{color: 'blue'}} />
+                      {isDeletable && (
+                        <Divider type="vertical" style={{color: 'blue'}} />
+                      )}
                     </>
                   )}
                   {isDeletable && (
