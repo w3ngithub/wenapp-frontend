@@ -338,13 +338,16 @@ function LateAttendance({userRole}: {userRole: any}) {
 
   return (
     <div>
-      <LeaveCutModal
-        coWorker={attendanceRecord?._id?.user || ''}
-        open={openLeaveCutModal}
-        onClose={hanldeCloseLeaveCutModal}
-        onSubmit={handleCutLeave}
-        loading={leaveMutation.isLoading}
-      />
+      {openLeaveCutModal && (
+        <LeaveCutModal
+          coWorker={attendanceRecord?._id?.user || ''}
+          open={openLeaveCutModal}
+          onClose={hanldeCloseLeaveCutModal}
+          onSubmit={handleCutLeave}
+          loading={leaveMutation.isLoading}
+        />
+      )}
+
       <ViewDetailModel
         toogle={openView}
         title={attToView?.user ? attToView?.user : 'Attendance Details'}

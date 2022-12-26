@@ -119,15 +119,17 @@ function Policy() {
 
   return (
     <>
-      <CommonResourceModal
-        toggle={openModal}
-        type={type}
-        isEditMode={isEditMode}
-        editData={dataToEdit}
-        isLoading={addPolicyMutation.isLoading}
-        onSubmit={isEditMode ? handleEditClick : handleAddClick}
-        onCancel={handleCloseModal}
-      />
+      {openModal && (
+        <CommonResourceModal
+          toggle={openModal}
+          type={type}
+          isEditMode={isEditMode}
+          editData={dataToEdit}
+          isLoading={addPolicyMutation.isLoading}
+          onSubmit={isEditMode ? handleEditClick : handleAddClick}
+          onCancel={handleCloseModal}
+        />
+      )}
       <Card
         title="Policy"
         extra={
