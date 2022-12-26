@@ -23,7 +23,7 @@ export const permissionRole = {
     {name: `viewAnnouncement`, label: `View Announcement `, rule: []},
     {
       name: 'viewCoworkersPunhedInToday',
-      label: `View Co-workers Punhed In Today`,
+      label: `View Co-workers Punched In Today`,
       rule: [],
     },
     {name: `viewHolidays`, label: `View Holidays `, rule: []},
@@ -151,7 +151,7 @@ export const permissionRole = {
     },
     {name: 'viewLeaves', label: 'View Leaves', rule: []},
     {name: 'viewLeavesCalendar', label: 'View Leaves Calendar', rule: []},
-    {name: 'addCoworkersLeaves', label: 'Add Co=workers Leaves', rule: []},
+    {name: 'addCoworkersLeaves', label: 'Add Co-workers Leaves', rule: []},
     {
       name: 'showQuarterlyLeaveDetails',
       label: 'Show Quarterly Leave Details',
