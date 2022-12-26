@@ -22,40 +22,40 @@ function Settings() {
   return (
     <Card title="Settings">
       <Tabs type="card">
-        {Settings?.coWorkers && (
+        {Settings?.coWorker && (
           <TabPane tab="Co-Workers" key="1">
             <Coworkers />
           </TabPane>
         )}
 
-        {Settings?.projects && (
+        {Settings?.project && (
           <TabPane tab="Projects" key="2">
             <Projects />
           </TabPane>
         )}
-        {Settings?.logTime && (
+        {Settings?.logTimes && (
           <TabPane tab="Log Time" key="3">
             <Logtime />
           </TabPane>
         )}
 
-        {Settings?.leaveManagement && (
+        {Settings?.leaveManagements && (
           <TabPane tab="Leave Management" key="4">
             <Leave />
           </TabPane>
         )}
-        {Settings?.noticeBoard && (
+        {Settings?.noticeBoards && (
           <TabPane tab="Notice Board" key="5">
             <Noticeboard />
           </TabPane>
         )}
-        {Settings?.blog && (
+        {Settings?.blogs && (
           <TabPane tab="Blog" key="6">
             <Blog />
           </TabPane>
         )}
 
-        {Settings?.Resources && (
+        {Settings?.resource && (
           <TabPane tab="Resources" key="7">
             <Resources />
           </TabPane>
