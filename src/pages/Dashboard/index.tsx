@@ -604,16 +604,21 @@ const Dashboard = () => {
           </Col>
         )}
 
-        <Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
-          <Widget>
-            <EventsAndAnnouncements
-              announcements={notices?.data?.data?.notices}
-              holidays={Holidays?.data?.data?.data?.[0]?.holidays}
-              birthdays={BirthMonthUsers?.data?.data?.users}
-              salaryReview={salaryReview?.data?.data?.users}
-            />
-          </Widget>
-        </Col>
+        {(NavigationDashboard?.viewSalaryReview ||
+          NavigationDashboard?.viewAnnouncement ||
+          NavigationDashboard?.viewHolidays ||
+          NavigationDashboard?.viewBirthdays) && (
+          <Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
+            <Widget>
+              <EventsAndAnnouncements
+                announcements={notices?.data?.data?.notices}
+                holidays={Holidays?.data?.data?.data?.[0]?.holidays}
+                birthdays={BirthMonthUsers?.data?.data?.users}
+                salaryReview={salaryReview?.data?.data?.users}
+              />
+            </Widget>
+          </Col>
+        )}
 
         <Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
           {NavigationDashboard?.viewCalendar && (
