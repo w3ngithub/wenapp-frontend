@@ -59,7 +59,6 @@ const NOTICE_COLUMNS = (
               <span className="gx-link" onClick={() => openModal(record, true)}>
                 <CustomIcon name="view" />
               </span>
-              <Divider type="vertical" />
             </>
           )}
 
@@ -67,17 +66,20 @@ const NOTICE_COLUMNS = (
             <>
               {role?.editNotice && (
                 <>
+                  {role?.viewNotice && <Divider type="vertical" />}
                   <span
                     className="gx-link"
                     onClick={() => openModal(record, false)}
                   >
                     <CustomIcon name="edit" />
                   </span>
-                  <Divider type="vertical" />
                 </>
               )}
               {role?.deleteNotice && (
                 <>
+                  {(role?.editNotice || role?.viewNotice) && (
+                    <Divider type="vertical" />
+                  )}
                   <Popconfirm
                     title="Are you sure to delete this notice?"
                     onConfirm={() => confirmDelete(record)}
