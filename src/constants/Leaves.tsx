@@ -94,7 +94,7 @@ const LEAVES_COLUMN = ({
                       }
                     >
                       <>
-                        <Divider type="vertical" />
+                        {viewLeave && <Divider type="vertical" />}
 
                         <span
                           onClick={() => onApproveClick(record)}
@@ -113,7 +113,9 @@ const LEAVES_COLUMN = ({
                       }
                     >
                       <>
-                        <Divider type="vertical" />
+                        {(viewLeave || approveLeave) && (
+                          <Divider type="vertical" />
+                        )}
 
                         <span
                           className="gx-link gx-text-danger"
@@ -136,7 +138,9 @@ const LEAVES_COLUMN = ({
                       }
                     >
                       <>
-                        <Divider type="vertical" />
+                        {(viewLeave || cancelLeave || approveLeave) && (
+                          <Divider type="vertical" />
+                        )}
                         <i
                           className="icon icon-edit gx-link"
                           onClick={() => onEditClick(record, false)}
