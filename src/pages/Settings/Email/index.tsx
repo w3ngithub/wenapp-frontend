@@ -115,14 +115,16 @@ function Email() {
 
   return (
     <>
-      <EmailModal
-        toggle={openModal}
-        isEditMode={isEditMode}
-        editData={dataToEdit}
-        isLoading={addEmailMutation.isLoading || editEmailMutation.isLoading}
-        onSubmit={isEditMode ? handleEditClick : handleAddClick}
-        onCancel={handleCloseModal}
-      />
+      {openModal && (
+        <EmailModal
+          toggle={openModal}
+          isEditMode={isEditMode}
+          editData={dataToEdit}
+          isLoading={addEmailMutation.isLoading || editEmailMutation.isLoading}
+          onSubmit={isEditMode ? handleEditClick : handleAddClick}
+          onCancel={handleCloseModal}
+        />
+      )}
       <Row>
         <Col span={6} xs={24} md={24}>
           <Card

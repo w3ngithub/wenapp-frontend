@@ -54,6 +54,7 @@ function SidebarContent(props) {
             selectedKeys={[selectedOpenKeys]}
             theme={themeType === THEME_TYPE_LITE ? 'lite' : 'dark'}
             mode="inline"
+            // items={items}
           >
             {SIDEBAR_ITEMS({Navigation, Reports, NavigationResources})
               .filter((item) => item.roles === true)
@@ -97,7 +98,6 @@ function SidebarContent(props) {
                               to={`${item.url}/${subItem.url}`}
                               onClick={collapseNav}
                             >
-                              {/* <i className={`icon ${item.icon}`} /> */}
                               <IntlMessages id={subItem.name} />
                             </Link>
                           </Menu.Item>

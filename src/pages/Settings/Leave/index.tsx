@@ -337,30 +337,34 @@ function Leave() {
 
   return (
     <>
-      <LeaveModal
-        toggle={openModal}
-        isEditMode={isEditMode}
-        duplicateValue={duplicateValue}
-        setDuplicateValue={setDuplicateValue}
-        currentData={arrayDataToSend}
-        editData={dataToEdit}
-        isLoading={
-          addLeaveTypeMutation.isLoading || editLeaveTypeMutation.isLoading
-        }
-        onSubmit={isEditMode ? handleEditClick : handleAddClick}
-        onCancel={handleCloseModal}
-      />
-      <LeaveQuarterModal
-        toggle={openQuarterModel}
-        isEditMode={isQuarterEditMode}
-        editData={leaveQuarter?.data?.data?.data[0]}
-        isLoading={
-          addLeaveQuarterMutation.isLoading ||
-          editLeaveQuarterMutation.isLoading
-        }
-        onSubmit={addLeaveQuarters}
-        onCancel={closeQuarterModel}
-      />
+      {openModal && (
+        <LeaveModal
+          toggle={openModal}
+          isEditMode={isEditMode}
+          duplicateValue={duplicateValue}
+          setDuplicateValue={setDuplicateValue}
+          currentData={arrayDataToSend}
+          editData={dataToEdit}
+          isLoading={
+            addLeaveTypeMutation.isLoading || editLeaveTypeMutation.isLoading
+          }
+          onSubmit={isEditMode ? handleEditClick : handleAddClick}
+          onCancel={handleCloseModal}
+        />
+      )}
+      {openQuarterModel && (
+        <LeaveQuarterModal
+          toggle={openQuarterModel}
+          isEditMode={isQuarterEditMode}
+          editData={leaveQuarter?.data?.data?.data[0]}
+          isLoading={
+            addLeaveQuarterMutation.isLoading ||
+            editLeaveQuarterMutation.isLoading
+          }
+          onSubmit={addLeaveQuarters}
+          onCancel={closeQuarterModel}
+        />
+      )}
       <Row>
         <Col span={6} xs={24} md={12}>
           <Card

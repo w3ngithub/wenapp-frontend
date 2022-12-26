@@ -261,26 +261,29 @@ function Leaves({
   }))
   return (
     <div>
-      <LeaveModal
-        leaveData={dataToEdit}
-        isEditMode={isEditMode}
-        open={openModal}
-        onClose={handleCloseModal}
-        users={usersQuery?.data?.data?.data?.data}
-        readOnly={readOnly}
-      />
-
-      <CancelLeaveModal
-        open={openApproveLeaveModal}
-        onClose={handleCloseApproveModal}
-        onSubmit={handleApproveLeave}
-        leaveData={leaveDetails}
-        loader={loader}
-        setLoader={setLoader}
-        title={'Approve Leave'}
-        isRequired={false}
-        name={'leaveApproveReason'}
-      />
+      {openModal && (
+        <LeaveModal
+          leaveData={dataToEdit}
+          isEditMode={isEditMode}
+          open={openModal}
+          onClose={handleCloseModal}
+          users={usersQuery?.data?.data?.data?.data}
+          readOnly={readOnly}
+        />
+      )}
+      {openApproveLeaveModal && (
+        <CancelLeaveModal
+          open={openApproveLeaveModal}
+          onClose={handleCloseApproveModal}
+          onSubmit={handleApproveLeave}
+          leaveData={leaveDetails}
+          loader={loader}
+          setLoader={setLoader}
+          title={'Approve Leave'}
+          isRequired={false}
+          name={'leaveApproveReason'}
+        />
+      )}
 
       <div className="components-table-demo-control-bar">
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">

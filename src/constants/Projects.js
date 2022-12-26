@@ -1,10 +1,6 @@
 import React from 'react'
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
-import {
-  PROJECTS_TABLE_ACTION_DELETE_NO_ACCESS,
-  PROJECTS_TABLE_ACTION_NO_ACCESS,
-} from './RoleAccess'
 import {Input} from 'antd'
 import {getIsAdmin} from 'helpers/utils'
 
@@ -58,7 +54,6 @@ const PROJECT_COLUMNS = (
     width: 150,
     key: 'startDate',
     sorter: true,
-
     sortOrder: sortedInfo.columnKey === 'startDate' && sortedInfo.order,
   },
   {
@@ -67,14 +62,15 @@ const PROJECT_COLUMNS = (
     width: 150,
     key: 'endDate',
     sorter: true,
-
     sortOrder: sortedInfo.columnKey === 'endDate' && sortedInfo.order,
   },
   {
     title: 'Project Type',
     dataIndex: 'projectTypes',
     width: 150,
-    key: 'projectTypes',
+    render: (text, record) => (
+      <span>{record?.projectTypes?.[0]?.props?.children}</span>
+    ),
   },
   {
     title: 'Project Status',
@@ -97,7 +93,6 @@ const PROJECT_COLUMNS = (
           >
             Log Time
           </span>
-
           {role?.viewProjects && (
             <>
               <Divider type="vertical" />
