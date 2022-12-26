@@ -1,5 +1,4 @@
 import '@ant-design/compatible/assets/index.css'
-import {async} from '@firebase/util'
 import {useQuery} from '@tanstack/react-query'
 import {
   Button,
@@ -87,7 +86,9 @@ function ProjectModal({
           : values?.liveUrl?.join('')
       onSubmit({
         ...values,
-        name: values?.name?.trim()?.[0].toUpperCase() + values?.name?.trim()?.slice(1),
+        name:
+          values?.name?.trim()?.[0].toUpperCase() +
+          values?.name?.trim()?.slice(1),
         designers: updatedDesigners,
         qa: updatedQAs,
         developers: updatedDevelopers,

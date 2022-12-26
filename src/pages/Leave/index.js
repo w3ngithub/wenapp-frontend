@@ -144,18 +144,20 @@ function Leave() {
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
     <>
-      <CancelLeaveModal
-        open={openCancelLeaveModal}
-        onClose={handleCloseCancelLeaveModal}
-        onSubmit={handleCancelLeave}
-        leaveData={leaveData}
-        loader={submittingCancelReason}
-        setLoader={setSubmittingCancelReason}
-        title={'Cancel Leave'}
-        isRequired={true}
-        label={'Cancel Leave Reason'}
-        name={'leaveCancelReason'}
-      />
+      {openCancelLeaveModal && (
+        <CancelLeaveModal
+          open={openCancelLeaveModal}
+          onClose={handleCloseCancelLeaveModal}
+          onSubmit={handleCancelLeave}
+          leaveData={leaveData}
+          loader={submittingCancelReason}
+          setLoader={setSubmittingCancelReason}
+          title={'Cancel Leave'}
+          isRequired={true}
+          label={'Cancel Leave Reason'}
+          name={'leaveCancelReason'}
+        />
+      )}
 
       <Card title="Leave Management System">
         <Row>

@@ -172,6 +172,7 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="Name"
+            hasFeedback={readOnly ? false : true}
             name="name"
             rules={[
               {
@@ -197,7 +198,6 @@ function UserDetailForm({
                 },
               },
             ]}
-            hasFeedback={readOnly ? false : true}
           >
             <Input placeholder="Enter Name" disabled={readOnly} />
           </FormItem>
@@ -232,6 +232,7 @@ function UserDetailForm({
             {...formItemLayout}
             label="Office Start Time"
             name="officeTime"
+            hasFeedback={readOnly ? false : true}
             rules={[
               {
                 required: true,
@@ -247,7 +248,6 @@ function UserDetailForm({
                 },
               },
             ]}
-            hasFeedback={readOnly ? false : true}
           >
             <TimePicker
               disabled={readOnly}
@@ -272,7 +272,6 @@ function UserDetailForm({
               showSearch
               placeholder="Select Position"
               disabled={readOnly}
-              hasFeedback={readOnly ? false : true}
               filterOption={filterOptions}
               onChange={handlePositionChange}
             >
@@ -300,7 +299,6 @@ function UserDetailForm({
               showSearch
               placeholder="Select Position Type"
               disabled={readOnly}
-              hasFeedback={readOnly ? false : true}
               filterOption={filterOptions}
             >
               {positionTypes &&
@@ -327,7 +325,6 @@ function UserDetailForm({
               showSearch
               placeholder="Select Status"
               disabled={readOnly}
-              hasFeedback={readOnly ? false : true}
               filterOption={filterOptions}
               onChange={handleStatusChange}
             >

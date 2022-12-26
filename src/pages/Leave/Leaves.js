@@ -20,10 +20,6 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {getLeaveTypes} from 'services/leaves'
-import {
-  LEAVES_TAB_ACTIONS_NO_ACCESS,
-  LEAVE_TAB_ADD_LEAVE_NO_ACCESS,
-} from 'constants/RoleAccess'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {sendEmailforLeave} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
