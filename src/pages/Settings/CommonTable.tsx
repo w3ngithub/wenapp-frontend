@@ -19,13 +19,17 @@ function CommonTable({
   pagination?: any
   footer?: any
 }) {
+  const formattedData = data?.map((item: any, index: number) => ({
+    ...item,
+    key: item?._id ?? index,
+  }))
   return (
     <>
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
         columns={columns}
-        dataSource={data}
+        dataSource={formattedData}
         pagination={pagination}
         loading={isLoading}
         footer={footer}
