@@ -221,19 +221,21 @@ function LogTime() {
 
   return (
     <div>
-      <LogModal
-        toggle={openModal}
-        onClose={handleCloseTimelogModal}
-        onSubmit={handleLogTypeSubmit}
-        loading={
-          addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
-        }
-        logTypes={logTypes}
-        initialValues={timeLogToUpdate}
-        isEditMode={isEditMode}
-        isUserLogtime={true}
-        role={key}
-      />
+      {openModal && (
+        <LogModal
+          toggle={openModal}
+          onClose={handleCloseTimelogModal}
+          onSubmit={handleLogTypeSubmit}
+          loading={
+            addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
+          }
+          logTypes={logTypes}
+          initialValues={timeLogToUpdate}
+          isEditMode={isEditMode}
+          isUserLogtime={true}
+          role={key}
+        />
+      )}
       <div style={{marginTop: 20}}></div>
       <Card title={' Time Summary'}>
         <TimeSummary

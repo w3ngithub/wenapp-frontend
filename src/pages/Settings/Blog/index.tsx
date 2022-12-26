@@ -10,7 +10,7 @@ import {
   getBlogCategories,
 } from 'services/settings/blog'
 import CommonModal from '../CommonModal'
-import {capitalizeInput, getIsAdmin, handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 
 function Blog() {
@@ -116,21 +116,23 @@ function Blog() {
 
   return (
     <>
-      <CommonModal
-        toggle={openModal}
-        duplicateValue={duplicateValue}
-        setDuplicateValue={setDuplicateValue}
-        type={type}
-        currentData={arrayDataToSend}
-        isEditMode={isEditMode}
-        editData={dataToEdit}
-        isLoading={
-          addBlogCategoryMutation.isLoading ||
-          editBlogCategoryMutation.isLoading
-        }
-        onSubmit={isEditMode ? handleEditClick : handleAddClick}
-        onCancel={handleCloseModal}
-      />
+      {openModal && (
+        <CommonModal
+          toggle={openModal}
+          duplicateValue={duplicateValue}
+          setDuplicateValue={setDuplicateValue}
+          type={type}
+          currentData={arrayDataToSend}
+          isEditMode={isEditMode}
+          editData={dataToEdit}
+          isLoading={
+            addBlogCategoryMutation.isLoading ||
+            editBlogCategoryMutation.isLoading
+          }
+          onSubmit={isEditMode ? handleEditClick : handleAddClick}
+          onCancel={handleCloseModal}
+        />
+      )}
       <Card
         title="Category"
         extra={

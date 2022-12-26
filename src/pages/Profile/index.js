@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import {Col, notification, Row} from 'antd'
 import About from 'components/Modules/profile/About/index'
-import Biography from 'components/Modules/profile/Biography/index'
 import Contact from '../../components/Modules/profile/Contact/index'
 import Auxiliary from 'util/Auxiliary'
 import ProfileHeader from 'components/Modules/profile/ProfileHeader'

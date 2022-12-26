@@ -307,18 +307,20 @@ function CoworkersPage() {
         files={files}
         setFiles={setFiles}
       />
-      <UserDetailForm
-        toggle={openUserDetailModal}
-        onToggleModal={handleToggleModal}
-        onSubmit={handleUserDetailSubmit}
-        loading={mutation.isLoading}
-        roles={roleData}
-        position={positionData}
-        positionTypes={positionTypes}
-        intialValues={userRecord}
-        readOnly={readOnly}
-        currentQuarter={quarterQuery}
-      />
+      {openUserDetailModal && (
+        <UserDetailForm
+          toggle={openUserDetailModal}
+          onToggleModal={handleToggleModal}
+          onSubmit={handleUserDetailSubmit}
+          loading={mutation.isLoading}
+          roles={roleData}
+          position={positionData}
+          positionTypes={positionTypes}
+          intialValues={userRecord}
+          readOnly={readOnly}
+          currentQuarter={quarterQuery}
+        />
+      )}
       <Card title="Co-workers">
         <div className="components-table-demo-control-bar">
           <div className="gx-d-flex gx-justify-content-between gx-flex-row ">

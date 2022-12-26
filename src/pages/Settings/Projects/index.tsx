@@ -317,27 +317,30 @@ function Projects() {
   }
   return (
     <>
-      <CommonModal
-        toggle={openModal}
-        type={type}
-        currentData={arrayDataToSend}
-        duplicateValue={duplicateValue}
-        setDuplicateValue={setDuplicateValue}
-        isEditMode={isEditMode}
-        editData={dataToEdit}
-        isLoading={
-          addProjectTypeMutation.isLoading ||
-          addProjectStatusMutation.isLoading ||
-          addProjectTagMutation.isLoading ||
-          addClientMutation.isLoading ||
-          editProjectTypeMutation.isLoading ||
-          editProjectStatusMutation.isLoading ||
-          editClientMutation.isLoading ||
-          editProjectTagMutation.isLoading
-        }
-        onSubmit={isEditMode ? handleEditClick : handleAddClick}
-        onCancel={handleCloseModal}
-      />
+      {openModal && (
+        <CommonModal
+          toggle={openModal}
+          type={type}
+          currentData={arrayDataToSend}
+          duplicateValue={duplicateValue}
+          setDuplicateValue={setDuplicateValue}
+          isEditMode={isEditMode}
+          editData={dataToEdit}
+          isLoading={
+            addProjectTypeMutation.isLoading ||
+            addProjectStatusMutation.isLoading ||
+            addProjectTagMutation.isLoading ||
+            addClientMutation.isLoading ||
+            editProjectTypeMutation.isLoading ||
+            editProjectStatusMutation.isLoading ||
+            editClientMutation.isLoading ||
+            editProjectTagMutation.isLoading
+          }
+          onSubmit={isEditMode ? handleEditClick : handleAddClick}
+          onCancel={handleCloseModal}
+        />
+      )}
+
       <Row>
         <Col span={6} xs={24} md={12}>
           <Card

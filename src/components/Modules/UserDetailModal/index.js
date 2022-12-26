@@ -253,7 +253,7 @@ function UserDetailForm({
               disabled={readOnly}
               style={{width: '100%'}}
               format="h:mm:ss A"
-              defaultValue={moment('09:00:00 AM', 'HH:mm:ss a')}
+              initialValues={moment('09:00:00 AM', 'HH:mm:ss a')}
             />
           </FormItem>
           <FormItem

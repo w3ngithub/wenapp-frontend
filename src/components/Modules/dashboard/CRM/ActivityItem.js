@@ -5,7 +5,7 @@ import Auxiliary from 'util/Auxiliary'
 const ActivityItem = ({task, title = '', viewedBy = []}) => {
   const userId = localStorage.getItem('user_id') || ''
   const formattedId = userId.replaceAll('"', '')
-
+  const displayTitle = title ? task?.title : task?.title?.[0]?.props?.children
   return (
     <Auxiliary>
       <div className={`gx-d-flex`}>
@@ -17,8 +17,11 @@ const ActivityItem = ({task, title = '', viewedBy = []}) => {
                 : ''
             }
           >
-            {task?.title}
+            {displayTitle?.map((item, index) => (
+              <div key={index}>{item}</div>
+            ))}
           </div>
+
           {task?.imageList?.length > 0 ? (
             <ul className="gx-list-inline gx-mb-3 gx-mt-2">
               {task?.imageList?.map((image, index) => {
@@ -52,7 +55,7 @@ const ActivityItem = ({task, title = '', viewedBy = []}) => {
           <div className="circle"></div>
         )}
       </div>
-      <p
+      <div
         className={
           title === 'Notifications' || title === 'Recent Activities'
             ? 'notificationDivider'
@@ -60,7 +63,7 @@ const ActivityItem = ({task, title = '', viewedBy = []}) => {
         }
       >
         <Divider />
-      </p>
+      </div>
     </Auxiliary>
   )
 }

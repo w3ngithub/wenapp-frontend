@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
-import {dark, prism} from 'react-syntax-highlighter/dist/esm/styles/prism'
+import {prism} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import {docco} from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import {useNavigate, useParams} from 'react-router-dom'
 import {useQuery} from '@tanstack/react-query'
@@ -11,8 +11,6 @@ import {getBlog} from 'services/blog'
 import BlogsBreadCumb from './BlogsBreadCumb'
 import CircularProgress from 'components/Elements/CircularProgress'
 import moment from 'moment'
-import {LOCALSTORAGE_USER} from 'constants/Settings'
-import {BLOGS_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {getIsAdmin} from 'helpers/utils'
@@ -83,7 +81,7 @@ function Detail() {
         {mainArray?.map((item, index) => {
           if (index % 2 !== 0) {
             return (
-              <div>
+              <div key={index}>
                 <SyntaxHighlighter
                   language="javascript"
                   style={darkTheme ? docco : prism}
@@ -94,7 +92,7 @@ function Detail() {
               </div>
             )
           } else {
-            return <div>{HTMLReactParser(item || '')}</div>
+            return <div key={index}>{HTMLReactParser(item || '')}</div>
           }
         })}
       </Card>
