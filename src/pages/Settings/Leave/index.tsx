@@ -9,12 +9,7 @@ import {
   editLeaveType,
   getLeaveTypes,
 } from 'services/settings/leaveType'
-import {
-  capitalizeInput,
-  changeDate,
-  getIsAdmin,
-  handleResponse,
-} from 'helpers/utils'
+import {changeDate, getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import LeaveModal from './LeaveModal'
 import {
