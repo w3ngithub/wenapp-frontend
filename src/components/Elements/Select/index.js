@@ -36,8 +36,6 @@ const Select = ({
         style={style}
         onChange={onChange}
         defaultValue={initialValues ? initialValues : undefined}
-        // initialValues={null}
-
         onSearch={(e) => {
           inputSelect && setSearchValue(e)
           handleSearch(e)
