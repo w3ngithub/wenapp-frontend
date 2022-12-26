@@ -70,7 +70,9 @@ const CO_WORKERCOLUMNS = (
 
           {role?.['Co-Workers']?.disableCoworkers && !getIsAdmin() && (
             <>
-              <Divider type="vertical" />
+              {role?.['Co-Workers']?.viewCoworkers && (
+                <Divider type="vertical" />
+              )}
               <Popconfirm
                 title={`Are you sure to make Co-worker ${
                   record.active ? 'inactive' : 'active'
@@ -100,7 +102,10 @@ const CO_WORKERCOLUMNS = (
           )}
           {role?.['Co-Workers']?.editCoworkers && !getIsAdmin() && (
             <>
-              <Divider type="vertical" />
+              {(role?.['Co-Workers']?.disableCoworkers ||
+                role?.['Co-Workers']?.viewCoworkers) && (
+                <Divider type="vertical" />
+              )}
 
               <span
                 className="gx-link"
@@ -118,7 +123,11 @@ const CO_WORKERCOLUMNS = (
               JSON.parse(localStorage.getItem(LOCALSTORAGE_USER))
             ) && (
               <>
-                <Divider type="vertical" />
+                {(role?.['Co-Workers']?.editCoworkers ||
+                  role?.['Co-Workers']?.disableCoworkers ||
+                  role?.['Co-Workers']?.viewCoworkers) && (
+                  <Divider type="vertical" />
+                )}
                 <span
                   className="gx-link"
                   onClick={() => handleSwitchToUser(record)}
