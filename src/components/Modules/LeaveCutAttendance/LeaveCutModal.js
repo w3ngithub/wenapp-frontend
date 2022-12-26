@@ -39,8 +39,8 @@ const LeaveCutModal = ({open, onSubmit, onClose, loading, coWorker}) => {
     >
       <Spin spinning={loading}>
         <Form form={form}>
-          <FormItem name="leaveType">
-            <Radio.Group defaultValue={1}>
+          <FormItem name="leaveType" initialValue={1}>
+            <Radio.Group>
               <Radio value={1} checked>
                 Full Day
               </Radio>
