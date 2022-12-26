@@ -322,30 +322,38 @@ function ProjectLogs() {
 
   return (
     <div>
-      <ProjectModal
-        toggle={openViewModal}
-        onClose={handleCloseModal}
-        initialValues={userRecord?.project}
-        isEditMode={true}
-        readOnly={true}
-        isFromLog={true}
-      />
-      <LogTimeModal
-        toggle={openModal}
-        onClose={handleCloseTimelogModal}
-        onSubmit={handleLogTypeSubmit}
-        loading={
-          addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
-        }
-        logTypes={logTypes}
-        initialValues={timeLogToUpdate}
-        isEditMode={isEditMode}
-      />
-      <LogHoursModal
-        toggle={openLogHoursModal}
-        onClose={handleCloseLogHoursModal}
-        totalHours={totalHours}
-      />
+      {openViewModal && (
+        <ProjectModal
+          toggle={openViewModal}
+          onClose={handleCloseModal}
+          initialValues={userRecord?.project}
+          isEditMode={true}
+          readOnly={true}
+          isFromLog={true}
+        />
+      )}
+
+      {openModal && (
+        <LogTimeModal
+          toggle={openModal}
+          onClose={handleCloseTimelogModal}
+          onSubmit={handleLogTypeSubmit}
+          loading={
+            addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
+          }
+          logTypes={logTypes}
+          initialValues={timeLogToUpdate}
+          isEditMode={isEditMode}
+        />
+      )}
+      {openLogHoursModal && (
+        <LogHoursModal
+          toggle={openLogHoursModal}
+          onClose={handleCloseLogHoursModal}
+          totalHours={totalHours}
+        />
+      )}
+
       <LogsBreadCumb slug={projectSlug} />
       <div style={{marginTop: 20}}></div>
       <Card title={projectSlug + ' Time Summary'}>
