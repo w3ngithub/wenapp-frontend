@@ -65,6 +65,10 @@ const RolePermissionModal = ({
         label: 'Navigation',
         key: 'Navigation',
       },
+      {
+        label:'Dashboard',
+        key:'Dashboard'
+      },
       ...MenuItems,
     ])
   }, [state?.checkedList])
