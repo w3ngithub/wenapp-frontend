@@ -99,7 +99,9 @@ const LOGTIMES_COLUMNS = (
                   )}
 
                   <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
-                    <Divider type="vertical" />
+                    {role?.[`Log Time`]?.editLogTime && (
+                      <Divider type="vertical" />
+                    )}
                     <Popconfirm
                       title="Are you sure to delete this Log?"
                       onConfirm={() => confirmDelete(record)}
@@ -189,7 +191,9 @@ const LOGTIMES_COLUMNS = (
                   )}
 
                   <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
-                    <Divider type="vertical" />
+                    {role?.[`Log Time`]?.editLogTime && (
+                      <Divider type="vertical" />
+                    )}
                     <Popconfirm
                       title="Are you sure to delete this Log?"
                       onConfirm={() => confirmDelete(record)}
