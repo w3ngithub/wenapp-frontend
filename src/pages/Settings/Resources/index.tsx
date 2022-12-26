@@ -188,20 +188,23 @@ function Resources() {
 
   return (
     <>
-      <CommonResourceModal
-        toggle={openModal}
-        type={type}
-        isEditMode={isEditMode}
-        editData={dataToEdit}
-        isLoading={
-          addFaqMutation.isLoading ||
-          editFaqMutation.isLoading ||
-          addPolicyMutation.isLoading ||
-          editPolicyMutation.isLoading
-        }
-        onSubmit={isEditMode ? handleEditClick : handleAddClick}
-        onCancel={handleCloseModal}
-      />
+      {openModal && (
+        <CommonResourceModal
+          toggle={openModal}
+          type={type}
+          isEditMode={isEditMode}
+          editData={dataToEdit}
+          isLoading={
+            addFaqMutation.isLoading ||
+            editFaqMutation.isLoading ||
+            addPolicyMutation.isLoading ||
+            editPolicyMutation.isLoading
+          }
+          onSubmit={isEditMode ? handleEditClick : handleAddClick}
+          onCancel={handleCloseModal}
+        />
+      )}
+
       <Row>
         <Col span={6} xs={24} md={12}>
           <Card

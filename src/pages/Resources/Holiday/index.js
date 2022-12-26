@@ -171,16 +171,19 @@ function Holiday() {
 
   return (
     <div className="gx-main-content">
-      <CommonModal
-        toggle={openAdd}
-        isEditMode={isEditMode}
-        editData={dataToEdit}
-        onCancel={handleCloseModal}
-        onSubmit={isEditMode ? handleEditClick : handleAddClick}
-        isLoading={
-          createHolidaysMutation.isLoading || editHolidayMutation.isLoading
-        }
-      />
+      {openAdd && (
+        <CommonModal
+          toggle={openAdd}
+          isEditMode={isEditMode}
+          editData={dataToEdit}
+          onCancel={handleCloseModal}
+          onSubmit={isEditMode ? handleEditClick : handleAddClick}
+          isLoading={
+            createHolidaysMutation.isLoading || editHolidayMutation.isLoading
+          }
+        />
+      )}
+
       <Card
         title="Holidays"
         extra={

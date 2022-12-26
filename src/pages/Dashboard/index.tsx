@@ -37,12 +37,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import RoleAccess, {
-  DASHBOARD_CARD_CLICKABLE_ACCESS,
-  DASHBOARD_ICON_ACCESS,
-  DASHBOARD_PROJECT_LOG_NO_ACCESS,
-  DASHBOARD_PUNCH_IN_TODAY_CARD_ACCESS,
-} from 'constants/RoleAccess'
+import {DASHBOARD_ICON_ACCESS} from 'constants/RoleAccess'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -69,7 +64,6 @@ const Dashboard = () => {
   const [projectArray, setProjectArray] = useState([])
   const [chartData, setChartData] = useState([])
   const navigate = useNavigate()
-  const loggedInUser = useSelector(selectAuthUser)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)
@@ -509,8 +503,6 @@ const Dashboard = () => {
 
   const isAdmin = DASHBOARD_ICON_ACCESS.includes(key)
 
-  const width = isAdmin ? 6 : 12
-
   return (
     <Auxiliary>
       <Row>
@@ -661,7 +653,7 @@ const Dashboard = () => {
                       value={chart}
                       onChange={(c: any) => setChart(c)}
                       placeholder="Select Chart"
-                      defaultValue="Bar Chart"
+                      initialValues="Bar Chart"
                       options={[
                         {_id: '1', name: 'Bar Chart'},
                         {_id: '2', name: 'Pie Chart'},

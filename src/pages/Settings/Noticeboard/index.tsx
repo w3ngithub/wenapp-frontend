@@ -9,7 +9,7 @@ import {
   editNoticeboardType,
   getNoticeboardTypes,
 } from 'services/settings/noticeBoard'
-import {capitalizeInput, getIsAdmin, handleResponse} from 'helpers/utils'
+import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonModal from '../CommonModal'
 
@@ -120,21 +120,23 @@ function Noticeboard() {
 
   return (
     <>
-      <CommonModal
-        toggle={openModal}
-        type={type}
-        duplicateValue={duplicateValue}
-        setDuplicateValue={setDuplicateValue}
-        currentData={arrayDataToSend}
-        isEditMode={isEditMode}
-        editData={dataToEdit}
-        isLoading={
-          addNoticeboardTypeMutation.isLoading ||
-          editNoticeboardTypeMutation.isLoading
-        }
-        onSubmit={isEditMode ? handleEditClick : handleAddClick}
-        onCancel={handleCloseModal}
-      />
+      {openModal && (
+        <CommonModal
+          toggle={openModal}
+          type={type}
+          duplicateValue={duplicateValue}
+          setDuplicateValue={setDuplicateValue}
+          currentData={arrayDataToSend}
+          isEditMode={isEditMode}
+          editData={dataToEdit}
+          isLoading={
+            addNoticeboardTypeMutation.isLoading ||
+            editNoticeboardTypeMutation.isLoading
+          }
+          onSubmit={isEditMode ? handleEditClick : handleAddClick}
+          onCancel={handleCloseModal}
+        />
+      )}
       <Card
         title="Category"
         extra={
