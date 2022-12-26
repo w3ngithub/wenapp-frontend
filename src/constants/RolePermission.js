@@ -198,13 +198,13 @@ export const permissionRole = {
     {name: 'deleteHoliday', label: 'Delete Holiday', rule: []},
   ],
   Settings: [
-    {name: 'coWorkers', label: 'Co-Workers', rule: []},
-    {name: 'projects', label: 'Projects', rule: []},
-    {name: 'logTime', label: 'Log Time', rule: []},
-    {name: 'leaveManagement', label: 'Leave Management', rule: []},
-    {name: 'noticeBoard', label: 'Notice Board', rule: []},
-    {name: 'blog', label: 'Blog', rule: []},
-    {name: 'Resources', label: 'Resources', rule: []},
+    {name: 'coWorker', label: 'Co-Workers', rule: []},
+    {name: 'project', label: 'Projects', rule: []},
+    {name: 'logTimes', label: 'Log Time', rule: []},
+    {name: 'leaveManagements', label: 'Leave Management', rule: []},
+    {name: 'noticeBoards', label: 'Notice Board', rule: []},
+    {name: 'blogs', label: 'Blog', rule: []},
+    {name: 'resource', label: 'Resources', rule: []},
     {name: 'emails', label: 'Emails', rule: []},
   ],
 }
@@ -216,5 +216,4 @@ export const GLOBAL_SELECT_ALL = 'GLOBAL_SELECT_ALL'
 export const GLOBAL_REMOVE_ALL = 'GLOBAL_REMOVE_ALL'
 export const SET_EDIT_DATA = 'SET_EDIT_DATA'
 export const DESELECT_ALL = 'DESELECT_ALL'
-export const SET_COLLAPSE_OPEN = 'SET_COLLAPSE_OPEN'
 export const REMOVE_CHECKBOX_SELECTION = 'REMOVE_CHECKBOX_SELECTION'
