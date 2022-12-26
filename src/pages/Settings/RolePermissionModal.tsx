@@ -1,8 +1,11 @@
 import React, {useState, useEffect, useContext} from 'react'
-import {Button, Form, Input, Modal, Spin, Checkbox} from 'antd'
+import {Button, Form, Input, Modal, Checkbox} from 'antd'
+import {MenuProps} from 'antd'
+import {Menu} from 'antd'
 import CommonRolePermission from './CommonRolePermission'
 import {
   DESELECT_ALL,
+  GLOBAL_SELECT_ALL,
   permissionRole,
   RESET,
   SET_EDIT_DATA,
@@ -29,7 +32,6 @@ const RolePermissionModal = ({
   duplicateValue,
   setDuplicateValue,
   width,
-  currentData,
   isEditMode,
   editData,
   isLoading,
@@ -37,6 +39,39 @@ const RolePermissionModal = ({
   const [form] = Form.useForm()
   const [allAccess, setAllAccess] = useState<boolean>(false)
   const {state, dispatch} = useContext(RolePermissionContext)
+  const [current, setCurrent] = useState('Navigation')
+  const [items, setItems] = useState<MenuProps['items']>([
+    {
+      label: 'Navigation',
+      key: 'Navigation',
+    },
+  ])
+
+  useEffect(() => {
+    const activeKeys = permissionRole?.Navigation.filter(
+      (d) =>
+        state?.checkedList?.Navigation?.includes(d.name) &&
+        d.name !== 'todaysOverview'
+    ).map((d) => d.label)
+
+    const MenuItems = activeKeys.map((d) => {
+      return {
+        label: d,
+        key: d,
+      }
+    })
+    setItems([
+      {
+        label: 'Navigation',
+        key: 'Navigation',
+      },
+      {
+        label:'Dashboard',
+        key:'Dashboard'
+      },
+      ...MenuItems,
+    ])
+  }, [state?.checkedList])
 
   let rolePermissions: any = permissionRole
 
@@ -49,6 +84,10 @@ const RolePermissionModal = ({
       }
     })
     return formattedData
+  }
+
+  const onClick: MenuProps['onClick'] = (e) => {
+    setCurrent(e.key)
   }
 
   useEffect(() => {
@@ -105,6 +144,7 @@ const RolePermissionModal = ({
     }
     if (!toggle) {
       form.resetFields()
+      setCurrent('Navigation')
       dispatch({type: RESET})
     }
   }, [toggle])
@@ -123,8 +163,25 @@ const RolePermissionModal = ({
   }, [state.checkedList])
 
   const handleSelectAllChange = (e: any) => {
-    setAllAccess(e.target.checked)
-    if (!e.target.checked) dispatch({type: DESELECT_ALL})
+    // setAllAccess(e.target.checked)
+    if (e.target.checked) {
+      const activeKeys = Object.keys(permissionRole)
+      let temp: any = permissionRole
+
+      const checkedList = activeKeys.reduce((prev: any, current: any) => {
+        let data = temp?.[current].map((d: any) => d.name)
+        return Object.assign(prev, {[current]: data})
+      }, {})
+
+      const checkAll = activeKeys.reduce((prev: any, current: any) => {
+        return Object.assign(prev, {[current]: true})
+      }, {})
+
+      dispatch({type: GLOBAL_SELECT_ALL, payload: {checkedList, checkAll}})
+    } else {
+      setCurrent('Navigation')
+      dispatch({type: DESELECT_ALL})
+    }
   }
 
   const handleSubmit = () => {
@@ -169,6 +226,7 @@ const RolePermissionModal = ({
       onCancel={(value) => {
         onCancel(setDuplicateValue)
       }}
+      bodyStyle={{paddingBottom: 0}}
       footer={[
         <Button key="back" onClick={() => onCancel(setDuplicateValue)}>
           Cancel
@@ -215,8 +273,19 @@ const RolePermissionModal = ({
           </Checkbox>
         </div>
       </Form>
-      <div>
-        <CommonRolePermission allAccess={allAccess} isEditMode={isEditMode} />
+      <div className="role-content">
+        <div className="role-left-container">
+          <Menu
+            onClick={onClick}
+            selectedKeys={[current]}
+            mode="vertical"
+            items={items}
+          />
+        </div>
+
+        <div className="role-right-container">
+          <CommonRolePermission allAccess={allAccess} title={current} />
+        </div>
       </div>
       {duplicateValue && (
         <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>
