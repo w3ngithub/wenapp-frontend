@@ -3,7 +3,6 @@ import moment from 'moment'
 import CustomIcon from 'components/Elements/Icons'
 import {Popconfirm} from 'antd'
 import {NINE_HOURS} from './Common'
-import {ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS} from './RoleAccess'
 import {getIsAdmin} from 'helpers/utils'
 
 interface notice {
