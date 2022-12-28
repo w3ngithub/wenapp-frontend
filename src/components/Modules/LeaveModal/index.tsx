@@ -180,6 +180,7 @@ function LeaveModal({
         'Leave update failed',
         [
           () => queryClient.invalidateQueries(['leaves']),
+          ()=>queryClient.invalidateQueries(['userLeaves']),
           () => {
             socket.emit('CUD')
           },

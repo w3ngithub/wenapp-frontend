@@ -276,6 +276,22 @@ const LEAVES_COLUMN = ({
                     </span>{' '}
                   </>
                 </AccessWrapper>
+
+                <AccessWrapper
+                  role={
+                    record.leaveStatus === STATUS_TYPES[2].id
+                  }
+                >
+                  <>
+                    {' '}
+                    <Divider type="vertical" />{' '}
+                    <i
+                    className="icon icon-edit gx-link"
+                    onClick={() => onEditClick ? onEditClick(record, false) : () => {}}
+                        />
+                  </>
+                </AccessWrapper>
+
               </div>
             )
           },
