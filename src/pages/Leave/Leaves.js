@@ -11,6 +11,7 @@ import {
   changeDate,
   getIsAdmin,
   handleResponse,
+  MuiFormatDate,
   removeDash,
 } from 'helpers/utils'
 import Notification from 'components/Elements/Notification'
@@ -26,6 +27,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 
 const FormItem = Form.Item
+const {RangePicker} = DatePicker
 
 const formattedLeaves = (leaves) => {
   return leaves?.map((leave) => ({
@@ -91,12 +93,13 @@ function Leaves({
         }
       : undefined
   )
+  const [rangeDate, setRangeDate] = useState([])
   const [page, setPage] = useState({page: 1, limit: 10})
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
   const leavesQuery = useQuery(
-    ['leaves', leaveStatus, user, date, page, leaveId],
+    ['leaves', leaveStatus, user, date, rangeDate, page, leaveId],
     () =>
       getLeavesOfAllUsers(
         leaveStatus,
@@ -105,7 +108,9 @@ function Leaves({
         page.page,
         page.limit,
         '-leaveDates,_id',
-        leaveId
+        leaveId,
+        rangeDate?.[0] ? MuiFormatDate(rangeDate[0]?._d) + 'T00:00:00Z' : '',
+        rangeDate?.[1] ? MuiFormatDate(rangeDate[1]?._d) + 'T00:00:00Z' : ''
       ),
     {
       onError: (err) => console.log(err),
@@ -207,6 +212,7 @@ function Leaves({
     setUser(undefined)
     setDate(undefined)
     setLeaveId(undefined)
+    setRangeDate([])
   }
 
   const handleCloseModal = (
@@ -246,9 +252,10 @@ function Leaves({
   }
 
   const handleDateChange = (value) => {
-    const m = moment(value._d)
-    m.set({h: 5, m: 45, s: 0})
-    setDate({moment: value, utc: moment.utc(m._d).format()})
+    // const m = moment(value._d)
+    // m.set({h: 5, m: 45, s: 0})
+    // setDate({moment: value, utc: moment.utc(m._d).format()})
+    setRangeDate(value)
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)
   const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
@@ -310,14 +317,8 @@ function Leaves({
                 onChange={handleUserChange}
               />
             </FormItem>
-            <FormItem style={{marginBottom: '0.5px'}}>
-              <DatePicker
-                className="gx-mb-3 "
-                style={{width: innerWidth <= 748 ? '100%' : '200px'}}
-                value={date?.moment}
-                onChange={handleDateChange}
-                disabledDate={disabledDate}
-              />
+            <FormItem>
+              <RangePicker onChange={handleDateChange} value={rangeDate} />
             </FormItem>
 
             <FormItem style={{marginBottom: '3px'}}>

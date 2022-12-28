@@ -2,7 +2,12 @@ import {useQuery} from '@tanstack/react-query'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
 import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
-import {capitalizeInput, changeDate, removeDash} from 'helpers/utils'
+import {
+  capitalizeInput,
+  changeDate,
+  MuiFormatDate,
+  removeDash,
+} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment, {Moment} from 'moment'
 import React, {useState} from 'react'
@@ -16,6 +21,7 @@ import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const FormItem = Form.Item
+const {RangePicker} = DatePicker
 
 const defaultPage = {page: 1, limit: 10}
 
@@ -66,12 +72,14 @@ function MyHistory({
     moment: selectedDate ? moment(selectedDate).startOf('day') : undefined,
   })
 
+  const [rangeDate, setRangeDate] = useState<any>([])
+
   const [page, setPage] = useState(defaultPage)
 
   const {gender} = useSelector(selectAuthUser)
 
   const userLeavesQuery = useQuery(
-    ['userLeaves', leaveStatus, date, page, leaveTypeId],
+    ['userLeaves', leaveStatus, rangeDate, page, leaveTypeId],
     () =>
       getLeavesOfUser(
         userId,
@@ -79,8 +87,8 @@ function MyHistory({
         date?.utc,
         page.page,
         page.limit,
-        '',
-        '',
+        rangeDate?.[0] ? MuiFormatDate(rangeDate[0]?._d) + 'T00:00:00Z' : '',
+        rangeDate?.[1] ? MuiFormatDate(rangeDate[1]?._d) + 'T00:00:00Z' : '',
         '-leaveDates,_id',
         leaveTypeId
       )
@@ -129,10 +137,12 @@ function MyHistory({
   const handleDateChange = (value: any) => {
     if (page?.page > 1) setPage(defaultPage)
 
-    setDate({
-      moment: value,
-      utc: moment.utc(value._d).startOf('day').format(),
-    })
+    setRangeDate(value)
+
+    // setDate({
+    //   moment: value,
+    //   utc: moment.utc(value._d).startOf('day').format(),
+    // })
   }
 
   const handleShow = (data: any, mode: boolean) => {
@@ -144,6 +154,7 @@ function MyHistory({
     setLeaveStatus(undefined)
     setLeaveType(undefined)
     setPage(defaultPage)
+    setRangeDate([])
     setDate({
       utc: '',
       moment: undefined,
@@ -182,17 +193,9 @@ function MyHistory({
               options={leaveTypeQuery?.data}
             />
           </FormItem>
-
-          <FormItem style={{marginBottom: '0.5px'}}>
-            <DatePicker
-              className="gx-mb-3 "
-              style={{width: innerWidth <= 748 ? '100%' : '200px'}}
-              value={date?.moment}
-              onChange={handleDateChange}
-              disabledDate={disabledDate}
-            />
+          <FormItem>
+            <RangePicker onChange={handleDateChange} value={rangeDate} />
           </FormItem>
-
           <FormItem style={{marginBottom: '3px'}}>
             <Button
               className="gx-btn-primary gx-text-white"
