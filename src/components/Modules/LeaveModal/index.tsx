@@ -38,7 +38,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
-import {LEAVES_TYPES} from 'constants/Leaves'
+import {LEAVES_TYPES, STATUS_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
@@ -592,7 +592,7 @@ function LeaveModal({
                 </Col>
               </Row>
 
-              {leaveData?.status === 'cancelled' && (
+              {(leaveData?.leaveStatus === STATUS_TYPES[3].id && leaveData?.cancelReason) &&(
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item
