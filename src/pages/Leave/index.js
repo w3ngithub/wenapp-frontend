@@ -34,6 +34,7 @@ function Leave() {
   let leaveCancelReason
   const [selectedRows, setSelectedRows] = useState([])
   const [openCancelLeaveModal, setOpenCancelLeaveModal] = useState(false)
+  const [IsReject,setIsReject] = useState(false)
 
   const [leaveData, setLeaveData] = useState('')
   const [submittingCancelReason, setSubmittingCancelReason] = useState(false)
@@ -58,7 +59,8 @@ function Leave() {
     setOpenCancelLeaveModal(false)
   }
 
-  const handleOpenCancelLeaveModal = (leaveDetails) => {
+  const handleOpenCancelLeaveModal = (leaveDetails,mode=false) => {
+    setIsReject(mode)
     setOpenCancelLeaveModal(true)
     setLeaveData(leaveDetails)
   }
@@ -74,8 +76,8 @@ function Leave() {
       onSuccess: (response) =>
         handleResponse(
           response,
-          'Leave cancelled successfully',
-          'Could not cancel leave',
+          `${IsReject?'Leave Rejected successfully':'Leave cancelled successfully'}`,
+          `${IsReject?'Could not Reject leave':'Could not cancel leave'}`,
           [
             () => sendEmailNotification(response),
             () => queryClient.invalidateQueries(['userLeaves']),
@@ -86,7 +88,7 @@ function Leave() {
             () => {
               socket.emit('cancel-leave', {
                 showTo: [response.data.data.data.user._id],
-                remarks: 'Your leave has been cancelled.',
+                remarks: `${IsReject?'Your leave has been rejected.':'Your leave has been cancelled'}`,
                 module: 'Leave',
               })
             },
@@ -98,14 +100,55 @@ function Leave() {
     }
   )
 
+
+  const leavereapplyMutation = useMutation(
+    (payload) => changeLeaveStatus(payload.id, payload.type, payload.reason),
+    {
+      onSuccess: (response) =>
+        handleResponse(
+          response,
+          'Leave Reapplied successfully',
+          'Could not re-apply leave',
+          [
+            () => sendEmailNotification(response),
+            () => queryClient.invalidateQueries(['userLeaves']),
+            () => queryClient.invalidateQueries(['leaves']),
+            () => {
+              socket.emit('CUD')
+            },
+            () => {
+              socket.emit('cancel-leave', {
+                showTo: [response.data.data.data.user._id],
+                remarks: 'Leave reapplied succesfully',
+                module: 'Leave',
+              })
+            },
+          ]
+        ),
+      onError: (error) => {
+        notification({message: 'Could not reapply leave', type: 'error'})
+      },
+    }
+  )
+
+
   const handleCancelLeave = (leave) => {
-    leaveCancelReason = leave?.leaveCancelReason
+    leaveCancelReason = IsReject? leave?.leaveRejectReason: leave?.leaveCancelReason
     leaveCancelMutation.mutate({
       id: leave._id,
-      type: 'cancel',
+      type: IsReject?'reject':'cancel',
       reason: leaveCancelReason,
     })
   }
+
+  const reApplyLeave = (leave)=>{
+    leavereapplyMutation.mutate({
+      id:leave._id,
+      type:'pending',
+      status:''
+    })
+  }
+
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
 
   const sendEmailNotification = (res) => {
@@ -152,10 +195,10 @@ function Leave() {
           leaveData={leaveData}
           loader={submittingCancelReason}
           setLoader={setSubmittingCancelReason}
-          title={'Cancel Leave'}
+          title={IsReject?'Reject Leave':'Cancel Leave'}
           isRequired={true}
-          label={'Cancel Leave Reason'}
-          name={'leaveCancelReason'}
+          label={IsReject?'Leave Reject Reason':'Cancel Leave Reason'}
+          name={IsReject?'leaveRejectReason':'leaveCancelReason'}
         />
       )}
 
@@ -246,6 +289,7 @@ function Leave() {
                 userId={loggedInUser?._id}
                 permissions={leavePermissions}
                 handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
+                reApplyLeave={reApplyLeave}
               />
             </TabPane>
           )}

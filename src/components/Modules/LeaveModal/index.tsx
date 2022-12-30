@@ -265,6 +265,7 @@ function LeaveModal({
           user: leaveData.user._id,
           halfDay: leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
           cancelReason: leaveData?.cancelReason,
+          rejectReason:leaveData?.rejectReason
         })
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
@@ -592,7 +593,7 @@ function LeaveModal({
                 </Col>
               </Row>
 
-              {(leaveData?.leaveStatus === STATUS_TYPES[3].id && leaveData?.cancelReason) &&(
+              {(leaveData?.leaveStatus === STATUS_TYPES[3].id && leaveData?.cancelReason)  &&(
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item
@@ -612,6 +613,33 @@ function LeaveModal({
                   </Col>
                 </Row>
               )}
+
+            
+        {(leaveData?.leaveStatus === STATUS_TYPES[4].id && leaveData?.rejectReason) &&(
+                <Row>
+                  <Col span={6} xs={24} sm={24} xl={24}>
+                    <Form.Item
+                      {...formItemLayout}
+                      name="rejectReason"
+                      label="Leave Reject Reason"
+                    >
+                      <Input.TextArea
+                        allowClear
+                        rows={10}
+                        disabled={readOnly}
+                        style={{
+                          background: darkCalendar ? '#434f5a' : '',
+                        }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              )}
+
+
+
+
+
             </Col>
             {user &&
               (immediateApprovalLeaveTypes.includes(leaveType) ? (

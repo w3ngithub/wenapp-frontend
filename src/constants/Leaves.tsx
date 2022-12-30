@@ -15,7 +15,7 @@ const LEAVES_COLUMN = ({
   editLeave = false,
   role,
 }: {
-  onCancelLeave?: (param: any) => void
+  onCancelLeave?: (param: any,param2:boolean) => void
   onApproveClick?: (param: any) => void
   onEditClick?: (param: any, param2: any) => void
   isAdmin?: boolean
@@ -120,13 +120,40 @@ const LEAVES_COLUMN = ({
                         <span
                           className="gx-link gx-text-danger"
                           onClick={() =>
-                            onCancelLeave ? onCancelLeave(record) : () => {}
+                            onCancelLeave ? onCancelLeave(record,false) : () => {}
                           }
                         >
                           Cancel
                         </span>
                       </>
                     </AccessWrapper>
+                    
+                    <AccessWrapper
+                      role={
+                        !getIsAdmin() &&
+                        [STATUS_TYPES[2].id].includes(
+                          record.leaveStatus
+                        ) 
+                      }
+                    >
+                      <>
+                        {(viewLeave || cancelLeave || approveLeave) && (
+                          <Divider type="vertical" />
+                        )}
+                      
+                      <span
+                          className="gx-link gx-text-danger"
+                          onClick={() =>
+                            onCancelLeave ? onCancelLeave(record,true) : () => {}
+                          }
+                        >
+                          Reject
+                        </span>
+
+                      </>
+                    </AccessWrapper>
+
+
 
                     <AccessWrapper
                       role={
@@ -157,7 +184,7 @@ const LEAVES_COLUMN = ({
               <span
                 className="gx-link gx-text-danger"
                 onClick={() =>
-                  onCancelLeave ? onCancelLeave(record) : () => {}
+                  onCancelLeave ? onCancelLeave(record,false) : () => {}
                 }
               >
                 Cancel
@@ -256,6 +283,31 @@ const LEAVES_COLUMN = ({
                   </span>
                 </AccessWrapper>
 
+                <AccessWrapper role={ record.leaveStatus === STATUS_TYPES[4].id &&
+                    !getIsAdmin()}>
+                  <>
+                  
+                  {viewLeave && <Divider type="vertical" />}
+
+            
+
+                  <Popconfirm
+                          title="Are you sure you want to reapply?"
+                          onConfirm={() => onApproveClick?onApproveClick(record):{}}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                  <span
+                    className="gx-link gx-text-primary"
+                  >
+                   Reapply
+                  </span>   
+                   
+                        </Popconfirm>
+
+                  </>
+                </AccessWrapper>
+
                 <AccessWrapper
                   role={
                     cancelLeave &&
@@ -269,7 +321,7 @@ const LEAVES_COLUMN = ({
                     <span
                       className="gx-link gx-text-danger"
                       onClick={() =>
-                        onCancelLeave ? onCancelLeave(record) : () => {}
+                        onCancelLeave ? onCancelLeave(record,false) : () => {}
                       }
                     >
                       Cancel
@@ -303,6 +355,7 @@ const STATUS_TYPES = [
   {id: 'approved', value: 'Approved'},
   {id: 'pending', value: 'Pending'},
   {id: 'cancelled', value: 'Cancelled'},
+  {id:'rejected',value:'Rejected'}
 ]
 
 export {LEAVES_COLUMN, STATUS_TYPES}

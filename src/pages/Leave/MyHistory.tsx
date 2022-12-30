@@ -46,12 +46,14 @@ function MyHistory({
   handleOpenCancelLeaveModal,
   isLoading,
   permissions,
+  reApplyLeave
 }: {
   userId: string
   handleCancelLeave: (leave: any) => void
   handleOpenCancelLeaveModal: (param: any) => void
   isLoading: boolean
   permissions: any
+  reApplyLeave:(leave:any)=>void
 }) {
   const [form] = Form.useForm()
   const location: any = useLocation()
@@ -123,7 +125,6 @@ function MyHistory({
 
   const handleStatusChange = (statusId: string) => {
     if (page?.page > 1) setPage(defaultPage)
-
     setLeaveStatus(statusId)
   }
 
@@ -210,7 +211,9 @@ function MyHistory({
         className="gx-table-responsive"
         columns={LEAVES_COLUMN({
           onCancelLeave: handleOpenCancelLeaveModal,
-          onApproveClick: () => {},
+          onApproveClick: (leave) => {
+            reApplyLeave(leave)
+          },
           onEditClick: handleShow,
           viewLeave: permissions?.viewMyLeaveDetails,
           cancelLeave: permissions?.cancelMyLeaves,
