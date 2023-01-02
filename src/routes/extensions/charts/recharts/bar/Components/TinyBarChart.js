@@ -1,4 +1,3 @@
-import {logTypeColors} from 'constants/GraphColors'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import React from 'react'
 import {useSelector} from 'react-redux'
@@ -22,7 +21,11 @@ const TinyBarChart = ({data}) => {
   return (
     <ResponsiveContainer width="100%" height={400}>
       <BarChart data={data} margin={{top: 10, right: 0, left: -15, bottom: 0}}>
-        <XAxis dataKey="name" stroke={darkTheme ? '#fff' : '#000'} interval={0}/>
+        <XAxis
+          dataKey="name"
+          stroke={darkTheme ? '#fff' : '#000'}
+          interval={0}
+        />
         <YAxis stroke={darkTheme ? '#fff' : '#000'} />
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip />
