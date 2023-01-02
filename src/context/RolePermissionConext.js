@@ -43,6 +43,10 @@ const initialState = {
   ],
   'Notice Board':[
     'viewNotice'
+  ],
+  'Attendance':[
+    'createMyAttendance',
+    'viewMyAttendance'
   ]
   },
   defauleCollapseOpen: [
