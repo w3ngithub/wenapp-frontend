@@ -249,15 +249,19 @@ function NoticeBoardPage() {
 
   return (
     <div>
-      <NoticeBoardModal
-        toggle={openUserDetailModal}
-        onClose={handleCloseModal}
-        onSubmit={handleUserDetailSubmit}
-        loading={addNoticeMutation.isLoading || updateNoticeMutation.isLoading}
-        initialValues={noticeRecord.project}
-        readOnly={readOnly}
-        isEditMode={isEditMode}
-      />
+      {openUserDetailModal && (
+        <NoticeBoardModal
+          toggle={openUserDetailModal}
+          onClose={handleCloseModal}
+          onSubmit={handleUserDetailSubmit}
+          loading={
+            addNoticeMutation.isLoading || updateNoticeMutation.isLoading
+          }
+          initialValues={noticeRecord.project}
+          readOnly={readOnly}
+          isEditMode={isEditMode}
+        />
+      )}
 
       <Card title="Notice Board">
         <div className="components-table-demo-control-bar">

@@ -1,4 +1,4 @@
-import {Button, Table} from 'antd'
+import {Table} from 'antd'
 import React from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 
@@ -19,13 +19,17 @@ function CommonTable({
   pagination?: any
   footer?: any
 }) {
+  const formattedData = data?.map((item: any, index: number) => ({
+    ...item,
+    key: item?._id ?? index,
+  }))
   return (
     <>
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
         columns={columns}
-        dataSource={data}
+        dataSource={formattedData}
         pagination={pagination}
         loading={isLoading}
         footer={footer}

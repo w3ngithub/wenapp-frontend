@@ -55,12 +55,6 @@ body.dark-theme {
         background-color: @dark-theme-text-color;
       }
     }
-    // & .ant-timeline-item-content{
-    //   & .ant-divider{
-    //     background-color: blue;
-
-    //   }
-    // }
   
 
   & .@{class-prefix}-link {
@@ -204,6 +198,20 @@ body.dark-theme {
 
     color: white;
   }
+
+  & .role-left-container{
+    background-color: #343d45;
+  }
+
+  & .role-right-container{
+    background-color: #5f6870;
+  }
+
+  & .role-left-container .ant-menu-item:hover{
+    color: #fff !important;
+  }
+
+
 
   & .rbc-overlay-header {
     border-bottom: 1px solid #e5e5e5;
@@ -1008,6 +1016,7 @@ body.dark-theme {
       }
     }
   }
+ 
 
   & .@{class-prefix}-card {
     background-color: @dark-theme-component-background;

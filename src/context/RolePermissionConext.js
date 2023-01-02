@@ -8,7 +8,6 @@ import {
   SET_EDIT_DATA,
 } from 'constants/RolePermission'
 import React, {useReducer} from 'react'
-import {SET_COLLAPSE_OPEN} from '../constants/RolePermission'
 
 const initialState = {
   checkAll: {},
@@ -85,19 +84,8 @@ const reducer = (state, action) => {
     case GLOBAL_SELECT_ALL:
       return {
         ...state,
-        checkedList: {
-          ...state.checkedList,
-          [action.payload.checkedList.title]: action.payload.checkedList.list,
-        },
-        indeterminate: {
-          ...state.indeterminate,
-          [action.payload.indeterminate.title]:
-            action.payload.indeterminate.check,
-        },
-        checkAll: {
-          ...state.checkAll,
-          [action.payload.checkAll.title]: action.payload.checkAll.check,
-        },
+        checkedList: action.payload.checkedList,
+        checkAll: action.payload.checkAll,
       }
 
     case SET_EDIT_DATA:
@@ -106,12 +94,6 @@ const reducer = (state, action) => {
         checkedList: action.payload.checkedList,
         checkAll: action.payload.checkAll,
         indeterminate: action.payload.indeterminate,
-      }
-
-    case SET_COLLAPSE_OPEN:
-      return {
-        ...state,
-        defauleCollapseOpen: action.payload,
       }
 
     case REMOVE_CHECKBOX_SELECTION:

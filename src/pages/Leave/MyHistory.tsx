@@ -23,18 +23,15 @@ const formattedLeaves = (leaves: any) => {
   return leaves?.map((leave: any) => ({
     ...leave,
     key: leave._id,
-    dates: leave?.leaveDates.map((date: any, index: any) => {
-      if (
-        (leave?.leaveType?.name === 'Maternity' ||
+    dates: leave?.leaveDates
+      ?.map((date: any, index: any) => changeDate(date))
+      .join(
+        leave?.leaveType?.name === 'Maternity' ||
           leave?.leaveType?.name === 'Paternity' ||
-          leave?.leaveType?.name === 'Paid Time Off') &&
-        index < leave?.leaveDates?.length - 1
-      ) {
-        return <p>{`${changeDate(date)} - `}</p>
-      } else {
-        return <p>{changeDate(date)}</p>
-      }
-    }),
+          leave?.leaveType?.name === 'Paid Time Off'
+          ? ' - '
+          : '\r\n'
+      ),
     type: `${leave?.leaveType?.name} ${
       leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
         ? '- ' + removeDash(leave?.halfDay)
@@ -154,15 +151,17 @@ function MyHistory({
   }
   return (
     <div>
-      <LeaveModal
-        open={openModal}
-        leaveData={datatoShow}
-        onClose={() => setModal(false)}
-        isEditMode={true}
-        users={[]}
-        readOnly={true}
-        showWorker={false}
-      />
+      {openModal && (
+        <LeaveModal
+          open={openModal}
+          leaveData={datatoShow}
+          onClose={() => setModal(false)}
+          isEditMode={true}
+          users={[]}
+          readOnly={true}
+          showWorker={false}
+        />
+      )}
 
       <div className="gx-d-flex gx-justify-content-between gx-flex-row">
         <Form layout="inline" form={form}>

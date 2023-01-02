@@ -62,6 +62,7 @@ function CoworkersPage() {
   const [userRecord, setUserRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
+  const [selectedIds,setSelectedIds] = useState([])
   const [openImport, setOpenImport] = useState(false)
   const [files, setFiles] = useState([])
   const queryClient = useQueryClient()
@@ -266,6 +267,28 @@ function CoworkersPage() {
     setSelectedRows(rows)
   }
 
+  const handleSelectRow=(record,selected,selectedRows)=>{
+    if(selected) {
+      setSelectedIds((prev)=>[...prev,record?._id])
+      setSelectedRows((prev)=>[...prev,record])
+    }
+    else {
+      setSelectedIds((prev)=>prev.filter((d)=>d!==record?._id))
+      setSelectedRows((prev)=>prev.filter((d)=>d?._id!==record?._id))
+    }
+  }
+
+  const handleSelectAll = (selected,selectedRows,changeRows)=>{
+    if(selected){
+      setSelectedIds(prev=>[...prev,...changeRows?.map((d)=>d?._id)])
+      setSelectedRows((prev)=>[...prev,...changeRows])
+    }else{
+      let changeRowsId = changeRows?.map((d)=>d?._id)
+      setSelectedIds(prev=>prev.filter((d)=>!changeRowsId.includes(d)))
+      setSelectedRows(prev=>prev.filter((d)=>!changeRows.includes(d?._id)))
+    }
+  }
+
   const handleSwitchToUser = async (user) => {
     dispatch(switchUser())
     const adminId = getLocalStorageData('user_id')
@@ -284,18 +307,20 @@ function CoworkersPage() {
         files={files}
         setFiles={setFiles}
       />
-      <UserDetailForm
-        toggle={openUserDetailModal}
-        onToggleModal={handleToggleModal}
-        onSubmit={handleUserDetailSubmit}
-        loading={mutation.isLoading}
-        roles={roleData}
-        position={positionData}
-        positionTypes={positionTypes}
-        intialValues={userRecord}
-        readOnly={readOnly}
-        currentQuarter={quarterQuery}
-      />
+      {openUserDetailModal && (
+        <UserDetailForm
+          toggle={openUserDetailModal}
+          onToggleModal={handleToggleModal}
+          onSubmit={handleUserDetailSubmit}
+          loading={mutation.isLoading}
+          roles={roleData}
+          position={positionData}
+          positionTypes={positionTypes}
+          intialValues={userRecord}
+          readOnly={readOnly}
+          currentQuarter={quarterQuery}
+        />
+      )}
       <Card title="Co-workers">
         <div className="components-table-demo-control-bar">
           <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
@@ -403,8 +428,7 @@ function CoworkersPage() {
                         'DOB',
                         'Join Date',
                       ],
-                      ...data?.data?.data?.data
-                        ?.filter((x) => selectedRows.includes(x?._id))
+                      ...selectedRows
                         ?.map((d) => [
                           d?.name,
                           d?.email,
@@ -412,8 +436,8 @@ function CoworkersPage() {
                           d?.role?._id,
                           d?.position?.name,
                           d?.position?._id,
-                          changeDate(d?.dob),
-                          changeDate(d?.joinDate),
+                          d?.dob,
+                          d?.joinDate
                         ]),
                     ]}
                   >
@@ -443,8 +467,9 @@ function CoworkersPage() {
           dataSource={formattedUsers(data?.data?.data?.data, key === 'admin')}
           onChange={handleTableChange}
           rowSelection={{
-            onChange: handleRowSelect,
-            selectedRowKeys: selectedRows,
+            onSelect: handleSelectRow,
+            selectedRowKeys: selectedIds,
+            onSelectAll:handleSelectAll,
           }}
           pagination={{
             current: page.page,

@@ -12,7 +12,6 @@ export const POSITION_COLUMN = (
     key: 'name',
     width: 630,
   },
-
   {
     title: 'Action',
     key: 'action',

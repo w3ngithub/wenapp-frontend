@@ -20,10 +20,6 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {getLeaveTypes} from 'services/leaves'
-import {
-  LEAVES_TAB_ACTIONS_NO_ACCESS,
-  LEAVE_TAB_ADD_LEAVE_NO_ACCESS,
-} from 'constants/RoleAccess'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import {sendEmailforLeave} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
@@ -261,26 +257,29 @@ function Leaves({
   }))
   return (
     <div>
-      <LeaveModal
-        leaveData={dataToEdit}
-        isEditMode={isEditMode}
-        open={openModal}
-        onClose={handleCloseModal}
-        users={usersQuery?.data?.data?.data?.data}
-        readOnly={readOnly}
-      />
-
-      <CancelLeaveModal
-        open={openApproveLeaveModal}
-        onClose={handleCloseApproveModal}
-        onSubmit={handleApproveLeave}
-        leaveData={leaveDetails}
-        loader={loader}
-        setLoader={setLoader}
-        title={'Approve Leave'}
-        isRequired={false}
-        name={'leaveApproveReason'}
-      />
+      {openModal && (
+        <LeaveModal
+          leaveData={dataToEdit}
+          isEditMode={isEditMode}
+          open={openModal}
+          onClose={handleCloseModal}
+          users={usersQuery?.data?.data?.data?.data}
+          readOnly={readOnly}
+        />
+      )}
+      {openApproveLeaveModal && (
+        <CancelLeaveModal
+          open={openApproveLeaveModal}
+          onClose={handleCloseApproveModal}
+          onSubmit={handleApproveLeave}
+          leaveData={leaveDetails}
+          loader={loader}
+          setLoader={setLoader}
+          title={'Approve Leave'}
+          isRequired={false}
+          name={'leaveApproveReason'}
+        />
+      )}
 
       <div className="components-table-demo-control-bar">
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
