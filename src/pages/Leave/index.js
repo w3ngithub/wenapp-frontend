@@ -31,7 +31,7 @@ function Leave() {
   const location = useLocation()
   const queryClient = useQueryClient()
 
-  let leaveCancelReason
+  let leaveCancelReason="";
   const [selectedRows, setSelectedRows] = useState([])
   const [openCancelLeaveModal, setOpenCancelLeaveModal] = useState(false)
   const [IsReject,setIsReject] = useState(false)
@@ -57,6 +57,7 @@ function Leave() {
 
   const handleCloseCancelLeaveModal = () => {
     setOpenCancelLeaveModal(false)
+    setIsReject(false)
   }
 
   const handleOpenCancelLeaveModal = (leaveDetails,mode=false) => {
@@ -96,7 +97,7 @@ function Leave() {
         ),
       onError: (error) => {
         notification({message: 'Could not cancel leave', type: 'error'})
-      },
+      }
     }
   )
 
@@ -157,6 +158,7 @@ function Leave() {
       leaveDates: res.data.data.data.leaveDates,
       leaveType:res.data.data.data?.leaveType?.name,
       user: res.data.data.data.user,
+      leaveReason:res?.data?.data?.data?.reason,
       reapply:res.reapply,
       leaveCancelReason,
     })
