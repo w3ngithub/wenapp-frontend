@@ -20,6 +20,30 @@ const initialState = {
       'leaveManagement',
       'blog',
     ],
+    Dashboard:[
+      'viewCalendar',
+      'viewTotalCoworkers',
+      'viewAnnouncement',
+      'viewHolidays',
+      'viewBirthdays'
+    ],
+    Resources:[
+      'viewFAQ',
+      'viewPolicy',
+      'viewHoliday' 
+    ],
+    'Leave Management':[
+      'applyLeave',
+      'viewMyHistory',
+      'viewMyLeaveDetails',
+      'cancelMyLeaves'
+    ],
+  Blog: [
+    'viewBlog'
+  ],
+  'Notice Board':[
+    'viewNotice'
+  ]
   },
   defauleCollapseOpen: [
     'Navigation',
