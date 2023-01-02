@@ -110,7 +110,7 @@ function Leave() {
           'Leave Reapplied successfully',
           'Could not re-apply leave',
           [
-            () => sendEmailNotification(response),
+            () => sendEmailNotification({...response,reapply:true}),
             () => queryClient.invalidateQueries(['userLeaves']),
             () => queryClient.invalidateQueries(['leaves']),
             () => {
@@ -155,7 +155,9 @@ function Leave() {
     emailMutation.mutate({
       leaveStatus: res.data.data.data.leaveStatus,
       leaveDates: res.data.data.data.leaveDates,
+      leaveType:res.data.data.data?.leaveType?.name,
       user: res.data.data.data.user,
+      reapply:res.reapply,
       leaveCancelReason,
     })
     setSubmittingCancelReason(false)
