@@ -74,7 +74,7 @@ function ProjectsPage() {
   const {
     role: {
       key,
-      permission: {Projects},
+      permission,
     },
   } = useSelector(selectAuthUser)
 
@@ -374,7 +374,7 @@ function ProjectsPage() {
               allowClear
               className="direct-form-item"
             />
-            <AccessWrapper role={Projects?.createProjects}>
+            <AccessWrapper role={permission?.Projects?.createProjects}>
               <div
                 style={{
                   marginBottom: '1rem',
@@ -482,7 +482,7 @@ function ProjectsPage() {
             handleOpenEditModal,
             confirmDeleteProject,
             navigateToProjectLogs,
-            Projects
+            permission
           )}
           dataSource={formattedProjects(data?.data?.data?.data)}
           onChange={handleTableChange}
