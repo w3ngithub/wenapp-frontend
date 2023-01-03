@@ -159,7 +159,7 @@ function Leave() {
       leaveType:res.data.data.data?.leaveType?.name,
       user: res.data.data.data.user,
       leaveReason:res?.data?.data?.data?.reason,
-      reapply:res.reapply,
+      reapply:res?.reapply,
       leaveCancelReason,
     })
     setSubmittingCancelReason(false)
