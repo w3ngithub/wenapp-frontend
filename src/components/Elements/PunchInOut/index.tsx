@@ -100,7 +100,7 @@ function PunchInOut() {
       latestAttendance?.[latestAttendance.length - 1]?.punchInTime
     if (
       latestPunchInTime &&
-      moment() < moment(latestPunchInTime).add(10, 's')
+      moment() < moment(latestPunchInTime).add(10, 'm')
     ) {
       notification({
         message: 'You have just Punched In !',
