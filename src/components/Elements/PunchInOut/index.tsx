@@ -63,6 +63,9 @@ function PunchInOut() {
     onError: (error) => {
       notification({message: 'Punch  failed', type: 'error'})
     },
+    onSettled: () => {
+      setdisableButton(false)
+    },
   })
 
   const punchOutAttendances = useMutation(
@@ -84,15 +87,20 @@ function PunchInOut() {
       onError: (error) => {
         notification({message: 'Punch  failed', type: 'error'})
       },
+      onSettled: () => {
+        setdisableButton(false)
+      },
     }
   )
 
   const handlePunch = async () => {
+    setdisableButton(true)
+
     let latestPunchInTime =
       latestAttendance?.[latestAttendance.length - 1]?.punchInTime
     if (
       latestPunchInTime &&
-      moment() < moment(latestPunchInTime).add(10, 'm')
+      moment() < moment(latestPunchInTime).add(10, 's')
     ) {
       notification({
         message: 'You have just Punched In !',
@@ -116,7 +124,7 @@ function PunchInOut() {
       setToogle(true)
       return
     }
-    setdisableButton(true)
+
     const location = await getLocation()
     if (await checkLocationPermission()) {
       const IP = await getIpAddres()
@@ -149,8 +157,8 @@ function PunchInOut() {
         message: 'Please allow Location Access to Punch for Attendance',
         type: 'error',
       })
+      setdisableButton(false)
     }
-    setdisableButton(false)
   }
 
   return (
@@ -161,19 +169,7 @@ function PunchInOut() {
         handleCancel={() => setToogle(false)}
       />
       <Button
-        onClick={
-          latestAttendance?.length >= punchLimit &&
-          !latestAttendance
-            ?.map((item: object) => item?.hasOwnProperty('punchOutTime'))
-            .includes(false)
-            ? () => {
-                notification({
-                  message: 'Punch Limit Exceeded',
-                  type: 'error',
-                })
-              }
-            : handlePunch
-        }
+        onClick={handlePunch}
         className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
         icon={<ScheduleOutlined />}
         disabled={
