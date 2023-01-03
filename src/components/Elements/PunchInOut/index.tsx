@@ -95,8 +95,6 @@ function PunchInOut() {
   )
 
   const handlePunch = async () => {
-    setdisableButton(true)
-
     let latestPunchInTime =
       latestAttendance?.[latestAttendance.length - 1]?.punchInTime
     if (
@@ -125,6 +123,9 @@ function PunchInOut() {
       setToogle(true)
       return
     }
+
+    setdisableButton(true)
+
     const location = await getLocation()
     if (await checkLocationPermission()) {
       const IP = await getIpAddres()
