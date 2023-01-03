@@ -107,7 +107,9 @@ const PROJECT_COLUMNS = (
           )}
           {role?.Projects?.editProjects && !getIsAdmin() && (
             <>
-              <Divider type="vertical" />
+              {(role?.Navigation?.logTime || role?.Projects?.viewProjects) && (
+                <Divider type="vertical" />
+              )}
               <span
                 className="gx-link"
                 onClick={() => openModal(record, false)}
@@ -118,7 +120,9 @@ const PROJECT_COLUMNS = (
           )}
           {role?.Projects?.deleteProjects && (
             <>
-              <Divider type="vertical" />
+              {(role?.Navigation?.logTime ||
+                role?.Projects?.viewProjects ||
+                role?.Projects?.editProjects) && <Divider type="vertical" />}
               <Popconfirm
                 title="Are you sure to delete this project?"
                 onConfirm={() => confirmDelete(record)}
