@@ -63,6 +63,7 @@ function PunchInOut() {
     onError: (error) => {
       notification({message: 'Punch  failed', type: 'error'})
     },
+
     onSettled: () => {
       setdisableButton(false)
     },
@@ -124,7 +125,6 @@ function PunchInOut() {
       setToogle(true)
       return
     }
-
     const location = await getLocation()
     if (await checkLocationPermission()) {
       const IP = await getIpAddres()
@@ -169,7 +169,19 @@ function PunchInOut() {
         handleCancel={() => setToogle(false)}
       />
       <Button
-        onClick={handlePunch}
+        onClick={
+          latestAttendance?.length >= punchLimit &&
+          !latestAttendance
+            ?.map((item: object) => item?.hasOwnProperty('punchOutTime'))
+            .includes(false)
+            ? () => {
+                notification({
+                  message: 'Punch Limit Exceeded',
+                  type: 'error',
+                })
+              }
+            : handlePunch
+        }
         className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
         icon={<ScheduleOutlined />}
         disabled={
