@@ -52,8 +52,15 @@ function AdminAttendanceCalendar() {
       setDate([calendarDate[0], calendarDate[6]])
     } else if (filterByDay) {
       setDate([calendarDate[0], mom])
-    } else {
-      setDate([calendarDate.start, calendarDate.end])
+    } else{
+      if(moment(calendarDate.start).date()!==1){
+        const startDate = moment(calendarDate.start).endOf('month').add(1,'day')
+        const endDate = moment(startDate).endOf('month')
+        setDate([startDate,endDate])
+      } 
+      else{
+      setDate([calendarDate.start, moment(calendarDate.start).endOf('month')])
+      }
     }
   }
 
