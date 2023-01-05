@@ -32,6 +32,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
+import {getProjectTags} from 'services/projects'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -57,6 +58,7 @@ function ProjectsPage() {
   const [project, setProject] = useState('')
   const [page, setPage] = useState({page: 1, limit: 20})
   const [projectStatus, setProjectStatus] = useState(undefined)
+  const [projectTags,setProjectTags] = useState(undefined)
   const [projectType, setProjectType] = useState(undefined)
   const [projectClient, setprojectClient] = useState(undefined)
   const [developer, setDeveloper] = useState(undefined)
@@ -103,6 +105,9 @@ function ProjectsPage() {
   const {data: devops} = useQuery(['DevOps', positionTypeData], () =>
     getAllUsers({positionType: positionTypeData?.devops, sort: 'name'})
   )
+
+  const {data:projectTagsData} = useQuery(['tags'], getProjectTags)
+
   const {data, isLoading, isError, isFetching} = useQuery(
     [
       'projects',
@@ -110,6 +115,7 @@ function ProjectsPage() {
       sort,
       projectType,
       projectStatus,
+      projectTags,
       projectClient,
       project,
       developer,
@@ -121,6 +127,7 @@ function ProjectsPage() {
         ...page,
         projectType,
         projectStatus,
+        projectTags,
         projectClient,
         project,
         developer,
@@ -302,6 +309,10 @@ function ProjectsPage() {
   const handleClientChange = (clientId) => {
     setprojectClient(clientId)
   }
+
+  const handleProjectTagsChange = (tagId)=>{
+    setProjectTags(tagId)
+  }
   const handleDeveloperChange = (developerId) => {
     setDeveloper(developerId)
   }
@@ -350,6 +361,7 @@ function ProjectsPage() {
           client={projectClientsData}
           developers={developers}
           designers={designers}
+          tags={projectTagsData}
           qas={QAs}
           devops={devops}
           initialValues={userRecord?.project}
@@ -411,6 +423,18 @@ function ProjectsPage() {
                 onChange={handleProjectStatusChange}
                 value={projectStatus}
                 options={projectStatusData?.data?.data?.data?.map((x) => ({
+                  id: x?._id,
+                  value: x?.name,
+                }))}
+              />
+            </FormItem>
+            <FormItem className="direct-form-search">
+              <Select
+                placeholderClass={PLACE_HOLDER_CLASS}
+                placeholder="Select Project Tag"
+                onChange={handleProjectTagsChange}
+                value={projectTags}
+                options={projectTagsData?.data?.data?.data?.map((x) => ({
                   id: x?._id,
                   value: x?.name,
                 }))}
