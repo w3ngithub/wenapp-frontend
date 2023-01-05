@@ -326,6 +326,7 @@ function ProjectsPage() {
   const handleResetFilter = () => {
     setProjectName('')
     setProject('')
+    setProjectTags(undefined)
     setProjectType(undefined)
     setProjectStatus(undefined)
     setprojectClient(undefined)
