@@ -1,5 +1,4 @@
 import '@ant-design/compatible/assets/index.css'
-import {useQuery} from '@tanstack/react-query'
 import {
   Button,
   Col,
@@ -17,7 +16,6 @@ import {filterOptions, scrollForm} from 'helpers/utils'
 import moment from 'moment'
 import Maintenance from 'pages/Projects/Maintainance'
 import {useEffect, useState} from 'react'
-import {getProjectTags} from 'services/projects'
 import './style.css'
 
 const FormItem = Form.Item
