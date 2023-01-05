@@ -95,13 +95,13 @@ const LOGTIMES_COLUMNS = (
                       >
                         <CustomIcon name="edit" />
                       </span>
+                      {role?.[`Log Time`]?.deleteLogTime && (
+                        <Divider type="vertical" />
+                      )}
                     </AccessWrapper>
                   )}
 
                   <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
-                    {role?.[`Log Time`]?.editLogTime && (
-                      <Divider type="vertical" />
-                    )}
                     <Popconfirm
                       title="Are you sure to delete this Log?"
                       onConfirm={() => confirmDelete(record)}
@@ -179,21 +179,20 @@ const LOGTIMES_COLUMNS = (
                   {(record.user === user &&
                     moment(sendDate) >=
                       moment().subtract(1, 'days').startOf('day')) ||
-                  role?.[`Log Time`]?.editLogTime ? (
-                    <span
-                      className="gx-link"
-                      onClick={() => onOpenEditModal(record)}
-                    >
-                      <CustomIcon name="edit" />
-                    </span>
-                  ) : (
-                    ''
-                  )}
+                  role?.[`Log Time`]?.editLogTime
+                    ? (<span
+                        className="gx-link"
+                        onClick={() => onOpenEditModal(record)}
+                      >
+                        <CustomIcon name="edit" />
+                      </span>)(
+                        role?.[`Log Time`]?.deleteLogTime && (
+                          <Divider type="vertical" />
+                        )
+                      )
+                    : ''}
 
                   <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
-                    {role?.[`Log Time`]?.editLogTime && (
-                      <Divider type="vertical" />
-                    )}
                     <Popconfirm
                       title="Are you sure to delete this Log?"
                       onConfirm={() => confirmDelete(record)}

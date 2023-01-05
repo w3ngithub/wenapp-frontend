@@ -8,17 +8,18 @@ const getAllProjects = async ({
   limit = '',
   fields = '',
   projectStatus = '',
+  projectTags = '',
   projectType = '',
   projectClient = '',
   project = '',
   developer = '',
   designer = '',
   qa = '',
-  endDate=''
+  endDate = '',
 }) => {
   try {
     let response = await API.get(
-      `${Apis.Projects}?search=${project}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&projectStatus=${projectStatus}&projectTypes=${projectType}&client=${projectClient}&developers=${developer}&designers=${designer}&qa=${qa}&endDate=${endDate}`
+      `${Apis.Projects}?search=${project}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&projectStatus=${projectStatus}&projectTags=${projectTags}&projectTypes=${projectType}&client=${projectClient}&developers=${developer}&designers=${designer}&qa=${qa}&endDate=${endDate}`
     )
     return getAPIResponse(response)
   } catch (err) {

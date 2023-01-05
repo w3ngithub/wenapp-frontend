@@ -1,5 +1,4 @@
 import '@ant-design/compatible/assets/index.css'
-import {useQuery} from '@tanstack/react-query'
 import {
   Button,
   Col,
@@ -17,7 +16,6 @@ import {filterOptions, scrollForm} from 'helpers/utils'
 import moment from 'moment'
 import Maintenance from 'pages/Projects/Maintainance'
 import {useEffect, useState} from 'react'
-import {getProjectTags} from 'services/projects'
 import './style.css'
 
 const FormItem = Form.Item
@@ -35,6 +33,7 @@ function ProjectModal({
   loading = false,
   isEditMode = false,
   client,
+  tags,
   developers,
   designers,
   qas,
@@ -47,14 +46,12 @@ function ProjectModal({
   const [maintenance, setMaintenance] = useState([])
   const [startDate, setStartDate] = useState(undefined)
   const [endDate, setEndDate] = useState(undefined)
-  const {data, refetch} = useQuery(['tags'], getProjectTags, {
-    enabled: false,
-  })
 
   const handleCancel = () => {
     form.resetFields()
     onClose()
   }
+
   const currentDesigners = designers?.data?.data?.data?.map((item) => item?._id)
   const currentDevelopers = developers?.data?.data?.data?.map(
     (item) => item?._id
@@ -111,7 +108,6 @@ function ProjectModal({
     if (toggle) {
       // setProjectStatuses(statuses.data.data.data)
       setProjectTypes(types?.data?.data?.data)
-      refetch()
       if (isEditMode) {
         setStartDate(moment(initialValues.startDate))
         setEndDate(moment(initialValues.endDate))
@@ -592,8 +588,8 @@ function ProjectModal({
                   mode="multiple"
                   size="large"
                 >
-                  {data &&
-                    data.data.data.data.map((tag) => (
+                  {tags &&
+                    tags.data.data.data.map((tag) => (
                       <Option value={tag._id} key={tag._id}>
                         {tag.name}
                       </Option>
