@@ -169,7 +169,6 @@ const LOGTIMES_COLUMNS = (
           key: 'action',
           // width: 360,
           render: (text, record) => {
-            console.log(record.user, user)
             let logDateTime = record?.logDate?.split('/')
             let sendDate = `${logDateTime[1]}/${logDateTime[0]}/${logDateTime[2]}`
             return (
