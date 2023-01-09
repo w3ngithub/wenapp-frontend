@@ -162,6 +162,7 @@ export const SIDEBAR_ITEMS = ({
         name: 'sidebar.resources.ir',
         url: 'ir',
         id: 4,
+        roles: true,
       },
     ],
   },
