@@ -71,12 +71,7 @@ function SidebarContent(props) {
                     }
                   >
                     {item.subItems
-                      .filter((subitem) => {
-                        if (subitem.roles) {
-                          return subitem.roles === true
-                        }
-                        return true
-                      })
+                      .filter((subitem) => subitem.roles === true)
                       .map((subItem) => {
                         if (subItem.url === 'ir') {
                           return (
