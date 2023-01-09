@@ -1,16 +1,16 @@
 export const permissionRoleLogo = {
-  Navigation:'navigation',
-  Dashboard:'dasbhoard',
-  'Co-Workers':'view-o',
-  Projects:'folder-o',
-  Attendance:'select',
-  'Log Time':'ckeditor',
-  'Leave Management':'hotel-booking',
-  'Notice Board':'calendar-new',
-  Blog:'chat-new',
-  Reports:'chart-line',
-  Resources:'editor',
-  Settings: 'setting'
+  Navigation: 'navigation',
+  Dashboard: 'dasbhoard',
+  'Co-Workers': 'view-o',
+  Projects: 'folder-o',
+  Attendance: 'select',
+  'Log Time': 'ckeditor',
+  'Leave Management': 'hotel-booking',
+  'Notice Board': 'calendar-new',
+  Blog: 'chat-new',
+  Reports: 'chart-line',
+  Resources: 'editor',
+  Settings: 'setting',
 }
 
 export const permissionRole = {
@@ -145,7 +145,11 @@ export const permissionRole = {
 
   'Leave Management': [
     {name: 'applyLeave', label: 'Apply Leave', rule: []},
-    {name: 'viewCoworkersLeaves', label: 'View Co-workers Leaves Detail', rule: []},
+    {
+      name: 'viewCoworkersLeaves',
+      label: 'View Co-workers Leaves Detail',
+      rule: [],
+    },
     {name: 'viewMyHistory', label: 'View My History Detail', rule: []},
     {
       name: 'approveCoworkersLeaves',
@@ -217,6 +221,7 @@ export const permissionRole = {
   Settings: [
     {name: 'coWorker', label: 'Co-Workers', rule: []},
     {name: 'project', label: 'Projects', rule: []},
+    {name: 'coworkerCUD', label: 'Co-Workers CUD', rule: []},
     {name: 'logTimes', label: 'Log Time', rule: []},
     {name: 'leaveManagements', label: 'Leave Management', rule: []},
     {name: 'noticeBoards', label: 'Notice Board', rule: []},
