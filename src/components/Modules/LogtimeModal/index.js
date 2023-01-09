@@ -88,21 +88,18 @@ function LogtimeModal({
   useEffect(() => {
     if (toggle) {
       setTypes(logTypes.data?.data?.data)
-      // projectsQuery.refetch()
       form.setFieldsValue({
         hours: '0',
         minutes: '0',
       })
       if (isEditMode) {
         if (initialValues?.project?._id && isUserLogtime) {
-          getProject(initialValues?.project?._id).then((data) => {
-            if (data?.data?.status === 'success') {
-              let projectInfo = data?.data?.data?.data
-              setProjectArray(projectInfo)
-            } else {
-              notification({message: 'Project Cannot be Imported'})
-            }
-          })
+          setProjectArray([
+            {
+              _id: initialValues?.project._id,
+              name: initialValues?.project?.name,
+            },
+          ])
         }
 
         form.setFieldsValue(
@@ -307,7 +304,7 @@ function LogtimeModal({
                   {_id: process.env.REACT_APP_OTHER_PROJECT_ID, name: 'Other'},
                 ].map((project) => (
                   <Option value={project._id} key={project._id}>
-                    {project.name}
+                    {project?.name}
                   </Option>
                 ))}
               </Select>
