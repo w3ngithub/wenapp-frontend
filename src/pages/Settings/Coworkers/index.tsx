@@ -6,7 +6,11 @@ import {
   getInvitedUsers,
   inviteUsers,
 } from 'services/settings/coworkers/inviteUser'
-import {INVITED_EMPLOYEES_COLUMN, POSITION_COLUMN} from 'constants/Settings'
+import {
+  INVITED_EMPLOYEES_COLUMN,
+  POSITION_COLUMN,
+  ROLE_COLUMN,
+} from 'constants/Settings'
 import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonModal from '../CommonModal'
@@ -34,6 +38,8 @@ import {socket} from 'pages/Main'
 import RoleAccess from 'constants/RoleAccess'
 import RolePermissionModal from '../RolePermissionModal'
 import {RolePermissionProvider} from 'context/RolePermissionConext'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {useSelector} from 'react-redux'
 
 const layout = {
   // labelCol: { span: 8 },
@@ -47,6 +53,11 @@ const types = {
 }
 
 function Coworkers() {
+  const {
+    role: {
+      permission: {Settings},
+    },
+  } = useSelector(selectAuthUser)
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
 
@@ -526,20 +537,23 @@ function Coworkers() {
           <Card
             title="Role"
             extra={
-              <Button
-                className="gx-btn gx-btn-primary gx-text-white settings-add"
-                onClick={() => setOpenRole(true)}
-                disabled={getIsAdmin()}
-              >
-                Add
-              </Button>
+              Settings?.coworkerCUD && (
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white settings-add"
+                  onClick={() => setOpenRole(true)}
+                  disabled={getIsAdmin()}
+                >
+                  Add
+                </Button>
+              )
             }
           >
             <SettingTable
               data={roles}
-              columns={POSITION_COLUMN(
+              columns={ROLE_COLUMN(
                 (value) => handleDeleteClick(value, types.ROLE),
-                (value) => handleOpenEditModal(value, types.ROLE, roles)
+                (value) => handleOpenEditModal(value, types.ROLE, roles),
+                Settings?.coworkerCUD
               )}
               isLoading={deleteRoleMutation.isLoading || isLoading}
               onAddClick={() => setOpenRole(true)}
