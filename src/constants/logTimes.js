@@ -88,17 +88,15 @@ const LOGTIMES_COLUMNS = (
                 <span>
                   {moment(sendDate) >=
                     moment().subtract(1, 'days').startOf('day') && (
-                    <AccessWrapper role={role?.[`Log Time`]?.editLogTime}>
-                      <span
-                        className="gx-link"
-                        onClick={() => onOpenEditModal(record)}
-                      >
-                        <CustomIcon name="edit" />
-                      </span>
+                    <span
+                      className="gx-link"
+                      onClick={() => onOpenEditModal(record)}
+                    >
+                      <CustomIcon name="edit" />
                       {role?.[`Log Time`]?.deleteLogTime && (
                         <Divider type="vertical" />
                       )}
-                    </AccessWrapper>
+                    </span>
                   )}
 
                   <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
@@ -171,6 +169,7 @@ const LOGTIMES_COLUMNS = (
           key: 'action',
           // width: 360,
           render: (text, record) => {
+            console.log(record.user, user)
             let logDateTime = record?.logDate?.split('/')
             let sendDate = `${logDateTime[1]}/${logDateTime[0]}/${logDateTime[2]}`
             return (
