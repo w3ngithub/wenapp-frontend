@@ -318,10 +318,8 @@ export function removeDash(param) {
     .join(' ')
 }
 
-export const filterOptions = (input, option) => {
-  console.log('hello from sort', input, option)
-  return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-}
+export const filterOptions = (input, option) =>
+  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
 export const filterSortOptions = (optionA, optionB) =>
   (optionA?.children ?? '')
