@@ -89,7 +89,6 @@ function LeaveModal({
   showWorker: boolean
 }) {
   const queryClient = useQueryClient()
-  console.log('users', users)
   const [colorState, setColorState] = useState(true)
   const [form] = Form.useForm()
   const [leaveType, setLeaveType] = useState('')
