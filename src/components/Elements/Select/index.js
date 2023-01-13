@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {Select as Dropdown} from 'antd'
-import {filterOptions} from 'helpers/utils'
+import {filterOptions, filterSortOptions} from 'helpers/utils'
 import './selectLabel.less'
 import {SearchOutlined} from '@ant-design/icons'
 import {emptyText} from 'constants/EmptySearchAntd'
@@ -15,6 +15,7 @@ const Select = ({
   placeholder,
   style,
   mode,
+  sortAscend = false,
   inputSelect = false,
   initialValues = '',
   width = 200,
@@ -42,6 +43,7 @@ const Select = ({
         }}
         value={value}
         filterOption={filterOptions}
+        filterSort={sortAscend && filterSortOptions}
         mode={mode}
         open={!inputSelect ? undefined : searchValue.length ? true : false}
         onSelect={() => {
