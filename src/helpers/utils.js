@@ -321,6 +321,11 @@ export function removeDash(param) {
 export const filterOptions = (input, option) =>
   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
+export const filterSortOptions = (optionA, optionB) =>
+  (optionA?.children ?? '')
+    .toLowerCase()
+    .localeCompare((optionB?.children ?? '').toLowerCase())
+
 export const handleResponse = (
   response,
   successMessage,
