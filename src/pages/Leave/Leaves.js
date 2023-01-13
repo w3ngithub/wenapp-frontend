@@ -308,7 +308,13 @@ function Leaves({
               <Select
                 placeholder="Select Co-worker"
                 value={user}
-                options={filterSpecificUser(allUsers, ADMINISTRATOR)}
+                options={filterSpecificUser(
+                  usersQuery?.data?.data?.data?.data,
+                  ADMINISTRATOR
+                )?.map((x) => ({
+                  id: x._id,
+                  value: x.name,
+                }))}
                 onChange={handleUserChange}
               />
             </FormItem>
