@@ -280,7 +280,7 @@ function ProjectModal({
   }, [toggle])
 
   useEffect(() => {
-    if (moment() < moment(startDate) || startDate === undefined) {
+    if (moment() < moment(startDate) || !startDate) {
       let removeCompleted = statuses?.data?.data?.data?.filter(
         (data) => data.name !== 'Completed'
       )
@@ -288,7 +288,7 @@ function ProjectModal({
         (status) => status._id === form.getFieldValue('projectStatus')
       )
       setProjectStatuses(removeCompleted)
-      if (selectedStatus?.[0]?.name === 'Completed') {
+      if (startDate && selectedStatus?.[0]?.name === 'Completed') {
         form.setFieldValue('projectStatus', null)
       }
     } else {
@@ -297,8 +297,12 @@ function ProjectModal({
   }, [startDate])
 
   const handleDateChange = (e, time) => {
-    if (time === 'start') setStartDate(e)
-    else setEndDate(e)
+    if (time === 'start') {
+      if (!e) {
+        form.setFieldValue('projectStatus', null)
+      }
+      setStartDate(e)
+    } else setEndDate(e)
   }
 
   const disableDate = (current, date, time) => {
