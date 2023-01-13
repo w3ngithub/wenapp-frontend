@@ -15,8 +15,9 @@ import {
   weeklyState,
 } from 'constants/Attendance'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {debounce} from 'helpers/utils'
+import {debounce, filterSpecificUser} from 'helpers/utils'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {ADMINISTRATOR} from 'constants/UserNames'
 
 const FormItem = Form.Item
 let screenWidth: number
@@ -177,7 +178,10 @@ function WorkLogReport() {
                 placeholder="Select Co-worker"
                 onChange={handleUserChange}
                 value={user}
-                options={usersData?.data?.data?.data?.map((x: any) => ({
+                options={filterSpecificUser(
+                  usersData?.data?.data?.data,
+                  ADMINISTRATOR
+                )?.map((x: any) => ({
                   ...x,
                   id: x._id,
                   value: x.name,

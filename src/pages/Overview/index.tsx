@@ -16,6 +16,7 @@ import {getAllProjects} from 'services/projects'
 import {Collapse} from 'antd'
 import {WalletOutlined} from '@ant-design/icons'
 import {useLocation} from 'react-router-dom'
+import {ADMINISTRATOR} from 'constants/UserNames'
 
 const {Panel} = Collapse
 
@@ -83,7 +84,8 @@ const Overview = () => {
   const checkInUsers = checkInSecition?.map((x: any) => x._id.user)
 
   const notCheckInSection = data?.data?.data?.data?.filter(
-    (user: any) => !checkInUsers.includes(user.name)
+    (user: any) =>
+      user.name !== ADMINISTRATOR && !checkInUsers.includes(user.name)
   )
 
   const deadlineProject = projects?.data?.data?.data || []
