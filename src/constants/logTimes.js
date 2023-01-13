@@ -88,20 +88,18 @@ const LOGTIMES_COLUMNS = (
                 <span>
                   {moment(sendDate) >=
                     moment().subtract(1, 'days').startOf('day') && (
-                    <AccessWrapper role={role?.[`Log Time`]?.editLogTime}>
-                      <span
-                        className="gx-link"
-                        onClick={() => onOpenEditModal(record)}
-                      >
-                        <CustomIcon name="edit" />
-                      </span>
-                    </AccessWrapper>
+                    <span
+                      className="gx-link"
+                      onClick={() => onOpenEditModal(record)}
+                    >
+                      <CustomIcon name="edit" />
+                      {role?.[`Log Time`]?.deleteLogTime && (
+                        <Divider type="vertical" />
+                      )}
+                    </span>
                   )}
 
                   <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
-                    {role?.[`Log Time`]?.editLogTime && (
-                      <Divider type="vertical" />
-                    )}
                     <Popconfirm
                       title="Are you sure to delete this Log?"
                       onConfirm={() => confirmDelete(record)}
@@ -185,15 +183,15 @@ const LOGTIMES_COLUMNS = (
                       onClick={() => onOpenEditModal(record)}
                     >
                       <CustomIcon name="edit" />
+                      {role?.[`Log Time`]?.deleteLogTime && (
+                        <Divider type="vertical" />
+                      )}
                     </span>
                   ) : (
                     ''
                   )}
 
                   <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
-                    {role?.[`Log Time`]?.editLogTime && (
-                      <Divider type="vertical" />
-                    )}
                     <Popconfirm
                       title="Are you sure to delete this Log?"
                       onConfirm={() => confirmDelete(record)}

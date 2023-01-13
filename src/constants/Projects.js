@@ -23,7 +23,9 @@ const PROJECT_COLUMNS = (
         <div>
           <p
             className="project-name"
-            onClick={() => role?.viewProjects && openModal(record, true)}
+            onClick={() =>
+              role?.Projects?.viewProjects && openModal(record, true)
+            }
           >
             {record.name}
           </p>
@@ -85,25 +87,29 @@ const PROJECT_COLUMNS = (
     render: (text, record) => {
       return (
         <div style={{display: 'flex'}}>
-          <span
-            className="gx-link"
-            onClick={() =>
-              navigateToProjectLogs(`${record._id}-${record.slug}`)
-            }
-          >
-            Log Time
-          </span>
-          {role?.viewProjects && (
+          {role?.Navigation?.logTime && (
+            <span
+              className="gx-link"
+              onClick={() =>
+                navigateToProjectLogs(`${record._id}-${record.slug}`)
+              }
+            >
+              Log Time
+            </span>
+          )}
+          {role?.Projects?.viewProjects && (
             <>
-              <Divider type="vertical" />
+              {role?.Navigation?.logTime && <Divider type="vertical" />}
               <span className="gx-link" onClick={() => openModal(record, true)}>
                 <CustomIcon name="view" />
               </span>
             </>
           )}
-          {role?.editProjects && !getIsAdmin() && (
+          {role?.Projects?.editProjects && !getIsAdmin() && (
             <>
-              <Divider type="vertical" />
+              {(role?.Navigation?.logTime || role?.Projects?.viewProjects) && (
+                <Divider type="vertical" />
+              )}
               <span
                 className="gx-link"
                 onClick={() => openModal(record, false)}
@@ -112,9 +118,11 @@ const PROJECT_COLUMNS = (
               </span>
             </>
           )}
-          {role?.deleteProjects && (
+          {role?.Projects?.deleteProjects && (
             <>
-              <Divider type="vertical" />
+              {(role?.Navigation?.logTime ||
+                role?.Projects?.viewProjects ||
+                role?.Projects?.editProjects) && <Divider type="vertical" />}
               <Popconfirm
                 title="Are you sure to delete this project?"
                 onConfirm={() => confirmDelete(record)}

@@ -63,6 +63,10 @@ function PunchInOut() {
     onError: (error) => {
       notification({message: 'Punch  failed', type: 'error'})
     },
+
+    onSettled: () => {
+      setdisableButton(false)
+    },
   })
 
   const punchOutAttendances = useMutation(
@@ -83,6 +87,9 @@ function PunchInOut() {
       },
       onError: (error) => {
         notification({message: 'Punch  failed', type: 'error'})
+      },
+      onSettled: () => {
+        setdisableButton(false)
       },
     }
   )
@@ -116,7 +123,9 @@ function PunchInOut() {
       setToogle(true)
       return
     }
+
     setdisableButton(true)
+
     const location = await getLocation()
     if (await checkLocationPermission()) {
       const IP = await getIpAddres()
@@ -149,8 +158,8 @@ function PunchInOut() {
         message: 'Please allow Location Access to Punch for Attendance',
         type: 'error',
       })
+      setdisableButton(false)
     }
-    setdisableButton(false)
   }
 
   return (

@@ -591,7 +591,7 @@ function LeaveModal({
                 </Col>
               </Row>
 
-              {leaveData?.status === 'cancelled' && (
+              {leaveData?.leaveStatus === 'cancelled' && (
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item

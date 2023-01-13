@@ -24,6 +24,7 @@ import {
   UserTotalofficehour,
 } from 'services/attendances'
 import {
+  convertMsToHM,
   dateDifference,
   getIsAdmin,
   hourIntoMilliSecond,
@@ -449,7 +450,7 @@ function AdminAttendance({userRole}) {
                     ? timeFetching
                       ? 'Calculating...'
                       : timedata?.data?.data[0]?.totalhours
-                      ? milliSecondIntoHours(
+                      ? convertMsToHM(
                           timedata?.data?.data[0]?.totalhours
                         )
                       : 0
@@ -549,7 +550,7 @@ function AdminAttendance({userRole}) {
                       ? timeFetching
                         ? 'Calculating...'
                         : timedata?.data?.data[0]?.totalhours
-                        ? milliSecondIntoHours(
+                        ? convertMsToHM(
                             timedata?.data?.data[0]?.totalhours
                           )
                         : 0
