@@ -244,7 +244,6 @@ export const dateDifference = (end, start) => {
   } `
 }
 
-
 export function convertMsToHM(milliSec) {
   let delta = Math.abs(milliSec) / 1000
 
@@ -253,13 +252,10 @@ export function convertMsToHM(milliSec) {
 
   let minutes = Math.floor(delta / 60) % 60
 
-  return `${
-    hours === 0 ? '' : hours === 1 ? `${hours} hr` : `${hours} hrs`
-  } ${
+  return `${hours === 0 ? '' : hours === 1 ? `${hours} hr` : `${hours} hrs`} ${
     minutes === 0 ? '' : minutes === 1 ? `${minutes} min` : `${minutes} mins`
-  } `;
+  } `
 }
-
 
 export const milliSecondIntoHours = (milliSec) => {
   let delta = Math.abs(milliSec) / 1000
@@ -322,8 +318,15 @@ export function removeDash(param) {
     .join(' ')
 }
 
-export const filterOptions = (input, option) =>
-  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+export const filterOptions = (input, option) => {
+  console.log('hello from sort', input, option)
+  return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+}
+
+export const filterSortOptions = (optionA, optionB) =>
+  (optionA?.children ?? '')
+    .toLowerCase()
+    .localeCompare((optionB?.children ?? '').toLowerCase())
 
 export const handleResponse = (
   response,
