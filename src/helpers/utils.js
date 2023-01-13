@@ -504,3 +504,14 @@ export const scrollForm = (form, name) => {
     block: 'end',
   })
 }
+
+//filter specific User
+
+export const filterSpecificUser = (group, name) => {
+  console.log({group, name})
+  return group?.filter((user) => {
+    if (user?.hasOwnProperty('name')) {
+      return user.name !== name
+    } else return user.value !== name
+  })
+}

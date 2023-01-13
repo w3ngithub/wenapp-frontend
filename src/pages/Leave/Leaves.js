@@ -9,6 +9,7 @@ import {changeLeaveStatus, getLeavesOfAllUsers} from 'services/leaves'
 import {
   capitalizeInput,
   changeDate,
+  filterSpecificUser,
   getIsAdmin,
   handleResponse,
   removeDash,
@@ -24,6 +25,7 @@ import {disabledDate} from 'util/antDatePickerDisabled'
 import {sendEmailforLeave} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
+import {ADMINISTRATOR} from 'constants/UserNames'
 
 const FormItem = Form.Item
 
@@ -306,7 +308,7 @@ function Leaves({
               <Select
                 placeholder="Select Co-worker"
                 value={user}
-                options={allUsers}
+                options={filterSpecificUser(allUsers, ADMINISTRATOR)}
                 onChange={handleUserChange}
               />
             </FormItem>
