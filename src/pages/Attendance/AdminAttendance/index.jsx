@@ -26,6 +26,7 @@ import {
 import {
   convertMsToHM,
   dateDifference,
+  filterSpecificUser,
   getIsAdmin,
   hourIntoMilliSecond,
   milliSecondIntoHours,
@@ -43,6 +44,7 @@ import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {emptyText} from 'constants/EmptySearchAntd'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {ADMINISTRATOR} from 'constants/UserNames'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -383,7 +385,10 @@ function AdminAttendance({userRole}) {
                     placeholder="Select Co-worker"
                     onChange={handleUserChange}
                     value={user}
-                    options={users?.data?.data?.data?.map((x) => ({
+                    options={filterSpecificUser(
+                      users?.data?.data?.data,
+                      ADMINISTRATOR
+                    )?.map((x) => ({
                       id: x._id,
                       value: x.name,
                     }))}
@@ -450,9 +455,7 @@ function AdminAttendance({userRole}) {
                     ? timeFetching
                       ? 'Calculating...'
                       : timedata?.data?.data[0]?.totalhours
-                      ? convertMsToHM(
-                          timedata?.data?.data[0]?.totalhours
-                        )
+                      ? convertMsToHM(timedata?.data?.data[0]?.totalhours)
                       : 0
                     : ''
                 }
@@ -524,7 +527,10 @@ function AdminAttendance({userRole}) {
                     placeholder="Select Co-worker"
                     onChange={handleUserChange}
                     value={user}
-                    options={users?.data?.data?.data?.map((x) => ({
+                    options={filterSpecificUser(
+                      users?.data?.data?.data,
+                      ADMINISTRATOR
+                    )?.map((x) => ({
                       id: x._id,
                       value: x.name,
                     }))}
@@ -550,9 +556,7 @@ function AdminAttendance({userRole}) {
                       ? timeFetching
                         ? 'Calculating...'
                         : timedata?.data?.data[0]?.totalhours
-                        ? convertMsToHM(
-                            timedata?.data?.data[0]?.totalhours
-                          )
+                        ? convertMsToHM(timedata?.data?.data[0]?.totalhours)
                         : 0
                       : ''
                   }
