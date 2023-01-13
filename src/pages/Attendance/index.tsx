@@ -26,8 +26,20 @@ function Attendace() {
   } = useSelector(selectAuthUser)
 
   useEffect(() => {
-    setTabKey(state?.tab)
-  }, [state])
+    if (state?.tab) {
+      setTabKey(state?.tab)
+    } else if (NavigationAttendance?.viewMyAttendance) {
+      setTabKey('1')
+    } else if (NavigationAttendance?.viewMyAttendanceCalendar) {
+      setTabKey('2')
+    } else if (NavigationAttendance?.viewCoworkersAttendance) {
+      setTabKey('3')
+    } else if (NavigationAttendance?.viewCoworkersLateAttendance) {
+      setTabKey('4')
+    } else if (NavigationAttendance?.viewCoworkersAttendanceCalendar) {
+      setTabKey('5')
+    }
+  }, [state, NavigationAttendance])
 
   return (
     <Card title="Attendance">
