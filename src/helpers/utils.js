@@ -244,7 +244,6 @@ export const dateDifference = (end, start) => {
   } `
 }
 
-
 export function convertMsToHM(milliSec) {
   let delta = Math.abs(milliSec) / 1000
 
@@ -253,13 +252,10 @@ export function convertMsToHM(milliSec) {
 
   let minutes = Math.floor(delta / 60) % 60
 
-  return `${
-    hours === 0 ? '' : hours === 1 ? `${hours} hr` : `${hours} hrs`
-  } ${
+  return `${hours === 0 ? '' : hours === 1 ? `${hours} hr` : `${hours} hrs`} ${
     minutes === 0 ? '' : minutes === 1 ? `${minutes} min` : `${minutes} mins`
-  } `;
+  } `
 }
-
 
 export const milliSecondIntoHours = (milliSec) => {
   let delta = Math.abs(milliSec) / 1000
@@ -501,5 +497,16 @@ export const scrollForm = (form, name) => {
   form.scrollToField(name, {
     behavior: 'smooth',
     block: 'end',
+  })
+}
+
+//filter specific User
+
+export const filterSpecificUser = (group, name) => {
+  console.log({group, name})
+  return group?.filter((user) => {
+    if (user?.hasOwnProperty('name')) {
+      return user.name !== name
+    } else return user.value !== name
   })
 }
