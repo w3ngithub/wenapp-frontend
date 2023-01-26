@@ -10,6 +10,7 @@ import Resources from './Resources'
 import Email from './Email'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import Attendance from './Attendance'
 
 const TabPane = Tabs.TabPane
 
@@ -64,6 +65,11 @@ function Settings() {
         {Settings?.emails && (
           <TabPane tab="Emails" key="8">
             <Email />
+          </TabPane>
+        )}
+        {Settings?.emails && (
+          <TabPane tab="Attendance" key="9">
+            <Attendance />
           </TabPane>
         )}
       </Tabs>

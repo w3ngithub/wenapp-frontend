@@ -103,6 +103,7 @@ function TmsMyAttendanceForm({
         punchInLocation: location,
         punchInIp: IP?.data?.IPv4,
         attendanceDate: moment.utc().startOf('day').format(),
+        isLateArrival: true,
       })
     } else {
       notification({
