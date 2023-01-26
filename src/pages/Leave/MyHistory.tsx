@@ -17,8 +17,6 @@ import {disabledDate} from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {getLeaveTypes} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
-import {useSelector} from 'react-redux'
-import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
@@ -76,8 +74,6 @@ function MyHistory({
 
   const [page, setPage] = useState(defaultPage)
 
-  const {gender} = useSelector(selectAuthUser)
-
   const userLeavesQuery = useQuery(
     ['userLeaves', leaveStatus, rangeDate, page, leaveTypeId],
     () =>
@@ -100,23 +96,12 @@ function MyHistory({
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {
-      if (gender === 'Male') {
-        return [
-          ...res?.data?.data?.data
-            ?.filter((types: any) => types.name !== 'Substitute Leave')
-            .map((type: any) => ({
-              id: type._id,
-              value: type?.name.replace('Leave', '').trim(),
-            })),
-        ]
-      } else {
-        return [
-          ...res?.data?.data?.data?.map((type: any) => ({
-            id: type._id,
-            value: type?.name.replace('Leave', '').trim(),
-          })),
-        ]
-      }
+      return [
+        ...res?.data?.data?.data?.map((type: any) => ({
+          id: type._id,
+          value: type?.name.replace('Leave', '').trim(),
+        })),
+      ]
     },
   })
 
