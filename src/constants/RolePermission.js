@@ -103,6 +103,11 @@ export const permissionRole = {
       label: 'Edit Co-workers Attendance',
       rule: [],
     },
+    {
+      name: 'deleteCoworkersAttendance',
+      label: 'Delete Co-workers Attendance',
+      rule: [],
+    },
     {name: 'viewMyAttendance', label: 'View My Attendance Detail', rule: []},
     {
       name: 'exportCoworkersAttendance',

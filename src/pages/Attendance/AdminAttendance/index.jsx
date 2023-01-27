@@ -305,7 +305,7 @@ function AdminAttendance({userRole}) {
                   </span>
                 </>
               )}
-              {userRole?.editCoworkersAttendance && !getIsAdmin() && (
+              {userRole?.deleteCoworkersAttendance && !getIsAdmin() && (
                 <>
                   <Divider type="vertical" />
                   <Popconfirm
