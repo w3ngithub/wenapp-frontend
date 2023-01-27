@@ -48,8 +48,6 @@ function TmsMyAttendanceForm({
     )
   )
 
-  console.log({leavesData, punchIn, latestAttendance})
-
   const addAttendances: any = useMutation((payload) => addAttendance(payload), {
     onSuccess: (response: any) => {
       if (response.status) {

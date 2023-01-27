@@ -62,7 +62,6 @@ function Attendance() {
   })
 
   const handleEditClick = (name: string, value: string) => {
-    console.log({name, value})
     editLateArrivalMutation.mutate({[name]: +value})
   }
 
