@@ -89,6 +89,9 @@ function AttendanceModal({
                     if (!value) {
                       throw new Error(`${type} is required.`)
                     }
+                    if (+value <= 0) {
+                      throw new Error('Please enter a value greater than 0')
+                    }
                     if (value?.trim() === '') {
                       throw new Error(`Please enter a valid ${type}.`)
                     }
@@ -103,6 +106,7 @@ function AttendanceModal({
               // value={input}
               placeholder={type}
               type="number"
+              min={1}
             />
           </Form.Item>
         </Form>

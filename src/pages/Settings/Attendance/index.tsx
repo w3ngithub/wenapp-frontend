@@ -30,7 +30,28 @@ function Attendance() {
         response,
         'Attendance parameter updated successfully',
         'Attendance parameter update failed',
-        [handleCloseModal, () => {}]
+        [
+          handleCloseModal,
+          () => {
+            if (
+              response.status &&
+              response?.data?.data?.hasOwnProperty('lateArrivalThreshold')
+            ) {
+              dispatch(
+                getLateArrivalThreshold(
+                  response?.data?.data?.lateArrivalThreshold
+                )
+              )
+            } else if (
+              response.status &&
+              response?.data?.data?.hasOwnProperty('officeHour')
+            ) {
+              dispatch(
+                getAllocatedOfficeHours(response?.data?.data?.officeHour)
+              )
+            }
+          },
+        ]
       ),
     onError: (error) => {
       notification({
@@ -43,11 +64,6 @@ function Attendance() {
   const handleEditClick = (name: string, value: string) => {
     console.log({name, value})
     editLateArrivalMutation.mutate({[name]: +value})
-    if (name === 'lateArrivalThreshold') {
-      dispatch(getLateArrivalThreshold(value))
-    } else {
-      dispatch(getAllocatedOfficeHours(value))
-    }
   }
 
   const handleOpenEditModal = (type: string) => {
