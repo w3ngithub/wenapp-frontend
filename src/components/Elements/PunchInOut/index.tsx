@@ -25,6 +25,10 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 function PunchInOut() {
   const user = useSelector(selectAuthUser)
 
+  const {lateArrivalThreshold} = useSelector(
+    (state: any) => state.configurations
+  )
+
   const [toogle, setToogle] = useState(false)
   const [disableButton, setdisableButton] = useState(false)
   const queryClient = useQueryClient()
@@ -63,6 +67,10 @@ function PunchInOut() {
     onError: (error) => {
       notification({message: 'Punch  failed', type: 'error'})
     },
+
+    onSettled: () => {
+      setdisableButton(false)
+    },
   })
 
   const punchOutAttendances = useMutation(
@@ -83,6 +91,9 @@ function PunchInOut() {
       },
       onError: (error) => {
         notification({message: 'Punch  failed', type: 'error'})
+      },
+      onSettled: () => {
+        setdisableButton(false)
       },
     }
   )
@@ -110,13 +121,17 @@ function PunchInOut() {
 
     if (
       checkIfTimeISBetweenOfficeHour(
-        moment(user?.officeTime?.utcDate).add(10, 'm').format('h:mm:ss')
+        moment(user?.officeTime?.utcDate)
+          .add(lateArrivalThreshold, 'm')
+          .format('HH:mm:ss')
       )
     ) {
       setToogle(true)
       return
     }
+
     setdisableButton(true)
+
     const location = await getLocation()
     if (await checkLocationPermission()) {
       const IP = await getIpAddres()
@@ -149,8 +164,8 @@ function PunchInOut() {
         message: 'Please allow Location Access to Punch for Attendance',
         type: 'error',
       })
+      setdisableButton(false)
     }
-    setdisableButton(false)
   }
 
   return (

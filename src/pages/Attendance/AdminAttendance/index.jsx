@@ -26,7 +26,9 @@ import {
   UserTotalofficehour,
 } from 'services/attendances'
 import {
+  convertMsToHM,
   dateDifference,
+  filterSpecificUser,
   getIsAdmin,
   handleResponse,
   hourIntoMilliSecond,
@@ -46,6 +48,8 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import {emptyText} from 'constants/EmptySearchAntd'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {socket} from 'pages/Main'
+import {ADMINISTRATOR} from 'constants/UserNames'
+import {useSelector} from 'react-redux'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -106,6 +110,8 @@ function AdminAttendance({userRole}) {
     loading: false,
   })
   const CSVRef = useRef()
+
+  const {allocatedOfficeHours} = useSelector((state) => state.configurations)
 
   const {innerWidth} = useWindowsSize()
 
@@ -427,7 +433,10 @@ function AdminAttendance({userRole}) {
                     placeholder="Select Co-worker"
                     onChange={handleUserChange}
                     value={user}
-                    options={users?.data?.data?.data?.map((x) => ({
+                    options={filterSpecificUser(
+                      users?.data?.data?.data,
+                      ADMINISTRATOR
+                    )?.map((x) => ({
                       id: x._id,
                       value: x.name,
                     }))}
@@ -494,9 +503,7 @@ function AdminAttendance({userRole}) {
                     ? timeFetching
                       ? 'Calculating...'
                       : timedata?.data?.data[0]?.totalhours
-                      ? milliSecondIntoHours(
-                          timedata?.data?.data[0]?.totalhours
-                        )
+                      ? convertMsToHM(timedata?.data?.data[0]?.totalhours)
                       : 0
                     : ''
                 }
@@ -568,7 +575,10 @@ function AdminAttendance({userRole}) {
                     placeholder="Select Co-worker"
                     onChange={handleUserChange}
                     value={user}
-                    options={users?.data?.data?.data?.map((x) => ({
+                    options={filterSpecificUser(
+                      users?.data?.data?.data,
+                      ADMINISTRATOR
+                    )?.map((x) => ({
                       id: x._id,
                       value: x.name,
                     }))}
@@ -594,9 +604,7 @@ function AdminAttendance({userRole}) {
                       ? timeFetching
                         ? 'Calculating...'
                         : timedata?.data?.data[0]?.totalhours
-                        ? milliSecondIntoHours(
-                            timedata?.data?.data[0]?.totalhours
-                          )
+                        ? convertMsToHM(timedata?.data?.data[0]?.totalhours)
                         : 0
                       : ''
                   }
@@ -693,7 +701,12 @@ function AdminAttendance({userRole}) {
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        columns={ATTENDANCE_COLUMNS(sort, handleView, true)}
+        columns={ATTENDANCE_COLUMNS(
+          sort,
+          handleView,
+          true,
+          allocatedOfficeHours
+        )}
         dataSource={formattedAttendances(sortedData)}
         expandable={{expandedRowRender}}
         onChange={handleTableChange}

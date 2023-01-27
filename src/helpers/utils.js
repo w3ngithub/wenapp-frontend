@@ -244,6 +244,19 @@ export const dateDifference = (end, start) => {
   } `
 }
 
+export function convertMsToHM(milliSec) {
+  let delta = Math.abs(milliSec) / 1000
+
+  let hours = Math.floor(delta / 3600)
+  delta -= hours * 3600
+
+  let minutes = Math.floor(delta / 60) % 60
+
+  return `${hours === 0 ? '' : hours === 1 ? `${hours} hr` : `${hours} hrs`} ${
+    minutes === 0 ? '' : minutes === 1 ? `${minutes} min` : `${minutes} mins`
+  } `
+}
+
 export const milliSecondIntoHours = (milliSec) => {
   let delta = Math.abs(milliSec) / 1000
 
@@ -307,6 +320,11 @@ export function removeDash(param) {
 
 export const filterOptions = (input, option) =>
   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+
+export const filterSortOptions = (optionA, optionB) =>
+  (optionA?.children ?? '')
+    .toLowerCase()
+    .localeCompare((optionB?.children ?? '').toLowerCase())
 
 export const handleResponse = (
   response,
@@ -485,4 +503,10 @@ export const scrollForm = (form, name) => {
     behavior: 'smooth',
     block: 'end',
   })
+}
+
+//filter specific User
+
+export const filterSpecificUser = (group, name) => {
+  return group?.filter((user) => user.name !== name)
 }

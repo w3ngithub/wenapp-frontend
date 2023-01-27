@@ -138,7 +138,8 @@ function AddBlog() {
 
   const submitBlog = (formData) => {
     const rawContent = convertToRaw(editorState.getCurrentContent())
-      ?.blocks?.[0]?.text
+      ?.blocks?.map((block) => block?.text)
+      .join('')
 
     if (rawContent === '') {
       setNoContent(true)

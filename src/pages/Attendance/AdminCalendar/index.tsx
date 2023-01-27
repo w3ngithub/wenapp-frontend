@@ -3,7 +3,12 @@ import React, {useState} from 'react'
 import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
-import {milliSecondIntoHours, MuiFormatDate, sortFromDate} from 'helpers/utils'
+import {
+  filterSpecificUser,
+  milliSecondIntoHours,
+  MuiFormatDate,
+  sortFromDate,
+} from 'helpers/utils'
 import {searchAttendacentOfUser} from 'services/attendances'
 import {ATTENDANCE_COLUMNS, monthlyState} from 'constants/Attendance'
 import {getLeavesOfAllUsers} from 'services/leaves'
@@ -12,12 +17,18 @@ import {getAllUsers} from 'services/users/userDetails'
 import {useNavigate} from 'react-router-dom'
 import {ATTENDANCE} from 'helpers/routePath'
 import {LEAVES_TYPES} from 'constants/Leaves'
+import {ADMINISTRATOR} from 'constants/UserNames'
+import {useSelector} from 'react-redux'
 
 const localizer = momentLocalizer(moment)
 const FormItem = Form.Item
 
 function AdminAttendanceCalendar() {
   const navigate = useNavigate()
+
+  const {allocatedOfficeHours} = useSelector(
+    (state: any) => state.configurations
+  )
 
   const [date, setDate] = useState(monthlyState)
   const [user, setUser] = useState<undefined | string>(undefined)
@@ -53,7 +64,15 @@ function AdminAttendanceCalendar() {
     } else if (filterByDay) {
       setDate([calendarDate[0], mom])
     } else {
-      setDate([calendarDate.start, calendarDate.end])
+      if (moment(calendarDate.start).date() !== 1) {
+        const startDate = moment(calendarDate.start)
+          .endOf('month')
+          .add(1, 'day')
+        const endDate = moment(startDate).endOf('month')
+        setDate([startDate, endDate])
+      } else {
+        setDate([calendarDate.start, moment(calendarDate.start).endOf('month')])
+      }
     }
   }
 
@@ -167,7 +186,7 @@ function AdminAttendanceCalendar() {
           title: totalHoursWorked,
           start: new Date(attendance._id?.attendanceDate),
           end: new Date(attendance._id?.attendanceDate),
-          isLessHourWorked: totalTime < 9,
+          isLessHourWorked: totalTime < allocatedOfficeHours,
           allDay: true,
         }
       } else return null
@@ -200,7 +219,10 @@ function AdminAttendanceCalendar() {
                 placeholder="Search Co-worker"
                 onChange={handleUserChange}
                 value={user}
-                options={users?.data?.data?.data?.map((x: any) => ({
+                options={filterSpecificUser(
+                  users?.data?.data?.data,
+                  ADMINISTRATOR
+                )?.map((x: any) => ({
                   id: x._id,
                   value: x.name,
                 }))}

@@ -28,6 +28,7 @@ import {
   MuiFormatDate,
   specifyParticularHalf,
   pendingLeaves,
+  filterSpecificUser,
 } from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
@@ -42,6 +43,7 @@ import {LEAVES_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
+import {ADMINISTRATOR} from 'constants/UserNames'
 
 const {Option} = Select
 
@@ -87,7 +89,6 @@ function LeaveModal({
   showWorker: boolean
 }) {
   const queryClient = useQueryClient()
-
   const [colorState, setColorState] = useState(true)
   const [form] = Form.useForm()
   const [leaveType, setLeaveType] = useState('')
@@ -539,11 +540,13 @@ function LeaveModal({
                         disabled={readOnly}
                         allowClear
                       >
-                        {users?.map((user: any) => (
-                          <Option value={user._id} key={user._id}>
-                            {user?.name}
-                          </Option>
-                        ))}
+                        {filterSpecificUser(users, ADMINISTRATOR)?.map(
+                          (user: any) => (
+                            <Option value={user._id} key={user._id}>
+                              {user?.name}
+                            </Option>
+                          )
+                        )}
                       </Select>
                     </Form.Item>
                   )}
@@ -591,7 +594,7 @@ function LeaveModal({
                 </Col>
               </Row>
 
-              {leaveData?.status === 'cancelled' && (
+              {leaveData?.leaveStatus === 'cancelled' && (
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item
