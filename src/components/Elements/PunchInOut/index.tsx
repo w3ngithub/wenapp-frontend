@@ -123,7 +123,7 @@ function PunchInOut() {
       checkIfTimeISBetweenOfficeHour(
         moment(user?.officeTime?.utcDate)
           .add(lateArrivalThreshold, 'm')
-          .format('hh:mm:ss')
+          .format('HH:mm:ss')
       )
     ) {
       setToogle(true)
