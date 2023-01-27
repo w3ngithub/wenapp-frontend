@@ -9,6 +9,7 @@ import {changeLeaveStatus, getLeavesOfAllUsers} from 'services/leaves'
 import {
   capitalizeInput,
   changeDate,
+  filterOptions,
   filterSpecificUser,
   getIsAdmin,
   handleResponse,
@@ -26,6 +27,7 @@ import {sendEmailforLeave} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
+import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
 
 const FormItem = Form.Item
 
@@ -70,6 +72,7 @@ function Leaves({
   permissions,
 }) {
   const queryClient = useQueryClient()
+
   let approveReason
   const [openModal, setOpenModal] = useState(false)
   const [openApproveLeaveModal, setopenApproveLeaveModal] = useState(false)
@@ -79,6 +82,8 @@ function Leaves({
   const [readOnly, setReadOnly] = useState(false)
   const [leaveStatus, setLeaveStatus] = useState(status ?? '')
   const [leaveId, setLeaveId] = useState(undefined)
+  const [leaveTitle, setLeaveTitle] = useState('')
+  const [leaveInterval, setLeaveInterval] = useState(undefined)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const [date, setDate] = useState(
@@ -98,7 +103,7 @@ function Leaves({
   const [user, setUser] = useState(selectedUser ?? undefined)
 
   const leavesQuery = useQuery(
-    ['leaves', leaveStatus, user, date, page, leaveId],
+    ['leaves', leaveStatus, user, date, page, leaveId, leaveInterval],
     () =>
       getLeavesOfAllUsers(
         leaveStatus,
@@ -107,7 +112,8 @@ function Leaves({
         page.page,
         page.limit,
         '-leaveDates,_id',
-        leaveId
+        leaveId,
+        leaveInterval === 'full-day' ? undefined : leaveInterval
       ),
     {
       onError: (err) => console.log(err),
@@ -123,8 +129,17 @@ function Leaves({
     ],
   })
 
-  const handleLeaveTypeChange = (value) => {
+  const handleLeaveTypeChange = (value, option) => {
+    console.log('op', option)
     setLeaveId(value)
+    setLeaveTitle(option.children)
+    if (option.children !== 'Sick' && option.children !== 'Casual') {
+      setLeaveInterval(undefined)
+    }
+  }
+  const handleLeaveIntervalChange = (value) => {
+    console.log('value', value)
+    setLeaveInterval(value)
   }
 
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
@@ -303,6 +318,16 @@ function Leaves({
                 options={leaveTypeQuery?.data}
               />
             </FormItem>
+            {(leaveTitle === 'Sick' || leaveTitle === 'Casual') && (
+              <FormItem className="direct-form-item">
+                <Select
+                  placeholder="Select Half Day Type"
+                  onChange={handleLeaveIntervalChange}
+                  options={customLeaves}
+                  value={leaveInterval}
+                />
+              </FormItem>
+            )}
 
             <FormItem className="direct-form-item">
               <Select

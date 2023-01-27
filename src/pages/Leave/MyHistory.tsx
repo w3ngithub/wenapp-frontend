@@ -14,6 +14,7 @@ import {getLeaveTypes} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {customLeaves} from 'constants/LeaveDuration'
 
 const FormItem = Form.Item
 
@@ -61,6 +62,7 @@ function MyHistory({
   const [openModal, setModal] = useState<boolean>(false)
   const [leaveStatus, setLeaveStatus] = useState<string | undefined>('')
   const [leaveTypeId, setLeaveType] = useState<string | undefined>(undefined)
+
   const [date, setDate] = useState<{moment: Moment | undefined; utc: string}>({
     utc: selectedDate ? selectedDate : undefined,
     moment: selectedDate ? moment(selectedDate).startOf('day') : undefined,

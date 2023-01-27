@@ -1,8 +1,7 @@
 import React, {ReactElement} from 'react'
 import moment from 'moment'
 import CustomIcon from 'components/Elements/Icons'
-import {Popconfirm} from 'antd'
-import {NINE_HOURS} from './Common'
+import {hrsToMins} from './Common'
 import {ATTENDANCE_LATE_ATTENDANCE_CUT_LEAVE_NO_ACCESS} from './RoleAccess'
 import {getIsAdmin} from 'helpers/utils'
 
@@ -28,7 +27,8 @@ type days =
 const ATTENDANCE_COLUMNS = (
   sortedInfo: any,
   openModal: Function,
-  admin: boolean
+  admin: boolean,
+  officeHours: number
 ): notice[] =>
   admin
     ? [
@@ -87,7 +87,7 @@ const ATTENDANCE_COLUMNS = (
                     .filter(Boolean)
                     ?.reduce((accumulator: number, value: number) => {
                       return accumulator + value
-                    }, 0) < NINE_HOURS
+                    }, 0) < hrsToMins(officeHours)
                     ? 'gx-text-danger'
                     : ''
                 }
@@ -147,7 +147,7 @@ const ATTENDANCE_COLUMNS = (
                     .filter(Boolean)
                     ?.reduce((accumulator: number, value: number) => {
                       return accumulator + value
-                    }, 0) < NINE_HOURS
+                    }, 0) < hrsToMins(officeHours)
                     ? 'gx-text-danger'
                     : ''
                 }
@@ -276,5 +276,23 @@ export const OfficeHourFilter = [
   {
     value: 'Is Lesser than',
     id: 'lt',
+  },
+]
+
+export const ATTENDANCE_SETTINGS_LIST = (
+  lateMinutes: any,
+  officeHours: any
+) => [
+  {
+    id: 0,
+    name: 'Late Arrival Threshold',
+    unit: lateMinutes === 1 ? 'minute' : 'minutes',
+    value: lateMinutes,
+  },
+  {
+    id: 1,
+    name: 'Allocated Office Hours',
+    unit: officeHours === 1 ? 'hour' : 'hours',
+    value: officeHours,
   },
 ]
