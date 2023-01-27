@@ -1,9 +1,21 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {STATUS_TYPES} from 'constants/Leaves'
-import {Button, Col, Input, Row, Select, Spin, Form, DatePicker} from 'antd'
 import {
+  Button,
+  Col,
+  Input,
+  Row,
+  Select,
+  Spin,
+  Form,
+  DatePicker,
+  Modal,
+} from 'antd'
+import {
+  compare,
   filterHalfDayLeaves,
   filterOptions,
+  getDateRangeArray,
   getIsAdmin,
   handleResponse,
   MuiFormatDate,
@@ -35,6 +47,8 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
 import RoleAccess from 'constants/RoleAccess'
+import moment from 'moment'
+import {ExclamationCircleFilled} from '@ant-design/icons'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -53,6 +67,8 @@ function Apply({user}) {
   const [calendarClicked, setCalendarClicked] = useState(false)
   const [yearStartDate, setYearStartDate] = useState(undefined)
   const [yearEndDate, setYearEndDate] = useState(undefined)
+  const [openModal, setOpenModal] = useState(false)
+  const [newDateArr, setNewDateArr] = useState([])
 
   const {name, email, role} = useSelector(selectAuthUser)
   const date = new Date()
@@ -203,6 +219,68 @@ function Apply({user}) {
     setSpecificHalf(false)
     setCalendarClicked(false)
   }
+
+  //condition to check holidays and weekends
+  const handleLeaveCheck = () => {
+    form.validateFields().then((values) => {
+      const leaveTypeName = leaveTypeQuery?.data?.find(
+        (type) => type?.id === values?.leaveType
+      )?.value
+      if (leaveTypeName === 'Casual' || leaveTypeName === 'Sick') {
+        const selectedDates = form?.getFieldValue('leaveDatesCasual')
+        const formattedDate = selectedDates?.map((d) => ({
+          index: moment(MuiFormatDate(new Date(d))).day(),
+          date: MuiFormatDate(new Date(d)),
+        }))
+        const sortedDate = formattedDate.sort(compare)
+        let holidayList = holidaysThisYear?.map((holiday) => {
+          return MuiFormatDate(moment(holiday?.date).format())
+        })
+        let selectedDatesArr = []
+        if (selectedDates.length > 1) {
+          sortedDate?.forEach((d, index) => {
+            if (sortedDate[index + 1]) {
+              let dateRange = getDateRangeArray(
+                d?.date,
+                sortedDate[index + 1]?.date
+              )
+              let filteredDateRange = dateRange.filter(
+                (d, index) => index !== 0 && index !== dateRange.length - 1
+              )
+              let filteredDateRangeWithIndex = filteredDateRange?.map((d) => ({
+                index: moment(d).day(),
+                date: d,
+              }))
+              let includesHolidayAndWeekend =
+                filteredDateRangeWithIndex.length > 0 &&
+                filteredDateRangeWithIndex?.every(
+                  (d) =>
+                    d.index === 0 ||
+                    d.index === 6 ||
+                    holidayList.includes(d.date)
+                )
+              if (includesHolidayAndWeekend) {
+                selectedDatesArr.push(
+                  ...filteredDateRangeWithIndex.map((d) =>
+                    moment(d.date).format('YYYY/MM/DD')
+                  )
+                )
+              }
+            }
+          })
+          setNewDateArr(selectedDatesArr)
+        }
+        if (selectedDatesArr?.length > 0) {
+          setOpenModal(true)
+        } else {
+          handleSubmit()
+        }
+      } else {
+        handleSubmit()
+      }
+    })
+  }
+
   const handleSubmit = () => {
     form.validateFields().then((values) => {
       const leaveTypeName = leaveTypeQuery?.data?.find(
@@ -251,8 +329,9 @@ function Apply({user}) {
       //calculation for sick, casual leaves
       const casualLeaveDays = appliedDate
         ? []
-        : values?.leaveDatesCasual?.join(',').split(',')
-      const casualLeaveDaysUTC = casualLeaveDays.map(
+        : [...values?.leaveDatesCasual?.join(',').split(','), ...newDateArr]
+
+      const casualLeaveDaysUTC = casualLeaveDays?.map(
         (leave) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
       )
       setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
@@ -274,6 +353,8 @@ function Apply({user}) {
         })
       )
     })
+    setOpenModal(false)
+    setNewDateArr([])
   }
   let userLeaves = []
   const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays?.map(
@@ -376,6 +457,32 @@ function Apply({user}) {
 
   return (
     <Spin spinning={leaveMutation.isLoading}>
+      <Modal
+        title={`Are you sure?`}
+        visible={openModal}
+        mask={false}
+        onCancel={() => setOpenModal(false)}
+        footer={[
+          <Button key="back" onClick={() => setOpenModal(false)}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleSubmit}
+            disabled={leaveMutation.isLoading}
+          >
+            Apply
+          </Button>,
+        ]}
+      >
+        <p>
+          <ExclamationCircleFilled style={{color: '#faad14'}} /> If there is a
+          public holiday or weekend in between the leave dates that you have
+          applied, it also will be counted as a leave date.
+        </p>
+      </Modal>
+
       <Form
         layout="vertical"
         style={{padding: '15px 0'}}
@@ -597,7 +704,8 @@ function Apply({user}) {
                 <div>
                   <Button
                     type="primary"
-                    onClick={handleSubmit}
+                    // onClick={extraLeave ? '' : submit}
+                    onClick={handleLeaveCheck}
                     disabled={getIsAdmin()}
                   >
                     Apply

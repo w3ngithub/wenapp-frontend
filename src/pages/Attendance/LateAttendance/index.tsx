@@ -17,6 +17,7 @@ import {
 import {
   changeDate,
   dateDifference,
+  filterSpecificUser,
   handleResponse,
   sortFromDate,
 } from 'helpers/utils'
@@ -31,6 +32,7 @@ import LeaveCutModal from 'components/Modules/LeaveCutAttendance/LeaveCutModal'
 import CustomIcon from 'components/Elements/Icons'
 import ViewDetailModel from '../ViewDetailModel'
 import {socket} from 'pages/Main'
+import {ADMINISTRATOR} from 'constants/UserNames'
 
 const FormItem = Form.Item
 
@@ -375,7 +377,10 @@ function LateAttendance({userRole}: {userRole: any}) {
                 placeholder="Select Co-worker"
                 onChange={handleUserChange}
                 value={user}
-                options={users?.data?.data?.data?.map((x: any) => ({
+                options={filterSpecificUser(
+                  users?.data?.data?.data,
+                  ADMINISTRATOR
+                )?.map((x: any) => ({
                   id: x._id,
                   value: x.name,
                 }))}
