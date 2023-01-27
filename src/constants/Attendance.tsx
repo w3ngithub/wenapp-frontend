@@ -291,7 +291,7 @@ export const ATTENDANCE_SETTINGS_LIST = (
   },
   {
     id: 1,
-    name: 'Allocated Office Hours',
+    name: 'Office Hours',
     unit: officeHours === 1 ? 'hour' : 'hours',
     value: officeHours,
   },
