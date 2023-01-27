@@ -224,6 +224,8 @@ function Leaves({
     setUser(undefined)
     setDate(undefined)
     setLeaveId(undefined)
+    setLeaveInterval(undefined)
+    setLeaveTitle('')
   }
 
   const handleCloseModal = (
