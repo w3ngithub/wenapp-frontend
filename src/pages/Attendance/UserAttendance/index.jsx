@@ -80,6 +80,7 @@ function UserAttendance({userRole}) {
     field: 'attendanceDate',
     columnKey: 'attendanceDate',
   })
+  const {allocatedOfficeHours} = useSelector((state) => state.configurations)
   const [form] = Form.useForm()
   const dispatch = useDispatch()
   const [disableButton, setDisableButton] = useState(false)
@@ -262,7 +263,6 @@ function UserAttendance({userRole}) {
 
     return <Table columns={columns} dataSource={data} pagination={false} />
   }
-
   const sortedData = useMemo(() => {
     return data?.data?.data?.attendances?.[0]?.data?.map((d) => ({
       ...d,
@@ -365,35 +365,41 @@ function UserAttendance({userRole}) {
               />
             </FormItem>
           </Form>
-          {userRole?.createMyAttendance &&
-          <div className="form-buttons">
-            <Button
-              className="gx-btn-form gx-btn-primary gx-text-white "
-              disabled={isLoading || getIsAdmin() || disableButton}
-              onClick={
-                data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.length >=
-                  punchLimit &&
-                !data?.data?.data?.attendances?.[0]?.data?.[0]?.data
-                  ?.map((item) => item?.hasOwnProperty('punchOutTime'))
-                  .includes(false)
-                  ? () => {
-                      notification({
-                        message: 'Punch Limit Exceeded',
-                        type: 'error',
-                      })
-                    }
-                  : handlePunch
-              }
-            >
-              {punchIn ? 'Punch In' : 'Punch Out'}
-            </Button>
-          </div>}
+          {userRole?.createMyAttendance && (
+            <div className="form-buttons">
+              <Button
+                className="gx-btn-form gx-btn-primary gx-text-white "
+                disabled={isLoading || getIsAdmin() || disableButton}
+                onClick={
+                  data?.data?.data?.attendances?.[0]?.data?.[0]?.data?.length >=
+                    punchLimit &&
+                  !data?.data?.data?.attendances?.[0]?.data?.[0]?.data
+                    ?.map((item) => item?.hasOwnProperty('punchOutTime'))
+                    .includes(false)
+                    ? () => {
+                        notification({
+                          message: 'Punch Limit Exceeded',
+                          type: 'error',
+                        })
+                      }
+                    : handlePunch
+                }
+              >
+                {punchIn ? 'Punch In' : 'Punch Out'}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        columns={ATTENDANCE_COLUMNS(sort, handleView)}
+        columns={ATTENDANCE_COLUMNS(
+          sort,
+          handleView,
+          false,
+          allocatedOfficeHours
+        )}
         dataSource={formattedAttendances(sortedData)}
         expandable={{expandedRowRender}}
         onChange={handleTableChange}

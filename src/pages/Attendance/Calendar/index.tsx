@@ -20,6 +20,9 @@ function AttendanceCalendar() {
   const navigate = useNavigate()
 
   const user = useSelector(selectAuthUser)
+  const {allocatedOfficeHours} = useSelector(
+    (state: any) => state.configurations
+  )
   const {innerWidth} = useWindowsSize()
   const [date, setDate] = useState(monthlyState)
 
@@ -48,15 +51,15 @@ function AttendanceCalendar() {
       setDate([calendarDate[0], calendarDate[6]])
     } else if (filterByDay) {
       setDate([calendarDate[0], mom])
-    }
-    else{
-      if(moment(calendarDate.start).date()!==1){
-        const startDate = moment(calendarDate.start).endOf('month').add(1,'day')
+    } else {
+      if (moment(calendarDate.start).date() !== 1) {
+        const startDate = moment(calendarDate.start)
+          .endOf('month')
+          .add(1, 'day')
         const endDate = moment(startDate).endOf('month')
-        setDate([startDate,endDate])
-      } 
-      else{
-      setDate([calendarDate.start, moment(calendarDate.start).endOf('month')])
+        setDate([startDate, endDate])
+      } else {
+        setDate([calendarDate.start, moment(calendarDate.start).endOf('month')])
       }
     }
   }
@@ -171,7 +174,7 @@ function AttendanceCalendar() {
           title: totalHoursWorked,
           start: new Date(attendance._id?.attendanceDate),
           end: new Date(attendance._id?.attendanceDate),
-          isLessHourWorked: totalTime < 9,
+          isLessHourWorked: totalTime < allocatedOfficeHours,
           allDay: true,
         }
       } else return null
@@ -189,7 +192,6 @@ function AttendanceCalendar() {
       })
   }
 
-
   return (
     <Card className="gx-card" title="Calendar">
       <Spin spinning={isLoading}>
@@ -204,7 +206,6 @@ function AttendanceCalendar() {
             views={['month', 'week', 'day']}
             eventPropGetter={handleEventStyle}
             onSelectEvent={handleSelectEvent}
-    
           />
         </div>
       </Spin>

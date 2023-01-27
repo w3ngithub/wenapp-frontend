@@ -25,6 +25,10 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 function PunchInOut() {
   const user = useSelector(selectAuthUser)
 
+  const {lateArrivalThreshold} = useSelector(
+    (state: any) => state.configurations
+  )
+
   const [toogle, setToogle] = useState(false)
   const [disableButton, setdisableButton] = useState(false)
   const queryClient = useQueryClient()
@@ -117,7 +121,9 @@ function PunchInOut() {
 
     if (
       checkIfTimeISBetweenOfficeHour(
-        moment(user?.officeTime?.utcDate).add(10, 'm').format('h:mm:ss')
+        moment(user?.officeTime?.utcDate)
+          .add(lateArrivalThreshold, 'm')
+          .format('HH:mm:ss')
       )
     ) {
       setToogle(true)
