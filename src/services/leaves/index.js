@@ -84,11 +84,11 @@ const getLeaveTypes = async (id) => {
   }
 }
 
-const changeLeaveStatus = async (id, statusType, reason) => {
+const changeLeaveStatus = async (id, statusType, reason='',reapplyreason='') => {
   try {
     let response = await API.patch(
       `${Apis.Leaves}/${id}/status/${statusType}`,
-      {reason}
+      {reason,reapplyreason}
     )
     return getAPIResponse(response)
   } catch (err) {

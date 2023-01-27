@@ -486,3 +486,18 @@ export const scrollForm = (form, name) => {
     block: 'end',
   })
 }
+
+export const isLeavesBeforeToday = (leaveDates) =>{
+  let firstDayofLeave;
+  if (leaveDates.length===1){
+    firstDayofLeave = new Date(leaveDates[0]).setUTCHours(0,0,0,0)
+  }
+  else{
+  const ascSortedDate = leaveDates.sort((date1,date2)=> new Date(date1) - new Date(date2))
+  firstDayofLeave = new Date(ascSortedDate[0])?.setUTCHours(0,0,0,0)
+  }
+  const todayDate = new Date()
+  todayDate.setUTCHours(0, 0, 0, 0)
+
+  return new Date(todayDate) <  new Date(firstDayofLeave) 
+}

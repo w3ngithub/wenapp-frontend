@@ -19,6 +19,7 @@ const FormItem = Form.Item
 
 const defaultPage = {page: 1, limit: 10}
 
+
 const formattedLeaves = (leaves: any) => {
   return leaves?.map((leave: any) => ({
     ...leave,
@@ -89,6 +90,8 @@ function MyHistory({
       )
   )
 
+
+
   const handleLeaveType = (value: string | undefined) => {
     setLeaveType(value)
   }
@@ -151,6 +154,9 @@ function MyHistory({
       utc: '',
       moment: undefined,
     })
+  
+
+
   }
   return (
     <div>

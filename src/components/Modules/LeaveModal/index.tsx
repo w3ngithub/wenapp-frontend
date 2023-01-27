@@ -265,7 +265,8 @@ function LeaveModal({
           user: leaveData.user._id,
           halfDay: leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
           cancelReason: leaveData?.cancelReason,
-          rejectReason:leaveData?.rejectReason
+          rejectReason:leaveData?.rejectReason,
+          reapplyreason:leaveData?.reapplyreason
         })
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
@@ -635,6 +636,31 @@ function LeaveModal({
                   </Col>
                 </Row>
               )}
+
+                
+        {(leaveData?.leaveStatus === STATUS_TYPES[2].id && leaveData?.reapplyreason) &&(
+                <Row>
+                  <Col span={6} xs={24} sm={24} xl={24}>
+                    <Form.Item
+                      {...formItemLayout}
+                      name="reapplyreason"
+                      label="Leave Re-apply Reason"
+                    >
+                      <Input.TextArea
+                        allowClear
+                        rows={10}
+                        disabled={readOnly}
+                        style={{
+                          background: darkCalendar ? '#434f5a' : '',
+                        }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              )}
+
+
+
 
 
 

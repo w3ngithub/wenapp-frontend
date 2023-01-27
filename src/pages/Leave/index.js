@@ -24,6 +24,8 @@ import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
 import AccessWrapper from 'components/Modules/AccessWrapper'
+import ReapplyLeaveModal from 'components/Modules/ReapplyLeaveModal'
+import { STATUS_TYPES } from 'constants/Leaves'
 
 const TabPane = Tabs.TabPane
 
@@ -34,7 +36,11 @@ function Leave() {
   let leaveCancelReason="";
   const [selectedRows, setSelectedRows] = useState([])
   const [openCancelLeaveModal, setOpenCancelLeaveModal] = useState(false)
+  const [openReapplyLeaveModal,setOpenReapplyLeaveModal] = useState({open:false,leaveData:{}})
+  const [reapplyLoader,setreapplyLoader] = useState(false)
+
   const [IsReject,setIsReject] = useState(false)
+  const [IsUserCancel,setUserCancel] = useState(false)
 
   const [leaveData, setLeaveData] = useState('')
   const [submittingCancelReason, setSubmittingCancelReason] = useState(false)
@@ -60,10 +66,18 @@ function Leave() {
     setIsReject(false)
   }
 
-  const handleOpenCancelLeaveModal = (leaveDetails,mode=false) => {
+  const handleOpenCancelLeaveModal = (leaveDetails,mode=false,userCancel=false) => {
+    if(leaveDetails?.leaveStatus===STATUS_TYPES[5]?.id){
+      leaveCancelMutation.mutate({
+        id: leaveDetails?._id,
+        type: 'cancel'
+      })
+      return;
+    }    
     setIsReject(mode)
     setOpenCancelLeaveModal(true)
     setLeaveData(leaveDetails)
+    setUserCancel(userCancel)
   }
 
   const quarterleaveDaysQuery = useQuery(
@@ -103,7 +117,7 @@ function Leave() {
 
 
   const leavereapplyMutation = useMutation(
-    (payload) => changeLeaveStatus(payload.id, payload.type, payload.reason),
+    (payload) => changeLeaveStatus(payload.id, payload.type,'',payload.reapplyreason),
     {
       onSuccess: (response) =>
         handleResponse(
@@ -127,6 +141,7 @@ function Leave() {
           ]
         ),
       onError: (error) => {
+        setreapplyLoader(false)
         notification({message: 'Could not reapply leave', type: 'error'})
       },
     }
@@ -137,17 +152,27 @@ function Leave() {
     leaveCancelReason = IsReject? leave?.leaveRejectReason: leave?.leaveCancelReason
     leaveCancelMutation.mutate({
       id: leave._id,
-      type: IsReject?'reject':'cancel',
+      type: IsReject?'reject':IsUserCancel?'user-cancel':'cancel',
       reason: leaveCancelReason,
     })
   }
 
   const reApplyLeave = (leave)=>{
-    leavereapplyMutation.mutate({
-      id:leave._id,
-      type:'pending',
-      status:''
-    })
+   setOpenReapplyLeaveModal({open:true,leaveData:leave})
+  }
+
+const handleReapplyLeave=(data)=>{
+  leavereapplyMutation.mutate({
+    id:data?._id,
+    type:'pending',
+    status:'',
+    reapplyreason:data?.reapplyreason
+  })
+}
+
+
+  const handleCloseReapplyModal = ()=>{
+    setOpenReapplyLeaveModal({open:false,leaveData:{}})
   }
 
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
@@ -162,7 +187,9 @@ function Leave() {
       reapply:res?.reapply,
       leaveCancelReason,
     })
+    setreapplyLoader(false)
     setSubmittingCancelReason(false)
+    handleCloseReapplyModal()
     handleCloseCancelLeaveModal()
   }
 
@@ -186,6 +213,7 @@ function Leave() {
     {}
   )
 
+
   let IsIntern = user?.status === EmployeeStatus?.Probation
 
   if (leaveDaysQuery.isLoading) return <CircularProgress />
@@ -205,6 +233,16 @@ function Leave() {
           name={IsReject?'leaveRejectReason':'leaveCancelReason'}
         />
       )}
+
+      <ReapplyLeaveModal
+      open={openReapplyLeaveModal.open}
+      onClose={handleCloseReapplyModal}
+      onSubmit={handleReapplyLeave}
+      leaveData={openReapplyLeaveModal.leaveData}
+      loader={reapplyLoader}
+      setLoader={setreapplyLoader}
+      isRequired={true}
+      />
 
       <Card title="Leave Management System">
         <Row>
