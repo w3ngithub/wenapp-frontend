@@ -54,7 +54,7 @@ function Apply({user}) {
   const [yearStartDate, setYearStartDate] = useState(undefined)
   const [yearEndDate, setYearEndDate] = useState(undefined)
 
-  const {name, email, gender} = useSelector(selectAuthUser)
+  const {name, email, role} = useSelector(selectAuthUser)
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -96,17 +96,12 @@ function Apply({user}) {
     getAllHolidays({sort: '-createdAt', limit: '1'})
   )
 
-  const {data: leaveQuarter, refetch} = useQuery(
-    ['leaveQuarter'],
-    getLeaveQuarter,
-    {
-      onSuccess: (data) => {
-        setYearStartDate(data?.data?.data?.data?.[0].firstQuarter.fromDate)
-        setYearEndDate(data?.data?.data?.data?.[0].fourthQuarter.toDate)
-      },
-      enabled: false,
-    }
-  )
+  const {data: leaveQuarter} = useQuery(['leaveQuarter'], getLeaveQuarter, {
+    onSuccess: (data) => {
+      setYearStartDate(data?.data?.data?.data?.[0].firstQuarter.fromDate)
+      setYearEndDate(data?.data?.data?.data?.[0].fourthQuarter.toDate)
+    },
+  })
 
   const userSubstituteLeave = useQuery(
     ['substitute', yearStartDate, yearEndDate],
@@ -115,33 +110,15 @@ function Apply({user}) {
     {enabled: !!yearStartDate && !!yearEndDate}
   )
 
-  useEffect(() => {
-    if (gender === 'Female') {
-      refetch()
-    }
-  }, [gender])
-
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {
-      if (gender === 'Male') {
-        return [
-          ...res?.data?.data?.data
-            ?.filter((types) => types.name !== 'Substitute Leave')
-            .map((type) => ({
-              id: type._id,
-              value: type?.name.replace('Leave', '').trim(),
-              leaveDays: type?.leaveDays,
-            })),
-        ]
-      } else {
-        return [
-          ...res?.data?.data?.data?.map((type) => ({
-            id: type._id,
-            value: type?.name.replace('Leave', '').trim(),
-            leaveDays: type?.leaveDays,
-          })),
-        ]
-      }
+      return [
+        ...res?.data?.data?.data?.map((type) => ({
+          id: type._id,
+          value: type?.name.replace('Leave', '').trim(),
+          leaveDays: type?.leaveDays,
+        })),
+      ]
     },
   })
 
@@ -165,6 +142,7 @@ function Apply({user}) {
           () => sendEmailNotification(response),
           () => queryClient.invalidateQueries(['userLeaves']),
           () => queryClient.invalidateQueries(['leaves']),
+          () => queryClient.invalidateQueries(['substitute']),
           () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
           () => {
             socket.emit('CUD')
@@ -232,14 +210,13 @@ function Apply({user}) {
       )?.value
 
       //code for substitute leave
-      if (gender === 'Female') {
-        let isSubstitute = leaveTypeQuery?.data?.find(
-          (data) => data?.value === 'Substitute'
-        )
+      const isSubstitute = leaveTypeQuery?.data?.find(
+        (data) => data?.value === 'Substitute'
+      )
+      if (isSubstitute?.id === form.getFieldValue('leaveType')) {
         if (
-          form.getFieldValue('leaveDatesCasual').length >
-            isSubstitute?.leaveDays &&
-          isSubstitute?.id === form.getFieldValue('leaveType')
+          form.getFieldValue('leaveDatesCasual')?.length >
+          isSubstitute?.leaveDays
         ) {
           return notification({
             type: 'error',
@@ -249,8 +226,7 @@ function Apply({user}) {
         let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
           (sub) =>
             sub?.leaveType?.name === 'Substitute Leave' &&
-            sub?.leaveStatus === 'approved' &&
-            isSubstitute?.id === form.getFieldValue('leaveType')
+            sub?.leaveStatus === 'approved'
         )
 
         if (hasSubstitute) {
@@ -291,7 +267,10 @@ function Apply({user}) {
             values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
               ? ''
               : values?.halfDay,
-          leaveStatus: appliedDate ? 'approved' : 'pending',
+          leaveStatus:
+            appliedDate || ['admin', 'hr'].includes(role?.key)
+              ? 'approved'
+              : 'pending',
         })
       )
     })

@@ -73,6 +73,7 @@ const Overview = () => {
       })
   )
   const leavesSection = leaves?.data?.data?.users || []
+
   const checkInSecition =
     CheckedIn?.data?.data?.attendances?.[0]?.data?.map((d: any) => ({
       ...d,
@@ -92,7 +93,11 @@ const Overview = () => {
   }
   return (
     <div>
-      <Collapse defaultActiveKey={location?.state ? ['2'] : ['1']}>
+      <Collapse
+        defaultActiveKey={
+          location?.state || leavesSection.length === 0 ? ['2'] : ['1']
+        }
+      >
         <Panel
           header={
             <h3>

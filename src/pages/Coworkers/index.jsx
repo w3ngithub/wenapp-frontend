@@ -357,6 +357,7 @@ function CoworkersPage() {
                 <Select
                   placeholderClass={PLACE_HOLDER_CLASS}
                   placeholder="Select Role"
+                  sortAscend={true}
                   onChange={handleRoleChange}
                   value={role}
                   options={roleData?.data?.data?.data?.map((x) => ({
@@ -369,6 +370,7 @@ function CoworkersPage() {
                 <Select
                   placeholderClass={PLACE_HOLDER_CLASS}
                   placeholder="Select Position"
+                  sortAscend={true}
                   className="margin-1r"
                   onChange={handlePositionChange}
                   value={position}
