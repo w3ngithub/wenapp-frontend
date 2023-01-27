@@ -45,6 +45,7 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import {emptyText} from 'constants/EmptySearchAntd'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {ADMINISTRATOR} from 'constants/UserNames'
+import {useSelector} from 'react-redux'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -104,6 +105,8 @@ function AdminAttendance({userRole}) {
     loading: false,
   })
   const CSVRef = useRef()
+
+  const {allocatedOfficeHours} = useSelector((state) => state.configurations)
 
   const {innerWidth} = useWindowsSize()
 
@@ -653,7 +656,12 @@ function AdminAttendance({userRole}) {
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        columns={ATTENDANCE_COLUMNS(sort, handleView, true)}
+        columns={ATTENDANCE_COLUMNS(
+          sort,
+          handleView,
+          true,
+          allocatedOfficeHours
+        )}
         dataSource={formattedAttendances(sortedData)}
         expandable={{expandedRowRender}}
         onChange={handleTableChange}

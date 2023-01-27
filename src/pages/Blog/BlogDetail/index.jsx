@@ -45,7 +45,6 @@ function Detail() {
   }
 
   const mainArray = BLOG?.content?.split('<p>@highlight-code</p>')
-
   return (
     <div>
       <BlogsBreadCumb slug={BLOG?.title} />
@@ -80,14 +79,28 @@ function Detail() {
       >
         {mainArray?.map((item, index) => {
           if (index % 2 !== 0) {
+            const parsedArray = HTMLReactParser(item).filter(
+              (el) => el !== '\n'
+            )
+            const codeLanguage = parsedArray
+              ?.shift()
+              ?.props?.children?.split(':')?.[1]
+              ?.trim()
+            const parsedString = parsedArray
+              .map((item) => {
+                if (item?.props && index !== 0) {
+                  return item.props.children
+                } else return null
+              })
+              .join('\n')
             return (
               <div key={index}>
                 <SyntaxHighlighter
-                  language="javascript"
+                  language={codeLanguage}
                   style={darkTheme ? docco : prism}
                   showLineNumbers
                 >
-                  {item}
+                  {parsedString}
                 </SyntaxHighlighter>
               </div>
             )
