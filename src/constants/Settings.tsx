@@ -168,7 +168,7 @@ export const LATE_ATTENDANCE_COLUMN = (
   {
     title: 'Duration',
     key: 'duration',
-    width: 300,
+    width: 700,
     render: (text: any, record: any) => {
       return <span>{`${record.value} ${record.unit}`}</span>
     },

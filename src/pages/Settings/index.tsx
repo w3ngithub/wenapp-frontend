@@ -67,7 +67,7 @@ function Settings() {
             <Email />
           </TabPane>
         )}
-        {Settings?.emails && (
+        {Settings?.attendance && (
           <TabPane tab="Attendance" key="9">
             <Attendance />
           </TabPane>
