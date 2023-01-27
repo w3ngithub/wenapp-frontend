@@ -142,6 +142,7 @@ function Apply({user}) {
           () => sendEmailNotification(response),
           () => queryClient.invalidateQueries(['userLeaves']),
           () => queryClient.invalidateQueries(['leaves']),
+          () => queryClient.invalidateQueries(['substitute']),
           () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
           () => {
             socket.emit('CUD')
