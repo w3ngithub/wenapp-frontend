@@ -18,12 +18,17 @@ import {useNavigate} from 'react-router-dom'
 import {ATTENDANCE} from 'helpers/routePath'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {ADMINISTRATOR} from 'constants/UserNames'
+import {useSelector} from 'react-redux'
 
 const localizer = momentLocalizer(moment)
 const FormItem = Form.Item
 
 function AdminAttendanceCalendar() {
   const navigate = useNavigate()
+
+  const {allocatedOfficeHours} = useSelector(
+    (state: any) => state.configurations
+  )
 
   const [date, setDate] = useState(monthlyState)
   const [user, setUser] = useState<undefined | string>(undefined)
@@ -181,7 +186,7 @@ function AdminAttendanceCalendar() {
           title: totalHoursWorked,
           start: new Date(attendance._id?.attendanceDate),
           end: new Date(attendance._id?.attendanceDate),
-          isLessHourWorked: totalTime < 9,
+          isLessHourWorked: totalTime < allocatedOfficeHours,
           allDay: true,
         }
       } else return null

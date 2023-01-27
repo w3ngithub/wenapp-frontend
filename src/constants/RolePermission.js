@@ -228,6 +228,7 @@ export const permissionRole = {
     {name: 'blogs', label: 'Blog', rule: []},
     {name: 'resource', label: 'Resources', rule: []},
     {name: 'emails', label: 'Emails', rule: []},
+    {name: 'attendance', label: 'Attendance', rule: []},
   ],
 }
 

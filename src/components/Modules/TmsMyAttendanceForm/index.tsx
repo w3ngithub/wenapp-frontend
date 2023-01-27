@@ -3,7 +3,7 @@ import {Button, Col, Form, Input, Modal, Row, Checkbox, Spin} from 'antd'
 import moment from 'moment'
 import {FieldTimeOutlined} from '@ant-design/icons'
 import LiveTime from 'components/Elements/LiveTime'
-import {useMutation, useQueryClient} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {addAttendance, getIpAddres, updatePunchout} from 'services/attendances'
 import {handleResponse, isNotValidTimeZone, sortFromDate} from 'helpers/utils'
 import {notification} from 'helpers/notification'
@@ -13,6 +13,7 @@ import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {Dispatch} from 'redux'
 import getLocation, {checkLocationPermission} from 'helpers/getLocation'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {getLeavesOfUser} from 'services/leaves'
 
 function TmsMyAttendanceForm({
   title,
@@ -34,6 +35,18 @@ function TmsMyAttendanceForm({
   const reduxuserAttendance = useSelector((state: any) => state.attendance)
 
   const {punchIn, latestAttendance} = reduxuserAttendance
+
+  const {data: leavesData, isFetching} = useQuery(['userLeaves'], () =>
+    getLeavesOfUser(
+      user?._id,
+      'approved',
+      undefined,
+      1,
+      30,
+      `${moment().startOf('day').format().split('+')?.[0]}Z`,
+      `${moment().add(1, 'd').startOf('day').format().split('+')?.[0]}Z`
+    )
+  )
 
   const addAttendances: any = useMutation((payload) => addAttendance(payload), {
     onSuccess: (response: any) => {
@@ -97,13 +110,21 @@ function TmsMyAttendanceForm({
     if (await checkLocationPermission()) {
       const IP = await getIpAddres()
 
-      addAttendances.mutate({
+      let attendanceParams: any = {
         punchInTime: moment.utc().format(),
         punchInNote: values.punchInNote,
         punchInLocation: location,
         punchInIp: IP?.data?.IPv4,
         attendanceDate: moment.utc().startOf('day').format(),
-      })
+      }
+
+      if (leavesData?.data?.data?.data?.[0]?.halfday !== 'first-half') {
+        if (!latestAttendance || latestAttendance.length === 0) {
+          attendanceParams = {...attendanceParams, isLateArrival: true}
+        }
+      }
+
+      addAttendances.mutate(attendanceParams)
     } else {
       notification({
         message: 'Please allow Location Access to Punch for Attendance',

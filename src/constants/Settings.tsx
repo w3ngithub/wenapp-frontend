@@ -156,6 +156,38 @@ export const LOGTYPE_COLUMN = (
   },
 ]
 
+export const LATE_ATTENDANCE_COLUMN = (
+  onEditClick: (param: any, param2: any) => void
+) => [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    width: 500,
+  },
+  {
+    title: 'Duration',
+    key: 'duration',
+    width: 700,
+    render: (text: any, record: any) => {
+      return <span>{`${record.value} ${record.unit}`}</span>
+    },
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    render: (text: any, record: any) =>
+      !getIsAdmin() && (
+        <span
+          className="gx-link gx-text-primary"
+          onClick={() => onEditClick(record, true)}
+        >
+          <CustomIcon name="edit" />
+        </span>
+      ),
+  },
+]
+
 export const INVITED_EMPLOYEES_COLUMN = () => [
   {
     title: 'Email',
