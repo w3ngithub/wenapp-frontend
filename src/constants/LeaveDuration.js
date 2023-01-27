@@ -5,7 +5,7 @@ export const leaveInterval = [
 ]
 
 export const customLeaves = [
-  {id: 'full-day', value: 'Full Day'},
+  {id: 'full-day', value: 'All'},
   {id: 'first-half', value: 'First Half'},
   {id: 'second-half', value: 'Second Half'},
 ]

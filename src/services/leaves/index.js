@@ -46,7 +46,7 @@ const getLeavesOfAllUsers = async (
       `${
         Apis.Leaves
       }?leaveStatus=${status}&sort=${sort}&user=${user}&leaveDates=${date}&page=${page}&limit=${limit}&leaveType=${type}${
-        halfday === undefined ? '' : `&halfday=${halfday}`
+        halfday === undefined ? '' : `&halfDay=${halfday}`
       }`
     )
     return getAPIResponse(response)

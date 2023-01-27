@@ -321,7 +321,7 @@ function Leaves({
             {(leaveTitle === 'Sick' || leaveTitle === 'Casual') && (
               <FormItem className="direct-form-item">
                 <Select
-                  placeholder="Select Duration"
+                  placeholder="Select Half Day Type"
                   onChange={handleLeaveIntervalChange}
                   options={customLeaves}
                   value={leaveInterval}
