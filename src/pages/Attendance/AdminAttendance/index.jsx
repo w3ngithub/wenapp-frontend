@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react'
-import {useQuery} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {
   Button,
   Table,
@@ -8,6 +8,7 @@ import {
   Divider,
   Input,
   InputNumber,
+  Popconfirm,
 } from 'antd'
 import moment from 'moment'
 import {CSVLink} from 'react-csv'
@@ -20,12 +21,16 @@ import {
   weeklyState,
 } from 'constants/Attendance'
 import {
+  deleteAttendance,
   searchAttendacentOfUser,
   UserTotalofficehour,
 } from 'services/attendances'
 import {
+  convertMsToHM,
   dateDifference,
+  filterSpecificUser,
   getIsAdmin,
+  handleResponse,
   hourIntoMilliSecond,
   milliSecondIntoHours,
   MuiFormatDate,
@@ -42,6 +47,9 @@ import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {emptyText} from 'constants/EmptySearchAntd'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {socket} from 'pages/Main'
+import {ADMINISTRATOR} from 'constants/UserNames'
+import {useSelector} from 'react-redux'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -95,12 +103,15 @@ function AdminAttendance({userRole}) {
   const [toggleEdit, setToggleEdit] = useState(false)
   const [AttToEdit, setAttToEdit] = useState({})
   const [btnClick, setbtnClick] = useState(false)
+  const queryClient = useQueryClient()
   const [dataToExport, setdataToExport] = useState({
     todownload: false,
     data: [],
     loading: false,
   })
   const CSVRef = useRef()
+
+  const {allocatedOfficeHours} = useSelector((state) => state.configurations)
 
   const {innerWidth} = useWindowsSize()
 
@@ -144,6 +155,28 @@ function AdminAttendance({userRole}) {
         officehourop: defaultFilter?.op,
         officehourValue: hourIntoMilliSecond(defaultFilter?.num),
       })
+    }
+  )
+
+  const deleteAttendanceMutation = useMutation(
+    (attendanceId) => deleteAttendance(attendanceId),
+    {
+      onSuccess: (response) =>
+        handleResponse(
+          response,
+          'Attendance removed Successfully',
+          'Attendance deletion failed',
+          [
+            () => queryClient.invalidateQueries(['adminAttendance']),
+            () => queryClient.invalidateQueries(['userAttendance']),
+            () => {
+              socket.emit('CUD')
+            },
+          ]
+        ),
+      onError: (error) => {
+        notification({message: 'Project deletion failed', type: 'error'})
+      },
     }
   )
 
@@ -198,6 +231,9 @@ function AdminAttendance({userRole}) {
   const handleEdit = (record) => {
     setToggleEdit(true)
     setAttToEdit(record)
+  }
+  const confirmDeleteAttendance = (project) => {
+    deleteAttendanceMutation.mutate(project._id)
   }
 
   const handleAttChnageChange = (val) => {
@@ -267,6 +303,21 @@ function AdminAttendance({userRole}) {
                   <span className="gx-link" onClick={() => handleEdit(record)}>
                     <CustomIcon name="edit" />
                   </span>
+                </>
+              )}
+              {userRole?.deleteCoworkersAttendance && !getIsAdmin() && (
+                <>
+                  <Divider type="vertical" />
+                  <Popconfirm
+                    title="Are you sure to delete this attendance?"
+                    onConfirm={() => confirmDeleteAttendance(record)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <span className="gx-link gx-text-danger">
+                      <CustomIcon name="delete" />
+                    </span>
+                  </Popconfirm>
                 </>
               )}
             </span>
@@ -382,7 +433,10 @@ function AdminAttendance({userRole}) {
                     placeholder="Select Co-worker"
                     onChange={handleUserChange}
                     value={user}
-                    options={users?.data?.data?.data?.map((x) => ({
+                    options={filterSpecificUser(
+                      users?.data?.data?.data,
+                      ADMINISTRATOR
+                    )?.map((x) => ({
                       id: x._id,
                       value: x.name,
                     }))}
@@ -449,9 +503,7 @@ function AdminAttendance({userRole}) {
                     ? timeFetching
                       ? 'Calculating...'
                       : timedata?.data?.data[0]?.totalhours
-                      ? milliSecondIntoHours(
-                          timedata?.data?.data[0]?.totalhours
-                        )
+                      ? convertMsToHM(timedata?.data?.data[0]?.totalhours)
                       : 0
                     : ''
                 }
@@ -523,7 +575,10 @@ function AdminAttendance({userRole}) {
                     placeholder="Select Co-worker"
                     onChange={handleUserChange}
                     value={user}
-                    options={users?.data?.data?.data?.map((x) => ({
+                    options={filterSpecificUser(
+                      users?.data?.data?.data,
+                      ADMINISTRATOR
+                    )?.map((x) => ({
                       id: x._id,
                       value: x.name,
                     }))}
@@ -549,9 +604,7 @@ function AdminAttendance({userRole}) {
                       ? timeFetching
                         ? 'Calculating...'
                         : timedata?.data?.data[0]?.totalhours
-                        ? milliSecondIntoHours(
-                            timedata?.data?.data[0]?.totalhours
-                          )
+                        ? convertMsToHM(timedata?.data?.data[0]?.totalhours)
                         : 0
                       : ''
                   }
@@ -648,7 +701,12 @@ function AdminAttendance({userRole}) {
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        columns={ATTENDANCE_COLUMNS(sort, handleView, true)}
+        columns={ATTENDANCE_COLUMNS(
+          sort,
+          handleView,
+          true,
+          allocatedOfficeHours
+        )}
         dataSource={formattedAttendances(sortedData)}
         expandable={{expandedRowRender}}
         onChange={handleTableChange}

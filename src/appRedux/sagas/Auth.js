@@ -61,10 +61,10 @@ function* signOut() {
   try {
     const signOutUser = yield call(signOutRequest)
     if (signOutUser.status) {
-      // localStorage.removeItem(LOCALSTORAGE_USER)
-      // localStorage.removeItem('token')
-      // localStorage.removeItem('admin')
-      localStorage.clear()
+      localStorage.removeItem(LOCALSTORAGE_USER)
+      localStorage.removeItem('token')
+      localStorage.removeItem('admin')
+      localStorage.removeItem('showMaintenanceButtonToAdminOnly')
       yield put(userSignOutSuccess(signOutUser))
     } else {
       yield put(showAuthMessage(signOutUser.data.message))

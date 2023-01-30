@@ -19,6 +19,11 @@ import {getUserProfile, getUserRolePermission} from 'appRedux/actions'
 import {getMyProfile} from 'services/users/userDetails'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {getRoles} from 'services/settings/coworkers/roles'
+import {getMaintenance} from 'services/configurations'
+import {
+  getAllocatedOfficeHours,
+  getLateArrivalThreshold,
+} from 'appRedux/actions/Configurations'
 
 const {Content, Footer} = Layout
 
@@ -48,6 +53,25 @@ export const MainApp = (props) => {
         }
       },
       enabled: !!userId,
+    }
+  )
+
+  const {data: configurations, isFetching: isConfigurationsFetching} = useQuery(
+    ['configuration'],
+    getMaintenance,
+    {
+      onSuccess: (data) => {
+        if (data.status) {
+          dispatch(
+            getLateArrivalThreshold(
+              data?.data?.data?.data?.[0]?.lateArrivalThreshold
+            )
+          )
+          dispatch(
+            getAllocatedOfficeHours(data?.data?.data?.data?.[0]?.officeHour)
+          )
+        }
+      },
     }
   )
 

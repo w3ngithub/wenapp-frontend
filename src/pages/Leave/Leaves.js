@@ -9,8 +9,11 @@ import {changeLeaveStatus, getLeavesOfAllUsers} from 'services/leaves'
 import {
   capitalizeInput,
   changeDate,
+  filterOptions,
+  filterSpecificUser,
   getIsAdmin,
   handleResponse,
+  MuiFormatDate,
   removeDash,
 } from 'helpers/utils'
 import Notification from 'components/Elements/Notification'
@@ -24,8 +27,11 @@ import {disabledDate} from 'util/antDatePickerDisabled'
 import {sendEmailforLeave} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
+import {ADMINISTRATOR} from 'constants/UserNames'
+import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
 
 const FormItem = Form.Item
+const {RangePicker} = DatePicker
 
 const formattedLeaves = (leaves) => {
   return leaves?.map((leave) => ({
@@ -68,6 +74,7 @@ function Leaves({
   permissions,
 }) {
   const queryClient = useQueryClient()
+
   let approveReason
   const [openModal, setOpenModal] = useState(false)
   const [openApproveLeaveModal, setopenApproveLeaveModal] = useState(false)
@@ -77,6 +84,8 @@ function Leaves({
   const [readOnly, setReadOnly] = useState(false)
   const [leaveStatus, setLeaveStatus] = useState(status ?? '')
   const [leaveId, setLeaveId] = useState(undefined)
+  const [leaveTitle, setLeaveTitle] = useState('')
+  const [leaveInterval, setLeaveInterval] = useState(undefined)
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const [date, setDate] = useState(
@@ -91,12 +100,22 @@ function Leaves({
         }
       : undefined
   )
+  const [rangeDate, setRangeDate] = useState([])
   const [page, setPage] = useState({page: 1, limit: 10})
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
   const leavesQuery = useQuery(
-    ['leaves', leaveStatus, user, date, page, leaveId],
+    [
+      'leaves',
+      leaveStatus,
+      user,
+      date,
+      rangeDate,
+      page,
+      leaveId,
+      leaveInterval,
+    ],
     () =>
       getLeavesOfAllUsers(
         leaveStatus,
@@ -105,7 +124,10 @@ function Leaves({
         page.page,
         page.limit,
         '-leaveDates,_id',
-        leaveId
+        leaveId,
+        rangeDate?.[0] ? MuiFormatDate(rangeDate[0]?._d) + 'T00:00:00Z' : '',
+        rangeDate?.[1] ? MuiFormatDate(rangeDate[1]?._d) + 'T00:00:00Z' : '',
+        leaveInterval === 'full-day' ? undefined : leaveInterval
       ),
     {
       onError: (err) => console.log(err),
@@ -121,8 +143,17 @@ function Leaves({
     ],
   })
 
-  const handleLeaveTypeChange = (value) => {
+  const handleLeaveTypeChange = (value, option) => {
+    console.log('op', option)
     setLeaveId(value)
+    setLeaveTitle(option.children)
+    if (option.children !== 'Sick' && option.children !== 'Casual') {
+      setLeaveInterval(undefined)
+    }
+  }
+  const handleLeaveIntervalChange = (value) => {
+    console.log('value', value)
+    setLeaveInterval(value)
   }
 
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
@@ -208,6 +239,9 @@ function Leaves({
     setUser(undefined)
     setDate(undefined)
     setLeaveId(undefined)
+    setLeaveInterval(undefined)
+    setLeaveTitle('')
+    setRangeDate([])
   }
 
   const handleCloseModal = (
@@ -247,9 +281,10 @@ function Leaves({
   }
 
   const handleDateChange = (value) => {
-    const m = moment(value._d)
-    m.set({h: 5, m: 45, s: 0})
-    setDate({moment: value, utc: moment.utc(m._d).format()})
+    // const m = moment(value._d)
+    // m.set({h: 5, m: 45, s: 0})
+    // setDate({moment: value, utc: moment.utc(m._d).format()})
+    setRangeDate(value)
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)
   const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
@@ -302,23 +337,33 @@ function Leaves({
                 options={leaveTypeQuery?.data}
               />
             </FormItem>
+            {(leaveTitle === 'Sick' || leaveTitle === 'Casual') && (
+              <FormItem className="direct-form-item">
+                <Select
+                  placeholder="Select Half Day Type"
+                  onChange={handleLeaveIntervalChange}
+                  options={customLeaves}
+                  value={leaveInterval}
+                />
+              </FormItem>
+            )}
 
             <FormItem className="direct-form-item">
               <Select
                 placeholder="Select Co-worker"
                 value={user}
-                options={allUsers}
+                options={filterSpecificUser(
+                  usersQuery?.data?.data?.data?.data,
+                  ADMINISTRATOR
+                )?.map((x) => ({
+                  id: x._id,
+                  value: x.name,
+                }))}
                 onChange={handleUserChange}
               />
             </FormItem>
-            <FormItem style={{marginBottom: '0.5px'}}>
-              <DatePicker
-                className="gx-mb-3 "
-                style={{width: innerWidth <= 748 ? '100%' : '200px'}}
-                value={date?.moment}
-                onChange={handleDateChange}
-                disabledDate={disabledDate}
-              />
+            <FormItem>
+              <RangePicker onChange={handleDateChange} value={rangeDate} />
             </FormItem>
 
             <FormItem style={{marginBottom: '3px'}}>

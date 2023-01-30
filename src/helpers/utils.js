@@ -244,6 +244,19 @@ export const dateDifference = (end, start) => {
   } `
 }
 
+export function convertMsToHM(milliSec) {
+  let delta = Math.abs(milliSec) / 1000
+
+  let hours = Math.floor(delta / 3600)
+  delta -= hours * 3600
+
+  let minutes = Math.floor(delta / 60) % 60
+
+  return `${hours === 0 ? '' : hours === 1 ? `${hours} hr` : `${hours} hrs`} ${
+    minutes === 0 ? '' : minutes === 1 ? `${minutes} min` : `${minutes} mins`
+  } `
+}
+
 export const milliSecondIntoHours = (milliSec) => {
   let delta = Math.abs(milliSec) / 1000
 
@@ -307,6 +320,11 @@ export function removeDash(param) {
 
 export const filterOptions = (input, option) =>
   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+
+export const filterSortOptions = (optionA, optionB) =>
+  (optionA?.children ?? '')
+    .toLowerCase()
+    .localeCompare((optionB?.children ?? '').toLowerCase())
 
 export const handleResponse = (
   response,
@@ -500,4 +518,20 @@ export const isLeavesBeforeToday = (leaveDates) =>{
   todayDate.setUTCHours(0, 0, 0, 0)
 
   return new Date(todayDate) <  new Date(firstDayofLeave) 
+
+}
+
+
+//filter specific User
+export const filterSpecificUser = (group, name) => {
+  return group?.filter((user) => user.name !== name)
+}
+
+//get date range from a start date to end date
+export const getDateRangeArray = function (s, e) {
+  let a = []
+  for (const d = new Date(s); d <= new Date(e); d.setDate(d.getDate() + 1)) {
+    a.push(`${MuiFormatDate(new Date(d))}`)
+  }
+  return a
 }
