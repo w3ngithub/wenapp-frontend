@@ -39,7 +39,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
-import {LEAVES_TYPES} from 'constants/Leaves'
+import {LEAVES_TYPES, STATUS_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
@@ -181,6 +181,7 @@ function LeaveModal({
         'Leave update failed',
         [
           () => queryClient.invalidateQueries(['leaves']),
+          ()=>queryClient.invalidateQueries(['userLeaves']),
           () => {
             socket.emit('CUD')
           },
@@ -265,6 +266,8 @@ function LeaveModal({
           user: leaveData.user._id,
           halfDay: leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
           cancelReason: leaveData?.cancelReason,
+          rejectReason:leaveData?.rejectReason,
+          reapplyreason:leaveData?.reapplyreason
         })
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
@@ -594,7 +597,7 @@ function LeaveModal({
                 </Col>
               </Row>
 
-              {leaveData?.leaveStatus === 'cancelled' && (
+              {((leaveData?.leaveStatus === STATUS_TYPES[3].id || leaveData?.leaveStatus === STATUS_TYPES[5].id ) && leaveData?.cancelReason)  &&(
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item
@@ -614,6 +617,58 @@ function LeaveModal({
                   </Col>
                 </Row>
               )}
+
+            
+        {((leaveData?.leaveStatus === STATUS_TYPES[4].id || leaveData?.leaveStatus === STATUS_TYPES[2].id) && leaveData?.rejectReason) &&(
+                <Row>
+                  <Col span={6} xs={24} sm={24} xl={24}>
+                    <Form.Item
+                      {...formItemLayout}
+                      name="rejectReason"
+                      label="Leave Reject Reason"
+                    >
+                      <Input.TextArea
+                        allowClear
+                        rows={10}
+                        disabled={readOnly}
+                        style={{
+                          background: darkCalendar ? '#434f5a' : '',
+                        }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              )}
+
+                
+        {(leaveData?.leaveStatus === STATUS_TYPES[2].id && leaveData?.reapplyreason) &&(
+                <Row>
+                  <Col span={6} xs={24} sm={24} xl={24}>
+                    <Form.Item
+                      {...formItemLayout}
+                      name="reapplyreason"
+                      label="Leave Re-apply Reason"
+                    >
+                      <Input.TextArea
+                        allowClear
+                        rows={10}
+                        disabled={readOnly}
+                        style={{
+                          background: darkCalendar ? '#434f5a' : '',
+                        }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              )}
+
+
+
+
+
+
+
+
             </Col>
             {user &&
               (immediateApprovalLeaveTypes.includes(leaveType) ? (
