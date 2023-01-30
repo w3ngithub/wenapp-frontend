@@ -2,12 +2,7 @@ import {useQuery} from '@tanstack/react-query'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
 import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
-import {
-  capitalizeInput,
-  changeDate,
-  MuiFormatDate,
-  removeDash,
-} from 'helpers/utils'
+import {MuiFormatDate, capitalizeInput, changeDate, removeDash} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment, {Moment} from 'moment'
 import React, {useState} from 'react'
@@ -22,6 +17,7 @@ const FormItem = Form.Item
 const {RangePicker} = DatePicker
 
 const defaultPage = {page: 1, limit: 10}
+
 
 const formattedLeaves = (leaves: any) => {
   return leaves?.map((leave: any) => ({
@@ -50,12 +46,14 @@ function MyHistory({
   handleOpenCancelLeaveModal,
   isLoading,
   permissions,
+  reApplyLeave
 }: {
   userId: string
   handleCancelLeave: (leave: any) => void
   handleOpenCancelLeaveModal: (param: any) => void
   isLoading: boolean
   permissions: any
+  reApplyLeave:(leave:any)=>void
 }) {
   const [form] = Form.useForm()
   const location: any = useLocation()
@@ -72,7 +70,9 @@ function MyHistory({
 
   const [rangeDate, setRangeDate] = useState<any>([])
 
+
   const [page, setPage] = useState(defaultPage)
+
 
   const userLeavesQuery = useQuery(
     ['userLeaves', leaveStatus, rangeDate, page, leaveTypeId],
@@ -90,9 +90,12 @@ function MyHistory({
       )
   )
 
+
+
   const handleLeaveType = (value: string | undefined) => {
     setLeaveType(value)
   }
+
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {
@@ -115,7 +118,6 @@ function MyHistory({
 
   const handleStatusChange = (statusId: string) => {
     if (page?.page > 1) setPage(defaultPage)
-
     setLeaveStatus(statusId)
   }
 
@@ -124,10 +126,6 @@ function MyHistory({
 
     setRangeDate(value)
 
-    // setDate({
-    //   moment: value,
-    //   utc: moment.utc(value._d).startOf('day').format(),
-    // })
   }
 
   const handleShow = (data: any, mode: boolean) => {
@@ -144,6 +142,9 @@ function MyHistory({
       utc: '',
       moment: undefined,
     })
+  
+
+
   }
   return (
     <div>
@@ -178,9 +179,11 @@ function MyHistory({
               options={leaveTypeQuery?.data}
             />
           </FormItem>
-          <FormItem>
-            <RangePicker onChange={handleDateChange} value={rangeDate} />
+
+          <FormItem style={{marginBottom: '0.5px'}}>
+          <RangePicker onChange={handleDateChange} value={rangeDate} />
           </FormItem>
+
           <FormItem style={{marginBottom: '3px'}}>
             <Button
               className="gx-btn-primary gx-text-white"
@@ -196,7 +199,9 @@ function MyHistory({
         className="gx-table-responsive"
         columns={LEAVES_COLUMN({
           onCancelLeave: handleOpenCancelLeaveModal,
-          onApproveClick: () => {},
+          onApproveClick: (leave) => {
+            reApplyLeave(leave)
+          },
           onEditClick: handleShow,
           viewLeave: permissions?.viewMyLeaveDetails,
           cancelLeave: permissions?.cancelMyLeaves,

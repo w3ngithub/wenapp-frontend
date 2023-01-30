@@ -227,6 +227,7 @@ function Leaves({
   }
 
   const handleStatusChange = (statusId) => {
+    setPage({page:1,limit:10})
     setLeaveStatus(statusId)
   }
   const handleUserChange = (user) => {

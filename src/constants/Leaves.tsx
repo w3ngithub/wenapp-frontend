@@ -1,7 +1,7 @@
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {getIsAdmin} from 'helpers/utils'
+import {getIsAdmin, isLeavesBeforeToday} from 'helpers/utils'
 import React from 'react'
 
 const LEAVES_COLUMN = ({
@@ -15,7 +15,7 @@ const LEAVES_COLUMN = ({
   editLeave = false,
   role,
 }: {
-  onCancelLeave?: (param: any) => void
+  onCancelLeave?: (param: any,param2:boolean,param3?:boolean) => void
   onApproveClick?: (param: any) => void
   onEditClick?: (param: any, param2: any) => void
   isAdmin?: boolean
@@ -87,7 +87,7 @@ const LEAVES_COLUMN = ({
                     <AccessWrapper
                       role={
                         !getIsAdmin() &&
-                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(
+                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id,STATUS_TYPES[4].id,STATUS_TYPES[5].id].includes(
                           record.leaveStatus
                         ) &&
                         approveLeave
@@ -107,7 +107,7 @@ const LEAVES_COLUMN = ({
 
                     <AccessWrapper
                       role={
-                        ![STATUS_TYPES[3].id].includes(record.leaveStatus) &&
+                        ![STATUS_TYPES[3].id,STATUS_TYPES[4].id].includes(record.leaveStatus) &&
                         !getIsAdmin() &&
                         cancelLeave
                       }
@@ -120,18 +120,45 @@ const LEAVES_COLUMN = ({
                         <span
                           className="gx-link gx-text-danger"
                           onClick={() =>
-                            onCancelLeave ? onCancelLeave(record) : () => {}
+                            onCancelLeave ? onCancelLeave(record,false) : () => {}
                           }
                         >
                           Cancel
                         </span>
                       </>
                     </AccessWrapper>
+                    
+                    <AccessWrapper
+                      role={
+                        !getIsAdmin() &&
+                        [STATUS_TYPES[2].id].includes(
+                          record.leaveStatus
+                        ) 
+                      }
+                    >
+                      <>
+                        {(viewLeave || cancelLeave || approveLeave) && (
+                          <Divider type="vertical" />
+                        )}
+                      
+                      <span
+                          className="gx-link gx-text-danger"
+                          onClick={() =>
+                            onCancelLeave ? onCancelLeave(record,true) : () => {}
+                          }
+                        >
+                          Reject
+                        </span>
+
+                      </>
+                    </AccessWrapper>
+
+
 
                     <AccessWrapper
                       role={
                         !getIsAdmin() &&
-                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(
+                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id,STATUS_TYPES[4].id,STATUS_TYPES[5].id].includes(
                           record.leaveStatus
                         ) &&
                         editLeave
@@ -157,7 +184,7 @@ const LEAVES_COLUMN = ({
               <span
                 className="gx-link gx-text-danger"
                 onClick={() =>
-                  onCancelLeave ? onCancelLeave(record) : () => {}
+                  onCancelLeave ? onCancelLeave(record,false) : () => {}
                 }
               >
                 Cancel
@@ -256,11 +283,27 @@ const LEAVES_COLUMN = ({
                   </span>
                 </AccessWrapper>
 
+                <AccessWrapper role={ record.leaveStatus === STATUS_TYPES[4].id && isLeavesBeforeToday(record.leaveDates) &&
+                    !getIsAdmin()}>
+                  <>
+                  
+                  {viewLeave && <Divider type="vertical" />}
+
+                  <span
+                    className="gx-link gx-text-primary"
+                    onClick={() => onApproveClick?onApproveClick(record):{}}
+                  >
+                   Reapply
+                  </span>   
+                   
+                  </>
+                </AccessWrapper>
+
                 <AccessWrapper
                   role={
-                    cancelLeave &&
+                    (cancelLeave &&
                     record.leaveStatus === STATUS_TYPES[2].id &&
-                    !getIsAdmin()
+                    !getIsAdmin()) || (record.leaveStatus=== STATUS_TYPES[1].id && isLeavesBeforeToday(record.leaveDates) && !getIsAdmin())
                   }
                 >
                   <>
@@ -269,13 +312,33 @@ const LEAVES_COLUMN = ({
                     <span
                       className="gx-link gx-text-danger"
                       onClick={() =>
-                        onCancelLeave ? onCancelLeave(record) : () => {}
+                        onCancelLeave ? onCancelLeave(record,false,true) : () => {}
                       }
                     >
                       Cancel
                     </span>{' '}
                   </>
                 </AccessWrapper>
+
+              
+              
+
+
+                <AccessWrapper
+                  role={
+                    record.leaveStatus === STATUS_TYPES[2].id
+                  }
+                >
+                  <>
+                    {' '}
+                    <Divider type="vertical" />{' '}
+                    <i
+                    className="icon icon-edit gx-link"
+                    onClick={() => onEditClick ? onEditClick(record, false) : () => {}}
+                        />
+                  </>
+                </AccessWrapper>
+
               </div>
             )
           },
@@ -287,6 +350,8 @@ const STATUS_TYPES = [
   {id: 'approved', value: 'Approved'},
   {id: 'pending', value: 'Pending'},
   {id: 'cancelled', value: 'Cancelled'},
+  {id:'rejected',value:'Rejected'},
+  {id:'user cancelled',value:'User Cancelled'}
 ]
 
 export {LEAVES_COLUMN, STATUS_TYPES}
