@@ -594,7 +594,7 @@ function LeaveModal({
                 </Col>
               </Row>
 
-              {(leaveData?.leaveStatus === STATUS_TYPES[3].id && leaveData?.cancelReason)  &&(
+              {((leaveData?.leaveStatus === STATUS_TYPES[3].id || leaveData?.leaveStatus === STATUS_TYPES[5].id ) && leaveData?.cancelReason)  &&(
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item
@@ -616,7 +616,7 @@ function LeaveModal({
               )}
 
             
-        {(leaveData?.leaveStatus === STATUS_TYPES[4].id && leaveData?.rejectReason) &&(
+        {((leaveData?.leaveStatus === STATUS_TYPES[4].id || leaveData?.leaveStatus === STATUS_TYPES[2].id) && leaveData?.rejectReason) &&(
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item
