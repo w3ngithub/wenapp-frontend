@@ -13,7 +13,6 @@ import {
   filterSpecificUser,
   getIsAdmin,
   handleResponse,
-  MuiFormatDate,
   removeDash,
 } from 'helpers/utils'
 import Notification from 'components/Elements/Notification'
@@ -31,7 +30,6 @@ import {ADMINISTRATOR} from 'constants/UserNames'
 import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
 
 const FormItem = Form.Item
-const {RangePicker} = DatePicker
 
 const formattedLeaves = (leaves) => {
   return leaves?.map((leave) => ({
@@ -100,22 +98,12 @@ function Leaves({
         }
       : undefined
   )
-  const [rangeDate, setRangeDate] = useState([])
   const [page, setPage] = useState({page: 1, limit: 10})
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
   const leavesQuery = useQuery(
-    [
-      'leaves',
-      leaveStatus,
-      user,
-      date,
-      rangeDate,
-      page,
-      leaveId,
-      leaveInterval,
-    ],
+    ['leaves', leaveStatus, user, date, page, leaveId, leaveInterval],
     () =>
       getLeavesOfAllUsers(
         leaveStatus,
@@ -125,8 +113,6 @@ function Leaves({
         page.limit,
         '-leaveDates,_id',
         leaveId,
-        rangeDate?.[0] ? MuiFormatDate(rangeDate[0]?._d) + 'T00:00:00Z' : '',
-        rangeDate?.[1] ? MuiFormatDate(rangeDate[1]?._d) + 'T00:00:00Z' : '',
         leaveInterval === 'full-day' ? undefined : leaveInterval
       ),
     {
@@ -227,7 +213,6 @@ function Leaves({
   }
 
   const handleStatusChange = (statusId) => {
-    setPage({page:1,limit:10})
     setLeaveStatus(statusId)
   }
   const handleUserChange = (user) => {
@@ -241,7 +226,6 @@ function Leaves({
     setLeaveId(undefined)
     setLeaveInterval(undefined)
     setLeaveTitle('')
-    setRangeDate([])
   }
 
   const handleCloseModal = (
@@ -281,10 +265,9 @@ function Leaves({
   }
 
   const handleDateChange = (value) => {
-    // const m = moment(value._d)
-    // m.set({h: 5, m: 45, s: 0})
-    // setDate({moment: value, utc: moment.utc(m._d).format()})
-    setRangeDate(value)
+    const m = moment(value._d)
+    m.set({h: 5, m: 45, s: 0})
+    setDate({moment: value, utc: moment.utc(m._d).format()})
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)
   const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
@@ -362,8 +345,14 @@ function Leaves({
                 onChange={handleUserChange}
               />
             </FormItem>
-            <FormItem>
-              <RangePicker onChange={handleDateChange} value={rangeDate} />
+            <FormItem style={{marginBottom: '0.5px'}}>
+              <DatePicker
+                className="gx-mb-3 "
+                style={{width: innerWidth <= 748 ? '100%' : '200px'}}
+                value={date?.moment}
+                onChange={handleDateChange}
+                disabledDate={disabledDate}
+              />
             </FormItem>
 
             <FormItem style={{marginBottom: '3px'}}>
