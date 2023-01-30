@@ -44,7 +44,7 @@ function Detail() {
     return <CircularProgress />
   }
 
-  const mainArray = BLOG?.content?.split('<p>@highlight-code</p>')
+  const mainArray = BLOG?.content?.split('@highlight-code')
   return (
     <div>
       <BlogsBreadCumb slug={BLOG?.title} />
@@ -80,12 +80,13 @@ function Detail() {
         {mainArray?.map((item, index) => {
           if (index % 2 !== 0) {
             const parsedArray = HTMLReactParser(item).filter(
-              (el) => el !== '\n'
+              (el) => el !== '\n' && el !== ' \n'
             )
             const codeLanguage = parsedArray
               ?.shift()
               ?.props?.children?.split(':')?.[1]
               ?.trim()
+
             const parsedString = parsedArray
               .map((item) => {
                 if (item?.props && index !== 0) {
