@@ -1,11 +1,23 @@
 import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
-import {Button, Col, DatePicker, Form, Input, Modal, Row, Spin} from 'antd'
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Spin,
+  Table,
+} from 'antd'
+import {EDIT_HOLIDAY_COLUMNS} from 'constants/Holidays'
 import {notification} from 'helpers/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import React, {useEffect, useState} from 'react'
 
 interface modalType {
+  dataSource: any
   isEditMode: boolean
   toggle: boolean
   onSubmit: (holiday: any) => void
@@ -29,6 +41,7 @@ const CommonModal = (props: modalType) => {
     onSubmit,
     isLoading,
     editData,
+    dataSource,
   } = props
 
   const [indexes, setIndexes] = useState<boolean[]>([])
@@ -80,6 +93,24 @@ const CommonModal = (props: modalType) => {
     if (!toggle) form.resetFields()
   }, [toggle])
 
+  console.log('editData', editData)
+
+  useEffect(() => {
+    if (toggle) {
+      if (isEditMode)
+        // form.setFieldsValue({
+        //   holidays: editData?.map((holiday: any) => ({
+        //     ...holiday,
+        //     date: moment(holiday.date),
+        //   })),
+        // })
+        form.setFieldsValue({
+          [editData?.[0]._id]: moment(editData?.[0]?.date),
+        })
+    }
+    if (!toggle) form.resetFields()
+  }, [toggle])
+
   return (
     <Modal
       width={900}
@@ -105,7 +136,15 @@ const CommonModal = (props: modalType) => {
           style={{marginLeft: 10}}
           className="add-holiday"
         >
-          <Form.List
+          <Table
+            className="gx-table-responsive"
+            columns={EDIT_HOLIDAY_COLUMNS()}
+            dataSource={dataSource}
+            // onChange={handleTableChange}
+            pagination={false}
+            loading={isLoading}
+          />
+          {/* <Form.List
             name="holidays"
             initialValue={[
               null,
@@ -218,7 +257,7 @@ const CommonModal = (props: modalType) => {
                 </Form.Item>
               </>
             )}
-          </Form.List>
+          </Form.List> */}
         </Form>
       </Spin>
     </Modal>

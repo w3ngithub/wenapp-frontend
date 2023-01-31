@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react'
-import {Divider, Popconfirm} from 'antd'
+import {Checkbox, DatePicker, Divider, Form, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {dateToDateFormat, getIsAdmin} from 'helpers/utils'
@@ -116,4 +116,73 @@ const HOLIDAY_COLUMNS = (
         },
       ]
 
-export {HOLIDAY_COLUMNS}
+const EDIT_HOLIDAY_COLUMNS = () =>
+  getIsAdmin()
+    ? [
+        {
+          title: 'Date',
+          // dataIndex: 'date',
+          key: 'date',
+          render: (text: any, record: any) => {
+            return <DatePicker className=" gx-w-100" />
+          },
+        },
+        {
+          title: 'Title',
+          dataIndex: 'title',
+          key: 'title',
+        },
+        {
+          title: 'Remarks',
+          dataIndex: 'remarks',
+          key: 'remarks',
+        },
+      ]
+    : [
+        {
+          title: 'Date Admin',
+          key: 'date',
+          render: (text: any, record: any) => {
+            console.log({text, record})
+            return (
+              <Form.Item
+                // {...field}
+                // name={[field.name, 'date']}
+                name={record?.key}
+                required={false}
+                // rules={[
+                //   {
+                //     required: indexes[index],
+                //     message: 'Date is required.',
+                //   },
+                // ]}
+              >
+                <DatePicker className=" gx-w-100" />
+              </Form.Item>
+            )
+          },
+        },
+        {
+          title: 'Title',
+          dataIndex: 'title',
+          key: 'title',
+        },
+        {
+          title: 'Remarks',
+          dataIndex: 'remarks',
+          key: 'remarks',
+        },
+        {
+          title: 'Allow Leave Application',
+          key: 'action',
+          render: (text: any, record: any) => {
+            return (
+              <div style={{display: 'flex'}}>
+                <Checkbox></Checkbox>
+              </div>
+            )
+          },
+        },
+      ]
+
+export {HOLIDAY_COLUMNS, EDIT_HOLIDAY_COLUMNS}
