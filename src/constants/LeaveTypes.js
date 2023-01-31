@@ -5,7 +5,7 @@ export const immediateApprovalLeaveTypes = [
 ]
 
 export const leaveHistoryDays = [
-  {id: 1, value: 30},
-  {id: 2, value: 60},
-  {id: 3, value: 180},
+  {id: 1, value: `30 Days`},
+  {id: 2, value: `60 Days`},
+  {id: 3, value: `180 Days`},
 ]
