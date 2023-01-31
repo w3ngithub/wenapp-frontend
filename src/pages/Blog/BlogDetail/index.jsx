@@ -83,7 +83,6 @@ function Detail() {
               (el) => typeof el !== 'string'
             )
 
-            // console.log('parsedArray', parsedArray)
             const codeLanguage = parsedArray
               ?.shift()
               ?.props?.children?.split(':')?.[1]
