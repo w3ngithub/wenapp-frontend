@@ -2,7 +2,12 @@ import {useQuery} from '@tanstack/react-query'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
 import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
-import {MuiFormatDate, capitalizeInput, changeDate, removeDash} from 'helpers/utils'
+import {
+  MuiFormatDate,
+  capitalizeInput,
+  changeDate,
+  removeDash,
+} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment, {Moment} from 'moment'
 import React, {useState} from 'react'
@@ -12,12 +17,12 @@ import {disabledDate} from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {getLeaveTypes} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {leaveHistoryDays} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
 
 const defaultPage = {page: 1, limit: 10}
-
 
 const formattedLeaves = (leaves: any) => {
   return leaves?.map((leave: any) => ({
@@ -46,20 +51,23 @@ function MyHistory({
   handleOpenCancelLeaveModal,
   isLoading,
   permissions,
-  reApplyLeave
+  reApplyLeave,
 }: {
   userId: string
   handleCancelLeave: (leave: any) => void
   handleOpenCancelLeaveModal: (param: any) => void
   isLoading: boolean
   permissions: any
-  reApplyLeave:(leave:any)=>void
+  reApplyLeave: (leave: any) => void
 }) {
   const [form] = Form.useForm()
   const location: any = useLocation()
   let selectedDate = location.state?.date
   const {innerWidth} = useWindowsSize()
   const [datatoShow, setdatatoShow] = useState({})
+  const [historyLeaveId, setHistoryLeaveId] = useState<number | undefined>(
+    undefined
+  )
   const [openModal, setModal] = useState<boolean>(false)
   const [leaveStatus, setLeaveStatus] = useState<string | undefined>('')
   const [leaveTypeId, setLeaveType] = useState<string | undefined>(undefined)
@@ -70,9 +78,7 @@ function MyHistory({
 
   const [rangeDate, setRangeDate] = useState<any>([])
 
-
   const [page, setPage] = useState(defaultPage)
-
 
   const userLeavesQuery = useQuery(
     ['userLeaves', leaveStatus, rangeDate, page, leaveTypeId],
@@ -90,12 +96,23 @@ function MyHistory({
       )
   )
 
-
-
   const handleLeaveType = (value: string | undefined) => {
     setLeaveType(value)
   }
 
+  const handleLeaveHistoryDays = (value: number | undefined) => {
+    if (value) {
+      const selectedDays = leaveHistoryDays.find(
+        (d: any) => d?.id === value
+      )?.value
+      const newRangeDates = [moment().subtract(selectedDays, 'days'), moment()]
+      setHistoryLeaveId(value)
+      setRangeDate(newRangeDates)
+    } else {
+      setRangeDate([])
+      setHistoryLeaveId(undefined)
+    }
+  }
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {
@@ -122,10 +139,10 @@ function MyHistory({
   }
 
   const handleDateChange = (value: any) => {
+    setHistoryLeaveId(undefined)
     if (page?.page > 1) setPage(defaultPage)
 
     setRangeDate(value)
-
   }
 
   const handleShow = (data: any, mode: boolean) => {
@@ -136,15 +153,13 @@ function MyHistory({
   const handleResetFilter = () => {
     setLeaveStatus(undefined)
     setLeaveType(undefined)
+    setHistoryLeaveId(undefined)
     setPage(defaultPage)
     setRangeDate([])
     setDate({
       utc: '',
       moment: undefined,
     })
-  
-
-
   }
   return (
     <div>
@@ -181,7 +196,16 @@ function MyHistory({
           </FormItem>
 
           <FormItem style={{marginBottom: '0.5px'}}>
-          <RangePicker onChange={handleDateChange} value={rangeDate} />
+            <RangePicker onChange={handleDateChange} value={rangeDate} />
+          </FormItem>
+
+          <FormItem className="direct-form-item">
+            <Select
+              placeholder="Select Leave History Days"
+              onChange={handleLeaveHistoryDays}
+              value={historyLeaveId}
+              options={leaveHistoryDays}
+            />
           </FormItem>
 
           <FormItem style={{marginBottom: '3px'}}>

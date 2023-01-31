@@ -23,7 +23,7 @@ import {
   getTodaysUserLeaveCount,
   getFutureLeaves,
 } from 'services/leaves'
-import {MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
+import {compareString, MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
 import {getWeeklyNotices} from 'services/noticeboard'
 import {getAllHolidays} from 'services/resources'
 import {
@@ -304,7 +304,13 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: darkTheme ? darkThemeTextColor : '#038fde',
+        color: darkTheme
+          ? event?.leaveStatus === 'pending'
+            ? '#b1abab'
+            : darkThemeTextColor
+          : event?.leaveStatus === 'pending'
+          ? '#fd826b'
+          : '#038fde',
       }
     if (event.type === 'notice')
       style = {
@@ -396,7 +402,7 @@ const Dashboard = () => {
                   navigate('/leave', {
                     state: {
                       tabKey: '3',
-                      leaveStatus: 'approved',
+                      leaveStatus: props?.event?.leaveStatus,
                       date: props.event.startDate,
                       user: props.event.id,
                     },
@@ -407,7 +413,15 @@ const Dashboard = () => {
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
             <LeaveIcon
               width="18px"
-              fill={darkTheme ? darkThemeTextColor : '#038fde'}
+              fill={
+                darkTheme
+                  ? props?.event?.leaveStatus === 'pending'
+                    ? '#b1abab'
+                    : darkThemeTextColor
+                  : props?.event?.leaveStatus === 'pending'
+                  ? '#fd826b'
+                  : '#038fde'
+              }
             />
             {`${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`}
             {/* {`${shortName} ${specificHalf}`} */}
@@ -444,17 +458,22 @@ const Dashboard = () => {
     event: CustomEvent, // used by each view (Month, Day, Week)
   }
 
-  const leaveUsers = leavesQuery?.data?.map((x: any, index: number) => ({
-    title: x?.user[0],
-    start: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
-    end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
-    type: 'leave',
-    date: x?.leaveDates,
-    startDate: x?.date,
-    halfDay: x?.halfDay,
-    leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
-    id: x?._id[0],
-  }))
+  const leaveUsers = leavesQuery?.data
+    ?.map((x: any, index: number) => ({
+      title: x?.user[0],
+      leaveStatus: x?.leaveStatus,
+      start: new Date(
+        new Date(x.leaveDates).toLocaleDateString().split('T')[0]
+      ),
+      end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
+      type: 'leave',
+      date: x?.leaveDates,
+      startDate: x?.date,
+      halfDay: x?.halfDay,
+      leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
+      id: x?._id[0],
+    }))
+    ?.sort(compareString)
 
   const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
     title: x?.noticeType?.name,
