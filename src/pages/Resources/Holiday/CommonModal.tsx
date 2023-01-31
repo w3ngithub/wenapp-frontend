@@ -118,17 +118,19 @@ const CommonModal = (props: modalType) => {
             marginBottom: '0.4rem',
           }}
         >
-          <Col span={6} lg={5} sm={5}>
+          <Col span={5} lg={5} sm={5}>
             <label>Date</label>
           </Col>
-          <Col span={6} lg={5} sm={6}>
+          <Col span={5} lg={5} sm={6}>
             <label>Title</label>
           </Col>
-          <Col span={6} lg={5} sm={6}>
-            <label>Remarks</label>
+          <Col span={5} lg={5} sm={6}>
+            <label style={{marginLeft: '5rem'}}>Remarks</label>
           </Col>
-          <Col span={6} lg={6} sm={6}>
-            <label>Allow Leave Application</label>
+          <Col span={5} lg={6} sm={6}>
+            <label style={{marginLeft: '8rem', whiteSpace: 'nowrap'}}>
+              Allow Leave Application
+            </label>
           </Col>
         </Row>
         <Form
