@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react'
-import {Checkbox, DatePicker, Divider, Form, Popconfirm} from 'antd'
+import {Checkbox, DatePicker, Divider, Form, Input, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import {HOLIDAY_ACTION_NO_ACCESS} from 'constants/RoleAccess'
 import {dateToDateFormat, getIsAdmin} from 'helpers/utils'
@@ -146,9 +146,47 @@ const EDIT_HOLIDAY_COLUMNS = () =>
             console.log({text, record})
             return (
               <Form.Item
-                // {...field}
-                // name={[field.name, 'date']}
-                name={record?.key}
+                name={`${record?._id}date`}
+                required={true}
+                // rules={[
+                //   {
+                //     required: indexes[index],
+                //     message: 'Date is required.',
+                //   },
+                // ]}
+              >
+                <DatePicker />
+              </Form.Item>
+            )
+          },
+        },
+        {
+          title: 'Title',
+          key: 'title',
+          render: (text: any, record: any) => {
+            return (
+              <Form.Item
+                name={`${record?._id}title`}
+                required={true}
+                // rules={[
+                //   {
+                //     required: indexes[index],
+                //     message: 'Date is required.',
+                //   },
+                // ]}
+              >
+                <Input />
+              </Form.Item>
+            )
+          },
+        },
+        {
+          title: 'Remarks',
+          key: 'remarks',
+          render: (text: any, record: any) => {
+            return (
+              <Form.Item
+                name={`${record?._id}remarks`}
                 required={false}
                 // rules={[
                 //   {
@@ -157,29 +195,22 @@ const EDIT_HOLIDAY_COLUMNS = () =>
                 //   },
                 // ]}
               >
-                <DatePicker className=" gx-w-100" />
+                <Input />
               </Form.Item>
             )
           },
-        },
-        {
-          title: 'Title',
-          dataIndex: 'title',
-          key: 'title',
-        },
-        {
-          title: 'Remarks',
-          dataIndex: 'remarks',
-          key: 'remarks',
         },
         {
           title: 'Allow Leave Application',
           key: 'action',
           render: (text: any, record: any) => {
             return (
-              <div style={{display: 'flex'}}>
-                <Checkbox></Checkbox>
-              </div>
+              <Form.Item
+                name={`${record?._id}allowLeaveApply`}
+                required={false}
+              >
+                <Checkbox />
+              </Form.Item>
             )
           },
         },

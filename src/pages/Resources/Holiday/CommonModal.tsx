@@ -50,34 +50,35 @@ const CommonModal = (props: modalType) => {
 
   const handleSubmit = () => {
     let values = form.getFieldsValue()
-    let holidays = values?.holidays?.map(
-      (data: {date: any; title: string; remarks: string}, index: number) => {
-        if (data?.date || data?.title || data?.remarks) {
-          return true
-        } else return false
-      }
-    )
-    if (holidays.length === 0) {
-      return notification({type: 'info', message: 'Please Add Holiday Field'})
-    }
-    if (!holidays.includes(true)) {
-      holidays[0] = true
-    }
-    setIndexes(holidays)
-    form
-      .validateFields()
-      .then((values) => {
-        onSubmit({
-          holidays: form
-            .getFieldsValue()
-            .holidays.filter((holiday: holidayType) => holiday)
-            .map((holiday: holidayType) => ({
-              ...holiday,
-              date: moment.utc(holiday.date).format(),
-            })),
-        })
-      })
-      .catch((err) => console.log(err))
+    console.log('holidays values', values)
+    // let holidays = values?.holidays?.map(
+    //   (data: {date: any; title: string; remarks: string}, index: number) => {
+    //     if (data?.date || data?.title || data?.remarks) {
+    //       return true
+    //     } else return false
+    //   }
+    // )
+    // if (holidays.length === 0) {
+    //   return notification({type: 'info', message: 'Please Add Holiday Field'})
+    // }
+    // if (!holidays.includes(true)) {
+    //   holidays[0] = true
+    // }
+    // setIndexes(holidays)
+    // form
+    //   .validateFields()
+    //   .then((values) => {
+    //     onSubmit({
+    //       holidays: form
+    //         .getFieldsValue()
+    //         .holidays.filter((holiday: holidayType) => holiday)
+    //         .map((holiday: holidayType) => ({
+    //           ...holiday,
+    //           date: moment.utc(holiday.date).format(),
+    //         })),
+    //     })
+    //   })
+    //   .catch((err) => console.log(err))
   }
 
   useEffect(() => {
@@ -93,23 +94,20 @@ const CommonModal = (props: modalType) => {
     if (!toggle) form.resetFields()
   }, [toggle])
 
-  console.log('editData', editData)
-
-  useEffect(() => {
-    if (toggle) {
-      if (isEditMode)
-        // form.setFieldsValue({
-        //   holidays: editData?.map((holiday: any) => ({
-        //     ...holiday,
-        //     date: moment(holiday.date),
-        //   })),
-        // })
-        form.setFieldsValue({
-          [editData?.[0]._id]: moment(editData?.[0]?.date),
-        })
-    }
-    if (!toggle) form.resetFields()
-  }, [toggle])
+  // useEffect(() => {
+  //   if (toggle) {
+  //     if (isEditMode)
+  //       editData.forEach((item: any, index: number) => {
+  //         form.setFieldsValue({
+  //           [`${item?._id}date`]: moment(item?.date),
+  //           [`${item?._id}title`]: item?.title,
+  //           [`${item?._id}remarks`]: item?.remarks,
+  //           [`${item?._id}allowLeaveApply`]: item?.allowLeaveApply,
+  //         })
+  //       })
+  //   }
+  //   if (!toggle) form.resetFields()
+  // }, [toggle])
 
   return (
     <Modal
@@ -136,15 +134,34 @@ const CommonModal = (props: modalType) => {
           style={{marginLeft: 10}}
           className="add-holiday"
         >
-          <Table
+          {/* <Table
             className="gx-table-responsive"
             columns={EDIT_HOLIDAY_COLUMNS()}
             dataSource={dataSource}
             // onChange={handleTableChange}
             pagination={false}
             loading={isLoading}
-          />
-          {/* <Form.List
+          /> */}
+          <Row
+            style={{
+              columnGap: 6,
+              marginLeft: innerWidth <= 748 ? '' : '1rem',
+            }}
+          >
+            <Col>
+              <label>Date</label>
+            </Col>
+            <Col>
+              <label>Title</label>
+            </Col>
+            <Col>
+              <label>Remarks</label>
+            </Col>
+            <Col>
+              <label>Allow Leave Application</label>
+            </Col>
+          </Row>
+          <Form.List
             name="holidays"
             initialValue={[
               null,
@@ -179,7 +196,7 @@ const CommonModal = (props: modalType) => {
                       >
                         <Form.Item
                           {...field}
-                          label="Date"
+                          // label="Date"
                           name={[field.name, 'date']}
                           required={false}
                           rules={[
@@ -203,7 +220,7 @@ const CommonModal = (props: modalType) => {
                       >
                         <Form.Item
                           {...field}
-                          label="Title"
+                          // label="Title"
                           name={[field.name, 'title']}
                           required={false}
                           rules={[
@@ -226,7 +243,7 @@ const CommonModal = (props: modalType) => {
                         <Col span={24} sm={20}>
                           <Form.Item
                             {...field}
-                            label="Remarks"
+                            // label="Remarks"
                             name={[field.name, 'remarks']}
                             // rules={[{ required: true, message: "required!" }]}
                           >
@@ -257,7 +274,7 @@ const CommonModal = (props: modalType) => {
                 </Form.Item>
               </>
             )}
-          </Form.List> */}
+          </Form.List>
         </Form>
       </Spin>
     </Modal>
