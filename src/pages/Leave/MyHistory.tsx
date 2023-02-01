@@ -102,9 +102,10 @@ function MyHistory({
 
   const handleLeaveHistoryDays = (value: number | undefined) => {
     if (value) {
-      const selectedDays = leaveHistoryDays.find(
+      const tempDays: any = leaveHistoryDays.find(
         (d: any) => d?.id === value
       )?.value
+      const selectedDays = parseInt(tempDays?.split(' ')?.[0])
       const newRangeDates = [moment().subtract(selectedDays, 'days'), moment()]
       setHistoryLeaveId(value)
       setRangeDate(newRangeDates)
@@ -195,12 +196,13 @@ function MyHistory({
             />
           </FormItem>
 
-          <FormItem style={{marginBottom: '0.5px'}}>
+          <FormItem>
             <RangePicker onChange={handleDateChange} value={rangeDate} />
           </FormItem>
 
           <FormItem className="direct-form-item">
             <Select
+              style={{minWidth: '210px'}}
               placeholder="Select Leave History Days"
               onChange={handleLeaveHistoryDays}
               value={historyLeaveId}
@@ -208,7 +210,7 @@ function MyHistory({
             />
           </FormItem>
 
-          <FormItem style={{marginBottom: '3px'}}>
+          <FormItem style={{marginBottom: '3px', marginLeft: 30}}>
             <Button
               className="gx-btn-primary gx-text-white"
               onClick={handleResetFilter}
