@@ -75,6 +75,20 @@ function LeaveQuarterModal({
         <div className="leaveQuarterForm">
           <Form form={form} layout="horizontal">
             <Row>
+              <Col span={7} xs={7} md={7}>
+                Quarter
+              </Col>
+              <Col span={7} xs={7} md={7}>
+                Start
+              </Col>
+              <Col span={7} xs={7} md={7}>
+                End
+              </Col>
+              <Col span={7} xs={7} md={7}>
+                Leaves
+              </Col>
+            </Row>
+            <Row>
               {' '}
               <div className="gx-mb-1">First Quarter</div>
             </Row>
