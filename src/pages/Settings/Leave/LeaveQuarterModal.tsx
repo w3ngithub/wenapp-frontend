@@ -75,37 +75,55 @@ function LeaveQuarterModal({
         <div className="leaveQuarterForm">
           <Form form={form} layout="horizontal">
             <Row>
-              <Col span={7} xs={7} md={7}>
-                Quarter
+              <Col lg={5} md={5} sm={5} xs={5}>
+                <label>Quarter</label>
               </Col>
-              <Col span={7} xs={7} md={7}>
-                Start
+              <Col lg={7} md={6} sm={6} xs={5}>
+                <label>Start</label>
               </Col>
-              <Col span={7} xs={7} md={7}>
-                End
+              <Col lg={7} md={7} sm={7} xs={6}>
+                <label>End</label>
               </Col>
-              <Col span={7} xs={7} md={7}>
-                Leaves
+              <Col lg={4} md={5} sm={5} xs={5}>
+                <label style={{whiteSpace: 'nowrap'}}>Leaves</label>
               </Col>
             </Row>
-            <Row>
+            {/* <Row>
               {' '}
               <div className="gx-mb-1">First Quarter</div>
-            </Row>
+            </Row> */}
             <Row>
-              <Col span={8} xs={24} md={8}>
+              <Col span={6} xs={6} md={6}>
+                <Form.Item
+                  name={'quatername'}
+                  required={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Name is required.',
+                    },
+                    {
+                      whitespace: true,
+                      message: 'Please enter a valid Name',
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={6} xs={6} md={6}>
                 <Form.Item
                   name="firststartDate"
-                  label="Start"
+                  // label="Start"
                   rules={[{required: true, message: 'Required!'}]}
                 >
                   <DatePicker />
                 </Form.Item>
               </Col>
-              <Col span={8} xs={24} md={8}>
+              <Col span={6} xs={6} md={6}>
                 <Form.Item
                   name="firstendDate"
-                  label="End"
+                  // label="End"
                   rules={[
                     {
                       required: true,
@@ -135,21 +153,21 @@ function LeaveQuarterModal({
                   <DatePicker />
                 </Form.Item>
               </Col>
-              <Col span={8} xs={24} md={8}>
+              <Col span={6} xs={6} md={6}>
                 <Form.Item
                   name="firstleaves"
-                  label="Leaves"
+                  // label="Leaves"
                   rules={[{required: true, message: 'Required!'}]}
                 >
                   <Input />
                 </Form.Item>
               </Col>
             </Row>
-            <Row>
+            {/* <Row>
               {' '}
               <div className="gx-mb-1">Second Quarter</div>
-            </Row>
-            <Row>
+            </Row> */}
+            {/* <Row>
               <Col span={8} xs={24} md={8}>
                 <Form.Item
                   name="secondstartDate"
@@ -393,7 +411,7 @@ function LeaveQuarterModal({
                   <Input />
                 </Form.Item>
               </Col>
-            </Row>
+            </Row> */}
           </Form>
         </div>
       </Spin>
