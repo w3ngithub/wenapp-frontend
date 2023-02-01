@@ -34,42 +34,42 @@ function Settings() {
             <Projects />
           </TabPane>
         )}
+        {Settings?.attendance && (
+          <TabPane tab="Attendance" key="3">
+            <Attendance />
+          </TabPane>
+        )}
         {Settings?.logTimes && (
-          <TabPane tab="Log Time" key="3">
+          <TabPane tab="Log Time" key="4">
             <Logtime />
           </TabPane>
         )}
 
         {Settings?.leaveManagements && (
-          <TabPane tab="Leave Management" key="4">
+          <TabPane tab="Leave Management" key="5">
             <Leave />
           </TabPane>
         )}
         {Settings?.noticeBoards && (
-          <TabPane tab="Notice Board" key="5">
+          <TabPane tab="Notice Board" key="6">
             <Noticeboard />
           </TabPane>
         )}
         {Settings?.blogs && (
-          <TabPane tab="Blog" key="6">
+          <TabPane tab="Blog" key="7">
             <Blog />
           </TabPane>
         )}
 
         {Settings?.resource && (
-          <TabPane tab="Resources" key="7">
+          <TabPane tab="Resources" key="8">
             <Resources />
           </TabPane>
         )}
 
         {Settings?.emails && (
-          <TabPane tab="Emails" key="8">
+          <TabPane tab="Emails" key="9">
             <Email />
-          </TabPane>
-        )}
-        {Settings?.attendance && (
-          <TabPane tab="Attendance" key="9">
-            <Attendance />
           </TabPane>
         )}
       </Tabs>
