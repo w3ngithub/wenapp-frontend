@@ -114,8 +114,13 @@ function Apply({user}) {
 
   const {data: leaveQuarter} = useQuery(['leaveQuarter'], getLeaveQuarter, {
     onSuccess: (data) => {
-      setYearStartDate(data?.data?.data?.data?.[0].firstQuarter.fromDate)
-      setYearEndDate(data?.data?.data?.data?.[0].fourthQuarter.toDate)
+      const quarterLength = data?.data?.data?.data?.[0]?.quarters?.length - 1
+      setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
+      setYearEndDate(
+        data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
+      )
+      // setYearStartDate(data?.data?.data?.data?.[0]?.firstQuarter?.fromDate)
+      // setYearEndDate(data?.data?.data?.data?.[0]?.fourthQuarter?.toDate)
     },
   })
 
@@ -280,6 +285,12 @@ function Apply({user}) {
       }
     })
   }
+  let casualLeavesApplied = userSubstituteLeave?.data?.data?.data?.data?.filter(
+    (leave) =>
+      leave?.leaveType?.name === 'Casual Leave' &&
+      (leave?.leaveStatus === 'pending' || leave?.leaveStatus === 'approved')
+  )
+  console.log('casual', casualLeavesApplied)
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
