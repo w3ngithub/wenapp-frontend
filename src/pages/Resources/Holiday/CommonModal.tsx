@@ -95,9 +95,10 @@ const CommonModal = (props: modalType) => {
 
   return (
     <Modal
-      width={1250}
+      width={1200}
       bodyStyle={{overflowX: 'scroll'}}
       title={isEditMode ? `Update Holidays` : `Add Holidays`}
+      className="gx-table-responsive"
       visible={toggle}
       onOk={handleSubmit}
       onCancel={onCancel}
@@ -114,23 +115,22 @@ const CommonModal = (props: modalType) => {
       <Spin spinning={isLoading}>
         <Row
           style={{
-            marginLeft: innerWidth <= 748 ? '' : '0.8rem',
+            columnGap: 5,
+            marginLeft: innerWidth <= 748 ? '' : '1rem',
             marginBottom: '0.4rem',
           }}
         >
-          <Col span={5} lg={5} sm={5}>
+          <Col lg={5} md={5} sm={5} xs={5}>
             <label>Date</label>
           </Col>
-          <Col span={5} lg={5} sm={6}>
+          <Col lg={7} md={6} sm={6} xs={5}>
             <label>Title</label>
           </Col>
-          <Col span={5} lg={5} sm={6}>
-            <label style={{marginLeft: '6.6rem'}}>Remarks</label>
+          <Col lg={7} md={7} sm={7} xs={6}>
+            <label>Remarks</label>
           </Col>
-          <Col span={6} lg={6} sm={6}>
-            <label style={{marginLeft: '13.5rem', whiteSpace: 'nowrap'}}>
-              Allow Leave
-            </label>
+          <Col lg={4} md={5} sm={5} xs={5}>
+            <label style={{whiteSpace: 'nowrap'}}>Allow Leave</label>
           </Col>
         </Row>
         <Form
@@ -165,7 +165,7 @@ const CommonModal = (props: modalType) => {
                       marginLeft: innerWidth <= 748 ? '' : '1rem',
                     }}
                   >
-                    <Col span={6} sm={7} lg={5}>
+                    <Col span={5} sm={5} lg={5}>
                       <Form.Item
                         noStyle
                         shouldUpdate={(prevValues, curValues) =>
@@ -188,7 +188,7 @@ const CommonModal = (props: modalType) => {
                         </Form.Item>
                       </Form.Item>
                     </Col>
-                    <Col span={6} sm={7}>
+                    <Col span={5} sm={6} md={6} lg={7}>
                       <Form.Item
                         noStyle
                         shouldUpdate={(prevValues, curValues) =>
@@ -215,7 +215,7 @@ const CommonModal = (props: modalType) => {
                         </Form.Item>
                       </Form.Item>
                     </Col>
-                    <Col span={6} sm={7}>
+                    <Col span={5} sm={7} lg={7} md={7}>
                       <Form.Item
                         {...field}
                         name={[field.name, 'remarks']}
@@ -224,7 +224,7 @@ const CommonModal = (props: modalType) => {
                         <Input.TextArea rows={1} />
                       </Form.Item>
                     </Col>
-                    <Col span={6} sm={2}>
+                    <Col span={2} sm={3} md={2} lg={2}>
                       <Form.Item
                         {...field}
                         name={[field.name, 'allowLeaveApply']}
@@ -235,7 +235,7 @@ const CommonModal = (props: modalType) => {
                       </Form.Item>
                     </Col>
 
-                    <Col span={6} sm={2} lg={2}>
+                    <Col span={2} sm={1} md={2} lg={2}>
                       <MinusCircleOutlined
                         onClick={() => remove(field.name)}
                         style={{marginBottom: 20, marginTop: 10}}
