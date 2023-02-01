@@ -361,6 +361,7 @@ function Apply({user}) {
     (holiday) => ({
       date: new DateObject(holiday?.date).format(),
       name: holiday?.title,
+      allowLeaveApply: holiday?.allowLeaveApply,
     })
   )
   userLeavesQuery?.data?.data?.data?.data?.forEach((leave) => {
@@ -454,7 +455,6 @@ function Apply({user}) {
       setCalendarClicked(false)
     }
   }
-
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Modal
@@ -515,7 +515,9 @@ function Apply({user}) {
                   mapDays={({date, today, selectedDate}) => {
                     let isWeekend = [0, 6].includes(date.weekDay.index)
                     let holidayList = holidaysThisYear?.filter(
-                      (holiday) => date.format() === holiday?.date
+                      (holiday) =>
+                        !holiday?.allowLeaveApply &&
+                        date.format() === holiday?.date
                     )
                     let isHoliday = holidayList?.length > 0
                     let leaveDate = userLeaves?.filter(
