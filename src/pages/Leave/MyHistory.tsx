@@ -75,6 +75,7 @@ function MyHistory({
     utc: selectedDate ? selectedDate : undefined,
     moment: selectedDate ? moment(selectedDate).startOf('day') : undefined,
   })
+  const [modalReadOnly, setmodalReadOnly] = useState<boolean>(false)
 
   const [rangeDate, setRangeDate] = useState<any>([])
 
@@ -149,6 +150,7 @@ function MyHistory({
   const handleShow = (data: any, mode: boolean) => {
     setdatatoShow(data)
     setModal(true)
+    setmodalReadOnly(mode)
   }
 
   const handleResetFilter = () => {
@@ -171,7 +173,7 @@ function MyHistory({
           onClose={() => setModal(false)}
           isEditMode={true}
           users={[]}
-          readOnly={true}
+          readOnly={modalReadOnly}
           showWorker={false}
         />
       )}

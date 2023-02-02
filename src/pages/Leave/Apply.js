@@ -23,7 +23,7 @@ import {
   removeDash,
   specifyParticularHalf,
 } from 'helpers/utils'
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {
   createLeave,
@@ -49,7 +49,9 @@ import {socket} from 'pages/Main'
 import RoleAccess from 'constants/RoleAccess'
 import moment from 'moment'
 import {ExclamationCircleFilled} from '@ant-design/icons'
-
+import DragAndDropFile from 'components/Modules/DragAndDropFile'
+import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
+import {storage} from 'firebase'
 const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
@@ -69,6 +71,8 @@ function Apply({user}) {
   const [yearEndDate, setYearEndDate] = useState(undefined)
   const [openModal, setOpenModal] = useState(false)
   const [newDateArr, setNewDateArr] = useState([])
+  const [files, setFiles] = useState([])
+  const [, setRemovedFile] = useState(null)
 
   const {name, email, role} = useSelector(selectAuthUser)
   const date = new Date()
@@ -218,6 +222,7 @@ function Apply({user}) {
     setHalfLeavePending(false)
     setSpecificHalf(false)
     setCalendarClicked(false)
+    setFiles([])
   }
 
   //condition to check holidays and weekends
@@ -281,8 +286,8 @@ function Apply({user}) {
     })
   }
 
-  const handleSubmit = () => {
-    form.validateFields().then((values) => {
+  const handleSubmit = async () => {
+    await form.validateFields().then(async (values) => {
       const leaveTypeName = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
       )?.value
@@ -306,7 +311,6 @@ function Apply({user}) {
             sub?.leaveType?.name === 'Substitute Leave' &&
             sub?.leaveStatus === 'approved'
         )
-
         if (hasSubstitute) {
           return notification({
             type: 'error',
@@ -334,24 +338,65 @@ function Apply({user}) {
       const casualLeaveDaysUTC = casualLeaveDays?.map(
         (leave) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
       )
-      setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
-      form.validateFields().then((values) =>
-        leaveMutation.mutate({
-          ...values,
-          leaveDates: appliedDate
-            ? [appliedDateUTC, endDateUTC]
-            : casualLeaveDaysUTC,
-          halfDay:
-            values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
-              ? ''
-              : values?.halfDay,
-          leaveStatus:
-            appliedDate || ['admin', 'hr'].includes(role?.key)
-              ? 'approved'
-              : 'pending',
-        })
-      )
+
+      //document upload to firebase
+      if (files[0]?.originFileObj) {
+        const storageRef = ref(storage, `leaves/${files[0]?.name}`)
+        const uploadTask = uploadBytesResumable(
+          storageRef,
+          files[0]?.originFileObj
+        )
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {},
+          (error) => {
+            console.log(error.message)
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+              setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+              form.validateFields().then((values) =>
+                leaveMutation.mutate({
+                  ...values,
+                  leaveDates: appliedDate
+                    ? [appliedDateUTC, endDateUTC]
+                    : casualLeaveDaysUTC,
+                  halfDay:
+                    values?.halfDay === 'full-day' ||
+                    values?.halfDay === 'Full Day'
+                      ? ''
+                      : values?.halfDay,
+                  leaveStatus:
+                    appliedDate || ['admin', 'hr'].includes(role?.key)
+                      ? 'approved'
+                      : 'pending',
+                  leaveDocument: downloadURL,
+                })
+              )
+            })
+          }
+        )
+      } else {
+        setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+        setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+        form.validateFields().then((values) =>
+          leaveMutation.mutate({
+            ...values,
+            leaveDates: appliedDate
+              ? [appliedDateUTC, endDateUTC]
+              : casualLeaveDaysUTC,
+            halfDay:
+              values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
+                ? ''
+                : values?.halfDay,
+            leaveStatus:
+              appliedDate || ['admin', 'hr'].includes(role?.key)
+                ? 'approved'
+                : 'pending',
+          })
+        )
+      }
     })
     setOpenModal(false)
     setNewDateArr([])
@@ -699,6 +744,18 @@ function Apply({user}) {
                     placeholder="Enter Leave Reason"
                     rows={10}
                     disabled={getIsAdmin()}
+                  />
+                </FormItem>
+                <FormItem
+                  label="Select Document to Upload"
+                  name="leaveDocument"
+                >
+                  <DragAndDropFile
+                    files={files}
+                    setFiles={setFiles}
+                    onRemove={setRemovedFile}
+                    allowMultiple={false}
+                    accept=".pdf, image/png, image/jpeg"
                   />
                 </FormItem>
                 <div>
