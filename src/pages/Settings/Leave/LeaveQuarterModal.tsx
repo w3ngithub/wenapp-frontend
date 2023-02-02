@@ -1,4 +1,4 @@
-import {Button, DatePicker, Form, Input, Modal, Spin} from 'antd'
+import {Button, DatePicker, Form, Input, InputNumber, Modal, Spin} from 'antd'
 import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
 import React, {useEffect} from 'react'
 import {Row} from 'antd'
@@ -37,7 +37,7 @@ function LeaveQuarterModal({
 
     form.validateFields().then((values) => {
       if (quarters?.length === 0) {
-        return notification({type: 'info', message: 'Please Add Holiday Field'})
+        return notification({type: 'info', message: 'Please Add Quarters'})
       }
       const quaterTempLeaves = values?.quaterlyLeaves?.map((data: any) => ({
         quarterName: data?.quarterName,
@@ -115,7 +115,36 @@ function LeaveQuarterModal({
                       <Form.Item
                         {...field}
                         name={[field.name, 'quarterName']}
-                        rules={[{required: true, message: 'Required!'}]}
+                        rules={[
+                          {
+                            required: true,
+                            validator: async (rule, value) => {
+                              try {
+                                if (!value) {
+                                  throw new Error('Required!')
+                                }
+                                const regex = /^[^*|\":<>[\]{}`\\';@&$!#%^]+$/
+                                const isValid = regex.test(value)
+                                if (value.trim().length === 0) {
+                                  throw new Error('Please enter a valid Name.')
+                                }
+
+                                if (
+                                  value?.split('')[0] === '-' ||
+                                  value?.split('')[0] === '(' ||
+                                  value?.split('')[0] === ')' ||
+                                  !isValid
+                                ) {
+                                  throw new Error(
+                                    'Please do not use special characters.'
+                                  )
+                                }
+                              } catch (err) {
+                                throw new Error(err.message)
+                              }
+                            },
+                          },
+                        ]}
                       >
                         <Input />
                       </Form.Item>
@@ -125,7 +154,76 @@ function LeaveQuarterModal({
                       <Form.Item
                         {...field}
                         name={[field.name, 'firststartDate']}
-                        rules={[{required: true, message: 'Required!'}]}
+                        // rules={[{required: true, message: 'Required!'}]}
+                        rules={[
+                          {
+                            required: true,
+                            whitespace: true,
+                            validator: async (rule, value) => {
+                              console.log(
+                                form.getFieldValue([
+                                  'quaterlyLeaves',
+                                  field.name - 1,
+                                  'firstendDate',
+                                ])
+                              )
+                              try {
+                                if (!value) {
+                                  throw new Error('Required!')
+                                }
+                                if (
+                                  value.isAfter(
+                                    form
+                                      .getFieldValue([
+                                        'quaterlyLeaves',
+                                        field.name,
+                                        'firstendDate',
+                                      ])
+                                      ?.endOf('day')
+                                  ) &&
+                                  form.getFieldValue([
+                                    'quaterlyLeaves',
+                                    field.name,
+                                    'firstendDate',
+                                  ])
+                                ) {
+                                  throw new Error(
+                                    'Start Date should be before End Date.'
+                                  )
+                                }
+                                if (
+                                  field.name > 0 &&
+                                  value.isBefore(
+                                    form
+                                      .getFieldValue([
+                                        'quaterlyLeaves',
+                                        field.name - 1,
+                                        'firstendDate',
+                                      ])
+                                      ?.endOf('day')
+                                  ) &&
+                                  form.getFieldValue([
+                                    'quaterlyLeaves',
+                                    field.name - 1,
+                                    'firstendDate',
+                                  ])
+                                ) {
+                                  throw new Error(
+                                    `Start Date should be after ${form.getFieldValue(
+                                      [
+                                        'quaterlyLeaves',
+                                        field.name - 1,
+                                        'quarterName',
+                                      ]
+                                    )} `
+                                  )
+                                }
+                              } catch (err) {
+                                throw new Error(err.message)
+                              }
+                            },
+                          },
+                        ]}
                       >
                         <DatePicker className=" gx-w-100" />
                       </Form.Item>
@@ -146,10 +244,18 @@ function LeaveQuarterModal({
                                 if (
                                   value.isBefore(
                                     form
-                                      .getFieldValue('firststartDate')
+                                      .getFieldValue([
+                                        'quaterlyLeaves',
+                                        field.name,
+                                        'firststartDate',
+                                      ])
                                       ?.endOf('day')
                                   ) &&
-                                  form.getFieldValue('firststartDate')
+                                  form.getFieldValue([
+                                    'quaterlyLeaves',
+                                    field.name,
+                                    'firststartDate',
+                                  ])
                                 ) {
                                   throw new Error(
                                     'End Date should be after Start Date.'
@@ -165,11 +271,30 @@ function LeaveQuarterModal({
                         <DatePicker className=" gx-w-100" />
                       </Form.Item>
                     </Col>
-                    <Col span={4} sm={3} md={4} lg={4} xs={3}>
+                    <Col span={4} sm={3} md={4} lg={4} xs={4}>
                       <Form.Item
                         {...field}
                         name={[field.name, 'leaves']}
-                        rules={[{required: true, message: 'Required!'}]}
+                        rules={[
+                          {
+                            required: true,
+                            whitespace: true,
+                            validator: async (rule, value) => {
+                              try {
+                                if (!value) {
+                                  throw new Error('Required!')
+                                }
+                                if (value < 1 || value > 20) {
+                                  throw new Error(
+                                    'Please  enter number between 1 and 20'
+                                  )
+                                }
+                              } catch (err) {
+                                throw new Error(err.message)
+                              }
+                            },
+                          },
+                        ]}
                       >
                         <Input type="number" />
                       </Form.Item>
