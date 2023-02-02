@@ -181,7 +181,7 @@ function Leave() {
   const handleOpenEditModal = (data: any, type: string, currentData: any) => {
     setIsEditMode(true)
     setOpenModal(true)
-    setDataToEdit(leaveQuarter?.data?.data?.data?.[0]?.quarters)
+    setDataToEdit(data)
     setArrayDataToSend(currentData)
   }
 
