@@ -154,7 +154,6 @@ function LeaveQuarterModal({
                       <Form.Item
                         {...field}
                         name={[field.name, 'firststartDate']}
-                        // rules={[{required: true, message: 'Required!'}]}
                         rules={[
                           {
                             required: true,
@@ -263,7 +262,7 @@ function LeaveQuarterModal({
                                 }
                                 if (value < 1 || value > 20) {
                                   throw new Error(
-                                    'Please  enter number between 1 and 20'
+                                    'Leave Days should be less than 20'
                                   )
                                 }
                               } catch (err) {
