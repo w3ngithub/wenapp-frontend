@@ -18,6 +18,9 @@ import LeaveModal from 'components/Modules/LeaveModal'
 import {getLeaveTypes} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
+import { useSelector } from 'react-redux'
+
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
@@ -77,6 +80,9 @@ function MyHistory({
   })
   const [modalReadOnly, setmodalReadOnly] = useState<boolean>(false)
 
+  const {gender:userGender,status:userStatus} = useSelector(selectAuthUser)
+
+
   const [rangeDate, setRangeDate] = useState<any>([])
 
   const [page, setPage] = useState(defaultPage)
@@ -120,6 +126,7 @@ function MyHistory({
     select: (res) => {
       return [
         ...res?.data?.data?.data?.map((type: any) => ({
+          ...type,
           id: type._id,
           value: type?.name.replace('Leave', '').trim(),
         })),
@@ -194,7 +201,10 @@ function MyHistory({
               placeholder="Select Leave Type"
               onChange={handleLeaveType}
               value={leaveTypeId}
-              options={leaveTypeQuery?.data}
+              options={leaveTypeQuery?.data?.filter((d)=>{
+                const showToProbation = userStatus==="Probation"? d?.Probation:true
+                return  d.gender.includes(userGender) && showToProbation
+              })}
             />
           </FormItem>
 

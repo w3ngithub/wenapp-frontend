@@ -149,7 +149,6 @@ function Apply({user}) {
     },
   })
 
-  console.log(leaveTypeQuery.data)
 
   const teamLeadsQuery = useQuery(['teamLeads'], getTeamLeads, {
     select: (res) => ({
