@@ -179,7 +179,7 @@ function Leave() {
   const handleOpenEditModal = (data: any, type: string, currentData: any) => {
     setIsEditMode(true)
     setOpenModal(true)
-    setDataToEdit(data)
+    setDataToEdit(leaveQuarter?.data?.data?.data?.[0]?.quarters)
     setArrayDataToSend(currentData)
   }
 
@@ -198,51 +198,14 @@ function Leave() {
     deleteQuarterTypeMutation.mutate({id})
   }
 
-  const quarters =
-    leaveQuarter?.data?.data?.data.length !== 0
-      ? [
-          {
-            name: 'First Quarter',
-            start: changeDate(
-              leaveQuarter?.data?.data?.data[0]?.firstQuarter?.fromDate
-            ),
-            end: changeDate(
-              leaveQuarter?.data?.data?.data[0]?.firstQuarter?.toDate
-            ),
-            days: leaveQuarter?.data?.data?.data[0]?.firstQuarter?.leaves,
-          },
-          {
-            name: 'Second Quarter',
-            start: changeDate(
-              leaveQuarter?.data?.data?.data[0]?.secondQuarter?.fromDate
-            ),
-            end: changeDate(
-              leaveQuarter?.data?.data?.data[0]?.secondQuarter?.toDate
-            ),
-            days: leaveQuarter?.data?.data?.data[0]?.secondQuarter?.leaves,
-          },
-          {
-            name: 'Third Quarter',
-            start: changeDate(
-              leaveQuarter?.data?.data?.data[0]?.thirdQuarter?.fromDate
-            ),
-            end: changeDate(
-              leaveQuarter?.data?.data?.data[0]?.thirdQuarter?.toDate
-            ),
-            days: leaveQuarter?.data?.data?.data[0]?.thirdQuarter?.leaves,
-          },
-          {
-            name: 'Fourth Quarter',
-            start: changeDate(
-              leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.fromDate
-            ),
-            end: changeDate(
-              leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.toDate
-            ),
-            days: leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.leaves,
-          },
-        ]
-      : []
+  const tempQuarters = leaveQuarter?.data?.data?.data?.[0]?.quarters?.map(
+    (d: any) => ({
+      name: d.quarterName,
+      start: changeDate(d.fromDate),
+      end: changeDate(d.toDate),
+      days: d.leaves,
+    })
+  )
 
   const Footer = () => {
     return (
@@ -278,50 +241,13 @@ function Leave() {
   }
 
   const addLeaveQuarters = (payload: any) => {
-    const {
-      firstendDate,
-      firststartDate,
-      secondendDate,
-      secondstartDate,
-      thirdendDate,
-      thirdstartDate,
-      fourthendDate,
-      fourthstartDate,
-      firstleaves,
-      secondleaves,
-      thirdleaves,
-      fourthleaves,
-    } = payload
-
-    const preparedPayload = {
-      firstQuarter: {
-        fromDate: moment.utc(firststartDate.startOf('day')).format(),
-        toDate: moment.utc(firstendDate.endOf('day')).format(),
-        leaves: firstleaves,
-      },
-      secondQuarter: {
-        fromDate: moment.utc(secondstartDate.startOf('day')).format(),
-        toDate: moment.utc(secondendDate.endOf('day')).format(),
-        leaves: secondleaves,
-      },
-      thirdQuarter: {
-        fromDate: moment.utc(thirdstartDate.startOf('day')).format(),
-        toDate: moment.utc(thirdendDate.endOf('day')).format(),
-        leaves: thirdleaves,
-      },
-      fourthQuarter: {
-        fromDate: moment.utc(fourthstartDate.startOf('day')).format(),
-        toDate: moment.utc(fourthendDate.endOf('day')).format(),
-        leaves: fourthleaves,
-      },
-    }
     if (isQuarterEditMode) {
       editLeaveQuarterMutation.mutate({
         id: leaveQuarter?.data?.data?.data[0]._id,
-        leaveQuarters: preparedPayload,
+        leaveQuarters: {quarters: payload},
       })
     } else {
-      addLeaveQuarterMutation.mutate(preparedPayload)
+      addLeaveQuarterMutation.mutate({quarters: payload})
     }
   }
 
@@ -389,24 +315,23 @@ function Leave() {
           <Card
             title="Leave Quarter"
             extra={
-              new Date() >
-                new Date(
-                  leaveQuarter?.data?.data?.data[0]?.fourthQuarter?.toDate
-                ) || leaveQuarter?.data?.data?.data.length === 0 ? (
+              <Popconfirm
+                title="Adding next year's quarters will remove current year's quarters. Do you want to proceed?"
+                onConfirm={() => handleOpenModal('Leave Quarter', '')}
+                okText="Yes"
+                cancelText="No"
+              >
                 <Button
                   className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                  onClick={() => handleOpenModal('Leave Quarter', '')}
                   disabled={getIsAdmin()}
                 >
                   Add
                 </Button>
-              ) : (
-                ''
-              )
+              </Popconfirm>
             }
           >
             <SettingTable
-              data={quarters}
+              data={tempQuarters}
               columns={LEAVES_QUARTER_COLUMN()}
               isLoading={
                 leaveQuarterLoading || deleteQuarterTypeMutation.isLoading
