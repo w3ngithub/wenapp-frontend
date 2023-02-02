@@ -51,7 +51,7 @@ function UserDetailForm({
   const user = useSelector(selectAuthUser)
 
   const handleSubmit = () => {
-    const data = intialValues?.allocatedLeaves
+    // const data = intialValues?.allocatedLeaves
 
     form.validateFields().then((values) => {
       onSubmit({
@@ -62,18 +62,18 @@ function UserDetailForm({
           hour: moment(values.officeTime._d).add(10, 'm').utc().format('h'),
           minute: moment(values.officeTime._d).add(10, 'm').utc().format('m'),
         },
-        allocatedLeaves: {
-          ...data,
-          [currentQuarter?.data?.name]: values?.allocatedLeaves,
-        },
+        // allocatedLeaves: {
+        //   ...data,
+        //   [currentQuarter?.data?.name]: values?.allocatedLeaves,
+        // },
       })
     })
   }
 
   const handleStatusChange = (value) => {
-    if (value === 'Probation')
-      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
-    else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
+    // if (value === 'Probation')
+    //   form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
+    // else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
   }
   const disableDate = (current) => {
     return current && current > moment().endOf('day')
@@ -87,18 +87,16 @@ function UserDetailForm({
   }
 
   const handlePositionChange = (value) => {
-    const isIntern =
-      form.getFieldValue('position') ===
-      position?.data?.data?.data?.find((pos) => pos?.name === 'Intern')._id
-    const isTrainee =
-      form.getFieldValue('position') ===
-      position?.data?.data?.data?.find((pos) => pos?.name === 'Trainee')._id
-
-    const isOnProbation = form.getFieldValue('status') === 'Probation'
-
-    if (isIntern || isTrainee || isOnProbation)
-      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
-    else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
+    // const isIntern =
+    //   form.getFieldValue('position') ===
+    //   position?.data?.data?.data?.find((pos) => pos?.name === 'Intern')._id
+    // const isTrainee =
+    //   form.getFieldValue('position') ===
+    //   position?.data?.data?.data?.find((pos) => pos?.name === 'Trainee')._id
+    // const isOnProbation = form.getFieldValue('status') === 'Probation'
+    // if (isIntern || isTrainee || isOnProbation)
+    //   form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
+    // else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
   }
   useEffect(() => {
     if (toggle) {
@@ -117,8 +115,8 @@ function UserDetailForm({
             ? intialValues.positionType._id
             : undefined,
         status: intialValues?.status && intialValues?.status,
-        allocatedLeaves:
-          intialValues?.allocatedLeaves?.[currentQuarter?.data?.name],
+        // allocatedLeaves:
+        //   intialValues?.allocatedLeaves?.[currentQuarter?.data?.name],
 
         panNumber: intialValues.panNumber && intialValues.panNumber,
         citNumber: intialValues.citNumber && intialValues.citNumber,
@@ -335,7 +333,7 @@ function UserDetailForm({
               ))}
             </Select>
           </FormItem>
-          <FormItem
+          {/* <FormItem
             {...formItemLayout}
             label="Allocated Leaves"
             hasFeedback={readOnly ? false : true}
@@ -362,7 +360,7 @@ function UserDetailForm({
             ]}
           >
             <Input placeholder="Enter Allocated Leaves" disabled={readOnly} />
-          </FormItem>
+          </FormItem> */}
           <FormItem
             {...formItemLayout}
             label="Last Review Date"

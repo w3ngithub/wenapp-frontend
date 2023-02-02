@@ -62,7 +62,7 @@ function CoworkersPage() {
   const [userRecord, setUserRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
-  const [selectedIds,setSelectedIds] = useState([])
+  const [selectedIds, setSelectedIds] = useState([])
   const [openImport, setOpenImport] = useState(false)
   const [files, setFiles] = useState([])
   const queryClient = useQueryClient()
@@ -260,32 +260,33 @@ function CoworkersPage() {
     setSelectedRows([])
   }
 
-  const handleResetAllocatedLeaves = () => {
-    resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
-  }
+  // const handleResetAllocatedLeaves = () => {
+  //   resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
+  // }
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
 
-  const handleSelectRow=(record,selected,selectedRows)=>{
-    if(selected) {
-      setSelectedIds((prev)=>[...prev,record?._id])
-      setSelectedRows((prev)=>[...prev,record])
-    }
-    else {
-      setSelectedIds((prev)=>prev.filter((d)=>d!==record?._id))
-      setSelectedRows((prev)=>prev.filter((d)=>d?._id!==record?._id))
+  const handleSelectRow = (record, selected, selectedRows) => {
+    if (selected) {
+      setSelectedIds((prev) => [...prev, record?._id])
+      setSelectedRows((prev) => [...prev, record])
+    } else {
+      setSelectedIds((prev) => prev.filter((d) => d !== record?._id))
+      setSelectedRows((prev) => prev.filter((d) => d?._id !== record?._id))
     }
   }
 
-  const handleSelectAll = (selected,selectedRows,changeRows)=>{
-    if(selected){
-      setSelectedIds(prev=>[...prev,...changeRows?.map((d)=>d?._id)])
-      setSelectedRows((prev)=>[...prev,...changeRows])
-    }else{
-      let changeRowsId = changeRows?.map((d)=>d?._id)
-      setSelectedIds(prev=>prev.filter((d)=>!changeRowsId.includes(d)))
-      setSelectedRows(prev=>prev.filter((d)=>!changeRows.includes(d?._id)))
+  const handleSelectAll = (selected, selectedRows, changeRows) => {
+    if (selected) {
+      setSelectedIds((prev) => [...prev, ...changeRows?.map((d) => d?._id)])
+      setSelectedRows((prev) => [...prev, ...changeRows])
+    } else {
+      let changeRowsId = changeRows?.map((d) => d?._id)
+      setSelectedIds((prev) => prev.filter((d) => !changeRowsId.includes(d)))
+      setSelectedRows((prev) =>
+        prev.filter((d) => !changeRows.includes(d?._id))
+      )
     }
   }
 
@@ -336,7 +337,7 @@ function CoworkersPage() {
               enterButton
               className="direct-form-item"
             />
-            {!getIsAdmin() && (
+            {/* {!getIsAdmin() && (
               <AccessWrapper role={coWorkersPermissions?.resetAllocatedLeaves}>
                 <Popconfirm
                   title={`Are you sure to reset allocated leaves?`}
@@ -349,7 +350,7 @@ function CoworkersPage() {
                   </Button>
                 </Popconfirm>
               </AccessWrapper>
-            )}
+            )} */}
           </div>
           <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
             <Form layout="inline" form={form}>
@@ -430,17 +431,16 @@ function CoworkersPage() {
                         'DOB',
                         'Join Date',
                       ],
-                      ...selectedRows
-                        ?.map((d) => [
-                          d?.name,
-                          d?.email,
-                          d?.role?.value,
-                          d?.role?._id,
-                          d?.position?.name,
-                          d?.position?._id,
-                          d?.dob,
-                          d?.joinDate
-                        ]),
+                      ...selectedRows?.map((d) => [
+                        d?.name,
+                        d?.email,
+                        d?.role?.value,
+                        d?.role?._id,
+                        d?.position?.name,
+                        d?.position?._id,
+                        d?.dob,
+                        d?.joinDate,
+                      ]),
                     ]}
                   >
                     <Button
@@ -471,7 +471,7 @@ function CoworkersPage() {
           rowSelection={{
             onSelect: handleSelectRow,
             selectedRowKeys: selectedIds,
-            onSelectAll:handleSelectAll,
+            onSelectAll: handleSelectAll,
           }}
           pagination={{
             current: page.page,
@@ -486,7 +486,7 @@ function CoworkersPage() {
           loading={
             mutation.isLoading ||
             isFetching ||
-            resetLeavesMutation.isLoading ||
+            // resetLeavesMutation.isLoading ||
             disableUserMmutation.isLoading
           }
         />
