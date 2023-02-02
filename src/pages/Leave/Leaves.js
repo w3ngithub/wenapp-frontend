@@ -144,7 +144,6 @@ function Leaves({
   })
 
   const handleLeaveTypeChange = (value, option) => {
-    console.log('op', option)
     setLeaveId(value)
     setLeaveTitle(option.children)
     if (option.children !== 'Sick' && option.children !== 'Casual') {
@@ -152,7 +151,6 @@ function Leaves({
     }
   }
   const handleLeaveIntervalChange = (value) => {
-    console.log('value', value)
     setLeaveInterval(value)
   }
 
@@ -227,7 +225,7 @@ function Leaves({
   }
 
   const handleStatusChange = (statusId) => {
-    setPage({page:1,limit:10})
+    setPage({page: 1, limit: 10})
     setLeaveStatus(statusId)
   }
   const handleUserChange = (user) => {
