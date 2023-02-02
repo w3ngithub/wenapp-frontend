@@ -21,9 +21,9 @@ import CustomActiveShapePieChart from 'routes/extensions/charts/recharts/pie/Com
 import {
   getPendingLeavesCount,
   getTodaysUserLeaveCount,
-  getWeekRangeLeaves,
+  getFutureLeaves,
 } from 'services/leaves'
-import {MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
+import {compareString, MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
 import {getWeeklyNotices} from 'services/noticeboard'
 import {getAllHolidays} from 'services/resources'
 import {
@@ -148,83 +148,80 @@ const Dashboard = () => {
 
   const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
-  const leavesQuery = useQuery(
-    ['DashBoardleaves'],
-    () => getWeekRangeLeaves(),
-    {
-      onError: (err) => console.log(err),
-      select: (res) => {
-        let updateLeaves: any[] = []
+  const leavesQuery = useQuery(['DashBoardleaves'], () => getFutureLeaves(), {
+    onError: (err) => console.log(err),
+    select: (res) => {
+      let updateLeaves: any[] = []
 
-        res?.data?.data?.users?.forEach((leave: any) => {
-          const isLeavePaternity =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
-          const isLeaveMaternity =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
-          const isLeavePTO =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
-          const weeksLastDate = new Date(
-            MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
-          )
-          const todayDate = new Date(MuiFormatDate(new Date()))
+      res?.data?.data?.users?.forEach((leave: any) => {
+        const isLeavePaternity =
+          leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
+        const isLeaveMaternity =
+          leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
+        const isLeavePTO =
+          leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
 
-          if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
-            const startLeaveDate = new Date(leave?.leaveDates[0])
-            const endLeaveDate = new Date(leave?.leaveDates[1])
-            for (let i = 0; i < 8; i++) {
-              const isHoliday =
-                startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
+        const todayDate = new Date(MuiFormatDate(new Date()))
 
-              if (
-                startLeaveDate >= todayDate &&
-                startLeaveDate <= weeksLastDate &&
-                startLeaveDate <= endLeaveDate &&
-                !isHoliday
-              ) {
-                updateLeaves = [
-                  ...updateLeaves,
-                  {
-                    ...leave,
-                    date: leave?.leaveDates[0],
+        if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
+          const startLeaveDate = new Date(leave?.leaveDates[0])
+          const endLeaveDate = new Date(leave?.leaveDates[1])
+          for (
+            let i: any = new Date(startLeaveDate.getTime());
+            i <= new Date(endLeaveDate.getTime());
+            i.setDate(i.getDate() + 1)
+          ) {
+            const isHoliday =
+              startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
 
-                    leaveDates: new Date(
-                      startLeaveDate.setDate(startLeaveDate.getDate())
-                    ).toJSON(),
-                  },
-                ]
-              }
+            if (
+              startLeaveDate >= todayDate &&
+              startLeaveDate <= endLeaveDate &&
+              !isHoliday
+            ) {
+              updateLeaves = [
+                ...updateLeaves,
+                {
+                  ...leave,
+                  date: leave?.leaveDates[0],
 
-              if (startLeaveDate < todayDate) {
-                startLeaveDate.setMonth(todayDate.getMonth())
-                startLeaveDate.setFullYear(todayDate.getFullYear())
-                updateLeaves = [
-                  ...updateLeaves,
-                  {
-                    ...leave,
-                    date: leave?.leaveDates[0],
-                    leaveDates: new Date(
-                      startLeaveDate.setDate(todayDate.getDate())
-                    ).toJSON(),
-                  },
-                ]
-              }
-              startLeaveDate.setDate(startLeaveDate.getDate() + 1)
+                  leaveDates: new Date(
+                    startLeaveDate.setDate(startLeaveDate.getDate())
+                  ).toJSON(),
+                },
+              ]
             }
-          } else {
-            leave?.leaveDates.forEach((date: string) => {
-              const leaveDate = new Date(date)
-              if (leaveDate >= todayDate && leaveDate <= weeksLastDate)
-                updateLeaves = [
-                  ...updateLeaves,
-                  {...leave, date: date, leaveDates: date},
-                ]
-            })
+
+            if (startLeaveDate < todayDate) {
+              startLeaveDate.setMonth(todayDate.getMonth())
+              startLeaveDate.setFullYear(todayDate.getFullYear())
+              updateLeaves = [
+                ...updateLeaves,
+                {
+                  ...leave,
+                  date: leave?.leaveDates[0],
+                  leaveDates: new Date(
+                    startLeaveDate.setDate(todayDate.getDate())
+                  ).toJSON(),
+                },
+              ]
+            }
+            startLeaveDate.setDate(startLeaveDate.getDate() + 1)
           }
-        })
-        return updateLeaves
-      },
-    }
-  )
+        } else {
+          leave?.leaveDates.forEach((date: string) => {
+            const leaveDate = new Date(date)
+            if (leaveDate >= todayDate && ![0, 6].includes(leaveDate.getDay()))
+              updateLeaves = [
+                ...updateLeaves,
+                {...leave, date: date, leaveDates: date},
+              ]
+          })
+        }
+      })
+      return updateLeaves
+    },
+  })
   const {data, refetch: projectRefetch} = useQuery(
     ['DashBoardprojects'],
     () =>
@@ -307,7 +304,13 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: darkTheme ? darkThemeTextColor : '#038fde',
+        color: darkTheme
+          ? event?.leaveStatus === 'pending'
+            ? '#b1abab'
+            : darkThemeTextColor
+          : event?.leaveStatus === 'pending'
+          ? '#fd826b'
+          : '#038fde',
       }
     if (event.type === 'notice')
       style = {
@@ -399,7 +402,7 @@ const Dashboard = () => {
                   navigate('/leave', {
                     state: {
                       tabKey: '3',
-                      leaveStatus: 'approved',
+                      leaveStatus: props?.event?.leaveStatus,
                       date: props.event.startDate,
                       user: props.event.id,
                     },
@@ -410,7 +413,15 @@ const Dashboard = () => {
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
             <LeaveIcon
               width="18px"
-              fill={darkTheme ? darkThemeTextColor : '#038fde'}
+              fill={
+                darkTheme
+                  ? props?.event?.leaveStatus === 'pending'
+                    ? '#b1abab'
+                    : darkThemeTextColor
+                  : props?.event?.leaveStatus === 'pending'
+                  ? '#fd826b'
+                  : '#038fde'
+              }
             />
             {`${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`}
             {/* {`${shortName} ${specificHalf}`} */}
@@ -447,17 +458,22 @@ const Dashboard = () => {
     event: CustomEvent, // used by each view (Month, Day, Week)
   }
 
-  const leaveUsers = leavesQuery?.data?.map((x: any, index: number) => ({
-    title: x?.user[0],
-    start: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
-    end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
-    type: 'leave',
-    date: x?.leaveDates,
-    startDate: x?.date,
-    halfDay: x?.halfDay,
-    leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
-    id: x?._id[0],
-  }))
+  const leaveUsers = leavesQuery?.data
+    ?.map((x: any, index: number) => ({
+      title: x?.user[0],
+      leaveStatus: x?.leaveStatus,
+      start: new Date(
+        new Date(x.leaveDates).toLocaleDateString().split('T')[0]
+      ),
+      end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
+      type: 'leave',
+      date: x?.leaveDates,
+      startDate: x?.date,
+      halfDay: x?.halfDay,
+      leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
+      id: x?._id[0],
+    }))
+    ?.sort(compareString)
 
   const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
     title: x?.noticeType?.name,

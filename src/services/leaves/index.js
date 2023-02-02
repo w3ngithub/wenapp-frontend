@@ -91,11 +91,16 @@ const getLeaveTypes = async (id) => {
   }
 }
 
-const changeLeaveStatus = async (id, statusType, reason='',reapplyreason='') => {
+const changeLeaveStatus = async (
+  id,
+  statusType,
+  reason = '',
+  reapplyreason = ''
+) => {
   try {
     let response = await API.patch(
       `${Apis.Leaves}/${id}/status/${statusType}`,
-      {reason,reapplyreason}
+      {reason, reapplyreason}
     )
     return getAPIResponse(response)
   } catch (err) {
@@ -160,9 +165,9 @@ const getFiscalYearLeaves = async () => {
   }
 }
 
-const getWeekRangeLeaves = async () => {
+const getFutureLeaves = async () => {
   try {
-    let response = await API.get(`${Apis.Leaves}/users/weekLeaves`)
+    let response = await API.get(`${Apis.Leaves}/users/futureLeaves`)
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)
@@ -211,7 +216,7 @@ export {
   getPendingLeavesCount,
   getTodaysUserLeaveCount,
   getFiscalYearLeaves,
-  getWeekRangeLeaves,
+  getFutureLeaves,
   getQuarters,
   sendEmailforLeave,
   getTodayLeaves,
