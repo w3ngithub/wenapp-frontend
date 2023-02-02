@@ -160,36 +160,9 @@ function LeaveQuarterModal({
                             required: true,
                             whitespace: true,
                             validator: async (rule, value) => {
-                              console.log(
-                                form.getFieldValue([
-                                  'quaterlyLeaves',
-                                  field.name - 1,
-                                  'firstendDate',
-                                ])
-                              )
                               try {
                                 if (!value) {
                                   throw new Error('Required!')
-                                }
-                                if (
-                                  value.isAfter(
-                                    form
-                                      .getFieldValue([
-                                        'quaterlyLeaves',
-                                        field.name,
-                                        'firstendDate',
-                                      ])
-                                      ?.endOf('day')
-                                  ) &&
-                                  form.getFieldValue([
-                                    'quaterlyLeaves',
-                                    field.name,
-                                    'firstendDate',
-                                  ])
-                                ) {
-                                  throw new Error(
-                                    'Start Date should be before End Date.'
-                                  )
                                 }
                                 if (
                                   field.name > 0 &&
@@ -209,13 +182,17 @@ function LeaveQuarterModal({
                                   ])
                                 ) {
                                   throw new Error(
-                                    `Start Date should be after ${form.getFieldValue(
+                                    `${form.getFieldValue([
+                                      'quaterlyLeaves',
+                                      field.name,
+                                      'quarterName',
+                                    ])} should start after ${form.getFieldValue(
                                       [
                                         'quaterlyLeaves',
                                         field.name - 1,
                                         'quarterName',
                                       ]
-                                    )} `
+                                    )} ends `
                                   )
                                 }
                               } catch (err) {

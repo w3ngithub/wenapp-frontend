@@ -315,19 +315,19 @@ function Leave() {
           <Card
             title="Leave Quarter"
             extra={
-              <Button
-                className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                disabled={getIsAdmin()}
+              <Popconfirm
+                title="Adding next year's quarters will remove current year's quarters. Do you want to proceed?"
+                onConfirm={() => handleOpenModal('Leave Quarter', '')}
+                okText="Yes"
+                cancelText="No"
               >
-                <Popconfirm
-                  title="Adding next year's quarters will remove current year's quarters. Do you want to proceed?"
-                  onConfirm={() => handleOpenModal('Leave Quarter', '')}
-                  okText="Yes"
-                  cancelText="No"
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                  disabled={getIsAdmin()}
                 >
                   Add
-                </Popconfirm>
-              </Button>
+                </Button>
+              </Popconfirm>
             }
           >
             <SettingTable
