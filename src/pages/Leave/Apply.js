@@ -117,10 +117,14 @@ function Apply({user}) {
   const {data: leaveQuarter} = useQuery(['leaveQuarter'], getLeaveQuarter, {
     onSuccess: (data) => {
       const quarterLength = data?.data?.data?.data?.[0]?.quarters?.length - 1
-      setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
-      setYearEndDate(
-        data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
-      )
+      // setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
+      // setYearEndDate(
+      //   data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
+      // )
+      // setYearStartDate(data?.data?.data?.data?.[0]?.firstQuarter?.fromDate)
+      // setYearEndDate(data?.data?.data?.data?.[0]?.fourthQuarter?.toDate)
+      setYearStartDate('2023-02-01T00:00:00Z')
+      setYearEndDate('2023-02-28T00:00:00Z')
     },
   })
 
@@ -294,26 +298,27 @@ function Apply({user}) {
 
       //code for exceeded casual leaves
       if (leaveTypeName === 'Casual') {
-        let casualLeaveDaysApplied =
+        let currentCasualLeaveDaysApplied =
           values?.leaveDatesCasual?.length > 1
             ? values?.leaveDatesCasual.length
             : values?.halfDay === 'full-day'
             ? 1
             : 0.5
 
-        let casualLeavesApplied = userSubstituteLeave?.data?.data?.data?.data
-          ?.filter(
-            (leave) =>
-              leave?.leaveType?.name === 'Casual Leave' &&
-              (leave?.leaveStatus === 'pending' ||
-                leave?.leaveStatus === 'approved')
-          )
-          .map((item) => {
-            if (item?.halfDay === '') {
-              return {...item, count: 1}
-            } else return {...item, count: 0.5}
-          })
-        const casualLeavesCount = casualLeavesApplied?.reduce(
+        let previouslyAppliedCasualLeaves =
+          userSubstituteLeave?.data?.data?.data?.data
+            ?.filter(
+              (leave) =>
+                leave?.leaveType?.name === 'Casual Leave' &&
+                (leave?.leaveStatus === 'pending' ||
+                  leave?.leaveStatus === 'approved')
+            )
+            .map((item) => {
+              if (item?.halfDay === '') {
+                return {...item, count: item?.leaveDates?.length}
+              } else return {...item, count: 0.5}
+            })
+        const casualLeavesCount = previouslyAppliedCasualLeaves?.reduce(
           (acc, cur) => acc + cur.count,
           0
         )
@@ -322,11 +327,16 @@ function Apply({user}) {
           (leave) => leave.value === 'Casual'
         )?.leaveDays
 
-        // console.log({allocatedCasualLeaves,casualLeavesCount,casualLeavesDaysApplied});
+        console.log({
+          allocatedCasualLeaves,
+          previouslyAppliedCasualLeaves,
+          casualLeavesCount,
+          currentCasualLeaveDaysApplied,
+        })
 
         if (
           allocatedCasualLeaves <
-          casualLeavesCount + casualLeaveDaysApplied
+          casualLeavesCount + currentCasualLeaveDaysApplied
         ) {
           setOpenCasualLeaveExceedModal(true)
           return
@@ -504,6 +514,26 @@ function Apply({user}) {
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Modal
+        title={'Sorry, Cannot Apply Casual Leave'}
+        visible={openCasualLeaveExceedModal}
+        mask={false}
+        onCancel={() => setOpenCasualLeaveExceedModal(false)}
+        footer={[
+          <Button
+            key="back"
+            onClick={() => setOpenCasualLeaveExceedModal(false)}
+          >
+            Close
+          </Button>,
+        ]}
+      >
+        <p>
+          <ExclamationCircleFilled style={{color: '#faad14'}} /> The number of
+          days applied exceeds your allocated Casual Leaves. Please reduce your
+          leave days or apply as Sick Leaves.
+        </p>
+      </Modal>
+      <Modal
         title={`Are you sure?`}
         visible={openModal}
         mask={false}
@@ -526,27 +556,6 @@ function Apply({user}) {
           <ExclamationCircleFilled style={{color: '#faad14'}} /> If there is a
           public holiday or weekend in between the leave dates that you have
           applied, it will also be counted as a leave date.
-        </p>
-      </Modal>
-
-      <Modal
-        title={'Sorry, Cannot Apply Casual Leave'}
-        visible={openCasualLeaveExceedModal}
-        mask={false}
-        onCancel={() => setOpenCasualLeaveExceedModal(false)}
-        footer={[
-          <Button
-            key="back"
-            onClick={() => setOpenCasualLeaveExceedModal(false)}
-          >
-            Cancel
-          </Button>,
-        ]}
-      >
-        <p>
-          <ExclamationCircleFilled style={{color: '#faad14'}} /> You have
-          exceeded your allocated Casual Leaves. Please apply leaves as Sick
-          Leaves.
         </p>
       </Modal>
 
