@@ -76,7 +76,8 @@ function Apply({user}) {
   const [openCasualLeaveExceedModal, setOpenCasualLeaveExceedModal] =
     useState(false)
 
-  const {name, email, role} = useSelector(selectAuthUser)
+  const {name, email, role,gender:userGender,status:userStatus} = useSelector(selectAuthUser)
+
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -139,6 +140,7 @@ function Apply({user}) {
     select: (res) => {
       return [
         ...res?.data?.data?.data?.map((type) => ({
+          ...type,
           id: type._id,
           value: type?.name.replace('Leave', '').trim(),
           leaveDays: type?.leaveDays,
@@ -146,6 +148,8 @@ function Apply({user}) {
       ]
     },
   })
+
+  console.log(leaveTypeQuery.data)
 
   const teamLeadsQuery = useQuery(['teamLeads'], getTeamLeads, {
     select: (res) => ({
@@ -706,7 +710,10 @@ function Apply({user}) {
                     style={{width: '100%'}}
                     onChange={handleTypesChange}
                   >
-                    {leaveTypeQuery?.data?.map((type) =>
+                    {leaveTypeQuery?.data?.filter((d)=>{
+                      const showToProbation = userStatus==="Probation"? d?.Probation:true
+                     return  d.gender.includes(userGender) && showToProbation
+                    }).map((type) =>
                       type.value !== 'Late Arrival' ? (
                         <Option value={type.id} key={type.id}>
                           {type.value}
