@@ -45,6 +45,7 @@ function LeaveModal({
   const [nameChanged, setNameChanged] = useState<boolean | undefined>()
   const [genderDefault,setgenderDefault] = useState<CheckboxValueType[]>(['Male','Female'])
   const [probationStatus,setProbationStatus] = useState<boolean>(true)
+  const [isgenderEmpty,setgenderEmpty] = useState<boolean>(false)
 
   const GenderCheckboxOptions:GenderCheckInterface[] = [
     {
@@ -58,6 +59,7 @@ function LeaveModal({
   ]
 
   const handleGenderCheckboxChange = (checkedValues:CheckboxValueType[]) =>{
+    setgenderEmpty(false)
     setgenderDefault(checkedValues)
   }
 
@@ -85,7 +87,7 @@ function LeaveModal({
     )
     if (
       !isEditMode &&
-      availableData?.includes(form.getFieldValue('name').toLowerCase())
+      availableData?.includes(form.getFieldValue('name')?.toLowerCase())
     ) {
       setDuplicateValue(true)
       return
@@ -110,6 +112,10 @@ function LeaveModal({
       availableData?.includes(form.getFieldValue('name').toLowerCase())
     ) {
       setDuplicateValue(true)
+      return
+    }
+    if(genderDefault.length===0){
+      setgenderEmpty(true)
       return
     }
     // console.log({...form.getFieldsValue(),gender:genderDefault,Probation:probationStatus})
@@ -241,6 +247,10 @@ function LeaveModal({
           <Form.Item label="Gender" required>
           <Checkbox.Group options={GenderCheckboxOptions} onChange={handleGenderCheckboxChange} value={genderDefault}  />
           </Form.Item>
+
+          {isgenderEmpty && (
+            <p style={{color: 'red'}}>Gender is required.</p>
+          )}
 
           <Form.Item label="Probation" required>
           <Radio.Group onChange={onProbationChange} value={probationStatus}>
