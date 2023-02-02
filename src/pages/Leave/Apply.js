@@ -117,14 +117,10 @@ function Apply({user}) {
   const {data: leaveQuarter} = useQuery(['leaveQuarter'], getLeaveQuarter, {
     onSuccess: (data) => {
       const quarterLength = data?.data?.data?.data?.[0]?.quarters?.length - 1
-      // setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
-      // setYearEndDate(
-      //   data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
-      // )
-      // setYearStartDate(data?.data?.data?.data?.[0]?.firstQuarter?.fromDate)
-      // setYearEndDate(data?.data?.data?.data?.[0]?.fourthQuarter?.toDate)
-      setYearStartDate('2023-02-01T00:00:00Z')
-      setYearEndDate('2023-02-28T00:00:00Z')
+      setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
+      setYearEndDate(
+        data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
+      )
     },
   })
 
@@ -235,6 +231,8 @@ function Apply({user}) {
       const leaveTypeName = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
       )?.value
+      let selectedDatesArr = []
+
       if (leaveTypeName === 'Casual' || leaveTypeName === 'Sick') {
         const selectedDates = form?.getFieldValue('leaveDatesCasual')
         const formattedDate = selectedDates?.map((d) => ({
@@ -245,7 +243,6 @@ function Apply({user}) {
         let holidayList = holidaysThisYear?.map((holiday) => {
           return MuiFormatDate(moment(holiday?.date).format())
         })
-        let selectedDatesArr = []
         if (selectedDates.length > 1) {
           sortedDate?.forEach((d, index) => {
             if (sortedDate[index + 1]) {
@@ -279,6 +276,7 @@ function Apply({user}) {
           })
           setNewDateArr(selectedDatesArr)
         }
+
         if (selectedDatesArr?.length > 0) {
           setOpenModal(true)
         } else {
@@ -295,12 +293,11 @@ function Apply({user}) {
       const leaveTypeName = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
       )?.value
-
       //code for exceeded casual leaves
       if (leaveTypeName === 'Casual') {
         let currentCasualLeaveDaysApplied =
           values?.leaveDatesCasual?.length > 1
-            ? values?.leaveDatesCasual.length
+            ? values?.leaveDatesCasual?.length + newDateArr?.length
             : values?.halfDay === 'full-day'
             ? 1
             : 0.5
@@ -327,13 +324,6 @@ function Apply({user}) {
           (leave) => leave.value === 'Casual'
         )?.leaveDays
 
-        console.log({
-          allocatedCasualLeaves,
-          previouslyAppliedCasualLeaves,
-          casualLeavesCount,
-          currentCasualLeaveDaysApplied,
-        })
-
         if (
           allocatedCasualLeaves <
           casualLeavesCount + currentCasualLeaveDaysApplied
@@ -342,7 +332,6 @@ function Apply({user}) {
           return
         }
       }
-
       //code for substitute leave
       const isSubstitute = leaveTypeQuery?.data?.find(
         (data) => data?.value === 'Substitute'
