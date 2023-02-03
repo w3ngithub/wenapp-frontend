@@ -29,6 +29,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
+import {PAGE10} from 'constants/Common'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
@@ -101,7 +102,7 @@ function Leaves({
       : undefined
   )
   const [rangeDate, setRangeDate] = useState([])
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState(PAGE10)
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
@@ -144,6 +145,7 @@ function Leaves({
   })
 
   const handleLeaveTypeChange = (value, option) => {
+    setPage(PAGE10)
     setLeaveId(value)
     setLeaveTitle(option.children)
     if (option.children !== 'Sick' && option.children !== 'Casual') {
@@ -151,6 +153,7 @@ function Leaves({
     }
   }
   const handleLeaveIntervalChange = (value) => {
+    setPage(PAGE10)
     setLeaveInterval(value)
   }
 
@@ -225,14 +228,16 @@ function Leaves({
   }
 
   const handleStatusChange = (statusId) => {
-    setPage({page: 1, limit: 10})
+    setPage(PAGE10)
     setLeaveStatus(statusId)
   }
   const handleUserChange = (user) => {
+    setPage(PAGE10)
     setUser(user)
   }
 
   const handleResetFilter = () => {
+    setPage(PAGE10)
     setLeaveStatus(undefined)
     setUser(undefined)
     setDate(undefined)
@@ -279,9 +284,7 @@ function Leaves({
   }
 
   const handleDateChange = (value) => {
-    // const m = moment(value._d)
-    // m.set({h: 5, m: 45, s: 0})
-    // setDate({moment: value, utc: moment.utc(m._d).format()})
+    setPage(PAGE10)
     setRangeDate(value)
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)

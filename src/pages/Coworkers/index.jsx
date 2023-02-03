@@ -28,7 +28,7 @@ import Select from 'components/Elements/Select'
 import {getQuarters} from 'services/leaves'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import RoleAccess from 'constants/RoleAccess'
-import {PLACE_HOLDER_CLASS} from 'constants/Common'
+import {PAGE20, PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useDispatch, useSelector} from 'react-redux'
 import {switchedUser, switchUser, updateJoinDate} from 'appRedux/actions'
@@ -51,7 +51,7 @@ const formattedUsers = (users, isAdmin) => {
 function CoworkersPage() {
   // init hooks
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState({page: 1, limit: 20})
+  const [page, setPage] = useState(PAGE20)
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
   const [activeUser, setActiveUser] = useState(true)
   const [defaultUser, setDefaultUser] = useState('active')
@@ -243,10 +243,12 @@ function CoworkersPage() {
   }
 
   const handleRoleChange = (roleId) => {
+    setPage(PAGE20)
     setRole(roleId)
   }
 
   const handlePositionChange = (positionId) => {
+    setPage(PAGE20)
     setPosition(positionId)
   }
 

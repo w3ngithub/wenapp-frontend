@@ -160,25 +160,22 @@ function LeaveQuarterModal({
                             whitespace: true,
                             validator: async (rule, value) => {
                               try {
+                                const previousEnd = form
+                                  .getFieldValue([
+                                    'quaterlyLeaves',
+                                    field.name - 1,
+                                    'firstendDate',
+                                  ])
+                                  ?.endOf('day')
+
                                 if (!value) {
                                   throw new Error('Required!')
                                 }
                                 if (
                                   field.name > 0 &&
-                                  value.isBefore(
-                                    form
-                                      .getFieldValue([
-                                        'quaterlyLeaves',
-                                        field.name - 1,
-                                        'firstendDate',
-                                      ])
-                                      ?.endOf('day')
-                                  ) &&
-                                  form.getFieldValue([
-                                    'quaterlyLeaves',
-                                    field.name - 1,
-                                    'firstendDate',
-                                  ])
+                                  (value.isBefore(previousEnd) ||
+                                    previousEnd.isSame(value.endOf('day'))) &&
+                                  previousEnd
                                 ) {
                                   throw new Error(
                                     `${form.getFieldValue([
@@ -214,24 +211,22 @@ function LeaveQuarterModal({
                             whitespace: true,
                             validator: async (rule, value) => {
                               try {
-                                if (!value) {
-                                  throw new Error('Required!')
-                                }
-                                if (
-                                  value.isBefore(
-                                    form
-                                      .getFieldValue([
-                                        'quaterlyLeaves',
-                                        field.name,
-                                        'firststartDate',
-                                      ])
-                                      ?.endOf('day')
-                                  ) &&
-                                  form.getFieldValue([
+                                const currentStartDate = form
+                                  .getFieldValue([
                                     'quaterlyLeaves',
                                     field.name,
                                     'firststartDate',
                                   ])
+                                  ?.endOf('day')
+                                if (!value) {
+                                  throw new Error('Required!')
+                                }
+                                if (
+                                  (value.isBefore(currentStartDate) ||
+                                    currentStartDate
+                                      ?.endOf('day')
+                                      .isSame(moment(value).endOf('day'))) &&
+                                  currentStartDate
                                 ) {
                                   throw new Error(
                                     'End Date should be after Start Date.'
