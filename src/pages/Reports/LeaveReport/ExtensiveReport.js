@@ -1,24 +1,58 @@
 import {useQuery} from '@tanstack/react-query'
-import {Button, DatePicker, Form, Select} from 'antd'
-import {STATUS_TYPES} from 'constants/Leaves'
+import {Button, DatePicker, Form, Table} from 'antd'
+import Select from 'components/Elements/Select'
+import {customLeaves} from 'constants/LeaveDuration'
+import {LEAVES_COLUMN_REPORT, STATUS_TYPES} from 'constants/Leaves'
 import {ADMINISTRATOR} from 'constants/UserNames'
-import {filterSpecificUser} from 'helpers/utils'
+import {
+  capitalizeInput,
+  changeDate,
+  filterSpecificUser,
+  MuiFormatDate,
+  removeDash,
+} from 'helpers/utils'
 import React, {useState} from 'react'
-import {getLeaveTypes} from 'services/leaves'
+import {getLeavesOfAllUsers, getLeaveTypes, getQuarters} from 'services/leaves'
 import {getAllUsers} from 'services/users/userDetails'
+import {emptyText} from 'constants/EmptySearchAntd'
+import moment from 'moment'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
 
+const formattedLeaves = (leaves) => {
+  return leaves?.map((leave) => ({
+    ...leave,
+    key: leave._id,
+    coWorker: leave?.user?.name,
+    dates: leave?.leaveDates
+      ?.map((date) => changeDate(date))
+      .join(
+        leave?.leaveType?.name === 'Maternity' ||
+          leave?.leaveType?.name === 'Paternity' ||
+          leave?.leaveType?.name === 'Paid Time Off'
+          ? ' - '
+          : ' '
+      ),
+    type: `${leave?.leaveType?.name} ${
+      leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
+        ? '- ' + removeDash(leave?.halfDay)
+        : ''
+    }`,
+    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
+  }))
+}
+
 function ExtensiveReport() {
   const [user, setUser] = useState(undefined)
   const [rangeDate, setRangeDate] = useState([])
-  const [leaveStatus, setLeaveStatus] = useState({id: '', value: 'All'})
+  const [leaveStatus, setLeaveStatus] = useState('')
   const [leaveId, setLeaveId] = useState(undefined)
   const [leaveInterval, setLeaveInterval] = useState(undefined)
   const [leaveTitle, setLeaveTitle] = useState('')
   const [page, setPage] = useState({page: 1, limit: 10})
-
+  const [date, setDate] = useState(undefined)
+  const [quarter, setQuarter] = useState(undefined)
   const [form] = Form.useForm()
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => [
@@ -31,6 +65,49 @@ function ExtensiveReport() {
 
   const usersQuery = useQuery(['users'], () => getAllUsers({sort: 'name'}))
 
+  const leavesQuery = useQuery(
+    [
+      'leaves',
+      leaveStatus,
+      user,
+      date,
+      rangeDate,
+      page,
+      leaveId,
+      leaveInterval,
+    ],
+    () =>
+      getLeavesOfAllUsers(
+        leaveStatus,
+        user,
+        date?.utc ? date?.utc : '',
+        page.page,
+        page.limit,
+        '-leaveDates,_id',
+        leaveId,
+        rangeDate?.[0] ? MuiFormatDate(rangeDate[0]?._d) + 'T00:00:00Z' : '',
+        rangeDate?.[1] ? MuiFormatDate(rangeDate[1]?._d) + 'T00:00:00Z' : '',
+        leaveInterval === 'full-day' ? undefined : leaveInterval
+      ),
+    {
+      onError: (err) => console.log(err),
+    }
+  )
+
+  const {data: quarterQuery} = useQuery(['quarters'], getQuarters, {
+    select: (res) => {
+      return res.data?.data?.data?.[0]?.quarters
+    },
+  })
+
+  const tableData = formattedLeaves(leavesQuery?.data?.data?.data?.data)
+
+  const updatedQuarters = quarterQuery.map((d) => ({
+    ...d,
+    id: d?._id,
+    value: d.quarterName,
+  }))
+
   const handleStatusChange = (statusId) => {
     setPage({page: 1, limit: 10})
     setLeaveStatus(statusId)
@@ -38,10 +115,14 @@ function ExtensiveReport() {
 
   const handleDateChange = (value) => {
     setRangeDate(value)
+    setQuarter(undefined)
   }
 
   const handleUserChange = (user) => {
     setUser(user)
+  }
+  const handleLeaveIntervalChange = (value) => {
+    setLeaveInterval(value)
   }
 
   const handleLeaveTypeChange = (value, option) => {
@@ -52,14 +133,30 @@ function ExtensiveReport() {
     }
   }
 
+  const handleQuarterChange = (value) => {
+    const rangeDate = updatedQuarters.find((d) => d.id === value)
+    setQuarter(value)
+    setRangeDate([moment(rangeDate.fromDate), moment(rangeDate.toDate)])
+  }
+
   const handleResetFilter = () => {
     setLeaveStatus(undefined)
     setUser(undefined)
     setLeaveId(undefined)
     setLeaveInterval(undefined)
     setLeaveTitle('')
+    setQuarter(undefined)
     setRangeDate([])
   }
+
+  const onShowSizeChange = (_, pageSize) => {
+    setPage((prev) => ({...page, limit: pageSize}))
+  }
+
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
+  }
+
   return (
     <div>
       <Form layout="inline" form={form}>
@@ -80,7 +177,7 @@ function ExtensiveReport() {
             options={leaveTypeQuery?.data}
           />
         </FormItem>
-        {/* {(leaveTitle === 'Sick' || leaveTitle === 'Casual') && (
+        {(leaveTitle === 'Sick' || leaveTitle === 'Casual') && (
           <FormItem className="direct-form-item">
             <Select
               placeholder="Select Half Day Type"
@@ -89,7 +186,7 @@ function ExtensiveReport() {
               value={leaveInterval}
             />
           </FormItem>
-        )} */}
+        )}
 
         <FormItem className="direct-form-item">
           <Select
@@ -108,7 +205,14 @@ function ExtensiveReport() {
         <FormItem>
           <RangePicker onChange={handleDateChange} value={rangeDate} />
         </FormItem>
-
+        <FormItem className="direct-form-item">
+          <Select
+            placeholder="Select Quarter"
+            onChange={handleQuarterChange}
+            value={quarter}
+            options={updatedQuarters}
+          />
+        </FormItem>
         <FormItem style={{marginBottom: '3px'}}>
           <Button
             className="gx-btn-primary gx-text-white"
@@ -118,6 +222,49 @@ function ExtensiveReport() {
           </Button>
         </FormItem>
       </Form>
+
+      <Table
+        locale={{emptyText}}
+        className="gx-table-responsive"
+        columns={LEAVES_COLUMN_REPORT()}
+        dataSource={tableData}
+        pagination={{
+          current: page.page,
+          pageSize: page.limit,
+          pageSizeOptions: ['5', '10', '20', '50'],
+          showSizeChanger: true,
+          total: leavesQuery?.data?.data?.data?.count || 1,
+          onShowSizeChange,
+          hideOnSinglePage: leavesQuery?.data?.data?.data?.count ? false : true,
+          onChange: handlePageChange,
+        }}
+        loading={leavesQuery.isFetching}
+        // columns={LEAVES_COLUMN_REPORT({
+        //   onCancelLeave: handleOpenCancelLeaveModal,
+        //   onApproveClick: handleOpenApproveModal,
+        //   onEditClick: handleOpenEditModal,
+        //   isAdmin: true,
+        //   role: userRole,
+        //   viewLeave: permissions?.viewCoworkersLeaves,
+        //   cancelLeave: permissions?.cancelCoworkersLeaves,
+        //   approveLeave: permissions?.approveCoworkersLeaves,
+        //   editLeave: permissions?.editCoworkersLeaves,
+        // })}
+
+        // onChange={handleTableChange}
+        // rowSelection={rowSelection}
+        // pagination={{
+        //   current: page.page,
+        //   pageSize: page.limit,
+        //   pageSizeOptions: ['5', '10', '20', '50'],
+        //   showSizeChanger: true,
+        //   total: leavesQuery?.data?.data?.data?.count || 1,
+        //   onShowSizeChange,
+        //   hideOnSinglePage: leavesQuery?.data?.data?.data?.count ? false : true,
+        //   onChange: handlePageChange,
+        // }}
+        // loading={leavesQuery.isFetching || leaveApproveMutation.isLoading}
+      />
     </div>
   )
 }
