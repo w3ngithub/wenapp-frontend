@@ -76,7 +76,13 @@ function Apply({user}) {
   const [openCasualLeaveExceedModal, setOpenCasualLeaveExceedModal] =
     useState(false)
 
-  const {name, email, role,gender:userGender,status:userStatus} = useSelector(selectAuthUser)
+  const {
+    name,
+    email,
+    role,
+    gender: userGender,
+    status: userStatus,
+  } = useSelector(selectAuthUser)
 
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
@@ -148,7 +154,6 @@ function Apply({user}) {
       ]
     },
   })
-
 
   const teamLeadsQuery = useQuery(['teamLeads'], getTeamLeads, {
     select: (res) => ({
@@ -576,7 +581,13 @@ function Apply({user}) {
         mask={false}
         onCancel={() => setOpenModal(false)}
         footer={[
-          <Button key="back" onClick={() => setOpenModal(false)}>
+          <Button
+            key="back"
+            onClick={() => {
+              setOpenModal(false)
+              setNewDateArr([])
+            }}
+          >
             Cancel
           </Button>,
           <Button
@@ -709,16 +720,19 @@ function Apply({user}) {
                     style={{width: '100%'}}
                     onChange={handleTypesChange}
                   >
-                    {leaveTypeQuery?.data?.filter((d)=>{
-                      const showToProbation = userStatus==="Probation"? d?.Probation:true
-                     return  d.gender.includes(userGender) && showToProbation
-                    }).map((type) =>
-                      type.value !== 'Late Arrival' ? (
-                        <Option value={type.id} key={type.id}>
-                          {type.value}
-                        </Option>
-                      ) : null
-                    )}
+                    {leaveTypeQuery?.data
+                      ?.filter((d) => {
+                        const showToProbation =
+                          userStatus === 'Probation' ? d?.Probation : true
+                        return d.gender.includes(userGender) && showToProbation
+                      })
+                      .map((type) =>
+                        type.value !== 'Late Arrival' ? (
+                          <Option value={type.id} key={type.id}>
+                            {type.value}
+                          </Option>
+                        ) : null
+                      )}
                   </Select>
                 </FormItem>
                 {(leaveType === 'Casual' || leaveType === 'Sick') &&
