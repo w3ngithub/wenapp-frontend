@@ -8,7 +8,6 @@ import {filterSpecificUser, getIsAdmin, handleResponse} from 'helpers/utils'
 import React from 'react'
 import {getAllUsers, resetAllocatedLeaves} from 'services/users/userDetails'
 import CommonQuarters from './Common'
-import {Quarters} from 'constants/Quarters'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -91,7 +90,6 @@ function SummaryReport() {
               sortAscend={true}
               onChange={handleQuarterChange}
               value={quarter}
-              options={Quarters}
             />
           </FormItem>
           <FormItem className="direct-form-search">
