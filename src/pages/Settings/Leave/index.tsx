@@ -23,11 +23,11 @@ import LeaveQuarterModal from './LeaveQuarterModal'
 import moment from 'moment'
 import {socket} from 'pages/Main'
 
- interface leaveType {
+interface leaveType {
   name: string
-  leaveDays: string,
-  gender:Array<string>,
-  Probation:Boolean
+  leaveDays: string
+  gender: Array<string>
+  Probation: Boolean
 }
 
 function Leave() {
@@ -256,7 +256,6 @@ function Leave() {
   const handleOpenEditQuarterModal = () => {
     setQuarterModel(true)
     setQuarterIsEditMode(true)
-    setDataToEdit(leaveQuarter?.data?.data?.data?.[0]?.quarters)
   }
 
   return (
