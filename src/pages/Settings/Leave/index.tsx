@@ -23,9 +23,11 @@ import LeaveQuarterModal from './LeaveQuarterModal'
 import moment from 'moment'
 import {socket} from 'pages/Main'
 
-interface leaveType {
+ interface leaveType {
   name: string
-  leaveDays: string
+  leaveDays: string,
+  gender:Array<string>,
+  Probation:Boolean
 }
 
 function Leave() {
