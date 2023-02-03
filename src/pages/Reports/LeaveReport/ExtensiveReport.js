@@ -16,6 +16,7 @@ import {getLeavesOfAllUsers, getLeaveTypes, getQuarters} from 'services/leaves'
 import {getAllUsers} from 'services/users/userDetails'
 import {emptyText} from 'constants/EmptySearchAntd'
 import moment from 'moment'
+import {PAGE10} from 'constants/Common'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
@@ -50,7 +51,7 @@ function ExtensiveReport() {
   const [leaveId, setLeaveId] = useState(undefined)
   const [leaveInterval, setLeaveInterval] = useState(undefined)
   const [leaveTitle, setLeaveTitle] = useState('')
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState(PAGE10)
   const [date, setDate] = useState(undefined)
   const [quarter, setQuarter] = useState(undefined)
   const [form] = Form.useForm()
@@ -109,23 +110,27 @@ function ExtensiveReport() {
   }))
 
   const handleStatusChange = (statusId) => {
-    setPage({page: 1, limit: 10})
+    setPage(PAGE10)
     setLeaveStatus(statusId)
   }
 
   const handleDateChange = (value) => {
+    setPage(PAGE10)
     setRangeDate(value)
     setQuarter(undefined)
   }
 
   const handleUserChange = (user) => {
+    setPage(PAGE10)
     setUser(user)
   }
   const handleLeaveIntervalChange = (value) => {
+    setPage(PAGE10)
     setLeaveInterval(value)
   }
 
   const handleLeaveTypeChange = (value, option) => {
+    setPage(PAGE10)
     setLeaveId(value)
     setLeaveTitle(option.children)
     if (option.children !== 'Sick' && option.children !== 'Casual') {
@@ -134,6 +139,7 @@ function ExtensiveReport() {
   }
 
   const handleQuarterChange = (value) => {
+    setPage(PAGE10)
     const rangeDate = updatedQuarters.find((d) => d.id === value)
     setQuarter(value)
     setRangeDate([moment(rangeDate.fromDate), moment(rangeDate.toDate)])
@@ -239,31 +245,6 @@ function ExtensiveReport() {
           onChange: handlePageChange,
         }}
         loading={leavesQuery.isFetching}
-        // columns={LEAVES_COLUMN_REPORT({
-        //   onCancelLeave: handleOpenCancelLeaveModal,
-        //   onApproveClick: handleOpenApproveModal,
-        //   onEditClick: handleOpenEditModal,
-        //   isAdmin: true,
-        //   role: userRole,
-        //   viewLeave: permissions?.viewCoworkersLeaves,
-        //   cancelLeave: permissions?.cancelCoworkersLeaves,
-        //   approveLeave: permissions?.approveCoworkersLeaves,
-        //   editLeave: permissions?.editCoworkersLeaves,
-        // })}
-
-        // onChange={handleTableChange}
-        // rowSelection={rowSelection}
-        // pagination={{
-        //   current: page.page,
-        //   pageSize: page.limit,
-        //   pageSizeOptions: ['5', '10', '20', '50'],
-        //   showSizeChanger: true,
-        //   total: leavesQuery?.data?.data?.data?.count || 1,
-        //   onShowSizeChange,
-        //   hideOnSinglePage: leavesQuery?.data?.data?.data?.count ? false : true,
-        //   onChange: handlePageChange,
-        // }}
-        // loading={leavesQuery.isFetching || leaveApproveMutation.isLoading}
       />
     </div>
   )
