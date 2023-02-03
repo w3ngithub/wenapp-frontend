@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {useMutation, useQuery} from '@tanstack/react-query'
 import {Button, DatePicker, Form, Popconfirm} from 'antd'
 import Select from 'components/Elements/Select'
@@ -16,6 +16,7 @@ import {socket} from 'pages/Main'
 import {notification} from 'helpers/notification'
 import {getQuarters} from 'services/leaves'
 import moment from 'moment'
+import {getUserLeavesSummary} from 'services/reports'
 
 function SummaryReport() {
   const {
@@ -27,7 +28,14 @@ function SummaryReport() {
   const usersQuery = useQuery(['users'], () => getAllUsers({sort: 'name'}))
   const [user, setUser] = useState(undefined)
   const [quarter, setQuarter] = useState(undefined)
+  const [yearSelected, setYearSelected] = useState(
+    new Date().getFullYear().toString()
+  )
   const coWorkersPermissions = permission?.['Co-Workers']
+
+  useEffect(() => {
+    form.setFieldValue('selectedYear', moment().year(Number))
+  }, [])
 
   const handleUserChange = (user) => {
     setUser(user)
@@ -59,32 +67,58 @@ function SummaryReport() {
       },
     }
   )
-  const quarterQuery = useQuery(['quarters'], getQuarters, {
-    select: (res) => {
-      const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
-        (quarter) =>
-          new Date(quarter[1].fromDate) <=
-            new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
-          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
-            new Date(quarter[1].toDate)
-      )
+  // const quarterQuery = useQuery(['quarters'], getQuarters, {
+  //   select: (res) => {
+  //     const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
+  //       (quarter) =>
+  //         new Date(quarter[1].fromDate) <=
+  //           new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
+  //         new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
+  //           new Date(quarter[1].toDate)
+  //     )
 
-      return {
-        name: ongoingQuarter[0],
-        ...ongoingQuarter[1],
-      }
-    },
-  })
+  //     return {
+  //       name: ongoingQuarter[0],
+  //       ...ongoingQuarter[1],
+  //     }
+  //   },
+  // })
+  // console.log('quarterQuery', quarterQuery)
+
+  const leavesSummaryQuery = useQuery(
+    ['leavesSummary', yearSelected, user],
+    () =>
+      getUserLeavesSummary({
+        userId: user ? user : '',
+        fiscalYear: `${
+          yearSelected ? yearSelected + '-01-01T00:00:00.000Z' : ''
+        }`,
+        quarterId: '',
+      }),
+    {
+      select: (res) => {
+        console.log('res', res)
+      },
+    }
+  )
 
   const handleResetAllocatedLeaves = () => {
-    resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
+    // resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
+  }
+  const formFieldChanges = (values) => {
+    if (values?.selectedYear) {
+      console.log('string year', values.selectedYear.format())
+      setYearSelected(values.selectedYear?.format()?.split('-')?.[0])
+    } else {
+      setYearSelected('')
+    }
   }
 
   return (
     <>
       <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
-        <Form layout="inline" form={form}>
-          <FormItem className="direct-form-search margin-1r">
+        <Form layout="inline" form={form} onValuesChange={formFieldChanges}>
+          <FormItem className="direct-form-search margin-1r" name="quarters">
             <Select
               placeholderClass={PLACE_HOLDER_CLASS}
               placeholder="Select Quarter"
@@ -94,7 +128,7 @@ function SummaryReport() {
               options={Quarters}
             />
           </FormItem>
-          <FormItem className="direct-form-search">
+          <FormItem className="direct-form-search" name="coWorkers">
             <Select
               placeholderClass={PLACE_HOLDER_CLASS}
               placeholder="Select Co-Worker"
@@ -109,7 +143,7 @@ function SummaryReport() {
               onChange={handleUserChange}
             />
           </FormItem>
-          <FormItem className="direct-form-search">
+          <FormItem className="direct-form-search" name="selectedYear">
             <DatePicker className=" gx-w-100" picker="year" />
           </FormItem>
         </Form>

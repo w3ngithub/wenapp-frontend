@@ -13,22 +13,19 @@ import SummaryReport from './SummaryReport'
 import ExtensiveReport from './ExtensiveReport'
 
 function LeaveReport() {
-  const {data: leaveQuarter, isLoading: leaveQuarterLoading}: any = useQuery(
-    ['leaveQuarter'],
-    getLeaveQuarter
-  )
+  // console.log('quarterData', leaveQuarter?.data?.data?.data)
 
-  const {data: positionData, isLoading: positionLoading} = useQuery(
-    ['userPositions'],
-    getUserPosition
-  )
+  // const {data: positionData, isLoading: positionLoading} = useQuery(
+  //   ['userPositions'],
+  //   getUserPosition
+  // )
 
-  const {firstQuarter, secondQuarter, thirdQuarter, fourthQuarter} =
-    leaveQuarter?.data?.data?.data?.[0] || {}
+  // const {firstQuarter, secondQuarter, thirdQuarter, fourthQuarter} =
+  //   leaveQuarter?.data?.data?.data?.[0] || {}
 
-  if (leaveQuarterLoading || positionLoading) {
-    return <CircularProgress className="" />
-  }
+  // if (leaveQuarterLoading || positionLoading) {
+  //   return <CircularProgress className="" />
+  // }
 
   return (
     <div>
