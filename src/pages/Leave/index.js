@@ -3,11 +3,13 @@ import {Card, Col, Row, Tabs} from 'antd'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {
   changeLeaveStatus,
+  getQuarters,
   getQuarterTakenAndRemainingLeaveDaysOfUser,
   getTakenAndRemainingLeaveDaysOfUser,
+  getUserLeavesSummary,
   sendEmailforLeave,
 } from 'services/leaves'
-import {handleResponse} from 'helpers/utils'
+import {getCurrentFiscalYear, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import LeavesApply from './Apply'
 import Leaves from './Leaves'
@@ -26,6 +28,7 @@ import {socket} from 'pages/Main'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import ReapplyLeaveModal from 'components/Modules/ReapplyLeaveModal'
 import {STATUS_TYPES} from 'constants/Leaves'
+import moment from 'moment'
 
 const TabPane = Tabs.TabPane
 
@@ -91,6 +94,33 @@ function Leave() {
     ['quartertakenAndRemainingLeaveDays', loggedInUser],
     () => getQuarterTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
+
+  const {data: quarters, isSuccess} = useQuery(['allquarters'], () =>
+    getQuarters()
+  )
+
+  const leavesSummary = useQuery(
+    ['leavesSummary'],
+    () => {
+      console.log(quarters)
+      //getting the quarterId
+      const currentQuarter = quarters?.data?.data?.data[0]?.quarters.find(
+        (d) =>
+          new Date(d?.fromDate) <=
+            new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
+          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
+            new Date(d?.toDate)
+      )
+      return getUserLeavesSummary({
+        userId: loggedInUser._id,
+        quarterId: '',
+        fiscalYear: getCurrentFiscalYear(),
+      })
+    },
+    {enabled: isSuccess}
+  )
+
+  console.log('xx', leavesSummary?.data?.data?.data)
 
   const leaveCancelMutation = useMutation(
     (payload) => changeLeaveStatus(payload.id, payload.type, payload.reason),
@@ -264,7 +294,7 @@ function Leave() {
           <AccessWrapper role={leavePermissions?.showQuarterlyLeaveDetails}>
             <Col
               xl={
-                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 12
+                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 10
               }
               lg={
                 IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 12
@@ -281,12 +311,20 @@ function Leave() {
                   firstType="Days Remaining"
                   secondType="Days Approved"
                   firstNumber={
-                    quarterleaveDaysQuery?.data?.data?.data?.remainingLeaves ||
-                    0
+                    leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
+                      ?.remainingLeaves
                   }
                   secondNumber={
                     quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0
                   }
+                  approvedLeaves={{
+                    sickLeaves:
+                      leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
+                        ?.approvedLeaves?.sickLeaves,
+                    casualLeaves:
+                      leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
+                        ?.approvedLeaves?.casualLeaves,
+                  }}
                 />
               </Card>
             </Col>
@@ -296,7 +334,7 @@ function Leave() {
             role={!IsIntern && leavePermissions?.showAnnualLeaveDetails}
           >
             <Col
-              xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 12}
+              xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 14}
               lg={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 12}
               md={24}
               sm={24}
@@ -325,6 +363,7 @@ function Leave() {
                   }
                   sickDayApplied={yearlyLeavesTakn?.['Sick Leave'] || 0}
                   casualDayApplied={yearlyLeavesTakn?.['Casual Leave'] || 0}
+                  yearlyLeaveTaken={yearlyLeavesTakn}
                 />
               </Card>
             </Col>
