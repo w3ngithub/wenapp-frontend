@@ -43,22 +43,22 @@ function SummaryReport() {
     setQuarter(quarter)
   }
 
-  // const quarterQuery = useQuery(['quarters'], getQuarters, {
-  //   select: (res) => {
-  //     const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
-  //       (quarter) =>
-  //         new Date(quarter[1].fromDate) <=
-  //           new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
-  //         new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
-  //           new Date(quarter[1].toDate)
-  //     )
+  const quarterQuery = useQuery(['quarters'], getQuarters, {
+    select: (res) => {
+      const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
+        (quarter) =>
+          new Date(quarter[1].fromDate) <=
+            new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
+          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
+            new Date(quarter[1].toDate)
+      )
 
-  //     return {
-  //       name: ongoingQuarter[0],
-  //       ...ongoingQuarter[1],
-  //     }
-  //   },
-  // })
+      return {
+        name: ongoingQuarter[0],
+        ...ongoingQuarter[1],
+      }
+    },
+  })
 
   const resetLeavesMutation = useMutation(
     (payload) => resetAllocatedLeaves(payload),
@@ -69,7 +69,7 @@ function SummaryReport() {
           'Allocated leaves reset of all user Successfully',
           'Could not reset allocated leaves',
           [
-            // () => refetch(),
+            () => refetch(),
             () => {
               socket.emit('CUD')
             },
@@ -111,7 +111,7 @@ function SummaryReport() {
   )
 
   const handleResetAllocatedLeaves = () => {
-    // resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
+    resetLeavesMutation.mutate()
   }
 
   const yearChangeHandler = (value) => {
