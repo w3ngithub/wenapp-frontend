@@ -4,6 +4,46 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import {getIsAdmin, isLeavesBeforeToday} from 'helpers/utils'
 import React from 'react'
 
+export const LEAVES_COLUMN_REPORT = () => [
+  {
+    title: 'Co-worker',
+    dataIndex: 'coWorker',
+    key: 'Co-worker',
+    width: 150,
+  },
+  {
+    title: 'Dates',
+    dataIndex: 'dates',
+    key: 'dates',
+    width: 10,
+  },
+  {
+    title: 'Type',
+    dataIndex: 'type',
+    key: 'type',
+    width: 30,
+  },
+  {
+    title: 'Reason',
+    dataIndex: 'reason',
+    width: 300,
+    key: 'reason',
+    render: (text: any, record: any) => {
+      return (
+        <div className="max-two-lines">
+          <span>{record.reason}</span>
+        </div>
+      )
+    },
+  },
+  {
+    title: 'Status',
+    dataIndex: 'status',
+    width: 10,
+    key: 'status',
+  },
+]
+
 const LEAVES_COLUMN = ({
   onCancelLeave,
   onApproveClick,
@@ -15,7 +55,7 @@ const LEAVES_COLUMN = ({
   editLeave = false,
   role,
 }: {
-  onCancelLeave?: (param: any,param2:boolean,param3?:boolean) => void
+  onCancelLeave?: (param: any, param2: boolean, param3?: boolean) => void
   onApproveClick?: (param: any) => void
   onEditClick?: (param: any, param2: any) => void
   isAdmin?: boolean
@@ -87,9 +127,12 @@ const LEAVES_COLUMN = ({
                     <AccessWrapper
                       role={
                         !getIsAdmin() &&
-                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id,STATUS_TYPES[4].id,STATUS_TYPES[5].id].includes(
-                          record.leaveStatus
-                        ) &&
+                        ![
+                          STATUS_TYPES[1].id,
+                          STATUS_TYPES[3].id,
+                          STATUS_TYPES[4].id,
+                          STATUS_TYPES[5].id,
+                        ].includes(record.leaveStatus) &&
                         approveLeave
                       }
                     >
@@ -107,7 +150,9 @@ const LEAVES_COLUMN = ({
 
                     <AccessWrapper
                       role={
-                        ![STATUS_TYPES[3].id,STATUS_TYPES[4].id].includes(record.leaveStatus) &&
+                        ![STATUS_TYPES[3].id, STATUS_TYPES[4].id].includes(
+                          record.leaveStatus
+                        ) &&
                         !getIsAdmin() &&
                         cancelLeave
                       }
@@ -120,47 +165,49 @@ const LEAVES_COLUMN = ({
                         <span
                           className="gx-link gx-text-danger"
                           onClick={() =>
-                            onCancelLeave ? onCancelLeave(record,false) : () => {}
+                            onCancelLeave
+                              ? onCancelLeave(record, false)
+                              : () => {}
                           }
                         >
                           Cancel
                         </span>
                       </>
                     </AccessWrapper>
-                    
+
                     <AccessWrapper
                       role={
                         !getIsAdmin() &&
-                        [STATUS_TYPES[2].id].includes(
-                          record.leaveStatus
-                        ) 
+                        [STATUS_TYPES[2].id].includes(record.leaveStatus)
                       }
                     >
                       <>
                         {(viewLeave || cancelLeave || approveLeave) && (
                           <Divider type="vertical" />
                         )}
-                      
-                      <span
+
+                        <span
                           className="gx-link gx-text-danger"
                           onClick={() =>
-                            onCancelLeave ? onCancelLeave(record,true) : () => {}
+                            onCancelLeave
+                              ? onCancelLeave(record, true)
+                              : () => {}
                           }
                         >
                           Reject
                         </span>
-
                       </>
                     </AccessWrapper>
-
-
 
                     <AccessWrapper
                       role={
                         !getIsAdmin() &&
-                        ![STATUS_TYPES[1].id, STATUS_TYPES[3].id,STATUS_TYPES[4].id,STATUS_TYPES[5].id].includes(
-                          record.leaveStatus
-                        ) &&
+                        ![
+                          STATUS_TYPES[1].id,
+                          STATUS_TYPES[3].id,
+                          STATUS_TYPES[4].id,
+                          STATUS_TYPES[5].id,
+                        ].includes(record.leaveStatus) &&
                         editLeave
                       }
                     >
@@ -184,7 +231,7 @@ const LEAVES_COLUMN = ({
               <span
                 className="gx-link gx-text-danger"
                 onClick={() =>
-                  onCancelLeave ? onCancelLeave(record,false) : () => {}
+                  onCancelLeave ? onCancelLeave(record, false) : () => {}
                 }
               >
                 Cancel
@@ -283,27 +330,35 @@ const LEAVES_COLUMN = ({
                   </span>
                 </AccessWrapper>
 
-                <AccessWrapper role={ record.leaveStatus === STATUS_TYPES[4].id && isLeavesBeforeToday(record.leaveDates) &&
-                    !getIsAdmin()}>
+                <AccessWrapper
+                  role={
+                    record.leaveStatus === STATUS_TYPES[4].id &&
+                    isLeavesBeforeToday(record.leaveDates) &&
+                    !getIsAdmin()
+                  }
+                >
                   <>
-                  
-                  {viewLeave && <Divider type="vertical" />}
+                    {viewLeave && <Divider type="vertical" />}
 
-                  <span
-                    className="gx-link gx-text-primary"
-                    onClick={() => onApproveClick?onApproveClick(record):{}}
-                  >
-                   Reapply
-                  </span>   
-                   
+                    <span
+                      className="gx-link gx-text-primary"
+                      onClick={() =>
+                        onApproveClick ? onApproveClick(record) : {}
+                      }
+                    >
+                      Reapply
+                    </span>
                   </>
                 </AccessWrapper>
 
                 <AccessWrapper
                   role={
                     (cancelLeave &&
-                    record.leaveStatus === STATUS_TYPES[2].id &&
-                    !getIsAdmin()) || (record.leaveStatus=== STATUS_TYPES[1].id && isLeavesBeforeToday(record.leaveDates) && !getIsAdmin())
+                      record.leaveStatus === STATUS_TYPES[2].id &&
+                      !getIsAdmin()) ||
+                    (record.leaveStatus === STATUS_TYPES[1].id &&
+                      isLeavesBeforeToday(record.leaveDates) &&
+                      !getIsAdmin())
                   }
                 >
                   <>
@@ -312,7 +367,9 @@ const LEAVES_COLUMN = ({
                     <span
                       className="gx-link gx-text-danger"
                       onClick={() =>
-                        onCancelLeave ? onCancelLeave(record,false,true) : () => {}
+                        onCancelLeave
+                          ? onCancelLeave(record, false, true)
+                          : () => {}
                       }
                     >
                       Cancel
@@ -320,25 +377,18 @@ const LEAVES_COLUMN = ({
                   </>
                 </AccessWrapper>
 
-              
-              
-
-
-                <AccessWrapper
-                  role={
-                    record.leaveStatus === STATUS_TYPES[2].id
-                  }
-                >
+                <AccessWrapper role={record.leaveStatus === STATUS_TYPES[2].id}>
                   <>
                     {' '}
                     <Divider type="vertical" />{' '}
                     <i
-                    className="icon icon-edit gx-link"
-                    onClick={() => onEditClick ? onEditClick(record, false) : () => {}}
-                        />
+                      className="icon icon-edit gx-link"
+                      onClick={() =>
+                        onEditClick ? onEditClick(record, false) : () => {}
+                      }
+                    />
                   </>
                 </AccessWrapper>
-
               </div>
             )
           },
@@ -350,8 +400,8 @@ const STATUS_TYPES = [
   {id: 'approved', value: 'Approved'},
   {id: 'pending', value: 'Pending'},
   {id: 'cancelled', value: 'Cancelled'},
-  {id:'rejected',value:'Rejected'},
-  {id:'user cancelled',value:'User Cancelled'}
+  {id: 'rejected', value: 'Rejected'},
+  {id: 'user cancelled', value: 'User Cancelled'},
 ]
 
 export {LEAVES_COLUMN, STATUS_TYPES}

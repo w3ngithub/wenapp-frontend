@@ -125,15 +125,19 @@ function Apply({user}) {
     getAllHolidays({sort: '-createdAt', limit: '1'})
   )
 
-  const {data: leaveQuarter} = useQuery(['leaveQuarter'], getLeaveQuarter, {
-    onSuccess: (data) => {
-      const quarterLength = data?.data?.data?.data?.[0]?.quarters?.length - 1
-      setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
-      setYearEndDate(
-        data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
-      )
-    },
-  })
+  const {data: leaveQuarter} = useQuery(
+    ['leaveQuarter'],
+    () => getLeaveQuarter(),
+    {
+      onSuccess: (data) => {
+        const quarterLength = data?.data?.data?.data?.[0]?.quarters?.length - 1
+        setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
+        setYearEndDate(
+          data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
+        )
+      },
+    }
+  )
 
   const userSubstituteLeave = useQuery(
     ['substitute', yearStartDate, yearEndDate],
@@ -570,9 +574,9 @@ function Apply({user}) {
         ]}
       >
         <p>
-          <ExclamationCircleFilled style={{color: '#faad14'}} /> The number of
-          days applied exceeds your allocated Casual Leaves. Please reduce your
-          leave days or apply as Sick Leaves.
+          <ExclamationCircleFilled style={{color: '#faad14'}} /> “Your casual
+          leave application exceeds the leave available to you! You can either
+          apply it as a separate application or discuss this with HR/Management”
         </p>
       </Modal>
       <Modal

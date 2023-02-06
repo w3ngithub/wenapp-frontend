@@ -50,6 +50,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {useSelector} from 'react-redux'
+import {PAGE10} from 'constants/Common'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -92,7 +93,7 @@ function AdminAttendance({userRole}) {
     columnKey: 'attendanceDate',
   })
   const [form] = Form.useForm()
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState(PAGE10)
   const [defaultFilter, setDefaultFilter] = useState(undefined)
   const [openView, setOpenView] = useState(false)
   const [attToView, setAttToView] = useState({})
@@ -237,6 +238,7 @@ function AdminAttendance({userRole}) {
   }
 
   const handleAttChnageChange = (val) => {
+    setPage(PAGE10)
     setAttFilter(val)
     switch (val) {
       case 1:
@@ -254,6 +256,7 @@ function AdminAttendance({userRole}) {
     }
   }
   const handleUserChange = (id) => {
+    setPage(PAGE10)
     setUser(id)
   }
 
