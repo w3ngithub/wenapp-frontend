@@ -251,6 +251,12 @@ function Leave() {
     {}
   )
 
+  const YearlyLeaveExceptCasualandSick = leaveDaysQuery?.data?.data?.data?.data
+    ?.filter(
+      (item) => !['Casual Leave', 'Sick Leave'].includes(item?._id[0]?.name)
+    )
+    .map((d) => [d?._id[0]?.name, d.leavesTaken])
+
   const allocatedYealryLeaves = leaveTypes?.data?.data?.data?.reduce(
     (acc, item) => {
       acc[item?.name] = item.leaveDays
@@ -297,7 +303,11 @@ function Leave() {
                 IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 10
               }
               lg={
-                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 12
+                IsIntern ||
+                !leavePermissions?.showAnnualLeaveDetails ||
+                YearlyLeaveExceptCasualandSick.length > 0
+                  ? 24
+                  : 12
               }
               md={24}
               sm={24}
@@ -335,7 +345,12 @@ function Leave() {
           >
             <Col
               xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 14}
-              lg={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 12}
+              lg={
+                !leavePermissions?.showQuarterlyLeaveDetails ||
+                YearlyLeaveExceptCasualandSick.length > 0
+                  ? 24
+                  : 12
+              }
               md={24}
               sm={24}
               xs={24}
@@ -363,7 +378,9 @@ function Leave() {
                   }
                   sickDayApplied={yearlyLeavesTakn?.['Sick Leave'] || 0}
                   casualDayApplied={yearlyLeavesTakn?.['Casual Leave'] || 0}
-                  yearlyLeaveTaken={yearlyLeavesTakn}
+                  YearlyLeaveExceptCasualandSick={
+                    YearlyLeaveExceptCasualandSick
+                  }
                 />
               </Card>
             </Col>
