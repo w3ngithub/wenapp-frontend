@@ -8,6 +8,7 @@ interface LeaveReport {
   sorter: (a: any, b: any) => any
   sortOrder: string
   render?: any
+  children?: any
 }
 
 const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
@@ -50,7 +51,7 @@ const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
       const changeBalance = (e: any) => {
         curVal = e.target.value
       }
-      return <Input value={text} onChange={changeBalance} />
+      return <Input value={curVal} onChange={changeBalance} />
     },
   },
   {
@@ -62,21 +63,32 @@ const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
     sortOrder: sortedInfo.columnKey === 'remainingLeaves' && sortedInfo.order,
   },
   {
-    title: 'Sick Leaves',
-    dataIndex: 'sickLeaves',
-    key: 'sickLeaves',
+    title: 'Approved Leaves',
     editable: false,
-    sorter: (a: any, b: any) => a.sickLeaves - b.sickLeaves,
-    sortOrder: sortedInfo.columnKey === 'sickLeaves' && sortedInfo.order,
+    dataIndex: 'approvedLeaves',
+    key: 'approvedLeaves',
+    sorter: () => {},
+    sortOrder: sortedInfo.columnKey === 'approvedLeaves' && sortedInfo.order,
+    children: [
+      {
+        title: 'Sick Leaves',
+        dataIndex: 'sickLeaves',
+        key: 'sickLeaves',
+        editable: false,
+        sorter: (a: any, b: any) => a.sickLeaves - b.sickLeaves,
+        sortOrder: sortedInfo.columnKey === 'sickLeaves' && sortedInfo.order,
+      },
+      {
+        title: 'Casual Leaves',
+        dataIndex: 'casualLeaves',
+        key: 'casualLeaves',
+        editable: false,
+        sorter: (a: any, b: any) => a.casualLeaves - b.casualLeaves,
+        sortOrder: sortedInfo.columnKey === 'casualLeaves' && sortedInfo.order,
+      },
+    ],
   },
-  {
-    title: 'Casual Leaves',
-    dataIndex: 'casualLeaves',
-    key: 'casualLeaves',
-    editable: false,
-    sorter: (a: any, b: any) => a.casualLeaves - b.casualLeaves,
-    sortOrder: sortedInfo.columnKey === 'casualLeaves' && sortedInfo.order,
-  },
+
   {
     title: 'Carried Over Leaves',
     dataIndex: 'carriedLeaves',
