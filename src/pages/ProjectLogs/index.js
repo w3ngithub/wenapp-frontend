@@ -33,6 +33,7 @@ import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import LogHoursModal from './LogHours'
 import {socket} from 'pages/Main'
+import {PAGE50} from 'constants/Common'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -58,7 +59,7 @@ function ProjectLogs() {
   const [logType, setLogType] = useState(undefined)
   const [author, setAuthor] = useState(undefined)
   const [openModal, setOpenModal] = useState(false)
-  const [page, setPage] = useState({page: 1, limit: 50})
+  const [page, setPage] = useState(PAGE50)
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const [openViewModal, setOpenViewModal] = useState(false)
@@ -200,14 +201,14 @@ function ProjectLogs() {
     setSelectedLogsIds([])
     setSelectedLogObject([])
     setLogType(log)
-    setPage({page: 1, limit: 50})
+    setPage(PAGE50)
   }
 
   const handleAuthorChange = (logAuthor) => {
     setSelectedLogsIds([])
     setSelectedLogObject([])
     setAuthor(logAuthor)
-    setPage({page: 1, limit: 50})
+    setPage(PAGE50)
   }
 
   const handleResetFilter = () => {

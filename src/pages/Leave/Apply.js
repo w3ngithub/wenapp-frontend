@@ -76,7 +76,13 @@ function Apply({user}) {
   const [openCasualLeaveExceedModal, setOpenCasualLeaveExceedModal] =
     useState(false)
 
-  const {name, email, role,gender:userGender,status:userStatus} = useSelector(selectAuthUser)
+  const {
+    name,
+    email,
+    role,
+    gender: userGender,
+    status: userStatus,
+  } = useSelector(selectAuthUser)
 
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
@@ -119,15 +125,19 @@ function Apply({user}) {
     getAllHolidays({sort: '-createdAt', limit: '1'})
   )
 
-  const {data: leaveQuarter} = useQuery(['leaveQuarter'], getLeaveQuarter, {
-    onSuccess: (data) => {
-      const quarterLength = data?.data?.data?.data?.[0]?.quarters?.length - 1
-      setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
-      setYearEndDate(
-        data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
-      )
-    },
-  })
+  const {data: leaveQuarter} = useQuery(
+    ['leaveQuarter'],
+    () => getLeaveQuarter(),
+    {
+      onSuccess: (data) => {
+        const quarterLength = data?.data?.data?.data?.[0]?.quarters?.length - 1
+        setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
+        setYearEndDate(
+          data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
+        )
+      },
+    }
+  )
 
   const userSubstituteLeave = useQuery(
     ['substitute', yearStartDate, yearEndDate],
@@ -148,7 +158,6 @@ function Apply({user}) {
       ]
     },
   })
-
 
   const teamLeadsQuery = useQuery(['teamLeads'], getTeamLeads, {
     select: (res) => ({
@@ -565,9 +574,9 @@ function Apply({user}) {
         ]}
       >
         <p>
-          <ExclamationCircleFilled style={{color: '#faad14'}} /> The number of
-          days applied exceeds your allocated Casual Leaves. Please reduce your
-          leave days or apply as Sick Leaves.
+          <ExclamationCircleFilled style={{color: '#faad14'}} /> “Your casual
+          leave application exceeds the leave available to you! You can either
+          apply it as a separate application or discuss this with HR/Management”
         </p>
       </Modal>
       <Modal
@@ -709,16 +718,19 @@ function Apply({user}) {
                     style={{width: '100%'}}
                     onChange={handleTypesChange}
                   >
-                    {leaveTypeQuery?.data?.filter((d)=>{
-                      const showToProbation = userStatus==="Probation"? d?.Probation:true
-                     return  d.gender.includes(userGender) && showToProbation
-                    }).map((type) =>
-                      type.value !== 'Late Arrival' ? (
-                        <Option value={type.id} key={type.id}>
-                          {type.value}
-                        </Option>
-                      ) : null
-                    )}
+                    {leaveTypeQuery?.data
+                      ?.filter((d) => {
+                        const showToProbation =
+                          userStatus === 'Probation' ? d?.Probation : true
+                        return d.gender.includes(userGender) && showToProbation
+                      })
+                      .map((type) =>
+                        type.value !== 'Late Arrival' ? (
+                          <Option value={type.id} key={type.id}>
+                            {type.value}
+                          </Option>
+                        ) : null
+                      )}
                   </Select>
                 </FormItem>
                 {(leaveType === 'Casual' || leaveType === 'Sick') &&

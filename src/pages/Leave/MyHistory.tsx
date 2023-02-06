@@ -18,14 +18,12 @@ import LeaveModal from 'components/Modules/LeaveModal'
 import {getLeaveTypes} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
-import { selectAuthUser } from 'appRedux/reducers/Auth'
-import { useSelector } from 'react-redux'
-
+import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {useSelector} from 'react-redux'
+import {PAGE10} from 'constants/Common'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
-
-const defaultPage = {page: 1, limit: 10}
 
 const formattedLeaves = (leaves: any) => {
   return leaves?.map((leave: any) => ({
@@ -80,12 +78,11 @@ function MyHistory({
   })
   const [modalReadOnly, setmodalReadOnly] = useState<boolean>(false)
 
-  const {gender:userGender,status:userStatus} = useSelector(selectAuthUser)
-
+  const {gender: userGender, status: userStatus} = useSelector(selectAuthUser)
 
   const [rangeDate, setRangeDate] = useState<any>([])
 
-  const [page, setPage] = useState(defaultPage)
+  const [page, setPage] = useState(PAGE10)
 
   const userLeavesQuery = useQuery(
     ['userLeaves', leaveStatus, rangeDate, page, leaveTypeId],
@@ -104,10 +101,12 @@ function MyHistory({
   )
 
   const handleLeaveType = (value: string | undefined) => {
+    setPage(PAGE10)
     setLeaveType(value)
   }
 
   const handleLeaveHistoryDays = (value: number | undefined) => {
+    setPage(PAGE10)
     if (value) {
       const tempDays: any = leaveHistoryDays.find(
         (d: any) => d?.id === value
@@ -143,13 +142,13 @@ function MyHistory({
   }
 
   const handleStatusChange = (statusId: string) => {
-    if (page?.page > 1) setPage(defaultPage)
+    if (page?.page > 1) setPage(PAGE10)
     setLeaveStatus(statusId)
   }
 
   const handleDateChange = (value: any) => {
     setHistoryLeaveId(undefined)
-    if (page?.page > 1) setPage(defaultPage)
+    if (page?.page > 1) setPage(PAGE10)
 
     setRangeDate(value)
   }
@@ -164,7 +163,7 @@ function MyHistory({
     setLeaveStatus(undefined)
     setLeaveType(undefined)
     setHistoryLeaveId(undefined)
-    setPage(defaultPage)
+    setPage(PAGE10)
     setRangeDate([])
     setDate({
       utc: '',
@@ -201,9 +200,10 @@ function MyHistory({
               placeholder="Select Leave Type"
               onChange={handleLeaveType}
               value={leaveTypeId}
-              options={leaveTypeQuery?.data?.filter((d)=>{
-                const showToProbation = userStatus==="Probation"? d?.Probation:true
-                return  d.gender.includes(userGender) && showToProbation
+              options={leaveTypeQuery?.data?.filter((d) => {
+                const showToProbation =
+                  userStatus === 'Probation' ? d?.Probation : true
+                return d.gender.includes(userGender) && showToProbation
               })}
             />
           </FormItem>
