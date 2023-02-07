@@ -1,22 +1,17 @@
-import React, {
-  useEffect,
-  useState,
-  createContext,
-  useRef,
-  useContext,
-} from 'react'
-import {useQuery} from '@tanstack/react-query'
-import {Form, Input, Table} from 'antd'
-import CircularProgress from 'components/Elements/CircularProgress'
-import {notification} from 'helpers/notification'
+import React, {useState} from 'react'
+import {Table} from 'antd'
 import {LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
-import {getLeaveDaysOfAllUsers} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
 import LeaveReportModal from 'components/Modules/LeaveReportModal'
 
 function SummaryTable({data, quarterId}) {
   // init states
-  const [sort, setSort] = useState({})
+  const [sort, setSort] = useState({
+    column: undefined,
+    order: 'ascend',
+    field: 'name',
+    columnKey: 'name',
+  })
   const [page, setPage] = useState({page: 1, limit: 10})
   const [openModal, setOpenModal] = useState(false)
   const [specificUserDetails, setSpecificUserDetails] = useState({})
@@ -32,10 +27,6 @@ function SummaryTable({data, quarterId}) {
       sickLeaves: leave?.leaves?.[0]?.approvedLeaves?.sickLeaves,
       casualLeaves: leave?.leaves?.[0]?.approvedLeaves?.casualLeaves,
     }))
-  }
-
-  const handleSave = () => {
-    console.log('saving')
   }
 
   const handleTableChange = (pagination, filters, sorter) => {
@@ -76,18 +67,18 @@ function SummaryTable({data, quarterId}) {
         columns={LEAVE_REPORT_COLUMNS(sort, handleOpenModal)}
         dataSource={summaryLeaveReport(data)}
         onChange={handleTableChange}
-        // pagination={{
-        //   current: page.page,
-        //   pageSize: page.limit,
-        //   pageSizeOptions: ['5', '10', '20', '50'],
-        //   showSizeChanger: true,
-        //   total: data?.data?.data?.data?.[quarter - 1]?.length || 1,
-        //   onShowSizeChange,
-        //   hideOnSinglePage: data?.data?.data?.data?.[quarter - 1]?.length
-        //     ? false
-        //     : true,
-        //   onChange: handlePageChange,
-        // }}
+        pagination={{
+          current: page.page,
+          pageSize: page.limit,
+          pageSizeOptions: ['5', '10', '20', '50'],
+          showSizeChanger: true,
+          // total: data?.data?.data?.data?.[quarter - 1]?.length || 1,
+          onShowSizeChange,
+          // hideOnSinglePage: data?.data?.data?.data?.[quarter - 1]?.length
+          //   ? false
+          //   : true,
+          onChange: handlePageChange,
+        }}
         // loading={isLoading || isFetching}
       />
     </>
