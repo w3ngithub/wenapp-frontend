@@ -12,7 +12,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import moment, {Moment} from 'moment'
 import React, {useState} from 'react'
 import {useLocation} from 'react-router-dom'
-import {getLeavesOfUser} from 'services/leaves'
+import {getLeavesOfUser, getQuarters} from 'services/leaves'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {getLeaveTypes} from 'services/leaves'
@@ -83,6 +83,7 @@ function MyHistory({
   const [rangeDate, setRangeDate] = useState<any>([])
 
   const [page, setPage] = useState(PAGE10)
+  const [quarter, setQuarter] = useState(undefined)
 
   const userLeavesQuery = useQuery(
     ['userLeaves', leaveStatus, rangeDate, page, leaveTypeId],
@@ -100,6 +101,18 @@ function MyHistory({
       )
   )
 
+  const {data: quarterQuery} = useQuery(['quarters'], getQuarters, {
+    select: (res: any) => {
+      return res.data?.data?.data?.[0]?.quarters
+    },
+  })
+
+  const updatedQuarters = quarterQuery?.map((d: any) => ({
+    ...d,
+    id: d?._id,
+    value: d.quarterName,
+  }))
+
   const handleLeaveType = (value: string | undefined) => {
     setPage(PAGE10)
     setLeaveType(value)
@@ -111,13 +124,24 @@ function MyHistory({
       const tempDays: any = leaveHistoryDays.find(
         (d: any) => d?.id === value
       )?.value
-      const selectedDays = parseInt(tempDays?.split(' ')?.[0])
+      const selectedDays = parseInt(tempDays?.split(' ')?.[1])
       const newRangeDates = [moment().subtract(selectedDays, 'days'), moment()]
       setHistoryLeaveId(value)
       setRangeDate(newRangeDates)
     } else {
       setRangeDate([])
       setHistoryLeaveId(undefined)
+    }
+  }
+  const handleQuarterChange = (value: any) => {
+    setPage(PAGE10)
+    if (value) {
+      const rangeDate = updatedQuarters.find((d: any) => d.id === value)
+      setQuarter(value)
+      setRangeDate([moment(rangeDate.fromDate), moment(rangeDate.toDate)])
+    } else {
+      setRangeDate([])
+      setQuarter(undefined)
     }
   }
 
@@ -165,6 +189,7 @@ function MyHistory({
     setHistoryLeaveId(undefined)
     setPage(PAGE10)
     setRangeDate([])
+    setQuarter(undefined)
     setDate({
       utc: '',
       moment: undefined,
@@ -214,6 +239,15 @@ function MyHistory({
 
           <FormItem className="direct-form-item">
             <Select
+              placeholder="Select Quarter"
+              onChange={handleQuarterChange}
+              value={quarter}
+              options={updatedQuarters}
+            />
+          </FormItem>
+
+          <FormItem className="direct-form-item" style={{marginRight: '2rem'}}>
+            <Select
               style={{minWidth: '210px'}}
               placeholder="Select Leave History Days"
               onChange={handleLeaveHistoryDays}
@@ -222,7 +256,7 @@ function MyHistory({
             />
           </FormItem>
 
-          <FormItem style={{marginBottom: '3px', marginLeft: 30}}>
+          <FormItem style={{marginBottom: '3px'}}>
             <Button
               className="gx-btn-primary gx-text-white"
               onClick={handleResetFilter}

@@ -202,6 +202,21 @@ const getTodayLeaves = async () => {
   }
 }
 
+const getUserLeavesSummary = async ({
+  userId = '',
+  fiscalYear = '',
+  quarterId = '',
+}) => {
+  try {
+    let response = await API.get(
+      `${Apis.Leaves}/userLeaves?userId=${userId}&fiscalYear=${fiscalYear}&quarterId=${quarterId}`
+    )
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err.response)
+  }
+}
+
 export {
   getLeaveDaysOfAllUsers,
   getLeavesOfUser,
@@ -220,4 +235,5 @@ export {
   getQuarters,
   sendEmailforLeave,
   getTodayLeaves,
+  getUserLeavesSummary,
 }

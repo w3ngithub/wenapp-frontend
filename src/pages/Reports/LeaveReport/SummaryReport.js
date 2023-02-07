@@ -7,7 +7,6 @@ import {ADMINISTRATOR} from 'constants/UserNames'
 import {filterSpecificUser, getIsAdmin, handleResponse} from 'helpers/utils'
 import React from 'react'
 import {getAllUsers, resetAllocatedLeaves} from 'services/users/userDetails'
-import CommonQuarters from './Common'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -27,12 +26,12 @@ function SummaryReport() {
   const [form] = Form.useForm()
   const FormItem = Form.Item
 
+  const currentYear = new Date().getFullYear().toString()
+
   const usersQuery = useQuery(['users'], () => getAllUsers({sort: 'name'}))
   const [user, setUser] = useState(undefined)
   const [quarter, setQuarter] = useState(undefined)
-  const [yearSelected, setYearSelected] = useState(
-    new Date().getFullYear().toString()
-  )
+  const [yearSelected, setYearSelected] = useState(currentYear)
   const coWorkersPermissions = permission?.['Co-Workers']
 
   const handleUserChange = (user) => {
@@ -125,6 +124,13 @@ function SummaryReport() {
     }
   }
 
+  const handleResetFilter = () => {
+    setYearSelected(currentYear)
+    setUser(undefined)
+    setQuarter(undefined)
+    form.setFieldsValue({selectedYear: moment().year(Number), coWorkers: ''})
+  }
+
   useEffect(() => {
     form.setFieldValue('selectedYear', moment().year(Number))
   }, [])
@@ -146,6 +152,7 @@ function SummaryReport() {
           <FormItem className="direct-form-search margin-1r" name="quarters">
             <Select
               placeholderClass={PLACE_HOLDER_CLASS}
+              allowClear={false}
               placeholder="Select Quarter"
               onChange={handleQuarterChange}
               value={quarter}
@@ -174,10 +181,19 @@ function SummaryReport() {
           </FormItem>
           <FormItem className="direct-form-search" name="selectedYear">
             <DatePicker
+              allowClear={false}
               className=" gx-w-100"
               picker="year"
               onChange={yearChangeHandler}
             />
+          </FormItem>
+          <FormItem style={{marginBottom: '3px'}}>
+            <Button
+              className="gx-btn-primary gx-text-white"
+              onClick={handleResetFilter}
+            >
+              Reset
+            </Button>
           </FormItem>
         </Form>
         {!getIsAdmin() && (
@@ -188,19 +204,29 @@ function SummaryReport() {
               okText="Yes"
               cancelText="No"
             >
-              <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-4">
+              <Button
+                className={
+                  resetLeavesMutation?.isLoading
+                    ? ''
+                    : `gx-btn-primary gx-text-white gx-mb-4`
+                }
+                disabled={resetLeavesMutation?.isLoading}
+              >
                 Reset Allocated Leaves
               </Button>
             </Popconfirm>
           </AccessWrapper>
         )}
       </div>
-      {/* {leaveQuarterLoading ? (
+
+      {leavesSummaryQuery?.isLoading || resetLeavesMutation?.isLoading ? (
         <CircularProgress className="" />
       ) : (
-        <CommonQuarters />
-      )} */}
-      <SummaryTable data={leavesSummaryQuery?.data?.data?.data} />
+        <SummaryTable
+          data={leavesSummaryQuery?.data?.data?.data}
+          quarterId={quarter}
+        />
+      )}
     </>
   )
 }

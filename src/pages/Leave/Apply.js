@@ -585,7 +585,13 @@ function Apply({user}) {
         mask={false}
         onCancel={() => setOpenModal(false)}
         footer={[
-          <Button key="back" onClick={() => setOpenModal(false)}>
+          <Button
+            key="back"
+            onClick={() => {
+              setOpenModal(false)
+              setNewDateArr([])
+            }}
+          >
             Cancel
           </Button>,
           <Button
