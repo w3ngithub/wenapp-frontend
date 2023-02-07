@@ -52,7 +52,7 @@ function LeaveQuarterModal({
         fromDate: moment.utc(data?.firststartDate).startOf('day').format(),
         toDate: moment.utc(data?.firstendDate).startOf('day').format(),
         leaves: data?.leaves,
-        _id: data?._id ? data?._id : undefined,
+        _id: data?._id,
       }))
       onSubmit(quaterTempLeaves)
     })
