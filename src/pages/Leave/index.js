@@ -102,7 +102,6 @@ function Leave() {
   const leavesSummary = useQuery(
     ['leavesSummary'],
     () => {
-      console.log(quarters)
       //getting the quarterId
       const currentQuarter = quarters?.data?.data?.data[0]?.quarters.find(
         (d) =>
@@ -119,8 +118,6 @@ function Leave() {
     },
     {enabled: isSuccess}
   )
-
-  console.log('xx', leavesSummary?.data?.data?.data)
 
   const leaveCancelMutation = useMutation(
     (payload) => changeLeaveStatus(payload.id, payload.type, payload.reason),
