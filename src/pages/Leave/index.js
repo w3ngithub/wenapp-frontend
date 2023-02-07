@@ -110,9 +110,10 @@ function Leave() {
           new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
             new Date(d?.toDate)
       )
+
       return getUserLeavesSummary({
         userId: loggedInUser._id,
-        quarterId: '',
+        quarterId: currentQuarter?._id,
         fiscalYear: getCurrentFiscalYear(),
       })
     },
@@ -302,7 +303,7 @@ function Leave() {
               lg={
                 IsIntern ||
                 !leavePermissions?.showAnnualLeaveDetails ||
-                YearlyLeaveExceptCasualandSick.length > 0
+                YearlyLeaveExceptCasualandSick?.length > 0
                   ? 24
                   : 12
               }
@@ -344,7 +345,7 @@ function Leave() {
               xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 14}
               lg={
                 !leavePermissions?.showQuarterlyLeaveDetails ||
-                YearlyLeaveExceptCasualandSick.length > 0
+                YearlyLeaveExceptCasualandSick?.length > 0
                   ? 24
                   : 12
               }
