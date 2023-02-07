@@ -368,7 +368,11 @@ const LEAVES_COLUMN = ({
                       className="gx-link gx-text-danger"
                       onClick={() =>
                         onCancelLeave
-                          ? onCancelLeave(record, false, true)
+                          ? onCancelLeave(
+                              record,
+                              false,
+                              record.leaveStatus === STATUS_TYPES[1].id
+                            )
                           : () => {}
                       }
                     >
