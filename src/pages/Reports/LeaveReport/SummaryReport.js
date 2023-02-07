@@ -127,7 +127,6 @@ function SummaryReport() {
   const handleResetFilter = () => {
     setYearSelected(currentYear)
     setUser(undefined)
-    setQuarter(undefined)
     form.setFieldsValue({selectedYear: moment().year(Number), coWorkers: ''})
   }
 
