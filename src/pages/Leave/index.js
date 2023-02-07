@@ -90,11 +90,6 @@ function Leave() {
     setUserCancel(userCancel)
   }
 
-  const quarterleaveDaysQuery = useQuery(
-    ['quartertakenAndRemainingLeaveDays', loggedInUser],
-    () => getQuarterTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
-  )
-
   const {data: quarters, isSuccess} = useQuery(['allquarters'], () =>
     getQuarters()
   )
@@ -321,9 +316,6 @@ function Leave() {
                   firstNumber={
                     leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
                       ?.remainingLeaves
-                  }
-                  secondNumber={
-                    quarterleaveDaysQuery?.data?.data?.data?.leavesTaken || 0
                   }
                   approvedLeaves={{
                     sickLeaves:
