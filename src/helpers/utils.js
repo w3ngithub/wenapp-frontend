@@ -546,3 +546,7 @@ export const compareString = (a, b) => {
   }
   return comparison
 }
+
+export const getCurrentFiscalYear = () => {
+  return new Date(new Date().getFullYear(), 0, 1)
+}

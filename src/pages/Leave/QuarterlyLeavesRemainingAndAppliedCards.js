@@ -1,5 +1,6 @@
 import {Col, Row} from 'antd'
 import IconAndNumber from 'components/Modules/Metrics/IconAndNumber'
+import IconAndInfoCard from 'components/Modules/Metrics/IconAndInfoCard'
 import React from 'react'
 
 function QuarterlyLeavesRemainingAndAppliedCards({
@@ -7,6 +8,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
   secondType,
   firstNumber,
   secondNumber,
+  approvedLeaves,
 }) {
   return (
     <Row>
@@ -19,11 +21,15 @@ function QuarterlyLeavesRemainingAndAppliedCards({
         />
       </Col>
       <Col xl={12} sm={12} xs={24} className="gx-col-full">
-        <IconAndNumber
+        <IconAndInfoCard
           cardColor="orange"
           icon="tasks"
+          firstType="Sick"
+          secondType="Casual"
           number={secondNumber}
-          text={secondType}
+          title={secondType}
+          firstTypeCount={approvedLeaves.sickLeaves}
+          secondTypeCount={approvedLeaves.casualLeaves}
         />
       </Col>
     </Row>

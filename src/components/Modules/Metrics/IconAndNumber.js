@@ -13,7 +13,7 @@ const IconAndNumber = (props) => {
   const {innerWidth} = useWindowsSize()
 
   return (
-    <Widget styleName={`gx-bg-${cardColor}`}>
+    <Widget styleName={`gx-bg-${cardColor}`} style={{height: '100%'}}>
       <div style={{marginLeft: '1rem', paddingBottom: '3px'}}>
         <Row>
           <p className={`gx-text-${iconColor}`}>{title}</p>
