@@ -25,6 +25,14 @@ function LeaveQuarterModal({
 }: modalInterface) {
   const [form] = Form.useForm()
 
+  const dateArray = editData?.quarters?.map((quarterData: any) => [
+    moment(quarterData.fromDate),
+    moment(quarterData.toDate),
+  ])
+  const dateIndex =
+    isEditMode &&
+    dateArray.findIndex((d: any) => moment().isBetween(d[0], d[1]))
+
   const handleSubmit = () => {
     const values = form.getFieldsValue()
     const quarters = values?.quaterlyLeaves?.map((d: any) => {
@@ -44,6 +52,7 @@ function LeaveQuarterModal({
         fromDate: moment.utc(data?.firststartDate).startOf('day').format(),
         toDate: moment.utc(data?.firstendDate).startOf('day').format(),
         leaves: data?.leaves,
+        _id: data?._id ? data?._id : undefined,
       }))
       onSubmit(quaterTempLeaves)
     })
@@ -146,7 +155,7 @@ function LeaveQuarterModal({
                           },
                         ]}
                       >
-                        <Input />
+                        <Input disabled={index < dateIndex} />
                       </Form.Item>
                     </Col>
 
@@ -198,7 +207,10 @@ function LeaveQuarterModal({
                           },
                         ]}
                       >
-                        <DatePicker className=" gx-w-100" />
+                        <DatePicker
+                          className=" gx-w-100"
+                          disabled={index < dateIndex}
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={5} sm={5} md={5} lg={5}>
@@ -239,7 +251,10 @@ function LeaveQuarterModal({
                           },
                         ]}
                       >
-                        <DatePicker className=" gx-w-100" />
+                        <DatePicker
+                          className=" gx-w-100"
+                          disabled={index < dateIndex}
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={4} sm={3} md={4} lg={4} xs={4}>
@@ -267,16 +282,18 @@ function LeaveQuarterModal({
                           },
                         ]}
                       >
-                        <Input type="number" />
+                        <Input type="number" disabled={index < dateIndex} />
                       </Form.Item>
                     </Col>
-                    <Col span={2} sm={1} md={2} lg={2} xs={1}>
-                      <MinusCircleOutlined
-                        onClick={() => remove(field.name)}
-                        style={{marginBottom: 20, marginTop: 10}}
-                        className="svg-clear"
-                      />
-                    </Col>
+                    {((isEditMode && index >= dateIndex) || !isEditMode) && (
+                      <Col span={2} sm={1} md={2} lg={2} xs={1}>
+                        <MinusCircleOutlined
+                          onClick={() => remove(field.name)}
+                          style={{marginBottom: 20, marginTop: 10}}
+                          className="svg-clear"
+                        />
+                      </Col>
+                    )}
                   </Row>
                 ))}
                 <Form.Item>
