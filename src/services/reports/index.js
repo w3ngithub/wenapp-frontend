@@ -16,3 +16,21 @@ export const getUserLeavesSummary = async ({
     return getAPIResponse(err.response)
   }
 }
+
+export const updatUserAllocatedLeaves = async ({
+  id = '',
+  quarterId = '',
+  allocatedLeaves,
+}) => {
+  try {
+    let response = await API.patch(
+      `${Apis.Leaves}/userLeaves/allocatedLeaves/${id}?quarterId=${quarterId}`,
+      {
+        allocatedLeaves,
+      }
+    )
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err.response)
+  }
+}

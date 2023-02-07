@@ -5,7 +5,11 @@ import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
 import {CSVLink} from 'react-csv'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {changeLeaveStatus, getLeavesOfAllUsers} from 'services/leaves'
+import {
+  changeLeaveStatus,
+  getLeavesOfAllUsers,
+  getQuarters,
+} from 'services/leaves'
 import {
   capitalizeInput,
   changeDate,
@@ -30,6 +34,7 @@ import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
 import {PAGE10} from 'constants/Common'
+import {leaveHistoryDays} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
@@ -88,6 +93,9 @@ function Leaves({
   const [leaveTitle, setLeaveTitle] = useState('')
   const [leaveInterval, setLeaveInterval] = useState(undefined)
   const {innerWidth} = useWindowsSize()
+  const [historyLeaveId, setHistoryLeaveId] = useState(undefined)
+  const [quarter, setQuarter] = useState(undefined)
+
   const [form] = Form.useForm()
   const [date, setDate] = useState(
     selectedDate
@@ -134,6 +142,17 @@ function Leaves({
       onError: (err) => console.log(err),
     }
   )
+  const {data: quarterQuery} = useQuery(['quarters'], getQuarters, {
+    select: (res) => {
+      return res.data?.data?.data?.[0]?.quarters
+    },
+  })
+
+  const updatedQuarters = quarterQuery?.map((d) => ({
+    ...d,
+    id: d?._id,
+    value: d.quarterName,
+  }))
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => [
@@ -143,6 +162,20 @@ function Leaves({
       })),
     ],
   })
+
+  const handleLeaveHistoryDays = (value) => {
+    setPage(PAGE10)
+    if (value) {
+      const tempDays = leaveHistoryDays.find((d) => d?.id === value)?.value
+      const selectedDays = parseInt(tempDays?.split(' ')?.[1])
+      const newRangeDates = [moment().subtract(selectedDays, 'days'), moment()]
+      setHistoryLeaveId(value)
+      setRangeDate(newRangeDates)
+    } else {
+      setRangeDate([])
+      setHistoryLeaveId(undefined)
+    }
+  }
 
   const handleLeaveTypeChange = (value, option) => {
     setPage(PAGE10)
@@ -155,6 +188,18 @@ function Leaves({
   const handleLeaveIntervalChange = (value) => {
     setPage(PAGE10)
     setLeaveInterval(value)
+  }
+
+  const handleQuarterChange = (value) => {
+    setPage(PAGE10)
+    if (value) {
+      const rangeDate = updatedQuarters.find((d) => d.id === value)
+      setQuarter(value)
+      setRangeDate([moment(rangeDate.fromDate), moment(rangeDate.toDate)])
+    } else {
+      setRangeDate([])
+      setQuarter(undefined)
+    }
   }
 
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
@@ -245,6 +290,8 @@ function Leaves({
     setLeaveInterval(undefined)
     setLeaveTitle('')
     setRangeDate([])
+    setHistoryLeaveId(undefined)
+    setQuarter(undefined)
   }
 
   const handleCloseModal = (
@@ -365,6 +412,25 @@ function Leaves({
             </FormItem>
             <FormItem>
               <RangePicker onChange={handleDateChange} value={rangeDate} />
+            </FormItem>
+
+            <FormItem className="direct-form-item">
+              <Select
+                style={{minWidth: '210px'}}
+                placeholder="Select Leave History Days"
+                onChange={handleLeaveHistoryDays}
+                value={historyLeaveId}
+                options={leaveHistoryDays}
+              />
+            </FormItem>
+
+            <FormItem className="direct-form-item">
+              <Select
+                placeholder="Select Quarter"
+                onChange={handleQuarterChange}
+                value={quarter}
+                options={updatedQuarters}
+              />
             </FormItem>
 
             <FormItem style={{marginBottom: '3px'}}>

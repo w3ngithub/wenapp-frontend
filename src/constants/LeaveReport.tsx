@@ -1,17 +1,22 @@
-import {Input} from 'antd'
+import {Input, Tooltip} from 'antd'
+import CustomIcon from 'components/Elements/Icons'
 
 interface LeaveReport {
   title: string
   dataIndex: string
   editable: boolean
   key: any
-  sorter: (a: any, b: any) => any
-  sortOrder: string
+  sorter?: (a: any, b: any) => any
+  sortOrder?: string
   render?: any
   children?: any
+  width?: number
 }
 
-const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
+const LEAVE_REPORT_COLUMNS = (
+  sortedInfo: any,
+  handleOpenModal: any
+): LeaveReport[] => [
   {
     title: 'Co-workers',
     dataIndex: 'name',
@@ -29,30 +34,6 @@ const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
     editable: true,
     sorter: (a: any, b: any) => a.allocatedLeaves - b.allocatedLeaves,
     sortOrder: sortedInfo.columnKey === 'allocatedLeaves' && sortedInfo.order,
-    render: (text: any, record: any) => {
-      let curVal = text
-      const changeAllocatedLeave = (e: any) => {
-        curVal = e.target.value
-      }
-      return <Input value={curVal} onChange={changeAllocatedLeave} />
-    },
-  },
-  {
-    title: 'Leave Deduction Balance',
-    dataIndex: 'leaveDeductionBalance',
-    key: 'leaveDeductionBalance',
-    editable: true,
-    sorter: (a: any, b: any) =>
-      a.leaveDeductionBalance - b.leaveDeductionBalance,
-    sortOrder:
-      sortedInfo.columnKey === 'leaveDeductionBalance' && sortedInfo.order,
-    render: (text: any, record: any) => {
-      let curVal = text
-      const changeBalance = (e: any) => {
-        curVal = e.target.value
-      }
-      return <Input value={curVal} onChange={changeBalance} />
-    },
   },
   {
     title: 'Remaining Leaves',
@@ -61,14 +42,30 @@ const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
     editable: false,
     sorter: (a: any, b: any) => a.remainingLeaves - b.remainingLeaves,
     sortOrder: sortedInfo.columnKey === 'remainingLeaves' && sortedInfo.order,
+    width: 300,
+    render: (text: any, record: any) => {
+      return (
+        <div>
+          <p>{text}</p>
+          {record?.user?.leaveadjustmentBalance > 0 && (
+            <Tooltip
+              title={`Leave Adjustment Balance is leave balance to deduct. Leave Adjustment Balance : ${record?.user?.leaveadjustmentBalance}`}
+            >
+              <span>
+                Leave Adjustment Balance :{' '}
+                {record?.user?.leaveadjustmentBalance}
+              </span>
+            </Tooltip>
+          )}
+        </div>
+      )
+    },
   },
   {
     title: 'Approved Leaves',
     editable: false,
     dataIndex: 'approvedLeaves',
     key: 'approvedLeaves',
-    sorter: () => {},
-    sortOrder: sortedInfo.columnKey === 'approvedLeaves' && sortedInfo.order,
     children: [
       {
         title: 'Sick Leaves',
@@ -91,16 +88,23 @@ const LEAVE_REPORT_COLUMNS = (sortedInfo: any): LeaveReport[] => [
 
   {
     title: 'Carried Over Leaves',
-    dataIndex: 'carriedLeaves',
-    key: 'carriedLeaves',
+    dataIndex: 'carriedOverLeaves',
+    key: 'carriedOverLeaves',
     editable: false,
-    sorter: (a, b) => a.carriedLeaves - b.carriedLeaves,
-    sortOrder: sortedInfo.columnKey === 'carriedLeaves' && sortedInfo.order,
-    render: (_: any, record: any) => {
-      const carriedLeaves = record.leavesRemaining + record.leavesTaken
-      return carriedLeaves - record.allocatedLeaves > 0
-        ? carriedLeaves - record.allocatedLeaves
-        : 0
+    sorter: (a, b) => a.carriedOverLeaves - b.carriedOverLeaves,
+    sortOrder: sortedInfo.columnKey === 'carriedOverLeaves' && sortedInfo.order,
+  },
+  {
+    title: 'Action',
+    dataIndex: 'action',
+    editable: false,
+    key: 'action',
+    render: (text: string, record: any) => {
+      return (
+        <span className="gx-link" onClick={() => handleOpenModal(record)}>
+          <CustomIcon name="edit" />
+        </span>
+      )
     },
   },
 ]

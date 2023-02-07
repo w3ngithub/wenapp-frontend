@@ -12,89 +12,14 @@ import {notification} from 'helpers/notification'
 import {LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
 import {getLeaveDaysOfAllUsers} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
+import LeaveReportModal from 'components/Modules/LeaveReportModal'
 
-const EditableContext = createContext(null)
-const EditableRow = ({index, ...props}) => {
-  const [form] = Form.useForm()
-  return (
-    <Form form={form} component={false}>
-      <EditableContext.Provider value={form}>
-        <tr {...props} />
-      </EditableContext.Provider>
-    </Form>
-  )
-}
-
-const EditableCell = ({
-  title,
-  editable,
-  children,
-  dataIndex,
-  record,
-  handleSave,
-  ...restProps
-}) => {
-  const [editing, setEditing] = useState(false)
-  const inputRef = useRef(null)
-  const form = useContext(EditableContext)
-  useEffect(() => {
-    if (editing) {
-      inputRef.current.focus()
-    }
-  }, [editing])
-  const toggleEdit = () => {
-    setEditing(!editing)
-    form.setFieldsValue({
-      [dataIndex]: record[dataIndex],
-    })
-  }
-  const save = async () => {
-    try {
-      const values = await form.validateFields()
-      toggleEdit()
-      handleSave({
-        ...record,
-        ...values,
-      })
-    } catch (errInfo) {
-      console.log('Save failed:', errInfo)
-    }
-  }
-  let childNode = children
-  if (editable) {
-    childNode = editing ? (
-      <Form.Item
-        style={{
-          margin: 0,
-        }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-      </Form.Item>
-    ) : (
-      <div
-        style={{
-          paddingRight: 24,
-        }}
-        onClick={toggleEdit}
-      >
-        {children}
-      </div>
-    )
-  }
-  return <td {...restProps}>{childNode}</td>
-}
-
-function SummaryTable({data}) {
+function SummaryTable({data, quarterId}) {
   // init states
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 10})
+  const [openModal, setOpenModal] = useState(false)
+  const [specificUserDetails, setSpecificUserDetails] = useState({})
 
   const summaryLeaveReport = (leaveData) => {
     return leaveData?.map((leave) => ({
@@ -108,12 +33,6 @@ function SummaryTable({data}) {
       casualLeaves: leave?.leaves?.[0]?.approvedLeaves?.casualLeaves,
     }))
   }
-
-  //   useEffect(() => {
-  //     if (isError) {
-  //       notification({message: 'Could not load Leave Report!', type: 'error'})
-  //     }
-  //   }, [isError, data])
 
   const handleSave = () => {
     console.log('saving')
@@ -130,42 +49,33 @@ function SummaryTable({data}) {
   const onShowSizeChange = (_, pageSize) => {
     setPage((prev) => ({...page, limit: pageSize}))
   }
-
-  const components = {
-    body: {
-      row: EditableRow,
-      cell: EditableCell,
-    },
+  const handleOpenModal = (record) => {
+    setSpecificUserDetails(record)
+    setOpenModal(true)
   }
-  const columns = LEAVE_REPORT_COLUMNS(sort)?.map((item) => {
-    if (!item.editable) {
-      return item
-    }
-    return {
-      ...item,
-      onCell: (record) => ({
-        record,
-        editable: item.editable,
-        dataIndex: item.dataIndex,
-        title: item.title,
-        handleSave,
-      }),
-    }
-  })
+  const handleCloseModal = () => {
+    setOpenModal(false)
+  }
 
   return (
     <>
+      {openModal && (
+        <LeaveReportModal
+          toggle={openModal}
+          closeModal={handleCloseModal}
+          userDetails={specificUserDetails}
+          quarterId={quarterId}
+        />
+      )}
       <div className="components-table-demo-control-bar">
         <div className="gx-d-flex gx-justify-content-between gx-flex-row"></div>
       </div>
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        components={components}
-        columns={columns}
-        // rowClassName={() => 'editable-row'}
+        columns={LEAVE_REPORT_COLUMNS(sort, handleOpenModal)}
         dataSource={summaryLeaveReport(data)}
-        // onChange={handleTableChange}
+        onChange={handleTableChange}
         // pagination={{
         //   current: page.page,
         //   pageSize: page.limit,
