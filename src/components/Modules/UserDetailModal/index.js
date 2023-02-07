@@ -54,9 +54,19 @@ function UserDetailForm({
     // const data = intialValues?.allocatedLeaves
 
     form.validateFields().then((values) => {
+      let prevReviewDate = intialValues?.lastReviewDate?.map((d) => moment(d))
+      if (
+        !prevReviewDate[prevReviewDate.length - 1].isSame(
+          values?.lastReviewDate
+        )
+      ) {
+        prevReviewDate.push(values.lastReviewDate)
+      }
+      console.log('date', prevReviewDate)
       onSubmit({
         ...intialValues,
         ...values,
+        lastReviewDate: prevReviewDate,
         officeTime: {
           utcDate: moment(values.officeTime._d).utc().format(),
           hour: moment(values.officeTime._d).add(10, 'm').utc().format('h'),
@@ -123,7 +133,10 @@ function UserDetailForm({
         bankAccNumber: intialValues.bankAccNumber && intialValues.bankAccNumber,
         bankName: intialValues.bankName && intialValues.bankName,
         lastReviewDate:
-          intialValues.lastReviewDate && moment(intialValues.lastReviewDate),
+          intialValues.lastReviewDate &&
+          moment(
+            intialValues.lastReviewDate[intialValues.lastReviewDate.length - 1]
+          ),
         joinDate:
           intialValues.joinDate &&
           moment(dateToDateFormat(intialValues.joinDate)),
