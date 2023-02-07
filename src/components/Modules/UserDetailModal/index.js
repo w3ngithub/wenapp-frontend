@@ -346,8 +346,8 @@ function UserDetailForm({
               {
                 required: false,
                 // type: 'object',
-                message: 'Last Review Date is required.',
                 // whitespace: true,
+                message: 'Last Review Date is required.',
               },
             ]}
           >
