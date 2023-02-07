@@ -248,7 +248,8 @@ function Leave() {
     ?.filter(
       (item) => !['Casual Leave', 'Sick Leave'].includes(item?._id[0]?.name)
     )
-    .map((d) => [d?._id[0]?.name, d.leavesTaken])
+    ?.map((d) => [d?._id[0]?.name, d.leavesTaken])
+    ?.filter((d) => !!d[0])
 
   const allocatedYealryLeaves = leaveTypes?.data?.data?.data?.reduce(
     (acc, item) => {
