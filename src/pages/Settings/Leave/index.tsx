@@ -219,7 +219,7 @@ function Leave() {
           >
             <CustomIcon name="edit" />
           </span>{' '}
-          <Popconfirm
+          {/* <Popconfirm
             title="Are you sure you want to delete?"
             onConfirm={() =>
               onDeleteClickQuarter(leaveQuarter?.data?.data?.data[0]?._id)
@@ -231,7 +231,7 @@ function Leave() {
               {' '}
               <CustomIcon name="delete" />
             </span>
-          </Popconfirm>
+          </Popconfirm> */}
         </div>
       )
     )
