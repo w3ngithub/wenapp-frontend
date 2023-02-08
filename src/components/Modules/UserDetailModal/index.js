@@ -56,13 +56,15 @@ function UserDetailForm({
         intialValues?.lastReviewDate?.length > 0
           ? intialValues?.lastReviewDate?.map((d) => moment(d))
           : []
-      if (
-        intialValues?.lastReviewDate?.length === 0 ||
-        !prevReviewDate[prevReviewDate.length - 1].isSame(
-          values?.lastReviewDate
-        )
-      ) {
-        prevReviewDate.push(values.lastReviewDate)
+      if (!!values?.lastReviewDate) {
+        if (
+          intialValues?.lastReviewDate?.length === 0 ||
+          !prevReviewDate[prevReviewDate.length - 1].isSame(
+            values?.lastReviewDate
+          )
+        ) {
+          prevReviewDate.push(values.lastReviewDate)
+        }
       }
       onSubmit({
         ...intialValues,
@@ -342,9 +344,10 @@ function UserDetailForm({
             name="lastReviewDate"
             rules={[
               {
-                type: 'object',
+                required: false,
+                // type: 'object',
+                // whitespace: true,
                 message: 'Last Review Date is required.',
-                whitespace: true,
               },
             ]}
           >
