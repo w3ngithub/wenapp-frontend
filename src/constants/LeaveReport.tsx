@@ -36,6 +36,14 @@ const LEAVE_REPORT_COLUMNS = (
     sortOrder: sortedInfo.columnKey === 'allocatedLeaves' && sortedInfo.order,
   },
   {
+    title: 'Carried Over Leaves',
+    dataIndex: 'carriedOverLeaves',
+    key: 'carriedOverLeaves',
+    editable: false,
+    sorter: (a, b) => a.carriedOverLeaves - b.carriedOverLeaves,
+    sortOrder: sortedInfo.columnKey === 'carriedOverLeaves' && sortedInfo.order,
+  },
+  {
     title: 'Remaining Leaves',
     dataIndex: 'remainingLeaves',
     key: 'remainingLeaves',
@@ -48,9 +56,7 @@ const LEAVE_REPORT_COLUMNS = (
         <>
           <p
             style={{
-              paddingTop: !!record?.user?.leaveadjustmentBalance
-                ? ''
-                : '1.1rem',
+              paddingTop: !!record?.user?.leaveadjustmentBalance ? '' : '1rem',
             }}
           >
             {text}
@@ -92,15 +98,6 @@ const LEAVE_REPORT_COLUMNS = (
         sortOrder: sortedInfo.columnKey === 'casualLeaves' && sortedInfo.order,
       },
     ],
-  },
-
-  {
-    title: 'Carried Over Leaves',
-    dataIndex: 'carriedOverLeaves',
-    key: 'carriedOverLeaves',
-    editable: false,
-    sorter: (a, b) => a.carriedOverLeaves - b.carriedOverLeaves,
-    sortOrder: sortedInfo.columnKey === 'carriedOverLeaves' && sortedInfo.order,
   },
   {
     title: 'Action',
