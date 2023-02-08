@@ -204,6 +204,7 @@ export const permissionRole = {
   Reports: [
     {name: 'viewWeeklyReport', label: 'View Weekly Report', rule: []},
     {name: 'viewLeaveReport', label: 'View Leave Report', rule: []},
+    {name: 'editLeaveReport', label: 'Edit Leave Report', rule: []},
     {name: 'viewWorkLogReport', label: 'View Work Log Report', rule: []},
     {name: 'viewActivityLog', label: 'View Activity Log', rule: []},
   ],
