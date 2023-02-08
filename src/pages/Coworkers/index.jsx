@@ -25,7 +25,6 @@ import {
 } from 'services/users/userDetails'
 import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
-import {getQuarters} from 'services/leaves'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import RoleAccess from 'constants/RoleAccess'
 import {PAGE20, PLACE_HOLDER_CLASS} from 'constants/Common'
@@ -103,22 +102,7 @@ function CoworkersPage() {
       keepPreviousData: true,
     }
   )
-  const quarterQuery = useQuery(['quarters'], getQuarters, {
-    select: (res) => {
-      const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
-        (quarter) =>
-          new Date(quarter[1].fromDate) <=
-            new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
-          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
-            new Date(quarter[1].toDate)
-      )
 
-      return {
-        name: ongoingQuarter[0],
-        ...ongoingQuarter[1],
-      }
-    },
-  })
   const mutation = useMutation(
     (updatedUser) => updateUser(updatedUser.userId, updatedUser.updatedData),
     {
@@ -168,30 +152,6 @@ function CoworkersPage() {
       notification({message: 'Could not disable User', type: 'error'})
     },
   })
-
-  const resetLeavesMutation = useMutation(
-    (payload) => resetAllocatedLeaves(payload),
-    {
-      onSuccess: (response) =>
-        handleResponse(
-          response,
-          'Allocated leaves reset of all user Successfully',
-          'Could not reset allocated leaves',
-          [
-            () => refetch(),
-            () => {
-              socket.emit('CUD')
-            },
-          ]
-        ),
-      onError: (error) => {
-        notification({
-          message: 'Could not reset allocated leaves',
-          type: 'error',
-        })
-      },
-    }
-  )
 
   useEffect(() => {
     if (isError) {
@@ -264,9 +224,6 @@ function CoworkersPage() {
     setSelectedRows([])
   }
 
-  // const handleResetAllocatedLeaves = () => {
-  //   resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
-  // }
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
@@ -323,7 +280,6 @@ function CoworkersPage() {
           positionTypes={positionTypes}
           intialValues={userRecord}
           readOnly={readOnly}
-          currentQuarter={quarterQuery}
         />
       )}
       <Card title="Co-workers">
@@ -341,20 +297,6 @@ function CoworkersPage() {
               enterButton
               className="direct-form-item"
             />
-            {/* {!getIsAdmin() && (
-              <AccessWrapper role={coWorkersPermissions?.resetAllocatedLeaves}>
-                <Popconfirm
-                  title={`Are you sure to reset allocated leaves?`}
-                  onConfirm={handleResetAllocatedLeaves}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
-                    Reset Allocated Leaves
-                  </Button>
-                </Popconfirm>
-              </AccessWrapper>
-            )} */}
           </div>
           <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
             <Form layout="inline" form={form}>
