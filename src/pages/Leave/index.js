@@ -29,6 +29,7 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import ReapplyLeaveModal from 'components/Modules/ReapplyLeaveModal'
 import {STATUS_TYPES} from 'constants/Leaves'
 import moment from 'moment'
+import useWindowsSize from 'hooks/useWindowsSize'
 
 const TabPane = Tabs.TabPane
 
@@ -44,6 +45,7 @@ function Leave() {
     leaveData: {},
   })
   const [reapplyLoader, setreapplyLoader] = useState(false)
+  const {innerWidth} = useWindowsSize()
 
   const [IsReject, setIsReject] = useState(false)
   const [IsUserCancel, setUserCancel] = useState(false)
@@ -100,11 +102,10 @@ function Leave() {
       //getting the quarterId
       const currentQuarter = quarters?.data?.data?.data[0]?.quarters.find(
         (d) =>
-          new Date(d?.fromDate) <=
-            new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
-          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
-            new Date(d?.toDate)
+          new Date(d?.fromDate) <= new Date().setUTCHours(0, 0, 0, 0) &&
+          new Date().setUTCHours(23, 59, 59, 999) <= new Date(d?.toDate)
       )
+     
 
       return getUserLeavesSummary({
         userId: loggedInUser._id,
@@ -296,20 +297,18 @@ function Leave() {
               xl={
                 IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 10
               }
-              lg={
-                IsIntern ||
-                !leavePermissions?.showAnnualLeaveDetails ||
-                YearlyLeaveExceptCasualandSick?.length > 0
-                  ? 24
-                  : 12
-              }
+              lg={24}
               md={24}
               sm={24}
               xs={24}
             >
               <Card
                 title="Quarterly Leave"
-                style={{background: 'rgb(232 232 232 / 26%)'}}
+                style={{
+                  background: 'rgb(232 232 232 / 26%)',
+                  marginBottom: '0px',
+                  paddingBottom: '0px',
+                }}
               >
                 <QuarterlyLeavesRemainingAndAppliedCards
                   firstType="Days Remaining"
@@ -336,19 +335,18 @@ function Leave() {
           >
             <Col
               xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 14}
-              lg={
-                !leavePermissions?.showQuarterlyLeaveDetails ||
-                YearlyLeaveExceptCasualandSick?.length > 0
-                  ? 24
-                  : 12
-              }
+              lg={24}
               md={24}
               sm={24}
               xs={24}
             >
               <Card
                 title="Annual Leave"
-                style={{background: 'rgb(232 232 232 / 26%)'}}
+                style={{
+                  background: 'rgb(232 232 232 / 26%)',
+                  marginBottom: '0px',
+                  paddingBottom: '0px',
+                }}
               >
                 <AnnualLeavesRemainingAndAppliedCards
                   firstTitle="Days Remaining"
