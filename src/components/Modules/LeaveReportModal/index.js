@@ -99,8 +99,9 @@ function LeaveReportModal({toggle, closeModal, userDetails, quarterId}) {
   return (
     <Modal
       visible={toggle}
+      closable={false}
       mask={false}
-      width={600}
+      width={500}
       onCancel={closeModal}
       footer={[
         <Button key="back" onClick={closeModal}>

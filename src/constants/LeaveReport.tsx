@@ -45,19 +45,27 @@ const LEAVE_REPORT_COLUMNS = (
     width: 300,
     render: (text: any, record: any) => {
       return (
-        <div>
-          <p>{text}</p>
+        <>
+          <p
+            style={{
+              paddingTop: !!record?.user?.leaveadjustmentBalance
+                ? ''
+                : '1.1rem',
+            }}
+          >
+            {text}
+          </p>
           {record?.user?.leaveadjustmentBalance > 0 && (
             <Tooltip
               title={`Leave Adjustment Balance is leave balance to deduct. Leave Adjustment Balance : ${record?.user?.leaveadjustmentBalance}`}
             >
-              <span>
-                Leave Adjustment Balance :{' '}
-                {record?.user?.leaveadjustmentBalance}
+              <span style={{opacity: 0.6, fontSize: '12px'}}>
+                (Leave Adjustment Balance :{' '}
+                {record?.user?.leaveadjustmentBalance})
               </span>
             </Tooltip>
           )}
-        </div>
+        </>
       )
     },
   },
