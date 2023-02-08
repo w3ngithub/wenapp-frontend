@@ -105,7 +105,7 @@ function Leave() {
           new Date(d?.fromDate) <= new Date().setUTCHours(0, 0, 0, 0) &&
           new Date().setUTCHours(23, 59, 59, 999) <= new Date(d?.toDate)
       )
-      console.log('x', currentQuarter)
+     
 
       return getUserLeavesSummary({
         userId: loggedInUser._id,
