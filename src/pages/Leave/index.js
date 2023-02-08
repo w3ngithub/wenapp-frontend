@@ -105,7 +105,6 @@ function Leave() {
           new Date(d?.fromDate) <= new Date().setUTCHours(0, 0, 0, 0) &&
           new Date().setUTCHours(23, 59, 59, 999) <= new Date(d?.toDate)
       )
-      console.log('x', currentQuarter)
 
       return getUserLeavesSummary({
         userId: loggedInUser._id,
@@ -262,6 +261,8 @@ function Leave() {
 
   let IsIntern = user?.status === EmployeeStatus?.Probation
 
+  const padding = innerWidth < 1200 ? '0px 24px' : '24px'
+
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
     <>
@@ -307,8 +308,9 @@ function Leave() {
                 style={{
                   background: 'rgb(232 232 232 / 26%)',
                   marginBottom: '0px',
-                  paddingBottom: '0px',
+                  padding: '0px',
                 }}
+                bodyStyle={{padding: padding}}
               >
                 <QuarterlyLeavesRemainingAndAppliedCards
                   firstType="Days Remaining"
@@ -347,6 +349,7 @@ function Leave() {
                   marginBottom: '0px',
                   paddingBottom: '0px',
                 }}
+                bodyStyle={{padding: padding}}
               >
                 <AnnualLeavesRemainingAndAppliedCards
                   firstTitle="Days Remaining"
