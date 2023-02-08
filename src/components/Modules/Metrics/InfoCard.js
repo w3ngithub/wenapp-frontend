@@ -12,10 +12,16 @@ const InfoCard = (props) => {
 
   const {innerWidth} = useWindowsSize()
   return (
-    <Widget styleName={`gx-bg-${cardColor}`} style={style}>
+    <Widget
+      styleName={`gx-bg-${cardColor}`}
+      style={style}
+      bodyStyle={{paddingLeft: '5px', paddingRight: '5px'}}
+    >
       <div style={{marginLeft: '1rem'}}>
         <Row>
-          <p className={`gx-text-${iconColor}`}>{title}</p>
+          <p className={`gx-text-${iconColor}`} style={{marginLeft: '1rem'}}>
+            {title}
+          </p>
         </Row>
         <Row>
           <Col lg={24} sm={24} xs={24} md={24}>

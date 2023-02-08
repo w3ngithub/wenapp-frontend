@@ -11,6 +11,7 @@ const Widget = ({
   actions,
   style,
   onClick,
+  bodyStyle = {},
 }) => {
   return (
     <Card
@@ -21,6 +22,7 @@ const Widget = ({
       extra={extra}
       style={style}
       onClick={onClick}
+      bodyStyle={bodyStyle}
     >
       {children}
     </Card>
