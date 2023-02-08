@@ -13,6 +13,7 @@ const IconAndInfoCard = (props) => {
     firstTypeCount,
     secondType,
     secondTypeCount,
+    style,
   } = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {
@@ -20,7 +21,7 @@ const IconAndInfoCard = (props) => {
   // }
   const {innerWidth} = useWindowsSize()
   return (
-    <Widget styleName={`gx-bg-${cardColor}`} style={{height: '100%'}}>
+    <Widget styleName={`gx-bg-${cardColor}`} style={style}>
       <div style={{marginLeft: '1rem'}}>
         <Row>
           <p className={`gx-text-${iconColor}`}>{title}</p>
