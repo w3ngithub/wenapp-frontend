@@ -21,7 +21,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
           firstType="Days Remaining"
           secondType="Leave adjustment"
           firstTypeCount={firstNumber}
-          secondTypeCount="40"
+          secondTypeCount={secondNumber}
           style={{minHeight: '125px'}}
         />
       </Col>
@@ -31,7 +31,6 @@ function QuarterlyLeavesRemainingAndAppliedCards({
           icon="tasks"
           firstType="Sick"
           secondType="Casual"
-          number={secondNumber}
           title={secondType}
           firstTypeCount={approvedLeaves.sickLeaves}
           secondTypeCount={approvedLeaves.casualLeaves}

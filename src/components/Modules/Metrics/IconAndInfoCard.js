@@ -70,12 +70,14 @@ const IconAndInfoCard = (props) => {
               </p>
               <p className={`gx-mb-0 gx-text-${iconColor}`}>{firstTypeCount}</p>
             </div>
-            <div className="gx-d-flex gx-justify-content-between">
-              <p className={`gx-mb-0 gx-text-${iconColor}`}>{secondType}</p>
-              <p className={`gx-mb-0 gx-text-${iconColor}`}>
-                {secondTypeCount}
-              </p>
-            </div>
+            {(secondTypeCount > 0 || title) && (
+              <div className="gx-d-flex gx-justify-content-between">
+                <p className={`gx-mb-0 gx-text-${iconColor}`}>{secondType}</p>
+                <p className={`gx-mb-0 gx-text-${iconColor}`}>
+                  {secondTypeCount}
+                </p>
+              </div>
+            )}
           </Col>
         </Row>
       </div>
