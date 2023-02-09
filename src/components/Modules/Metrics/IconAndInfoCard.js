@@ -28,6 +28,7 @@ const IconAndInfoCard = (props) => {
       ? {
           row: {
             marginTop: '17px',
+            paddingTop: '2px',
           },
           icon: {
             marginBottom: '10px',

@@ -311,7 +311,7 @@ function Leave() {
                   marginBottom: '0px',
                   padding: '0px',
                 }}
-                bodyStyle={{padding: padding}}
+                bodyStyle={{padding: '0px 24px'}}
               >
                 <QuarterlyLeavesRemainingAndAppliedCards
                   firstType="Days Remaining"
@@ -348,10 +348,10 @@ function Leave() {
                 title="Annual Leave"
                 style={{
                   background: 'rgb(232 232 232 / 26%)',
-                  marginBottom: '0px',
+                  marginBottom: '15px',
                   paddingBottom: '0px',
                 }}
-                bodyStyle={{padding: padding}}
+                bodyStyle={{padding: '0px 24px'}}
               >
                 <AnnualLeavesRemainingAndAppliedCards
                   firstTitle="Days Remaining"

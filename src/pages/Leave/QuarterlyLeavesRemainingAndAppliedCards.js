@@ -22,7 +22,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
           secondType="Leave adjustment"
           firstTypeCount={firstNumber}
           secondTypeCount={secondNumber}
-          style={{minHeight: '125px'}}
+          style={{minHeight: '131px'}}
         />
       </Col>
       <Col xl={12} sm={12} xs={24} className="gx-col-full">
@@ -34,7 +34,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
           title={secondType}
           firstTypeCount={approvedLeaves.sickLeaves}
           secondTypeCount={approvedLeaves.casualLeaves}
-          style={innerWidth < 1600 ? {minHeight: '135px'} : {}}
+          style={{minHeight: '131px'}}
         />
       </Col>
     </Row>
