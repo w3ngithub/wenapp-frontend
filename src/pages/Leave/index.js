@@ -54,6 +54,7 @@ function Leave() {
   const [submittingCancelReason, setSubmittingCancelReason] = useState(false)
 
   const loggedInUser = useSelector(selectAuthUser)
+
   const {data: leaveTypes, isLoading} = useQuery(['leaveTypes'], getLeaveTypes)
 
   const leaveDaysQuery = useQuery(
@@ -319,6 +320,7 @@ function Leave() {
                     leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
                       ?.remainingLeaves
                   }
+                  secondNumber={loggedInUser.leaveadjustmentBalance}
                   approvedLeaves={{
                     sickLeaves:
                       leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
