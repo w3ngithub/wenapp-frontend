@@ -9,6 +9,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
   firstNumber,
   secondNumber,
   approvedLeaves,
+  nonCasualSickLeaveCardHeight,
 }) {
   return (
     <Row>
@@ -18,6 +19,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
           icon="product-list"
           number={firstNumber}
           text={firstType}
+          nonCasualSickLeaveCardHeight={nonCasualSickLeaveCardHeight}
         />
       </Col>
       <Col xl={12} sm={12} xs={24} className="gx-col-full">
@@ -30,6 +32,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
           title={secondType}
           firstTypeCount={approvedLeaves.sickLeaves}
           secondTypeCount={approvedLeaves.casualLeaves}
+          nonCasualSickLeaveCardHeight={nonCasualSickLeaveCardHeight}
         />
       </Col>
     </Row>

@@ -261,6 +261,20 @@ function Leave() {
 
   let IsIntern = user?.status === EmployeeStatus?.Probation
 
+  const [nonCasualSickLeaveCardHeight, setNonCasualSickLeaveCardHeight] =
+    useState('100%')
+  useEffect(() => {
+    const nonCasualSickLeaveCard = document.getElementsByClassName(
+      'non-casual-sick-leave-card'
+    )[0]
+    if (
+      typeof nonCasualSickLeaveCard !== 'undefined' &&
+      nonCasualSickLeaveCardHeight === '100%'
+    )
+      setNonCasualSickLeaveCardHeight(
+        `${nonCasualSickLeaveCard.offsetHeight}px`
+      )
+  })
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
     <>
@@ -306,10 +320,13 @@ function Leave() {
               md={24}
               sm={24}
               xs={24}
+              className="gx-p-0"
             >
               <Card
                 title="Quarterly Leave"
                 style={{background: 'rgb(232 232 232 / 26%)'}}
+                bodyStyle={{paddingRight: 0, paddingLeft: 0}}
+                headStyle={{paddingRight: 0, paddingLeft: 0}}
               >
                 <QuarterlyLeavesRemainingAndAppliedCards
                   firstType="Days Remaining"
@@ -326,6 +343,7 @@ function Leave() {
                       leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
                         ?.approvedLeaves?.casualLeaves,
                   }}
+                  nonCasualSickLeaveCardHeight={nonCasualSickLeaveCardHeight}
                 />
               </Card>
             </Col>
@@ -345,10 +363,13 @@ function Leave() {
               md={24}
               sm={24}
               xs={24}
+              className="gx-p-0"
             >
               <Card
                 title="Annual Leave"
                 style={{background: 'rgb(232 232 232 / 26%)'}}
+                bodyStyle={{paddingRight: 0, paddingLeft: '30px'}}
+                headStyle={{paddingRight: 0, paddingLeft: '30px'}}
               >
                 <AnnualLeavesRemainingAndAppliedCards
                   firstTitle="Days Remaining"
@@ -372,6 +393,7 @@ function Leave() {
                   YearlyLeaveExceptCasualandSick={
                     YearlyLeaveExceptCasualandSick
                   }
+                  nonCasualSickLeaveCardHeight={nonCasualSickLeaveCardHeight}
                 />
               </Card>
             </Col>

@@ -12,13 +12,19 @@ const InfoCard = (props) => {
 
   const {innerWidth} = useWindowsSize()
   return (
-    <Widget styleName={`gx-bg-${cardColor}`} style={{height: '100%'}}>
-      <div style={{marginLeft: '1rem'}}>
+    <Widget
+      styleName={`gx-bg-${cardColor} no-margin non-casual-sick-leave-card`}
+      style={{height: '100%'}}
+    >
+      <div
+        style={{marginLeft: '2rem', height: '100%', justifyContent: 'center'}}
+        className="gx-flex-column"
+      >
         <Row>
           <p className={`gx-text-${iconColor}`}>{title}</p>
         </Row>
         <Row>
-          <Col lg={24} sm={24} xs={24} md={24}>
+          <Col lg={24} sm={24} xs={24} md={24} className="gx-p-0">
             {YearlyLeaveExceptCasualandSick?.map((data, index) => (
               <div key={index} className="gx-media-body">
                 <div

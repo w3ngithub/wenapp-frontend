@@ -13,6 +13,7 @@ const IconAndInfoCard = (props) => {
     firstTypeCount,
     secondType,
     secondTypeCount,
+    nonCasualSickLeaveCardHeight,
   } = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {
@@ -20,8 +21,14 @@ const IconAndInfoCard = (props) => {
   // }
   const {innerWidth} = useWindowsSize()
   return (
-    <Widget styleName={`gx-bg-${cardColor}`} style={{height: '100%'}}>
-      <div style={{marginLeft: '1rem'}}>
+    <Widget
+      styleName={`gx-bg-${cardColor} no-margin`}
+      style={{height: nonCasualSickLeaveCardHeight}}
+    >
+      <div
+        style={{marginLeft: '2rem', height: '100%', justifyContent: 'center'}}
+        className="gx-flex-column"
+      >
         <Row>
           <p className={`gx-text-${iconColor}`}>{title}</p>
         </Row>
@@ -30,7 +37,10 @@ const IconAndInfoCard = (props) => {
             <div className="gx-mr-lg-4 gx-mr-3">
               <i
                 className={`icon icon-${icon} gx-fs-xlxl gx-text-${iconColor} gx-d-flex`}
-                style={{fontSize: 45}}
+                style={{
+                  fontSize: 45,
+                  marginLeft: icon === 'tasks' ? '-7px' : '',
+                }}
               />
             </div>
           </Col>
