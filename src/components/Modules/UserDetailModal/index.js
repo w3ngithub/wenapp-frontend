@@ -9,9 +9,15 @@ import {
   Spin,
   Form,
   TimePicker,
+  Tooltip,
 } from 'antd'
 import moment from 'moment'
-import {dateToDateFormat, filterOptions, scrollForm} from 'helpers/utils'
+import {
+  changeDate,
+  dateToDateFormat,
+  filterOptions,
+  scrollForm,
+} from 'helpers/utils'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
@@ -42,10 +48,24 @@ function UserDetailForm({
   currentQuarter,
 }) {
   const [form] = Form.useForm()
+  let reviewElement = null
 
   const handleCancel = () => {
     form.resetFields()
     onToggleModal({})
+  }
+
+  if (readOnly) {
+    const toolTipReviewDate = intialValues.lastReviewDate?.map((d) =>
+      changeDate(d)
+    )
+    reviewElement = ['Leave Review Date History', ...toolTipReviewDate].map(
+      (d) => (
+        <div style={{textAlign: 'center', marginBottom: 2}}>
+          <div>{d}</div>
+        </div>
+      )
+    )
   }
 
   const user = useSelector(selectAuthUser)
@@ -336,27 +356,54 @@ function UserDetailForm({
               ))}
             </Select>
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            all
-            label="Last Review Date"
-            hasFeedback={readOnly ? false : true}
-            name="lastReviewDate"
-            rules={[
-              {
-                required: false,
-                // type: 'object',
-                // whitespace: true,
-                message: 'Last Review Date is required.',
-              },
-            ]}
-          >
-            <DatePicker
-              disabledDate={disableReviewDate}
-              className=" gx-w-100"
-              disabled={readOnly}
-            />
-          </FormItem>
+          {readOnly ? (
+            <Tooltip
+              overlayStyle={{whiteSpace: 'pre-line'}}
+              title={reviewElement}
+            >
+              <FormItem
+                {...formItemLayout}
+                all
+                label="Last Review Date"
+                hasFeedback={readOnly ? false : true}
+                name="lastReviewDate"
+                rules={[
+                  {
+                    required: false,
+
+                    message: 'Last Review Date is required.',
+                  },
+                ]}
+              >
+                <DatePicker
+                  disabledDate={disableReviewDate}
+                  className=" gx-w-100"
+                  disabled={readOnly}
+                />
+              </FormItem>
+            </Tooltip>
+          ) : (
+            <FormItem
+              {...formItemLayout}
+              all
+              label="Last Review Date"
+              hasFeedback={readOnly ? false : true}
+              name="lastReviewDate"
+              rules={[
+                {
+                  required: false,
+
+                  message: 'Last Review Date is required.',
+                },
+              ]}
+            >
+              <DatePicker
+                disabledDate={disableReviewDate}
+                className=" gx-w-100"
+                disabled={readOnly}
+              />
+            </FormItem>
+          )}
           <FormItem
             {...formItemLayout}
             label="Join Date"

@@ -5,7 +5,7 @@ import {Col, Row} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
 
 const InfoCard = (props) => {
-  const {icon, title, cardColor, YearlyLeaveExceptCasualandSick} = props
+  const {icon, title, cardColor, YearlyLeaveExceptCasualandSick, style} = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {
   iconColor = 'white'
@@ -21,7 +21,9 @@ const InfoCard = (props) => {
         className="gx-flex-column"
       >
         <Row>
-          <p className={`gx-text-${iconColor}`}>{title}</p>
+          <p className={`gx-text-${iconColor}`} style={{marginLeft: '1rem'}}>
+            {title}
+          </p>
         </Row>
         <Row>
           <Col lg={24} sm={24} xs={24} md={24} className="gx-p-0">

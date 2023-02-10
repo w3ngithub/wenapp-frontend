@@ -29,6 +29,7 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import ReapplyLeaveModal from 'components/Modules/ReapplyLeaveModal'
 import {STATUS_TYPES} from 'constants/Leaves'
 import moment from 'moment'
+import useWindowsSize from 'hooks/useWindowsSize'
 
 const TabPane = Tabs.TabPane
 
@@ -44,6 +45,7 @@ function Leave() {
     leaveData: {},
   })
   const [reapplyLoader, setreapplyLoader] = useState(false)
+  const {innerWidth} = useWindowsSize()
 
   const [IsReject, setIsReject] = useState(false)
   const [IsUserCancel, setUserCancel] = useState(false)
@@ -52,6 +54,7 @@ function Leave() {
   const [submittingCancelReason, setSubmittingCancelReason] = useState(false)
 
   const loggedInUser = useSelector(selectAuthUser)
+
   const {data: leaveTypes, isLoading} = useQuery(['leaveTypes'], getLeaveTypes)
 
   const leaveDaysQuery = useQuery(
@@ -100,10 +103,8 @@ function Leave() {
       //getting the quarterId
       const currentQuarter = quarters?.data?.data?.data[0]?.quarters.find(
         (d) =>
-          new Date(d?.fromDate) <=
-            new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
-          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
-            new Date(d?.toDate)
+          new Date(d?.fromDate) <= new Date().setUTCHours(0, 0, 0, 0) &&
+          new Date().setUTCHours(23, 59, 59, 999) <= new Date(d?.toDate)
       )
 
       return getUserLeavesSummary({
@@ -275,6 +276,8 @@ function Leave() {
         `${nonCasualSickLeaveCard.offsetHeight}px`
       )
   })
+  const padding = innerWidth < 1200 ? '0px 24px' : '24px'
+
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
     <>
@@ -310,13 +313,7 @@ function Leave() {
               xl={
                 IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 10
               }
-              lg={
-                IsIntern ||
-                !leavePermissions?.showAnnualLeaveDetails ||
-                YearlyLeaveExceptCasualandSick?.length > 0
-                  ? 24
-                  : 12
-              }
+              lg={24}
               md={24}
               sm={24}
               xs={24}
@@ -335,6 +332,7 @@ function Leave() {
                     leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
                       ?.remainingLeaves
                   }
+                  secondNumber={loggedInUser.leaveadjustmentBalance}
                   approvedLeaves={{
                     sickLeaves:
                       leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
@@ -354,12 +352,7 @@ function Leave() {
           >
             <Col
               xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 14}
-              lg={
-                !leavePermissions?.showQuarterlyLeaveDetails ||
-                YearlyLeaveExceptCasualandSick?.length > 0
-                  ? 24
-                  : 12
-              }
+              lg={24}
               md={24}
               sm={24}
               xs={24}

@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import {useMutation, useQuery} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Button, DatePicker, Form, Popconfirm} from 'antd'
 import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
@@ -27,6 +27,7 @@ function SummaryReport() {
   const FormItem = Form.Item
 
   const currentYear = new Date().getFullYear().toString()
+  const queryClient = useQueryClient()
 
   const usersQuery = useQuery(['users'], () => getAllUsers({sort: 'name'}))
   const [user, setUser] = useState(undefined)
@@ -58,30 +59,6 @@ function SummaryReport() {
       }
     },
   })
-
-  const resetLeavesMutation = useMutation(
-    (payload) => resetAllocatedLeaves(payload),
-    {
-      onSuccess: (response) =>
-        handleResponse(
-          response,
-          'Allocated leaves reset of all user Successfully',
-          'Could not reset allocated leaves',
-          [
-            () => refetch(),
-            () => {
-              socket.emit('CUD')
-            },
-          ]
-        ),
-      onError: (error) => {
-        notification({
-          message: 'Could not reset allocated leaves',
-          type: 'error',
-        })
-      },
-    }
-  )
   const {
     data: leaveQuarters,
     isLoading: leaveQuarterLoading,
@@ -106,6 +83,30 @@ function SummaryReport() {
       }),
     {
       enabled: !!yearSelected,
+    }
+  )
+
+  const resetLeavesMutation = useMutation(
+    (payload) => resetAllocatedLeaves(payload),
+    {
+      onSuccess: (response) =>
+        handleResponse(
+          response,
+          'Allocated leaves reset of all user Successfully',
+          'Could not reset allocated leaves',
+          [
+            () => queryClient.invalidateQueries(['leavesSummary']),
+            () => {
+              socket.emit('CUD')
+            },
+          ]
+        ),
+      onError: (error) => {
+        notification({
+          message: 'Could not reset allocated leaves',
+          type: 'error',
+        })
+      },
     }
   )
 

@@ -3,6 +3,8 @@ import {Table} from 'antd'
 import {LEAVE_REPORT_COLUMNS} from 'constants/LeaveReport'
 import {emptyText} from 'constants/EmptySearchAntd'
 import LeaveReportModal from 'components/Modules/LeaveReportModal'
+import {useSelector} from 'react-redux'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function SummaryTable({data, quarterId}) {
   // init states
@@ -12,6 +14,10 @@ function SummaryTable({data, quarterId}) {
     field: 'name',
     columnKey: 'name',
   })
+
+  const {
+    role: {key, permission},
+  } = useSelector(selectAuthUser)
   const [page, setPage] = useState({page: 1, limit: 10})
   const [openModal, setOpenModal] = useState(false)
   const [specificUserDetails, setSpecificUserDetails] = useState({})
@@ -28,6 +34,8 @@ function SummaryTable({data, quarterId}) {
       casualLeaves: leave?.leaves?.[0]?.approvedLeaves?.casualLeaves,
     }))
   }
+
+  const reportPermission = permission?.Reports?.editLeaveReport
 
   const handleTableChange = (pagination, filters, sorter) => {
     setSort(sorter)
@@ -48,6 +56,14 @@ function SummaryTable({data, quarterId}) {
     setOpenModal(false)
   }
 
+  const columns = LEAVE_REPORT_COLUMNS(sort, handleOpenModal)?.filter(
+    (item) => {
+      if (reportPermission) {
+        return item?.title !== 'Action'
+      } else return true
+    }
+  )
+
   return (
     <>
       {openModal && (
@@ -64,7 +80,7 @@ function SummaryTable({data, quarterId}) {
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        columns={LEAVE_REPORT_COLUMNS(sort, handleOpenModal)}
+        columns={columns}
         dataSource={summaryLeaveReport(data)}
         onChange={handleTableChange}
         pagination={{

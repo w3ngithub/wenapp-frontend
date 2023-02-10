@@ -5,8 +5,15 @@ import {Col, Row} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
 
 const IconAndNumber = (props) => {
-  const {icon, title, cardColor, text, number, nonCasualSickLeaveCardHeight} =
-    props
+  const {
+    icon,
+    title,
+    cardColor,
+    text,
+    number,
+    style,
+    nonCasualSickLeaveCardHeight,
+  } = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {
   iconColor = 'white'
