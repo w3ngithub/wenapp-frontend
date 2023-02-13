@@ -10,6 +10,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
   firstNumber,
   secondNumber,
   approvedLeaves,
+  nonCasualSickLeaveCardHeight,
 }) {
   const {innerWidth} = useWindowsSize()
   return (
@@ -18,6 +19,9 @@ function QuarterlyLeavesRemainingAndAppliedCards({
         <IconAndInfoCard
           cardColor="cyan"
           icon="product-list"
+          number={firstNumber}
+          text={firstType}
+          nonCasualSickLeaveCardHeight={nonCasualSickLeaveCardHeight}
           firstType="Days Remaining"
           secondType="Leave adjustment"
           firstTypeCount={firstNumber}
@@ -34,7 +38,8 @@ function QuarterlyLeavesRemainingAndAppliedCards({
           title={secondType}
           firstTypeCount={approvedLeaves.sickLeaves}
           secondTypeCount={approvedLeaves.casualLeaves}
-          style={{minHeight: '131px'}}
+          nonCasualSickLeaveCardHeight={nonCasualSickLeaveCardHeight}
+          style={innerWidth < 1600 ? {minHeight: '135px'} : {}}
         />
       </Col>
     </Row>

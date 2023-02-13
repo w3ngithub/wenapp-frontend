@@ -5,6 +5,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import LeaveReportModal from 'components/Modules/LeaveReportModal'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import moment from 'moment'
 
 function SummaryTable({data, quarterId}) {
   // init states
@@ -23,16 +24,31 @@ function SummaryTable({data, quarterId}) {
   const [specificUserDetails, setSpecificUserDetails] = useState({})
 
   const summaryLeaveReport = (leaveData) => {
-    return leaveData?.map((leave) => ({
-      ...leave,
-      name: leave?.user?.name,
-      allocatedLeaves: leave?.leaves?.[0]?.allocatedLeaves,
-      remainingLeaves: leave?.leaves?.[0]?.remainingLeaves,
-      carriedOverLeaves: leave?.leaves?.[0]?.carriedOverLeaves,
-      leaveDeductionBalance: leave?.leaves?.[0]?.leaveDeductionBalance,
-      sickLeaves: leave?.leaves?.[0]?.approvedLeaves?.sickLeaves,
-      casualLeaves: leave?.leaves?.[0]?.approvedLeaves?.casualLeaves,
-    }))
+    return leaveData
+      ?.filter((item) => {
+        if (!item?.leaves || item?.leaves?.length !== 0) {
+          if (!item?.user?.exitDate) {
+            return true
+          } else {
+            if (
+              moment(item?.leaves?.[0]?.quarter?.fromDate) <
+              moment(item?.user?.exitDate)
+            ) {
+              return true
+            } else return false
+          }
+        } else return false
+      })
+      ?.map((leave) => ({
+        ...leave,
+        name: leave?.user?.name,
+        allocatedLeaves: leave?.leaves?.[0]?.allocatedLeaves,
+        remainingLeaves: leave?.leaves?.[0]?.remainingLeaves,
+        carriedOverLeaves: leave?.leaves?.[0]?.carriedOverLeaves,
+        leaveDeductionBalance: leave?.leaves?.[0]?.leaveDeductionBalance,
+        sickLeaves: leave?.leaves?.[0]?.approvedLeaves?.sickLeaves,
+        casualLeaves: leave?.leaves?.[0]?.approvedLeaves?.casualLeaves,
+      }))
   }
 
   const reportPermission = permission?.Reports?.editLeaveReport
@@ -58,7 +74,7 @@ function SummaryTable({data, quarterId}) {
 
   const columns = LEAVE_REPORT_COLUMNS(sort, handleOpenModal)?.filter(
     (item) => {
-      if (reportPermission) {
+      if (!reportPermission) {
         return item?.title !== 'Action'
       } else return true
     }

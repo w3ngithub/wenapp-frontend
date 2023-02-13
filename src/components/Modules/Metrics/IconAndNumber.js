@@ -5,7 +5,15 @@ import {Col, Row} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
 
 const IconAndNumber = (props) => {
-  const {icon, title, cardColor, text, number, style} = props
+  const {
+    icon,
+    title,
+    cardColor,
+    text,
+    number,
+    style,
+    nonCasualSickLeaveCardHeight,
+  } = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {
   iconColor = 'white'
@@ -13,7 +21,10 @@ const IconAndNumber = (props) => {
   const {innerWidth} = useWindowsSize()
 
   return (
-    <Widget styleName={`gx-bg-${cardColor}`} style={style}>
+    <Widget
+      styleName={`gx-bg-${cardColor}`}
+      style={{height: nonCasualSickLeaveCardHeight}}
+    >
       <div style={{marginLeft: '1rem', paddingBottom: '3px'}}>
         <Row>
           <p className={`gx-text-${iconColor}`}>{title}</p>

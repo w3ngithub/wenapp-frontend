@@ -13,6 +13,7 @@ const IconAndInfoCard = (props) => {
     firstTypeCount,
     secondType,
     secondTypeCount,
+    nonCasualSickLeaveCardHeight,
     style,
     showIcon = true,
     bodyStyle = {},
@@ -38,19 +39,31 @@ const IconAndInfoCard = (props) => {
 
   return (
     <Widget
-      styleName={`gx-bg-${cardColor}`}
-      style={style}
-      bodyStyle={bodyStyle}
+      styleName={`gx-bg-${cardColor} no-margin`}
+      style={{height: nonCasualSickLeaveCardHeight}}
     >
-      <div style={{marginLeft: '1rem'}}>
-        {title && (
-          <Row>
-            <p className={`gx-text-${iconColor}`}>{title}</p>
-          </Row>
-        )}
-
+      <div
+        style={{marginLeft: '2rem', height: '100%', justifyContent: 'center'}}
+        className="gx-flex-column"
+      >
+        <Row>
+          <p className={`gx-text-${iconColor}`}>{title}</p>
+        </Row>
+        <Row>
+          <Col>
+            <div className="gx-mr-lg-4 gx-mr-3">
+              <i
+                className={`icon icon-${icon} gx-fs-xlxl gx-text-${iconColor} gx-d-flex`}
+                style={{
+                  fontSize: 45,
+                  marginLeft: icon === 'tasks' ? '-7px' : '',
+                }}
+              />
+            </div>
+          </Col>
+        </Row>
         <Row style={styleObject?.row}>
-          {showIcon && (
+          {/* {showIcon && (
             <Col>
               <div className="gx-mr-lg-4 gx-mr-3">
                 <i
@@ -59,7 +72,7 @@ const IconAndInfoCard = (props) => {
                 />
               </div>
             </Col>
-          )}
+          )} */}
 
           <Col>
             <div
