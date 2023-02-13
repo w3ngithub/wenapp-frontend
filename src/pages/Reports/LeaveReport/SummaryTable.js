@@ -5,6 +5,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import LeaveReportModal from 'components/Modules/LeaveReportModal'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import moment from 'moment'
 
 function SummaryTable({data, quarterId}) {
   // init states
@@ -22,9 +23,28 @@ function SummaryTable({data, quarterId}) {
   const [openModal, setOpenModal] = useState(false)
   const [specificUserDetails, setSpecificUserDetails] = useState({})
 
+  // console.log('mom', moment('2022-07-15T00:00:00.000Z') < moment(undefined))
+  // &&
+  //         moment(item?.leaves?.[0]?.quarter?.fromDate) <
+  //           moment(item?.user?.exitDate)
+
   const summaryLeaveReport = (leaveData) => {
+    console.log('leaveData', leaveData)
     return leaveData
-      ?.filter((item) => !item?.leaves || item?.leaves?.length !== 0)
+      ?.filter((item) => {
+        if (!item?.leaves || item?.leaves?.length !== 0) {
+          if (!item?.user?.exitDate) {
+            return true
+          } else {
+            if (
+              moment(item?.leaves?.[0]?.quarter?.fromDate) <
+              moment(item?.user?.exitDate)
+            ) {
+              return true
+            } else return false
+          }
+        } else return false
+      })
       ?.map((leave) => ({
         ...leave,
         name: leave?.user?.name,
