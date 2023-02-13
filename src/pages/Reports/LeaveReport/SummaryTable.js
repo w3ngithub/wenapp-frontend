@@ -29,7 +29,6 @@ function SummaryTable({data, quarterId}) {
   //           moment(item?.user?.exitDate)
 
   const summaryLeaveReport = (leaveData) => {
-    console.log('leaveData', leaveData)
     return leaveData
       ?.filter((item) => {
         if (!item?.leaves || item?.leaves?.length !== 0) {
