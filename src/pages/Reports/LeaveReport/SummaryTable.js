@@ -23,16 +23,18 @@ function SummaryTable({data, quarterId}) {
   const [specificUserDetails, setSpecificUserDetails] = useState({})
 
   const summaryLeaveReport = (leaveData) => {
-    return leaveData?.map((leave) => ({
-      ...leave,
-      name: leave?.user?.name,
-      allocatedLeaves: leave?.leaves?.[0]?.allocatedLeaves,
-      remainingLeaves: leave?.leaves?.[0]?.remainingLeaves,
-      carriedOverLeaves: leave?.leaves?.[0]?.carriedOverLeaves,
-      leaveDeductionBalance: leave?.leaves?.[0]?.leaveDeductionBalance,
-      sickLeaves: leave?.leaves?.[0]?.approvedLeaves?.sickLeaves,
-      casualLeaves: leave?.leaves?.[0]?.approvedLeaves?.casualLeaves,
-    }))
+    return leaveData
+      ?.filter((item) => !item?.leaves || item?.leaves?.length !== 0)
+      ?.map((leave) => ({
+        ...leave,
+        name: leave?.user?.name,
+        allocatedLeaves: leave?.leaves?.[0]?.allocatedLeaves,
+        remainingLeaves: leave?.leaves?.[0]?.remainingLeaves,
+        carriedOverLeaves: leave?.leaves?.[0]?.carriedOverLeaves,
+        leaveDeductionBalance: leave?.leaves?.[0]?.leaveDeductionBalance,
+        sickLeaves: leave?.leaves?.[0]?.approvedLeaves?.sickLeaves,
+        casualLeaves: leave?.leaves?.[0]?.approvedLeaves?.casualLeaves,
+      }))
   }
 
   const reportPermission = permission?.Reports?.editLeaveReport
@@ -58,7 +60,7 @@ function SummaryTable({data, quarterId}) {
 
   const columns = LEAVE_REPORT_COLUMNS(sort, handleOpenModal)?.filter(
     (item) => {
-      if (reportPermission) {
+      if (!reportPermission) {
         return item?.title !== 'Action'
       } else return true
     }
