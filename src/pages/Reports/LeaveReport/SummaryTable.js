@@ -23,11 +23,6 @@ function SummaryTable({data, quarterId}) {
   const [openModal, setOpenModal] = useState(false)
   const [specificUserDetails, setSpecificUserDetails] = useState({})
 
-  // console.log('mom', moment('2022-07-15T00:00:00.000Z') < moment(undefined))
-  // &&
-  //         moment(item?.leaves?.[0]?.quarter?.fromDate) <
-  //           moment(item?.user?.exitDate)
-
   const summaryLeaveReport = (leaveData) => {
     return leaveData
       ?.filter((item) => {
