@@ -82,7 +82,7 @@ function SummaryReport() {
         quarterId: quarter ? quarter : '',
       }),
     {
-      enabled: !!yearSelected,
+      enabled: !!yearSelected && !!quarter,
     }
   )
 
@@ -137,7 +137,9 @@ function SummaryReport() {
 
   useEffect(() => {
     if (leaveQuarters?.status) {
-      setQuarter(leaveQuarters?.data?.data?.data?.[0]?.quarters?.[0]?._id)
+      setQuarter(
+        leaveQuarters?.data?.data?.data?.[0]?.quarters?.[0]?._id || undefined
+      )
       form.setFieldValue(
         'quarters',
         leaveQuarters?.data?.data?.data?.[0]?.quarters?.[0]?._id
@@ -219,11 +221,13 @@ function SummaryReport() {
         )}
       </div>
 
-      {leavesSummaryQuery?.isLoading || resetLeavesMutation?.isLoading ? (
+      {(leavesSummaryQuery?.isLoading &&
+        leaveQuarters?.data?.data?.data?.[0]?.quarters?.length > 0) ||
+      resetLeavesMutation?.isLoading ? (
         <CircularProgress className="" />
       ) : (
         <SummaryTable
-          data={leavesSummaryQuery?.data?.data?.data}
+          data={leavesSummaryQuery?.data?.data?.data || []}
           quarterId={quarter}
         />
       )}
