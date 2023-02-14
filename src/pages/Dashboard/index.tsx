@@ -608,7 +608,7 @@ const Dashboard = () => {
           NavigationDashboard?.viewAnnouncement ||
           NavigationDashboard?.viewHolidays ||
           NavigationDashboard?.viewBirthdays) && (
-          <Col xl={6} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
+          <Col xl={7} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
             <Widget>
               <EventsAndAnnouncements
                 announcements={notices?.data?.data?.notices}
@@ -620,7 +620,7 @@ const Dashboard = () => {
           </Col>
         )}
 
-        <Col xl={18} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
+        <Col xl={17} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
           {NavigationDashboard?.viewCalendar && (
             <Card className="gx-card dashboard-calendar" title="Calendar">
               {leavesQuery?.isLoading ? (
