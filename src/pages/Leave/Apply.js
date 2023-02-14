@@ -281,7 +281,8 @@ function Apply({user}) {
       )
       setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
       setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
-      form.validateFields().then((values) =>
+      form.validateFields().then((values) => {
+        delete values.leaveDatesCasual
         leaveMutation.mutate({
           ...values,
           leaveDates: appliedDate
@@ -293,7 +294,7 @@ function Apply({user}) {
               : values?.halfDay,
           leaveStatus: appliedDate ? 'approved' : 'pending',
         })
-      )
+      })
     })
   }
   let userLeaves = []
