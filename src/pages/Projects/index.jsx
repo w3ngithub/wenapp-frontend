@@ -56,9 +56,9 @@ function ProjectsPage() {
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const [project, setProject] = useState('')
-  const [page, setPage] = useState({page: 1, limit: 20})
+  const [page, setPage] = useState({page: 1, limit: 25})
   const [projectStatus, setProjectStatus] = useState(undefined)
-  const [projectTags,setProjectTags] = useState(undefined)
+  const [projectTags, setProjectTags] = useState(undefined)
   const [projectType, setProjectType] = useState(undefined)
   const [projectClient, setprojectClient] = useState(undefined)
   const [developer, setDeveloper] = useState(undefined)
@@ -74,10 +74,7 @@ function ProjectsPage() {
   const navigate = useNavigate()
 
   const {
-    role: {
-      key,
-      permission,
-    },
+    role: {key, permission},
   } = useSelector(selectAuthUser)
 
   const {data: projectTypesData} = useQuery(['projectTypes'], getProjectTypes)
@@ -106,7 +103,7 @@ function ProjectsPage() {
     getAllUsers({positionType: positionTypeData?.devops, sort: 'name'})
   )
 
-  const {data:projectTagsData} = useQuery(['tags'], getProjectTags)
+  const {data: projectTagsData} = useQuery(['tags'], getProjectTags)
 
   const {data, isLoading, isError, isFetching} = useQuery(
     [
@@ -310,7 +307,7 @@ function ProjectsPage() {
     setprojectClient(clientId)
   }
 
-  const handleProjectTagsChange = (tagId)=>{
+  const handleProjectTagsChange = (tagId) => {
     setProjectTags(tagId)
   }
   const handleDeveloperChange = (developerId) => {
@@ -514,7 +511,7 @@ function ProjectsPage() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['20', '50', '80'],
+            pageSizeOptions: ['25', '50', '100'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
