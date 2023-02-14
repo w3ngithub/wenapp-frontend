@@ -459,13 +459,13 @@ function Apply({user}) {
     setNewDateArr([])
   }
   let userLeaves = []
-  const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays?.map(
-    (holiday) => ({
+  const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays
+    ?.map((holiday) => ({
       date: new DateObject(holiday?.date).format(),
       name: holiday?.title,
       allowLeaveApply: holiday?.allowLeaveApply,
-    })
-  )
+    }))
+    .filter((d) => !d?.allowLeaveApply)
   userLeavesQuery?.data?.data?.data?.data?.forEach((leave) => {
     if (leave?.leaveDates?.length > 1) {
       for (let i = 0; i < leave?.leaveDates.length; i++) {
@@ -643,9 +643,7 @@ function Apply({user}) {
                   mapDays={({date, today, selectedDate}) => {
                     let isWeekend = [0, 6].includes(date.weekDay.index)
                     let holidayList = holidaysThisYear?.filter(
-                      (holiday) =>
-                        !holiday?.allowLeaveApply &&
-                        date.format() === holiday?.date
+                      (holiday) => date.format() === holiday?.date
                     )
                     let isHoliday = holidayList?.length > 0
                     let leaveDate = userLeaves?.filter(
