@@ -311,7 +311,7 @@ function Leave() {
           <AccessWrapper role={leavePermissions?.showQuarterlyLeaveDetails}>
             <Col
               xl={
-                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 10
+                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 :9
               }
               lg={24}
               md={24}
