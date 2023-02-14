@@ -86,6 +86,19 @@ function UserDetailForm({
     )
   }
 
+  const disableReviewDate = (current) => {
+    return (
+      (current && current > moment().endOf('day')) ||
+      (intialValues?.lastReviewDate.length > 0 &&
+        current <
+          moment(
+            intialValues?.lastReviewDate[
+              intialValues?.lastReviewDate?.length - 1
+            ]
+          ))
+    )
+  }
+
   const handlePositionChange = (value) => {
     const isIntern =
       form.getFieldValue('position') ===
@@ -125,7 +138,10 @@ function UserDetailForm({
         bankAccNumber: intialValues.bankAccNumber && intialValues.bankAccNumber,
         bankName: intialValues.bankName && intialValues.bankName,
         lastReviewDate:
-          intialValues.lastReviewDate && moment(intialValues.lastReviewDate),
+          intialValues?.lastReviewDate?.length > 0 &&
+          moment(
+            intialValues.lastReviewDate[intialValues.lastReviewDate.length - 1]
+          ),
         joinDate:
           intialValues.joinDate &&
           moment(dateToDateFormat(intialValues.joinDate)),
@@ -377,7 +393,7 @@ function UserDetailForm({
             ]}
           >
             <DatePicker
-              disabledDate={disableDate}
+              disabledDate={disableReviewDate}
               className=" gx-w-100"
               disabled={readOnly}
             />
