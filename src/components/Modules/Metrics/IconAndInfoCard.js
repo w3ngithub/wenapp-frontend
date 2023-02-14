@@ -28,7 +28,8 @@ const IconAndInfoCard = (props) => {
     !title && innerWidth > 1600
       ? {
           row: {
-            marginTop: '17px',
+            //marginTop: '17px',
+            alignItems: 'center',
           },
           icon: {
             marginBottom: '10px',
@@ -40,15 +41,22 @@ const IconAndInfoCard = (props) => {
     <Widget
       styleName={`gx-bg-${cardColor} no-margin`}
       style={{height: nonCasualSickLeaveCardHeight}}
+      bodyStyle={{
+        padding: 20,
+        alignItems: 'center',
+        height: '100%',
+        justifyContent: 'center',
+        display: 'flex',
+      }}
     >
       <div
-        style={{marginLeft: '2rem', height: '100%', justifyContent: 'center'}}
+        style={{height: '100%', justifyContent: 'center'}}
         className="gx-flex-column"
       >
         <Row>
           <p className={`gx-text-${iconColor}`}>{title}</p>
         </Row>
-        <Row>
+        {/* <Row>
           <Col>
             <div className="gx-mr-lg-4 gx-mr-3">
               <i
@@ -60,14 +68,17 @@ const IconAndInfoCard = (props) => {
               />
             </div>
           </Col>
-        </Row>
+        </Row> */}
         <Row style={styleObject?.row}>
           {showIcon && (
             <Col>
               <div className="gx-mr-lg-4 gx-mr-3">
                 <i
                   className={`icon icon-${icon} gx-fs-xlxl gx-text-${iconColor} gx-d-flex`}
-                  style={{fontSize: 45, marginBottom: '5px'}}
+                  style={{
+                    fontSize: 45,
+                    marginLeft: icon === 'tasks' ? '-7px' : '',
+                  }}
                 />
               </div>
             </Col>
