@@ -98,7 +98,7 @@ function Leaves({
         }
       : undefined
   )
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState({page: 1, limit: 25})
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
@@ -426,7 +426,7 @@ function Leaves({
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['5', '10', '20', '50'],
+          pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
           total: leavesQuery?.data?.data?.data?.count || 1,
           onShowSizeChange,

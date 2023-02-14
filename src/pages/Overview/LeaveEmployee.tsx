@@ -38,7 +38,12 @@ const formattedLeaves = (leaves: any[]) => {
 }
 
 function LeaveEmployee({leaves}: {leaves: any[]}) {
-  const [sort, setSort] = useState({})
+  const [sort, setSort] = useState({
+    column: undefined,
+    order: 'ascend',
+    field: 'name',
+    columnKey: 'name',
+  })
 
   const handleTableChange = (pagination: any, filters: any, sorter: any) => {
     setSort(sorter)

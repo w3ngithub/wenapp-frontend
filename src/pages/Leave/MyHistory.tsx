@@ -18,7 +18,7 @@ import {customLeaves} from 'constants/LeaveDuration'
 
 const FormItem = Form.Item
 
-const defaultPage = {page: 1, limit: 10}
+const defaultPage = {page: 1, limit: 25}
 
 const formattedLeaves = (leaves: any) => {
   return leaves?.map((leave: any) => ({
@@ -219,7 +219,7 @@ function MyHistory({
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['5', '10', '20', '50'],
+          pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
           total: userLeavesQuery?.data?.data?.data?.count || 1,
           onShowSizeChange,

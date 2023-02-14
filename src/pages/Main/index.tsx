@@ -126,7 +126,10 @@ function App(props: any) {
 
   return (
     <ConfigProvider
-      locale={currentAppLocale.antd}
+      locale={{
+        locale: currentAppLocale.antd,
+        Table: {triggerDesc: '', triggerAsc: ''},
+      }}
       getPopupContainer={(node: any) => {
         if (node && node?.classList) {
           if (

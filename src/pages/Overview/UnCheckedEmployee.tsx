@@ -13,8 +13,13 @@ const formattedUsers = (users: any[]) => {
 }
 
 function UnCheckedInEmployee({notCheckInSection}: {notCheckInSection: any[]}) {
-  const [sort, setSort] = useState({})
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [sort, setSort] = useState({
+    column: undefined,
+    order: 'ascend',
+    field: 'name',
+    columnKey: 'name',
+  })
+  const [page, setPage] = useState({page: 1, limit: 50})
 
   const onShowSizeChange = (_: any, pageSize: number) => {
     setPage((prev) => ({...page, limit: pageSize}))
@@ -38,7 +43,7 @@ function UnCheckedInEmployee({notCheckInSection}: {notCheckInSection: any[]}) {
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['5', '10', '20', '50'],
+          pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
           total: notCheckInSection?.length || 1,
           onShowSizeChange,
