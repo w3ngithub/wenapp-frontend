@@ -118,6 +118,6 @@ export const updateRolePermission = (payload) => {
   const updatedRolePermission = JSON.parse(payload || '[{}]')
   return {
     type: UPDATE_PERMISSION_ROLE,
-    payload: updatedRolePermission,
+    payload: updatedRolePermission?.[0],
   }
 }
