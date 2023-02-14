@@ -74,7 +74,10 @@ function SummaryTable({data, quarterId}) {
 
   const columns = LEAVE_REPORT_COLUMNS(sort, handleOpenModal)?.filter(
     (item) => {
-      if (!reportPermission) {
+      if (
+        !reportPermission ||
+        moment() > moment(data?.[0]?.leaves?.[0]?.quarter?.toDate)
+      ) {
         return item?.title !== 'Action'
       } else return true
     }
