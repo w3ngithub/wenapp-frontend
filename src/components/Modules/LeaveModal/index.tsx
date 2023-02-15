@@ -138,6 +138,7 @@ function LeaveModal({
       ...res?.data?.data?.data?.map((type: leaveTypeInterface) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
+        leaveDays: type?.leaveDays,
       })),
     ],
   })
@@ -198,15 +199,15 @@ function LeaveModal({
       notification({message: 'Leave update failed!', type: 'error'})
     },
   })
+  console.log('bob', leaveTypeQuery?.data)
 
   const onFinish = (values: any) => {
     form.validateFields().then((values) => {
-      const leaveTypeName = leaveTypeQuery?.data?.find(
+      const leaveType = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
-      )?.value
+      )
       //calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays =
-        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
+      const numberOfLeaveDays = leaveType?.leaveDays - 1 // 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(

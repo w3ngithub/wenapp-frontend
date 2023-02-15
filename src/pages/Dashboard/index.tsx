@@ -277,7 +277,7 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: darkTheme ? darkThemeTextColor : '#05ccf9',
+        color: '#05ccf9',
       }
     if (event.type === 'holiday')
       style = {
@@ -289,7 +289,6 @@ const Dashboard = () => {
         color: 'rgb(235 68 68)',
       }
     if (event.type === 'leave') {
-      console.log('event', event)
       style = {
         ...style,
         fontWeight: '400',
@@ -297,11 +296,7 @@ const Dashboard = () => {
         marginBottom: '3px',
         marginLeft: '11px',
         // color: darkTheme ? darkThemeTextColor : '#038fde',
-        color: darkTheme
-          ? darkThemeTextColor
-          : event?.leaveType === 'Late Arrival'
-          ? '#eb9293'
-          : '#15f706',
+        color: event?.leaveType === 'Late Arrival' ? '#eb9293' : '#84f17d',
       }
     }
     if (event.type === 'notice')
@@ -331,7 +326,7 @@ const Dashboard = () => {
       alignItems: 'center',
       gap: '4px',
       margin: '0 !important',
-      fontSize: '7.9px',
+      fontSize: '9px',
     }
 
     if (props.event.type === 'birthday') {
@@ -349,7 +344,7 @@ const Dashboard = () => {
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
             <i
               className="icon icon-birthday-new gx-fs-sm "
-              style={{width: '12px'}}
+              style={{width: '12px', lineHeight: 2}}
             />
             <span className="gx-mt--3p">{shortName}</span>
           </p>
@@ -378,11 +373,8 @@ const Dashboard = () => {
           <p
             style={{...style, margin: 0, flexWrap: 'nowrap', fontWeight: '500'}}
           >
-            <i
-              className="icon icon-calendar gx-fs-xs gx-ml-1p"
-              // style={{width: '12px'}}
-            />
-            <span className="gx-ml-2p">{props?.event?.title}</span>
+            <i className="icon icon-calendar gx-fs-xs gx-ml-2p" />
+            <span className="gx-ml-12p">{props?.event?.title}</span>
           </p>
         </div>
       )
@@ -434,22 +426,15 @@ const Dashboard = () => {
             style={{
               ...style,
               margin: 0,
-              flexWrap: 'wrap',
               fontWeight: '500',
-              fontSize: '7.9px',
+              fontSize: '10px',
             }}
           >
             <LeaveIcon
-              width="13px"
-              fill={
-                darkTheme
-                  ? darkThemeTextColor
-                  : extraInfo === 'Late'
-                  ? '#eb9293'
-                  : '#15f706'
-              }
+              width="15px"
+              fill={extraInfo === 'Late' ? '#eb9293' : '#84f17d'}
             />
-            <span className="gx-mt-1p">{`${shortName}${
+            <span className="gx-mt-1p" style={{width: '59px'}}>{`${shortName}${
               extraInfo ? '(' + extraInfo + ')' : ''
             }`}</span>
           </p>
