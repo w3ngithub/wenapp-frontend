@@ -39,7 +39,7 @@ const IconAndInfoCard = (props) => {
 
   return (
     <Widget
-      styleName={`gx-bg-${cardColor} no-margin`}
+      styleName={`gx-bg-${cardColor} no-margin leave-card`}
       style={{height: nonCasualSickLeaveCardHeight}}
       bodyStyle={{
         padding: 20,
