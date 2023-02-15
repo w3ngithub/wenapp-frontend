@@ -93,8 +93,7 @@ function Leaves({
   const [leaveTitle, setLeaveTitle] = useState('')
   const [leaveInterval, setLeaveInterval] = useState(undefined)
   const {innerWidth} = useWindowsSize()
-  const [historyLeaveId, setHistoryLeaveId] = useState(undefined)
-  const [quarter, setQuarter] = useState(undefined)
+  const [leaveFilter, setLeaveFilter] = useState(undefined)
 
   const [form] = Form.useForm()
   const [date, setDate] = useState(
@@ -153,6 +152,7 @@ function Leaves({
     id: d?._id,
     value: d.quarterName,
   }))
+  const combinedFilter = [...leaveHistoryDays, ...updatedQuarters]
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => [
@@ -162,20 +162,6 @@ function Leaves({
       })),
     ],
   })
-
-  const handleLeaveHistoryDays = (value) => {
-    setPage(PAGE10)
-    if (value) {
-      const tempDays = leaveHistoryDays.find((d) => d?.id === value)?.value
-      const selectedDays = parseInt(tempDays?.split(' ')?.[1])
-      const newRangeDates = [moment().subtract(selectedDays, 'days'), moment()]
-      setHistoryLeaveId(value)
-      setRangeDate(newRangeDates)
-    } else {
-      setRangeDate([])
-      setHistoryLeaveId(undefined)
-    }
-  }
 
   const handleLeaveTypeChange = (value, option) => {
     setPage(PAGE10)
@@ -190,15 +176,26 @@ function Leaves({
     setLeaveInterval(value)
   }
 
-  const handleQuarterChange = (value) => {
+  const handleLeaveFilter = (value) => {
     setPage(PAGE10)
     if (value) {
-      const rangeDate = updatedQuarters.find((d) => d.id === value)
-      setQuarter(value)
-      setRangeDate([moment(rangeDate.fromDate), moment(rangeDate.toDate)])
+      if (updatedQuarters?.find((d) => d?.id === value)) {
+        const rangeDate = updatedQuarters?.find((d) => d?.id === value)
+        setLeaveFilter(value)
+        setRangeDate([moment(rangeDate?.fromDate), moment(rangeDate?.toDate)])
+      } else if (leaveHistoryDays?.find((d) => d?.id === value)) {
+        const tempDays = leaveHistoryDays?.find((d) => d?.id === value)?.value
+        const selectedDays = parseInt(tempDays?.split(' ')?.[1])
+        const newRangeDates = [
+          moment().subtract(selectedDays, 'days'),
+          moment(),
+        ]
+        setLeaveFilter(value)
+        setRangeDate(newRangeDates)
+      }
     } else {
       setRangeDate([])
-      setQuarter(undefined)
+      setLeaveFilter(undefined)
     }
   }
 
@@ -290,8 +287,7 @@ function Leaves({
     setLeaveInterval(undefined)
     setLeaveTitle('')
     setRangeDate([])
-    setHistoryLeaveId(undefined)
-    setQuarter(undefined)
+    setLeaveFilter(undefined)
   }
 
   const handleCloseModal = (
@@ -414,22 +410,16 @@ function Leaves({
               <RangePicker onChange={handleDateChange} value={rangeDate} />
             </FormItem>
 
-            <FormItem className="direct-form-item">
+            <FormItem
+              className="direct-form-item"
+              style={{marginRight: '2rem'}}
+            >
               <Select
                 style={{minWidth: '210px'}}
-                placeholder="Select Leave History Days"
-                onChange={handleLeaveHistoryDays}
-                value={historyLeaveId}
-                options={leaveHistoryDays}
-              />
-            </FormItem>
-
-            <FormItem className="direct-form-item">
-              <Select
-                placeholder="Select Quarter"
-                onChange={handleQuarterChange}
-                value={quarter}
-                options={updatedQuarters}
+                placeholder="Select Filter By"
+                onChange={handleLeaveFilter}
+                value={leaveFilter}
+                options={combinedFilter}
               />
             </FormItem>
 
