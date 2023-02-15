@@ -1,10 +1,9 @@
 import {Button, Form, Input, Modal, Spin} from 'antd'
 import React, {useEffect, useState} from 'react'
-import { Checkbox } from 'antd';
-import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import type { RadioChangeEvent } from 'antd';
-import { Radio } from 'antd';
-
+import {Checkbox} from 'antd'
+import type {CheckboxValueType} from 'antd/es/checkbox/Group'
+import type {RadioChangeEvent} from 'antd'
+import {Radio} from 'antd'
 
 interface modalInterface {
   isEditMode: boolean
@@ -12,22 +11,21 @@ interface modalInterface {
   currentData: any
   duplicateValue: boolean
   setDuplicateValue: (a: boolean) => void
-  onSubmit: (leave:{
+  onSubmit: (leave: {
     name: string
-    leaveDays: string,
-    gender:Array<string>,
-    Probation:Boolean
+    leaveDays: string
+    gender: Array<string>
+    Probation: Boolean
   }) => void
   onCancel: (setDuplicateValue: any) => void
   isLoading: boolean
   editData: any
 }
 
-interface GenderCheckInterface{
-    label:string,
-    value:string
-  }
-
+interface GenderCheckInterface {
+  label: string
+  value: string
+}
 
 function LeaveModal({
   isEditMode,
@@ -43,26 +41,28 @@ function LeaveModal({
   const [form] = Form.useForm()
 
   const [nameChanged, setNameChanged] = useState<boolean | undefined>()
-  const [genderDefault,setgenderDefault] = useState<CheckboxValueType[]>(['Male','Female'])
-  const [probationStatus,setProbationStatus] = useState<boolean>(true)
-  const [isgenderEmpty,setgenderEmpty] = useState<boolean>(false)
+  const [genderDefault, setgenderDefault] = useState<CheckboxValueType[]>([
+    'Male',
+    'Female',
+  ])
+  const [probationStatus, setProbationStatus] = useState<boolean>(true)
+  const [isgenderEmpty, setgenderEmpty] = useState<boolean>(false)
 
-  const GenderCheckboxOptions:GenderCheckInterface[] = [
+  const GenderCheckboxOptions: GenderCheckInterface[] = [
     {
-      label:'Male',
-      value:'Male'
+      label: 'Male',
+      value: 'Male',
     },
     {
-      label:'Female',
-      value:'Female'
-    }
+      label: 'Female',
+      value: 'Female',
+    },
   ]
 
-  const handleGenderCheckboxChange = (checkedValues:CheckboxValueType[]) =>{
+  const handleGenderCheckboxChange = (checkedValues: CheckboxValueType[]) => {
     setgenderEmpty(false)
     setgenderDefault(checkedValues)
   }
-
 
   const formFieldChanges = (values: {name?: string}) => {
     if (values?.hasOwnProperty('name')) {
@@ -75,8 +75,8 @@ function LeaveModal({
       }
     }
   }
-  
-  const onProbationChange=(e:RadioChangeEvent)=>{
+
+  const onProbationChange = (e: RadioChangeEvent) => {
     setProbationStatus(e.target.value)
   }
 
@@ -114,17 +114,23 @@ function LeaveModal({
       setDuplicateValue(true)
       return
     }
-    if(genderDefault.length===0){
+    if (genderDefault.length === 0) {
       setgenderEmpty(true)
       return
     }
     // console.log({...form.getFieldsValue(),gender:genderDefault,Probation:probationStatus})
-   form.validateFields().then((values) => onSubmit({...form.getFieldsValue(),gender:genderDefault,Probation:probationStatus}))
+    form.validateFields().then((values) =>
+      onSubmit({
+        ...form.getFieldsValue(),
+        gender: genderDefault,
+        Probation: probationStatus,
+      })
+    )
   }
 
   useEffect(() => {
     if (toggle) {
-      if (isEditMode){
+      if (isEditMode) {
         form.setFieldsValue({
           name: editData?.name,
           leaveDays: editData?.leaveDays,
@@ -132,7 +138,7 @@ function LeaveModal({
         setgenderDefault(editData?.gender)
         setProbationStatus(editData?.Probation)
       }
-      }
+    }
     if (!toggle) form.resetFields()
   }, [toggle])
   return (
@@ -186,12 +192,7 @@ function LeaveModal({
                     if (value?.trim() === '') {
                       throw new Error('Please enter a valid name.')
                     }
-                    if (value?.trim()?.length < 10) {
-                      throw new Error(
-                        'Leave name should be at least 10 characters.'
-                      )
-                    }
-                    if (value?.trim()?.length > 1000) {
+                    if (value?.trim()?.length > 100) {
                       throw new Error(
                         'Leave name cannot exceed more than 100 characters'
                       )
@@ -245,21 +246,22 @@ function LeaveModal({
           </Form.Item>
 
           <Form.Item label="Gender" required>
-          <Checkbox.Group options={GenderCheckboxOptions} onChange={handleGenderCheckboxChange} value={genderDefault}  />
+            <Checkbox.Group
+              options={GenderCheckboxOptions}
+              onChange={handleGenderCheckboxChange}
+              value={genderDefault}
+            />
           </Form.Item>
 
-          {isgenderEmpty && (
-            <p style={{color: 'red'}}>Gender is required.</p>
-          )}
+          {isgenderEmpty && <p style={{color: 'red'}}>Gender is required.</p>}
 
           <Form.Item label="Probation" required>
-          <Radio.Group onChange={onProbationChange} value={probationStatus}>
-          <Radio value={true}>Yes</Radio>
-          <Radio value={false}>No</Radio>
-        </Radio.Group>
+            <Radio.Group onChange={onProbationChange} value={probationStatus}>
+              <Radio value={true}>Yes</Radio>
+              <Radio value={false}>No</Radio>
+            </Radio.Group>
           </Form.Item>
 
-         
           {duplicateValue && (
             <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>
           )}
