@@ -345,7 +345,6 @@ function UserDetailForm({
 
           <FormItem
             {...formItemLayout}
-            all
             label="Last Review Date"
             hasFeedback={readOnly ? false : true}
             name="lastReviewDate"
