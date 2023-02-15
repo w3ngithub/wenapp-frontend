@@ -373,7 +373,7 @@ const Dashboard = () => {
           <p
             style={{...style, margin: 0, flexWrap: 'nowrap', fontWeight: '500'}}
           >
-            <i className="icon icon-calendar gx-fs-xs gx-ml-1p" />
+            <i className="icon icon-calendar gx-fs-xs gx-ml-2p" />
             <span className="gx-ml-12p">{props?.event?.title}</span>
           </p>
         </div>
