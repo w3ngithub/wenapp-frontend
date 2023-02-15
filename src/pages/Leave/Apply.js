@@ -227,9 +227,9 @@ function Apply({user}) {
   }
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      const leaveTypeName = leaveTypeQuery?.data?.find(
+      const leaveType = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
-      )?.value
+      )
 
       //code for substitute leave
       if (gender === 'Female') {
@@ -237,7 +237,7 @@ function Apply({user}) {
           (data) => data?.value === 'Substitute'
         )
         if (
-          form.getFieldValue('leaveDatesCasual').length >
+          form.getFieldValue('leaveDatesCasual')?.length >
             isSubstitute?.leaveDays &&
           isSubstitute?.id === form.getFieldValue('leaveType')
         ) {
@@ -262,8 +262,7 @@ function Apply({user}) {
       }
 
       // calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays =
-        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
+      const numberOfLeaveDays = leaveType?.leaveDays - 1 // 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(
