@@ -24,7 +24,7 @@ export const SALARY_REVIEW_COLUMN = (sortedInfo) => [
     title: 'Past Review',
     dataIndex: 'pastreview',
     key: 'pastreview',
-    render: (text, record) => text.map((d) => <div>{changeDate(d)}</div>),
+    render: (text, record) => text?.map((d) => <div>{changeDate(d)}</div>),
   },
 ]
 
