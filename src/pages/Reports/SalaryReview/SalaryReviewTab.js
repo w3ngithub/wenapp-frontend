@@ -32,7 +32,11 @@ const SalaryReviewTab = () => {
     REVIEWDATES[0].id
   )
 
-  const {data: salaryReview} = useQuery(
+  const {
+    data: salaryReview,
+    isLoading: salaryLoading,
+    isFetching: salaryFetching,
+  } = useQuery(
     ['usersSalaryReview', selectedCoworker, selectedReviewDate],
     () =>
       getSalaryReviewUsers({
@@ -135,7 +139,7 @@ const SalaryReviewTab = () => {
           hideOnSinglePage: true,
           onChange: handlePageChange,
         }}
-        loading={isLoading || isFetching}
+        loading={isLoading || isFetching || salaryLoading || salaryFetching}
       />
     </>
   )
