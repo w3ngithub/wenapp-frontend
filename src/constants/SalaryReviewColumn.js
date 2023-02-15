@@ -21,16 +21,16 @@ export const SALARY_REVIEW_COLUMN = (sortedInfo) => [
       sortedInfo.columnKey === 'upcomingreviewdate' && sortedInfo.order,
   },
   {
-    title: 'Past Review',
+    title: 'Past Review Dates',
     dataIndex: 'pastreview',
     key: 'pastreview',
-    render: (text, record) => text.map((d) => <div>{changeDate(d)}</div>),
+    render: (text, record) => text?.map((d) => <div>{changeDate(d)}</div>),
   },
 ]
 
 export const REVIEWDATES = [
   {id: 90, value: 'Upcoming 90 Days'},
   {id: 180, value: 'Upcoming 180 Days'},
-  {id: 365, value: 'Upcoming 360 Days'},
+  {id: 365, value: 'Upcoming 365 Days'},
   {id: '', value: 'All'},
 ]
