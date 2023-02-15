@@ -66,9 +66,6 @@ function MyHistory({
   let selectedDate = location.state?.date
   const {innerWidth} = useWindowsSize()
   const [datatoShow, setdatatoShow] = useState({})
-  const [historyLeaveId, setHistoryLeaveId] = useState<number | undefined>(
-    undefined
-  )
   const [openModal, setModal] = useState<boolean>(false)
   const [leaveStatus, setLeaveStatus] = useState<string | undefined>('')
   const [leaveTypeId, setLeaveType] = useState<string | undefined>(undefined)
@@ -83,7 +80,7 @@ function MyHistory({
   const [rangeDate, setRangeDate] = useState<any>([])
 
   const [page, setPage] = useState(PAGE10)
-  const [quarter, setQuarter] = useState(undefined)
+  const [leaveFilter, setLeaveFilter] = useState(undefined)
 
   const userLeavesQuery = useQuery(
     ['userLeaves', leaveStatus, rangeDate, page, leaveTypeId],
@@ -112,36 +109,35 @@ function MyHistory({
     id: d?._id,
     value: d.quarterName,
   }))
+  const combinedFilter = [...leaveHistoryDays, ...updatedQuarters]
 
   const handleLeaveType = (value: string | undefined) => {
     setPage(PAGE10)
     setLeaveType(value)
   }
 
-  const handleLeaveHistoryDays = (value: number | undefined) => {
+  const handleLeaveFilter = (value: any) => {
     setPage(PAGE10)
     if (value) {
-      const tempDays: any = leaveHistoryDays.find(
-        (d: any) => d?.id === value
-      )?.value
-      const selectedDays = parseInt(tempDays?.split(' ')?.[1])
-      const newRangeDates = [moment().subtract(selectedDays, 'days'), moment()]
-      setHistoryLeaveId(value)
-      setRangeDate(newRangeDates)
+      if (updatedQuarters?.find((d: any) => d?.id === value)) {
+        const rangeDate = updatedQuarters?.find((d: any) => d?.id === value)
+        setLeaveFilter(value)
+        setRangeDate([moment(rangeDate?.fromDate), moment(rangeDate?.toDate)])
+      } else if (leaveHistoryDays?.find((d: any) => d?.id === value)) {
+        const tempDays: any = leaveHistoryDays?.find(
+          (d: any) => d?.id === value
+        )?.value
+        const selectedDays = parseInt(tempDays?.split(' ')?.[1])
+        const newRangeDates = [
+          moment().subtract(selectedDays, 'days'),
+          moment(),
+        ]
+        setLeaveFilter(value)
+        setRangeDate(newRangeDates)
+      }
     } else {
       setRangeDate([])
-      setHistoryLeaveId(undefined)
-    }
-  }
-  const handleQuarterChange = (value: any) => {
-    setPage(PAGE10)
-    if (value) {
-      const rangeDate = updatedQuarters.find((d: any) => d.id === value)
-      setQuarter(value)
-      setRangeDate([moment(rangeDate.fromDate), moment(rangeDate.toDate)])
-    } else {
-      setRangeDate([])
-      setQuarter(undefined)
+      setLeaveFilter(undefined)
     }
   }
 
@@ -171,7 +167,7 @@ function MyHistory({
   }
 
   const handleDateChange = (value: any) => {
-    setHistoryLeaveId(undefined)
+    setLeaveFilter(undefined)
     if (page?.page > 1) setPage(PAGE10)
 
     setRangeDate(value)
@@ -186,10 +182,9 @@ function MyHistory({
   const handleResetFilter = () => {
     setLeaveStatus(undefined)
     setLeaveType(undefined)
-    setHistoryLeaveId(undefined)
     setPage(PAGE10)
     setRangeDate([])
-    setQuarter(undefined)
+    setLeaveFilter(undefined)
     setDate({
       utc: '',
       moment: undefined,
@@ -237,22 +232,13 @@ function MyHistory({
             <RangePicker onChange={handleDateChange} value={rangeDate} />
           </FormItem>
 
-          <FormItem className="direct-form-item">
-            <Select
-              placeholder="Select Quarter"
-              onChange={handleQuarterChange}
-              value={quarter}
-              options={updatedQuarters}
-            />
-          </FormItem>
-
           <FormItem className="direct-form-item" style={{marginRight: '2rem'}}>
             <Select
               style={{minWidth: '210px'}}
-              placeholder="Select Leave History Days"
-              onChange={handleLeaveHistoryDays}
-              value={historyLeaveId}
-              options={leaveHistoryDays}
+              placeholder="Select Filter By"
+              onChange={handleLeaveFilter}
+              value={leaveFilter}
+              options={combinedFilter}
             />
           </FormItem>
 
