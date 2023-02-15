@@ -311,19 +311,19 @@ function Leave() {
           <AccessWrapper role={leavePermissions?.showQuarterlyLeaveDetails}>
             <Col
               xl={
-                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 10
+                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 9
               }
               lg={24}
               md={24}
               sm={24}
               xs={24}
-              className="gx-p-0"
+              className="gx-p-0 leave-card-col"
             >
               <Card
                 title="Quarterly Leave"
                 style={{background: 'rgb(232 232 232 / 26%)'}}
-                bodyStyle={{paddingRight: 0, paddingLeft: 0}}
-                headStyle={{paddingRight: 0, paddingLeft: 0}}
+                // bodyStyle={{paddingRight: 0, paddingLeft: 0}}
+                // headStyle={{paddingRight: 0, paddingLeft: 0}}
               >
                 <QuarterlyLeavesRemainingAndAppliedCards
                   firstType="Days Remaining"
@@ -356,13 +356,15 @@ function Leave() {
               md={24}
               sm={24}
               xs={24}
-              className="gx-p-0"
+              className="gx-p-0 leave-card-col"
             >
               <Card
                 title="Annual Leave"
                 style={{background: 'rgb(232 232 232 / 26%)'}}
-                bodyStyle={{paddingRight: 0, paddingLeft: '30px'}}
-                headStyle={{paddingRight: 0, paddingLeft: '30px'}}
+                // bodyStyle={{paddingRight: 0}}
+                //headStyle={{paddingTop: 0}}
+                className="padding-right-0 header-pd-0"
+                bordered={false}
               >
                 <AnnualLeavesRemainingAndAppliedCards
                   firstTitle="Days Remaining"

@@ -14,16 +14,17 @@ const InfoCard = (props) => {
   return (
     <Widget
       styleName={`gx-bg-${cardColor} no-margin non-casual-sick-leave-card`}
-      style={{height: '100%'}}
+      //style={{height: '100%'}}
+      bodyStyle={{
+        padding: 20,
+      }}
     >
       <div
         style={{marginLeft: '2rem', height: '100%', justifyContent: 'center'}}
         className="gx-flex-column"
       >
         <Row>
-          <p className={`gx-text-${iconColor}`} style={{marginLeft: '1rem'}}>
-            {title}
-          </p>
+          <p className={`gx-text-${iconColor}`}>{title}</p>
         </Row>
         <Row>
           <Col lg={24} sm={24} xs={24} md={24} className="gx-p-0">

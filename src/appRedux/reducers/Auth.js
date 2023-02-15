@@ -124,7 +124,7 @@ const reducer = (state = INIT_STATE, action) => {
           ...state.authUser,
           user: {
             ...state.authUser.user,
-            role: action.payload,
+            role: {...state.authUser.user.role, permission: action.payload},
           },
         },
       }
