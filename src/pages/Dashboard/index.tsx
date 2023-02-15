@@ -84,12 +84,6 @@ const Dashboard = () => {
     )
   }, [])
 
-  const {data: salaryReview, refetch: salaryRefetch} = useQuery(
-    ['usersSalaryReview'],
-    getSalaryReviewUsers,
-    {enabled: false}
-  )
-
   const {data: AttendanceCount} = useQuery(
     ['todaysAttendance'],
     getTodaysUserAttendanceCount
@@ -251,12 +245,6 @@ const Dashboard = () => {
     projectRefetch,
   ])
 
-  useEffect(() => {
-    if (NavigationDashboard?.viewSalaryReview) {
-      Promise.all([salaryRefetch()])
-    }
-  }, [NavigationDashboard?.viewSalaryReview, salaryRefetch])
-
   const calCulateWidth = (roles: any) => {
     const roleArray = [
       roles?.viewCoworkersOnLeave,
@@ -289,7 +277,7 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: darkTheme ? darkThemeTextColor : '#FC6BAB',
+        color: darkTheme ? darkThemeTextColor : '#05ccf9',
       }
     if (event.type === 'holiday')
       style = {
@@ -300,15 +288,22 @@ const Dashboard = () => {
         marginLeft: '11px',
         color: 'rgb(235 68 68)',
       }
-    if (event.type === 'leave')
+    if (event.type === 'leave') {
+      console.log('event', event)
       style = {
         ...style,
         fontWeight: '400',
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: darkTheme ? darkThemeTextColor : '#038fde',
+        // color: darkTheme ? darkThemeTextColor : '#038fde',
+        color: darkTheme
+          ? darkThemeTextColor
+          : event?.leaveType === 'Late Arrival'
+          ? '#eb9293'
+          : '#15f706',
       }
+    }
     if (event.type === 'notice')
       style = {
         ...style,
@@ -336,6 +331,7 @@ const Dashboard = () => {
       alignItems: 'center',
       gap: '4px',
       margin: '0 !important',
+      fontSize: '7.9px',
     }
 
     if (props.event.type === 'birthday') {
@@ -347,41 +343,67 @@ const Dashboard = () => {
             alignItems: 'center',
             justifyContent: 'center',
             flexWrap: 'wrap',
+            textAlign: 'left',
           }}
         >
           <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
             <i
-              className="icon icon-birthday-new gx-fs-md "
-              style={{width: '18px'}}
+              className="icon icon-birthday-new gx-fs-sm "
+              style={{width: '12px'}}
             />
-            {shortName}
+            <span className="gx-mt--3p">{shortName}</span>
           </p>
         </div>
       )
     }
     if (props.event.type === 'holiday')
       return (
-        <div style={{...style, margin: 0, flexWrap: 'nowrap'}}>
-          <i className="icon icon-calendar gx-fs-md gx-ml-3p" />
-          <p style={{...style, marginTop: '8px'}}>{props?.event?.title}</p>
+        // <div style={{...style, margin: 0, flexWrap: 'nowrap'}}>
+        //   <i
+        //     className="icon icon-calendar gx-fs-xxm gx-ml-1p"
+        //     // style={{width: '12px'}}
+        //   />
+        //   <p style={{...style}}>{props?.event?.title}</p>
+        // </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            textAlign: 'left',
+          }}
+        >
+          <p
+            style={{...style, margin: 0, flexWrap: 'nowrap', fontWeight: '500'}}
+          >
+            <i
+              className="icon icon-calendar gx-fs-xs gx-ml-1p"
+              // style={{width: '12px'}}
+            />
+            <span className="gx-ml-2p">{props?.event?.title}</span>
+          </p>
         </div>
       )
 
     if (props.event.type === 'leave') {
-      let specificHalf = ''
-      if (
+      let extraInfo = ''
+      if (props.event.leaveType === 'Late Arrival') {
+        extraInfo = 'Late'
+      } else if (
         props?.event?.leaveType === 'Maternity' ||
         props?.event?.leaveType === 'Paternity' ||
-        props?.event?.leaveType === 'Paid Time Off' ||
+        props?.event?.leaveType === 'Paid Time' ||
         props?.event?.halfDay === ''
       ) {
-        specificHalf = ''
+        extraInfo = ''
       } else {
         if (props?.event?.halfDay === 'first-half') {
-          specificHalf = '1st'
+          extraInfo = '1st'
         }
         if (props?.event?.halfDay === 'second-half') {
-          specificHalf = '2nd'
+          extraInfo = '2nd'
         }
       }
       return (
@@ -392,6 +414,7 @@ const Dashboard = () => {
             alignItems: 'center',
             justifyContent: 'center',
             flexWrap: 'wrap',
+            // height: '10px',
           }}
           onClick={
             isAdmin
@@ -407,13 +430,28 @@ const Dashboard = () => {
               : () => {}
           }
         >
-          <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
+          <p
+            style={{
+              ...style,
+              margin: 0,
+              flexWrap: 'wrap',
+              fontWeight: '500',
+              fontSize: '7.9px',
+            }}
+          >
             <LeaveIcon
-              width="18px"
-              fill={darkTheme ? darkThemeTextColor : '#038fde'}
+              width="13px"
+              fill={
+                darkTheme
+                  ? darkThemeTextColor
+                  : extraInfo === 'Late'
+                  ? '#eb9293'
+                  : '#15f706'
+              }
             />
-            {`${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`}
-            {/* {`${shortName} ${specificHalf}`} */}
+            <span className="gx-mt-1p">{`${shortName}${
+              extraInfo ? '(' + extraInfo + ')' : ''
+            }`}</span>
           </p>
         </div>
       )
@@ -608,19 +646,27 @@ const Dashboard = () => {
           NavigationDashboard?.viewAnnouncement ||
           NavigationDashboard?.viewHolidays ||
           NavigationDashboard?.viewBirthdays) && (
-          <Col xl={7} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
+          <Col
+            xl={6}
+            lg={24}
+            md={24}
+            sm={24}
+            xs={24}
+            className={`gx-order-lg-2 ${
+              innerWidth > 1204 && 'announcement-card'
+            }`}
+          >
             <Widget>
               <EventsAndAnnouncements
                 announcements={notices?.data?.data?.notices}
                 holidays={Holidays?.data?.data?.data?.[0]?.holidays}
                 birthdays={BirthMonthUsers?.data?.data?.users}
-                salaryReview={salaryReview?.data?.data?.users}
               />
             </Widget>
           </Col>
         )}
 
-        <Col xl={17} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
+        <Col xl={18} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
           {NavigationDashboard?.viewCalendar && (
             <Card className="gx-card dashboard-calendar" title="Calendar">
               {leavesQuery?.isLoading ? (
