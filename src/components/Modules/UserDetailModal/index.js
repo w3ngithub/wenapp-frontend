@@ -9,9 +9,15 @@ import {
   Spin,
   Form,
   TimePicker,
+  Tooltip,
 } from 'antd'
 import moment from 'moment'
-import {dateToDateFormat, filterOptions, scrollForm} from 'helpers/utils'
+import {
+  changeDate,
+  dateToDateFormat,
+  filterOptions,
+  scrollForm,
+} from 'helpers/utils'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
@@ -51,32 +57,48 @@ function UserDetailForm({
   const user = useSelector(selectAuthUser)
 
   const handleSubmit = () => {
-    const data = intialValues?.allocatedLeaves
-
     form.validateFields().then((values) => {
+      let prevReviewDate =
+        intialValues?.lastReviewDate?.length > 0
+          ? intialValues?.lastReviewDate?.map((d) => moment(d))
+          : []
+      if (!!values?.lastReviewDate) {
+        if (
+          intialValues?.lastReviewDate?.length === 0 ||
+          !prevReviewDate[prevReviewDate.length - 1].isSame(
+            values?.lastReviewDate
+          )
+        ) {
+          prevReviewDate.push(values.lastReviewDate)
+        }
+      }
       onSubmit({
         ...intialValues,
         ...values,
+        lastReviewDate: prevReviewDate,
         officeTime: {
           utcDate: moment(values.officeTime._d).utc().format(),
           hour: moment(values.officeTime._d).add(10, 'm').utc().format('h'),
           minute: moment(values.officeTime._d).add(10, 'm').utc().format('m'),
         },
-        allocatedLeaves: {
-          ...data,
-          [currentQuarter?.data?.name]: values?.allocatedLeaves,
-        },
       })
     })
   }
 
-  const handleStatusChange = (value) => {
-    if (value === 'Probation')
-      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
-    else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
-  }
   const disableDate = (current) => {
     return current && current > moment().endOf('day')
+  }
+  const disableReviewDate = (current) => {
+    return (
+      (current && current > moment().endOf('day')) ||
+      (intialValues?.lastReviewDate.length > 0 &&
+        current <
+          moment(
+            intialValues?.lastReviewDate[
+              intialValues?.lastReviewDate?.length - 1
+            ]
+          ))
+    )
   }
 
   const disableJoinDate = (current) => {
@@ -86,20 +108,6 @@ function UserDetailForm({
     )
   }
 
-  const handlePositionChange = (value) => {
-    const isIntern =
-      form.getFieldValue('position') ===
-      position?.data?.data?.data?.find((pos) => pos?.name === 'Intern')._id
-    const isTrainee =
-      form.getFieldValue('position') ===
-      position?.data?.data?.data?.find((pos) => pos?.name === 'Trainee')._id
-
-    const isOnProbation = form.getFieldValue('status') === 'Probation'
-
-    if (isIntern || isTrainee || isOnProbation)
-      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
-    else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
-  }
   useEffect(() => {
     if (toggle) {
       form.setFieldsValue({
@@ -117,15 +125,16 @@ function UserDetailForm({
             ? intialValues.positionType._id
             : undefined,
         status: intialValues?.status && intialValues?.status,
-        allocatedLeaves:
-          intialValues?.allocatedLeaves?.[currentQuarter?.data?.name],
 
         panNumber: intialValues.panNumber && intialValues.panNumber,
         citNumber: intialValues.citNumber && intialValues.citNumber,
         bankAccNumber: intialValues.bankAccNumber && intialValues.bankAccNumber,
         bankName: intialValues.bankName && intialValues.bankName,
         lastReviewDate:
-          intialValues.lastReviewDate && moment(intialValues.lastReviewDate),
+          intialValues.lastReviewDate.length > 0 &&
+          moment(
+            intialValues.lastReviewDate[intialValues.lastReviewDate.length - 1]
+          ),
         joinDate:
           intialValues.joinDate &&
           moment(dateToDateFormat(intialValues.joinDate)),
@@ -273,7 +282,6 @@ function UserDetailForm({
               placeholder="Select Position"
               disabled={readOnly}
               filterOption={filterOptions}
-              onChange={handlePositionChange}
             >
               {position &&
                 position?.data?.data?.data?.map((position) => (
@@ -326,7 +334,6 @@ function UserDetailForm({
               placeholder="Select Status"
               disabled={readOnly}
               filterOption={filterOptions}
-              onChange={handleStatusChange}
             >
               {['Permanent', 'Probation'].map((status) => (
                 <Option value={status} key={status}>
@@ -335,34 +342,7 @@ function UserDetailForm({
               ))}
             </Select>
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Allocated Leaves"
-            hasFeedback={readOnly ? false : true}
-            name="allocatedLeaves"
-            rules={[
-              {
-                required: true,
-                validator: async (_, value) => {
-                  try {
-                    if (!value) {
-                      throw new Error('Allocated Leaves is required.')
-                    }
-                    const regex = /^[0-9]+$/
-                    const isValid = regex.test(value)
-                    if (!isValid) {
-                      throw new Error('Allocated Leaves must be a number')
-                    }
-                  } catch (error) {
-                    scrollForm(form, 'allocatedLeaves')
-                    throw new Error(error.message)
-                  }
-                },
-              },
-            ]}
-          >
-            <Input placeholder="Enter Allocated Leaves" disabled={readOnly} />
-          </FormItem>
+
           <FormItem
             {...formItemLayout}
             label="Last Review Date"
@@ -370,18 +350,18 @@ function UserDetailForm({
             name="lastReviewDate"
             rules={[
               {
-                type: 'object',
+                required: false,
                 message: 'Last Review Date is required.',
-                whitespace: true,
               },
             ]}
           >
             <DatePicker
-              disabledDate={disableDate}
+              disabledDate={disableReviewDate}
               className=" gx-w-100"
               disabled={readOnly}
             />
           </FormItem>
+
           <FormItem
             {...formItemLayout}
             label="Join Date"

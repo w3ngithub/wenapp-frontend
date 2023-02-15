@@ -3,3 +3,9 @@ export const immediateApprovalLeaveTypes = [
   'Paternity',
   'Paid Time Off',
 ]
+
+export const leaveHistoryDays = [
+  {id: 1, value: `Last 30 Days`},
+  {id: 2, value: `Last 60 Days`},
+  {id: 3, value: `Last 180 Days`},
+]

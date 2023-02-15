@@ -25,10 +25,9 @@ import {
 } from 'services/users/userDetails'
 import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
-import {getQuarters} from 'services/leaves'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import RoleAccess from 'constants/RoleAccess'
-import {PLACE_HOLDER_CLASS} from 'constants/Common'
+import {PAGE20, PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useDispatch, useSelector} from 'react-redux'
 import {switchedUser, switchUser, updateJoinDate} from 'appRedux/actions'
@@ -51,7 +50,7 @@ const formattedUsers = (users, isAdmin) => {
 function CoworkersPage() {
   // init hooks
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState({page: 1, limit: 20})
+  const [page, setPage] = useState(PAGE20)
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
   const [activeUser, setActiveUser] = useState(true)
   const [defaultUser, setDefaultUser] = useState('active')
@@ -62,7 +61,7 @@ function CoworkersPage() {
   const [userRecord, setUserRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
-  const [selectedIds,setSelectedIds] = useState([])
+  const [selectedIds, setSelectedIds] = useState([])
   const [openImport, setOpenImport] = useState(false)
   const [files, setFiles] = useState([])
   const queryClient = useQueryClient()
@@ -103,22 +102,7 @@ function CoworkersPage() {
       keepPreviousData: true,
     }
   )
-  const quarterQuery = useQuery(['quarters'], getQuarters, {
-    select: (res) => {
-      const ongoingQuarter = Object.entries(res.data?.data?.data[0]).find(
-        (quarter) =>
-          new Date(quarter[1].fromDate) <=
-            new Date(moment.utc(moment(new Date()).startOf('day')).format()) &&
-          new Date(moment.utc(moment(new Date()).startOf('day')).format()) <=
-            new Date(quarter[1].toDate)
-      )
 
-      return {
-        name: ongoingQuarter[0],
-        ...ongoingQuarter[1],
-      }
-    },
-  })
   const mutation = useMutation(
     (updatedUser) => updateUser(updatedUser.userId, updatedUser.updatedData),
     {
@@ -169,30 +153,6 @@ function CoworkersPage() {
     },
   })
 
-  const resetLeavesMutation = useMutation(
-    (payload) => resetAllocatedLeaves(payload),
-    {
-      onSuccess: (response) =>
-        handleResponse(
-          response,
-          'Allocated leaves reset of all user Successfully',
-          'Could not reset allocated leaves',
-          [
-            () => refetch(),
-            () => {
-              socket.emit('CUD')
-            },
-          ]
-        ),
-      onError: (error) => {
-        notification({
-          message: 'Could not reset allocated leaves',
-          type: 'error',
-        })
-      },
-    }
-  )
-
   useEffect(() => {
     if (isError) {
       notification({message: 'Could not load Users!', type: 'error'})
@@ -216,7 +176,9 @@ function CoworkersPage() {
           joinDate: user.joinDate
             ? moment.utc(user.joinDate).format()
             : undefined,
-          lastReviewDate: moment.utc(user.lastReviewDate).endOf('day').format(),
+          lastReviewDate: user.lastReviewDate.map((d) =>
+            moment.utc(d).endOf('day').format()
+          ),
           exitDate: user?.exitDate ? moment.utc(user.exitDate).format() : null,
         },
       })
@@ -243,10 +205,12 @@ function CoworkersPage() {
   }
 
   const handleRoleChange = (roleId) => {
+    setPage(PAGE20)
     setRole(roleId)
   }
 
   const handlePositionChange = (positionId) => {
+    setPage(PAGE20)
     setPosition(positionId)
   }
 
@@ -260,32 +224,30 @@ function CoworkersPage() {
     setSelectedRows([])
   }
 
-  const handleResetAllocatedLeaves = () => {
-    resetLeavesMutation.mutate({currentQuarter: quarterQuery?.data?.name})
-  }
   const handleRowSelect = (rows) => {
     setSelectedRows(rows)
   }
 
-  const handleSelectRow=(record,selected,selectedRows)=>{
-    if(selected) {
-      setSelectedIds((prev)=>[...prev,record?._id])
-      setSelectedRows((prev)=>[...prev,record])
-    }
-    else {
-      setSelectedIds((prev)=>prev.filter((d)=>d!==record?._id))
-      setSelectedRows((prev)=>prev.filter((d)=>d?._id!==record?._id))
+  const handleSelectRow = (record, selected, selectedRows) => {
+    if (selected) {
+      setSelectedIds((prev) => [...prev, record?._id])
+      setSelectedRows((prev) => [...prev, record])
+    } else {
+      setSelectedIds((prev) => prev.filter((d) => d !== record?._id))
+      setSelectedRows((prev) => prev.filter((d) => d?._id !== record?._id))
     }
   }
 
-  const handleSelectAll = (selected,selectedRows,changeRows)=>{
-    if(selected){
-      setSelectedIds(prev=>[...prev,...changeRows?.map((d)=>d?._id)])
-      setSelectedRows((prev)=>[...prev,...changeRows])
-    }else{
-      let changeRowsId = changeRows?.map((d)=>d?._id)
-      setSelectedIds(prev=>prev.filter((d)=>!changeRowsId.includes(d)))
-      setSelectedRows(prev=>prev.filter((d)=>!changeRows.includes(d?._id)))
+  const handleSelectAll = (selected, selectedRows, changeRows) => {
+    if (selected) {
+      setSelectedIds((prev) => [...prev, ...changeRows?.map((d) => d?._id)])
+      setSelectedRows((prev) => [...prev, ...changeRows])
+    } else {
+      let changeRowsId = changeRows?.map((d) => d?._id)
+      setSelectedIds((prev) => prev.filter((d) => !changeRowsId.includes(d)))
+      setSelectedRows((prev) =>
+        prev.filter((d) => !changeRows.includes(d?._id))
+      )
     }
   }
 
@@ -318,7 +280,6 @@ function CoworkersPage() {
           positionTypes={positionTypes}
           intialValues={userRecord}
           readOnly={readOnly}
-          currentQuarter={quarterQuery}
         />
       )}
       <Card title="Co-workers">
@@ -336,20 +297,6 @@ function CoworkersPage() {
               enterButton
               className="direct-form-item"
             />
-            {!getIsAdmin() && (
-              <AccessWrapper role={coWorkersPermissions?.resetAllocatedLeaves}>
-                <Popconfirm
-                  title={`Are you sure to reset allocated leaves?`}
-                  onConfirm={handleResetAllocatedLeaves}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <Button className="gx-btn gx-btn-primary gx-text-white gx-mb-1">
-                    Reset Allocated Leaves
-                  </Button>
-                </Popconfirm>
-              </AccessWrapper>
-            )}
           </div>
           <div className="gx-d-flex gx-justify-content-between gx-flex-row ">
             <Form layout="inline" form={form}>
@@ -430,17 +377,16 @@ function CoworkersPage() {
                         'DOB',
                         'Join Date',
                       ],
-                      ...selectedRows
-                        ?.map((d) => [
-                          d?.name,
-                          d?.email,
-                          d?.role?.value,
-                          d?.role?._id,
-                          d?.position?.name,
-                          d?.position?._id,
-                          d?.dob,
-                          d?.joinDate
-                        ]),
+                      ...selectedRows?.map((d) => [
+                        d?.name,
+                        d?.email,
+                        d?.role?.value,
+                        d?.role?._id,
+                        d?.position?.name,
+                        d?.position?._id,
+                        d?.dob,
+                        d?.joinDate,
+                      ]),
                     ]}
                   >
                     <Button
@@ -471,7 +417,7 @@ function CoworkersPage() {
           rowSelection={{
             onSelect: handleSelectRow,
             selectedRowKeys: selectedIds,
-            onSelectAll:handleSelectAll,
+            onSelectAll: handleSelectAll,
           }}
           pagination={{
             current: page.page,
@@ -486,7 +432,7 @@ function CoworkersPage() {
           loading={
             mutation.isLoading ||
             isFetching ||
-            resetLeavesMutation.isLoading ||
+            // resetLeavesMutation.isLoading ||
             disableUserMmutation.isLoading
           }
         />

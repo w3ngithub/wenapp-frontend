@@ -33,6 +33,12 @@
       padding-right: @gx-card-padding-base !important;
     }
   }
+  & .no-margin {
+    margin: 0 !important;
+  }
+  &-body {
+    height: 100%;
+  }
 }
 
 .ant-card-wider-padding .ant-card-body {
@@ -453,5 +459,34 @@
   &.ant-divider-with-text-left,
   &.ant-divider-with-text-right {
     font-size: @font-size-base;
+  }
+}
+
+.leave-card {
+  max-width: 360px;
+  min-height: 100px;
+}
+.leave-card-col {
+  @media (min-width: 1600px) {
+    .ant-card-head,
+    .ant-card-body {
+      padding-left: 0;
+    }
+    .padding-right-0 {
+      .ant-card-head,
+      .ant-card-body {
+        padding-right: 0;
+      }
+    }
+  }
+  @media (max-width: 1600px) {
+    .ant-card {
+      margin-bottom: 0;
+    }
+    .header-pd-0 {
+      .ant-card-head-title {
+        padding: 0;
+      }
+    }
   }
 }

@@ -5,7 +5,11 @@ import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
 import {CSVLink} from 'react-csv'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {changeLeaveStatus, getLeavesOfAllUsers} from 'services/leaves'
+import {
+  changeLeaveStatus,
+  getLeavesOfAllUsers,
+  getQuarters,
+} from 'services/leaves'
 import {
   capitalizeInput,
   changeDate,
@@ -13,6 +17,7 @@ import {
   filterSpecificUser,
   getIsAdmin,
   handleResponse,
+  MuiFormatDate,
   removeDash,
 } from 'helpers/utils'
 import Notification from 'components/Elements/Notification'
@@ -28,8 +33,11 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
+import {PAGE10} from 'constants/Common'
+import {leaveHistoryDays} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
+const {RangePicker} = DatePicker
 
 const formattedLeaves = (leaves) => {
   return leaves?.map((leave) => ({
@@ -85,6 +93,8 @@ function Leaves({
   const [leaveTitle, setLeaveTitle] = useState('')
   const [leaveInterval, setLeaveInterval] = useState(undefined)
   const {innerWidth} = useWindowsSize()
+  const [leaveFilter, setLeaveFilter] = useState(undefined)
+
   const [form] = Form.useForm()
   const [date, setDate] = useState(
     selectedDate
@@ -98,12 +108,22 @@ function Leaves({
         }
       : undefined
   )
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [rangeDate, setRangeDate] = useState([])
+  const [page, setPage] = useState(PAGE10)
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
   const leavesQuery = useQuery(
-    ['leaves', leaveStatus, user, date, page, leaveId, leaveInterval],
+    [
+      'leaves',
+      leaveStatus,
+      user,
+      date,
+      rangeDate,
+      page,
+      leaveId,
+      leaveInterval,
+    ],
     () =>
       getLeavesOfAllUsers(
         leaveStatus,
@@ -113,12 +133,26 @@ function Leaves({
         page.limit,
         '-leaveDates,_id',
         leaveId,
+        rangeDate?.[0] ? MuiFormatDate(rangeDate[0]?._d) + 'T00:00:00Z' : '',
+        rangeDate?.[1] ? MuiFormatDate(rangeDate[1]?._d) + 'T00:00:00Z' : '',
         leaveInterval === 'full-day' ? undefined : leaveInterval
       ),
     {
       onError: (err) => console.log(err),
     }
   )
+  const {data: quarterQuery} = useQuery(['quarters'], getQuarters, {
+    select: (res) => {
+      return res.data?.data?.data?.[0]?.quarters
+    },
+  })
+
+  const updatedQuarters = quarterQuery?.map((d) => ({
+    ...d,
+    id: d?._id,
+    value: d.quarterName,
+  }))
+  const combinedFilter = [...leaveHistoryDays, ...(updatedQuarters || [])]
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => [
@@ -130,7 +164,7 @@ function Leaves({
   })
 
   const handleLeaveTypeChange = (value, option) => {
-    console.log('op', option)
+    setPage(PAGE10)
     setLeaveId(value)
     setLeaveTitle(option.children)
     if (option.children !== 'Sick' && option.children !== 'Casual') {
@@ -138,8 +172,31 @@ function Leaves({
     }
   }
   const handleLeaveIntervalChange = (value) => {
-    console.log('value', value)
+    setPage(PAGE10)
     setLeaveInterval(value)
+  }
+
+  const handleLeaveFilter = (value) => {
+    setPage(PAGE10)
+    if (value) {
+      if (updatedQuarters?.find((d) => d?.id === value)) {
+        const rangeDate = updatedQuarters?.find((d) => d?.id === value)
+        setLeaveFilter(value)
+        setRangeDate([moment(rangeDate?.fromDate), moment(rangeDate?.toDate)])
+      } else if (leaveHistoryDays?.find((d) => d?.id === value)) {
+        const tempDays = leaveHistoryDays?.find((d) => d?.id === value)?.value
+        const selectedDays = parseInt(tempDays?.split(' ')?.[1])
+        const newRangeDates = [
+          moment().subtract(selectedDays, 'days'),
+          moment(),
+        ]
+        setLeaveFilter(value)
+        setRangeDate(newRangeDates)
+      }
+    } else {
+      setRangeDate([])
+      setLeaveFilter(undefined)
+    }
   }
 
   const emailMutation = useMutation((payload) => sendEmailforLeave(payload))
@@ -213,19 +270,24 @@ function Leaves({
   }
 
   const handleStatusChange = (statusId) => {
+    setPage(PAGE10)
     setLeaveStatus(statusId)
   }
   const handleUserChange = (user) => {
+    setPage(PAGE10)
     setUser(user)
   }
 
   const handleResetFilter = () => {
+    setPage(PAGE10)
     setLeaveStatus(undefined)
     setUser(undefined)
     setDate(undefined)
     setLeaveId(undefined)
     setLeaveInterval(undefined)
     setLeaveTitle('')
+    setRangeDate([])
+    setLeaveFilter(undefined)
   }
 
   const handleCloseModal = (
@@ -265,9 +327,8 @@ function Leaves({
   }
 
   const handleDateChange = (value) => {
-    const m = moment(value._d)
-    m.set({h: 5, m: 45, s: 0})
-    setDate({moment: value, utc: moment.utc(m._d).format()})
+    setPage(PAGE10)
+    setRangeDate(value)
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)
   const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
@@ -345,13 +406,20 @@ function Leaves({
                 onChange={handleUserChange}
               />
             </FormItem>
-            <FormItem style={{marginBottom: '0.5px'}}>
-              <DatePicker
-                className="gx-mb-3 "
-                style={{width: innerWidth <= 748 ? '100%' : '200px'}}
-                value={date?.moment}
-                onChange={handleDateChange}
-                disabledDate={disabledDate}
+            <FormItem>
+              <RangePicker onChange={handleDateChange} value={rangeDate} />
+            </FormItem>
+
+            <FormItem
+              className="direct-form-item"
+              style={{marginRight: '2rem'}}
+            >
+              <Select
+                style={{minWidth: '210px'}}
+                placeholder="Select Filter By"
+                onChange={handleLeaveFilter}
+                value={leaveFilter}
+                options={combinedFilter}
               />
             </FormItem>
 

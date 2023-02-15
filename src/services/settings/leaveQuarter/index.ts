@@ -2,10 +2,12 @@ import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
 
-export const getLeaveQuarter = async () => {
+export const getLeaveQuarter = async (year: any = '') => {
   try {
     let response = await API.get(
-      `${Apis.Leaves}/quarters?sort=-createdAt&limit=1`
+      `${Apis.Leaves}/quarters?sort=-createdAt&limit=1${
+        year ? `&fiscalYear=${year}-01-01T00:00:00.000Z` : ''
+      }`
     )
     return getAPIResponse(response)
   } catch (err) {
