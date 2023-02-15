@@ -216,7 +216,9 @@ function CoworkersPage() {
           joinDate: user.joinDate
             ? moment.utc(user.joinDate).format()
             : undefined,
-          lastReviewDate: moment.utc(user.lastReviewDate).endOf('day').format(),
+          lastReviewDate: user.lastReviewDate.map((d) =>
+            moment(d).startOf('day').utc().format()
+          ),
           exitDate: user?.exitDate ? moment.utc(user.exitDate).format() : null,
         },
       })

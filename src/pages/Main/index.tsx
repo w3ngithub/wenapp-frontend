@@ -38,6 +38,7 @@ import {
   REPORTS,
   RESET_PASSWORD,
   RESOURCES,
+  SALARY_REVIEW,
   SETTINGS,
   SIGNIN,
   SIGNUP,
@@ -70,6 +71,7 @@ import Error404 from 'components/Modules/404'
 import ActivityLogs from 'pages/Reports/ActivityLogs'
 import MaintenanceMode from 'pages/MaintenanceMode'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import SalaryReviewPage from 'pages/Reports/SalaryReview'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -282,6 +284,14 @@ function App(props: any) {
                   element={
                     <AccessRoute roles={NavigationReports?.viewLeaveReport}>
                       <LeaveReport />
+                    </AccessRoute>
+                  }
+                />
+                <Route
+                  path={SALARY_REVIEW}
+                  element={
+                    <AccessRoute roles={NavigationReports?.viewSalaryReview}>
+                      <SalaryReviewPage />
                     </AccessRoute>
                   }
                 />
