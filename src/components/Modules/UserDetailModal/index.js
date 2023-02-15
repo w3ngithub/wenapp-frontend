@@ -54,9 +54,24 @@ function UserDetailForm({
     const data = intialValues?.allocatedLeaves
 
     form.validateFields().then((values) => {
+      let prevReviewDate =
+        intialValues?.lastReviewDate?.length > 0
+          ? intialValues?.lastReviewDate?.map((d) => moment(d))
+          : []
+      if (!!values?.lastReviewDate) {
+        if (
+          intialValues?.lastReviewDate?.length === 0 ||
+          !prevReviewDate[prevReviewDate.length - 1].isSame(
+            values?.lastReviewDate
+          )
+        ) {
+          prevReviewDate.push(values.lastReviewDate)
+        }
+      }
       onSubmit({
         ...intialValues,
         ...values,
+        lastReviewDate: prevReviewDate,
         officeTime: {
           utcDate: moment(values.officeTime._d).utc().format(),
           hour: moment(values.officeTime._d).add(10, 'm').utc().format('h'),
