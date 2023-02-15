@@ -50,7 +50,6 @@ const LEAVE_REPORT_COLUMNS = (
     editable: false,
     sorter: (a: any, b: any) => a.remainingLeaves - b.remainingLeaves,
     sortOrder: sortedInfo.columnKey === 'remainingLeaves' && sortedInfo.order,
-    width: 300,
     render: (text: any, record: any) => {
       return (
         <>
@@ -62,42 +61,29 @@ const LEAVE_REPORT_COLUMNS = (
             {text}
           </p>
           {record?.user?.leaveadjustmentBalance > 0 && (
-            <Tooltip
-              title={`Leave Adjustment Balance is leave balance to deduct. Leave Adjustment Balance : ${record?.user?.leaveadjustmentBalance}`}
-            >
-              <span style={{opacity: 0.6, fontSize: '12px'}}>
-                (Leave Adjustment Balance :{' '}
-                {record?.user?.leaveadjustmentBalance})
-              </span>
-            </Tooltip>
+            <span style={{opacity: 0.6, fontSize: '12px'}}>
+              (Leave adj : {record?.user?.leaveadjustmentBalance})
+            </span>
           )}
         </>
       )
     },
   },
   {
-    title: 'Approved Leaves',
+    title: 'Approved S.L',
+    dataIndex: 'sickLeaves',
+    key: 'sickLeaves',
     editable: false,
-    dataIndex: 'approvedLeaves',
-    key: 'approvedLeaves',
-    children: [
-      {
-        title: 'Sick Leaves',
-        dataIndex: 'sickLeaves',
-        key: 'sickLeaves',
-        editable: false,
-        sorter: (a: any, b: any) => a.sickLeaves - b.sickLeaves,
-        sortOrder: sortedInfo.columnKey === 'sickLeaves' && sortedInfo.order,
-      },
-      {
-        title: 'Casual Leaves',
-        dataIndex: 'casualLeaves',
-        key: 'casualLeaves',
-        editable: false,
-        sorter: (a: any, b: any) => a.casualLeaves - b.casualLeaves,
-        sortOrder: sortedInfo.columnKey === 'casualLeaves' && sortedInfo.order,
-      },
-    ],
+    sorter: (a: any, b: any) => a.sickLeaves - b.sickLeaves,
+    sortOrder: sortedInfo.columnKey === 'sickLeaves' && sortedInfo.order,
+  },
+  {
+    title: 'Approved C.L',
+    dataIndex: 'casualLeaves',
+    key: 'casualLeaves',
+    editable: false,
+    sorter: (a: any, b: any) => a.casualLeaves - b.casualLeaves,
+    sortOrder: sortedInfo.columnKey === 'casualLeaves' && sortedInfo.order,
   },
   {
     title: 'Action',

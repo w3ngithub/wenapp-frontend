@@ -114,6 +114,7 @@ function SummaryTable({data, quarterId}) {
           //   : true,
           onChange: handlePageChange,
         }}
+        footer={() => 'Leave adj is leaves to be duducted.'}
         // loading={isLoading || isFetching}
       />
     </>
