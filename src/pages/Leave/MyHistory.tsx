@@ -109,7 +109,7 @@ function MyHistory({
     id: d?._id,
     value: d.quarterName,
   }))
-  const combinedFilter = [...leaveHistoryDays, ...updatedQuarters]
+  const combinedFilter = [...leaveHistoryDays, ...(updatedQuarters || [])]
 
   const handleLeaveType = (value: string | undefined) => {
     setPage(PAGE10)
