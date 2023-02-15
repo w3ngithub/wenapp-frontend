@@ -277,7 +277,7 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: darkTheme ? darkThemeTextColor : '#05ccf9',
+        color: '#05ccf9',
       }
     if (event.type === 'holiday')
       style = {
@@ -289,7 +289,6 @@ const Dashboard = () => {
         color: 'rgb(235 68 68)',
       }
     if (event.type === 'leave') {
-      console.log('event', event)
       style = {
         ...style,
         fontWeight: '400',
@@ -297,11 +296,7 @@ const Dashboard = () => {
         marginBottom: '3px',
         marginLeft: '11px',
         // color: darkTheme ? darkThemeTextColor : '#038fde',
-        color: darkTheme
-          ? darkThemeTextColor
-          : event?.leaveType === 'Late Arrival'
-          ? '#eb9293'
-          : '#15f706',
+        color: event?.leaveType === 'Late Arrival' ? '#eb9293' : '#15f706',
       }
     }
     if (event.type === 'notice')
@@ -441,13 +436,7 @@ const Dashboard = () => {
           >
             <LeaveIcon
               width="13px"
-              fill={
-                darkTheme
-                  ? darkThemeTextColor
-                  : extraInfo === 'Late'
-                  ? '#eb9293'
-                  : '#15f706'
-              }
+              fill={extraInfo === 'Late' ? '#eb9293' : '#15f706'}
             />
             <span className="gx-mt-1p">{`${shortName}${
               extraInfo ? '(' + extraInfo + ')' : ''
