@@ -31,6 +31,7 @@ export const WEEKLY_REPORT = `weekly-report`
 export const WORK_LOG_REPORT = `work-log-report`
 export const LEAVE_REPORT = `leave-report`
 export const ACTIVITY_LOGS = `activity-logs`
+export const SALARY_REVIEW = 'salary-review'
 
 // Resources
 export const FAQS = `faq`
