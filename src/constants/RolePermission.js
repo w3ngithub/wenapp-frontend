@@ -200,6 +200,7 @@ export const permissionRole = {
     {name: 'viewWeeklyReport', label: 'View Weekly Report', rule: []},
     {name: 'viewLeaveReport', label: 'View Leave Report', rule: []},
     {name: 'viewWorkLogReport', label: 'View Work Log Report', rule: []},
+    {name: 'viewSalaryReview', label: 'View Salary Review', rule: []},
     {name: 'viewActivityLog', label: 'View Activity Log', rule: []},
   ],
   Resources: [
