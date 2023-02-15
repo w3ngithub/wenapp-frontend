@@ -338,8 +338,8 @@ function UserDetailForm({
               disabled={readOnly}
             >
               <Popconfirm
-                title="Are you sure?"
-                okText="Ok"
+                title="Are you sure you want to switch Co-Worker Status to Permanent?"
+                okText="Yes"
                 cancelText="No"
                 onConfirm={() => setStatus('Permanent')}
               >
@@ -347,8 +347,8 @@ function UserDetailForm({
               </Popconfirm>
 
               <Popconfirm
-                title="Are you sure?"
-                okText="Ok"
+                title="Are you sure you want to switch Co-worker Status to Probation?"
+                okText="Yes"
                 cancelText="No"
                 onConfirm={() => setStatus('Probation')}
               >
