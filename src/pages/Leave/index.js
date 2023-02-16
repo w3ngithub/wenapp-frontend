@@ -434,7 +434,13 @@ function Leave() {
       />
 
       <Card title="Leave Management System">
-        {!IsIntern && leaveCardContent}
+        {!IsIntern ? (
+          leaveCardContent
+        ) : (
+          <p className="blueText">
+            Note: You are allocated 1 day leave each month.
+          </p>
+        )}
 
         <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
           {leavePermissions?.applyLeave && (
