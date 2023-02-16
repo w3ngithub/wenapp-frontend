@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import '@ant-design/compatible/assets/index.css'
 import {
   Button,
@@ -10,6 +10,8 @@ import {
   Form,
   TimePicker,
   Tooltip,
+  Radio,
+  Popconfirm,
 } from 'antd'
 import moment from 'moment'
 import {
@@ -49,6 +51,7 @@ function UserDetailForm({
 }) {
   const [form] = Form.useForm()
 
+  const [status, setStatus] = useState(false)
   const handleCancel = () => {
     form.resetFields()
     onToggleModal({})
@@ -75,6 +78,7 @@ function UserDetailForm({
       onSubmit({
         ...intialValues,
         ...values,
+        status,
         lastReviewDate: prevReviewDate,
         officeTime: {
           utcDate: moment(values.officeTime._d).utc().format(),
@@ -124,7 +128,6 @@ function UserDetailForm({
           intialValues.positionType && intialValues.positionType._id
             ? intialValues.positionType._id
             : undefined,
-        status: intialValues?.status && intialValues?.status,
 
         panNumber: intialValues.panNumber && intialValues.panNumber,
         citNumber: intialValues.citNumber && intialValues.citNumber,
@@ -143,6 +146,7 @@ function UserDetailForm({
           ? moment(new Date(intialValues?.officeTime?.utcDate), 'h:mm:ss a')
           : moment('09:00:00 AM', 'HH:mm:ss a'),
       })
+      setStatus(intialValues?.status)
     }
 
     if (!toggle) form.resetFields()
@@ -320,8 +324,6 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="Status"
-            hasFeedback={readOnly ? false : true}
-            name="status"
             rules={[
               {
                 required: true,
@@ -329,18 +331,30 @@ function UserDetailForm({
               },
             ]}
           >
-            <Select
-              showSearch
-              placeholder="Select Status"
+            <Radio.Group
+              buttonStyle="solid"
+              value={status}
+              id="radio"
               disabled={readOnly}
-              filterOption={filterOptions}
             >
-              {['Permanent', 'Probation'].map((status) => (
-                <Option value={status} key={status}>
-                  {status}
-                </Option>
-              ))}
-            </Select>
+              <Popconfirm
+                title="Are you sure you want to switch Co-Worker Status to Permanent?"
+                okText="Yes"
+                cancelText="No"
+                onConfirm={() => setStatus('Permanent')}
+              >
+                <Radio.Button value="Permanent">Permanent</Radio.Button>
+              </Popconfirm>
+
+              <Popconfirm
+                title="Are you sure you want to switch Co-worker Status to Probation?"
+                okText="Yes"
+                cancelText="No"
+                onConfirm={() => setStatus('Probation')}
+              >
+                <Radio.Button value="Probation">Probation</Radio.Button>
+              </Popconfirm>
+            </Radio.Group>
           </FormItem>
 
           <FormItem

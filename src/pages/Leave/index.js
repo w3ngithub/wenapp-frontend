@@ -28,10 +28,12 @@ import {socket} from 'pages/Main'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import ReapplyLeaveModal from 'components/Modules/ReapplyLeaveModal'
 import {STATUS_TYPES} from 'constants/Leaves'
-import moment from 'moment'
+import {Collapse} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {WalletOutlined} from '@ant-design/icons'
 
 const TabPane = Tabs.TabPane
+const {Panel} = Collapse
 
 function Leave() {
   const location = useLocation()
@@ -276,7 +278,132 @@ function Leave() {
         `${nonCasualSickLeaveCard.offsetHeight}px`
       )
   })
-  const padding = innerWidth < 1200 ? '0px 24px' : '24px'
+
+  const quarterlyLeaveContent = (
+    <QuarterlyLeavesRemainingAndAppliedCards
+      firstType="Days Remaining"
+      secondType="Days Approved"
+      firstNumber={
+        leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]?.remainingLeaves
+      }
+      secondNumber={loggedInUser.leaveadjustmentBalance}
+      approvedLeaves={{
+        sickLeaves:
+          leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]?.approvedLeaves
+            ?.sickLeaves,
+        casualLeaves:
+          leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]?.approvedLeaves
+            ?.casualLeaves,
+      }}
+      nonCasualSickLeaveCardHeight={nonCasualSickLeaveCardHeight}
+    />
+  )
+
+  const annualLeaveContent = (
+    <AnnualLeavesRemainingAndAppliedCards
+      firstTitle="Days Remaining"
+      secondTitle="Days Approved"
+      firstType="Sick"
+      secondType="Casual"
+      sickDayRemaining={
+        yearlyLeavesTakn?.['Sick Leave']
+          ? allocatedYealryLeaves?.['Sick Leave'] -
+            yearlyLeavesTakn?.['Sick Leave']
+          : allocatedYealryLeaves?.['Sick Leave']
+      }
+      casualDayRemaining={
+        yearlyLeavesTakn?.['Casual Leave']
+          ? allocatedYealryLeaves?.['Casual Leave'] -
+            yearlyLeavesTakn?.['Casual Leave']
+          : allocatedYealryLeaves?.['Casual Leave']
+      }
+      sickDayApplied={yearlyLeavesTakn?.['Sick Leave'] || 0}
+      casualDayApplied={yearlyLeavesTakn?.['Casual Leave'] || 0}
+      YearlyLeaveExceptCasualandSick={YearlyLeaveExceptCasualandSick}
+      nonCasualSickLeaveCardHeight={nonCasualSickLeaveCardHeight}
+    />
+  )
+
+  const leaveCardContent =
+    innerWidth > 1600 ? (
+      <Row>
+        <AccessWrapper role={leavePermissions?.showQuarterlyLeaveDetails}>
+          <Col
+            xl={IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 9}
+            lg={24}
+            md={24}
+            sm={24}
+            xs={24}
+            className="gx-p-0 leave-card-col"
+          >
+            <Card
+              title="Quarterly Leave"
+              style={{background: 'rgb(232 232 232 / 26%)'}}
+              // bodyStyle={{paddingRight: 0, paddingLeft: 0}}
+              // headStyle={{paddingRight: 0, paddingLeft: 0}}
+            >
+              {quarterlyLeaveContent}
+            </Card>
+          </Col>
+        </AccessWrapper>
+
+        <AccessWrapper
+          role={!IsIntern && leavePermissions?.showAnnualLeaveDetails}
+        >
+          <Col
+            xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 14}
+            lg={24}
+            md={24}
+            sm={24}
+            xs={24}
+            className="gx-p-0 leave-card-col"
+          >
+            <Card
+              title="Annual Leave"
+              style={{background: 'rgb(232 232 232 / 26%)'}}
+              // bodyStyle={{paddingRight: 0}}
+              //headStyle={{paddingTop: 0}}
+              className="padding-right-0 header-pd-0"
+              bordered={false}
+            >
+              {annualLeaveContent}
+            </Card>
+          </Col>
+        </AccessWrapper>
+      </Row>
+    ) : (
+      <Collapse defaultActiveKey={['1']} style={{marginBottom: '2rem'}}>
+        <Panel
+          header={
+            <h3>
+              <WalletOutlined />
+              <span className="gx-ml-3">Quarterly Leave</span>
+            </h3>
+          }
+          key="1"
+        >
+          <AccessWrapper role={leavePermissions?.showQuarterlyLeaveDetails}>
+            {quarterlyLeaveContent}
+          </AccessWrapper>
+        </Panel>
+
+        <Panel
+          header={
+            <h3>
+              <WalletOutlined />
+              <span className="gx-ml-3">Annual Leave</span>
+            </h3>
+          }
+          key="2"
+        >
+          <AccessWrapper
+            role={!IsIntern && leavePermissions?.showAnnualLeaveDetails}
+          >
+            {annualLeaveContent}
+          </AccessWrapper>
+        </Panel>
+      </Collapse>
+    )
 
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
@@ -307,93 +434,13 @@ function Leave() {
       />
 
       <Card title="Leave Management System">
-        <Row>
-          <AccessWrapper role={leavePermissions?.showQuarterlyLeaveDetails}>
-            <Col
-              xl={
-                IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 9
-              }
-              lg={24}
-              md={24}
-              sm={24}
-              xs={24}
-              className="gx-p-0 leave-card-col"
-            >
-              <Card
-                title="Quarterly Leave"
-                style={{background: 'rgb(232 232 232 / 26%)'}}
-                // bodyStyle={{paddingRight: 0, paddingLeft: 0}}
-                // headStyle={{paddingRight: 0, paddingLeft: 0}}
-              >
-                <QuarterlyLeavesRemainingAndAppliedCards
-                  firstType="Days Remaining"
-                  secondType="Days Approved"
-                  firstNumber={
-                    leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
-                      ?.remainingLeaves
-                  }
-                  secondNumber={loggedInUser.leaveadjustmentBalance}
-                  approvedLeaves={{
-                    sickLeaves:
-                      leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
-                        ?.approvedLeaves?.sickLeaves,
-                    casualLeaves:
-                      leavesSummary?.data?.data?.data?.[0]?.leaves?.[0]
-                        ?.approvedLeaves?.casualLeaves,
-                  }}
-                  nonCasualSickLeaveCardHeight={nonCasualSickLeaveCardHeight}
-                />
-              </Card>
-            </Col>
-          </AccessWrapper>
-
-          <AccessWrapper
-            role={!IsIntern && leavePermissions?.showAnnualLeaveDetails}
-          >
-            <Col
-              xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 14}
-              lg={24}
-              md={24}
-              sm={24}
-              xs={24}
-              className="gx-p-0 leave-card-col"
-            >
-              <Card
-                title="Annual Leave"
-                style={{background: 'rgb(232 232 232 / 26%)'}}
-                // bodyStyle={{paddingRight: 0}}
-                //headStyle={{paddingTop: 0}}
-                className="padding-right-0 header-pd-0"
-                bordered={false}
-              >
-                <AnnualLeavesRemainingAndAppliedCards
-                  firstTitle="Days Remaining"
-                  secondTitle="Days Approved"
-                  firstType="Sick"
-                  secondType="Casual"
-                  sickDayRemaining={
-                    yearlyLeavesTakn?.['Sick Leave']
-                      ? allocatedYealryLeaves?.['Sick Leave'] -
-                        yearlyLeavesTakn?.['Sick Leave']
-                      : allocatedYealryLeaves?.['Sick Leave']
-                  }
-                  casualDayRemaining={
-                    yearlyLeavesTakn?.['Casual Leave']
-                      ? allocatedYealryLeaves?.['Casual Leave'] -
-                        yearlyLeavesTakn?.['Casual Leave']
-                      : allocatedYealryLeaves?.['Casual Leave']
-                  }
-                  sickDayApplied={yearlyLeavesTakn?.['Sick Leave'] || 0}
-                  casualDayApplied={yearlyLeavesTakn?.['Casual Leave'] || 0}
-                  YearlyLeaveExceptCasualandSick={
-                    YearlyLeaveExceptCasualandSick
-                  }
-                  nonCasualSickLeaveCardHeight={nonCasualSickLeaveCardHeight}
-                />
-              </Card>
-            </Col>
-          </AccessWrapper>
-        </Row>
+        {!IsIntern ? (
+          leaveCardContent
+        ) : (
+          <p className="blueText">
+            Note: You are allocated 1 day leave each month.
+          </p>
+        )}
 
         <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
           {leavePermissions?.applyLeave && (
