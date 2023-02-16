@@ -47,8 +47,8 @@ const formattedLeaves = (leaves) => {
     dates: leave?.leaveDates
       ?.map((date) => changeDate(date))
       .join(
-        leave?.leaveType?.name === 'Maternity' ||
-          leave?.leaveType?.name === 'Paternity' ||
+        leave?.leaveType?.name?.includes('Maternity') ||
+          leave?.leaveType?.name?.includes('Paternity') ||
           leave?.leaveType?.name === 'Paid Time Off'
           ? ' - '
           : ' '
