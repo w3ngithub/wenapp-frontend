@@ -1,7 +1,7 @@
-import {useQuery} from '@tanstack/react-query'
-import {Button, DatePicker, Form, Table} from 'antd'
+import { useQuery } from '@tanstack/react-query'
+import { Button, DatePicker, Form, Table } from 'antd'
 import Select from 'components/Elements/Select'
-import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
+import { LEAVES_COLUMN, STATUS_TYPES } from 'constants/Leaves'
 import {
   MuiFormatDate,
   capitalizeInput,
@@ -9,21 +9,21 @@ import {
   removeDash,
 } from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
-import moment, {Moment} from 'moment'
-import React, {useState} from 'react'
-import {useLocation} from 'react-router-dom'
-import {getLeavesOfUser, getQuarters} from 'services/leaves'
-import {disabledDate} from 'util/antDatePickerDisabled'
+import moment, { Moment } from 'moment'
+import React, { useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import { getLeavesOfUser, getQuarters } from 'services/leaves'
+import { disabledDate } from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
-import {getLeaveTypes} from 'services/leaves'
-import {emptyText} from 'constants/EmptySearchAntd'
-import {leaveHistoryDays} from 'constants/LeaveTypes'
-import {selectAuthUser} from 'appRedux/reducers/Auth'
-import {useSelector} from 'react-redux'
-import {PAGE10} from 'constants/Common'
+import { getLeaveTypes } from 'services/leaves'
+import { emptyText } from 'constants/EmptySearchAntd'
+import { leaveHistoryDays } from 'constants/LeaveTypes'
+import { selectAuthUser } from 'appRedux/reducers/Auth'
+import { useSelector } from 'react-redux'
+import { PAGE10 } from 'constants/Common'
 
 const FormItem = Form.Item
-const {RangePicker} = DatePicker
+const { RangePicker } = DatePicker
 
 const formattedLeaves = (leaves: any) => {
   return leaves?.map((leave: any) => ({
@@ -38,11 +38,10 @@ const formattedLeaves = (leaves: any) => {
           ? ' - '
           : '\r\n'
       ),
-    type: `${leave?.leaveType?.name} ${
-      leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
+    type: `${leave?.leaveType?.name} ${leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
         ? '- ' + removeDash(leave?.halfDay)
         : ''
-    }`,
+      }`,
     status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
   }))
 }
@@ -64,18 +63,18 @@ function MyHistory({
   const [form] = Form.useForm()
   const location: any = useLocation()
   let selectedDate = location.state?.date
-  const {innerWidth} = useWindowsSize()
+  const { innerWidth } = useWindowsSize()
   const [datatoShow, setdatatoShow] = useState({})
   const [openModal, setModal] = useState<boolean>(false)
   const [leaveStatus, setLeaveStatus] = useState<string | undefined>('')
   const [leaveTypeId, setLeaveType] = useState<string | undefined>(undefined)
-  const [date, setDate] = useState<{moment: Moment | undefined; utc: string}>({
+  const [date, setDate] = useState<{ moment: Moment | undefined; utc: string }>({
     utc: selectedDate ? selectedDate : undefined,
     moment: selectedDate ? moment(selectedDate).startOf('day') : undefined,
   })
   const [modalReadOnly, setmodalReadOnly] = useState<boolean>(false)
 
-  const {gender: userGender, status: userStatus} = useSelector(selectAuthUser)
+  const { gender: userGender, status: userStatus } = useSelector(selectAuthUser)
 
   const [rangeDate, setRangeDate] = useState<any>([])
 
@@ -98,7 +97,7 @@ function MyHistory({
       )
   )
 
-  const {data: quarterQuery} = useQuery(['quarters'], getQuarters, {
+  const { data: quarterQuery } = useQuery(['quarters'], getQuarters, {
     select: (res: any) => {
       return res.data?.data?.data?.[0]?.quarters
     },
@@ -154,11 +153,11 @@ function MyHistory({
   })
 
   const onShowSizeChange = (_: any, pageSize: number) => {
-    setPage((prev) => ({...page, limit: pageSize}))
+    setPage((prev) => ({ ...page, limit: pageSize }))
   }
 
   const handlePageChange = (pageNumber: number) => {
-    setPage((prev) => ({...prev, page: pageNumber}))
+    setPage((prev) => ({ ...prev, page: pageNumber }))
   }
 
   const handleStatusChange = (statusId: string) => {
@@ -232,9 +231,9 @@ function MyHistory({
             <RangePicker onChange={handleDateChange} value={rangeDate} />
           </FormItem>
 
-          <FormItem className="direct-form-item" style={{marginRight: '2rem'}}>
+          <FormItem className="direct-form-item" style={{ marginRight: '2rem' }}>
             <Select
-              style={{minWidth: '210px'}}
+              style={{ minWidth: '210px' }}
               placeholder="Select Filter By"
               onChange={handleLeaveFilter}
               value={leaveFilter}
@@ -242,7 +241,7 @@ function MyHistory({
             />
           </FormItem>
 
-          <FormItem style={{marginBottom: '3px'}}>
+          <FormItem style={{ marginBottom: '3px' }}>
             <Button
               className="gx-btn-primary gx-text-white"
               onClick={handleResetFilter}
@@ -253,7 +252,7 @@ function MyHistory({
         </Form>
       </div>
       <Table
-        locale={{emptyText}}
+        locale={{ emptyText }}
         className="gx-table-responsive"
         columns={LEAVES_COLUMN({
           onCancelLeave: handleOpenCancelLeaveModal,

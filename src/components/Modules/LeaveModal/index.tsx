@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Modal,
@@ -14,8 +14,8 @@ import {
 } from 'antd'
 import en_GB from 'antd/lib/locale-provider/en_GB'
 import 'moment/locale/en-gb'
-import {Calendar, DateObject} from 'react-multi-date-picker'
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import { Calendar, DateObject } from 'react-multi-date-picker'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createLeaveOfUser,
   getLeavesOfUser,
@@ -32,19 +32,19 @@ import {
   filterSpecificUser,
 } from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
-import {notification} from 'helpers/notification'
-import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
-import {useSelector} from 'react-redux'
+import { notification } from 'helpers/notification'
+import { THEME_TYPE_DARK } from 'constants/ThemeSetting'
+import { useSelector } from 'react-redux'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
-import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
-import {disabledDate} from 'util/antDatePickerDisabled'
-import {LEAVES_TYPES, STATUS_TYPES} from 'constants/Leaves'
-import {leaveInterval} from 'constants/LeaveDuration'
-import {emptyText} from 'constants/EmptySearchAntd'
-import {socket} from 'pages/Main'
-import {ADMINISTRATOR} from 'constants/UserNames'
+import { immediateApprovalLeaveTypes } from 'constants/LeaveTypes'
+import { disabledDate } from 'util/antDatePickerDisabled'
+import { LEAVES_TYPES, STATUS_TYPES } from 'constants/Leaves'
+import { leaveInterval } from 'constants/LeaveDuration'
+import { emptyText } from 'constants/EmptySearchAntd'
+import { socket } from 'pages/Main'
+import { ADMINISTRATOR } from 'constants/UserNames'
 import DragAndDropFile from '../DragAndDropFile'
 import CustomIcon from 'components/Elements/Icons'
 import {
@@ -53,23 +53,23 @@ import {
   ref,
   uploadBytesResumable,
 } from 'firebase/storage'
-import {storage} from 'firebase'
+import { storage } from 'firebase'
 
-const {Option} = Select
+const { Option } = Select
 
 const layout = {
-  labelCol: {span: 8},
-  wrapperCol: {span: 16},
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
 }
 
 const formItemLayout = {
   labelCol: {
-    xs: {span: 0},
-    sm: {span: 16},
+    xs: { span: 0 },
+    sm: { span: 16 },
   },
   wrapperCol: {
-    xs: {span: 0},
-    sm: {span: 24},
+    xs: { span: 0 },
+    sm: { span: 24 },
   },
 }
 
@@ -105,8 +105,8 @@ function LeaveModal({
   const [leaveType, setLeaveType] = useState('')
   const [user, setUser] = useState('')
   const [leaveId, setLeaveId] = useState(null)
-  const {innerWidth} = useWindowsSize()
-  const {themeType} = useSelector((state: any) => state.settings)
+  const { innerWidth } = useWindowsSize()
+  const { themeType } = useSelector((state: any) => state.settings)
   const [holidays, setHolidays] = useState([])
   const [specificHalf, setSpecificHalf] = useState<any>(false)
   const [halfLeaveApproved, setHalfLeaveApproved] = useState<any>(false)
@@ -154,6 +154,7 @@ function LeaveModal({
       ...res?.data?.data?.data?.map((type: leaveTypeInterface) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
+        leaveDays: type?.leaveDays,
       })),
     ],
   })
@@ -186,7 +187,7 @@ function LeaveModal({
         ]
       ),
     onError: (error) => {
-      notification({message: 'Leave creation failed!', type: 'error'})
+      notification({ message: 'Leave creation failed!', type: 'error' })
     },
   })
 
@@ -214,18 +215,18 @@ function LeaveModal({
         ]
       ),
     onError: (error) => {
-      notification({message: 'Leave update failed!', type: 'error'})
+      notification({ message: 'Leave update failed!', type: 'error' })
     },
   })
+  console.log('bob', leaveTypeQuery?.data)
 
   const onFinish = async (values: any) => {
     form.validateFields().then(async (values) => {
-      const leaveTypeName = leaveTypeQuery?.data?.find(
+      const leaveType = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
-      )?.value
+      )
       //calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays =
-        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
+      const numberOfLeaveDays = leaveType?.leaveDays - 1 // 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(
@@ -255,7 +256,7 @@ function LeaveModal({
         )
         uploadTask.on(
           'state_changed',
-          (snapshot) => {},
+          (snapshot) => { },
           (error) => {
             console.log(error.message)
           },
@@ -270,7 +271,7 @@ function LeaveModal({
                 leaveType: values.leaveType,
                 halfDay:
                   values?.halfDay === 'full-day' ||
-                  values?.halfDay === 'Full Day'
+                    values?.halfDay === 'Full Day'
                     ? ''
                     : values?.halfDay,
                 leaveStatus: appliedDate ? 'approved' : 'pending',
@@ -279,7 +280,7 @@ function LeaveModal({
               setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
               setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
               if (isEditMode) {
-                leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
+                leaveUpdateMutation.mutate({ id: leaveId, data: newLeave })
               } else {
                 leaveMutation.mutate({
                   id: values.user,
@@ -307,7 +308,7 @@ function LeaveModal({
         setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
         setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
         if (isEditMode) {
-          leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
+          leaveUpdateMutation.mutate({ id: leaveId, data: newLeave })
         } else {
           leaveMutation.mutate({
             id: values.user,
@@ -400,7 +401,7 @@ function LeaveModal({
       return false
     }
   }
-  const formFieldChanges = (values: {leaveDatesCasual: Array<string>}) => {
+  const formFieldChanges = (values: { leaveDatesCasual: Array<string> }) => {
     if (values?.hasOwnProperty('leaveDatesCasual')) {
       if (values?.leaveDatesCasual?.length === 1) {
         setMultipleDatesSelected(false)
@@ -462,7 +463,7 @@ function LeaveModal({
     <Modal
       width={1100}
       title={!isEditMode ? 'Add Leave' : readOnly ? 'Details' : 'Update Leave'}
-      style={{flexDirection: 'row'}}
+      style={{ flexDirection: 'row' }}
       visible={open}
       mask={false}
       onOk={onFinish}
@@ -479,49 +480,49 @@ function LeaveModal({
       footer={
         readOnly
           ? [
-              <Button
-                key="back"
-                onClick={() =>
-                  onClose(
-                    setSpecificHalf,
-                    setHalfLeaveApproved,
-                    setHalfLeavePending,
-                    setMultipleDatesSelected,
-                    setCalendarClicked,
-                    setIsDocumentDeleted
-                  )
-                }
-              >
-                Cancel
-              </Button>,
-            ]
+            <Button
+              key="back"
+              onClick={() =>
+                onClose(
+                  setSpecificHalf,
+                  setHalfLeaveApproved,
+                  setHalfLeavePending,
+                  setMultipleDatesSelected,
+                  setCalendarClicked,
+                  setIsDocumentDeleted
+                )
+              }
+            >
+              Cancel
+            </Button>,
+          ]
           : [
-              <Button
-                key="back"
-                onClick={() =>
-                  onClose(
-                    setSpecificHalf,
-                    setHalfLeaveApproved,
-                    setHalfLeavePending,
-                    setMultipleDatesSelected,
-                    setCalendarClicked,
-                    setIsDocumentDeleted
-                  )
-                }
-              >
-                Cancel
-              </Button>,
-              <Button
-                key="submit"
-                type="primary"
-                onClick={onFinish}
-                disabled={
-                  leaveMutation.isLoading || leaveUpdateMutation.isLoading
-                }
-              >
-                Submit
-              </Button>,
-            ]
+            <Button
+              key="back"
+              onClick={() =>
+                onClose(
+                  setSpecificHalf,
+                  setHalfLeaveApproved,
+                  setHalfLeavePending,
+                  setMultipleDatesSelected,
+                  setCalendarClicked,
+                  setIsDocumentDeleted
+                )
+              }
+            >
+              Cancel
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              onClick={onFinish}
+              disabled={
+                leaveMutation.isLoading || leaveUpdateMutation.isLoading
+              }
+            >
+              Submit
+            </Button>,
+          ]
       }
     >
       <Spin spinning={leaveMutation.isLoading || leaveUpdateMutation.isLoading}>
@@ -542,7 +543,7 @@ function LeaveModal({
                     name="leaveType"
                     label="Leave Type"
                     rules={[
-                      {required: true, message: 'Leave Type is required.'},
+                      { required: true, message: 'Leave Type is required.' },
                     ]}
                   >
                     <Select
@@ -556,7 +557,7 @@ function LeaveModal({
                     >
                       {leaveTypeQuery?.data?.map((type) =>
                         readOnly ||
-                        type.value.toLowerCase() !==
+                          type.value.toLowerCase() !==
                           LEAVES_TYPES?.LateArrival ? (
                           <Option value={type.id} key={type.id}>
                             {type.value}
@@ -571,37 +572,37 @@ function LeaveModal({
                     leaveType === 'Sick Leave') &&
                     calendarClicked) ||
                     readOnly) && (
-                    <Form.Item
-                      {...formItemLayout}
-                      label="Leave Interval"
-                      name="halfDay"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Leave Interval is required.',
-                        },
-                      ]}
-                    >
-                      <Select
-                        showSearch
-                        notFoundContent={emptyText}
-                        filterOption={filterOptions}
-                        placeholder="Select Duration"
-                        style={{width: '100%'}}
-                        disabled={readOnly}
+                      <Form.Item
+                        {...formItemLayout}
+                        label="Leave Interval"
+                        name="halfDay"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Leave Interval is required.',
+                          },
+                        ]}
                       >
-                        {leaveInterval?.map((type, index) => (
-                          <Option
-                            value={type?.value}
-                            key={index}
-                            disabled={disableInterval(index)}
-                          >
-                            {type?.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  )}
+                        <Select
+                          showSearch
+                          notFoundContent={emptyText}
+                          filterOption={filterOptions}
+                          placeholder="Select Duration"
+                          style={{ width: '100%' }}
+                          disabled={readOnly}
+                        >
+                          {leaveInterval?.map((type, index) => (
+                            <Option
+                              value={type?.value}
+                              key={index}
+                              disabled={disableInterval(index)}
+                            >
+                              {type?.name}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    )}
                 </Col>
                 <Col span={6} xs={24} sm={12}>
                   {showWorker && (
@@ -610,7 +611,7 @@ function LeaveModal({
                       name="user"
                       label="Co-worker"
                       rules={[
-                        {required: true, message: 'Co-worker is required.'},
+                        { required: true, message: 'Co-worker is required.' },
                       ]}
                     >
                       <Select
@@ -807,7 +808,7 @@ function LeaveModal({
                 <Col xs={24} sm={8}>
                   <ConfigProvider locale={en_GB}>
                     <Form.Item
-                      style={{marginBottom: '0.5px'}}
+                      style={{ marginBottom: '0.5px' }}
                       label="Leave Start Date"
                       name="leaveDatesPeriod"
                       rules={[
@@ -819,7 +820,7 @@ function LeaveModal({
                     >
                       <DatePicker
                         className="gx-mb-3 "
-                        style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+                        style={{ width: innerWidth <= 1096 ? '100%' : '300px' }}
                         disabled={readOnly}
                         disabledDate={disabledDate}
                       />
@@ -833,7 +834,7 @@ function LeaveModal({
                     name="leaveDatesCasual"
                     label={!readOnly && 'Select Leave Date'}
                     rules={[
-                      {required: true, message: 'Leave Date is required.'},
+                      { required: true, message: 'Leave Date is required.' },
                     ]}
                   >
                     <Calendar
@@ -849,12 +850,12 @@ function LeaveModal({
                       disabled={readOnly}
                       minDate={
                         leaveType === 'Sick' ||
-                        leaveType === 'Casual' ||
-                        isEditMode
+                          leaveType === 'Casual' ||
+                          isEditMode
                           ? new DateObject().subtract(2, 'months')
                           : new Date()
                       }
-                      mapDays={({date}) => {
+                      mapDays={({ date }) => {
                         let isWeekend = [0, 6].includes(date.weekDay.index)
                         let dates = `${date.year}/${date.month}/${date.day}`
                         let calenderDate = MuiFormatDate(dates)
@@ -925,20 +926,20 @@ function LeaveModal({
                             style: {
                               color:
                                 isWeekend ||
-                                leaveAlreadyTakenDates ||
-                                leavePending
+                                  leaveAlreadyTakenDates ||
+                                  leavePending
                                   ? '#ccc'
                                   : 'rgb(237 45 45)',
                             },
                             onClick: () => {
                               if (isWeekend)
-                                notification({message: 'Weekends are disabled'})
+                                notification({ message: 'Weekends are disabled' })
                               else if (isHoliday)
                                 notification({
                                   message: `${holidayList[0]?.name} holiday`,
                                 })
                               else if (leaveAlreadyTakenDates)
-                                notification({message: `Leave already taken`})
+                                notification({ message: `Leave already taken` })
                               else if (leavePending)
                                 notification({
                                   message: `Leave request for the day is pending. Please cancel the previous applied leave to apply again`,
@@ -946,7 +947,7 @@ function LeaveModal({
                             },
                           }
                       }}
-                      // disabled={readOnly}
+                    // disabled={readOnly}
                     />
                   </Form.Item>
 
