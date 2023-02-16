@@ -227,6 +227,7 @@ function Leave() {
       user: res.data.data.data.user,
       leaveReason: res?.data?.data?.data?.reason,
       reapply: res?.reapply,
+      userCancelReason: res?.data?.data?.data?.cancelReason,
       leaveCancelReason,
     })
     setreapplyLoader(false)
