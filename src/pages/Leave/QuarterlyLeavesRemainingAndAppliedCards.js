@@ -26,7 +26,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
           secondType="Leave adjustment"
           firstTypeCount={firstNumber}
           secondTypeCount={secondNumber}
-          style={{minHeight: '125px'}}
+          style={{minHeight: '131px'}}
         />
       </Col>
       <Col xxl={12} lg={8} md={8} sm={8} xs={4} className="gx-col-full">

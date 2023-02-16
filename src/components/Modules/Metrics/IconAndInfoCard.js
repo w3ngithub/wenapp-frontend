@@ -70,7 +70,7 @@ const IconAndInfoCard = (props) => {
           </Col>
         </Row> */}
         <Row style={styleObject?.row}>
-          {showIcon && (
+          {/* {showIcon && (
             <Col>
               <div className="gx-mr-lg-4 gx-mr-3">
                 <i
@@ -82,7 +82,7 @@ const IconAndInfoCard = (props) => {
                 />
               </div>
             </Col>
-          )}
+          )} */}
 
           <Col>
             <div
