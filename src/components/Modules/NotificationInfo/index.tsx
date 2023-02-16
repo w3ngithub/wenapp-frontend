@@ -11,11 +11,11 @@ import {useSelector} from 'react-redux'
 import moment from 'moment'
 import RecentActivity from '../dashboard/CRM/RecentActivity'
 import {getIsAdmin} from 'helpers/utils'
-import {BLOG, NOTICEBOARD} from 'helpers/routePath'
+import {BLOG, NOTICEBOARD, COWORKERS, LEAVE} from 'helpers/routePath'
 import {NOTIFICATION_ICONS} from 'constants/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 
-const NOTIFICATION_TO_CLICK = ['Blog', 'Notice']
+const NOTIFICATION_TO_CLICK = ['Blog', 'Notice', 'Leave', 'User', 'Attendance']
 
 function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
   const [visible, setVisible] = useState<boolean>(false)
@@ -125,16 +125,35 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
     }
   }, [visible])
 
-  const handleNotificationClick = (module: String) => {
+  const handleNotificationClick = (module: String, showTo: any[]) => {
     switch (module) {
       case 'Blog':
         navigate(BLOG)
         setVisible(false)
         return
+
       case 'Notice':
         navigate(NOTICEBOARD)
         setVisible(false)
         return
+
+      case 'Leave':
+        navigate(LEAVE, {
+          state: {tabKey: showTo?.includes('admin') ? '3' : '2'},
+        })
+        setVisible(false)
+        return
+
+      case 'Attendance':
+        navigate(LEAVE, {state: {tabKey: '2'}})
+        setVisible(false)
+        return
+
+      case 'User':
+        navigate(COWORKERS)
+        setVisible(false)
+        return
+
       default:
         return
     }
@@ -166,7 +185,7 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
                 NOTIFICATION_TO_CLICK.includes(log?.module) ? 'gx-link' : ''
               }
               onClick={() => {
-                handleNotificationClick(log?.module)
+                handleNotificationClick(log?.module, log?.showTo)
               }}
               key={1}
             >
