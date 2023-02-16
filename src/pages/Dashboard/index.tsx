@@ -810,5 +810,5 @@ const Dashboard = () => {
       </Auxiliary>
     )
   }
-
-  export default Dashboard
+}
+export default Dashboard
