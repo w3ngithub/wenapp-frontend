@@ -3,14 +3,13 @@ import Widget from 'components/Elements/Widget/index'
 import {connect} from 'react-redux'
 import {Col, Row} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const InfoCard = (props) => {
   const {icon, title, cardColor, YearlyLeaveExceptCasualandSick, style} = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {
   iconColor = 'white'
-
-  const {innerWidth} = useWindowsSize()
   return (
     <Widget
       styleName={`gx-bg-${cardColor} no-margin non-casual-sick-leave-card`}
@@ -45,9 +44,9 @@ const InfoCard = (props) => {
                     {data[0]?.replace('Leave', '')}
                   </p>
                   <p className={`gx-mb-0 gx-text-${iconColor}`}>
-                    {data?.[0]?.includes('Late Arrival')
-                      ? data[1]
-                      : (data[1] * data[2]) / 2}
+                    {immediateApprovalLeaveTypes?.includes(data?.[0])
+                      ? (data[1] * data[2]) / 2
+                      : data[1]}
                   </p>
                 </div>
               </div>
