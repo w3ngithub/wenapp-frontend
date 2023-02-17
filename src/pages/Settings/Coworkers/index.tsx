@@ -224,7 +224,8 @@ function Coworkers() {
     },
   })
   const editRoleMutation = useMutation(updateRole, {
-    onSuccess: (response) =>
+    onSuccess: (response) => {
+      console.log('response', response?.data?.data?.data?.key)
       handleResponse(
         response,
         'Role updated successfully',
@@ -232,12 +233,16 @@ function Coworkers() {
         [
           handleCloseModal,
           () => queryClient.invalidateQueries(['roles']),
-          () =>
-            dispatch(
-              updateRolePermission(response?.data?.data?.data?.permission)
-            ),
+          () => {
+            if (response?.data?.data?.data?.key === 'admin') {
+              dispatch(
+                updateRolePermission(response?.data?.data?.data?.permission)
+              )
+            }
+          },
         ]
-      ),
+      )
+    },
     onError: (error) => {
       notification({
         message: 'Role update failed!',
