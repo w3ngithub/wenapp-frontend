@@ -238,9 +238,9 @@ function LeaveModal({
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
-      const casualLeaveDaysUTC = casualLeaveDays.map(
-        (leave: string) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
-      )
+      const casualLeaveDaysUTC = casualLeaveDays
+        ?.map((leave: string) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`)
+        .sort((a: any, b: any) => a.localeCompare(b))
       //deleting existing document image from firebase if the uses updates the image
       if (isDocumentDeleted) {
         const imageRef = ref(storage, values?.leaveDocument)

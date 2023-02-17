@@ -392,9 +392,9 @@ function Apply({user}) {
         ? []
         : [...values?.leaveDatesCasual?.join(',').split(','), ...newDateArr]
 
-      const casualLeaveDaysUTC = casualLeaveDays?.map(
-        (leave) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
-      )
+      const casualLeaveDaysUTC = casualLeaveDays
+        ?.map((leave) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`)
+        .sort((a, b) => a.localeCompare(b))
 
       //document upload to firebase
       if (files[0]?.originFileObj) {
