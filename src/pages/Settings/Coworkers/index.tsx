@@ -224,8 +224,7 @@ function Coworkers() {
     },
   })
   const editRoleMutation = useMutation(updateRole, {
-    onSuccess: (response) => {
-      console.log('response', response?.data?.data?.data?.key)
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Role updated successfully',
@@ -241,8 +240,7 @@ function Coworkers() {
             }
           },
         ]
-      )
-    },
+      ),
     onError: (error) => {
       notification({
         message: 'Role update failed!',
