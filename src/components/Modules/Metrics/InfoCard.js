@@ -44,7 +44,11 @@ const InfoCard = (props) => {
                   >
                     {data[0]?.replace('Leave', '')}
                   </p>
-                  <p className={`gx-mb-0 gx-text-${iconColor}`}>{data[1]}</p>
+                  <p className={`gx-mb-0 gx-text-${iconColor}`}>
+                    {data?.[0]?.includes('Late Arrival')
+                      ? data[1]
+                      : (data[1] * data[2]) / 2}
+                  </p>
                 </div>
               </div>
             ))}

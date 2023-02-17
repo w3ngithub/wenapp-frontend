@@ -248,13 +248,6 @@ function Leave() {
     {}
   )
 
-  const YearlyLeaveExceptCasualandSick = leaveDaysQuery?.data?.data?.data?.data
-    ?.filter(
-      (item) => !['Casual Leave', 'Sick Leave'].includes(item?._id[0]?.name)
-    )
-    ?.map((d) => [d?._id[0]?.name, d.leavesTaken])
-    ?.filter((d) => !!d[0])
-
   const allocatedYealryLeaves = leaveTypes?.data?.data?.data?.reduce(
     (acc, item) => {
       acc[item?.name] = item.leaveDays
@@ -262,6 +255,17 @@ function Leave() {
     },
     {}
   )
+
+  const YearlyLeaveExceptCasualandSick = leaveDaysQuery?.data?.data?.data?.data
+    ?.filter(
+      (item) => !['Casual Leave', 'Sick Leave'].includes(item?._id[0]?.name)
+    )
+    ?.map((d) => [
+      d?._id[0]?.name,
+      d.leavesTaken,
+      allocatedYealryLeaves?.[d?._id[0]?.name],
+    ])
+    ?.filter((d) => !!d[0])
 
   let IsIntern = user?.status === EmployeeStatus?.Probation
 
