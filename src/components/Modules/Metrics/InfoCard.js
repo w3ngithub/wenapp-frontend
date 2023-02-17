@@ -28,7 +28,7 @@ const InfoCard = (props) => {
         </Row>
         <Row>
           <Col lg={24} sm={24} xs={24} md={24} className="gx-p-0">
-            {YearlyLeaveExceptCasualandSick?.slice(0, 2)?.map((data, index) => (
+            {YearlyLeaveExceptCasualandSick?.map((data, index) => (
               <div key={index} className="gx-media-body">
                 <div
                   key={index}
