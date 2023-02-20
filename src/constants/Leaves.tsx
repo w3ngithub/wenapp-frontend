@@ -299,7 +299,8 @@ export const LEAVES_TYPES = {
   Casual: 'casual',
   Sick: 'sick',
   Maternity: 'maternity',
-  Paternity: 'paternity',
+  Paternity: 'paternity leave',
   PTO: 'paid time off',
   LateArrival: 'late arrival',
+  Bereavement: 'bereavement leave',
 }

@@ -15,31 +15,34 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {customLeaves} from 'constants/LeaveDuration'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
 
 const defaultPage = {page: 1, limit: 25}
 
 const formattedLeaves = (leaves: any) => {
-  return leaves?.map((leave: any) => ({
-    ...leave,
-    key: leave._id,
-    dates: leave?.leaveDates
-      ?.map((date: any, index: any) => changeDate(date))
-      .join(
-        leave?.leaveType?.name?.includes('Maternity') ||
-          leave?.leaveType?.name?.includes('Paternity') ||
-          leave?.leaveType?.name === 'Paid Time Off'
-          ? ' - '
-          : '\r\n'
-      ),
-    type: `${leave?.leaveType?.name} ${
-      leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
-        ? '- ' + removeDash(leave?.halfDay)
-        : ''
-    }`,
-    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
-  }))
+  return leaves?.map((leave: any) => {
+    return {
+      ...leave,
+      key: leave._id,
+      dates: leave?.leaveDates
+        ?.map((date: any, index: any) => changeDate(date))
+        .join(
+          immediateApprovalLeaveTypes.includes(
+            leave?.leaveType?.name?.split(' ')?.[0]
+          ) || leave?.leaveType?.name === 'Paid Time Off'
+            ? ' - '
+            : '\r\n'
+        ),
+      type: `${leave?.leaveType?.name} ${
+        leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
+          ? '- ' + removeDash(leave?.halfDay)
+          : ''
+      }`,
+      status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
+    }
+  })
 }
 
 function MyHistory({

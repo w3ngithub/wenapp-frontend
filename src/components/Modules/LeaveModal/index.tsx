@@ -199,7 +199,6 @@ function LeaveModal({
       notification({message: 'Leave update failed!', type: 'error'})
     },
   })
-  console.log('bob', leaveTypeQuery?.data)
 
   const onFinish = (values: any) => {
     form.validateFields().then((values) => {
@@ -207,7 +206,7 @@ function LeaveModal({
         (type) => type?.id === values?.leaveType
       )
       //calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays = leaveType?.leaveDays - 1 // 60 for maternity, 5 for other two
+      const numberOfLeaveDays = leaveType?.leaveDays - 1 // duration is dynamic based on settings values
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(

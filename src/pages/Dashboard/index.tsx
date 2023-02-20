@@ -157,12 +157,19 @@ const Dashboard = () => {
             leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
           const isLeavePTO =
             leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
+          const isLeaveBereavement =
+            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Bereavement
           const weeksLastDate = new Date(
             MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
           )
           const todayDate = new Date(MuiFormatDate(new Date()))
 
-          if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
+          if (
+            isLeavePaternity ||
+            isLeaveMaternity ||
+            isLeavePTO ||
+            isLeaveBereavement
+          ) {
             const startLeaveDate = new Date(leave?.leaveDates[0])
             const endLeaveDate = new Date(leave?.leaveDates[1])
             for (let i = 0; i < 8; i++) {
@@ -353,13 +360,6 @@ const Dashboard = () => {
     }
     if (props.event.type === 'holiday')
       return (
-        // <div style={{...style, margin: 0, flexWrap: 'nowrap'}}>
-        //   <i
-        //     className="icon icon-calendar gx-fs-xxm gx-ml-1p"
-        //     // style={{width: '12px'}}
-        //   />
-        //   <p style={{...style}}>{props?.event?.title}</p>
-        // </div>
         <div
           style={{
             display: 'flex',
