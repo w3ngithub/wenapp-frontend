@@ -64,6 +64,8 @@ function Leave() {
     () => getTakenAndRemainingLeaveDaysOfUser(loggedInUser._id)
   )
 
+  const [openTab, setOpenTab] = useState('2')
+
   const user = useSelector(selectAuthUser)
 
   const {
@@ -275,14 +277,31 @@ function Leave() {
     const nonCasualSickLeaveCard = document.getElementsByClassName(
       'non-casual-sick-leave-card'
     )[0]
+
+    console.log(
+      'object',
+      nonCasualSickLeaveCard === typeof nonCasualSickLeaveCard
+    )
     if (
       typeof nonCasualSickLeaveCard !== 'undefined' &&
       nonCasualSickLeaveCardHeight === '100%'
-    )
+    ) {
+      console.log('inside if')
       setNonCasualSickLeaveCardHeight(
         `${nonCasualSickLeaveCard.offsetHeight}px`
       )
+      // setOpenTab('1')
+    }
+    setOpenTab('1')
   })
+  // useEffect(() => {
+  //   console.log('in last useEffect')
+  //   if (nonCasualSickLeaveCardHeight !== '100%') {
+  //     console.log('changing tabs')
+  //     setOpenTab('1')
+  //   }
+  // }, [nonCasualSickLeaveCardHeight])
+  console.log({openTab, nonCasualSickLeaveCardHeight})
 
   const quarterlyLeaveContent = (
     <QuarterlyLeavesRemainingAndAppliedCards
@@ -377,7 +396,7 @@ function Leave() {
         </AccessWrapper>
       </Row>
     ) : (
-      <Collapse defaultActiveKey={['1']} style={{marginBottom: '2rem'}}>
+      <Collapse defaultActiveKey={[openTab]} style={{marginBottom: '2rem'}}>
         <Panel
           header={
             <h3>
