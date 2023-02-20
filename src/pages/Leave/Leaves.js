@@ -28,30 +28,33 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
 
 const formattedLeaves = (leaves) => {
-  return leaves?.map((leave) => ({
-    ...leave,
-    key: leave._id,
-    coWorker: leave?.user?.name,
-    dates: leave?.leaveDates
-      ?.map((date) => changeDate(date))
-      .join(
-        leave?.leaveType?.name?.includes('Maternity') ||
-          leave?.leaveType?.name?.includes('Paternity') ||
-          leave?.leaveType?.name === 'Paid Time Off'
-          ? ' - '
-          : ' '
-      ),
-    type: `${leave?.leaveType?.name} ${
-      leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
-        ? '- ' + removeDash(leave?.halfDay)
-        : ''
-    }`,
-    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
-  }))
+  return leaves?.map((leave) => {
+    return {
+      ...leave,
+      key: leave._id,
+      coWorker: leave?.user?.name,
+      dates: leave?.leaveDates
+        ?.map((date) => changeDate(date))
+        .join(
+          immediateApprovalLeaveTypes.includes(
+            leave?.leaveType?.name?.split(' ')?.[0]
+          ) || leave?.leaveType?.name === 'Paid Time Off'
+            ? '-'
+            : ' '
+        ),
+      type: `${leave?.leaveType?.name} ${
+        leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
+          ? '- ' + removeDash(leave?.halfDay)
+          : ''
+      }`,
+      status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
+    }
+  })
 }
 
 const formatToUtc = (date) => {
@@ -130,15 +133,13 @@ function Leaves({
   })
 
   const handleLeaveTypeChange = (value, option) => {
-    console.log('op', option)
     setLeaveId(value)
-    setLeaveTitle(option.children)
+    setLeaveTitle(option?.children)
     if (option.children !== 'Sick' && option.children !== 'Casual') {
       setLeaveInterval(undefined)
     }
   }
   const handleLeaveIntervalChange = (value) => {
-    console.log('value', value)
     setLeaveInterval(value)
   }
 

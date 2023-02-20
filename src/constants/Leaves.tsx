@@ -302,4 +302,5 @@ export const LEAVES_TYPES = {
   Paternity: 'paternity',
   PTO: 'paid time off',
   LateArrival: 'late arrival',
+  Bereavement: 'bereavement',
 }
