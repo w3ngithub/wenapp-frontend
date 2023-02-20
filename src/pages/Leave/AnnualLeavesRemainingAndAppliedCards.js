@@ -7,7 +7,7 @@ function AnnualLeavesRemainingAndAppliedCards(props) {
   const {YearlyLeaveExceptCasualandSick} = props
   const hasMoreLeaves = YearlyLeaveExceptCasualandSick?.length > 0
   return (
-    <Row>
+    <Row gutter={[20, 20]}>
       <Col
         lg={hasMoreLeaves ? 8 : 12}
         xl={hasMoreLeaves ? 8 : 12}

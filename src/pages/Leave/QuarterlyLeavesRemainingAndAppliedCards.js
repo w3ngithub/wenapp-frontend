@@ -14,8 +14,16 @@ function QuarterlyLeavesRemainingAndAppliedCards({
 }) {
   const {innerWidth} = useWindowsSize()
   return (
-    <Row>
-      <Col xxl={12} lg={12} md={12} sm={12} xs={24} className="gx-col-full">
+    <Row gutter={[20, 20]}>
+      <Col
+        xxl={12}
+        xl={8}
+        lg={8}
+        md={12}
+        sm={12}
+        xs={24}
+        className="gx-col-full"
+      >
         <IconAndInfoCard
           cardColor="cyan"
           icon="product-list"
@@ -29,7 +37,15 @@ function QuarterlyLeavesRemainingAndAppliedCards({
           style={{minHeight: '131px'}}
         />
       </Col>
-      <Col xxl={12} lg={12} md={12} sm={12} xs={24} className="gx-col-full">
+      <Col
+        xxl={12}
+        xl={8}
+        lg={8}
+        md={12}
+        sm={12}
+        xs={24}
+        className="gx-col-full"
+      >
         <IconAndInfoCard
           cardColor="orange"
           icon="tasks"
