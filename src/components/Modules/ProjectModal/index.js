@@ -83,6 +83,7 @@ function ProjectModal({
           : values?.liveUrl?.join('')
       onSubmit({
         ...values,
+        path: values?.path?.trim(),
         name:
           values?.name?.trim()?.[0].toUpperCase() +
           values?.name?.trim()?.slice(1),
