@@ -399,13 +399,6 @@ function UserDetailForm({
             label="Last Review Date"
             hasFeedback={readOnly ? false : true}
             name="lastReviewDate"
-            rules={[
-              {
-                type: 'object',
-                message: 'Last Review Date is required.',
-                whitespace: true,
-              },
-            ]}
           >
             <DatePicker
               disabledDate={disableReviewDate}
