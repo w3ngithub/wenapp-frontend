@@ -18,7 +18,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
       <Col
         xxl={12}
         xl={8}
-        lg={8}
+        lg={12}
         md={12}
         sm={12}
         xs={24}
@@ -40,7 +40,7 @@ function QuarterlyLeavesRemainingAndAppliedCards({
       <Col
         xxl={12}
         xl={8}
-        lg={8}
+        lg={12}
         md={12}
         sm={12}
         xs={24}
