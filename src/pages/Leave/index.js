@@ -288,6 +288,7 @@ function Leave() {
         `${nonCasualSickLeaveCard.offsetHeight}px`
       )
     }
+    // setOpenTab(['1'])
     if (tempHeight) {
       setOpenTab(['1'])
     }
@@ -340,50 +341,42 @@ function Leave() {
 
   const leaveCardContent =
     innerWidth > 1600 ? (
-      <Row>
-        <AccessWrapper role={leavePermissions?.showQuarterlyLeaveDetails}>
-          <Col
-            xl={IsIntern || !leavePermissions?.showAnnualLeaveDetails ? 24 : 9}
-            lg={24}
-            md={24}
-            sm={24}
-            xs={24}
-            className="gx-p-0 leave-card-col"
-          >
-            <Card
-              title="Quarterly Leave"
-              style={{background: 'rgb(232 232 232 / 26%)'}}
-              // bodyStyle={{paddingRight: 0, paddingLeft: 0}}
-              // headStyle={{paddingRight: 0, paddingLeft: 0}}
-            >
-              {quarterlyLeaveContent}
-            </Card>
-          </Col>
-        </AccessWrapper>
-
-        <AccessWrapper
-          role={!IsIntern && leavePermissions?.showAnnualLeaveDetails}
+      <Row gutter={[20, 20]}>
+        <Col
+          xl={YearlyLeaveExceptCasualandSick?.length > 0 ? 8 : 12}
+          lg={24}
+          md={24}
+          sm={24}
+          xs={24}
+          className="gx-p-0 leave-card-col"
         >
-          <Col
-            xl={!leavePermissions?.showQuarterlyLeaveDetails ? 24 : 14}
-            lg={24}
-            md={24}
-            sm={24}
-            xs={24}
-            className="gx-p-0 leave-card-col"
+          <Card
+            title="Quarterly Leave"
+            style={{background: 'rgb(232 232 232 / 26%)'}}
           >
-            <Card
-              title="Annual Leave"
-              style={{background: 'rgb(232 232 232 / 26%)'}}
-              // bodyStyle={{paddingRight: 0}}
-              //headStyle={{paddingTop: 0}}
-              className="padding-right-0 header-pd-0"
-              bordered={false}
-            >
-              {annualLeaveContent}
-            </Card>
-          </Col>
-        </AccessWrapper>
+            {quarterlyLeaveContent}
+          </Card>
+        </Col>
+
+        <Col
+          xl={YearlyLeaveExceptCasualandSick?.length > 0 ? 16 : 12}
+          lg={24}
+          md={24}
+          sm={24}
+          xs={24}
+          className="gx-p-0 leave-card-col"
+        >
+          <Card
+            title="Annual Leave"
+            style={{background: 'rgb(232 232 232 / 26%)'}}
+            // bodyStyle={{paddingRight: 0}}
+            //headStyle={{paddingTop: 0}}
+            className="padding-right-0 header-pd-0"
+            bordered={false}
+          >
+            {annualLeaveContent}
+          </Card>
+        </Col>
       </Row>
     ) : (
       <Collapse

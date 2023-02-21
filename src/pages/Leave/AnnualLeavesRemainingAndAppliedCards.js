@@ -9,11 +9,12 @@ function AnnualLeavesRemainingAndAppliedCards(props) {
   return (
     <Row gutter={[20, 20]}>
       <Col
+        xxl={hasMoreLeaves ? 8 : 12}
         lg={hasMoreLeaves ? 8 : 12}
-        xl={hasMoreLeaves ? 8 : 12}
+        xl={8}
+        md={12}
         sm={12}
         xs={24}
-        md={8}
         className="gx-col-full"
       >
         <IconAndInfoCard
@@ -26,11 +27,12 @@ function AnnualLeavesRemainingAndAppliedCards(props) {
         />
       </Col>
       <Col
+        xxl={hasMoreLeaves ? 8 : 12}
         lg={hasMoreLeaves ? 8 : 12}
-        xl={hasMoreLeaves ? 8 : 12}
+        xl={8}
         sm={12}
         xs={24}
-        md={8}
+        md={12}
         className="gx-col-full"
       >
         <IconAndInfoCard
