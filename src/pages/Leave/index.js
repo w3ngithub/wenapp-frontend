@@ -288,7 +288,6 @@ function Leave() {
         `${nonCasualSickLeaveCard.offsetHeight}px`
       )
     }
-    // setOpenTab(['1'])
     if (tempHeight) {
       setOpenTab(['1'])
     }
@@ -343,28 +342,29 @@ function Leave() {
     innerWidth > 1600 ? (
       <Row gutter={[20, 20]}>
         <Col
-          xl={YearlyLeaveExceptCasualandSick?.length > 0 ? 8 : 12}
+          xl={YearlyLeaveExceptCasualandSick?.length > 0 ? 10 : 12}
           lg={24}
           md={24}
           sm={24}
           xs={24}
-          className="gx-p-0 leave-card-col"
+          className=" leave-card-col"
         >
           <Card
             title="Quarterly Leave"
             style={{background: 'rgb(232 232 232 / 26%)'}}
+            className="padding-right-0 header-pd-0"
           >
             {quarterlyLeaveContent}
           </Card>
         </Col>
 
         <Col
-          xl={YearlyLeaveExceptCasualandSick?.length > 0 ? 16 : 12}
+          xl={YearlyLeaveExceptCasualandSick?.length > 0 ? 14 : 12}
           lg={24}
           md={24}
           sm={24}
           xs={24}
-          className="gx-p-0 leave-card-col"
+          className="leave-card-col"
         >
           <Card
             title="Annual Leave"

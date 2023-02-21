@@ -45,7 +45,7 @@ function AnnualLeavesRemainingAndAppliedCards(props) {
         />
       </Col>
       {hasMoreLeaves && (
-        <Col lg={8} xl={8} sm={12} xs={24} md={8} className="gx-col-full">
+        <Col lg={8} xl={8} sm={12} xs={24} md={12} className="gx-col-full">
           <InfoCard
             cardColor="orange"
             icon="tasks"
