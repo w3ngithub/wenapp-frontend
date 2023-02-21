@@ -9,7 +9,11 @@ import {
   getUserLeavesSummary,
   sendEmailforLeave,
 } from 'services/leaves'
-import {getCurrentFiscalYear, handleResponse} from 'helpers/utils'
+import {
+  convertMsToDay,
+  getCurrentFiscalYear,
+  handleResponse,
+} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import LeavesApply from './Apply'
 import Leaves from './Leaves'
@@ -262,12 +266,30 @@ function Leave() {
     ?.filter(
       (item) => !['Casual Leave', 'Sick Leave'].includes(item?._id[0]?.name)
     )
-    ?.map((d) => [
-      d?._id[0]?.name,
-      d.leavesTaken,
-      allocatedYealryLeaves?.[d?._id[0]?.name],
-    ])
+    ?.map((d) => {
+      const leaveStartDateArray = d?.leaveDates?.filter(
+        (item, index) => index % 2 === 0
+      )
+      const leaveEndDateArray = d?.leaveDates?.filter(
+        (item, index) => index % 2 !== 0
+      )
+
+      let leaveArray = []
+      leaveStartDateArray?.forEach((item, index) => {
+        leaveArray.push(
+          convertMsToDay(new Date(leaveEndDateArray[index]) - new Date(item))
+        )
+      })
+      const reducedLeaveDays = leaveArray?.reduce((acc, cur) => acc + cur, 0)
+      return [
+        d?._id[0]?.name,
+        d?.leavesTaken,
+        allocatedYealryLeaves?.[d?._id[0]?.name],
+        reducedLeaveDays,
+      ]
+    })
     ?.filter((d) => !!d[0])
+  console.log('extra', YearlyLeaveExceptCasualandSick)
 
   let IsIntern = user?.status === EmployeeStatus?.Probation
 

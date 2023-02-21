@@ -45,7 +45,7 @@ const InfoCard = (props) => {
                   </p>
                   <p className={`gx-mb-0 gx-text-${iconColor}`}>
                     {immediateApprovalLeaveTypes?.includes(data?.[0])
-                      ? (data[1] * data[2]) / 2
+                      ? data[3]
                       : data[1]}
                   </p>
                 </div>
