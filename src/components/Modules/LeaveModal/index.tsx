@@ -685,9 +685,17 @@ function LeaveModal({
                     >
                       {documentURL ? (
                         <>
-                          <a href={leaveData?.leaveDocument} download>
-                            Click here to download{' '}
-                          </a>
+                          <Button
+                            className="gx-btn-primary gx-text-white"
+                            download
+                            onClick={() =>
+                              window
+                                .open(leaveData?.leaveDocument, '_blank')
+                                ?.focus()
+                            }
+                          >
+                            Click here to View{' '}
+                          </Button>
                           <Popconfirm
                             title="Are you sure you want to delete?"
                             onConfirm={(e) => {
@@ -724,9 +732,17 @@ function LeaveModal({
                           name="leaveDocument"
                           label="Leave Document"
                         >
-                          <a href={leaveData?.leaveDocument} download>
-                            Click here to download
-                          </a>
+                          <Button
+                            className="gx-btn-primary gx-text-white"
+                            download
+                            onClick={() =>
+                              window
+                                .open(leaveData?.leaveDocument, '_blank')
+                                ?.focus()
+                            }
+                          >
+                            Click here to view
+                          </Button>
                         </Form.Item>
                       </Col>
                     </Row>
