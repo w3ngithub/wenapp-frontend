@@ -288,10 +288,13 @@ function Leave() {
         `${nonCasualSickLeaveCard.offsetHeight}px`
       )
     }
-    if (tempHeight) {
+    if (
+      tempHeight ||
+      (leaveDaysQuery.isSuccess && YearlyLeaveExceptCasualandSick.length === 0)
+    ) {
       setOpenTab(['1'])
     }
-  })
+  }, [leaveDaysQuery.isSuccess])
 
   const quarterlyLeaveContent = (
     <QuarterlyLeavesRemainingAndAppliedCards
