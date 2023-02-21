@@ -672,6 +672,7 @@ function AdminAttendance({userRole}) {
           showSizeChanger: true,
           total: data?.data?.data?.attendances?.[0]?.metadata?.[0]?.total || 1,
           onShowSizeChange,
+          hideOnSinglePage: true,
           onChange: handlePageChange,
         }}
         loading={isFetching}
