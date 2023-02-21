@@ -289,7 +289,6 @@ function Leave() {
       ]
     })
     ?.filter((d) => !!d[0])
-  console.log('extra', YearlyLeaveExceptCasualandSick)
 
   let IsIntern = user?.status === EmployeeStatus?.Probation
 
