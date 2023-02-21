@@ -396,9 +396,7 @@ function Leave() {
           }
           key="1"
         >
-          <AccessWrapper role={leavePermissions?.showQuarterlyLeaveDetails}>
-            {quarterlyLeaveContent}
-          </AccessWrapper>
+          {quarterlyLeaveContent}
         </Panel>
 
         <Panel
@@ -410,11 +408,7 @@ function Leave() {
           }
           key="2"
         >
-          <AccessWrapper
-            role={!IsIntern && leavePermissions?.showAnnualLeaveDetails}
-          >
-            {annualLeaveContent}
-          </AccessWrapper>
+          {annualLeaveContent}
         </Panel>
       </Collapse>
     )

@@ -176,17 +176,7 @@ export const permissionRole = {
     {name: 'viewLeaves', label: 'View Leaves Detail', rule: []},
     {name: 'viewLeavesCalendar', label: 'View Leaves Calendar', rule: []},
     {name: 'addCoworkersLeaves', label: 'Add Co-workers Leaves', rule: []},
-    {
-      name: 'showQuarterlyLeaveDetails',
-      label: 'Show Quarterly Leave Details',
-      rule: [],
-    },
     {name: 'editCoworkersLeaves', label: 'Edit Co-workers Leaves', rule: []},
-    {
-      name: 'showAnnualLeaveDetails',
-      label: 'Show Annual Leave Details',
-      rule: [],
-    },
   ],
 
   'Notice Board': [
