@@ -13,8 +13,8 @@ const LeavesCalendar = () => {
     ['leavesCalendar'],
     () => getFiscalYearLeaves(),
     {
-      onError: err => console.log(err),
-      select: res => {
+      onError: (err) => console.log(err),
+      select: (res) => {
         let allLeaves: any[] = []
         res?.data?.data?.data.forEach((leave: any) => {
           if (
@@ -31,10 +31,11 @@ const LeavesCalendar = () => {
       },
     }
   )
+
   const leaveUsers = leavesQuery?.data?.map(
-    ({user, leaveDates, leaveType,halfDay}: any) => {
+    ({user, leaveDates, leaveType, halfDay}: any) => {
       const nameSplitted = user[0].split(' ')
-      let specificHalf = ''
+      let extraInfo = ''
       let lastName
       if (nameSplitted.length === 1) {
         lastName = ''
@@ -43,10 +44,13 @@ const LeavesCalendar = () => {
       }
 
       if (halfDay === 'first-half') {
-        specificHalf = '1st'
+        extraInfo = '1st'
       }
       if (halfDay === 'second-half') {
-        specificHalf = '2nd'
+        extraInfo = '2nd'
+      }
+      if (leaveType.includes('Late Arrival')) {
+        extraInfo = 'Late'
       }
 
       const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
@@ -60,7 +64,7 @@ const LeavesCalendar = () => {
         }
       else
         return {
-          title: `${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`,
+          title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
           start: new Date(leaveDates),
           end: new Date(leaveDates),
         }

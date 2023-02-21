@@ -154,6 +154,7 @@ function LeaveModal({
       ...res?.data?.data?.data?.map((type: leaveTypeInterface) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
+        leaveDays: type?.leaveDays,
       })),
     ],
   })
@@ -220,12 +221,11 @@ function LeaveModal({
 
   const onFinish = async (values: any) => {
     form.validateFields().then(async (values) => {
-      const leaveTypeName = leaveTypeQuery?.data?.find(
+      const leaveType = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
-      )?.value
+      )
       //calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays =
-        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
+      const numberOfLeaveDays = leaveType?.leaveDays - 1 // duration is dynamic based on settings values
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(
