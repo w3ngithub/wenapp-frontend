@@ -290,7 +290,7 @@ function Leave() {
     }
     if (
       tempHeight ||
-      (leaveDaysQuery.isSuccess && YearlyLeaveExceptCasualandSick.length === 0)
+      (leaveDaysQuery.isSuccess && YearlyLeaveExceptCasualandSick?.length === 0)
     ) {
       setOpenTab(['1'])
     }

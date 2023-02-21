@@ -52,6 +52,7 @@ function AnnualLeavesRemainingAndAppliedCards(props) {
             title={props.secondTitle}
             firstTypeCount={props.sickDayApplied}
             secondTypeCount={props.casualDayApplied}
+            style={{minHeight: '100px'}}
             {...props}
           />
         </Col>
