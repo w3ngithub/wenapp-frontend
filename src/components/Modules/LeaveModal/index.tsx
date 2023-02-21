@@ -54,6 +54,7 @@ import {
   uploadBytesResumable,
 } from 'firebase/storage'
 import {storage} from 'firebase'
+import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 
 const {Option} = Select
 
@@ -113,6 +114,9 @@ function LeaveModal({
   const [halfLeavePending, setHalfLeavePending] = useState<any>(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
+  const [yearStartDate, setYearStartDate] = useState(undefined)
+  const [yearEndDate, setYearEndDate] = useState(undefined)
+
   const [files, setFiles] = useState<any>([])
   const [, setRemovedFile] = useState<any>(null)
   const [documentURL, setDocumentURL] = useState<any>(
@@ -154,12 +158,27 @@ function LeaveModal({
       ...res?.data?.data?.data?.map((type: leaveTypeInterface) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
+        leaveDays: type?.leaveDays,
       })),
     ],
   })
 
   const userLeavesQuery = useQuery(['userLeaves', fromDate, toDate, user], () =>
     getLeavesOfUser(user, '', undefined, 1, 30, fromDate, toDate)
+  )
+
+  const {data: leaveQuarter} = useQuery(
+    ['leaveQuarter'],
+    () => getLeaveQuarter(),
+    {
+      onSuccess: (data) => {
+        const quarterLength = data?.data?.data?.data?.[0]?.quarters?.length - 1
+        setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
+        setYearEndDate(
+          data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
+        )
+      },
+    }
   )
 
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
@@ -218,11 +237,44 @@ function LeaveModal({
     },
   })
 
+  const userSubstituteLeave = useQuery(
+    ['substitute', yearStartDate, yearEndDate],
+    () =>
+      getLeavesOfUser(user, '', undefined, 1, 30, yearStartDate, yearEndDate),
+    {enabled: !!yearStartDate && !!yearEndDate}
+  )
+
   const onFinish = async (values: any) => {
     form.validateFields().then(async (values) => {
       const leaveTypeName = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
       )?.value
+
+      const isSubstitute = leaveTypeQuery?.data?.find(
+        (data) => data?.value === 'Substitute'
+      )
+      if (isSubstitute?.id === form.getFieldValue('leaveType')) {
+        if (
+          form.getFieldValue('leaveDatesCasual')?.length >
+          isSubstitute?.leaveDays
+        ) {
+          return notification({
+            type: 'error',
+            message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} day`,
+          })
+        }
+        let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
+          (sub: any) =>
+            sub?.leaveType?.name === 'Substitute Leave' &&
+            sub?.leaveStatus === 'approved'
+        )
+        if (hasSubstitute) {
+          return notification({
+            type: 'error',
+            message: 'Substitute Leave Already Taken',
+          })
+        }
+      }
       //calculation for maternity, paternity, pto leaves
       const numberOfLeaveDays =
         leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
