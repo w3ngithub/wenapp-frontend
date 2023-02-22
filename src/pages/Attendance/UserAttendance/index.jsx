@@ -38,6 +38,7 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 import getLocation, {checkLocationPermission} from 'helpers/getLocation'
 import {PUNCH_IN, PUNCH_OUT} from 'constants/ActionTypes'
 import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
+import {PAGE10} from 'constants/Common'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -84,7 +85,7 @@ function UserAttendance({userRole}) {
   const [form] = Form.useForm()
   const dispatch = useDispatch()
   const [disableButton, setDisableButton] = useState(false)
-  const [page, setPage] = useState({page: 1, limit: 50})
+  const [page, setPage] = useState(PAGE10)
   const [openView, setOpenView] = useState(false)
   const [attToView, setAttToView] = useState({})
   const [date, setDate] = useState(intialDate)
@@ -195,6 +196,7 @@ function UserAttendance({userRole}) {
   )
 
   const handleAttChnageChange = (val) => {
+    setPage(PAGE10)
     setAttFilter(val)
     switch (val) {
       case 1:
@@ -406,7 +408,7 @@ function UserAttendance({userRole}) {
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['25', '50', '100'],
+          pageSizeOptions: ['5', '10', '20', '50'],
           showSizeChanger: true,
           total: data?.data?.data?.attendances?.[0]?.metadata?.[0]?.total || 1,
           onShowSizeChange,

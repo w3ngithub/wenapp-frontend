@@ -44,7 +44,7 @@ function Detail() {
     return <CircularProgress />
   }
 
-  const mainArray = BLOG?.content?.split?.('@highlight-code')
+  const mainArray = BLOG?.content?.split('<p>@highlight-code</p>')
   return (
     <div>
       <BlogsBreadCumb slug={BLOG?.title} />
@@ -79,34 +79,20 @@ function Detail() {
       >
         {mainArray?.map((item, index) => {
           if (index % 2 !== 0) {
-            const parsedArray = HTMLReactParser(item || '')?.filter(
-              (el) => typeof el !== 'string'
+            const parsedArray = HTMLReactParser(item).filter(
+              (el) => el !== '\n'
             )
-
             const codeLanguage = parsedArray
               ?.shift()
               ?.props?.children?.split(':')?.[1]
               ?.trim()
-
-            if (
-              parsedArray?.[parsedArray.length - 1]?.props?.children.trim() ===
-              ''
-            ) {
-              parsedArray.pop()
-            }
-
             const parsedString = parsedArray
               .map((item) => {
-                if (
-                  item?.props &&
-                  index !== 0 &&
-                  item?.props?.children?.trim() !== ''
-                ) {
+                if (item?.props && index !== 0) {
                   return item.props.children
                 } else return null
               })
               .join('\n')
-
             return (
               <div key={index}>
                 <SyntaxHighlighter

@@ -47,7 +47,7 @@ function NoticeBoardPage() {
   const [title, setTitle] = useState('')
   const [typedNotice, setTypedNotice] = useState('')
   const [date, setDate] = useState(undefined)
-  const [page, setPage] = useState({page: 1, limit: 50})
+  const [page, setPage] = useState({page: 1, limit: 10})
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
   const [noticeRecord, setNoticeRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)
@@ -327,7 +327,7 @@ function NoticeBoardPage() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['25', '50', '100'],
+            pageSizeOptions: ['5', '10', '20', '50'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,

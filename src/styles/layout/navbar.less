@@ -271,7 +271,7 @@
   &-inline {
     .ant-menu-item {
       &:not(:last-child) {
-        margin-bottom: -3px;
+        margin-bottom: 0;
       }
 
       &:after {
@@ -289,7 +289,7 @@
 
       .ant-layout-sider &,
       .ant-drawer & {
-        padding-left: @sidebar-padding-lr !important;
+        padding-left: @sidebar-padding-lr + 10px !important;
       }
 
       .icon {

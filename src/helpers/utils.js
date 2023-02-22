@@ -505,8 +505,48 @@ export const scrollForm = (form, name) => {
   })
 }
 
-//filter specific User
+export const isLeavesBeforeToday = (leaveDates) => {
+  let firstDayofLeave
+  if (leaveDates.length === 1) {
+    firstDayofLeave = new Date(leaveDates[0]).setUTCHours(0, 0, 0, 0)
+  } else {
+    const ascSortedDate = leaveDates.sort(
+      (date1, date2) => new Date(date1) - new Date(date2)
+    )
+    firstDayofLeave = new Date(ascSortedDate[0])?.setUTCHours(0, 0, 0, 0)
+  }
+  const todayDate = new Date()
+  todayDate.setUTCHours(0, 0, 0, 0)
 
+  return new Date(todayDate) < new Date(firstDayofLeave)
+}
+
+//filter specific User
 export const filterSpecificUser = (group, name) => {
   return group?.filter((user) => user.name !== name)
+}
+
+//get date range from a start date to end date
+export const getDateRangeArray = function (s, e) {
+  let a = []
+  for (const d = new Date(s); d <= new Date(e); d.setDate(d.getDate() + 1)) {
+    a.push(`${MuiFormatDate(new Date(d))}`)
+  }
+  return a
+}
+
+//sorting array of objects
+export const compareString = (a, b) => {
+  let comparison = 0
+
+  if (a?.leaveStatus > b?.leaveStatus) {
+    comparison = 1
+  } else if (a?.leaveStatus < b?.leaveStatus) {
+    comparison = -1
+  }
+  return comparison
+}
+
+export const getCurrentFiscalYear = () => {
+  return new Date(new Date().getFullYear(), 0, 1)
 }

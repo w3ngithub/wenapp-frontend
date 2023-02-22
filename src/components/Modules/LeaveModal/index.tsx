@@ -10,6 +10,7 @@ import {
   Spin,
   DatePicker,
   ConfigProvider,
+  Popconfirm,
 } from 'antd'
 import en_GB from 'antd/lib/locale-provider/en_GB'
 import 'moment/locale/en-gb'
@@ -39,11 +40,20 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
-import {LEAVES_TYPES} from 'constants/Leaves'
+import {LEAVES_TYPES, STATUS_TYPES} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
+import DragAndDropFile from '../DragAndDropFile'
+import CustomIcon from 'components/Elements/Icons'
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from 'firebase/storage'
+import {storage} from 'firebase'
 
 const {Option} = Select
 
@@ -82,7 +92,8 @@ function LeaveModal({
     setHalfLeaveApproved: any,
     setHalfLeavePending: any,
     setMultipleDatesSelected: any,
-    setCalendarClicked: any
+    setCalendarClicked: any,
+    setIsDocumentDeleted: any
   ) => void
   users: any
   readOnly: boolean
@@ -102,7 +113,12 @@ function LeaveModal({
   const [halfLeavePending, setHalfLeavePending] = useState<any>(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
-
+  const [files, setFiles] = useState<any>([])
+  const [, setRemovedFile] = useState<any>(null)
+  const [documentURL, setDocumentURL] = useState<any>(
+    leaveData?.leaveDocument ? leaveData?.leaveDocument : ''
+  )
+  const [isDocumentDeleted, setIsDocumentDeleted] = useState<boolean>(false)
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -165,7 +181,8 @@ function LeaveModal({
               setHalfLeaveApproved,
               setHalfLeavePending,
               setMultipleDatesSelected,
-              setCalendarClicked
+              setCalendarClicked,
+              setIsDocumentDeleted
             ),
         ]
       ),
@@ -182,6 +199,7 @@ function LeaveModal({
         'Leave update failed',
         [
           () => queryClient.invalidateQueries(['leaves']),
+          () => queryClient.invalidateQueries(['userLeaves']),
           () => {
             socket.emit('CUD')
           },
@@ -191,7 +209,8 @@ function LeaveModal({
               setHalfLeaveApproved,
               setHalfLeavePending,
               setMultipleDatesSelected,
-              setCalendarClicked
+              setCalendarClicked,
+              setIsDocumentDeleted(false)
             ),
         ]
       ),
@@ -200,8 +219,8 @@ function LeaveModal({
     },
   })
 
-  const onFinish = (values: any) => {
-    form.validateFields().then((values) => {
+  const onFinish = async (values: any) => {
+    form.validateFields().then(async (values) => {
       const leaveType = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
       )
@@ -219,30 +238,83 @@ function LeaveModal({
       const casualLeaveDays = appliedDate
         ? []
         : values?.leaveDatesCasual?.join(',').split(',')
-      const casualLeaveDaysUTC = casualLeaveDays.map(
-        (leave: string) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
-      )
-      const newLeave = {
-        ...values,
-        leaveDates: appliedDate
-          ? [appliedDateUTC, endDateUTC]
-          : casualLeaveDaysUTC,
-        reason: values.reason,
-        leaveType: values.leaveType,
-        halfDay:
-          values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
-            ? ''
-            : values?.halfDay,
-        leaveStatus: appliedDate ? 'approved' : 'pending',
+      const casualLeaveDaysUTC = casualLeaveDays
+        ?.map((leave: string) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`)
+        .sort((a: any, b: any) => a.localeCompare(b))
+      //deleting existing document image from firebase if the uses updates the image
+      if (isDocumentDeleted) {
+        const imageRef = ref(storage, values?.leaveDocument)
+        await deleteObject(imageRef)
       }
-      setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
-      if (isEditMode) leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
-      else
-        leaveMutation.mutate({
-          id: values.user,
-          data: newLeave,
-        })
+      //document upload to firebase
+      if (files[0]?.originFileObj) {
+        const storageRef = ref(storage, `leaves/${files[0]?.name}`)
+        const uploadTask = uploadBytesResumable(
+          storageRef,
+          files[0]?.originFileObj
+        )
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {},
+          (error) => {
+            console.log(error.message)
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              const newLeave = {
+                ...values,
+                leaveDates: appliedDate
+                  ? [appliedDateUTC, endDateUTC]
+                  : casualLeaveDaysUTC,
+                reason: values.reason,
+                leaveType: values.leaveType,
+                halfDay:
+                  values?.halfDay === 'full-day' ||
+                  values?.halfDay === 'Full Day'
+                    ? ''
+                    : values?.halfDay,
+                leaveStatus: appliedDate ? 'approved' : 'pending',
+                leaveDocument: downloadURL,
+              }
+              setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+              setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+              if (isEditMode) {
+                leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
+              } else {
+                leaveMutation.mutate({
+                  id: values.user,
+                  data: newLeave,
+                })
+              }
+            })
+          }
+        )
+      } else {
+        const newLeave = {
+          ...values,
+          leaveDates: appliedDate
+            ? [appliedDateUTC, endDateUTC]
+            : casualLeaveDaysUTC,
+          reason: values.reason,
+          leaveType: values.leaveType,
+          halfDay:
+            values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
+              ? ''
+              : values?.halfDay,
+          leaveStatus: appliedDate ? 'approved' : 'pending',
+          leaveDocument: !isDocumentDeleted ? leaveData.leaveDocument : '',
+        }
+        setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+        setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+        if (isEditMode) {
+          leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
+        } else {
+          leaveMutation.mutate({
+            id: values.user,
+            data: newLeave,
+          })
+        }
+      }
     })
   }
 
@@ -265,6 +337,9 @@ function LeaveModal({
           user: leaveData.user._id,
           halfDay: leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
           cancelReason: leaveData?.cancelReason,
+          rejectReason: leaveData?.rejectReason,
+          reapplyreason: leaveData?.reapplyreason,
+          leaveDocument: leaveData?.leaveDocument,
         })
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
@@ -379,6 +454,10 @@ function LeaveModal({
       setCalendarClicked(false)
     }
   }
+  const onDeleteClick = async (data: any) => {
+    setIsDocumentDeleted(true)
+    setDocumentURL('')
+  }
   return (
     <Modal
       width={1100}
@@ -393,7 +472,8 @@ function LeaveModal({
           setHalfLeaveApproved,
           setHalfLeavePending,
           setMultipleDatesSelected,
-          setCalendarClicked
+          setCalendarClicked,
+          setIsDocumentDeleted
         )
       }
       footer={
@@ -407,7 +487,8 @@ function LeaveModal({
                     setHalfLeaveApproved,
                     setHalfLeavePending,
                     setMultipleDatesSelected,
-                    setCalendarClicked
+                    setCalendarClicked,
+                    setIsDocumentDeleted
                   )
                 }
               >
@@ -423,7 +504,8 @@ function LeaveModal({
                     setHalfLeaveApproved,
                     setHalfLeavePending,
                     setMultipleDatesSelected,
-                    setCalendarClicked
+                    setCalendarClicked,
+                    setIsDocumentDeleted
                   )
                 }
               >
@@ -593,27 +675,132 @@ function LeaveModal({
                   </Form.Item>
                 </Col>
               </Row>
-
-              {leaveData?.leaveStatus === 'cancelled' && (
+              {isEditMode && !readOnly && !showWorker ? (
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item
                       {...formItemLayout}
-                      name="cancelReason"
-                      label="Cancel Leave Reason"
+                      name="leaveDocument"
+                      label="Leave Document"
                     >
-                      <Input.TextArea
-                        allowClear
-                        rows={10}
-                        disabled={readOnly}
-                        style={{
-                          background: darkCalendar ? '#434f5a' : '',
-                        }}
-                      />
+                      {documentURL ? (
+                        <>
+                          <a href={leaveData?.leaveDocument} download>
+                            Click here to download{' '}
+                          </a>
+                          <Popconfirm
+                            title="Are you sure you want to delete?"
+                            onConfirm={(e) => {
+                              onDeleteClick(leaveData)
+                            }}
+                            // onCancel={() => {}}
+                            okText="Yes"
+                            cancelText="No"
+                          >
+                            <span className="gx-link gx-text-danger">
+                              <CustomIcon name="delete" />
+                            </span>
+                          </Popconfirm>
+                        </>
+                      ) : (
+                        <DragAndDropFile
+                          files={files}
+                          setFiles={setFiles}
+                          onRemove={setRemovedFile}
+                          allowMultiple={false}
+                          accept=".pdf, image/png, image/jpeg"
+                        />
+                      )}
                     </Form.Item>
                   </Col>
                 </Row>
+              ) : (
+                <>
+                  {leaveData?.leaveDocument && (
+                    <Row>
+                      <Col span={6} xs={24} sm={24} xl={24}>
+                        <Form.Item
+                          {...formItemLayout}
+                          name="leaveDocument"
+                          label="Leave Document"
+                        >
+                          <a href={leaveData?.leaveDocument} download>
+                            Click here to download
+                          </a>
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  )}
+                </>
               )}
+
+              {(leaveData?.leaveStatus === STATUS_TYPES[3].id ||
+                leaveData?.leaveStatus === STATUS_TYPES[5].id) &&
+                leaveData?.cancelReason && (
+                  <Row>
+                    <Col span={6} xs={24} sm={24} xl={24}>
+                      <Form.Item
+                        {...formItemLayout}
+                        name="cancelReason"
+                        label="Cancel Leave Reason"
+                      >
+                        <Input.TextArea
+                          allowClear
+                          rows={10}
+                          disabled={readOnly}
+                          style={{
+                            background: darkCalendar ? '#434f5a' : '',
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                )}
+
+              {(leaveData?.leaveStatus === STATUS_TYPES[4].id ||
+                leaveData?.leaveStatus === STATUS_TYPES[2].id) &&
+                leaveData?.rejectReason && (
+                  <Row>
+                    <Col span={6} xs={24} sm={24} xl={24}>
+                      <Form.Item
+                        {...formItemLayout}
+                        name="rejectReason"
+                        label="Leave Reject Reason"
+                      >
+                        <Input.TextArea
+                          allowClear
+                          rows={10}
+                          disabled={readOnly}
+                          style={{
+                            background: darkCalendar ? '#434f5a' : '',
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                )}
+
+              {leaveData?.leaveStatus === STATUS_TYPES[2].id &&
+                leaveData?.reapplyreason && (
+                  <Row>
+                    <Col span={6} xs={24} sm={24} xl={24}>
+                      <Form.Item
+                        {...formItemLayout}
+                        name="reapplyreason"
+                        label="Leave Re-apply Reason"
+                      >
+                        <Input.TextArea
+                          allowClear
+                          rows={10}
+                          disabled={readOnly}
+                          style={{
+                            background: darkCalendar ? '#434f5a' : '',
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                )}
             </Col>
             {user &&
               (immediateApprovalLeaveTypes.includes(leaveType) ? (

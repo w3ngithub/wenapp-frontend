@@ -11,7 +11,7 @@ import Select from 'components/Elements/Select'
 import {WEEKLY_REPORT_COLUMNS} from 'constants/weeklyReport'
 import {roundedToFixed} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {emptyText} from 'constants/EmptySearchAntd'
+import { emptyText } from 'constants/EmptySearchAntd'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -36,7 +36,7 @@ const formattedWeeklyReports = (reports, clients) => {
 function WeeklyReport() {
   // init states
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState({page: 1, limit: 50})
+  const [page, setPage] = useState({page: 1, limit: 10})
   const [projectStatus, setProjectStatus] = useState(undefined)
   const [logType, setLogType] = useState(undefined)
   const [projectClient, setprojectClient] = useState(undefined)
@@ -185,7 +185,7 @@ function WeeklyReport() {
           </div>
         </div>
         <Table
-          locale={{emptyText}}
+        locale={{emptyText}}
           className="gx-table-responsive"
           columns={WEEKLY_REPORT_COLUMNS(sort, navigateToProjectLogs)}
           dataSource={formattedWeeklyReports(data?.data?.data?.report, clients)}
@@ -193,7 +193,7 @@ function WeeklyReport() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['25', '50', '100'],
+            pageSizeOptions: ['20', '50'],
             showSizeChanger: true,
             total: data?.data?.data?.report?.length || 1,
             onShowSizeChange,

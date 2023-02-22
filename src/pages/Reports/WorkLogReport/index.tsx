@@ -34,12 +34,7 @@ const formattedWorkLogReport: any = (logs: any) => {
 
 function WorkLogReport() {
   //init state
-  const [sort, setSort] = useState({
-    column: undefined,
-    order: 'ascend',
-    field: 'user',
-    columnKey: 'user',
-  })
+  const [sort, setSort] = useState({})
   const [form] = Form.useForm()
   const [date, setDate] = useState(intialDate)
   const {innerWidth} = useWindowsSize()
