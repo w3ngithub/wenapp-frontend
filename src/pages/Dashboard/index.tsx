@@ -280,7 +280,6 @@ const Dashboard = () => {
         marginBottom: '3px',
         marginLeft: '11px',
         color: '#05ccf9',
-        // color: darkTheme ? darkThemeTextColor : '#FC6BAB',
       }
     if (event.type === 'holiday')
       style = {
@@ -298,20 +297,12 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        // color: darkTheme ? darkThemeTextColor : '#038fde',
         color:
           event?.leaveStatus === 'pending'
-            ? '#fd826b'
+            ? '#CCBE00'
             : event?.leaveType === 'Late Arrival'
             ? '#eb9293'
-            : '#84f17d',
-        // color: darkTheme
-        //   ? event?.leaveStatus === 'pending'
-        //     ? '#b1abab'
-        //     : darkThemeTextColor
-        //   : event?.leaveStatus === 'pending'
-        //   ? '#fd826b'
-        //   : '#038fde',
+            : '#3DBF4D',
       }
     if (event.type === 'notice')
       style = {
@@ -387,21 +378,22 @@ const Dashboard = () => {
       )
 
     if (props.event.type === 'leave') {
-      let specificHalf = ''
       let extraInfo = ''
-      if (
+      if (props.event.leaveType === 'Late Arrival') {
+        extraInfo = 'Late'
+      } else if (
         props?.event?.leaveType === 'Maternity' ||
         props?.event?.leaveType === 'Paternity' ||
-        props?.event?.leaveType === 'Paid Time Off' ||
+        props?.event?.leaveType === 'Paid Time' ||
         props?.event?.halfDay === ''
       ) {
-        specificHalf = ''
+        extraInfo = ''
       } else {
         if (props?.event?.halfDay === 'first-half') {
-          specificHalf = '1st'
+          extraInfo = '1st'
         }
         if (props?.event?.halfDay === 'second-half') {
-          specificHalf = '2nd'
+          extraInfo = '2nd'
         }
       }
       return (
@@ -439,31 +431,16 @@ const Dashboard = () => {
               width="15px"
               fill={
                 props?.event?.leaveStatus === 'pending'
-                  ? '#fd826b'
+                  ? '#CCBE00'
                   : extraInfo === 'Late'
                   ? '#eb9293'
-                  : '#84f17d'
+                  : '#3DBF4D'
               }
-              // fill={extraInfo === 'Late' ? '#eb9293' : '#84f17d'}
             />
             <span className="gx-mt-1p" style={{width: '59px'}}>{`${shortName}${
               extraInfo ? '(' + extraInfo + ')' : ''
             }`}</span>
           </p>
-          {/* <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
-            <LeaveIcon
-              width="18px"
-              fill={
-                darkTheme
-                  ? props?.event?.leaveStatus === 'pending'
-                    ? '#b1abab'
-                    : darkThemeTextColor
-                  : props?.event?.leaveStatus === 'pending'
-                  ? '#fd826b'
-                  : '#038fde'
-              }
-            />
-            {`${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`} */}
         </div>
       )
     }
