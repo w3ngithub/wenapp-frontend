@@ -350,8 +350,7 @@ const Dashboard = () => {
               className="icon icon-birthday-new gx-fs-sm "
               style={{width: '12px', lineHeight: 2}}
             />
-            {/* <span className="gx-mt--3p">{shortName}</span> */}
-            {shortName}
+            <span className="gx-mt--3p">{shortName}</span>
           </p>
         </div>
       )
@@ -639,7 +638,16 @@ const Dashboard = () => {
           NavigationDashboard?.viewAnnouncement ||
           NavigationDashboard?.viewHolidays ||
           NavigationDashboard?.viewBirthdays) && (
-          <Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
+          <Col
+            xl={6}
+            lg={24}
+            md={24}
+            sm={24}
+            xs={24}
+            className={`gx-order-lg-2 ${
+              innerWidth > 1204 && 'announcement-card'
+            }`}
+          >
             <Widget>
               <EventsAndAnnouncements
                 announcements={notices?.data?.data?.notices}
@@ -650,7 +658,7 @@ const Dashboard = () => {
           </Col>
         )}
 
-        <Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
+        <Col xl={18} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
           {NavigationDashboard?.viewCalendar && (
             <Card className="gx-card dashboard-calendar" title="Calendar">
               {leavesQuery?.isLoading ? (
