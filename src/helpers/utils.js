@@ -550,3 +550,5 @@ export const compareString = (a, b) => {
 export const getCurrentFiscalYear = () => {
   return new Date(new Date().getFullYear(), 0, 1)
 }
+
+export const convertMsToDay = (num) => num / (1000 * 60 * 60 * 24)
