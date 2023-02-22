@@ -34,7 +34,7 @@ import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
-import {PAGE10} from 'constants/Common'
+import {PAGE25} from 'constants/Common'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
@@ -112,7 +112,7 @@ function Leaves({
       : undefined
   )
   const [rangeDate, setRangeDate] = useState([])
-  const [page, setPage] = useState(PAGE10)
+  const [page, setPage] = useState(PAGE25)
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
@@ -167,7 +167,7 @@ function Leaves({
   })
 
   const handleLeaveTypeChange = (value, option) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setLeaveId(value)
     setLeaveTitle(option?.children)
     if (option.children !== 'Sick' && option.children !== 'Casual') {
@@ -175,12 +175,12 @@ function Leaves({
     }
   }
   const handleLeaveIntervalChange = (value) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setLeaveInterval(value)
   }
 
   const handleLeaveFilter = (value) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     if (value) {
       if (updatedQuarters?.find((d) => d?.id === value)) {
         const rangeDate = updatedQuarters?.find((d) => d?.id === value)
@@ -273,16 +273,16 @@ function Leaves({
   }
 
   const handleStatusChange = (statusId) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setLeaveStatus(statusId)
   }
   const handleUserChange = (user) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setUser(user)
   }
 
   const handleResetFilter = () => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setLeaveStatus(undefined)
     setUser(undefined)
     setDate(undefined)
@@ -330,7 +330,7 @@ function Leaves({
   }
 
   const handleDateChange = (value) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setRangeDate(value)
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)
@@ -497,7 +497,7 @@ function Leaves({
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['5', '10', '20', '50'],
+          pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
           total: leavesQuery?.data?.data?.data?.count || 1,
           onShowSizeChange,

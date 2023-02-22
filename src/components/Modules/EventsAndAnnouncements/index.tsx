@@ -45,12 +45,10 @@ function EventsAndAnnouncements({
   announcements,
   holidays,
   birthdays,
-  salaryReview,
 }: {
   announcements: any
   holidays: any
   birthdays: any[]
-  salaryReview: any[]
 }) {
   const {role: {permission: {Dashboard = {}} = {}} = {}} =
     useSelector(selectAuthUser)
@@ -116,20 +114,6 @@ function EventsAndAnnouncements({
     avatar: x.photoURL || '',
   }))
 
-  const SalaryReviewData = salaryReview?.map((x: any) => ({
-    id: x._id,
-    name: x.name,
-    title: [
-      <>
-        <p className="gx-mb-0 gx-font-weight-medium">{x.name}</p>{' '}
-        <p className="gx-mb-0 gx-font-weight-light">
-          {dayCheck(x.newSalaryReviewDate)}
-        </p>
-      </>,
-    ],
-    avatar: x.photoURL || '',
-  }))
-
   function getName(task: any, shape: any) {
     if (task?.avatar === '') {
       let nameSplit = task?.name.split(' ')
@@ -178,12 +162,9 @@ function EventsAndAnnouncements({
         announcementsData,
         holidaysData,
         birthdayData,
-        SalaryReviewData,
       })
         ?.filter((data: any) => {
-          if (data?.day === 'Salary Review' && Dashboard?.viewSalaryReview)
-            return true
-          else if (data?.day === 'Announcements' && Dashboard?.viewAnnouncement)
+          if (data?.day === 'Announcements' && Dashboard?.viewAnnouncement)
             return true
           else if (data?.day === 'Holidays' && Dashboard?.viewHolidays)
             return true

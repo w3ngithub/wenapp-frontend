@@ -20,7 +20,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {useSelector} from 'react-redux'
-import {PAGE10} from 'constants/Common'
+import {PAGE25} from 'constants/Common'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
@@ -79,7 +79,7 @@ function MyHistory({
 
   const [rangeDate, setRangeDate] = useState<any>([])
 
-  const [page, setPage] = useState(PAGE10)
+  const [page, setPage] = useState(PAGE25)
   const [leaveFilter, setLeaveFilter] = useState(undefined)
 
   const userLeavesQuery = useQuery(
@@ -112,12 +112,12 @@ function MyHistory({
   const combinedFilter = [...leaveHistoryDays, ...(updatedQuarters || [])]
 
   const handleLeaveType = (value: string | undefined) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setLeaveType(value)
   }
 
   const handleLeaveFilter = (value: any) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     if (value) {
       if (updatedQuarters?.find((d: any) => d?.id === value)) {
         const rangeDate = updatedQuarters?.find((d: any) => d?.id === value)
@@ -162,13 +162,13 @@ function MyHistory({
   }
 
   const handleStatusChange = (statusId: string) => {
-    if (page?.page > 1) setPage(PAGE10)
+    if (page?.page > 1) setPage(PAGE25)
     setLeaveStatus(statusId)
   }
 
   const handleDateChange = (value: any) => {
     setLeaveFilter(undefined)
-    if (page?.page > 1) setPage(PAGE10)
+    if (page?.page > 1) setPage(PAGE25)
 
     setRangeDate(value)
   }
@@ -182,7 +182,7 @@ function MyHistory({
   const handleResetFilter = () => {
     setLeaveStatus(undefined)
     setLeaveType(undefined)
-    setPage(PAGE10)
+    setPage(PAGE25)
     setRangeDate([])
     setLeaveFilter(undefined)
     setDate({

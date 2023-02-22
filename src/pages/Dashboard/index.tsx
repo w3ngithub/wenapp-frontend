@@ -29,7 +29,6 @@ import {getAllHolidays} from 'services/resources'
 import {
   getActiveUsersCount,
   getBirthMonthUsers,
-  getSalaryReviewUsers,
 } from 'services/users/userDetails'
 import {getTodaysUserAttendanceCount} from 'services/attendances'
 import {useNavigate} from 'react-router-dom'
@@ -83,12 +82,6 @@ const Dashboard = () => {
       }
     )
   }, [])
-
-  const {data: salaryReview, refetch: salaryRefetch} = useQuery(
-    ['usersSalaryReview'],
-    getSalaryReviewUsers,
-    {enabled: false}
-  )
 
   const {data: AttendanceCount} = useQuery(
     ['todaysAttendance'],
@@ -254,12 +247,6 @@ const Dashboard = () => {
     projectRefetch,
   ])
 
-  useEffect(() => {
-    if (NavigationDashboard?.viewSalaryReview) {
-      Promise.all([salaryRefetch()])
-    }
-  }, [NavigationDashboard?.viewSalaryReview, salaryRefetch])
-
   const calCulateWidth = (roles: any) => {
     const roleArray = [
       roles?.viewCoworkersOnLeave,
@@ -367,6 +354,7 @@ const Dashboard = () => {
               className="icon icon-birthday-new gx-fs-sm "
               style={{width: '12px', lineHeight: 2}}
             />
+            {/* <span className="gx-mt--3p">{shortName}</span> */}
             {shortName}
           </p>
         </div>
@@ -668,7 +656,6 @@ const Dashboard = () => {
                 announcements={notices?.data?.data?.notices}
                 holidays={Holidays?.data?.data?.data?.[0]?.holidays}
                 birthdays={BirthMonthUsers?.data?.data?.users}
-                salaryReview={salaryReview?.data?.data?.users}
               />
             </Widget>
           </Col>
@@ -747,13 +734,6 @@ const Dashboard = () => {
                       onChange={(c: any) => setProject(c)}
                       handleSearch={optimizedFn}
                       placeholder="Search Project"
-                      // options={data?.data?.data?.data?.map(
-                      //   (x: {_id: string; name: string}) => ({
-                      //     id: x._id,
-                      //     value: x.name,
-                      //   })
-                      // )}
-
                       options={(projectArray || [])?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,
