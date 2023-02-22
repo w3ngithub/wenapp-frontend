@@ -299,7 +299,12 @@ const Dashboard = () => {
         marginBottom: '3px',
         marginLeft: '11px',
         // color: darkTheme ? darkThemeTextColor : '#038fde',
-        color: event?.leaveType === 'Late Arrival' ? '#eb9293' : '#84f17d',
+        color:
+          event?.leaveStatus === 'pending'
+            ? '#fd826b'
+            : event?.leaveType === 'Late Arrival'
+            ? '#eb9293'
+            : '#84f17d',
         // color: darkTheme
         //   ? event?.leaveStatus === 'pending'
         //     ? '#b1abab'
@@ -432,7 +437,14 @@ const Dashboard = () => {
           >
             <LeaveIcon
               width="15px"
-              fill={extraInfo === 'Late' ? '#eb9293' : '#84f17d'}
+              fill={
+                props?.event?.leaveStatus === 'pending'
+                  ? '#fd826b'
+                  : extraInfo === 'Late'
+                  ? '#eb9293'
+                  : '#84f17d'
+              }
+              // fill={extraInfo === 'Late' ? '#eb9293' : '#84f17d'}
             />
             <span className="gx-mt-1p" style={{width: '59px'}}>{`${shortName}${
               extraInfo ? '(' + extraInfo + ')' : ''
