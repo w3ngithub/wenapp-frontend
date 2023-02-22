@@ -28,6 +28,7 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
   const {
     role: {key},
     _id,
+    joinDate,
   } = useSelector(selectAuthUser)
 
   const {
@@ -45,6 +46,7 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
         limit: 10,
         role: key,
         userId: _id,
+        joinDate: joinDate,
       })
       return res
     },
@@ -77,7 +79,7 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
   }
 
   useEffect(() => {
-    socket.emit('get-notification-count', {_id, key})
+    socket.emit('get-notification-count', {_id, key, joinDate})
 
     socket.on('bell-notification', (response) => {
       if (response && response?.showTo?.includes(key)) {

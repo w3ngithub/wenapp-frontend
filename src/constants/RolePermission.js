@@ -62,22 +62,22 @@ export const permissionRole = {
     },
     {
       name: `makeclicakbleTotalCoworkers`,
-      label: `Make Clickable Total Co-workers`,
+      label: `Make 'Total Co-workers' Card Clickable`,
       rule: [],
     },
     {
       name: `makeclickableCoworkersPunchIn`,
-      label: `Make Clickable Co-workers Punch In`,
+      label: `Make 'Co-workers Punch In' Card Clickable`,
       rule: [],
     },
     {
       name: `makeclickableLeavePendingRequest`,
-      label: `Make Clickable Leave Pending Request `,
+      label: `Make'Pending Leave Requests' Card Clickable `,
       rule: [],
     },
     {
       name: `makeclickableCoworkersOnLeave`,
-      label: `Make Clickable Co-workers On Leave `,
+      label: `Make 'Co-workers On Leave' Card Clickable `,
       rule: [],
     },
   ],
