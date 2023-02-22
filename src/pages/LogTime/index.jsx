@@ -28,7 +28,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
-import {PAGE20} from 'constants/Common'
+import {PAGE50} from 'constants/Common'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -51,7 +51,7 @@ function LogTime() {
 
   // init states
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState(PAGE20)
+  const [page, setPage] = useState(PAGE50)
   const [openModal, setOpenModal] = useState(false)
 
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})

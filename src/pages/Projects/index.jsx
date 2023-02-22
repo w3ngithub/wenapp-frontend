@@ -27,7 +27,7 @@ import {getAllUsers, getUserPositionTypes} from 'services/users/userDetails'
 import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import Select from 'components/Elements/Select'
-import {PAGE20, PLACE_HOLDER_CLASS} from 'constants/Common'
+import {PAGE25, PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -56,7 +56,7 @@ function ProjectsPage() {
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const [project, setProject] = useState('')
-  const [page, setPage] = useState(PAGE20)
+  const [page, setPage] = useState(PAGE25)
   const [projectStatus, setProjectStatus] = useState(undefined)
   const [projectTags, setProjectTags] = useState(undefined)
   const [projectType, setProjectType] = useState(undefined)
@@ -296,34 +296,34 @@ function ProjectsPage() {
   }
 
   const handleProjectTypeChange = (typeId) => {
-    setPage(PAGE20)
+    setPage(PAGE25)
     setProjectType(typeId)
   }
 
   const handleProjectStatusChange = (statusId) => {
-    setPage(PAGE20)
+    setPage(PAGE25)
     setProjectStatus(statusId)
   }
 
   const handleClientChange = (clientId) => {
-    setPage(PAGE20)
+    setPage(PAGE25)
     setprojectClient(clientId)
   }
 
   const handleProjectTagsChange = (tagId) => {
-    setPage(PAGE20)
+    setPage(PAGE25)
     setProjectTags(tagId)
   }
   const handleDeveloperChange = (developerId) => {
-    setPage(PAGE20)
+    setPage(PAGE25)
     setDeveloper(developerId)
   }
   const handleDesignerChange = (designerId) => {
-    setPage(PAGE20)
+    setPage(PAGE25)
     setDesigner(designerId)
   }
   const handleQaChange = (qaId) => {
-    setPage(PAGE20)
+    setPage(PAGE25)
     setQa(qaId)
   }
 
