@@ -763,16 +763,18 @@ function LeaveModal({
                     />
                   </Form.Item>
 
-                  <small
-                    style={{
-                      color: 'red',
-                      fontSize: '14px',
-                      width: '10%',
-                      paddingLeft: 15,
-                    }}
-                  >
-                    *Disabled dates are holidays
-                  </small>
+                  {!readOnly && (
+                    <small
+                      style={{
+                        color: 'red',
+                        fontSize: '14px',
+                        width: '10%',
+                        paddingLeft: 15,
+                      }}
+                    >
+                      *Disabled dates are holidays
+                    </small>
+                  )}
                 </Col>
               ))}
           </Row>
