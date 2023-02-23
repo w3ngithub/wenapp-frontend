@@ -176,7 +176,7 @@ function AdminAttendance({userRole}) {
           ]
         ),
       onError: (error) => {
-        notification({message: 'Project deletion failed', type: 'error'})
+        notification({message: 'Attendance deletion failed', type: 'error'})
       },
     }
   )
@@ -233,8 +233,8 @@ function AdminAttendance({userRole}) {
     setToggleEdit(true)
     setAttToEdit(record)
   }
-  const confirmDeleteAttendance = (project) => {
-    deleteAttendanceMutation.mutate(project._id)
+  const confirmDeleteAttendance = (a) => {
+    deleteAttendanceMutation.mutate(a._id)
   }
 
   const handleAttChnageChange = (val) => {

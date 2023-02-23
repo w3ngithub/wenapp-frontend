@@ -21,30 +21,33 @@ import {leaveHistoryDays} from 'constants/LeaveTypes'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {useSelector} from 'react-redux'
 import {PAGE25} from 'constants/Common'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
 
 const formattedLeaves = (leaves: any) => {
-  return leaves?.map((leave: any) => ({
-    ...leave,
-    key: leave._id,
-    dates: leave?.leaveDates
-      ?.map((date: any, index: any) => changeDate(date))
-      .join(
-        leave?.leaveType?.name === 'Maternity' ||
-          leave?.leaveType?.name === 'Paternity' ||
-          leave?.leaveType?.name === 'Paid Time Off'
-          ? ' - '
-          : '\r\n'
-      ),
-    type: `${leave?.leaveType?.name} ${
-      leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
-        ? '- ' + removeDash(leave?.halfDay)
-        : ''
-    }`,
-    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
-  }))
+  return leaves?.map((leave: any) => {
+    return {
+      ...leave,
+      key: leave._id,
+      dates: leave?.leaveDates
+        ?.map((date: any, index: any) => changeDate(date))
+        .join(
+          immediateApprovalLeaveTypes.includes(
+            leave?.leaveType?.name?.split(' ')?.[0]
+          ) || leave?.leaveType?.name === 'Paid Time Off'
+            ? ' - '
+            : '\r\n'
+        ),
+      type: `${leave?.leaveType?.name} ${
+        leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
+          ? '- ' + removeDash(leave?.halfDay)
+          : ''
+      }`,
+      status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
+    }
+  })
 }
 
 function MyHistory({
@@ -268,7 +271,7 @@ function MyHistory({
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['5', '10', '20', '50'],
+          pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
           total: userLeavesQuery?.data?.data?.data?.count || 1,
           onShowSizeChange,

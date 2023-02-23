@@ -518,7 +518,7 @@ function ProjectsPage() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['20', '50', '80'],
+            pageSizeOptions: ['25', '50', '100'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,

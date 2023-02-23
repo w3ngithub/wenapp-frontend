@@ -82,13 +82,28 @@ function Detail() {
             const parsedArray = HTMLReactParser(item).filter(
               (el) => el !== '\n'
             )
-            const codeLanguage = parsedArray
-              ?.shift()
-              ?.props?.children?.split(':')?.[1]
-              ?.trim()
+
+            const codeLanguage =
+              typeof parsedArray?.[0]?.props?.children === 'string'
+                ? parsedArray?.shift()?.props?.children?.split(':')?.[1]?.trim()
+                : 'html'
+
+            if (
+              parsedArray?.[parsedArray.length - 1]?.props?.children?.trim() ===
+                '' ||
+              !parsedArray?.[parsedArray.length - 1]?.props?.children
+            ) {
+              parsedArray.pop()
+            }
+
             const parsedString = parsedArray
               .map((item) => {
-                if (item?.props && index !== 0) {
+                if (
+                  item?.props &&
+                  index !== 0 &&
+                  typeof item?.props?.children === 'string' &&
+                  item?.props?.children?.trim() !== ''
+                ) {
                   return item.props.children
                 } else if (
                   typeof item?.props?.children === 'object' &&
