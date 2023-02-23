@@ -100,9 +100,15 @@ function Detail() {
                 if (
                   item?.props &&
                   index !== 0 &&
+                  typeof item?.props?.children === 'string' &&
                   item?.props?.children?.trim() !== ''
                 ) {
                   return item.props.children
+                } else if (
+                  typeof item?.props?.children === 'object' &&
+                  typeof item?.props?.children?.props?.children === 'string'
+                ) {
+                  return item.props.children.props.children.trim()
                 } else return null
               })
               .join('\n')
