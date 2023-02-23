@@ -205,6 +205,7 @@ function SummaryReport() {
               onConfirm={handleResetAllocatedLeaves}
               okText="Yes"
               cancelText="No"
+              disabled={resetLeavesMutation?.isLoading}
             >
               <Button
                 className={
