@@ -17,28 +17,32 @@ const LeavesCalendar = () => {
       onError: (err) => console.log(err),
       select: (res) => {
         let allLeaves: any[] = []
+
         res?.data?.data?.data.forEach((leave: any) => {
-          const {_id: leaveData} = leave
           const isLeavePaternity =
-            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Paternity
           const isLeaveMaternity =
-            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Maternity
           const isLeavePTO =
-            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.PTO
           const isLeaveBereavement =
-            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.Bereavement
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Bereavement
 
           if (
             isLeavePaternity ||
             isLeaveMaternity ||
             isLeavePTO ||
             isLeaveBereavement
-          )
-            allLeaves.push({...leave?._id, leaveDates: [...leave?.leaveDates]})
-          else
+          ) {
+            allLeaves.push({
+              ...leave?._id,
+              leaveDates: [...leave?.leaveDates],
+            })
+          } else {
             leave.leaveDates.forEach((date: string) => {
               allLeaves.push({...leave?._id, leaveDates: date})
             })
+          }
         })
         return allLeaves
       },
