@@ -348,7 +348,15 @@ const Dashboard = () => {
             textAlign: 'left',
           }}
         >
-          <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
+          <p
+            style={{
+              ...style,
+              margin: 0,
+              flexWrap: 'wrap',
+              fontWeight: '500',
+              gap: '6px',
+            }}
+          >
             <i
               className="icon icon-birthday-new gx-fs-sm "
               style={{width: '12px', lineHeight: 2}}
@@ -434,7 +442,7 @@ const Dashboard = () => {
               width="15px"
               fill={extraInfo === 'Late' ? '#eb9293' : '#3DBF4D'}
             />
-            <span className="gx-mt-1p" style={{width: '59px'}}>{`${shortName}${
+            <span className="gx-mt-1p" style={{width: '80px'}}>{`${shortName}${
               extraInfo ? '(' + extraInfo + ')' : ''
             }`}</span>
           </p>
