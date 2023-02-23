@@ -17,29 +17,42 @@ const LeavesCalendar = () => {
       onError: (err) => console.log(err),
       select: (res) => {
         let allLeaves: any[] = []
-        res?.data?.data?.data.forEach((leave: any) => {
-          const {_id: leaveData} = leave
-          const isLeavePaternity =
-            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
-          const isLeaveMaternity =
-            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
-          const isLeavePTO =
-            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
-          const isLeaveBereavement =
-            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.Bereavement
-
-          if (
-            isLeavePaternity ||
-            isLeaveMaternity ||
-            isLeavePTO ||
-            isLeaveBereavement
+        try {
+          console.log(
+            res?.data?.data?.data.filter((data: any) => !data._id.leaveType[0])
           )
-            allLeaves.push({...leave?._id, leaveDates: [...leave?.leaveDates]})
-          else
-            leave.leaveDates.forEach((date: string) => {
-              allLeaves.push({...leave?._id, leaveDates: date})
-            })
-        })
+
+          res?.data?.data?.data.forEach((leave: any) => {
+            const isLeavePaternity =
+              leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Paternity
+            const isLeaveMaternity =
+              leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Maternity
+            const isLeavePTO =
+              leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.PTO
+            const isLeaveBereavement =
+              leave?._id?.leaveType[0]?.toLowerCase() ===
+              LEAVES_TYPES.Bereavement
+
+            if (
+              isLeavePaternity ||
+              isLeaveMaternity ||
+              isLeavePTO ||
+              isLeaveBereavement
+            ) {
+              allLeaves.push({
+                ...leave?._id,
+                leaveDates: [...leave?.leaveDates],
+              })
+            } else {
+              leave.leaveDates.forEach((date: string) => {
+                allLeaves.push({...leave?._id, leaveDates: date})
+              })
+            }
+          })
+        } catch (error) {
+          console.log(error)
+        }
+
         return allLeaves
       },
     }
