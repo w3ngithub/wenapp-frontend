@@ -83,14 +83,15 @@ function Detail() {
               (el) => typeof el !== 'string'
             )
 
-            const codeLanguage = parsedArray
-              ?.shift()
-              ?.props?.children?.split(':')?.[1]
-              ?.trim()
+            const codeLanguage =
+              typeof parsedArray?.[0]?.props?.children === 'string'
+                ? parsedArray?.shift()?.props?.children?.split(':')?.[1]?.trim()
+                : 'html'
 
             if (
-              parsedArray?.[parsedArray.length - 1]?.props?.children.trim() ===
-              ''
+              parsedArray?.[parsedArray.length - 1]?.props?.children?.trim() ===
+                '' ||
+              !parsedArray?.[parsedArray.length - 1]?.props?.children
             ) {
               parsedArray.pop()
             }
