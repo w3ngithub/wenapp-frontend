@@ -17,42 +17,33 @@ const LeavesCalendar = () => {
       onError: (err) => console.log(err),
       select: (res) => {
         let allLeaves: any[] = []
-        try {
-          console.log(
-            res?.data?.data?.data.filter((data: any) => !data._id.leaveType[0])
-          )
 
-          res?.data?.data?.data.forEach((leave: any) => {
-            const isLeavePaternity =
-              leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Paternity
-            const isLeaveMaternity =
-              leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Maternity
-            const isLeavePTO =
-              leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.PTO
-            const isLeaveBereavement =
-              leave?._id?.leaveType[0]?.toLowerCase() ===
-              LEAVES_TYPES.Bereavement
+        res?.data?.data?.data.forEach((leave: any) => {
+          const isLeavePaternity =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Paternity
+          const isLeaveMaternity =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Maternity
+          const isLeavePTO =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.PTO
+          const isLeaveBereavement =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Bereavement
 
-            if (
-              isLeavePaternity ||
-              isLeaveMaternity ||
-              isLeavePTO ||
-              isLeaveBereavement
-            ) {
-              allLeaves.push({
-                ...leave?._id,
-                leaveDates: [...leave?.leaveDates],
-              })
-            } else {
-              leave.leaveDates.forEach((date: string) => {
-                allLeaves.push({...leave?._id, leaveDates: date})
-              })
-            }
-          })
-        } catch (error) {
-          console.log(error)
-        }
-
+          if (
+            isLeavePaternity ||
+            isLeaveMaternity ||
+            isLeavePTO ||
+            isLeaveBereavement
+          ) {
+            allLeaves.push({
+              ...leave?._id,
+              leaveDates: [...leave?.leaveDates],
+            })
+          } else {
+            leave.leaveDates.forEach((date: string) => {
+              allLeaves.push({...leave?._id, leaveDates: date})
+            })
+          }
+        })
         return allLeaves
       },
     }
