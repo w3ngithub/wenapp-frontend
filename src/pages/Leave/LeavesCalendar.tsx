@@ -5,6 +5,7 @@ import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import {Spin} from 'antd'
 import {getFiscalYearLeaves} from 'services/leaves'
+import {LEAVES_TYPES} from 'constants/Leaves'
 
 const localizer = momentLocalizer(moment)
 
@@ -17,15 +18,27 @@ const LeavesCalendar = () => {
       select: (res) => {
         let allLeaves: any[] = []
         res?.data?.data?.data.forEach((leave: any) => {
+          const {_id: leaveData} = leave
+          const isLeavePaternity =
+            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
+          const isLeaveMaternity =
+            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
+          const isLeavePTO =
+            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
+          const isLeaveBereavement =
+            leaveData?.leaveType[0].toLowerCase() === LEAVES_TYPES.Bereavement
+
           if (
-            leave?._id?.leaveType[0] !== 'Paternity' &&
-            leave?._id?.leaveType[0] !== 'Maternity'
+            isLeavePaternity ||
+            isLeaveMaternity ||
+            isLeavePTO ||
+            isLeaveBereavement
           )
+            allLeaves.push({...leave?._id, leaveDates: [...leave?.leaveDates]})
+          else
             leave.leaveDates.forEach((date: string) => {
               allLeaves.push({...leave?._id, leaveDates: date})
             })
-          else
-            allLeaves.push({...leave?._id, leaveDates: [...leave?.leaveDates]})
         })
         return allLeaves
       },
@@ -55,7 +68,14 @@ const LeavesCalendar = () => {
 
       const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
-      if (leaveType[0] === 'Paternity' || leaveType[0] === 'Maternity')
+      if (
+        [
+          LEAVES_TYPES.Paternity,
+          LEAVES_TYPES.Maternity,
+          LEAVES_TYPES.PTO,
+          LEAVES_TYPES.Bereavement,
+        ].includes(leaveType[0]?.toLowerCase())
+      )
         return {
           title: shortName,
           start: new Date(leaveDates[0]),
