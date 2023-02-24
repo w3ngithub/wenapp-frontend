@@ -1,7 +1,12 @@
 import {useQuery} from '@tanstack/react-query'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
-import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
+import {
+  FIRST_HALF,
+  LEAVES_COLUMN,
+  SECOND_HALF,
+  STATUS_TYPES,
+} from 'constants/Leaves'
 import {capitalizeInput, changeDate, removeDash} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment, {Moment} from 'moment'
@@ -36,7 +41,7 @@ const formattedLeaves = (leaves: any) => {
             : '\r\n'
         ),
       type: `${leave?.leaveType?.name} ${
-        leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
+        leave?.halfDay === FIRST_HALF || leave?.halfDay === SECOND_HALF
           ? '- ' + removeDash(leave?.halfDay)
           : ''
       }`,

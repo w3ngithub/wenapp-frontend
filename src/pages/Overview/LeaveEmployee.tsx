@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {Card, Table} from 'antd'
 import {OVERVIEW_LEAVES} from 'constants/Overview'
 import {changeDate} from 'helpers/utils'
-import {LATE_ARRIVAL, LEAVES_TYPES} from 'constants/Leaves'
+import {FIRST_HALF, LATE_ARRIVAL, LEAVES_TYPES} from 'constants/Leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
 
 const formattedLeaves = (leaves: any[]) => {
@@ -19,6 +19,8 @@ const formattedLeaves = (leaves: any[]) => {
           LEAVES_TYPES.Casual &&
         leave?.leaveType[0]?.name.split(' ')[0].toLowerCase() !==
           LEAVES_TYPES.Sick &&
+        leave?.leaveType[0]?.name.split(' ')[0].toLowerCase() !==
+          LEAVES_TYPES.Substitute &&
         leave?.leaveType[0]?.name !== LATE_ARRIVAL
           ? `${(
               (new Date(leave?.leaveDates[1]).getTime() -
@@ -29,7 +31,7 @@ const formattedLeaves = (leaves: any[]) => {
           : leave.leaveDates.length > 1
           ? leave.leaveDates.length + ' Days'
           : leave.halfDay
-          ? leave.halfDay === 'first-half'
+          ? leave.halfDay === FIRST_HALF
             ? 'First Half'
             : 'Second Half'
           : '1 Day',
