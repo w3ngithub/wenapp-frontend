@@ -1,7 +1,13 @@
 import React, {useState} from 'react'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
-import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
+import {
+  FIRST_HALF,
+  LEAVES_COLUMN,
+  PAID_TIME_OFF,
+  SECOND_HALF,
+  STATUS_TYPES,
+} from 'constants/Leaves'
 import {CSVLink} from 'react-csv'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
@@ -43,12 +49,12 @@ const formattedLeaves = (leaves) => {
         .join(
           immediateApprovalLeaveTypes.includes(
             leave?.leaveType?.name?.split(' ')?.[0]
-          ) || leave?.leaveType?.name === 'Paid Time Off'
+          ) || leave?.leaveType?.name === PAID_TIME_OFF
             ? '-'
             : ' '
         ),
       type: `${leave?.leaveType?.name} ${
-        leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
+        leave?.halfDay === FIRST_HALF || leave?.halfDay === SECOND_HALF
           ? '- ' + removeDash(leave?.halfDay)
           : ''
       }`,

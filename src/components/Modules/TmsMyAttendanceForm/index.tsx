@@ -14,6 +14,7 @@ import {Dispatch} from 'redux'
 import getLocation, {checkLocationPermission} from 'helpers/getLocation'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {getLeavesOfUser} from 'services/leaves'
+import {FIRST_HALF} from 'constants/Leaves'
 
 function TmsMyAttendanceForm({
   title,
@@ -118,7 +119,7 @@ function TmsMyAttendanceForm({
         attendanceDate: moment.utc().startOf('day').format(),
       }
 
-      if (leavesData?.data?.data?.data?.[0]?.halfday !== 'first-half') {
+      if (leavesData?.data?.data?.data?.[0]?.halfday !== FIRST_HALF) {
         if (!latestAttendance || latestAttendance.length === 0) {
           attendanceParams = {...attendanceParams, isLateArrival: true}
         }

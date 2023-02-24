@@ -1,5 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {STATUS_TYPES} from 'constants/Leaves'
+import {FIRST_HALF, FULL_DAY, SECOND_HALF, STATUS_TYPES} from 'constants/Leaves'
 import {Button, Col, Input, Row, Select, Spin, Form, DatePicker} from 'antd'
 import {
   filterHalfDayLeaves,
@@ -330,10 +330,10 @@ function Apply({user}) {
       if (index === 0 && (halfLeaveApproved || halfLeavePending)) {
         return true
       }
-      if (index === 1 && specificHalf === 'first-half') {
+      if (index === 1 && specificHalf === FIRST_HALF) {
         return true
       }
-      if (index === 2 && specificHalf === 'second-half') {
+      if (index === 2 && specificHalf === SECOND_HALF) {
         return true
       }
       return false
@@ -372,7 +372,7 @@ function Apply({user}) {
     if (selectedDates?.length > 0) {
       setCalendarClicked(true)
       if (selectedDates?.length > 1) {
-        form.setFieldValue('halfDay', 'full-day')
+        form.setFieldValue('halfDay', FULL_DAY)
       }
       if (selectedDates?.length === 1) {
         const formattedDate = selectedDates?.map((d) =>
@@ -382,12 +382,12 @@ function Apply({user}) {
           (leave) => leave.date === formattedDate?.[0]?.split('-')?.join('/')
         )
         let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
-        if (specificHalf === 'first-half') {
-          form.setFieldValue('halfDay', 'second-half')
-        } else if (specificHalf === 'second-half') {
-          form.setFieldValue('halfDay', 'first-half')
+        if (specificHalf === FIRST_HALF) {
+          form.setFieldValue('halfDay', SECOND_HALF)
+        } else if (specificHalf === SECOND_HALF) {
+          form.setFieldValue('halfDay', FIRST_HALF)
         } else {
-          form.setFieldValue('halfDay', 'full-day')
+          form.setFieldValue('halfDay', FULL_DAY)
         }
       }
     } else {
