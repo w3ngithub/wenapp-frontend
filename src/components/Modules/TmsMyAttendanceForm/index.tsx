@@ -117,8 +117,7 @@ function TmsMyAttendanceForm({
         punchInIp: IP?.data?.IPv4,
         attendanceDate: moment.utc().startOf('day').format(),
       }
-
-      if (leavesData?.data?.data?.data?.[0]?.halfday !== 'first-half') {
+      if (leavesData?.data?.data?.data?.[0]?.halfDay !== 'first-half') {
         if (!latestAttendance || latestAttendance.length === 0) {
           attendanceParams = {...attendanceParams, isLateArrival: true}
         }
