@@ -83,14 +83,15 @@ function Detail() {
               (el) => typeof el !== 'string'
             )
 
-            const codeLanguage = parsedArray
-              ?.shift()
-              ?.props?.children?.split(':')?.[1]
-              ?.trim()
+            const codeLanguage =
+              typeof parsedArray?.[0]?.props?.children === 'string'
+                ? parsedArray?.shift()?.props?.children?.split(':')?.[1]?.trim()
+                : 'html'
 
             if (
-              parsedArray?.[parsedArray.length - 1]?.props?.children.trim() ===
-              ''
+              parsedArray?.[parsedArray.length - 1]?.props?.children?.trim() ===
+                '' ||
+              !parsedArray?.[parsedArray.length - 1]?.props?.children
             ) {
               parsedArray.pop()
             }
@@ -100,9 +101,15 @@ function Detail() {
                 if (
                   item?.props &&
                   index !== 0 &&
+                  typeof item?.props?.children === 'string' &&
                   item?.props?.children?.trim() !== ''
                 ) {
                   return item.props.children
+                } else if (
+                  typeof item?.props?.children === 'object' &&
+                  typeof item?.props?.children?.props?.children === 'string'
+                ) {
+                  return item.props.children.props.children?.trim()
                 } else return null
               })
               .join('\n')
