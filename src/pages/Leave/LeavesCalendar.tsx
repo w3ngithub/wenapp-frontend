@@ -5,7 +5,12 @@ import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import {Spin} from 'antd'
 import {getFiscalYearLeaves} from 'services/leaves'
-import {LEAVES_TYPES} from 'constants/Leaves'
+import {
+  FIRST_HALF,
+  LATE_ARRIVAL,
+  LEAVES_TYPES,
+  SECOND_HALF,
+} from 'constants/Leaves'
 
 const localizer = momentLocalizer(moment)
 
@@ -60,13 +65,13 @@ const LeavesCalendar = () => {
         lastName = `${nameSplitted.pop().substring(0, 1)}.`
       }
 
-      if (halfDay === 'first-half') {
+      if (halfDay === FIRST_HALF) {
         extraInfo = '1st'
       }
-      if (halfDay === 'second-half') {
+      if (halfDay === SECOND_HALF) {
         extraInfo = '2nd'
       }
-      if (leaveType.includes('Late Arrival')) {
+      if (leaveType.includes(LATE_ARRIVAL)) {
         extraInfo = 'Late'
       }
 
