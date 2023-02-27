@@ -13,7 +13,7 @@ const InfoCard = (props) => {
   return (
     <Widget
       styleName={`gx-bg-${cardColor} no-margin non-casual-sick-leave-card`}
-      //style={{height: '100%'}}
+      style={style}
       bodyStyle={{
         padding: 20,
       }}
@@ -45,7 +45,7 @@ const InfoCard = (props) => {
                   </p>
                   <p className={`gx-mb-0 gx-text-${iconColor}`}>
                     {immediateApprovalLeaveTypes?.includes(data?.[0])
-                      ? (data[1] * data[2]) / 2
+                      ? data[3]
                       : data[1]}
                   </p>
                 </div>
