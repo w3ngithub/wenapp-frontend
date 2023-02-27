@@ -278,7 +278,8 @@ function Leave() {
       let leaveArray = []
       leaveStartDateArray?.forEach((item, index) => {
         leaveArray.push(
-          convertMsToDay(new Date(leaveEndDateArray[index]) - new Date(item))
+          convertMsToDay(new Date(leaveEndDateArray[index]) - new Date(item)) +
+            1
         )
       })
       const reducedLeaveDays = leaveArray?.reduce((acc, cur) => acc + cur, 0)
