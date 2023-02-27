@@ -1,23 +1,23 @@
 import {Col, Row} from 'antd'
 import IconAndInfoCard from 'components/Modules/Metrics/IconAndInfoCard'
 import InfoCard from 'components/Modules/Metrics/InfoCard'
+import {AnnualApprovedLeaveCardClassName} from 'constants/DOM'
 import React from 'react'
 
 function AnnualLeavesRemainingAndAppliedCards(props) {
-  const {YearlyLeaveExceptCasualandSick} = props
-  const hasMoreLeaves = YearlyLeaveExceptCasualandSick?.length > 0
   return (
     <Row gutter={[20, 20]}>
       <Col
-        xxl={hasMoreLeaves ? 8 : 12}
-        lg={hasMoreLeaves ? 8 : 12}
-        xl={8}
+        xxl={12}
+        lg={12}
+        xl={12}
         md={12}
         sm={12}
         xs={24}
         className="gx-col-full"
       >
         <IconAndInfoCard
+          index={1}
           cardColor="cyan"
           icon="product-list"
           title={props.firstTitle}
@@ -27,36 +27,25 @@ function AnnualLeavesRemainingAndAppliedCards(props) {
         />
       </Col>
       <Col
-        xxl={hasMoreLeaves ? 8 : 12}
-        lg={hasMoreLeaves ? 8 : 12}
-        xl={8}
+        xxl={12}
+        lg={12}
+        xl={12}
         sm={12}
         xs={24}
         md={12}
         className="gx-col-full"
       >
         <IconAndInfoCard
+          index={2}
           cardColor="orange"
           icon="tasks"
           title={props.secondTitle}
           firstTypeCount={props.sickDayApplied}
           secondTypeCount={props.casualDayApplied}
+          uniqueClassName={AnnualApprovedLeaveCardClassName}
           {...props}
         />
       </Col>
-      {hasMoreLeaves && (
-        <Col lg={8} xl={8} sm={12} xs={24} md={12} className="gx-col-full">
-          <InfoCard
-            cardColor="orange"
-            icon="tasks"
-            title={props.secondTitle}
-            firstTypeCount={props.sickDayApplied}
-            secondTypeCount={props.casualDayApplied}
-            style={{minHeight: '100px'}}
-            {...props}
-          />
-        </Col>
-      )}
     </Row>
   )
 }

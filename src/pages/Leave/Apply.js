@@ -377,7 +377,7 @@ function Apply({user}) {
       }
 
       // calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays = leaveType?.leaveDays - 1 // 60 for maternity, 5 for other two
+      const numberOfLeaveDays = leaveType?.leaveDays // 60 for maternity, 5 for other two// 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(

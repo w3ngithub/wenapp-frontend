@@ -29,15 +29,12 @@ import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
-import AccessWrapper from 'components/Modules/AccessWrapper'
 import ReapplyLeaveModal from 'components/Modules/ReapplyLeaveModal'
 import {STATUS_TYPES} from 'constants/Leaves'
-import {Collapse} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {WalletOutlined} from '@ant-design/icons'
+import {AnnualApprovedLeaveCardClassName} from 'constants/DOM'
 
 const TabPane = Tabs.TabPane
-const {Panel} = Collapse
 
 function Leave() {
   const location = useLocation()
@@ -51,7 +48,6 @@ function Leave() {
     leaveData: {},
   })
   const [reapplyLoader, setreapplyLoader] = useState(false)
-  const {innerWidth} = useWindowsSize()
 
   const [IsReject, setIsReject] = useState(false)
   const [IsUserCancel, setUserCancel] = useState(false)
@@ -123,6 +119,11 @@ function Leave() {
     },
     {enabled: isSuccess}
   )
+
+  const yearlyAllocatedSickLeaves =
+    leavesSummary?.data?.data?.data?.[0]?.yearSickAllocatedLeaves
+  const yearlyAllocatedCasualLeaves =
+    leavesSummary?.data?.data?.data?.[0]?.yearCausalAllocatedLeaves
 
   const leaveCancelMutation = useMutation(
     (payload) => changeLeaveStatus(payload.id, payload.type, payload.reason),
@@ -298,25 +299,17 @@ function Leave() {
   const [nonCasualSickLeaveCardHeight, setNonCasualSickLeaveCardHeight] =
     useState('100%')
   useEffect(() => {
-    let tempHeight
     const nonCasualSickLeaveCard = document.getElementsByClassName(
-      'non-casual-sick-leave-card'
+      AnnualApprovedLeaveCardClassName
     )[0]
 
     if (
       typeof nonCasualSickLeaveCard !== 'undefined' &&
       nonCasualSickLeaveCardHeight === '100%'
     ) {
-      tempHeight = `${nonCasualSickLeaveCard.offsetHeight}px`
       setNonCasualSickLeaveCardHeight(
         `${nonCasualSickLeaveCard.offsetHeight}px`
       )
-    }
-    if (
-      tempHeight ||
-      (leaveDaysQuery.isSuccess && YearlyLeaveExceptCasualandSick?.length === 0)
-    ) {
-      setOpenTab(['1'])
     }
   }, [leaveDaysQuery.isSuccess])
 
@@ -348,15 +341,13 @@ function Leave() {
       secondType="Casual"
       sickDayRemaining={
         yearlyLeavesTakn?.['Sick Leave']
-          ? allocatedYealryLeaves?.['Sick Leave'] -
-            yearlyLeavesTakn?.['Sick Leave']
-          : allocatedYealryLeaves?.['Sick Leave']
+          ? yearlyAllocatedSickLeaves - yearlyLeavesTakn?.['Sick Leave']
+          : yearlyAllocatedSickLeaves
       }
       casualDayRemaining={
         yearlyLeavesTakn?.['Casual Leave']
-          ? allocatedYealryLeaves?.['Casual Leave'] -
-            yearlyLeavesTakn?.['Casual Leave']
-          : allocatedYealryLeaves?.['Casual Leave']
+          ? yearlyAllocatedCasualLeaves - yearlyLeavesTakn?.['Casual Leave']
+          : yearlyAllocatedCasualLeaves
       }
       sickDayApplied={yearlyLeavesTakn?.['Sick Leave'] || 0}
       casualDayApplied={yearlyLeavesTakn?.['Casual Leave'] || 0}
@@ -365,77 +356,27 @@ function Leave() {
     />
   )
 
-  const leaveCardContent =
-    innerWidth > 1600 ? (
-      <Row gutter={[20, 20]}>
-        <Col
-          xl={YearlyLeaveExceptCasualandSick?.length > 0 ? 10 : 12}
-          lg={24}
-          md={24}
-          sm={24}
-          xs={24}
-          className=" leave-card-col"
-        >
-          <Card
-            title="Quarterly Leave"
-            style={{background: 'rgb(232 232 232 / 26%)'}}
-            className="padding-right-0 header-pd-0"
-          >
-            {quarterlyLeaveContent}
-          </Card>
-        </Col>
-
-        <Col
-          xl={YearlyLeaveExceptCasualandSick?.length > 0 ? 14 : 12}
-          lg={24}
-          md={24}
-          sm={24}
-          xs={24}
-          className="leave-card-col"
-        >
-          <Card
-            title="Annual Leave"
-            style={{background: 'rgb(232 232 232 / 26%)'}}
-            // bodyStyle={{paddingRight: 0}}
-            //headStyle={{paddingTop: 0}}
-            className="padding-right-0 header-pd-0"
-            bordered={false}
-          >
-            {annualLeaveContent}
-          </Card>
-        </Col>
-      </Row>
-    ) : (
-      <Collapse
-        activeKey={openTab}
-        style={{marginBottom: '2rem'}}
-        onChange={(d, e, f) => setOpenTab(d)}
-      >
-        <Panel
-          header={
-            <h3>
-              <WalletOutlined />
-              <span className="gx-ml-3">Quarterly Leave</span>
-            </h3>
-          }
-          key="1"
+  const leaveCardContent = (
+    <Row>
+      <Col xl={12} lg={12} md={24} sm={24} xs={24}>
+        <Card
+          title="Quarterly Leave"
+          style={{background: 'rgb(232 232 232 / 26%)'}}
         >
           {quarterlyLeaveContent}
-        </Panel>
+        </Card>
+      </Col>
 
-        <Panel
-          header={
-            <h3>
-              <WalletOutlined />
-              <span className="gx-ml-3">Annual Leave</span>
-            </h3>
-          }
-          key="2"
+      <Col xl={12} lg={12} md={24} sm={24} xs={24}>
+        <Card
+          title="Annual Leave"
+          style={{background: 'rgb(232 232 232 / 26%)'}}
         >
           {annualLeaveContent}
-        </Panel>
-      </Collapse>
-    )
+        </Card>
+      </Col>
+    </Row>
+  )
 
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (

@@ -3,6 +3,7 @@ import Widget from 'components/Elements/Widget/index'
 import {connect} from 'react-redux'
 import {Col, Row} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const IconAndInfoCard = (props) => {
   const {
@@ -17,8 +18,9 @@ const IconAndInfoCard = (props) => {
     style,
     showIcon = true,
     bodyStyle = {},
+    uniqueClassName = '',
   } = props
-  let {iconColor} = props
+  let {iconColor, YearlyLeaveExceptCasualandSick, index} = props
   // if (props.themeType === THEME_TYPE_DARK) {
   iconColor = 'white'
   // }
@@ -39,7 +41,7 @@ const IconAndInfoCard = (props) => {
 
   return (
     <Widget
-      styleName={`gx-bg-${cardColor} no-margin leave-card`}
+      styleName={`gx-bg-${cardColor} no-margin leave-card ${uniqueClassName}`}
       style={{height: nonCasualSickLeaveCardHeight}}
       bodyStyle={{
         padding: 20,
@@ -95,13 +97,36 @@ const IconAndInfoCard = (props) => {
               <p className={`gx-mb-0 gx-text-${iconColor}`}>{firstTypeCount}</p>
             </div>
             {(secondTypeCount > 0 || title) && (
-              <div className="gx-d-flex gx-justify-content-between">
+              <div
+                className="gx-d-flex gx-justify-content-between"
+                style={{gap: '2rem', marginBottom: '0.2rem'}}
+              >
                 <p className={`gx-mb-0 gx-text-${iconColor}`}>{secondType}</p>
                 <p className={`gx-mb-0 gx-text-${iconColor}`}>
                   {secondTypeCount}
                 </p>
               </div>
             )}
+            {index === 2 &&
+              YearlyLeaveExceptCasualandSick?.map((data, index) => (
+                <div
+                  key={index}
+                  className="gx-d-flex gx-justify-content-between"
+                  style={{gap: '2rem', marginBottom: '0.2rem'}}
+                >
+                  <p
+                    className={`gx-mb-0 gx-text-${iconColor}`}
+                    style={{flex: 1}}
+                  >
+                    {data[0]?.replace('Leave', '')}
+                  </p>
+                  <p className={`gx-mb-0 gx-text-${iconColor}`}>
+                    {immediateApprovalLeaveTypes?.includes(data?.[0])
+                      ? parseInt(data[3])
+                      : data[1]}
+                  </p>
+                </div>
+              ))}
           </Col>
         </Row>
       </div>
