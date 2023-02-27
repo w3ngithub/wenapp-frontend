@@ -7,6 +7,7 @@ import 'assets/vendors/style'
 import 'styles/wieldy.less'
 import configureStore from './appRedux/store'
 import Main from './pages/Main'
+import CacheBuster from 'components/Elements/CacheBuster'
 
 export const store = configureStore()
 const queryClient = new QueryClient({
@@ -26,6 +27,7 @@ const App = () => {
             <Route path="/*" element={<Main />} />
           </Routes>
         </BrowserRouter>
+        <CacheBuster />
       </Provider>
     </QueryClientProvider>
   )
