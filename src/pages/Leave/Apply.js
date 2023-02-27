@@ -307,11 +307,11 @@ function Apply({user}) {
 
   const handleSubmit = async () => {
     await form.validateFields().then(async (values) => {
-      const leaveTypeName = leaveTypeQuery?.data?.find(
+      const leaveType = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
-      )?.value
+      )
       //code for exceeded casual leaves
-      if (leaveTypeName === 'Casual') {
+      if (leaveType?.value === 'Casual') {
         let currentCasualLeaveDaysApplied =
           values?.leaveDatesCasual?.length > 1
             ? values?.leaveDatesCasual?.length + newDateArr?.length
@@ -377,8 +377,7 @@ function Apply({user}) {
       }
 
       // calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays =
-        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
+      const numberOfLeaveDays = leaveType?.leaveDays // 60 for maternity, 5 for other two// 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(
