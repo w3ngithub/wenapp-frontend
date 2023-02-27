@@ -4,6 +4,7 @@ import Select from 'components/Elements/Select'
 import {
   FIRST_HALF,
   LEAVES_COLUMN,
+  PAID_TIME_OFF,
   SECOND_HALF,
   STATUS_TYPES,
 } from 'constants/Leaves'
@@ -36,7 +37,7 @@ const formattedLeaves = (leaves: any) => {
         .join(
           immediateApprovalLeaveTypes.includes(
             leave?.leaveType?.name?.split(' ')?.[0]
-          ) || leave?.leaveType?.name === 'Paid Time Off'
+          ) || leave?.leaveType?.name === PAID_TIME_OFF
             ? ' - '
             : '\r\n'
         ),
