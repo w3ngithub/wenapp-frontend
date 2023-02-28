@@ -1,6 +1,7 @@
 import React from 'react'
 import Widget from 'components/Elements/Widget'
 import {contactList} from '../../../../routes/socialApps/Profile/data'
+import {PhoneOutlined} from '@ant-design/icons'
 
 const Contact = ({user}) => {
   return (
@@ -23,7 +24,15 @@ const Contact = ({user}) => {
             className="gx-media gx-align-items-center gx-flex-nowrap gx-pro-contact-list "
           >
             <div className="gx-mr-3">
-              <i className={`icon icon-${data?.icon} gx-fs-xxl gx-text-grey`} />
+              {data.icon === 'phone' ? (
+                <span className="icon gx-fs-xxl gx-text-grey">
+                  <PhoneOutlined />
+                </span>
+              ) : (
+                <i
+                  className={`icon icon-${data?.icon} gx-fs-xxl gx-text-grey`}
+                />
+              )}
             </div>
             <div className="gx-media-body max-two-lines">
               <span className="gx-mb-0 gx-text-grey gx-fs-sm">
