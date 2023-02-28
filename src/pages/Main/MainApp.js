@@ -125,7 +125,19 @@ export const MainApp = (props) => {
             <Outlet />
           </div>
           <Footer>
-            <div className="gx-layout-footer-content">{footerText}</div>
+            <div className="gx-layout-footer-content">
+              {`© - ${new Date().getFullYear()}`} Built with Pride by
+              <span
+                onClick={() =>
+                  window.open('https://www.webexpertsnepal.com/', '_blank')
+                }
+                className="footer-text"
+              >
+                {' '}
+                WebExperts
+              </span>
+              .
+            </div>
           </Footer>
         </Content>
       </Layout>

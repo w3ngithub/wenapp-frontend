@@ -40,7 +40,13 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
-import {LEAVES_TYPES, STATUS_TYPES} from 'constants/Leaves'
+import {
+  FIRST_HALF,
+  FULL_DAY,
+  LEAVES_TYPES,
+  SECOND_HALF,
+  STATUS_TYPES,
+} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
@@ -391,10 +397,10 @@ function LeaveModal({
       if (index === 0 && (halfLeaveApproved || halfLeavePending)) {
         return true
       }
-      if (index === 1 && specificHalf === 'first-half') {
+      if (index === 1 && specificHalf === FIRST_HALF) {
         return true
       }
-      if (index === 2 && specificHalf === 'second-half') {
+      if (index === 2 && specificHalf === SECOND_HALF) {
         return true
       }
       return false
@@ -442,12 +448,12 @@ function LeaveModal({
           (leave) => leave.date === formattedDate?.[0]?.split('-')?.join('/')
         )
         let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
-        if (specificHalf === 'first-half') {
-          form.setFieldValue('halfDay', 'second-half')
-        } else if (specificHalf === 'second-half') {
-          form.setFieldValue('halfDay', 'first-half')
+        if (specificHalf === FIRST_HALF) {
+          form.setFieldValue('halfDay', SECOND_HALF)
+        } else if (specificHalf === SECOND_HALF) {
+          form.setFieldValue('halfDay', FIRST_HALF)
         } else {
-          form.setFieldValue('halfDay', 'full-day')
+          form.setFieldValue('halfDay', FULL_DAY)
         }
       }
     } else {

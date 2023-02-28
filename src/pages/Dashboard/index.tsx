@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { ReactComponent as LeaveIcon } from 'assets/images/Leave.svg'
-import { Button, Card, Col, Form, Row, Spin } from 'antd'
+import React, {useEffect, useState, useCallback} from 'react'
+import {ReactComponent as LeaveIcon} from 'assets/images/Leave.svg'
+import {Button, Card, Col, Form, Row, Spin} from 'antd'
 import Auxiliary from 'util/Auxiliary'
 import Widget from 'components/Elements/Widget/index'
 import TotalCountCard from 'components/Elements/TotalCountCard'
-import { Calendar, momentLocalizer } from 'react-big-calendar'
+import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import EventsAndAnnouncements from 'components/Modules/EventsAndAnnouncements'
 import {
@@ -14,34 +14,34 @@ import {
 } from '@ant-design/icons'
 import TinyBarChart from 'routes/extensions/charts/recharts/bar/Components/TinyBarChart'
 import Select from 'components/Elements/Select'
-import { useQuery } from '@tanstack/react-query'
-import { getAllProjects } from 'services/projects'
-import { getLogTypes, getTimeLogChart } from 'services/timeLogs'
+import {useQuery} from '@tanstack/react-query'
+import {getAllProjects} from 'services/projects'
+import {getLogTypes, getTimeLogChart} from 'services/timeLogs'
 import CustomActiveShapePieChart from 'routes/extensions/charts/recharts/pie/Components/CustomActiveShapePieChart'
 import {
   getPendingLeavesCount,
   getTodaysUserLeaveCount,
   getFutureLeaves,
 } from 'services/leaves'
-import { compareString, MuiFormatDate, oneWeekFilterCheck } from 'helpers/utils'
-import { getWeeklyNotices } from 'services/noticeboard'
-import { getAllHolidays } from 'services/resources'
+import {compareString, MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
+import {getWeeklyNotices} from 'services/noticeboard'
+import {getAllHolidays} from 'services/resources'
 import {
   getActiveUsersCount,
   getBirthMonthUsers,
 } from 'services/users/userDetails'
-import { getTodaysUserAttendanceCount } from 'services/attendances'
-import { useNavigate } from 'react-router-dom'
+import {getTodaysUserAttendanceCount} from 'services/attendances'
+import {useNavigate} from 'react-router-dom'
 import useWindowsSize from 'hooks/useWindowsSize'
-import { THEME_TYPE_DARK } from 'constants/ThemeSetting'
-import { useSelector } from 'react-redux'
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
+import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import { DASHBOARD_ICON_ACCESS } from 'constants/RoleAccess'
-import { LEAVES_TYPES } from 'constants/Leaves'
-import { debounce } from 'helpers/utils'
-import { selectAuthUser } from 'appRedux/reducers/Auth'
-import { notification } from 'helpers/notification'
-import { socket } from 'pages/Main'
+import {DASHBOARD_ICON_ACCESS} from 'constants/RoleAccess'
+import {FIRST_HALF, LEAVES_TYPES, SECOND_HALF} from 'constants/Leaves'
+import {debounce} from 'helpers/utils'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {notification} from 'helpers/notification'
+import {socket} from 'pages/Main'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -50,7 +50,7 @@ const Dashboard = () => {
   const {
     role: {
       key = '',
-      permission: { Dashboard: NavigationDashboard = {} } = {},
+      permission: {Dashboard: NavigationDashboard = {}} = {},
     } = {},
   } = useSelector(selectAuthUser)
 
@@ -63,9 +63,9 @@ const Dashboard = () => {
   const [projectArray, setProjectArray] = useState([])
   const [chartData, setChartData] = useState([])
   const navigate = useNavigate()
-  const { innerWidth } = useWindowsSize()
+  const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
-  const { themeType } = useSelector((state: any) => state.settings)
+  const {themeType} = useSelector((state: any) => state.settings)
   const darkTheme = themeType === THEME_TYPE_DARK
 
   const darkThemeTextColor = '#e0e0e0'
@@ -83,48 +83,48 @@ const Dashboard = () => {
     )
   }, [])
 
-  const { data: AttendanceCount } = useQuery(
+  const {data: AttendanceCount} = useQuery(
     ['todaysAttendance'],
     getTodaysUserAttendanceCount
   )
 
-  const { data: PendingLeaves } = useQuery(
+  const {data: PendingLeaves} = useQuery(
     ['pendingLeave'],
     getPendingLeavesCount
   )
 
-  const { data: ActiveUsers } = useQuery(
+  const {data: ActiveUsers} = useQuery(
     ['DashBoardActiveUsers'],
     getActiveUsersCount
   )
 
-  const { data: TodaysLeave } = useQuery(
+  const {data: TodaysLeave} = useQuery(
     ['DashBoardTodaysLeave'],
     getTodaysUserLeaveCount
   )
 
-  const { data: BirthMonthUsers } = useQuery(
+  const {data: BirthMonthUsers} = useQuery(
     ['bithMonthUsers'],
     getBirthMonthUsers
   )
 
-  const { data: notices } = useQuery(['DashBoardnotices'], getWeeklyNotices)
+  const {data: notices} = useQuery(['DashBoardnotices'], getWeeklyNotices)
 
-  const { data: Holidays } = useQuery(['DashBoardHolidays'], () =>
-    getAllHolidays({ sort: '-createdAt', limit: '1' })
+  const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
+    getAllHolidays({sort: '-createdAt', limit: '1'})
   )
 
   const fetchChartQuery = useCallback(async (project: any, logType: any) => {
     try {
-      const response = await getTimeLogChart({ project, logType })
+      const response = await getTimeLogChart({project, logType})
 
       if (response?.status) {
         setChartData(response?.data?.data?.chart || [])
       } else {
-        notification({ type: 'error', message: 'Failed to generate chart !' })
+        notification({type: 'error', message: 'Failed to generate chart !'})
       }
     } catch (error) {
-      notification({ type: 'error', message: 'Failed to generate chart !' })
+      notification({type: 'error', message: 'Failed to generate chart !'})
     }
   }, [])
 
@@ -133,7 +133,7 @@ const Dashboard = () => {
       setProjectArray([])
       return
     } else {
-      const projects = await getAllProjects({ project: projectName })
+      const projects = await getAllProjects({project: projectName})
       setProjectArray(projects?.data?.data?.data)
     }
     //else fetch projects from api
@@ -213,7 +213,7 @@ const Dashboard = () => {
             if (leaveDate >= todayDate && ![0, 6].includes(leaveDate.getDay()))
               updateLeaves = [
                 ...updateLeaves,
-                { ...leave, date: date, leaveDates: date },
+                {...leave, date: date, leaveDates: date},
               ]
           })
         }
@@ -221,20 +221,20 @@ const Dashboard = () => {
       return updateLeaves
     },
   })
-  const { data, refetch: projectRefetch } = useQuery(
+  const {data, refetch: projectRefetch} = useQuery(
     ['DashBoardprojects'],
     () =>
       getAllProjects({
         fields:
           '_id,name,-devOps,-createdBy,-designers,-developers,-projectStatus,-projectTags,-projectTypes,-qa,-updatedBy',
       }),
-    { enabled: false }
+    {enabled: false}
   )
 
-  const { data: logTypes, refetch: logTypeRefetch } = useQuery(
+  const {data: logTypes, refetch: logTypeRefetch} = useQuery(
     ['DashBoardlogTypes'],
     () => getLogTypes(),
-    { enabled: false }
+    {enabled: false}
   )
 
   useEffect(() => {
@@ -301,8 +301,8 @@ const Dashboard = () => {
           event?.leaveStatus === 'pending'
             ? '#CCBE00'
             : event?.leaveType === 'Late Arrival'
-              ? '#eb9293'
-              : '#3DBF4D',
+            ? '#eb9293'
+            : '#3DBF4D',
       }
     if (event.type === 'notice')
       style = {
@@ -356,7 +356,7 @@ const Dashboard = () => {
           >
             <i
               className="icon icon-birthday-new gx-fs-sm "
-              style={{ width: '12px', lineHeight: 2 }}
+              style={{width: '12px', lineHeight: 2}}
             />
             <span className="gx-mt--3p">{shortName}</span>
           </p>
@@ -376,7 +376,7 @@ const Dashboard = () => {
           }}
         >
           <p
-            style={{ ...style, margin: 0, flexWrap: 'nowrap', fontWeight: '500' }}
+            style={{...style, margin: 0, flexWrap: 'nowrap', fontWeight: '500'}}
           >
             <i className="icon icon-calendar gx-fs-xs gx-ml-2p" />
             <span className="gx-ml-12p">{props?.event?.title}</span>
@@ -396,10 +396,10 @@ const Dashboard = () => {
       ) {
         extraInfo = ''
       } else {
-        if (props?.event?.halfDay === 'first-half') {
+        if (props?.event?.halfDay === FIRST_HALF) {
           extraInfo = '1st'
         }
-        if (props?.event?.halfDay === 'second-half') {
+        if (props?.event?.halfDay === SECOND_HALF) {
           extraInfo = '2nd'
         }
       }
@@ -415,15 +415,15 @@ const Dashboard = () => {
           onClick={
             isAdmin
               ? () =>
-                navigate('/leave', {
-                  state: {
-                    tabKey: '3',
-                    leaveStatus: props?.event?.leaveStatus,
-                    date: props.event.startDate,
-                    user: props.event.id,
-                  },
-                })
-              : () => { }
+                  navigate('/leave', {
+                    state: {
+                      tabKey: '3',
+                      leaveStatus: props?.event?.leaveStatus,
+                      date: props.event.startDate,
+                      user: props.event.id,
+                    },
+                  })
+              : () => {}
           }
         >
           <p
@@ -440,12 +440,13 @@ const Dashboard = () => {
                 props?.event?.leaveStatus === 'pending'
                   ? '#CCBE00'
                   : extraInfo === 'Late'
-                    ? '#eb9293'
-                    : '#3DBF4D'
+                  ? '#eb9293'
+                  : '#3DBF4D'
               }
             />
-            <span className="gx-mt-1p" style={{ width: '80px' }}>{`${shortName}${extraInfo ? '(' + extraInfo + ')' : ''
-              }`}</span>
+            <span className="gx-mt-1p" style={{width: '80px'}}>{`${shortName}${
+              extraInfo ? '(' + extraInfo + ')' : ''
+            }`}</span>
           </p>
         </div>
       )
@@ -457,8 +458,8 @@ const Dashboard = () => {
           onClick={
             isAdmin
               ? () =>
-                navigate('/noticeboard', { state: { name: props?.event?.name } })
-              : () => { }
+                  navigate('/noticeboard', {state: {name: props?.event?.name}})
+              : () => {}
           }
           style={{
             margin: '0',
@@ -520,11 +521,13 @@ const Dashboard = () => {
     ?.map((x: any) => ({
       title: x.name,
       start: new Date(
-        `${new Date(x?.dob).getFullYear()}/${new Date(x.dob).getMonth() + 1
+        `${new Date(x?.dob).getFullYear()}/${
+          new Date(x.dob).getMonth() + 1
         }/${new Date(x.dob).getDate()}`
       ),
       end: new Date(
-        `${new Date(x?.dob).getFullYear()}/${new Date(x.dob).getMonth() + 1
+        `${new Date(x?.dob).getFullYear()}/${
+          new Date(x.dob).getMonth() + 1
         }/${new Date(x.dob).getDate()}`
       ),
       type: 'birthday',
@@ -580,7 +583,7 @@ const Dashboard = () => {
               onClick={
                 !NavigationDashboard?.makeclickableCoworkersPunchIn
                   ? null
-                  : () => navigate('/todays-overview', { state: true })
+                  : () => navigate('/todays-overview', {state: true})
               }
             />
           </Col>
@@ -607,8 +610,8 @@ const Dashboard = () => {
                 !NavigationDashboard?.makeclickableLeavePendingRequest
                   ? null
                   : navigate('/leave', {
-                    state: { tabKey: '3', leaveStatus: 'pending' },
-                  })
+                      state: {tabKey: '3', leaveStatus: 'pending'},
+                    })
               }
             />
           </Col>
@@ -643,24 +646,25 @@ const Dashboard = () => {
           NavigationDashboard?.viewAnnouncement ||
           NavigationDashboard?.viewHolidays ||
           NavigationDashboard?.viewBirthdays) && (
-            <Col
-              xl={6}
-              lg={24}
-              md={24}
-              sm={24}
-              xs={24}
-              className={`gx-order-lg-2 ${innerWidth > 1204 && 'announcement-card'
-                }`}
-            >
-              <Widget>
-                <EventsAndAnnouncements
-                  announcements={notices?.data?.data?.notices}
-                  holidays={Holidays?.data?.data?.data?.[0]?.holidays}
-                  birthdays={BirthMonthUsers?.data?.data?.users}
-                />
-              </Widget>
-            </Col>
-          )}
+          <Col
+            xl={6}
+            lg={24}
+            md={24}
+            sm={24}
+            xs={24}
+            className={`gx-order-lg-2 ${
+              innerWidth > 1204 && 'announcement-card'
+            }`}
+          >
+            <Widget>
+              <EventsAndAnnouncements
+                announcements={notices?.data?.data?.notices}
+                holidays={Holidays?.data?.data?.data?.[0]?.holidays}
+                birthdays={BirthMonthUsers?.data?.data?.users}
+              />
+            </Widget>
+          </Col>
+        )}
 
         <Col xl={18} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
           {NavigationDashboard?.viewCalendar && (
@@ -691,15 +695,15 @@ const Dashboard = () => {
                 <Form layout="inline" onFinish={generateChart} form={form}>
                   <FormItem name="chart">
                     <Select
-                      style={{ width: innerWidth <= 504 ? '100%' : 115 }}
+                      style={{width: innerWidth <= 504 ? '100%' : 115}}
                       value={chart}
                       onChange={(c: any) => setChart(c)}
                       placeholder="Select Chart"
                       initialValues="Bar Chart"
                       options={[
-                        { _id: '1', name: 'Bar Chart' },
-                        { _id: '2', name: 'Pie Chart' },
-                      ]?.map((x: { _id: string; name: string }) => ({
+                        {_id: '1', name: 'Bar Chart'},
+                        {_id: '2', name: 'Pie Chart'},
+                      ]?.map((x: {_id: string; name: string}) => ({
                         id: x._id,
                         value: x.name,
                       }))}
@@ -736,7 +740,7 @@ const Dashboard = () => {
                       handleSearch={optimizedFn}
                       placeholder="Search Project"
                       options={(projectArray || [])?.map(
-                        (x: { _id: string; name: string }) => ({
+                        (x: {_id: string; name: string}) => ({
                           id: x._id,
                           value: x.name,
                         })
@@ -751,7 +755,7 @@ const Dashboard = () => {
                       placeholder="Select Log Types"
                       mode="multiple"
                       options={logTypes?.data?.data?.data?.map(
-                        (x: { _id: string; name: string }) => ({
+                        (x: {_id: string; name: string}) => ({
                           id: x._id,
                           value: x.name,
                         })
