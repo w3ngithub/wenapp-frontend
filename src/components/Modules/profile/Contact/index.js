@@ -25,8 +25,8 @@ const Contact = ({user}) => {
           >
             <div className="gx-mr-3">
               {data.icon === 'phone' ? (
-                <span className="icon gx-fs-xxl gx-text-grey">
-                  <PhoneOutlined />
+                <span className="icon  gx-fs-xxl gx-text-grey">
+                  <PhoneOutlined className="rotate" />
                 </span>
               ) : (
                 <i
