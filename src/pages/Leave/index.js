@@ -268,6 +268,7 @@ function Leave() {
       (item) => !['Casual Leave', 'Sick Leave'].includes(item?._id[0]?.name)
     )
     ?.map((d) => {
+      console.log('leave', d)
       const leaveStartDateArray = d?.leaveDates?.filter(
         (item, index) => index % 2 === 0
       )
@@ -282,6 +283,7 @@ function Leave() {
             1
         )
       })
+
       const reducedLeaveDays = leaveArray?.reduce((acc, cur) => acc + cur, 0)
       return [
         d?._id[0]?.name,

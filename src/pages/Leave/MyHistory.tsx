@@ -20,31 +20,34 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {useSelector} from 'react-redux'
-import {PAGE10} from 'constants/Common'
+import {PAGE25} from 'constants/Common'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
 
 const formattedLeaves = (leaves: any) => {
-  return leaves?.map((leave: any) => ({
-    ...leave,
-    key: leave._id,
-    dates: leave?.leaveDates
-      ?.map((date: any, index: any) => changeDate(date))
-      .join(
-        leave?.leaveType?.name === 'Maternity' ||
-          leave?.leaveType?.name === 'Paternity' ||
-          leave?.leaveType?.name === 'Paid Time Off'
-          ? ' - '
-          : '\r\n'
-      ),
-    type: `${leave?.leaveType?.name} ${
-      leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
-        ? '- ' + removeDash(leave?.halfDay)
-        : ''
-    }`,
-    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
-  }))
+  return leaves?.map((leave: any) => {
+    return {
+      ...leave,
+      key: leave._id,
+      dates: leave?.leaveDates
+        ?.map((date: any, index: any) => changeDate(date))
+        .join(
+          immediateApprovalLeaveTypes.includes(
+            leave?.leaveType?.name?.split(' ')?.[0]
+          ) || leave?.leaveType?.name === 'Paid Time Off'
+            ? ' - '
+            : '\r\n'
+        ),
+      type: `${leave?.leaveType?.name} ${
+        leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
+          ? '- ' + removeDash(leave?.halfDay)
+          : ''
+      }`,
+      status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
+    }
+  })
 }
 
 function MyHistory({
@@ -79,7 +82,7 @@ function MyHistory({
 
   const [rangeDate, setRangeDate] = useState<any>([])
 
-  const [page, setPage] = useState(PAGE10)
+  const [page, setPage] = useState(PAGE25)
   const [leaveFilter, setLeaveFilter] = useState(undefined)
 
   const userLeavesQuery = useQuery(
@@ -112,12 +115,12 @@ function MyHistory({
   const combinedFilter = [...leaveHistoryDays, ...(updatedQuarters || [])]
 
   const handleLeaveType = (value: string | undefined) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setLeaveType(value)
   }
 
   const handleLeaveFilter = (value: any) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     if (value) {
       if (updatedQuarters?.find((d: any) => d?.id === value)) {
         const rangeDate = updatedQuarters?.find((d: any) => d?.id === value)
@@ -162,13 +165,13 @@ function MyHistory({
   }
 
   const handleStatusChange = (statusId: string) => {
-    if (page?.page > 1) setPage(PAGE10)
+    if (page?.page > 1) setPage(PAGE25)
     setLeaveStatus(statusId)
   }
 
   const handleDateChange = (value: any) => {
     setLeaveFilter(undefined)
-    if (page?.page > 1) setPage(PAGE10)
+    if (page?.page > 1) setPage(PAGE25)
 
     setRangeDate(value)
   }
@@ -182,7 +185,7 @@ function MyHistory({
   const handleResetFilter = () => {
     setLeaveStatus(undefined)
     setLeaveType(undefined)
-    setPage(PAGE10)
+    setPage(PAGE25)
     setRangeDate([])
     setLeaveFilter(undefined)
     setDate({
@@ -268,7 +271,7 @@ function MyHistory({
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['5', '10', '20', '50'],
+          pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
           total: userLeavesQuery?.data?.data?.data?.count || 1,
           onShowSizeChange,

@@ -27,7 +27,7 @@ import ImportUsers from './ImportUsers'
 import Select from 'components/Elements/Select'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import RoleAccess from 'constants/RoleAccess'
-import {PAGE20, PLACE_HOLDER_CLASS} from 'constants/Common'
+import {PAGE50, PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useDispatch, useSelector} from 'react-redux'
 import {switchedUser, switchUser, updateJoinDate} from 'appRedux/actions'
@@ -50,7 +50,7 @@ const formattedUsers = (users, isAdmin) => {
 function CoworkersPage() {
   // init hooks
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState(PAGE20)
+  const [page, setPage] = useState(PAGE50)
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
   const [activeUser, setActiveUser] = useState(true)
   const [defaultUser, setDefaultUser] = useState('active')
@@ -177,7 +177,7 @@ function CoworkersPage() {
             ? moment.utc(user.joinDate).format()
             : undefined,
           lastReviewDate: user.lastReviewDate.map((d) =>
-            moment.utc(d).endOf('day').format()
+            moment(d).startOf('day').utc().format()
           ),
           exitDate: user?.exitDate ? moment.utc(user.exitDate).format() : null,
         },
@@ -205,12 +205,12 @@ function CoworkersPage() {
   }
 
   const handleRoleChange = (roleId) => {
-    setPage(PAGE20)
+    setPage(PAGE50)
     setRole(roleId)
   }
 
   const handlePositionChange = (positionId) => {
-    setPage(PAGE20)
+    setPage(PAGE50)
     setPosition(positionId)
   }
 
@@ -422,7 +422,7 @@ function CoworkersPage() {
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['20', '50', '80'],
+            pageSizeOptions: ['25', '50', '100'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,
