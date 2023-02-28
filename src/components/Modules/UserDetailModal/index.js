@@ -134,7 +134,7 @@ function UserDetailForm({
         bankAccNumber: intialValues.bankAccNumber && intialValues.bankAccNumber,
         bankName: intialValues.bankName && intialValues.bankName,
         lastReviewDate:
-          intialValues.lastReviewDate.length > 0 &&
+          intialValues?.lastReviewDate?.length > 0 &&
           moment(
             intialValues.lastReviewDate[intialValues.lastReviewDate.length - 1]
           ),

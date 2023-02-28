@@ -6,5 +6,5 @@ export const SHOW_MAINTENANCE_BUTTON_TO_ADMIN_ONLY =
   'showMaintenanceButtonToAdminOnly'
 
 export const PAGE10 = {page: 1, limit: 10}
-export const PAGE20 = {page: 1, limit: 20}
+export const PAGE25 = {page: 1, limit: 25}
 export const PAGE50 = {page: 1, limit: 50}

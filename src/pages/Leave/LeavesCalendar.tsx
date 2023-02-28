@@ -5,6 +5,12 @@ import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import {Spin} from 'antd'
 import {getFiscalYearLeaves} from 'services/leaves'
+import {
+  FIRST_HALF,
+  LATE_ARRIVAL,
+  LEAVES_TYPES,
+  SECOND_HALF,
+} from 'constants/Leaves'
 
 const localizer = momentLocalizer(moment)
 
@@ -13,28 +19,45 @@ const LeavesCalendar = () => {
     ['leavesCalendar'],
     () => getFiscalYearLeaves(),
     {
-      onError: err => console.log(err),
-      select: res => {
+      onError: (err) => console.log(err),
+      select: (res) => {
         let allLeaves: any[] = []
+
         res?.data?.data?.data.forEach((leave: any) => {
+          const isLeavePaternity =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Paternity
+          const isLeaveMaternity =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Maternity
+          const isLeavePTO =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.PTO
+          const isLeaveBereavement =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Bereavement
+
           if (
-            leave?._id?.leaveType[0] !== 'Paternity' &&
-            leave?._id?.leaveType[0] !== 'Maternity'
-          )
+            isLeavePaternity ||
+            isLeaveMaternity ||
+            isLeavePTO ||
+            isLeaveBereavement
+          ) {
+            allLeaves.push({
+              ...leave?._id,
+              leaveDates: [...leave?.leaveDates],
+            })
+          } else {
             leave.leaveDates.forEach((date: string) => {
               allLeaves.push({...leave?._id, leaveDates: date})
             })
-          else
-            allLeaves.push({...leave?._id, leaveDates: [...leave?.leaveDates]})
+          }
         })
         return allLeaves
       },
     }
   )
+
   const leaveUsers = leavesQuery?.data?.map(
-    ({user, leaveDates, leaveType,halfDay}: any) => {
+    ({user, leaveDates, leaveType, halfDay}: any) => {
       const nameSplitted = user[0].split(' ')
-      let specificHalf = ''
+      let extraInfo = ''
       let lastName
       if (nameSplitted.length === 1) {
         lastName = ''
@@ -42,16 +65,26 @@ const LeavesCalendar = () => {
         lastName = `${nameSplitted.pop().substring(0, 1)}.`
       }
 
-      if (halfDay === 'first-half') {
-        specificHalf = '1st'
+      if (halfDay === FIRST_HALF) {
+        extraInfo = '1st'
       }
-      if (halfDay === 'second-half') {
-        specificHalf = '2nd'
+      if (halfDay === SECOND_HALF) {
+        extraInfo = '2nd'
+      }
+      if (leaveType.includes(LATE_ARRIVAL)) {
+        extraInfo = 'Late'
       }
 
       const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
-      if (leaveType[0] === 'Paternity' || leaveType[0] === 'Maternity')
+      if (
+        [
+          LEAVES_TYPES.Paternity,
+          LEAVES_TYPES.Maternity,
+          LEAVES_TYPES.PTO,
+          LEAVES_TYPES.Bereavement,
+        ].includes(leaveType[0]?.toLowerCase())
+      )
         return {
           title: shortName,
           start: new Date(leaveDates[0]),
@@ -60,7 +93,7 @@ const LeavesCalendar = () => {
         }
       else
         return {
-          title: `${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`,
+          title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
           start: new Date(leaveDates),
           end: new Date(leaveDates),
         }

@@ -50,7 +50,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {useSelector} from 'react-redux'
-import {PAGE10} from 'constants/Common'
+import {PAGE50} from 'constants/Common'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -93,7 +93,7 @@ function AdminAttendance({userRole}) {
     columnKey: 'attendanceDate',
   })
   const [form] = Form.useForm()
-  const [page, setPage] = useState(PAGE10)
+  const [page, setPage] = useState(PAGE50)
   const [defaultFilter, setDefaultFilter] = useState(undefined)
   const [openView, setOpenView] = useState(false)
   const [attToView, setAttToView] = useState({})
@@ -176,7 +176,7 @@ function AdminAttendance({userRole}) {
           ]
         ),
       onError: (error) => {
-        notification({message: 'Project deletion failed', type: 'error'})
+        notification({message: 'Attendance deletion failed', type: 'error'})
       },
     }
   )
@@ -233,12 +233,12 @@ function AdminAttendance({userRole}) {
     setToggleEdit(true)
     setAttToEdit(record)
   }
-  const confirmDeleteAttendance = (project) => {
-    deleteAttendanceMutation.mutate(project._id)
+  const confirmDeleteAttendance = (a) => {
+    deleteAttendanceMutation.mutate(a._id)
   }
 
   const handleAttChnageChange = (val) => {
-    setPage(PAGE10)
+    setPage(PAGE50)
     setAttFilter(val)
     switch (val) {
       case 1:
@@ -256,7 +256,7 @@ function AdminAttendance({userRole}) {
     }
   }
   const handleUserChange = (id) => {
-    setPage(PAGE10)
+    setPage(PAGE50)
     setUser(id)
   }
 
@@ -716,10 +716,11 @@ function AdminAttendance({userRole}) {
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['5', '10', '20', '50'],
+          pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
           total: data?.data?.data?.attendances?.[0]?.metadata?.[0]?.total || 1,
           onShowSizeChange,
+          hideOnSinglePage: true,
           onChange: handlePageChange,
         }}
         loading={isFetching}

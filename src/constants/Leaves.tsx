@@ -414,6 +414,11 @@ export const LATE_LEAVE_TYPE_ID = '631192ec8194d8f22afe6685'
 export const LATE_ARRIVAL = 'Late Arrival'
 export const CASUAL_LEAVE = 'Casual Leave'
 
+export const FIRST_HALF = 'first-half'
+export const SECOND_HALF = 'second-half'
+export const FULL_DAY = 'full-day'
+export const PAID_TIME_OFF = 'Paid Time Off'
+
 export const LEAVES_TYPES = {
   Casual: 'casual',
   Sick: 'sick',
@@ -421,4 +426,6 @@ export const LEAVES_TYPES = {
   Paternity: 'paternity',
   PTO: 'paid time off',
   LateArrival: 'late arrival',
+  Bereavement: 'bereavement',
+  Substitute: 'substitute',
 }

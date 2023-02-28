@@ -62,22 +62,22 @@ export const permissionRole = {
     },
     {
       name: `makeclicakbleTotalCoworkers`,
-      label: `Make Clickable Total Co-workers`,
+      label: `Make 'Total Co-workers' Card Clickable`,
       rule: [],
     },
     {
       name: `makeclickableCoworkersPunchIn`,
-      label: `Make Clickable Co-workers Punch In`,
+      label: `Make 'Co-workers Punch In' Card Clickable`,
       rule: [],
     },
     {
       name: `makeclickableLeavePendingRequest`,
-      label: `Make Clickable Leave Pending Request `,
+      label: `Make'Pending Leave Requests' Card Clickable `,
       rule: [],
     },
     {
       name: `makeclickableCoworkersOnLeave`,
-      label: `Make Clickable Co-workers On Leave `,
+      label: `Make 'Co-workers On Leave' Card Clickable `,
       rule: [],
     },
   ],
@@ -101,6 +101,11 @@ export const permissionRole = {
     {
       name: 'editCoworkersAttendance',
       label: 'Edit Co-workers Attendance',
+      rule: [],
+    },
+    {
+      name: 'deleteCoworkersAttendance',
+      label: 'Delete Co-workers Attendance',
       rule: [],
     },
     {
@@ -196,6 +201,7 @@ export const permissionRole = {
     {name: 'viewLeaveReport', label: 'View Leave Report', rule: []},
     {name: 'editLeaveReport', label: 'Edit Leave Report', rule: []},
     {name: 'viewWorkLogReport', label: 'View Work Log Report', rule: []},
+    {name: 'viewSalaryReview', label: 'View Salary Review', rule: []},
     {name: 'viewActivityLog', label: 'View Activity Log', rule: []},
   ],
   Resources: [

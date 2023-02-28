@@ -1,7 +1,13 @@
 import React, {useState} from 'react'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
-import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
+import {
+  FIRST_HALF,
+  LEAVES_COLUMN,
+  PAID_TIME_OFF,
+  SECOND_HALF,
+  STATUS_TYPES,
+} from 'constants/Leaves'
 import {CSVLink} from 'react-csv'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
@@ -33,33 +39,36 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
-import {PAGE10} from 'constants/Common'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
+import {PAGE25} from 'constants/Common'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
 
 const formattedLeaves = (leaves) => {
-  return leaves?.map((leave) => ({
-    ...leave,
-    key: leave._id,
-    coWorker: leave?.user?.name,
-    dates: leave?.leaveDates
-      ?.map((date) => changeDate(date))
-      .join(
-        leave?.leaveType?.name === 'Maternity' ||
-          leave?.leaveType?.name === 'Paternity' ||
-          leave?.leaveType?.name === 'Paid Time Off'
-          ? ' - '
-          : ' '
-      ),
-    type: `${leave?.leaveType?.name} ${
-      leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
-        ? '- ' + removeDash(leave?.halfDay)
-        : ''
-    }`,
-    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
-  }))
+  return leaves?.map((leave) => {
+    return {
+      ...leave,
+      key: leave._id,
+      coWorker: leave?.user?.name,
+      dates: leave?.leaveDates
+        ?.map((date) => changeDate(date))
+        .join(
+          immediateApprovalLeaveTypes.includes(
+            leave?.leaveType?.name?.split(' ')?.[0]
+          ) || leave?.leaveType?.name === PAID_TIME_OFF
+            ? '-'
+            : ' '
+        ),
+      type: `${leave?.leaveType?.name} ${
+        leave?.halfDay === FIRST_HALF || leave?.halfDay === SECOND_HALF
+          ? '- ' + removeDash(leave?.halfDay)
+          : ''
+      }`,
+      status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
+    }
+  })
 }
 
 const formatToUtc = (date) => {
@@ -109,7 +118,7 @@ function Leaves({
       : undefined
   )
   const [rangeDate, setRangeDate] = useState([])
-  const [page, setPage] = useState(PAGE10)
+  const [page, setPage] = useState(PAGE25)
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
@@ -164,20 +173,20 @@ function Leaves({
   })
 
   const handleLeaveTypeChange = (value, option) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setLeaveId(value)
-    setLeaveTitle(option.children)
+    setLeaveTitle(option?.children)
     if (option.children !== 'Sick' && option.children !== 'Casual') {
       setLeaveInterval(undefined)
     }
   }
   const handleLeaveIntervalChange = (value) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setLeaveInterval(value)
   }
 
   const handleLeaveFilter = (value) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     if (value) {
       if (updatedQuarters?.find((d) => d?.id === value)) {
         const rangeDate = updatedQuarters?.find((d) => d?.id === value)
@@ -270,16 +279,16 @@ function Leaves({
   }
 
   const handleStatusChange = (statusId) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setLeaveStatus(statusId)
   }
   const handleUserChange = (user) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setUser(user)
   }
 
   const handleResetFilter = () => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setLeaveStatus(undefined)
     setUser(undefined)
     setDate(undefined)
@@ -327,7 +336,7 @@ function Leaves({
   }
 
   const handleDateChange = (value) => {
-    setPage(PAGE10)
+    setPage(PAGE25)
     setRangeDate(value)
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)
@@ -494,7 +503,7 @@ function Leaves({
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['5', '10', '20', '50'],
+          pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
           total: leavesQuery?.data?.data?.data?.count || 1,
           onShowSizeChange,

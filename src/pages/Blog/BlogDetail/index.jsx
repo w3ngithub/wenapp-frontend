@@ -44,7 +44,7 @@ function Detail() {
     return <CircularProgress />
   }
 
-  const mainArray = BLOG?.content?.split('<p>@highlight-code</p>')
+  const mainArray = BLOG?.content?.split?.('@highlight-code')
   return (
     <div>
       <BlogsBreadCumb slug={BLOG?.title} />
@@ -79,20 +79,41 @@ function Detail() {
       >
         {mainArray?.map((item, index) => {
           if (index % 2 !== 0) {
-            const parsedArray = HTMLReactParser(item).filter(
-              (el) => el !== '\n'
+            const parsedArray = HTMLReactParser(item || '')?.filter(
+              (el) => typeof el !== 'string'
             )
-            const codeLanguage = parsedArray
-              ?.shift()
-              ?.props?.children?.split(':')?.[1]
-              ?.trim()
+
+            const codeLanguage =
+              typeof parsedArray?.[0]?.props?.children === 'string'
+                ? parsedArray?.shift()?.props?.children?.split(':')?.[1]?.trim()
+                : 'html'
+
+            if (
+              parsedArray?.[parsedArray.length - 1]?.props?.children?.trim() ===
+                '' ||
+              !parsedArray?.[parsedArray.length - 1]?.props?.children
+            ) {
+              parsedArray.pop()
+            }
+
             const parsedString = parsedArray
               .map((item) => {
-                if (item?.props && index !== 0) {
+                if (
+                  item?.props &&
+                  index !== 0 &&
+                  typeof item?.props?.children === 'string' &&
+                  item?.props?.children?.trim() !== ''
+                ) {
                   return item.props.children
+                } else if (
+                  typeof item?.props?.children === 'object' &&
+                  typeof item?.props?.children?.props?.children === 'string'
+                ) {
+                  return item.props.children.props.children?.trim()
                 } else return null
               })
               .join('\n')
+
             return (
               <div key={index}>
                 <SyntaxHighlighter

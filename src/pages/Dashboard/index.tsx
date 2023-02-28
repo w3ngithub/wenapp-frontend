@@ -29,7 +29,6 @@ import {getAllHolidays} from 'services/resources'
 import {
   getActiveUsersCount,
   getBirthMonthUsers,
-  getSalaryReviewUsers,
 } from 'services/users/userDetails'
 import {getTodaysUserAttendanceCount} from 'services/attendances'
 import {useNavigate} from 'react-router-dom'
@@ -38,7 +37,7 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {DASHBOARD_ICON_ACCESS} from 'constants/RoleAccess'
-import {LEAVES_TYPES} from 'constants/Leaves'
+import {FIRST_HALF, LEAVES_TYPES, SECOND_HALF} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
@@ -83,12 +82,6 @@ const Dashboard = () => {
       }
     )
   }, [])
-
-  const {data: salaryReview, refetch: salaryRefetch} = useQuery(
-    ['usersSalaryReview'],
-    getSalaryReviewUsers,
-    {enabled: false}
-  )
 
   const {data: AttendanceCount} = useQuery(
     ['todaysAttendance'],
@@ -160,10 +153,16 @@ const Dashboard = () => {
           leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
         const isLeavePTO =
           leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
-
+        const isLeaveBereavement =
+          leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Bereavement
         const todayDate = new Date(MuiFormatDate(new Date()))
 
-        if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
+        if (
+          isLeavePaternity ||
+          isLeaveMaternity ||
+          isLeavePTO ||
+          isLeaveBereavement
+        ) {
           const startLeaveDate = new Date(leave?.leaveDates[0])
           const endLeaveDate = new Date(leave?.leaveDates[1])
           for (
@@ -248,12 +247,6 @@ const Dashboard = () => {
     projectRefetch,
   ])
 
-  useEffect(() => {
-    if (NavigationDashboard?.viewSalaryReview) {
-      Promise.all([salaryRefetch()])
-    }
-  }, [NavigationDashboard?.viewSalaryReview, salaryRefetch])
-
   const calCulateWidth = (roles: any) => {
     const roleArray = [
       roles?.viewCoworkersOnLeave,
@@ -286,7 +279,7 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: darkTheme ? darkThemeTextColor : '#FC6BAB',
+        color: '#05ccf9',
       }
     if (event.type === 'holiday')
       style = {
@@ -304,13 +297,12 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: darkTheme
-          ? event?.leaveStatus === 'pending'
-            ? '#b1abab'
-            : darkThemeTextColor
-          : event?.leaveStatus === 'pending'
-          ? '#fd826b'
-          : '#038fde',
+        color:
+          event?.leaveStatus === 'pending'
+            ? '#CCBE00'
+            : event?.leaveType === 'Late Arrival'
+            ? '#eb9293'
+            : '#3DBF4D',
       }
     if (event.type === 'notice')
       style = {
@@ -339,6 +331,7 @@ const Dashboard = () => {
       alignItems: 'center',
       gap: '4px',
       margin: '0 !important',
+      fontSize: '9px',
     }
 
     if (props.event.type === 'birthday') {
@@ -352,39 +345,62 @@ const Dashboard = () => {
             flexWrap: 'wrap',
           }}
         >
-          <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
+          <p
+            style={{
+              ...style,
+              margin: 0,
+              flexWrap: 'wrap',
+              fontWeight: '500',
+              gap: '6px',
+            }}
+          >
             <i
-              className="icon icon-birthday-new gx-fs-md "
-              style={{width: '18px'}}
+              className="icon icon-birthday-new gx-fs-sm "
+              style={{width: '12px', lineHeight: 2}}
             />
-            {shortName}
+            <span className="gx-mt--3p">{shortName}</span>
           </p>
         </div>
       )
     }
     if (props.event.type === 'holiday')
       return (
-        <div style={{...style, margin: 0, flexWrap: 'nowrap'}}>
-          <i className="icon icon-calendar gx-fs-md gx-ml-3p" />
-          <p style={{...style, marginTop: '8px'}}>{props?.event?.title}</p>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            textAlign: 'left',
+          }}
+        >
+          <p
+            style={{...style, margin: 0, flexWrap: 'nowrap', fontWeight: '500'}}
+          >
+            <i className="icon icon-calendar gx-fs-xs gx-ml-2p" />
+            <span className="gx-ml-12p">{props?.event?.title}</span>
+          </p>
         </div>
       )
 
     if (props.event.type === 'leave') {
-      let specificHalf = ''
-      if (
+      let extraInfo = ''
+      if (props.event.leaveType === 'Late Arrival') {
+        extraInfo = 'Late'
+      } else if (
         props?.event?.leaveType === 'Maternity' ||
         props?.event?.leaveType === 'Paternity' ||
-        props?.event?.leaveType === 'Paid Time Off' ||
+        props?.event?.leaveType === 'Paid Time' ||
         props?.event?.halfDay === ''
       ) {
-        specificHalf = ''
+        extraInfo = ''
       } else {
-        if (props?.event?.halfDay === 'first-half') {
-          specificHalf = '1st'
+        if (props?.event?.halfDay === FIRST_HALF) {
+          extraInfo = '1st'
         }
-        if (props?.event?.halfDay === 'second-half') {
-          specificHalf = '2nd'
+        if (props?.event?.halfDay === SECOND_HALF) {
+          extraInfo = '2nd'
         }
       }
       return (
@@ -410,21 +426,27 @@ const Dashboard = () => {
               : () => {}
           }
         >
-          <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
+          <p
+            style={{
+              ...style,
+              margin: 0,
+              fontWeight: '500',
+              fontSize: '10px',
+            }}
+          >
             <LeaveIcon
-              width="18px"
+              width="15px"
               fill={
-                darkTheme
-                  ? props?.event?.leaveStatus === 'pending'
-                    ? '#b1abab'
-                    : darkThemeTextColor
-                  : props?.event?.leaveStatus === 'pending'
-                  ? '#fd826b'
-                  : '#038fde'
+                props?.event?.leaveStatus === 'pending'
+                  ? '#CCBE00'
+                  : extraInfo === 'Late'
+                  ? '#eb9293'
+                  : '#3DBF4D'
               }
             />
-            {`${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`}
-            {/* {`${shortName} ${specificHalf}`} */}
+            <span className="gx-mt-1p" style={{width: '80px'}}>{`${shortName}${
+              extraInfo ? '(' + extraInfo + ')' : ''
+            }`}</span>
           </p>
         </div>
       )
@@ -624,19 +646,27 @@ const Dashboard = () => {
           NavigationDashboard?.viewAnnouncement ||
           NavigationDashboard?.viewHolidays ||
           NavigationDashboard?.viewBirthdays) && (
-          <Col xl={8} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
+          <Col
+            xl={6}
+            lg={24}
+            md={24}
+            sm={24}
+            xs={24}
+            className={`gx-order-lg-2 ${
+              innerWidth > 1204 && 'announcement-card'
+            }`}
+          >
             <Widget>
               <EventsAndAnnouncements
                 announcements={notices?.data?.data?.notices}
                 holidays={Holidays?.data?.data?.data?.[0]?.holidays}
                 birthdays={BirthMonthUsers?.data?.data?.users}
-                salaryReview={salaryReview?.data?.data?.users}
               />
             </Widget>
           </Col>
         )}
 
-        <Col xl={16} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
+        <Col xl={18} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
           {NavigationDashboard?.viewCalendar && (
             <Card className="gx-card dashboard-calendar" title="Calendar">
               {leavesQuery?.isLoading ? (
@@ -709,13 +739,6 @@ const Dashboard = () => {
                       onChange={(c: any) => setProject(c)}
                       handleSearch={optimizedFn}
                       placeholder="Search Project"
-                      // options={data?.data?.data?.data?.map(
-                      //   (x: {_id: string; name: string}) => ({
-                      //     id: x._id,
-                      //     value: x.name,
-                      //   })
-                      // )}
-
                       options={(projectArray || [])?.map(
                         (x: {_id: string; name: string}) => ({
                           id: x._id,
