@@ -127,7 +127,7 @@ function LeaveModal({
         ...form.getFieldsValue(),
         gender: genderDefault,
         Probation: probationStatus,
-        IsSpecial: IsSpecial,
+        isSpecial: IsSpecial,
       })
     )
   }
@@ -141,7 +141,7 @@ function LeaveModal({
         })
         setgenderDefault(editData?.gender)
         setProbationStatus(editData?.Probation)
-        setIsSpecial(editData?.IsSpecial)
+        setIsSpecial(editData?.isSpecial)
       }
     }
     if (!toggle) form.resetFields()
