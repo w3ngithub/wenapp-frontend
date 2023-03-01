@@ -380,6 +380,7 @@ function Apply({user}) {
       let LeaveDaysUTC = []
 
       // calculation for maternity, paternity, pto leaves
+
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       if (leaveType?.isSpecial) {
         const newDate = new Date(values?.leaveDatesPeriod?._d)
