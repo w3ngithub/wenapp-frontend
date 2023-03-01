@@ -38,7 +38,7 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {DASHBOARD_ICON_ACCESS} from 'constants/RoleAccess'
-import {LEAVES_TYPES} from 'constants/Leaves'
+import {FIRST_HALF, LEAVES_TYPES, SECOND_HALF} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
@@ -399,10 +399,10 @@ const Dashboard = () => {
       ) {
         extraInfo = ''
       } else {
-        if (props?.event?.halfDay === 'first-half') {
+        if (props?.event?.halfDay === FIRST_HALF) {
           extraInfo = '1st'
         }
-        if (props?.event?.halfDay === 'second-half') {
+        if (props?.event?.halfDay === SECOND_HALF) {
           extraInfo = '2nd'
         }
       }

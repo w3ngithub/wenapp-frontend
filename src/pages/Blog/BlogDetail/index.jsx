@@ -78,8 +78,9 @@ function Detail() {
         }
       >
         {mainArray?.map((item, index) => {
+          let formattedItem = item
           if (index % 2 !== 0) {
-            const parsedArray = HTMLReactParser(item || '')?.filter(
+            const parsedArray = HTMLReactParser(formattedItem || '')?.filter(
               (el) => typeof el !== 'string'
             )
 
@@ -89,9 +90,9 @@ function Detail() {
                 : 'html'
 
             if (
+              !parsedArray?.[parsedArray.length - 1]?.props?.children ||
               parsedArray?.[parsedArray.length - 1]?.props?.children?.trim() ===
-                '' ||
-              !parsedArray?.[parsedArray.length - 1]?.props?.children
+                ''
             ) {
               parsedArray.pop()
             }
