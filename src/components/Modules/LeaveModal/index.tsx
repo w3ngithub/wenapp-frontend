@@ -161,6 +161,7 @@ function LeaveModal({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
         leaveDays: type?.leaveDays,
+        isSpecial: type?.isSpecial,
       })),
     ],
   })
