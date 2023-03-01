@@ -2,6 +2,7 @@ import {Button, Form, Input, Modal, Spin} from 'antd'
 import React, {useEffect, useState} from 'react'
 import {Checkbox} from 'antd'
 import type {CheckboxValueType} from 'antd/es/checkbox/Group'
+import type {CheckboxChangeEvent} from 'antd/es/checkbox'
 import type {RadioChangeEvent} from 'antd'
 import {Radio} from 'antd'
 
@@ -16,6 +17,7 @@ interface modalInterface {
     leaveDays: string
     gender: Array<string>
     Probation: Boolean
+    IsSpecial: Boolean
   }) => void
   onCancel: (setDuplicateValue: any) => void
   isLoading: boolean
@@ -45,6 +47,7 @@ function LeaveModal({
     'Male',
     'Female',
   ])
+  const [IsSpecial, setIsSpecial] = useState<boolean>(false)
   const [probationStatus, setProbationStatus] = useState<boolean>(true)
   const [isgenderEmpty, setgenderEmpty] = useState<boolean>(false)
 
@@ -124,6 +127,7 @@ function LeaveModal({
         ...form.getFieldsValue(),
         gender: genderDefault,
         Probation: probationStatus,
+        isSpecial: IsSpecial,
       })
     )
   }
@@ -137,6 +141,7 @@ function LeaveModal({
         })
         setgenderDefault(editData?.gender)
         setProbationStatus(editData?.Probation)
+        setIsSpecial(editData?.isSpecial)
       }
     }
     if (!toggle) form.resetFields()
@@ -261,6 +266,15 @@ function LeaveModal({
               <Radio value={false}>No</Radio>
             </Radio.Group>
           </Form.Item>
+
+          <Checkbox
+            checked={IsSpecial}
+            onChange={(e: CheckboxChangeEvent) =>
+              setIsSpecial(e.target.checked)
+            }
+          >
+            Special Leave Type
+          </Checkbox>
 
           {duplicateValue && (
             <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>

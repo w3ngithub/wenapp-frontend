@@ -228,7 +228,7 @@ function Apply({user}) {
   }
 
   const handleTypesChange = (value) => {
-    setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value).value)
+    setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value))
   }
 
   const handleFormReset = () => {
@@ -245,12 +245,13 @@ function Apply({user}) {
   //condition to check holidays and weekends
   const handleLeaveCheck = () => {
     form.validateFields().then((values) => {
-      const leaveTypeName = leaveTypeQuery?.data?.find(
+      const LeaveTypeData = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
-      )?.value
+      )
+
       let selectedDatesArr = []
 
-      if (leaveTypeName === 'Casual' || leaveTypeName === 'Sick') {
+      if (!LeaveTypeData?.isSpecial) {
         const selectedDates = form?.getFieldValue('leaveDatesCasual')
         const formattedDate = selectedDates?.map((d) => ({
           index: moment(MuiFormatDate(new Date(d))).day(),
@@ -376,24 +377,43 @@ function Apply({user}) {
         }
       }
 
+      let LeaveDaysUTC = []
+
       // calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays = leaveType?.leaveDays - 1 // 60 for maternity, 5 for other two// 60 for maternity, 5 for other two
-      const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
-      const newDate = new Date(values?.leaveDatesPeriod?._d)
-      const endDate = new Date(
-        newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
-      )
-      const appliedDateUTC = appliedDate ? MuiFormatDate(appliedDate) : ''
-      const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
+      if (leaveType?.isSpecial) {
+        const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
+        const newDate = new Date(values?.leaveDatesPeriod?._d)
+
+        const ArrayofDates = []
+        for (let i = 1; i < leaveType?.leaveDays; i++) {
+          ArrayofDates.push(
+            `${MuiFormatDate(
+              new Date(newDate.setDate(appliedDate?.getDate() + i))
+            )}T00:00:00Z`
+          )
+        }
+        // const endDate = new Date(
+        //   newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
+        // )
+        const appliedDateUTC = appliedDate
+          ? `${MuiFormatDate(appliedDate)}T00:00:00Z`
+          : ''
+
+        LeaveDaysUTC = [appliedDateUTC, ...ArrayofDates]
+        // const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
+      }
 
       //calculation for sick, casual leaves
-      const casualLeaveDays = appliedDate
-        ? []
-        : [...values?.leaveDatesCasual?.join(',').split(','), ...newDateArr]
+      else {
+        const casualLeaveDays = [
+          ...values?.leaveDatesCasual?.join(',').split(','),
+          ...newDateArr,
+        ]
 
-      const casualLeaveDaysUTC = casualLeaveDays
-        ?.map((leave) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`)
-        .sort((a, b) => a.localeCompare(b))
+        LeaveDaysUTC = casualLeaveDays
+          ?.map((leave) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`)
+          .sort((a, b) => a.localeCompare(b))
+      }
 
       //document upload to firebase
       if (files[0]?.originFileObj) {
@@ -415,9 +435,7 @@ function Apply({user}) {
               form.validateFields().then((values) =>
                 leaveMutation.mutate({
                   ...values,
-                  leaveDates: appliedDate
-                    ? [appliedDateUTC, endDateUTC]
-                    : casualLeaveDaysUTC,
+                  leaveDates: LeaveDaysUTC,
                   halfDay:
                     values?.halfDay === 'full-day' ||
                     values?.halfDay === 'Full Day'
@@ -440,9 +458,7 @@ function Apply({user}) {
           delete values.leaveDatesCasual
           leaveMutation.mutate({
             ...values,
-            leaveDates: appliedDate
-              ? [appliedDateUTC, endDateUTC]
-              : casualLeaveDaysUTC,
+            leaveDates: LeaveDaysUTC,
             halfDay:
               values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
                 ? ''
@@ -618,7 +634,7 @@ function Apply({user}) {
         onValuesChange={(allValues) => formFieldChanges(allValues)}
       >
         <Row type="flex">
-          {!immediateApprovalLeaveTypes.includes(leaveType) && (
+          {!leaveType?.isSpecial && (
             <Col xs={24} sm={6} md={6} style={{flex: 0.3, marginRight: '4rem'}}>
               <FormItem
                 label="Select Leave Dates"
@@ -771,7 +787,7 @@ function Apply({user}) {
                     </FormItem>
                   )}
               </Col>
-              {immediateApprovalLeaveTypes.includes(leaveType) && (
+              {leaveType?.isSpecial && (
                 <Col
                   span={24}
                   xs={24}
