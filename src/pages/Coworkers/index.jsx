@@ -51,7 +51,7 @@ const formattedUsers = (users, isAdmin) => {
 function CoworkersPage() {
   // init hooks
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState({page: 1, limit: 20})
+  const [page, setPage] = useState({page: 1, limit: 50})
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
   const [activeUser, setActiveUser] = useState(true)
   const [defaultUser, setDefaultUser] = useState('active')
@@ -62,7 +62,7 @@ function CoworkersPage() {
   const [userRecord, setUserRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
-  const [selectedIds,setSelectedIds] = useState([])
+  const [selectedIds, setSelectedIds] = useState([])
   const [openImport, setOpenImport] = useState(false)
   const [files, setFiles] = useState([])
   const queryClient = useQueryClient()
@@ -216,7 +216,9 @@ function CoworkersPage() {
           joinDate: user.joinDate
             ? moment.utc(user.joinDate).format()
             : undefined,
-          lastReviewDate: moment.utc(user.lastReviewDate).endOf('day').format(),
+          lastReviewDate: user.lastReviewDate.map((d) =>
+            moment(d).startOf('day').utc().format()
+          ),
           exitDate: user?.exitDate ? moment.utc(user.exitDate).format() : null,
         },
       })
@@ -267,25 +269,26 @@ function CoworkersPage() {
     setSelectedRows(rows)
   }
 
-  const handleSelectRow=(record,selected,selectedRows)=>{
-    if(selected) {
-      setSelectedIds((prev)=>[...prev,record?._id])
-      setSelectedRows((prev)=>[...prev,record])
-    }
-    else {
-      setSelectedIds((prev)=>prev.filter((d)=>d!==record?._id))
-      setSelectedRows((prev)=>prev.filter((d)=>d?._id!==record?._id))
+  const handleSelectRow = (record, selected, selectedRows) => {
+    if (selected) {
+      setSelectedIds((prev) => [...prev, record?._id])
+      setSelectedRows((prev) => [...prev, record])
+    } else {
+      setSelectedIds((prev) => prev.filter((d) => d !== record?._id))
+      setSelectedRows((prev) => prev.filter((d) => d?._id !== record?._id))
     }
   }
 
-  const handleSelectAll = (selected,selectedRows,changeRows)=>{
-    if(selected){
-      setSelectedIds(prev=>[...prev,...changeRows?.map((d)=>d?._id)])
-      setSelectedRows((prev)=>[...prev,...changeRows])
-    }else{
-      let changeRowsId = changeRows?.map((d)=>d?._id)
-      setSelectedIds(prev=>prev.filter((d)=>!changeRowsId.includes(d)))
-      setSelectedRows(prev=>prev.filter((d)=>!changeRows.includes(d?._id)))
+  const handleSelectAll = (selected, selectedRows, changeRows) => {
+    if (selected) {
+      setSelectedIds((prev) => [...prev, ...changeRows?.map((d) => d?._id)])
+      setSelectedRows((prev) => [...prev, ...changeRows])
+    } else {
+      let changeRowsId = changeRows?.map((d) => d?._id)
+      setSelectedIds((prev) => prev.filter((d) => !changeRowsId.includes(d)))
+      setSelectedRows((prev) =>
+        prev.filter((d) => !changeRows.includes(d?._id))
+      )
     }
   }
 
@@ -430,17 +433,16 @@ function CoworkersPage() {
                         'DOB',
                         'Join Date',
                       ],
-                      ...selectedRows
-                        ?.map((d) => [
-                          d?.name,
-                          d?.email,
-                          d?.role?.value,
-                          d?.role?._id,
-                          d?.position?.name,
-                          d?.position?._id,
-                          d?.dob,
-                          d?.joinDate
-                        ]),
+                      ...selectedRows?.map((d) => [
+                        d?.name,
+                        d?.email,
+                        d?.role?.value,
+                        d?.role?._id,
+                        d?.position?.name,
+                        d?.position?._id,
+                        d?.dob,
+                        d?.joinDate,
+                      ]),
                     ]}
                   >
                     <Button
@@ -471,12 +473,12 @@ function CoworkersPage() {
           rowSelection={{
             onSelect: handleSelectRow,
             selectedRowKeys: selectedIds,
-            onSelectAll:handleSelectAll,
+            onSelectAll: handleSelectAll,
           }}
           pagination={{
             current: page.page,
             pageSize: page.limit,
-            pageSizeOptions: ['20', '50', '80'],
+            pageSizeOptions: ['25', '50', '100'],
             showSizeChanger: true,
             total: data?.data?.data?.count || 1,
             onShowSizeChange,

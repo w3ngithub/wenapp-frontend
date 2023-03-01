@@ -39,16 +39,14 @@ const getLeavesOfAllUsers = async (
   limit = '',
   sort = '-leaveDates',
   type = '',
-  fromDate = '',
-  toDate = '',
-  halfDay = undefined
+  halfday = undefined
 ) => {
   try {
     let response = await API.get(
       `${
         Apis.Leaves
-      }?leaveStatus=${status}&sort=${sort}&user=${user}&leaveDates=${date}&page=${page}&limit=${limit}&leaveType=${type}&fromDate=${fromDate}&toDate=${toDate}${
-        halfDay === undefined ? '' : `&halfDay=${halfDay}`
+      }?leaveStatus=${status}&sort=${sort}&user=${user}&leaveDates=${date}&page=${page}&limit=${limit}&leaveType=${type}${
+        halfday === undefined ? '' : `&halfDay=${halfday}`
       }`
     )
     return getAPIResponse(response)
@@ -91,11 +89,11 @@ const getLeaveTypes = async (id) => {
   }
 }
 
-const changeLeaveStatus = async (id, statusType, reason='',reapplyreason='') => {
+const changeLeaveStatus = async (id, statusType, reason) => {
   try {
     let response = await API.patch(
       `${Apis.Leaves}/${id}/status/${statusType}`,
-      {reason,reapplyreason}
+      {reason}
     )
     return getAPIResponse(response)
   } catch (err) {

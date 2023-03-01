@@ -39,7 +39,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
-import {LEAVES_TYPES, STATUS_TYPES} from 'constants/Leaves'
+import {FIRST_HALF, FULL_DAY, LEAVES_TYPES, SECOND_HALF} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
@@ -138,6 +138,7 @@ function LeaveModal({
       ...res?.data?.data?.data?.map((type: leaveTypeInterface) => ({
         id: type._id,
         value: type?.name.replace('Leave', '').trim(),
+        leaveDays: type?.leaveDays,
       })),
     ],
   })
@@ -181,7 +182,6 @@ function LeaveModal({
         'Leave update failed',
         [
           () => queryClient.invalidateQueries(['leaves']),
-          ()=>queryClient.invalidateQueries(['userLeaves']),
           () => {
             socket.emit('CUD')
           },
@@ -202,12 +202,11 @@ function LeaveModal({
 
   const onFinish = (values: any) => {
     form.validateFields().then((values) => {
-      const leaveTypeName = leaveTypeQuery?.data?.find(
+      const leaveType = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
-      )?.value
+      )
       //calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays =
-        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
+      const numberOfLeaveDays = leaveType?.leaveDays - 1 // duration is dynamic based on settings values
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(
@@ -266,8 +265,6 @@ function LeaveModal({
           user: leaveData.user._id,
           halfDay: leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
           cancelReason: leaveData?.cancelReason,
-          rejectReason:leaveData?.rejectReason,
-          reapplyreason:leaveData?.reapplyreason
         })
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
@@ -319,10 +316,10 @@ function LeaveModal({
       if (index === 0 && (halfLeaveApproved || halfLeavePending)) {
         return true
       }
-      if (index === 1 && specificHalf === 'first-half') {
+      if (index === 1 && specificHalf === FIRST_HALF) {
         return true
       }
-      if (index === 2 && specificHalf === 'second-half') {
+      if (index === 2 && specificHalf === SECOND_HALF) {
         return true
       }
       return false
@@ -370,12 +367,12 @@ function LeaveModal({
           (leave) => leave.date === formattedDate?.[0]?.split('-')?.join('/')
         )
         let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
-        if (specificHalf === 'first-half') {
-          form.setFieldValue('halfDay', 'second-half')
-        } else if (specificHalf === 'second-half') {
-          form.setFieldValue('halfDay', 'first-half')
+        if (specificHalf === FIRST_HALF) {
+          form.setFieldValue('halfDay', SECOND_HALF)
+        } else if (specificHalf === SECOND_HALF) {
+          form.setFieldValue('halfDay', FIRST_HALF)
         } else {
-          form.setFieldValue('halfDay', 'full-day')
+          form.setFieldValue('halfDay', FULL_DAY)
         }
       }
     } else {
@@ -597,7 +594,7 @@ function LeaveModal({
                 </Col>
               </Row>
 
-              {((leaveData?.leaveStatus === STATUS_TYPES[3].id || leaveData?.leaveStatus === STATUS_TYPES[5].id ) && leaveData?.cancelReason)  &&(
+              {leaveData?.leaveStatus === 'cancelled' && (
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item
@@ -617,58 +614,6 @@ function LeaveModal({
                   </Col>
                 </Row>
               )}
-
-            
-        {((leaveData?.leaveStatus === STATUS_TYPES[4].id || leaveData?.leaveStatus === STATUS_TYPES[2].id) && leaveData?.rejectReason) &&(
-                <Row>
-                  <Col span={6} xs={24} sm={24} xl={24}>
-                    <Form.Item
-                      {...formItemLayout}
-                      name="rejectReason"
-                      label="Leave Reject Reason"
-                    >
-                      <Input.TextArea
-                        allowClear
-                        rows={10}
-                        disabled={readOnly}
-                        style={{
-                          background: darkCalendar ? '#434f5a' : '',
-                        }}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              )}
-
-                
-        {(leaveData?.leaveStatus === STATUS_TYPES[2].id && leaveData?.reapplyreason) &&(
-                <Row>
-                  <Col span={6} xs={24} sm={24} xl={24}>
-                    <Form.Item
-                      {...formItemLayout}
-                      name="reapplyreason"
-                      label="Leave Re-apply Reason"
-                    >
-                      <Input.TextArea
-                        allowClear
-                        rows={10}
-                        disabled={readOnly}
-                        style={{
-                          background: darkCalendar ? '#434f5a' : '',
-                        }}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              )}
-
-
-
-
-
-
-
-
             </Col>
             {user &&
               (immediateApprovalLeaveTypes.includes(leaveType) ? (
@@ -818,16 +763,18 @@ function LeaveModal({
                     />
                   </Form.Item>
 
-                  <small
-                    style={{
-                      color: 'red',
-                      fontSize: '14px',
-                      width: '10%',
-                      paddingLeft: 15,
-                    }}
-                  >
-                    *Disabled dates are holidays
-                  </small>
+                  {!readOnly && (
+                    <small
+                      style={{
+                        color: 'red',
+                        fontSize: '14px',
+                        width: '10%',
+                        paddingLeft: 15,
+                      }}
+                    >
+                      *Disabled dates are holidays
+                    </small>
+                  )}
                 </Col>
               ))}
           </Row>

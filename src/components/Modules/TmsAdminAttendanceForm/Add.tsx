@@ -78,6 +78,9 @@ function TmsAdminAddAttendanceForm({
         'T' +
         moment.utc(values.punchOutTime).format().split('T')[1]
       : undefined
+    if (!values?.isLateArrival) {
+      delete values.isLateArrival
+    }
     const payload = {
       ...values,
       attendanceDate,
@@ -175,19 +178,24 @@ function TmsAdminAddAttendanceForm({
           </Row>
           <Row>
             <Col span={24} sm={12} xs={24}>
-              <Form.Item
-                name="punchInTime"
-                rules={[
-                  {required: true, message: 'Punch In Time is required.'},
-                ]}
-                hasFeedback
-              >
-                <TimePicker
-                  use12Hours
-                  format="h:mm:ss A"
-                  defaultValue={moment('09:00:00 AM', 'HH:mm:ss a')}
-                />
-              </Form.Item>
+              <div className="gx-d-flex" style={{gap: 20}}>
+                <Form.Item
+                  name="punchInTime"
+                  rules={[
+                    {required: true, message: 'Punch In Time is required.'},
+                  ]}
+                  hasFeedback
+                >
+                  <TimePicker
+                    use12Hours
+                    format="h:mm:ss A"
+                    defaultValue={moment('09:00:00 AM', 'HH:mm:ss a')}
+                  />
+                </Form.Item>
+                <Form.Item name="isLateArrival" valuePropName="checked">
+                  <Checkbox>Late Arrival</Checkbox>
+                </Form.Item>
+              </div>
               <Form.Item label="Punch In Note" name="punchInNote" hasFeedback>
                 <Input.TextArea rows={5} />
               </Form.Item>

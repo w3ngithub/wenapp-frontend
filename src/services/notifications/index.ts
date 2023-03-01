@@ -9,10 +9,11 @@ export const getNotifications = async ({
   fields = '',
   role = '',
   userId = '',
+  joinDate = '',
 }) => {
   try {
     let response = await API.get(
-      `${Apis.Notification}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&role=${role}&userId=${userId}`
+      `${Apis.Notification}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&role=${role}&userId=${userId}&joinDate=${joinDate}`
     )
     return getAPIResponse(response)
   } catch (err) {

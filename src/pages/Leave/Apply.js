@@ -1,21 +1,9 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {STATUS_TYPES} from 'constants/Leaves'
+import {FIRST_HALF, FULL_DAY, SECOND_HALF, STATUS_TYPES} from 'constants/Leaves'
+import {Button, Col, Input, Row, Select, Spin, Form, DatePicker} from 'antd'
 import {
-  Button,
-  Col,
-  Input,
-  Row,
-  Select,
-  Spin,
-  Form,
-  DatePicker,
-  Modal,
-} from 'antd'
-import {
-  compare,
   filterHalfDayLeaves,
   filterOptions,
-  getDateRangeArray,
   getIsAdmin,
   handleResponse,
   MuiFormatDate,
@@ -47,8 +35,6 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
 import RoleAccess from 'constants/RoleAccess'
-import moment from 'moment'
-import {ExclamationCircleFilled} from '@ant-design/icons'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -67,10 +53,8 @@ function Apply({user}) {
   const [calendarClicked, setCalendarClicked] = useState(false)
   const [yearStartDate, setYearStartDate] = useState(undefined)
   const [yearEndDate, setYearEndDate] = useState(undefined)
-  const [openModal, setOpenModal] = useState(false)
-  const [newDateArr, setNewDateArr] = useState([])
 
-  const {name, email, role} = useSelector(selectAuthUser)
+  const {name, email, gender} = useSelector(selectAuthUser)
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -112,12 +96,17 @@ function Apply({user}) {
     getAllHolidays({sort: '-createdAt', limit: '1'})
   )
 
-  const {data: leaveQuarter} = useQuery(['leaveQuarter'], getLeaveQuarter, {
-    onSuccess: (data) => {
-      setYearStartDate(data?.data?.data?.data?.[0].firstQuarter.fromDate)
-      setYearEndDate(data?.data?.data?.data?.[0].fourthQuarter.toDate)
-    },
-  })
+  const {data: leaveQuarter, refetch} = useQuery(
+    ['leaveQuarter'],
+    getLeaveQuarter,
+    {
+      onSuccess: (data) => {
+        setYearStartDate(data?.data?.data?.data?.[0].firstQuarter.fromDate)
+        setYearEndDate(data?.data?.data?.data?.[0].fourthQuarter.toDate)
+      },
+      enabled: false,
+    }
+  )
 
   const userSubstituteLeave = useQuery(
     ['substitute', yearStartDate, yearEndDate],
@@ -126,15 +115,33 @@ function Apply({user}) {
     {enabled: !!yearStartDate && !!yearEndDate}
   )
 
+  useEffect(() => {
+    if (gender === 'Female') {
+      refetch()
+    }
+  }, [gender])
+
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {
-      return [
-        ...res?.data?.data?.data?.map((type) => ({
-          id: type._id,
-          value: type?.name.replace('Leave', '').trim(),
-          leaveDays: type?.leaveDays,
-        })),
-      ]
+      if (gender === 'Male') {
+        return [
+          ...res?.data?.data?.data
+            ?.filter((types) => types.name !== 'Substitute Leave')
+            .map((type) => ({
+              id: type._id,
+              value: type?.name.replace('Leave', '').trim(),
+              leaveDays: type?.leaveDays,
+            })),
+        ]
+      } else {
+        return [
+          ...res?.data?.data?.data?.map((type) => ({
+            id: type._id,
+            value: type?.name.replace('Leave', '').trim(),
+            leaveDays: type?.leaveDays,
+          })),
+        ]
+      }
     },
   })
 
@@ -158,7 +165,6 @@ function Apply({user}) {
           () => sendEmailNotification(response),
           () => queryClient.invalidateQueries(['userLeaves']),
           () => queryClient.invalidateQueries(['leaves']),
-          () => queryClient.invalidateQueries(['substitute']),
           () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
           () => {
             socket.emit('CUD')
@@ -219,82 +225,21 @@ function Apply({user}) {
     setSpecificHalf(false)
     setCalendarClicked(false)
   }
-
-  //condition to check holidays and weekends
-  const handleLeaveCheck = () => {
-    form.validateFields().then((values) => {
-      const leaveTypeName = leaveTypeQuery?.data?.find(
-        (type) => type?.id === values?.leaveType
-      )?.value
-      if (leaveTypeName === 'Casual' || leaveTypeName === 'Sick') {
-        const selectedDates = form?.getFieldValue('leaveDatesCasual')
-        const formattedDate = selectedDates?.map((d) => ({
-          index: moment(MuiFormatDate(new Date(d))).day(),
-          date: MuiFormatDate(new Date(d)),
-        }))
-        const sortedDate = formattedDate.sort(compare)
-        let holidayList = holidaysThisYear?.map((holiday) => {
-          return MuiFormatDate(moment(holiday?.date).format())
-        })
-        let selectedDatesArr = []
-        if (selectedDates.length > 1) {
-          sortedDate?.forEach((d, index) => {
-            if (sortedDate[index + 1]) {
-              let dateRange = getDateRangeArray(
-                d?.date,
-                sortedDate[index + 1]?.date
-              )
-              let filteredDateRange = dateRange.filter(
-                (d, index) => index !== 0 && index !== dateRange.length - 1
-              )
-              let filteredDateRangeWithIndex = filteredDateRange?.map((d) => ({
-                index: moment(d).day(),
-                date: d,
-              }))
-              let includesHolidayAndWeekend =
-                filteredDateRangeWithIndex.length > 0 &&
-                filteredDateRangeWithIndex?.every(
-                  (d) =>
-                    d.index === 0 ||
-                    d.index === 6 ||
-                    holidayList.includes(d.date)
-                )
-              if (includesHolidayAndWeekend) {
-                selectedDatesArr.push(
-                  ...filteredDateRangeWithIndex.map((d) =>
-                    moment(d.date).format('YYYY/MM/DD')
-                  )
-                )
-              }
-            }
-          })
-          setNewDateArr(selectedDatesArr)
-        }
-        if (selectedDatesArr?.length > 0) {
-          setOpenModal(true)
-        } else {
-          handleSubmit()
-        }
-      } else {
-        handleSubmit()
-      }
-    })
-  }
-
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      const leaveTypeName = leaveTypeQuery?.data?.find(
+      const leaveType = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
-      )?.value
+      )
 
       //code for substitute leave
-      const isSubstitute = leaveTypeQuery?.data?.find(
-        (data) => data?.value === 'Substitute'
-      )
-      if (isSubstitute?.id === form.getFieldValue('leaveType')) {
+      if (gender === 'Female') {
+        let isSubstitute = leaveTypeQuery?.data?.find(
+          (data) => data?.value === 'Substitute'
+        )
         if (
           form.getFieldValue('leaveDatesCasual')?.length >
-          isSubstitute?.leaveDays
+            isSubstitute?.leaveDays &&
+          isSubstitute?.id === form.getFieldValue('leaveType')
         ) {
           return notification({
             type: 'error',
@@ -304,7 +249,8 @@ function Apply({user}) {
         let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
           (sub) =>
             sub?.leaveType?.name === 'Substitute Leave' &&
-            sub?.leaveStatus === 'approved'
+            sub?.leaveStatus === 'approved' &&
+            isSubstitute?.id === form.getFieldValue('leaveType')
         )
 
         if (hasSubstitute) {
@@ -316,8 +262,7 @@ function Apply({user}) {
       }
 
       // calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays =
-        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
+      const numberOfLeaveDays = leaveType?.leaveDays - 1 // 60 for maternity, 5 for other two
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       const newDate = new Date(values?.leaveDatesPeriod?._d)
       const endDate = new Date(
@@ -329,14 +274,14 @@ function Apply({user}) {
       //calculation for sick, casual leaves
       const casualLeaveDays = appliedDate
         ? []
-        : [...values?.leaveDatesCasual?.join(',').split(','), ...newDateArr]
-
-      const casualLeaveDaysUTC = casualLeaveDays?.map(
+        : values?.leaveDatesCasual?.join(',').split(',')
+      const casualLeaveDaysUTC = casualLeaveDays.map(
         (leave) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
       )
       setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
       setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
-      form.validateFields().then((values) =>
+      form.validateFields().then((values) => {
+        delete values.leaveDatesCasual
         leaveMutation.mutate({
           ...values,
           leaveDates: appliedDate
@@ -346,15 +291,10 @@ function Apply({user}) {
             values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
               ? ''
               : values?.halfDay,
-          leaveStatus:
-            appliedDate || ['admin', 'hr'].includes(role?.key)
-              ? 'approved'
-              : 'pending',
+          leaveStatus: appliedDate ? 'approved' : 'pending',
         })
-      )
+      })
     })
-    setOpenModal(false)
-    setNewDateArr([])
   }
   let userLeaves = []
   const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays?.map(
@@ -390,10 +330,10 @@ function Apply({user}) {
       if (index === 0 && (halfLeaveApproved || halfLeavePending)) {
         return true
       }
-      if (index === 1 && specificHalf === 'first-half') {
+      if (index === 1 && specificHalf === FIRST_HALF) {
         return true
       }
-      if (index === 2 && specificHalf === 'second-half') {
+      if (index === 2 && specificHalf === SECOND_HALF) {
         return true
       }
       return false
@@ -432,7 +372,7 @@ function Apply({user}) {
     if (selectedDates?.length > 0) {
       setCalendarClicked(true)
       if (selectedDates?.length > 1) {
-        form.setFieldValue('halfDay', 'full-day')
+        form.setFieldValue('halfDay', FULL_DAY)
       }
       if (selectedDates?.length === 1) {
         const formattedDate = selectedDates?.map((d) =>
@@ -442,12 +382,12 @@ function Apply({user}) {
           (leave) => leave.date === formattedDate?.[0]?.split('-')?.join('/')
         )
         let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
-        if (specificHalf === 'first-half') {
-          form.setFieldValue('halfDay', 'second-half')
-        } else if (specificHalf === 'second-half') {
-          form.setFieldValue('halfDay', 'first-half')
+        if (specificHalf === FIRST_HALF) {
+          form.setFieldValue('halfDay', SECOND_HALF)
+        } else if (specificHalf === SECOND_HALF) {
+          form.setFieldValue('halfDay', FIRST_HALF)
         } else {
-          form.setFieldValue('halfDay', 'full-day')
+          form.setFieldValue('halfDay', FULL_DAY)
         }
       }
     } else {
@@ -457,32 +397,6 @@ function Apply({user}) {
 
   return (
     <Spin spinning={leaveMutation.isLoading}>
-      <Modal
-        title={`Are you sure?`}
-        visible={openModal}
-        mask={false}
-        onCancel={() => setOpenModal(false)}
-        footer={[
-          <Button key="back" onClick={() => setOpenModal(false)}>
-            Cancel
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            onClick={handleSubmit}
-            disabled={leaveMutation.isLoading}
-          >
-            Apply
-          </Button>,
-        ]}
-      >
-        <p>
-          <ExclamationCircleFilled style={{color: '#faad14'}} /> If there is a
-          public holiday or weekend in between the leave dates that you have
-          applied, it also will be counted as a leave date.
-        </p>
-      </Modal>
-
       <Form
         layout="vertical"
         style={{padding: '15px 0'}}
@@ -704,8 +618,7 @@ function Apply({user}) {
                 <div>
                   <Button
                     type="primary"
-                    // onClick={extraLeave ? '' : submit}
-                    onClick={handleLeaveCheck}
+                    onClick={handleSubmit}
                     disabled={getIsAdmin()}
                   >
                     Apply

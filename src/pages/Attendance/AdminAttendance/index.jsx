@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react'
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import {useQuery} from '@tanstack/react-query'
 import {
   Button,
   Table,
@@ -8,7 +8,6 @@ import {
   Divider,
   Input,
   InputNumber,
-  Popconfirm,
 } from 'antd'
 import moment from 'moment'
 import {CSVLink} from 'react-csv'
@@ -21,7 +20,6 @@ import {
   weeklyState,
 } from 'constants/Attendance'
 import {
-  deleteAttendance,
   searchAttendacentOfUser,
   UserTotalofficehour,
 } from 'services/attendances'
@@ -30,7 +28,6 @@ import {
   dateDifference,
   filterSpecificUser,
   getIsAdmin,
-  handleResponse,
   hourIntoMilliSecond,
   milliSecondIntoHours,
   MuiFormatDate,
@@ -47,7 +44,6 @@ import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {emptyText} from 'constants/EmptySearchAntd'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {useSelector} from 'react-redux'
 
@@ -92,7 +88,7 @@ function AdminAttendance({userRole}) {
     columnKey: 'attendanceDate',
   })
   const [form] = Form.useForm()
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState({page: 1, limit: 50})
   const [defaultFilter, setDefaultFilter] = useState(undefined)
   const [openView, setOpenView] = useState(false)
   const [attToView, setAttToView] = useState({})
@@ -103,7 +99,6 @@ function AdminAttendance({userRole}) {
   const [toggleEdit, setToggleEdit] = useState(false)
   const [AttToEdit, setAttToEdit] = useState({})
   const [btnClick, setbtnClick] = useState(false)
-  const queryClient = useQueryClient()
   const [dataToExport, setdataToExport] = useState({
     todownload: false,
     data: [],
@@ -158,28 +153,6 @@ function AdminAttendance({userRole}) {
     }
   )
 
-  const deleteAttendanceMutation = useMutation(
-    (attendanceId) => deleteAttendance(attendanceId),
-    {
-      onSuccess: (response) =>
-        handleResponse(
-          response,
-          'Attendance removed Successfully',
-          'Attendance deletion failed',
-          [
-            () => queryClient.invalidateQueries(['adminAttendance']),
-            () => queryClient.invalidateQueries(['userAttendance']),
-            () => {
-              socket.emit('CUD')
-            },
-          ]
-        ),
-      onError: (error) => {
-        notification({message: 'Project deletion failed', type: 'error'})
-      },
-    }
-  )
-
   const {
     data: timedata,
     refetch,
@@ -231,9 +204,6 @@ function AdminAttendance({userRole}) {
   const handleEdit = (record) => {
     setToggleEdit(true)
     setAttToEdit(record)
-  }
-  const confirmDeleteAttendance = (project) => {
-    deleteAttendanceMutation.mutate(project._id)
   }
 
   const handleAttChnageChange = (val) => {
@@ -303,21 +273,6 @@ function AdminAttendance({userRole}) {
                   <span className="gx-link" onClick={() => handleEdit(record)}>
                     <CustomIcon name="edit" />
                   </span>
-                </>
-              )}
-              {userRole?.deleteCoworkersAttendance && !getIsAdmin() && (
-                <>
-                  <Divider type="vertical" />
-                  <Popconfirm
-                    title="Are you sure to delete this attendance?"
-                    onConfirm={() => confirmDeleteAttendance(record)}
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <span className="gx-link gx-text-danger">
-                      <CustomIcon name="delete" />
-                    </span>
-                  </Popconfirm>
                 </>
               )}
             </span>
@@ -713,10 +668,11 @@ function AdminAttendance({userRole}) {
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['5', '10', '20', '50'],
+          pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
           total: data?.data?.data?.attendances?.[0]?.metadata?.[0]?.total || 1,
           onShowSizeChange,
+          hideOnSinglePage: true,
           onChange: handlePageChange,
         }}
         loading={isFetching}

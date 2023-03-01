@@ -1,7 +1,13 @@
 import React, {useState} from 'react'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
-import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
+import {
+  FIRST_HALF,
+  LEAVES_COLUMN,
+  PAID_TIME_OFF,
+  SECOND_HALF,
+  STATUS_TYPES,
+} from 'constants/Leaves'
 import {CSVLink} from 'react-csv'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
@@ -13,7 +19,6 @@ import {
   filterSpecificUser,
   getIsAdmin,
   handleResponse,
-  MuiFormatDate,
   removeDash,
 } from 'helpers/utils'
 import Notification from 'components/Elements/Notification'
@@ -29,31 +34,33 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
-const {RangePicker} = DatePicker
 
 const formattedLeaves = (leaves) => {
-  return leaves?.map((leave) => ({
-    ...leave,
-    key: leave._id,
-    coWorker: leave?.user?.name,
-    dates: leave?.leaveDates
-      ?.map((date) => changeDate(date))
-      .join(
-        leave?.leaveType?.name === 'Maternity' ||
-          leave?.leaveType?.name === 'Paternity' ||
-          leave?.leaveType?.name === 'Paid Time Off'
-          ? ' - '
-          : ' '
-      ),
-    type: `${leave?.leaveType?.name} ${
-      leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
-        ? '- ' + removeDash(leave?.halfDay)
-        : ''
-    }`,
-    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
-  }))
+  return leaves?.map((leave) => {
+    return {
+      ...leave,
+      key: leave._id,
+      coWorker: leave?.user?.name,
+      dates: leave?.leaveDates
+        ?.map((date) => changeDate(date))
+        .join(
+          immediateApprovalLeaveTypes.includes(
+            leave?.leaveType?.name?.split(' ')?.[0]
+          ) || leave?.leaveType?.name === PAID_TIME_OFF
+            ? '-'
+            : ' '
+        ),
+      type: `${leave?.leaveType?.name} ${
+        leave?.halfDay === FIRST_HALF || leave?.halfDay === SECOND_HALF
+          ? '- ' + removeDash(leave?.halfDay)
+          : ''
+      }`,
+      status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
+    }
+  })
 }
 
 const formatToUtc = (date) => {
@@ -100,22 +107,12 @@ function Leaves({
         }
       : undefined
   )
-  const [rangeDate, setRangeDate] = useState([])
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState({page: 1, limit: 25})
   const [leaveDetails, setleaveDetails] = useState({})
   const [user, setUser] = useState(selectedUser ?? undefined)
 
   const leavesQuery = useQuery(
-    [
-      'leaves',
-      leaveStatus,
-      user,
-      date,
-      rangeDate,
-      page,
-      leaveId,
-      leaveInterval,
-    ],
+    ['leaves', leaveStatus, user, date, page, leaveId, leaveInterval],
     () =>
       getLeavesOfAllUsers(
         leaveStatus,
@@ -125,8 +122,6 @@ function Leaves({
         page.limit,
         '-leaveDates,_id',
         leaveId,
-        rangeDate?.[0] ? MuiFormatDate(rangeDate[0]?._d) + 'T00:00:00Z' : '',
-        rangeDate?.[1] ? MuiFormatDate(rangeDate[1]?._d) + 'T00:00:00Z' : '',
         leaveInterval === 'full-day' ? undefined : leaveInterval
       ),
     {
@@ -144,15 +139,13 @@ function Leaves({
   })
 
   const handleLeaveTypeChange = (value, option) => {
-    console.log('op', option)
     setLeaveId(value)
-    setLeaveTitle(option.children)
+    setLeaveTitle(option?.children)
     if (option.children !== 'Sick' && option.children !== 'Casual') {
       setLeaveInterval(undefined)
     }
   }
   const handleLeaveIntervalChange = (value) => {
-    console.log('value', value)
     setLeaveInterval(value)
   }
 
@@ -227,7 +220,6 @@ function Leaves({
   }
 
   const handleStatusChange = (statusId) => {
-    setPage({page:1,limit:10})
     setLeaveStatus(statusId)
   }
   const handleUserChange = (user) => {
@@ -241,7 +233,6 @@ function Leaves({
     setLeaveId(undefined)
     setLeaveInterval(undefined)
     setLeaveTitle('')
-    setRangeDate([])
   }
 
   const handleCloseModal = (
@@ -281,10 +272,9 @@ function Leaves({
   }
 
   const handleDateChange = (value) => {
-    // const m = moment(value._d)
-    // m.set({h: 5, m: 45, s: 0})
-    // setDate({moment: value, utc: moment.utc(m._d).format()})
-    setRangeDate(value)
+    const m = moment(value._d)
+    m.set({h: 5, m: 45, s: 0})
+    setDate({moment: value, utc: moment.utc(m._d).format()})
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)
   const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
@@ -362,8 +352,14 @@ function Leaves({
                 onChange={handleUserChange}
               />
             </FormItem>
-            <FormItem>
-              <RangePicker onChange={handleDateChange} value={rangeDate} />
+            <FormItem style={{marginBottom: '0.5px'}}>
+              <DatePicker
+                className="gx-mb-3 "
+                style={{width: innerWidth <= 748 ? '100%' : '200px'}}
+                value={date?.moment}
+                onChange={handleDateChange}
+                disabledDate={disabledDate}
+              />
             </FormItem>
 
             <FormItem style={{marginBottom: '3px'}}>
@@ -437,7 +433,7 @@ function Leaves({
         pagination={{
           current: page.page,
           pageSize: page.limit,
-          pageSizeOptions: ['5', '10', '20', '50'],
+          pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
           total: leavesQuery?.data?.data?.data?.count || 1,
           onShowSizeChange,

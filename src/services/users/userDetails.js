@@ -153,9 +153,11 @@ const getBirthMonthUsers = async () => {
   }
 }
 
-const getSalaryReviewUsers = async () => {
+const getSalaryReviewUsers = async ({days, user}) => {
   try {
-    let response = await API.get(`${Apis.Users}/salaryReview`)
+    let response = await API.get(
+      `${Apis.Users}/salaryReview?user=${user}&days=${days}`
+    )
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)
