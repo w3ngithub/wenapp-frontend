@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Button, Card, Form, Input, Select, Spin} from 'antd'
+import {Button, Card, Dropdown, Form, Input, Select, Spin} from 'antd'
 import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import {convertToRaw, EditorState, ContentState} from 'draft-js'
 import htmlToDraft from 'html-to-draftjs'
@@ -20,6 +20,37 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import {socket} from 'pages/Main'
 import RoleAccess from 'constants/RoleAccess'
+import {BLOG_LANGUAGES_LIST} from 'constants/BlogLanguages'
+
+function CustomToolbar(props) {
+  const {editorState, setEditorState} = props
+  const addCodeSnippet = (language) => {
+    const sampleMarkup = `
+    <p>@highlight-code</p>\n<p>@language:${language}</p>\n\n<p>@highlight-code</p>
+    `
+    const html = `${draftToHtml(
+      convertToRaw(editorState.getCurrentContent())
+    )}${sampleMarkup}
+    `
+    const blocksFromHTML = htmlToDraft(html)
+    const state = ContentState.createFromBlockArray(
+      blocksFromHTML.contentBlocks,
+      blocksFromHTML.entityMap
+    )
+
+    const initialState = EditorState.createWithContent(state)
+    setEditorState(initialState)
+  }
+
+  return (
+    <Dropdown
+      overlay={() => BLOG_LANGUAGES_LIST(addCodeSnippet)}
+      trigger={['click']}
+    >
+      <button className="codeSnippetBtn">Select code snippet.</button>
+    </Dropdown>
+  )
+}
 
 function AddBlog() {
   // init state
@@ -306,6 +337,9 @@ function AddBlog() {
                   editorState={editorState}
                   wrapperClassName="demo-wrapper"
                   onEditorStateChange={onEditorStateChange}
+                  toolbarCustomButtons={[
+                    <CustomToolbar setEditorState={seteditorState} />,
+                  ]}
                 />
               </>
             </Form.Item>
