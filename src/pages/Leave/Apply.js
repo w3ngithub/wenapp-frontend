@@ -125,21 +125,21 @@ function Apply({user}) {
     select: (res) => {
       if (gender === 'Male') {
         return [
-          ...res?.data?.data?.data
+          ...(res?.data?.data?.data
             ?.filter((types) => types.name !== 'Substitute Leave')
             .map((type) => ({
               id: type._id,
               value: type?.name.replace('Leave', '').trim(),
               leaveDays: type?.leaveDays,
-            })),
+            })) || []),
         ]
       } else {
         return [
-          ...res?.data?.data?.data?.map((type) => ({
+          ...(res?.data?.data?.data?.map((type) => ({
             id: type._id,
             value: type?.name.replace('Leave', '').trim(),
             leaveDays: type?.leaveDays,
-          })),
+          })) || []),
         ]
       }
     },
@@ -472,7 +472,7 @@ function Apply({user}) {
                 />
               </FormItem>
               <small style={{color: 'red', fontSize: '14px'}}>
-                *Disabled dates are holidays"
+                *Disabled dates are holidays
               </small>
             </Col>
           )}
