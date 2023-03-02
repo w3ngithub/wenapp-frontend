@@ -141,85 +141,9 @@ const Dashboard = () => {
 
   const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
+  const todayDate = new Date(MuiFormatDate(new Date()))
   const leavesQuery = useQuery(['DashBoardleaves'], () => getFutureLeaves(), {
     onError: (err) => console.log(err),
-    select: (res) => {
-      let updateLeaves: any[] = []
-
-      res?.data?.data?.users?.forEach((leave: any) => {
-        const isLeavePaternity =
-          leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
-        const isLeaveMaternity =
-          leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
-        const isLeavePTO =
-          leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
-        const isLeaveBereavement =
-          leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Bereavement
-        const todayDate = new Date(MuiFormatDate(new Date()))
-
-        if (
-          isLeavePaternity ||
-          isLeaveMaternity ||
-          isLeavePTO ||
-          isLeaveBereavement
-        ) {
-          const startLeaveDate = new Date(leave?.leaveDates[0])
-          const endLeaveDate = new Date(leave?.leaveDates[1])
-          for (
-            let i: any = new Date(startLeaveDate.getTime());
-            i <= new Date(endLeaveDate.getTime());
-            i.setDate(i.getDate() + 1)
-          ) {
-            const isHoliday =
-              startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
-
-            if (
-              startLeaveDate >= todayDate &&
-              startLeaveDate <= endLeaveDate &&
-              !isHoliday
-            ) {
-              updateLeaves = [
-                ...updateLeaves,
-                {
-                  ...leave,
-                  date: leave?.leaveDates[0],
-
-                  leaveDates: new Date(
-                    startLeaveDate.setDate(startLeaveDate.getDate())
-                  ).toJSON(),
-                },
-              ]
-            }
-
-            if (startLeaveDate < todayDate) {
-              startLeaveDate.setMonth(todayDate.getMonth())
-              startLeaveDate.setFullYear(todayDate.getFullYear())
-              updateLeaves = [
-                ...updateLeaves,
-                {
-                  ...leave,
-                  date: leave?.leaveDates[0],
-                  leaveDates: new Date(
-                    startLeaveDate.setDate(todayDate.getDate())
-                  ).toJSON(),
-                },
-              ]
-            }
-            startLeaveDate.setDate(startLeaveDate.getDate() + 1)
-          }
-        } else {
-          leave?.leaveDates.forEach((date: string) => {
-            const leaveDate = new Date(date)
-            if (leaveDate >= todayDate && ![0, 6].includes(leaveDate.getDay()))
-              updateLeaves = [
-                ...updateLeaves,
-                {...leave, date: date, leaveDates: date},
-              ]
-          })
-        }
-      })
-      return updateLeaves
-    },
   })
   const {data, refetch: projectRefetch} = useQuery(
     ['DashBoardprojects'],
@@ -388,12 +312,7 @@ const Dashboard = () => {
       let extraInfo = ''
       if (props.event.leaveType === 'Late Arrival') {
         extraInfo = 'Late'
-      } else if (
-        props?.event?.leaveType === 'Maternity' ||
-        props?.event?.leaveType === 'Paternity' ||
-        props?.event?.leaveType === 'Paid Time' ||
-        props?.event?.halfDay === ''
-      ) {
+      } else if (props?.event?.isSpecial || props?.event?.halfDay === '') {
         extraInfo = ''
       } else {
         if (props?.event?.halfDay === FIRST_HALF) {
@@ -480,7 +399,12 @@ const Dashboard = () => {
     event: CustomEvent, // used by each view (Month, Day, Week)
   }
 
-  const leaveUsers = leavesQuery?.data
+  const leaveUsers = leavesQuery?.data?.data?.data?.users
+    ?.filter(
+      (leaveData: any) =>
+        new Date(leaveData?.leaveDates) >= todayDate &&
+        ![0, 6].includes(new Date(leaveData?.leaveDates)?.getDay())
+    )
     ?.map((x: any, index: number) => ({
       title: x?.user[0],
       leaveStatus: x?.leaveStatus,
@@ -494,6 +418,7 @@ const Dashboard = () => {
       halfDay: x?.halfDay,
       leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
       id: x?._id[0],
+      isSpecial: x?.isSpecial[0],
     }))
     ?.sort(compareString)
 
