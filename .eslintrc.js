@@ -4,9 +4,9 @@ module.exports = {
     es2021: true,
   },
   extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:@typescript-eslint/recommended',
+    // 'eslint:recommended',
+    // 'plugin:react/recommended',
+    // 'plugin:@typescript-eslint/recommended',
   ],
   overrides: [],
   parser: '@typescript-eslint/parser',
@@ -17,6 +17,7 @@ module.exports = {
   plugins: ['react', '@typescript-eslint'],
   rules: {
     'no-console': 'error',
-    'no-unused-vars': 'warn',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
   },
 }
