@@ -12,6 +12,7 @@ import {WEEKLY_REPORT_COLUMNS} from 'constants/weeklyReport'
 import {roundedToFixed} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {PAGE50} from 'constants/Common'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -36,7 +37,7 @@ const formattedWeeklyReports = (reports, clients) => {
 function WeeklyReport() {
   // init states
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState({page: 1, limit: 50})
+  const [page, setPage] = useState(PAGE50)
   const [projectStatus, setProjectStatus] = useState(undefined)
   const [logType, setLogType] = useState(undefined)
   const [projectClient, setprojectClient] = useState(undefined)

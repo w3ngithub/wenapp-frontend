@@ -7,12 +7,16 @@ import {emptyText} from 'constants/EmptySearchAntd'
 
 const formattedLeaves = (leaves: any[]) => {
   return leaves?.map((leave) => {
+    const sortedLeaveDates = leave?.leaveDates?.sort(
+      (d1: string, d2: string) =>
+        new Date(d1)?.getTime() - new Date(d2)?.getTime()
+    )
     return {
       ...leave,
       key: leave?._id,
       name: leave?.user[0]?.name,
-      absentFrom: changeDate(leave?.leaveDates[0]),
-      till: changeDate(leave.leaveDates.at(-1)),
+      absentFrom: changeDate(sortedLeaveDates?.[0]),
+      till: changeDate(sortedLeaveDates.at(-1)),
       fullHalf: leave.halfDay ? 'Half' : 'Full',
       period:
         leave?.leaveType[0]?.name.split(' ')[0].toLowerCase() !==
@@ -23,13 +27,13 @@ const formattedLeaves = (leaves: any[]) => {
           LEAVES_TYPES.Substitute &&
         leave?.leaveType[0]?.name !== LATE_ARRIVAL
           ? `${(
-              (new Date(leave?.leaveDates[1]).getTime() -
-                new Date(leave?.leaveDates[0]).getTime()) /
+              (new Date(sortedLeaveDates?.[1]).getTime() -
+                new Date(sortedLeaveDates?.[0]).getTime()) /
                 (1000 * 3600 * 24) +
               1
             ).toFixed()} days`
-          : leave.leaveDates.length > 1
-          ? leave.leaveDates.length + ' Days'
+          : sortedLeaveDates.length > 1
+          ? sortedLeaveDates.length + ' Days'
           : leave.halfDay
           ? leave.halfDay === FIRST_HALF
             ? 'First Half'

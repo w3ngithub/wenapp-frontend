@@ -39,14 +39,16 @@ const getLeavesOfAllUsers = async (
   limit = '',
   sort = '-leaveDates',
   type = '',
-  halfday = undefined
+  fromDate = '',
+  toDate = '',
+  halfDay = undefined
 ) => {
   try {
     let response = await API.get(
       `${
         Apis.Leaves
-      }?leaveStatus=${status}&sort=${sort}&user=${user}&leaveDates=${date}&page=${page}&limit=${limit}&leaveType=${type}${
-        halfday === undefined ? '' : `&halfDay=${halfday}`
+      }?leaveStatus=${status}&sort=${sort}&user=${user}&leaveDates=${date}&page=${page}&limit=${limit}&leaveType=${type}&fromDate=${fromDate}&toDate=${toDate}${
+        halfDay === undefined ? '' : `&halfDay=${halfDay}`
       }`
     )
     return getAPIResponse(response)
@@ -89,11 +91,16 @@ const getLeaveTypes = async (id) => {
   }
 }
 
-const changeLeaveStatus = async (id, statusType, reason) => {
+const changeLeaveStatus = async (
+  id,
+  statusType,
+  reason = '',
+  reapplyreason = ''
+) => {
   try {
     let response = await API.patch(
       `${Apis.Leaves}/${id}/status/${statusType}`,
-      {reason}
+      {reason, reapplyreason}
     )
     return getAPIResponse(response)
   } catch (err) {
@@ -158,9 +165,9 @@ const getFiscalYearLeaves = async () => {
   }
 }
 
-const getWeekRangeLeaves = async () => {
+const getFutureLeaves = async () => {
   try {
-    let response = await API.get(`${Apis.Leaves}/users/weekLeaves`)
+    let response = await API.get(`${Apis.Leaves}/users/futureLeaves`)
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)
@@ -195,6 +202,21 @@ const getTodayLeaves = async () => {
   }
 }
 
+const getUserLeavesSummary = async ({
+  userId = '',
+  fiscalYear = '',
+  quarterId = '',
+}) => {
+  try {
+    let response = await API.get(
+      `${Apis.Leaves}/userLeaves?userId=${userId}&fiscalYear=${fiscalYear}&quarterId=${quarterId}`
+    )
+    return getAPIResponse(response)
+  } catch (err) {
+    return getAPIResponse(err.response)
+  }
+}
+
 export {
   getLeaveDaysOfAllUsers,
   getLeavesOfUser,
@@ -209,8 +231,9 @@ export {
   getPendingLeavesCount,
   getTodaysUserLeaveCount,
   getFiscalYearLeaves,
-  getWeekRangeLeaves,
+  getFutureLeaves,
   getQuarters,
   sendEmailforLeave,
   getTodayLeaves,
+  getUserLeavesSummary,
 }

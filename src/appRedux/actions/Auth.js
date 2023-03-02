@@ -14,6 +14,7 @@ import {
   SIGNUP_USER,
   SIGNUP_USER_SUCCESS,
   UPDATE_JOIN_DATE,
+  UPDATE_PERMISSION_ROLE,
 } from 'constants/ActionTypes'
 
 export const userSignUp = (user) => {
@@ -110,5 +111,13 @@ export const updateJoinDate = (joinDate) => {
   return {
     type: UPDATE_JOIN_DATE,
     payload: joinDate,
+  }
+}
+
+export const updateRolePermission = (payload) => {
+  const updatedRolePermission = JSON.parse(payload || '[{}]')
+  return {
+    type: UPDATE_PERMISSION_ROLE,
+    payload: updatedRolePermission?.[0],
   }
 }

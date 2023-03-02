@@ -103,6 +103,16 @@ export const permissionRole = {
       label: 'Edit Co-workers Attendance',
       rule: [],
     },
+    {
+      name: 'deleteCoworkersAttendance',
+      label: 'Delete Co-workers Attendance',
+      rule: [],
+    },
+    {
+      name: 'deleteCoworkersAttendance',
+      label: 'Delete Co-workers Attendance',
+      rule: [],
+    },
     {name: 'viewMyAttendance', label: 'View My Attendance Detail', rule: []},
     {
       name: 'exportCoworkersAttendance',
@@ -171,17 +181,7 @@ export const permissionRole = {
     {name: 'viewLeaves', label: 'View Leaves Detail', rule: []},
     {name: 'viewLeavesCalendar', label: 'View Leaves Calendar', rule: []},
     {name: 'addCoworkersLeaves', label: 'Add Co-workers Leaves', rule: []},
-    {
-      name: 'showQuarterlyLeaveDetails',
-      label: 'Show Quarterly Leave Details',
-      rule: [],
-    },
     {name: 'editCoworkersLeaves', label: 'Edit Co-workers Leaves', rule: []},
-    {
-      name: 'showAnnualLeaveDetails',
-      label: 'Show Annual Leave Details',
-      rule: [],
-    },
   ],
 
   'Notice Board': [
@@ -199,6 +199,7 @@ export const permissionRole = {
   Reports: [
     {name: 'viewWeeklyReport', label: 'View Weekly Report', rule: []},
     {name: 'viewLeaveReport', label: 'View Leave Report', rule: []},
+    {name: 'editLeaveReport', label: 'Edit Leave Report', rule: []},
     {name: 'viewWorkLogReport', label: 'View Work Log Report', rule: []},
     {name: 'viewSalaryReview', label: 'View Salary Review', rule: []},
     {name: 'viewActivityLog', label: 'View Activity Log', rule: []},
