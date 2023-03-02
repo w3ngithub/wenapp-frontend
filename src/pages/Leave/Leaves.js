@@ -344,6 +344,7 @@ function Leaves({
     id: user._id,
     value: user.name,
   }))
+
   return (
     <div>
       {openModal && (
