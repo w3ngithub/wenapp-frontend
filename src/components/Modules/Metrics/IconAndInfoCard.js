@@ -120,11 +120,7 @@ const IconAndInfoCard = (props) => {
                   >
                     {data[0]?.replace('Leave', '')}
                   </p>
-                  <p className={`gx-mb-0 gx-text-${iconColor}`}>
-                    {immediateApprovalLeaveTypes?.includes(data?.[0])
-                      ? parseInt(data[3])
-                      : data[1]}
-                  </p>
+                  <p className={`gx-mb-0 gx-text-${iconColor}`}>{data?.[1]}</p>
                 </div>
               ))}
           </Col>

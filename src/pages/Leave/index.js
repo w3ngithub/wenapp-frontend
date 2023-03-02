@@ -249,7 +249,7 @@ function Leave() {
 
   const yearlyLeavesTakn = leaveDaysQuery?.data?.data?.data?.data?.reduce(
     (acc, item) => {
-      acc[item?._id[0]?.name] = item.leavesTaken
+      acc[item?._id] = item.leavesTaken
       return acc
     },
     {}
@@ -264,34 +264,40 @@ function Leave() {
   )
 
   const YearlyLeaveExceptCasualandSick = leaveDaysQuery?.data?.data?.data?.data
-    ?.filter(
-      (item) => !['Casual Leave', 'Sick Leave'].includes(item?._id[0]?.name)
-    )
-    ?.map((d) => {
-      const leaveStartDateArray = d?.leaveDates?.filter(
-        (item, index) => index % 2 === 0
-      )
-      const leaveEndDateArray = d?.leaveDates?.filter(
-        (item, index) => index % 2 !== 0
-      )
+    ?.filter((item) => item?.isSpecial?.[0])
+    ?.map((d) => [d?._id, d?.leavesTaken])
 
-      let leaveArray = []
-      leaveStartDateArray?.forEach((item, index) => {
-        leaveArray.push(
-          convertMsToDay(new Date(leaveEndDateArray[index]) - new Date(item)) +
-            1
-        )
-      })
+  console.log(YearlyLeaveExceptCasualandSick, 'xxx')
 
-      const reducedLeaveDays = leaveArray?.reduce((acc, cur) => acc + cur, 0)
-      return [
-        d?._id[0]?.name,
-        d?.leavesTaken,
-        allocatedYealryLeaves?.[d?._id[0]?.name],
-        reducedLeaveDays,
-      ]
-    })
-    ?.filter((d) => !!d[0])
+  // const YearlyLeaveExceptCasualandSick = leaveDaysQuery?.data?.data?.data?.data
+  //   ?.filter(
+  //     (item) => !['Casual Leave', 'Sick Leave'].includes(item?._id[0]?.name)
+  //   )
+  //   ?.map((d) => {
+  //     const leaveStartDateArray = d?.leaveDates?.filter(
+  //       (item, index) => index % 2 === 0
+  //     )
+  //     const leaveEndDateArray = d?.leaveDates?.filter(
+  //       (item, index) => index % 2 !== 0
+  //     )
+
+  //     let leaveArray = []
+  //     leaveStartDateArray?.forEach((item, index) => {
+  //       leaveArray.push(
+  //         convertMsToDay(new Date(leaveEndDateArray[index]) - new Date(item)) +
+  //           1
+  //       )
+  //     })
+
+  //     const reducedLeaveDays = leaveArray?.reduce((acc, cur) => acc + cur, 0)
+  //     return [
+  //       d?._id[0]?.name,
+  //       d?.leavesTaken,
+  //       allocatedYealryLeaves?.[d?._id[0]?.name],
+  //       reducedLeaveDays,
+  //     ]
+  //   })
+  //   ?.filter((d) => !!d[0])
 
   let IsIntern = user?.status === EmployeeStatus?.Probation
 
