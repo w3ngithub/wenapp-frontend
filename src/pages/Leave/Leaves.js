@@ -52,15 +52,11 @@ const formattedLeaves = (leaves) => {
       ...leave,
       key: leave._id,
       coWorker: leave?.user?.name,
-      dates: leave?.leaveDates
-        ?.map((date) => changeDate(date))
-        .join(
-          immediateApprovalLeaveTypes.includes(
-            leave?.leaveType?.name?.split(' ')?.[0]
-          ) || leave?.leaveType?.name === PAID_TIME_OFF
-            ? '-'
-            : ' '
-        ),
+      dates: leave?.leaveType?.isSpecial
+        ? [leave?.leaveDates?.[0], leave?.leaveDates?.at(-1)]
+            ?.map((date) => changeDate(date))
+            .join('-')
+        : leave?.leaveDates?.map((date) => changeDate(date)).join(' '),
       type: `${leave?.leaveType?.name} ${
         leave?.halfDay === FIRST_HALF || leave?.halfDay === SECOND_HALF
           ? '- ' + removeDash(leave?.halfDay)
