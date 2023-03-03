@@ -80,14 +80,15 @@ function Detail() {
         {mainArray?.map((item, index) => {
           let formattedItem = item
           if (index % 2 !== 0) {
-            const parsedArray = HTMLReactParser(formattedItem || '')?.filter(
+            let parsedArray = HTMLReactParser(formattedItem || '')?.filter(
               (el) => typeof el !== 'string'
             )
-
-            const codeLanguage =
-              typeof parsedArray?.[0]?.props?.children === 'string'
-                ? parsedArray?.shift()?.props?.children?.split(':')?.[1]?.trim()
-                : 'html'
+            if (
+              typeof parsedArray?.[0]?.props?.children === 'string' &&
+              parsedArray?.[0]?.props?.children?.includes('@language')
+            ) {
+              parsedArray = parsedArray.filter((item, index) => index !== 0)
+            }
 
             if (
               !parsedArray?.[parsedArray.length - 1]?.props?.children ||
@@ -118,7 +119,7 @@ function Detail() {
             return (
               <div key={index}>
                 <SyntaxHighlighter
-                  language={codeLanguage}
+                  language="html"
                   style={darkTheme ? docco : prism}
                   showLineNumbers
                 >

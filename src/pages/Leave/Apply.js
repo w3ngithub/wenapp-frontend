@@ -149,12 +149,12 @@ function Apply({user}) {
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {
       return [
-        ...res?.data?.data?.data?.map((type) => ({
+        ...(res?.data?.data?.data?.map((type) => ({
           ...type,
           id: type._id,
           value: type?.name.replace('Leave', '').trim(),
           leaveDays: type?.leaveDays,
-        })),
+        })) || []),
       ]
     },
   })

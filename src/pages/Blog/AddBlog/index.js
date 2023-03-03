@@ -24,9 +24,11 @@ import {BLOG_LANGUAGES_LIST} from 'constants/BlogLanguages'
 
 function CustomToolbar(props) {
   const {editorState, setEditorState} = props
-  const addCodeSnippet = (language) => {
+  const addCodeSnippet = (e) => {
+    e.preventDefault()
+
     const sampleMarkup = `
-    <p>@highlight-code</p>\n<p>@language:${language}</p>\n\n<p>@highlight-code</p>
+    <p>@highlight-code</p>\n\n\n<p>@highlight-code</p>
     `
     const html = `${draftToHtml(
       convertToRaw(editorState.getCurrentContent())
@@ -43,12 +45,15 @@ function CustomToolbar(props) {
   }
 
   return (
-    <Dropdown
-      overlay={() => BLOG_LANGUAGES_LIST(addCodeSnippet)}
-      trigger={['click']}
-    >
-      <button className="codeSnippetBtn">Select code snippet.</button>
-    </Dropdown>
+    <div>
+      <a
+        className="codeSnippetBtn"
+        onClick={(e) => addCodeSnippet(e)}
+        onKeyDown={() => {}}
+      >
+        Add code snippet.
+      </a>
+    </div>
   )
 }
 
@@ -86,7 +91,7 @@ function AddBlog() {
   )
 
   const addBlogMutation = useMutation((details) => addBlog(details), {
-    onSuccess: (response) =>
+    onSuccess: (response) => {
       handleResponse(
         response,
         'Added Blog successfully',
@@ -102,8 +107,10 @@ function AddBlog() {
           () => {
             navigate(`/${BLOG}`)
           },
+          () => {},
         ]
-      ),
+      )
+    },
 
     onError: () =>
       notification({
@@ -127,6 +134,7 @@ function AddBlog() {
             () => {
               navigate(`/${BLOG}`)
             },
+            () => {},
           ]
         ),
 
