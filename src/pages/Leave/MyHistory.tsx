@@ -31,15 +31,11 @@ const formattedLeaves = (leaves: any) => {
     return {
       ...leave,
       key: leave._id,
-      dates: leave?.leaveDates
-        ?.map((date: any, index: any) => changeDate(date))
-        .join(
-          immediateApprovalLeaveTypes.includes(
-            leave?.leaveType?.name?.split(' ')?.[0]
-          ) || leave?.leaveType?.name === 'Paid Time Off'
-            ? ' - '
-            : '\r\n'
-        ),
+      dates: leave?.leaveType?.isSpecial
+        ? [leave?.leaveDates?.[0], leave?.leaveDates?.at(-1)]
+            ?.map((date) => changeDate(date))
+            .join('-')
+        : leave?.leaveDates?.map((date: any) => changeDate(date))?.join(' '),
       type: `${leave?.leaveType?.name} ${
         leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
           ? '- ' + removeDash(leave?.halfDay)
