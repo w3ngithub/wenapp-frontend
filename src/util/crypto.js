@@ -5,7 +5,14 @@ export const decrypt = (cipherText, secretKey) => {
     return undefined
   }
   // Decrypt
-  const bytes = crypto.AES.decrypt(cipherText, secretKey)
-  const decryptedData = JSON.parse(bytes.toString(crypto.enc.Utf8))
-  return decryptedData
+  try {
+    const bytes = crypto.AES.decrypt(cipherText, secretKey)
+    const decryptedData = JSON.parse(bytes.toString(crypto.enc.Utf8))
+    return decryptedData
+  } catch (error) {
+    return undefined
+  }
 }
+
+export const LATE_ARRIVAL_KEY = 'latearrivalkey123456789'
+export const USERS_KEY = 'userkey123456789'
