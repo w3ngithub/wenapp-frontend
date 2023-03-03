@@ -652,7 +652,7 @@ function Apply({user}) {
                   weekStartDayIndex={1}
                   multiple
                   minDate={
-                    leaveType === 'Sick' || leaveType === 'Casual'
+                    leaveType?.value === 'Sick' || leaveType?.value === 'Casual'
                       ? new DateObject().subtract(2, 'months')
                       : new Date()
                   }
@@ -707,12 +707,7 @@ function Apply({user}) {
             </Col>
           )}
 
-          <Col
-            span={18}
-            xs={24}
-            sm={24}
-            md={immediateApprovalLeaveTypes.includes(leaveType) ? 24 : 15}
-          >
+          <Col span={18} xs={24} sm={24} md={leaveType?.isSpecial ? 24 : 15}>
             <Row
               type="flex"
               style={{marginLeft: innerWidth < 764 ? '-15px' : 0}}
@@ -720,7 +715,7 @@ function Apply({user}) {
               <Col
                 span={12}
                 xs={24}
-                lg={immediateApprovalLeaveTypes.includes(leaveType) ? 6 : 10}
+                lg={leaveType?.isSpecial ? 6 : 10}
                 md={24}
                 // style={{marginBottom: innerWidth < 974 ? '1.2rem' : 0}}
               >
@@ -755,37 +750,36 @@ function Apply({user}) {
                       )}
                   </Select>
                 </FormItem>
-                {(leaveType === 'Casual' || leaveType === 'Sick') &&
-                  calendarClicked && (
-                    <FormItem
-                      label="Leave Interval"
-                      name="halfDay"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Leave Interval is required.',
-                        },
-                      ]}
+                {!leaveType?.isSpecial && calendarClicked && (
+                  <FormItem
+                    label="Leave Interval"
+                    name="halfDay"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Leave Interval is required.',
+                      },
+                    ]}
+                  >
+                    <Select
+                      disabled={getIsAdmin()}
+                      showSearch
+                      filterOption={filterOptions}
+                      placeholder="Select Duration"
+                      style={{width: '100%'}}
                     >
-                      <Select
-                        disabled={getIsAdmin()}
-                        showSearch
-                        filterOption={filterOptions}
-                        placeholder="Select Duration"
-                        style={{width: '100%'}}
-                      >
-                        {leaveInterval?.map((type, index) => (
-                          <Option
-                            value={type?.value}
-                            key={index}
-                            disabled={disableInterval(index)}
-                          >
-                            {type?.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </FormItem>
-                  )}
+                      {leaveInterval?.map((type, index) => (
+                        <Option
+                          value={type?.value}
+                          key={index}
+                          disabled={disableInterval(index)}
+                        >
+                          {type?.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </FormItem>
+                )}
               </Col>
               {leaveType?.isSpecial && (
                 <Col

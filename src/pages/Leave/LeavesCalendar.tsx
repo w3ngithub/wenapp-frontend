@@ -19,26 +19,21 @@ const LeavesCalendar = () => {
     ['leavesCalendar'],
     () => getFiscalYearLeaves(),
     {
-      onError: (err) => console.log(err),
+      onError: (err) => {},
       select: (res) => {
         let allLeaves: any[] = []
 
         res?.data?.data?.data.forEach((leave: any) => {
-          const isLeavePaternity =
-            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Paternity
-          const isLeaveMaternity =
-            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Maternity
-          const isLeavePTO =
-            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.PTO
-          const isLeaveBereavement =
-            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Bereavement
+          // const isLeavePaternity =
+          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Paternity
+          // const isLeaveMaternity =
+          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Maternity
+          // const isLeavePTO =
+          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.PTO
+          // const isLeaveBereavement =
+          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Bereavement
 
-          if (
-            isLeavePaternity ||
-            isLeaveMaternity ||
-            isLeavePTO ||
-            isLeaveBereavement
-          ) {
+          if (leave?._id?.isSpecial[0]) {
             allLeaves.push({
               ...leave?._id,
               leaveDates: [...leave?.leaveDates],
@@ -55,7 +50,7 @@ const LeavesCalendar = () => {
   )
 
   const leaveUsers = leavesQuery?.data?.map(
-    ({user, leaveDates, leaveType, halfDay}: any) => {
+    ({user, leaveDates, leaveType, isSpecial, halfDay}: any) => {
       const nameSplitted = user[0].split(' ')
       let extraInfo = ''
       let lastName
@@ -78,17 +73,18 @@ const LeavesCalendar = () => {
       const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
       if (
-        [
-          LEAVES_TYPES.Paternity,
-          LEAVES_TYPES.Maternity,
-          LEAVES_TYPES.PTO,
-          LEAVES_TYPES.Bereavement,
-        ].includes(leaveType[0]?.toLowerCase())
+        // [
+        //   LEAVES_TYPES.Paternity,
+        //   LEAVES_TYPES.Maternity,
+        //   LEAVES_TYPES.PTO,
+        //   LEAVES_TYPES.Bereavement,
+        // ].includes(leaveType[0]?.toLowerCase())
+        isSpecial[0]
       )
         return {
           title: shortName,
           start: new Date(leaveDates[0]),
-          end: new Date(leaveDates[1]),
+          end: new Date(leaveDates[leaveDates.length - 1]),
           fullWidth: true,
         }
       else
