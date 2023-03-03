@@ -40,7 +40,7 @@ const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
 
-function Apply({user}) {
+function Apply({user, userGender}) {
   const [form] = Form.useForm()
 
   const queryClient = useQueryClient()
@@ -431,7 +431,18 @@ function Apply({user}) {
                     let holidayList = holidaysThisYear?.filter(
                       (holiday) => date.format() === holiday?.date
                     )
-                    let isHoliday = holidayList?.length > 0
+                    let isHoliday
+                    if (holidayList?.length > 0) {
+                      if (
+                        userGender === 'Male' &&
+                        date.format() === '2023/03/08'
+                      ) {
+                        isHoliday = false
+                      } else {
+                        isHoliday = true
+                      }
+                    }
+
                     let leaveDate = userLeaves?.filter(
                       (leave) => leave.date === date.format()
                     )

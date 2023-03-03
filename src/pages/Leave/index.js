@@ -236,6 +236,7 @@ function Leave() {
             <TabPane tab="Apply" key="1">
               <LeavesApply
                 user={loggedInUser?._id}
+                userGender={loggedInUser?.gender}
                 permissions={leavePermissions}
               />
             </TabPane>
