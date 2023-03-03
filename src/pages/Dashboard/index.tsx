@@ -21,15 +21,14 @@ import CustomActiveShapePieChart from 'routes/extensions/charts/recharts/pie/Com
 import {
   getPendingLeavesCount,
   getTodaysUserLeaveCount,
-  getWeekRangeLeaves,
+  getFutureLeaves,
 } from 'services/leaves'
-import {MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
+import {compareString, MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
 import {getWeeklyNotices} from 'services/noticeboard'
 import {getAllHolidays} from 'services/resources'
 import {
   getActiveUsersCount,
   getBirthMonthUsers,
-  getSalaryReviewUsers,
 } from 'services/users/userDetails'
 import {getTodaysUserAttendanceCount} from 'services/attendances'
 import {useNavigate} from 'react-router-dom'
@@ -38,7 +37,7 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {DASHBOARD_ICON_ACCESS} from 'constants/RoleAccess'
-import {LEAVES_TYPES} from 'constants/Leaves'
+import {FIRST_HALF, LEAVES_TYPES, SECOND_HALF} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
@@ -83,12 +82,6 @@ const Dashboard = () => {
       }
     )
   }, [])
-
-  const {data: salaryReview, refetch: salaryRefetch} = useQuery(
-    ['usersSalaryReview'],
-    getSalaryReviewUsers,
-    {enabled: false}
-  )
 
   const {data: AttendanceCount} = useQuery(
     ['todaysAttendance'],
@@ -148,83 +141,10 @@ const Dashboard = () => {
 
   const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
-  const leavesQuery = useQuery(
-    ['DashBoardleaves'],
-    () => getWeekRangeLeaves(),
-    {
-      onError: (err) => console.log(err),
-      select: (res) => {
-        let updateLeaves: any[] = []
-
-        res?.data?.data?.users?.forEach((leave: any) => {
-          const isLeavePaternity =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
-          const isLeaveMaternity =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
-          const isLeavePTO =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
-          const weeksLastDate = new Date(
-            MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
-          )
-          const todayDate = new Date(MuiFormatDate(new Date()))
-
-          if (isLeavePaternity || isLeaveMaternity || isLeavePTO) {
-            const startLeaveDate = new Date(leave?.leaveDates[0])
-            const endLeaveDate = new Date(leave?.leaveDates[1])
-            for (let i = 0; i < 8; i++) {
-              const isHoliday =
-                startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
-
-              if (
-                startLeaveDate >= todayDate &&
-                startLeaveDate <= weeksLastDate &&
-                startLeaveDate <= endLeaveDate &&
-                !isHoliday
-              ) {
-                updateLeaves = [
-                  ...updateLeaves,
-                  {
-                    ...leave,
-                    date: leave?.leaveDates[0],
-
-                    leaveDates: new Date(
-                      startLeaveDate.setDate(startLeaveDate.getDate())
-                    ).toJSON(),
-                  },
-                ]
-              }
-
-              if (startLeaveDate < todayDate) {
-                startLeaveDate.setMonth(todayDate.getMonth())
-                startLeaveDate.setFullYear(todayDate.getFullYear())
-                updateLeaves = [
-                  ...updateLeaves,
-                  {
-                    ...leave,
-                    date: leave?.leaveDates[0],
-                    leaveDates: new Date(
-                      startLeaveDate.setDate(todayDate.getDate())
-                    ).toJSON(),
-                  },
-                ]
-              }
-              startLeaveDate.setDate(startLeaveDate.getDate() + 1)
-            }
-          } else {
-            leave?.leaveDates.forEach((date: string) => {
-              const leaveDate = new Date(date)
-              if (leaveDate >= todayDate && leaveDate <= weeksLastDate)
-                updateLeaves = [
-                  ...updateLeaves,
-                  {...leave, date: date, leaveDates: date},
-                ]
-            })
-          }
-        })
-        return updateLeaves
-      },
-    }
-  )
+  const todayDate = new Date(MuiFormatDate(new Date()))
+  const leavesQuery = useQuery(['DashBoardleaves'], () => getFutureLeaves(), {
+    onError: (err) => console.log(err),
+  })
   const {data, refetch: projectRefetch} = useQuery(
     ['DashBoardprojects'],
     () =>
@@ -250,12 +170,6 @@ const Dashboard = () => {
     logTypeRefetch,
     projectRefetch,
   ])
-
-  useEffect(() => {
-    if (NavigationDashboard?.viewSalaryReview) {
-      Promise.all([salaryRefetch()])
-    }
-  }, [NavigationDashboard?.viewSalaryReview, salaryRefetch])
 
   const calCulateWidth = (roles: any) => {
     const roleArray = [
@@ -289,7 +203,7 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: darkTheme ? darkThemeTextColor : '#FC6BAB',
+        color: '#05ccf9',
       }
     if (event.type === 'holiday')
       style = {
@@ -307,7 +221,12 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: darkTheme ? darkThemeTextColor : '#038fde',
+        color:
+          event?.leaveStatus === 'pending'
+            ? '#CCBE00'
+            : event?.leaveType === 'Late Arrival'
+            ? '#eb9293'
+            : '#3DBF4D',
       }
     if (event.type === 'notice')
       style = {
@@ -336,6 +255,7 @@ const Dashboard = () => {
       alignItems: 'center',
       gap: '4px',
       margin: '0 !important',
+      fontSize: '9px',
     }
 
     if (props.event.type === 'birthday') {
@@ -349,39 +269,57 @@ const Dashboard = () => {
             flexWrap: 'wrap',
           }}
         >
-          <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
+          <p
+            style={{
+              ...style,
+              margin: 0,
+              flexWrap: 'wrap',
+              fontWeight: '500',
+              gap: '6px',
+            }}
+          >
             <i
-              className="icon icon-birthday-new gx-fs-md "
-              style={{width: '18px'}}
+              className="icon icon-birthday-new gx-fs-sm "
+              style={{width: '12px', lineHeight: 2}}
             />
-            {shortName}
+            <span className="gx-mt--3p">{shortName}</span>
           </p>
         </div>
       )
     }
     if (props.event.type === 'holiday')
       return (
-        <div style={{...style, margin: 0, flexWrap: 'nowrap'}}>
-          <i className="icon icon-calendar gx-fs-md gx-ml-3p" />
-          <p style={{...style, marginTop: '8px'}}>{props?.event?.title}</p>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            textAlign: 'left',
+          }}
+        >
+          <p
+            style={{...style, margin: 0, flexWrap: 'nowrap', fontWeight: '500'}}
+          >
+            <i className="icon icon-calendar gx-fs-xs gx-ml-2p" />
+            <span className="gx-ml-12p">{props?.event?.title}</span>
+          </p>
         </div>
       )
 
     if (props.event.type === 'leave') {
-      let specificHalf = ''
-      if (
-        props?.event?.leaveType === 'Maternity' ||
-        props?.event?.leaveType === 'Paternity' ||
-        props?.event?.leaveType === 'Paid Time Off' ||
-        props?.event?.halfDay === ''
-      ) {
-        specificHalf = ''
+      let extraInfo = ''
+      if (props.event.leaveType === 'Late Arrival') {
+        extraInfo = 'Late'
+      } else if (props?.event?.isSpecial || props?.event?.halfDay === '') {
+        extraInfo = ''
       } else {
-        if (props?.event?.halfDay === 'first-half') {
-          specificHalf = '1st'
+        if (props?.event?.halfDay === FIRST_HALF) {
+          extraInfo = '1st'
         }
-        if (props?.event?.halfDay === 'second-half') {
-          specificHalf = '2nd'
+        if (props?.event?.halfDay === SECOND_HALF) {
+          extraInfo = '2nd'
         }
       }
       return (
@@ -399,7 +337,7 @@ const Dashboard = () => {
                   navigate('/leave', {
                     state: {
                       tabKey: '3',
-                      leaveStatus: 'approved',
+                      leaveStatus: props?.event?.leaveStatus,
                       date: props.event.startDate,
                       user: props.event.id,
                     },
@@ -407,13 +345,27 @@ const Dashboard = () => {
               : () => {}
           }
         >
-          <p style={{...style, margin: 0, flexWrap: 'wrap', fontWeight: '500'}}>
+          <p
+            style={{
+              ...style,
+              margin: 0,
+              fontWeight: '500',
+              fontSize: '10px',
+            }}
+          >
             <LeaveIcon
-              width="18px"
-              fill={darkTheme ? darkThemeTextColor : '#038fde'}
+              width="15px"
+              fill={
+                props?.event?.leaveStatus === 'pending'
+                  ? '#CCBE00'
+                  : extraInfo === 'Late'
+                  ? '#eb9293'
+                  : '#3DBF4D'
+              }
             />
-            {`${shortName}${specificHalf ? '(' + specificHalf + ')' : ''}`}
-            {/* {`${shortName} ${specificHalf}`} */}
+            <span className="gx-mt-1p" style={{width: '80px'}}>{`${shortName}${
+              extraInfo ? '(' + extraInfo + ')' : ''
+            }`}</span>
           </p>
         </div>
       )
@@ -447,17 +399,28 @@ const Dashboard = () => {
     event: CustomEvent, // used by each view (Month, Day, Week)
   }
 
-  const leaveUsers = leavesQuery?.data?.map((x: any, index: number) => ({
-    title: x?.user[0],
-    start: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
-    end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
-    type: 'leave',
-    date: x?.leaveDates,
-    startDate: x?.date,
-    halfDay: x?.halfDay,
-    leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
-    id: x?._id[0],
-  }))
+  const leaveUsers = leavesQuery?.data?.data?.data?.users
+    ?.filter(
+      (leaveData: any) =>
+        new Date(leaveData?.leaveDates) >= todayDate &&
+        ![0, 6].includes(new Date(leaveData?.leaveDates)?.getDay())
+    )
+    ?.map((x: any, index: number) => ({
+      title: x?.user[0],
+      leaveStatus: x?.leaveStatus,
+      start: new Date(
+        new Date(x.leaveDates).toLocaleDateString().split('T')[0]
+      ),
+      end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
+      type: 'leave',
+      date: x?.leaveDates,
+      startDate: x?.date,
+      halfDay: x?.halfDay,
+      leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
+      id: x?._id[0],
+      isSpecial: x?.isSpecial[0],
+    }))
+    ?.sort(compareString)
 
   const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
     title: x?.noticeType?.name,
@@ -608,19 +571,27 @@ const Dashboard = () => {
           NavigationDashboard?.viewAnnouncement ||
           NavigationDashboard?.viewHolidays ||
           NavigationDashboard?.viewBirthdays) && (
-          <Col xl={7} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-2">
+          <Col
+            xl={6}
+            lg={24}
+            md={24}
+            sm={24}
+            xs={24}
+            className={`gx-order-lg-2 ${
+              innerWidth > 1204 && 'announcement-card'
+            }`}
+          >
             <Widget>
               <EventsAndAnnouncements
                 announcements={notices?.data?.data?.notices}
                 holidays={Holidays?.data?.data?.data?.[0]?.holidays}
                 birthdays={BirthMonthUsers?.data?.data?.users}
-                salaryReview={salaryReview?.data?.data?.users}
               />
             </Widget>
           </Col>
         )}
 
-        <Col xl={17} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
+        <Col xl={18} lg={24} md={24} sm={24} xs={24} className="gx-order-lg-1">
           {NavigationDashboard?.viewCalendar && (
             <Card className="gx-card dashboard-calendar" title="Calendar">
               {leavesQuery?.isLoading ? (

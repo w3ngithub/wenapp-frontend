@@ -25,7 +25,12 @@ import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
 import {createLeaveOfUser, getLeaveTypes} from 'services/leaves'
 import {notification} from 'helpers/notification'
-import {CASUAL_LEAVE, LATE_ARRIVAL, LATE_LEAVE_TYPE_ID} from 'constants/Leaves'
+import {
+  CASUAL_LEAVE,
+  FIRST_HALF,
+  LATE_ARRIVAL,
+  LATE_LEAVE_TYPE_ID,
+} from 'constants/Leaves'
 import RangePicker from 'components/Elements/RangePicker'
 import {emptyText} from 'constants/EmptySearchAntd'
 import LeaveCutModal from 'components/Modules/LeaveCutAttendance/LeaveCutModal'
@@ -214,7 +219,7 @@ function LateAttendance({userRole}: {userRole: any}) {
             (type: any) => type?.name === LATE_ARRIVAL
           )?._id || LATE_ARRIVAL,
         leaveStatus: 'approved',
-        halfDay: type === 2 ? 'first-half' : '',
+        halfDay: type === 2 ? FIRST_HALF : '',
       },
     })
   }
@@ -418,9 +423,6 @@ function LateAttendance({userRole}: {userRole: any}) {
         expandable={{expandedRowRender}}
         onChange={handleTableChange}
         loading={isFetching}
-        pagination={{
-          pageSize: 50,
-        }}
       />
     </div>
   )

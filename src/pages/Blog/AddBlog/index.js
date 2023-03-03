@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Button, Card, Form, Input, Select, Spin} from 'antd'
+import {Button, Card, Dropdown, Form, Input, Select, Spin} from 'antd'
 import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import {convertToRaw, EditorState, ContentState} from 'draft-js'
 import htmlToDraft from 'html-to-draftjs'
@@ -20,6 +20,42 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import {socket} from 'pages/Main'
 import RoleAccess from 'constants/RoleAccess'
+import {BLOG_LANGUAGES_LIST} from 'constants/BlogLanguages'
+
+function CustomToolbar(props) {
+  const {editorState, setEditorState} = props
+  const addCodeSnippet = (e) => {
+    e.preventDefault()
+
+    const sampleMarkup = `
+    <p>@highlight-code</p>\n\n\n<p>@highlight-code</p>
+    `
+    const html = `${draftToHtml(
+      convertToRaw(editorState.getCurrentContent())
+    )}${sampleMarkup}
+    `
+    const blocksFromHTML = htmlToDraft(html)
+    const state = ContentState.createFromBlockArray(
+      blocksFromHTML.contentBlocks,
+      blocksFromHTML.entityMap
+    )
+
+    const initialState = EditorState.createWithContent(state)
+    setEditorState(initialState)
+  }
+
+  return (
+    <div>
+      <a
+        className="codeSnippetBtn"
+        onClick={(e) => addCodeSnippet(e)}
+        onKeyDown={() => {}}
+      >
+        Add code snippet.
+      </a>
+    </div>
+  )
+}
 
 function AddBlog() {
   // init state
@@ -55,7 +91,7 @@ function AddBlog() {
   )
 
   const addBlogMutation = useMutation((details) => addBlog(details), {
-    onSuccess: (response) =>
+    onSuccess: (response) => {
       handleResponse(
         response,
         'Added Blog successfully',
@@ -71,8 +107,10 @@ function AddBlog() {
           () => {
             navigate(`/${BLOG}`)
           },
+          () => {},
         ]
-      ),
+      )
+    },
 
     onError: () =>
       notification({
@@ -96,6 +134,7 @@ function AddBlog() {
             () => {
               navigate(`/${BLOG}`)
             },
+            () => {},
           ]
         ),
 
@@ -306,6 +345,9 @@ function AddBlog() {
                   editorState={editorState}
                   wrapperClassName="demo-wrapper"
                   onEditorStateChange={onEditorStateChange}
+                  toolbarCustomButtons={[
+                    <CustomToolbar setEditorState={seteditorState} />,
+                  ]}
                 />
               </>
             </Form.Item>

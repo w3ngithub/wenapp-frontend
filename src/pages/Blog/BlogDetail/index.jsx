@@ -78,19 +78,22 @@ function Detail() {
         }
       >
         {mainArray?.map((item, index) => {
+          let formattedItem = item
           if (index % 2 !== 0) {
-            const parsedArray = HTMLReactParser(item || '')?.filter(
+            let parsedArray = HTMLReactParser(formattedItem || '')?.filter(
               (el) => typeof el !== 'string'
             )
-
-            const codeLanguage = parsedArray
-              ?.shift()
-              ?.props?.children?.split(':')?.[1]
-              ?.trim()
+            if (
+              typeof parsedArray?.[0]?.props?.children === 'string' &&
+              parsedArray?.[0]?.props?.children?.includes('@language')
+            ) {
+              parsedArray = parsedArray.filter((item, index) => index !== 0)
+            }
 
             if (
-              parsedArray?.[parsedArray.length - 1]?.props?.children.trim() ===
-              ''
+              !parsedArray?.[parsedArray.length - 1]?.props?.children ||
+              parsedArray?.[parsedArray.length - 1]?.props?.children?.trim() ===
+                ''
             ) {
               parsedArray.pop()
             }
@@ -100,9 +103,15 @@ function Detail() {
                 if (
                   item?.props &&
                   index !== 0 &&
+                  typeof item?.props?.children === 'string' &&
                   item?.props?.children?.trim() !== ''
                 ) {
                   return item.props.children
+                } else if (
+                  typeof item?.props?.children === 'object' &&
+                  typeof item?.props?.children?.props?.children === 'string'
+                ) {
+                  return item.props.children.props.children?.trim()
                 } else return null
               })
               .join('\n')
@@ -110,7 +119,7 @@ function Detail() {
             return (
               <div key={index}>
                 <SyntaxHighlighter
-                  language={codeLanguage}
+                  language="html"
                   style={darkTheme ? docco : prism}
                   showLineNumbers
                 >

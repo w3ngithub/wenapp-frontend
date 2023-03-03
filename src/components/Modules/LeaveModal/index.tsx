@@ -10,6 +10,7 @@ import {
   Spin,
   DatePicker,
   ConfigProvider,
+  Popconfirm,
 } from 'antd'
 import en_GB from 'antd/lib/locale-provider/en_GB'
 import 'moment/locale/en-gb'
@@ -39,11 +40,26 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {disabledDate} from 'util/antDatePickerDisabled'
-import {LEAVES_TYPES} from 'constants/Leaves'
+import {
+  FIRST_HALF,
+  FULL_DAY,
+  LEAVES_TYPES,
+  SECOND_HALF,
+  STATUS_TYPES,
+} from 'constants/Leaves'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
+import DragAndDropFile from '../DragAndDropFile'
+import CustomIcon from 'components/Elements/Icons'
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from 'firebase/storage'
+import {storage} from 'firebase'
 
 const {Option} = Select
 
@@ -82,7 +98,8 @@ function LeaveModal({
     setHalfLeaveApproved: any,
     setHalfLeavePending: any,
     setMultipleDatesSelected: any,
-    setCalendarClicked: any
+    setCalendarClicked: any,
+    setIsDocumentDeleted: any
   ) => void
   users: any
   readOnly: boolean
@@ -91,7 +108,7 @@ function LeaveModal({
   const queryClient = useQueryClient()
   const [colorState, setColorState] = useState(true)
   const [form] = Form.useForm()
-  const [leaveType, setLeaveType] = useState('')
+  const [leaveType, setLeaveType] = useState<leaveTypeInterface>({})
   const [user, setUser] = useState('')
   const [leaveId, setLeaveId] = useState(null)
   const {innerWidth} = useWindowsSize()
@@ -102,7 +119,12 @@ function LeaveModal({
   const [halfLeavePending, setHalfLeavePending] = useState<any>(false)
   const [multipleDatesSelected, setMultipleDatesSelected] = useState(false)
   const [calendarClicked, setCalendarClicked] = useState(false)
-
+  const [files, setFiles] = useState<any>([])
+  const [, setRemovedFile] = useState<any>(null)
+  const [documentURL, setDocumentURL] = useState<any>(
+    leaveData?.leaveDocument ? leaveData?.leaveDocument : ''
+  )
+  const [isDocumentDeleted, setIsDocumentDeleted] = useState<boolean>(false)
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -137,7 +159,9 @@ function LeaveModal({
     select: (res) => [
       ...res?.data?.data?.data?.map((type: leaveTypeInterface) => ({
         id: type._id,
-        value: type?.name.replace('Leave', '').trim(),
+        value: type?.name?.replace('Leave', '').trim(),
+        leaveDays: type?.leaveDays,
+        isSpecial: type?.isSpecial,
       })),
     ],
   })
@@ -164,7 +188,8 @@ function LeaveModal({
               setHalfLeaveApproved,
               setHalfLeavePending,
               setMultipleDatesSelected,
-              setCalendarClicked
+              setCalendarClicked,
+              setIsDocumentDeleted
             ),
         ]
       ),
@@ -181,6 +206,7 @@ function LeaveModal({
         'Leave update failed',
         [
           () => queryClient.invalidateQueries(['leaves']),
+          () => queryClient.invalidateQueries(['userLeaves']),
           () => {
             socket.emit('CUD')
           },
@@ -190,7 +216,8 @@ function LeaveModal({
               setHalfLeaveApproved,
               setHalfLeavePending,
               setMultipleDatesSelected,
-              setCalendarClicked
+              setCalendarClicked,
+              setIsDocumentDeleted(false)
             ),
         ]
       ),
@@ -199,55 +226,115 @@ function LeaveModal({
     },
   })
 
-  const onFinish = (values: any) => {
-    form.validateFields().then((values) => {
-      const leaveTypeName = leaveTypeQuery?.data?.find(
+  const onFinish = async (values: any) => {
+    form.validateFields().then(async (values) => {
+      const leaveType = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
-      )?.value
-      //calculation for maternity, paternity, pto leaves
-      const numberOfLeaveDays =
-        leaveTypeName.toLowerCase() === LEAVES_TYPES.Maternity ? 59 : 4 // 60 for maternity, 5 for other two
-      const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
-      const newDate = new Date(values?.leaveDatesPeriod?._d)
-      const endDate = new Date(
-        newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
       )
-      const appliedDateUTC = appliedDate ? MuiFormatDate(appliedDate) : ''
-      const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
 
-      //calculation for sick, casual leaves
-      const casualLeaveDays = appliedDate
-        ? []
-        : values?.leaveDatesCasual?.join(',').split(',')
-      const casualLeaveDaysUTC = casualLeaveDays.map(
-        (leave: string) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`
-      )
-      const newLeave = {
-        ...values,
-        leaveDates: appliedDate
-          ? [appliedDateUTC, endDateUTC]
-          : casualLeaveDaysUTC,
-        reason: values.reason,
-        leaveType: values.leaveType,
-        halfDay:
-          values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
-            ? ''
-            : values?.halfDay,
-        leaveStatus: appliedDate ? 'approved' : 'pending',
+      let LeaveDaysUTC: any = []
+
+      // calculation for maternity, paternity, pto leaves
+
+      const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
+      if (leaveType?.isSpecial) {
+        const newDate = new Date(values?.leaveDatesPeriod?._d)
+        const ArrayofDates = []
+        for (let i = 1; i < leaveType?.leaveDays; i++) {
+          ArrayofDates.push(
+            `${MuiFormatDate(
+              new Date(newDate.setDate(appliedDate?.getDate() + i))
+            )}T00:00:00Z`
+          )
+        }
+
+        const appliedDateUTC = appliedDate
+          ? `${MuiFormatDate(appliedDate)}T00:00:00Z`
+          : ''
+
+        LeaveDaysUTC = [appliedDateUTC, ...ArrayofDates]
+        // const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
+      } else {
+        const casualLeaveDays = [
+          ...values?.leaveDatesCasual?.join(',').split(','),
+        ]
+
+        LeaveDaysUTC = casualLeaveDays
+          ?.map((leave) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`)
+          .sort((a, b) => a.localeCompare(b))
       }
-      setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
-      setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
-      if (isEditMode) leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
-      else
-        leaveMutation.mutate({
-          id: values.user,
-          data: newLeave,
-        })
+
+      if (isDocumentDeleted) {
+        const imageRef = ref(storage, values?.leaveDocument)
+        await deleteObject(imageRef)
+      }
+      //document upload to firebase
+      if (files[0]?.originFileObj) {
+        const storageRef = ref(storage, `leaves/${files[0]?.name}`)
+        const uploadTask = uploadBytesResumable(
+          storageRef,
+          files[0]?.originFileObj
+        )
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {},
+          (error) => {},
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              const newLeave = {
+                ...values,
+                leaveDates: LeaveDaysUTC,
+                reason: values.reason,
+                leaveType: values.leaveType,
+                halfDay:
+                  values?.halfDay === 'full-day' ||
+                  values?.halfDay === 'Full Day'
+                    ? ''
+                    : values?.halfDay,
+                leaveStatus: appliedDate ? 'approved' : 'pending',
+                leaveDocument: downloadURL,
+              }
+              setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+              setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+              if (isEditMode) {
+                leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
+              } else {
+                leaveMutation.mutate({
+                  id: values.user,
+                  data: newLeave,
+                })
+              }
+            })
+          }
+        )
+      } else {
+        const newLeave = {
+          ...values,
+          leaveDates: LeaveDaysUTC,
+          leaveType: values.leaveType,
+          halfDay:
+            values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
+              ? ''
+              : values?.halfDay,
+          leaveStatus: appliedDate ? 'approved' : 'pending',
+          leaveDocument: !isDocumentDeleted ? leaveData.leaveDocument : '',
+        }
+        setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
+        setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+        if (isEditMode) {
+          leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
+        } else {
+          leaveMutation.mutate({
+            id: values.user,
+            data: newLeave,
+          })
+        }
+      }
     })
   }
 
   const handleLeaveTypeChange = (value: string) => {
-    setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value).value)
+    setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value))
   }
 
   const handleUserChange = (user: string) => {
@@ -265,10 +352,13 @@ function LeaveModal({
           user: leaveData.user._id,
           halfDay: leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
           cancelReason: leaveData?.cancelReason,
+          rejectReason: leaveData?.rejectReason,
+          reapplyreason: leaveData?.reapplyreason,
+          leaveDocument: leaveData?.leaveDocument,
         })
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
-        setLeaveType(leaveData.leaveType.name)
+        setLeaveType(leaveData.leaveType)
       }
       setHolidays(
         queryClient
@@ -282,7 +372,7 @@ function LeaveModal({
 
     if (!open) {
       form.resetFields()
-      setLeaveType('')
+      setLeaveType({})
       setUser('')
     }
   }, [open])
@@ -316,10 +406,10 @@ function LeaveModal({
       if (index === 0 && (halfLeaveApproved || halfLeavePending)) {
         return true
       }
-      if (index === 1 && specificHalf === 'first-half') {
+      if (index === 1 && specificHalf === FIRST_HALF) {
         return true
       }
-      if (index === 2 && specificHalf === 'second-half') {
+      if (index === 2 && specificHalf === SECOND_HALF) {
         return true
       }
       return false
@@ -367,17 +457,21 @@ function LeaveModal({
           (leave) => leave.date === formattedDate?.[0]?.split('-')?.join('/')
         )
         let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
-        if (specificHalf === 'first-half') {
-          form.setFieldValue('halfDay', 'second-half')
-        } else if (specificHalf === 'second-half') {
-          form.setFieldValue('halfDay', 'first-half')
+        if (specificHalf === FIRST_HALF) {
+          form.setFieldValue('halfDay', SECOND_HALF)
+        } else if (specificHalf === SECOND_HALF) {
+          form.setFieldValue('halfDay', FIRST_HALF)
         } else {
-          form.setFieldValue('halfDay', 'full-day')
+          form.setFieldValue('halfDay', FULL_DAY)
         }
       }
     } else {
       setCalendarClicked(false)
     }
+  }
+  const onDeleteClick = async (data: any) => {
+    setIsDocumentDeleted(true)
+    setDocumentURL('')
   }
   return (
     <Modal
@@ -393,7 +487,8 @@ function LeaveModal({
           setHalfLeaveApproved,
           setHalfLeavePending,
           setMultipleDatesSelected,
-          setCalendarClicked
+          setCalendarClicked,
+          setIsDocumentDeleted
         )
       }
       footer={
@@ -407,7 +502,8 @@ function LeaveModal({
                     setHalfLeaveApproved,
                     setHalfLeavePending,
                     setMultipleDatesSelected,
-                    setCalendarClicked
+                    setCalendarClicked,
+                    setIsDocumentDeleted
                   )
                 }
               >
@@ -423,7 +519,8 @@ function LeaveModal({
                     setHalfLeaveApproved,
                     setHalfLeavePending,
                     setMultipleDatesSelected,
-                    setCalendarClicked
+                    setCalendarClicked,
+                    setIsDocumentDeleted
                   )
                 }
               >
@@ -483,12 +580,7 @@ function LeaveModal({
                       )}
                     </Select>
                   </Form.Item>
-                  {(((leaveType === 'Casual' ||
-                    leaveType === 'Sick' ||
-                    leaveType === 'Casual Leave' ||
-                    leaveType === 'Sick Leave') &&
-                    calendarClicked) ||
-                    readOnly) && (
+                  {!leaveType?.isSpecial && (calendarClicked || readOnly) && (
                     <Form.Item
                       {...formItemLayout}
                       label="Leave Interval"
@@ -593,30 +685,151 @@ function LeaveModal({
                   </Form.Item>
                 </Col>
               </Row>
-
-              {leaveData?.leaveStatus === 'cancelled' && (
+              {isEditMode && !readOnly && !showWorker ? (
                 <Row>
                   <Col span={6} xs={24} sm={24} xl={24}>
                     <Form.Item
                       {...formItemLayout}
-                      name="cancelReason"
-                      label="Cancel Leave Reason"
+                      name="leaveDocument"
+                      label="Leave Document"
                     >
-                      <Input.TextArea
-                        allowClear
-                        rows={10}
-                        disabled={readOnly}
-                        style={{
-                          background: darkCalendar ? '#434f5a' : '',
-                        }}
-                      />
+                      {documentURL ? (
+                        <>
+                          <Button
+                            className="gx-btn-primary gx-text-white"
+                            download
+                            onClick={() =>
+                              window
+                                .open(leaveData?.leaveDocument, '_blank')
+                                ?.focus()
+                            }
+                          >
+                            Click here to View{' '}
+                          </Button>
+                          <Popconfirm
+                            title="Are you sure you want to delete?"
+                            onConfirm={(e) => {
+                              onDeleteClick(leaveData)
+                            }}
+                            // onCancel={() => {}}
+                            okText="Yes"
+                            cancelText="No"
+                          >
+                            <span className="gx-link gx-text-danger">
+                              <CustomIcon name="delete" />
+                            </span>
+                          </Popconfirm>
+                        </>
+                      ) : (
+                        <DragAndDropFile
+                          files={files}
+                          setFiles={setFiles}
+                          onRemove={setRemovedFile}
+                          allowMultiple={false}
+                          accept=".pdf, image/png, image/jpeg"
+                        />
+                      )}
                     </Form.Item>
                   </Col>
                 </Row>
+              ) : (
+                <>
+                  {leaveData?.leaveDocument && (
+                    <Row>
+                      <Col span={6} xs={24} sm={24} xl={24}>
+                        <Form.Item
+                          {...formItemLayout}
+                          name="leaveDocument"
+                          label="Leave Document"
+                        >
+                          <Button
+                            className="gx-btn-primary gx-text-white"
+                            download
+                            onClick={() =>
+                              window
+                                .open(leaveData?.leaveDocument, '_blank')
+                                ?.focus()
+                            }
+                          >
+                            Click here to view
+                          </Button>
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  )}
+                </>
               )}
+
+              {(leaveData?.leaveStatus === STATUS_TYPES[3].id ||
+                leaveData?.leaveStatus === STATUS_TYPES[5].id) &&
+                leaveData?.cancelReason && (
+                  <Row>
+                    <Col span={6} xs={24} sm={24} xl={24}>
+                      <Form.Item
+                        {...formItemLayout}
+                        name="cancelReason"
+                        label="Cancel Leave Reason"
+                      >
+                        <Input.TextArea
+                          allowClear
+                          rows={10}
+                          disabled={readOnly}
+                          style={{
+                            background: darkCalendar ? '#434f5a' : '',
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                )}
+
+              {(leaveData?.leaveStatus === STATUS_TYPES[4].id ||
+                leaveData?.leaveStatus === STATUS_TYPES[2].id) &&
+                leaveData?.rejectReason && (
+                  <Row>
+                    <Col span={6} xs={24} sm={24} xl={24}>
+                      <Form.Item
+                        {...formItemLayout}
+                        name="rejectReason"
+                        label="Leave Reject Reason"
+                      >
+                        <Input.TextArea
+                          allowClear
+                          rows={10}
+                          disabled={readOnly}
+                          style={{
+                            background: darkCalendar ? '#434f5a' : '',
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                )}
+
+              {leaveData?.leaveStatus === STATUS_TYPES[2].id &&
+                leaveData?.reapplyreason && (
+                  <Row>
+                    <Col span={6} xs={24} sm={24} xl={24}>
+                      <Form.Item
+                        {...formItemLayout}
+                        name="reapplyreason"
+                        label="Leave Re-apply Reason"
+                      >
+                        <Input.TextArea
+                          allowClear
+                          rows={10}
+                          disabled={readOnly}
+                          style={{
+                            background: darkCalendar ? '#434f5a' : '',
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                )}
             </Col>
             {user &&
-              (immediateApprovalLeaveTypes.includes(leaveType) ? (
+              (leaveType?.isSpecial ? (
                 <Col xs={24} sm={8}>
                   <ConfigProvider locale={en_GB}>
                     <Form.Item
@@ -661,9 +874,7 @@ function LeaveModal({
                       multiple
                       disabled={readOnly}
                       minDate={
-                        leaveType === 'Sick' ||
-                        leaveType === 'Casual' ||
-                        isEditMode
+                        !leaveType?.isSpecial || isEditMode
                           ? new DateObject().subtract(2, 'months')
                           : new Date()
                       }
@@ -763,16 +974,18 @@ function LeaveModal({
                     />
                   </Form.Item>
 
-                  <small
-                    style={{
-                      color: 'red',
-                      fontSize: '14px',
-                      width: '10%',
-                      paddingLeft: 15,
-                    }}
-                  >
-                    *Disabled dates are holidays
-                  </small>
+                  {!readOnly && (
+                    <small
+                      style={{
+                        color: 'red',
+                        fontSize: '14px',
+                        width: '10%',
+                        paddingLeft: 15,
+                      }}
+                    >
+                      *Disabled dates are holidays
+                    </small>
+                  )}
                 </Col>
               ))}
           </Row>

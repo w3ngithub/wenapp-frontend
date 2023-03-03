@@ -1,11 +1,23 @@
 import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
-import {Button, Col, DatePicker, Form, Input, Modal, Row, Spin} from 'antd'
+import {
+  Button,
+  Checkbox,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Spin,
+  Table,
+} from 'antd'
 import {notification} from 'helpers/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
 import React, {useEffect, useState} from 'react'
 
 interface modalType {
+  dataSource: any
   isEditMode: boolean
   toggle: boolean
   onSubmit: (holiday: any) => void
@@ -29,6 +41,7 @@ const CommonModal = (props: modalType) => {
     onSubmit,
     isLoading,
     editData,
+    dataSource,
   } = props
 
   const [indexes, setIndexes] = useState<boolean[]>([])
@@ -82,8 +95,10 @@ const CommonModal = (props: modalType) => {
 
   return (
     <Modal
-      width={900}
+      width={1200}
+      bodyStyle={{overflowX: 'scroll'}}
       title={isEditMode ? `Update Holidays` : `Add Holidays`}
+      className="gx-table-responsive"
       visible={toggle}
       onOk={handleSubmit}
       onCancel={onCancel}
@@ -98,6 +113,26 @@ const CommonModal = (props: modalType) => {
       ]}
     >
       <Spin spinning={isLoading}>
+        <Row
+          style={{
+            columnGap: 5,
+            marginLeft: innerWidth <= 748 ? '' : '1rem',
+            marginBottom: '0.4rem',
+          }}
+        >
+          <Col lg={5} md={5} sm={5} xs={5}>
+            <label>Date</label>
+          </Col>
+          <Col lg={7} md={6} sm={6} xs={5}>
+            <label>Title</label>
+          </Col>
+          <Col lg={7} md={7} sm={7} xs={6}>
+            <label>Remarks</label>
+          </Col>
+          <Col lg={4} md={5} sm={5} xs={5}>
+            <label style={{whiteSpace: 'nowrap'}}>Allow Leave</label>
+          </Col>
+        </Row>
         <Form
           form={form}
           name="dynamic_form_nest_item"
@@ -126,11 +161,11 @@ const CommonModal = (props: modalType) => {
                   <Row
                     key={field.key}
                     style={{
-                      columnGap: 6,
+                      columnGap: 8,
                       marginLeft: innerWidth <= 748 ? '' : '1rem',
                     }}
                   >
-                    <Col span={24} sm={7}>
+                    <Col span={5} sm={5} lg={5}>
                       <Form.Item
                         noStyle
                         shouldUpdate={(prevValues, curValues) =>
@@ -140,7 +175,6 @@ const CommonModal = (props: modalType) => {
                       >
                         <Form.Item
                           {...field}
-                          label="Date"
                           name={[field.name, 'date']}
                           required={false}
                           rules={[
@@ -154,7 +188,7 @@ const CommonModal = (props: modalType) => {
                         </Form.Item>
                       </Form.Item>
                     </Col>
-                    <Col span={24} sm={7}>
+                    <Col span={5} sm={6} md={6} lg={7}>
                       <Form.Item
                         noStyle
                         shouldUpdate={(prevValues, curValues) =>
@@ -164,7 +198,6 @@ const CommonModal = (props: modalType) => {
                       >
                         <Form.Item
                           {...field}
-                          label="Title"
                           name={[field.name, 'title']}
                           required={false}
                           rules={[
@@ -182,30 +215,35 @@ const CommonModal = (props: modalType) => {
                         </Form.Item>
                       </Form.Item>
                     </Col>
-                    <Col span={24} sm={9}>
-                      <Row align="middle">
-                        <Col span={24} sm={20}>
-                          <Form.Item
-                            {...field}
-                            label="Remarks"
-                            name={[field.name, 'remarks']}
-                            // rules={[{ required: true, message: "required!" }]}
-                          >
-                            <Input.TextArea rows={1} />
-                          </Form.Item>
-                        </Col>
-                        <Col span={24} sm={2}>
-                          <MinusCircleOutlined
-                            onClick={() => remove(field.name)}
-                            style={{marginBottom: 20}}
-                            className="svg-clear"
-                          />
-                        </Col>
-                      </Row>
+                    <Col span={5} sm={7} lg={7} md={7}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, 'remarks']}
+                        // rules={[{ required: true, message: "required!" }]}
+                      >
+                        <Input.TextArea rows={1} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={2} sm={3} md={2} lg={2}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, 'allowLeaveApply']}
+                        required={false}
+                        valuePropName="checked"
+                      >
+                        <Checkbox style={{marginLeft: '2rem'}} />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={2} sm={1} md={2} lg={2}>
+                      <MinusCircleOutlined
+                        onClick={() => remove(field.name)}
+                        style={{marginBottom: 20, marginTop: 10}}
+                        className="svg-clear"
+                      />
                     </Col>
                   </Row>
                 ))}
-
                 <Form.Item>
                   <Button
                     type="dashed"

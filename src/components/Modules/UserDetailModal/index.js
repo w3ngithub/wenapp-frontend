@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import '@ant-design/compatible/assets/index.css'
 import {
   Button,
@@ -9,9 +9,17 @@ import {
   Spin,
   Form,
   TimePicker,
+  Tooltip,
+  Radio,
+  Popconfirm,
 } from 'antd'
 import moment from 'moment'
-import {dateToDateFormat, filterOptions, scrollForm} from 'helpers/utils'
+import {
+  changeDate,
+  dateToDateFormat,
+  filterOptions,
+  scrollForm,
+} from 'helpers/utils'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
@@ -43,6 +51,7 @@ function UserDetailForm({
 }) {
   const [form] = Form.useForm()
 
+  const [status, setStatus] = useState(false)
   const handleCancel = () => {
     form.resetFields()
     onToggleModal({})
@@ -51,32 +60,49 @@ function UserDetailForm({
   const user = useSelector(selectAuthUser)
 
   const handleSubmit = () => {
-    const data = intialValues?.allocatedLeaves
-
     form.validateFields().then((values) => {
+      let prevReviewDate =
+        intialValues?.lastReviewDate?.length > 0
+          ? intialValues?.lastReviewDate?.map((d) => moment(d))
+          : []
+      if (!!values?.lastReviewDate) {
+        if (
+          intialValues?.lastReviewDate?.length === 0 ||
+          !prevReviewDate[prevReviewDate.length - 1].isSame(
+            values?.lastReviewDate
+          )
+        ) {
+          prevReviewDate.push(values.lastReviewDate)
+        }
+      }
       onSubmit({
         ...intialValues,
         ...values,
+        status,
+        lastReviewDate: prevReviewDate,
         officeTime: {
           utcDate: moment(values.officeTime._d).utc().format(),
           hour: moment(values.officeTime._d).add(10, 'm').utc().format('h'),
           minute: moment(values.officeTime._d).add(10, 'm').utc().format('m'),
         },
-        allocatedLeaves: {
-          ...data,
-          [currentQuarter?.data?.name]: values?.allocatedLeaves,
-        },
       })
     })
   }
 
-  const handleStatusChange = (value) => {
-    if (value === 'Probation')
-      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
-    else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
-  }
   const disableDate = (current) => {
     return current && current > moment().endOf('day')
+  }
+  const disableReviewDate = (current) => {
+    return (
+      (current && current > moment().endOf('day')) ||
+      (intialValues?.lastReviewDate.length > 0 &&
+        current <
+          moment(
+            intialValues?.lastReviewDate[
+              intialValues?.lastReviewDate?.length - 1
+            ]
+          ))
+    )
   }
 
   const disableJoinDate = (current) => {
@@ -86,20 +112,6 @@ function UserDetailForm({
     )
   }
 
-  const handlePositionChange = (value) => {
-    const isIntern =
-      form.getFieldValue('position') ===
-      position?.data?.data?.data?.find((pos) => pos?.name === 'Intern')._id
-    const isTrainee =
-      form.getFieldValue('position') ===
-      position?.data?.data?.data?.find((pos) => pos?.name === 'Trainee')._id
-
-    const isOnProbation = form.getFieldValue('status') === 'Probation'
-
-    if (isIntern || isTrainee || isOnProbation)
-      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
-    else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
-  }
   useEffect(() => {
     if (toggle) {
       form.setFieldsValue({
@@ -116,16 +128,16 @@ function UserDetailForm({
           intialValues.positionType && intialValues.positionType._id
             ? intialValues.positionType._id
             : undefined,
-        status: intialValues?.status && intialValues?.status,
-        allocatedLeaves:
-          intialValues?.allocatedLeaves?.[currentQuarter?.data?.name],
 
         panNumber: intialValues.panNumber && intialValues.panNumber,
         citNumber: intialValues.citNumber && intialValues.citNumber,
         bankAccNumber: intialValues.bankAccNumber && intialValues.bankAccNumber,
         bankName: intialValues.bankName && intialValues.bankName,
         lastReviewDate:
-          intialValues.lastReviewDate && moment(intialValues.lastReviewDate),
+          intialValues?.lastReviewDate?.length > 0 &&
+          moment(
+            intialValues.lastReviewDate[intialValues.lastReviewDate.length - 1]
+          ),
         joinDate:
           intialValues.joinDate &&
           moment(dateToDateFormat(intialValues.joinDate)),
@@ -134,6 +146,7 @@ function UserDetailForm({
           ? moment(new Date(intialValues?.officeTime?.utcDate), 'h:mm:ss a')
           : moment('09:00:00 AM', 'HH:mm:ss a'),
       })
+      setStatus(intialValues?.status)
     }
 
     if (!toggle) form.resetFields()
@@ -273,7 +286,6 @@ function UserDetailForm({
               placeholder="Select Position"
               disabled={readOnly}
               filterOption={filterOptions}
-              onChange={handlePositionChange}
             >
               {position &&
                 position?.data?.data?.data?.map((position) => (
@@ -312,8 +324,6 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="Status"
-            hasFeedback={readOnly ? false : true}
-            name="status"
             rules={[
               {
                 required: true,
@@ -321,48 +331,32 @@ function UserDetailForm({
               },
             ]}
           >
-            <Select
-              showSearch
-              placeholder="Select Status"
+            <Radio.Group
+              buttonStyle="solid"
+              value={status}
+              id="radio"
               disabled={readOnly}
-              filterOption={filterOptions}
-              onChange={handleStatusChange}
             >
-              {['Permanent', 'Probation'].map((status) => (
-                <Option value={status} key={status}>
-                  {status}
-                </Option>
-              ))}
-            </Select>
+              <Popconfirm
+                title="Are you sure you want to switch Co-Worker Status to Permanent?"
+                okText="Yes"
+                cancelText="No"
+                onConfirm={() => setStatus('Permanent')}
+              >
+                <Radio.Button value="Permanent">Permanent</Radio.Button>
+              </Popconfirm>
+
+              <Popconfirm
+                title="Are you sure you want to switch Co-worker Status to Probation?"
+                okText="Yes"
+                cancelText="No"
+                onConfirm={() => setStatus('Probation')}
+              >
+                <Radio.Button value="Probation">Probation</Radio.Button>
+              </Popconfirm>
+            </Radio.Group>
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Allocated Leaves"
-            hasFeedback={readOnly ? false : true}
-            name="allocatedLeaves"
-            rules={[
-              {
-                required: true,
-                validator: async (_, value) => {
-                  try {
-                    if (!value) {
-                      throw new Error('Allocated Leaves is required.')
-                    }
-                    const regex = /^[0-9]+$/
-                    const isValid = regex.test(value)
-                    if (!isValid) {
-                      throw new Error('Allocated Leaves must be a number')
-                    }
-                  } catch (error) {
-                    scrollForm(form, 'allocatedLeaves')
-                    throw new Error(error.message)
-                  }
-                },
-              },
-            ]}
-          >
-            <Input placeholder="Enter Allocated Leaves" disabled={readOnly} />
-          </FormItem>
+
           <FormItem
             {...formItemLayout}
             label="Last Review Date"
@@ -370,18 +364,18 @@ function UserDetailForm({
             name="lastReviewDate"
             rules={[
               {
-                type: 'object',
+                required: false,
                 message: 'Last Review Date is required.',
-                whitespace: true,
               },
             ]}
           >
             <DatePicker
-              disabledDate={disableDate}
+              disabledDate={disableReviewDate}
               className=" gx-w-100"
               disabled={readOnly}
             />
           </FormItem>
+
           <FormItem
             {...formItemLayout}
             label="Join Date"

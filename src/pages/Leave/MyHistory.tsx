@@ -2,44 +2,48 @@ import {useQuery} from '@tanstack/react-query'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
 import {LEAVES_COLUMN, STATUS_TYPES} from 'constants/Leaves'
-import {capitalizeInput, changeDate, removeDash} from 'helpers/utils'
+import {
+  MuiFormatDate,
+  capitalizeInput,
+  changeDate,
+  removeDash,
+} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment, {Moment} from 'moment'
 import React, {useState} from 'react'
 import {useLocation} from 'react-router-dom'
-import {getLeavesOfUser} from 'services/leaves'
+import {getLeavesOfUser, getQuarters} from 'services/leaves'
 import {disabledDate} from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {getLeaveTypes} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
-import {useSelector} from 'react-redux'
+import {leaveHistoryDays} from 'constants/LeaveTypes'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
-import {customLeaves} from 'constants/LeaveDuration'
+import {useSelector} from 'react-redux'
+import {PAGE25} from 'constants/Common'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
-
-const defaultPage = {page: 1, limit: 25}
+const {RangePicker} = DatePicker
 
 const formattedLeaves = (leaves: any) => {
-  return leaves?.map((leave: any) => ({
-    ...leave,
-    key: leave._id,
-    dates: leave?.leaveDates
-      ?.map((date: any, index: any) => changeDate(date))
-      .join(
-        leave?.leaveType?.name === 'Maternity' ||
-          leave?.leaveType?.name === 'Paternity' ||
-          leave?.leaveType?.name === 'Paid Time Off'
-          ? ' - '
-          : '\r\n'
-      ),
-    type: `${leave?.leaveType?.name} ${
-      leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
-        ? '- ' + removeDash(leave?.halfDay)
-        : ''
-    }`,
-    status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
-  }))
+  return leaves?.map((leave: any) => {
+    return {
+      ...leave,
+      key: leave._id,
+      dates: leave?.leaveType?.isSpecial
+        ? [leave?.leaveDates?.[0], leave?.leaveDates?.at(-1)]
+            ?.map((date) => changeDate(date))
+            .join('-')
+        : leave?.leaveDates?.map((date: any) => changeDate(date))?.join(' '),
+      type: `${leave?.leaveType?.name} ${
+        leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
+          ? '- ' + removeDash(leave?.halfDay)
+          : ''
+      }`,
+      status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
+    }
+  })
 }
 
 function MyHistory({
@@ -47,12 +51,14 @@ function MyHistory({
   handleOpenCancelLeaveModal,
   isLoading,
   permissions,
+  reApplyLeave,
 }: {
   userId: string
   handleCancelLeave: (leave: any) => void
   handleOpenCancelLeaveModal: (param: any) => void
   isLoading: boolean
   permissions: any
+  reApplyLeave: (leave: any) => void
 }) {
   const [form] = Form.useForm()
   const location: any = useLocation()
@@ -62,18 +68,21 @@ function MyHistory({
   const [openModal, setModal] = useState<boolean>(false)
   const [leaveStatus, setLeaveStatus] = useState<string | undefined>('')
   const [leaveTypeId, setLeaveType] = useState<string | undefined>(undefined)
-
   const [date, setDate] = useState<{moment: Moment | undefined; utc: string}>({
     utc: selectedDate ? selectedDate : undefined,
     moment: selectedDate ? moment(selectedDate).startOf('day') : undefined,
   })
+  const [modalReadOnly, setmodalReadOnly] = useState<boolean>(false)
 
-  const [page, setPage] = useState(defaultPage)
+  const {gender: userGender, status: userStatus} = useSelector(selectAuthUser)
 
-  const {gender} = useSelector(selectAuthUser)
+  const [rangeDate, setRangeDate] = useState<any>([])
+
+  const [page, setPage] = useState(PAGE25)
+  const [leaveFilter, setLeaveFilter] = useState(undefined)
 
   const userLeavesQuery = useQuery(
-    ['userLeaves', leaveStatus, date, page, leaveTypeId],
+    ['userLeaves', leaveStatus, rangeDate, page, leaveTypeId],
     () =>
       getLeavesOfUser(
         userId,
@@ -81,36 +90,65 @@ function MyHistory({
         date?.utc,
         page.page,
         page.limit,
-        '',
-        '',
+        rangeDate?.[0] ? MuiFormatDate(rangeDate[0]?._d) + 'T00:00:00Z' : '',
+        rangeDate?.[1] ? MuiFormatDate(rangeDate[1]?._d) + 'T00:00:00Z' : '',
         '-leaveDates,_id',
         leaveTypeId
       )
   )
 
+  const {data: quarterQuery} = useQuery(['quarters'], getQuarters, {
+    select: (res: any) => {
+      return res.data?.data?.data?.[0]?.quarters
+    },
+  })
+
+  const updatedQuarters = quarterQuery?.map((d: any) => ({
+    ...d,
+    id: d?._id,
+    value: d.quarterName,
+  }))
+  const combinedFilter = [...leaveHistoryDays, ...(updatedQuarters || [])]
+
   const handleLeaveType = (value: string | undefined) => {
+    setPage(PAGE25)
     setLeaveType(value)
+  }
+
+  const handleLeaveFilter = (value: any) => {
+    setPage(PAGE25)
+    if (value) {
+      if (updatedQuarters?.find((d: any) => d?.id === value)) {
+        const rangeDate = updatedQuarters?.find((d: any) => d?.id === value)
+        setLeaveFilter(value)
+        setRangeDate([moment(rangeDate?.fromDate), moment(rangeDate?.toDate)])
+      } else if (leaveHistoryDays?.find((d: any) => d?.id === value)) {
+        const tempDays: any = leaveHistoryDays?.find(
+          (d: any) => d?.id === value
+        )?.value
+        const selectedDays = parseInt(tempDays?.split(' ')?.[1])
+        const newRangeDates = [
+          moment().subtract(selectedDays, 'days'),
+          moment(),
+        ]
+        setLeaveFilter(value)
+        setRangeDate(newRangeDates)
+      }
+    } else {
+      setRangeDate([])
+      setLeaveFilter(undefined)
+    }
   }
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {
-      if (gender === 'Male') {
-        return [
-          ...res?.data?.data?.data
-            ?.filter((types: any) => types.name !== 'Substitute Leave')
-            .map((type: any) => ({
-              id: type._id,
-              value: type?.name.replace('Leave', '').trim(),
-            })),
-        ]
-      } else {
-        return [
-          ...res?.data?.data?.data?.map((type: any) => ({
-            id: type._id,
-            value: type?.name.replace('Leave', '').trim(),
-          })),
-        ]
-      }
+      return [
+        ...res?.data?.data?.data?.map((type: any) => ({
+          ...type,
+          id: type._id,
+          value: type?.name.replace('Leave', '').trim(),
+        })),
+      ]
     },
   })
 
@@ -123,29 +161,29 @@ function MyHistory({
   }
 
   const handleStatusChange = (statusId: string) => {
-    if (page?.page > 1) setPage(defaultPage)
-
+    if (page?.page > 1) setPage(PAGE25)
     setLeaveStatus(statusId)
   }
 
   const handleDateChange = (value: any) => {
-    if (page?.page > 1) setPage(defaultPage)
+    setLeaveFilter(undefined)
+    if (page?.page > 1) setPage(PAGE25)
 
-    setDate({
-      moment: value,
-      utc: moment.utc(value._d).startOf('day').format(),
-    })
+    setRangeDate(value)
   }
 
   const handleShow = (data: any, mode: boolean) => {
     setdatatoShow(data)
     setModal(true)
+    setmodalReadOnly(mode)
   }
 
   const handleResetFilter = () => {
     setLeaveStatus(undefined)
     setLeaveType(undefined)
-    setPage(defaultPage)
+    setPage(PAGE25)
+    setRangeDate([])
+    setLeaveFilter(undefined)
     setDate({
       utc: '',
       moment: undefined,
@@ -160,7 +198,7 @@ function MyHistory({
           onClose={() => setModal(false)}
           isEditMode={true}
           users={[]}
-          readOnly={true}
+          readOnly={modalReadOnly}
           showWorker={false}
         />
       )}
@@ -181,17 +219,25 @@ function MyHistory({
               placeholder="Select Leave Type"
               onChange={handleLeaveType}
               value={leaveTypeId}
-              options={leaveTypeQuery?.data}
+              options={leaveTypeQuery?.data?.filter((d) => {
+                const showToProbation =
+                  userStatus === 'Probation' ? d?.Probation : true
+                return d.gender.includes(userGender) && showToProbation
+              })}
             />
           </FormItem>
 
-          <FormItem style={{marginBottom: '0.5px'}}>
-            <DatePicker
-              className="gx-mb-3 "
-              style={{width: innerWidth <= 748 ? '100%' : '200px'}}
-              value={date?.moment}
-              onChange={handleDateChange}
-              disabledDate={disabledDate}
+          <FormItem>
+            <RangePicker onChange={handleDateChange} value={rangeDate} />
+          </FormItem>
+
+          <FormItem className="direct-form-item" style={{marginRight: '2rem'}}>
+            <Select
+              style={{minWidth: '210px'}}
+              placeholder="Select Filter By"
+              onChange={handleLeaveFilter}
+              value={leaveFilter}
+              options={combinedFilter}
             />
           </FormItem>
 
@@ -210,7 +256,9 @@ function MyHistory({
         className="gx-table-responsive"
         columns={LEAVES_COLUMN({
           onCancelLeave: handleOpenCancelLeaveModal,
-          onApproveClick: () => {},
+          onApproveClick: (leave) => {
+            reApplyLeave(leave)
+          },
           onEditClick: handleShow,
           viewLeave: permissions?.viewMyLeaveDetails,
           cancelLeave: permissions?.cancelMyLeaves,

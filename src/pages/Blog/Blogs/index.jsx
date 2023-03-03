@@ -24,6 +24,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {PAGE10} from 'constants/Common'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -32,7 +33,7 @@ function Blogs() {
   // init state
   const [title, setTitle] = useState('')
   const [user, setUser] = useState(undefined)
-  const [page, setPage] = useState({page: 1, limit: 10})
+  const [page, setPage] = useState(PAGE10)
 
   // init hooks
   const navigate = useNavigate()
@@ -91,12 +92,14 @@ function Blogs() {
   }
 
   const handleResetFilter = () => {
+    setPage(PAGE10)
     setTypedTitle('')
     setTitle('')
     setUser(undefined)
   }
 
   const handleUserChange = (user) => {
+    setPage(PAGE10)
     setUser(user)
   }
 
