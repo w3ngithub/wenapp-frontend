@@ -21,7 +21,6 @@ import {leaveHistoryDays} from 'constants/LeaveTypes'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {useSelector} from 'react-redux'
 import {PAGE25} from 'constants/Common'
-import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
