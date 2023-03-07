@@ -30,6 +30,7 @@ import {
   specifyParticularHalf,
   pendingLeaves,
   filterSpecificUser,
+  getRangeofDates,
 } from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
@@ -238,21 +239,10 @@ function LeaveModal({
 
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       if (leaveType?.isSpecial) {
-        const newDate = new Date(values?.leaveDatesPeriod?._d)
-        const ArrayofDates = []
-        for (let i = 1; i < leaveType?.leaveDays; i++) {
-          ArrayofDates.push(
-            `${MuiFormatDate(
-              new Date(newDate.setDate(appliedDate?.getDate() + i))
-            )}T00:00:00Z`
-          )
-        }
-
-        const appliedDateUTC = appliedDate
-          ? `${MuiFormatDate(appliedDate)}T00:00:00Z`
-          : ''
-
-        LeaveDaysUTC = [appliedDateUTC, ...ArrayofDates]
+        LeaveDaysUTC = getRangeofDates(
+          values?.leaveDatesPeriod?._d,
+          leaveType?.leaveDays
+        )
         // const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
       } else {
         const casualLeaveDays = [
