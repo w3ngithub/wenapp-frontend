@@ -551,4 +551,19 @@ export const getCurrentFiscalYear = () => {
   return new Date(new Date().getFullYear(), 0, 1)
 }
 
+export const getRangeofDates = (startDate, leaveDays) => {
+  let newDate = new Date(startDate)
+  let endDate = new Date(newDate)
+  endDate.setDate(newDate.getDate() + parseInt(leaveDays))
+  let ArrayofDates = []
+
+  let currentDate = new Date(newDate)
+
+  while (currentDate < endDate) {
+    ArrayofDates.push(`${MuiFormatDate(new Date(currentDate))}T00:00:00Z`)
+    currentDate.setDate(currentDate.getDate() + 1)
+  }
+  return ArrayofDates
+}
+
 export const convertMsToDay = (num) => num / (1000 * 60 * 60 * 24)
