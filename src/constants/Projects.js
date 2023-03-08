@@ -3,6 +3,7 @@ import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import {Input} from 'antd'
 import {getIsAdmin} from 'helpers/utils'
+import {Link} from 'react-router-dom'
 
 const PROJECT_COLUMNS = (
   sortedInfo,
@@ -85,17 +86,13 @@ const PROJECT_COLUMNS = (
     key: 'action',
     width: 250,
     render: (text, record) => {
+      console.log('path', `${record._id}-${record.slug}`)
       return (
         <div style={{display: 'flex'}}>
           {role?.Navigation?.logTime && (
-            <span
-              className="gx-link"
-              onClick={() =>
-                navigateToProjectLogs(`${record._id}-${record.slug}`)
-              }
-            >
+            <Link className="gx-link" to={`${record._id}-${record.slug}`}>
               Log Time
-            </span>
+            </Link>
           )}
           {role?.Projects?.viewProjects && (
             <>
