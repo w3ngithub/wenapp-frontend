@@ -86,15 +86,11 @@ const PROJECT_COLUMNS = (
     key: 'action',
     width: 250,
     render: (text, record) => {
+      console.log('path', `${record._id}-${record.slug}`)
       return (
         <div style={{display: 'flex'}}>
           {role?.Navigation?.logTime && (
-            <Link
-              className="gx-link"
-              onClick={() =>
-                navigateToProjectLogs(`${record._id}-${record.slug}`)
-              }
-            >
+            <Link className="gx-link" to={`${record._id}-${record.slug}`}>
               Log Time
             </Link>
           )}
