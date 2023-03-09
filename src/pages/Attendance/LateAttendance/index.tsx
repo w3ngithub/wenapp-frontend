@@ -19,6 +19,7 @@ import {
   dateDifference,
   filterSpecificUser,
   handleResponse,
+  MuiFormatDate,
   sortFromDate,
 } from 'helpers/utils'
 import Select from 'components/Elements/Select'
@@ -100,8 +101,12 @@ function LateAttendance({userRole}: {userRole: any}) {
       searchLateAttendacentOfUser({
         userId: user || '',
         lateArrivalLeaveCut: leaveCut,
-        fromDate: date?.[0] ? moment.utc(date[0]).format() : '',
-        toDate: date?.[1] ? moment.utc(date[1]).format() : '',
+        fromDate: date?.[0]
+          ? MuiFormatDate(date[0].format()) + 'T00:00:00Z'
+          : '',
+        toDate: date?.[1]
+          ? MuiFormatDate(date[1]?.format()) + 'T00:00:00Z'
+          : '',
       })
   )
 
