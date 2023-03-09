@@ -432,6 +432,7 @@ function Apply({user}) {
                       (holiday) => date.format() === holiday?.date
                     )
                     let isHoliday = holidayList?.length > 0
+
                     let leaveDate = userLeaves?.filter(
                       (leave) => leave.date === date.format()
                     )
