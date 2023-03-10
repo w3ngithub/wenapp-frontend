@@ -1,6 +1,7 @@
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
+import {decrypt, SALARY_REVIEW_KEY, USERS_KEY} from 'util/crypto'
 
 // login user api
 const loginInUsers = async (loginDetail) => {
@@ -37,7 +38,10 @@ const getAllUsers = async ({
     let response = await API.get(
       `${Apis.Users}?search=${name}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&role=${role}&position=${position}&positionType=${positionType}&active=${active}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {...response?.data, data: decrypt(response?.data?.data, USERS_KEY)},
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }
@@ -158,7 +162,13 @@ const getSalaryReviewUsers = async ({days, user}) => {
     let response = await API.get(
       `${Apis.Users}/salaryReview?user=${user}&days=${days}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, SALARY_REVIEW_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }
