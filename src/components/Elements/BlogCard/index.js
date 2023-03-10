@@ -13,16 +13,14 @@ const BlogItem = ({blog, grid, removeBlog, access}) => {
   const {title, content, createdBy, createdAt, blogCategories, _id, slug} = blog
 
   const navigate = useNavigate()
-  // var regexp = /<img([\w\W]+?)>/g
-  // const text = content.match(regexp)
 
-  // const imgageBlog = text?.filter((img) =>
-  //   img?.includes(`alt=\"undefined\"`)
-  // )[0]
-  // const imgSrc = imgageBlog?.split('src=')[1]?.split(' ')[0]?.replace(`"`, '')
+  const removedCodeContent = content
+    ?.split('@highlight-code')
+    ?.filter((item, index) => index % 2 === 0)
+    .join('')
 
   const [parsedContent, setParsedContent] = useState(
-    parse(content.substring(0, 400))
+    parse(removedCodeContent.substring(0, 400))
   )
   const {
     role: {permission: {Blog} = {}},
