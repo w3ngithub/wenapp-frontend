@@ -341,8 +341,6 @@ function LateAttendance({userRole}: {userRole: any}) {
     data: att.data && sortedData(att.data),
   }))
 
-  console.log(formattedAttendaces)
-
   const hanldeLeaveCutModal = (record: any) => {
     setAttendanceRecord(record)
     setOpenLeaveCutModal(true)
