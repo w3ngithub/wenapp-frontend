@@ -66,7 +66,6 @@ export const MainApp = (props) => {
     {
       onSuccess: (data) => {
         if (data.status) {
-          console.log(data?.data?.data?.data)
           dispatch(
             getLateArrivalThreshold(
               data?.data?.data?.data?.[0]?.lateArrivalThreshold
