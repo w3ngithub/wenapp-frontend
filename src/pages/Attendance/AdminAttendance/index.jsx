@@ -164,6 +164,8 @@ function AdminAttendance({userRole}) {
         userId: user,
         fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
         toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
+        officehourop: defaultFilter?.op,
+        officehourValue: hourIntoMilliSecond(defaultFilter?.num),
       }),
     {enabled: false}
   )
