@@ -134,10 +134,18 @@ const UserTotalofficehour = async ({
   userId = '',
   fromDate = '',
   toDate = '',
+  officehourop = '',
+  officehourValue = '',
 }) => {
   try {
     let response = await API.get(
-      `${Apis.Attendances}/totalofficehour?user=${userId}&fromDate=${fromDate}&toDate=${toDate}`
+      `${
+        Apis.Attendances
+      }/totalofficehour?user=${userId}&fromDate=${fromDate}&toDate=${toDate}${
+        officehourop &&
+        officehourValue &&
+        `&officehour[${officehourop}]=${officehourValue}`
+      }`
     )
     return getAPIResponse(response)
   } catch (err) {
