@@ -1,6 +1,7 @@
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
+import {ACTIVITY_LOGS_KEY, decrypt} from 'util/crypto'
 
 export const getActivityLogs = async ({
   page = 1,
@@ -16,7 +17,13 @@ export const getActivityLogs = async ({
     let response = await API.get(
       `${Apis.ActivityLogs}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&status=${status}&module=${module}&fromDate=${fromDate}&toDate=${toDate}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, ACTIVITY_LOGS_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }
