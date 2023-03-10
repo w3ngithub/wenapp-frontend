@@ -24,6 +24,7 @@ import {
   getAllocatedOfficeHours,
   getLateArrivalThreshold,
 } from 'appRedux/actions/Configurations'
+import {decrypt, USERS_KEY} from './../../util/crypto'
 
 const {Content, Footer} = Layout
 
@@ -41,13 +42,16 @@ export const MainApp = (props) => {
     {
       onSuccess: (data) => {
         if (data.status) {
+          // decrypt encrypted data from api response
+          const decryptedData = decrypt(data.data?.data, USERS_KEY)
+
           localStorage.setItem(
             LOCALSTORAGE_USER,
-            JSON.stringify(data?.data?.data?.data[0]?._id)
+            JSON.stringify(decryptedData?.data[0]?._id)
           )
           dispatch(
             getUserProfile({
-              user: data?.data?.data?.data[0],
+              user: decryptedData?.data[0],
             })
           )
         }
@@ -62,6 +66,7 @@ export const MainApp = (props) => {
     {
       onSuccess: (data) => {
         if (data.status) {
+          console.log(data?.data?.data?.data)
           dispatch(
             getLateArrivalThreshold(
               data?.data?.data?.data?.[0]?.lateArrivalThreshold

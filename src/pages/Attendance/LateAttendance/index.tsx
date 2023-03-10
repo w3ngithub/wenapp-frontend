@@ -39,6 +39,7 @@ import CustomIcon from 'components/Elements/Icons'
 import ViewDetailModel from '../ViewDetailModel'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
+import {decrypt} from '../../../util/crypto'
 
 const FormItem = Form.Item
 
@@ -332,12 +333,15 @@ function LateAttendance({userRole}: {userRole: any}) {
     }, [])
   }
 
-  const formattedAttendaces = data?.data?.data?.attendances?.map(
-    (att: any) => ({
-      ...att,
-      data: att.data && sortedData(att.data),
-    })
-  )
+  const formattedAttendaces = decrypt(
+    data?.data?.data?.attendances,
+    'secret key 123'
+  )?.map((att: any) => ({
+    ...att,
+    data: att.data && sortedData(att.data),
+  }))
+
+  console.log(formattedAttendaces)
 
   const hanldeLeaveCutModal = (record: any) => {
     setAttendanceRecord(record)
