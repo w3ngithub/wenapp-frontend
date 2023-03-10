@@ -114,7 +114,7 @@ const searchAttendacentOfUser = async ({
 }) => {
   try {
     let response
-    if (officehourop && officehourValue) {
+    if (officehourop && officehourValue >= 0) {
       response = await API.get(
         `${Apis.Attendances}/search?user=${userId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&officehour[${officehourop}]=${officehourValue}`
       )
@@ -136,6 +136,12 @@ const UserTotalofficehour = async ({
   toDate = '',
   officehourop = '',
   officehourValue = '',
+}: {
+  userId?: any
+  fromDate?: any
+  toDate?: any
+  officehourop?: any
+  officehourValue?: number | string
 }) => {
   try {
     let response = await API.get(
@@ -143,7 +149,7 @@ const UserTotalofficehour = async ({
         Apis.Attendances
       }/totalofficehour?user=${userId}&fromDate=${fromDate}&toDate=${toDate}${
         officehourop &&
-        officehourValue &&
+        officehourValue >= 0 &&
         `&officehour[${officehourop}]=${officehourValue}`
       }`
     )
