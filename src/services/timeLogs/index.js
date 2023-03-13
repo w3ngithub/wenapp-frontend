@@ -168,7 +168,13 @@ const getWeeklyTimeLogs = async ({
     let response = await API.get(
       `${Apis.TimeLogs}/users/weeklyLogs?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&project=${project}&user=${user}&logType=${logType}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
