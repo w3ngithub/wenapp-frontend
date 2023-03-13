@@ -38,3 +38,8 @@ export const LOG_KEY = 'logkey123456789'
 export const NOTICE_TYPE_KEY = 'noticetypekey123456789'
 export const BLOG_CATEGORY_KEY = 'blogcategorykey123456789'
 export const EMAIL_KEY = 'emailkey123456789'
+
+export const ATTENDANCE_KEY = 'attendancekey123456789'
+
+export const WEEKLY_REPORT_KEY = 'weeklyreportkey123456789'
+export const WORK_LOG_REPORT_KEY = 'worklogreportkey123456789'

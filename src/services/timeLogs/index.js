@@ -1,7 +1,12 @@
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
-import {decrypt, LOG_TYPE_KEY} from 'util/crypto'
+import {
+  decrypt,
+  LOG_TYPE_KEY,
+  WEEKLY_REPORT_KEY,
+  WORK_LOG_REPORT_KEY,
+} from 'util/crypto'
 
 const getAllTimeLogs = async ({
   page = '',
@@ -108,7 +113,13 @@ const getWeeklyReport = async ({
     let response = await API.post(
       `${Apis.TimeLogs}/weeklyreport/?fromDate=${fromDate}&toDate=${toDate}&logType=${logType}&projectStatus=${projectStatus}&client=${client}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, WEEKLY_REPORT_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -155,7 +166,13 @@ const getWorkLogReport = async ({
     let response = await API.post(
       `${Apis.TimeLogs}/worklogs?project=${project}&user=${user}&logType=${logType}&fromDate=${fromDate}&toDate=${toDate}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, WORK_LOG_REPORT_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
