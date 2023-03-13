@@ -26,3 +26,10 @@ export const CLIENT_KEY = 'clientkey123456789'
 export const PROJECT_STATUS_KEY = 'projectstatuskey123456789'
 export const PROJECCT_TAG_KEY = 'projecttagkey123456789'
 export const PROJECT_TYPE_KEY = 'projecttypekey123456789'
+
+export const LOG_TYPE_KEY = 'logtypekey123456789'
+export const LOG_KEY = 'logkey123456789'
+
+export const NOTICE_TYPE_KEY = 'noticetypekey123456789'
+export const BLOG_CATEGORY_KEY = 'blogcategorykey123456789'
+export const EMAIL_KEY = 'emailkey123456789'
