@@ -89,7 +89,7 @@ function SignIn(props) {
                   },
                 ]}
               >
-                <Input />
+                <Input className="ant-input-email" />
               </FormItem>
               <FormItem
                 label="Password"
