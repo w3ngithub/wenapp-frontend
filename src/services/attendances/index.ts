@@ -2,6 +2,7 @@ import axios from 'axios'
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
+import {ATTENDANCE_KEY, decrypt} from 'util/crypto'
 
 const getAllAttendances = async ({
   page = '',
@@ -124,7 +125,13 @@ const searchAttendacentOfUser = async ({
       )
     }
 
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, ATTENDANCE_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }
