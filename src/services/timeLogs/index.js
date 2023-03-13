@@ -1,6 +1,13 @@
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
+import {
+  decrypt,
+  LOG_KEY,
+  LOG_TYPE_KEY,
+  WEEKLY_REPORT_KEY,
+  WORK_LOG_REPORT_KEY,
+} from 'util/crypto'
 
 const getAllTimeLogs = async ({
   page = '',
@@ -15,7 +22,13 @@ const getAllTimeLogs = async ({
     let response = await API.get(
       `${Apis.TimeLogs}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&project=${project}&user=${user}&logType=${logType}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -24,7 +37,13 @@ const getAllTimeLogs = async ({
 const getLogTypes = async () => {
   try {
     let response = await API.get(`${Apis.TimeLogs}/types`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_TYPE_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -45,7 +64,13 @@ const addLogTime = async (payload) => {
 const getWeeklyTimeLogSummary = async () => {
   try {
     let response = await API.get(`${Apis.TimeLogs}/users/weeklytime`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -54,7 +79,13 @@ const getWeeklyTimeLogSummary = async () => {
 const getTodayTimeLogSummary = async () => {
   try {
     let response = await API.get(`${Apis.TimeLogs}/users/todaytime`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -101,7 +132,13 @@ const getWeeklyReport = async ({
     let response = await API.post(
       `${Apis.TimeLogs}/weeklyreport/?fromDate=${fromDate}&toDate=${toDate}&logType=${logType}&projectStatus=${projectStatus}&client=${client}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, WEEKLY_REPORT_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -131,7 +168,13 @@ const getWeeklyTimeLogs = async ({
     let response = await API.get(
       `${Apis.TimeLogs}/users/weeklyLogs?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&project=${project}&user=${user}&logType=${logType}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -148,7 +191,13 @@ const getWorkLogReport = async ({
     let response = await API.post(
       `${Apis.TimeLogs}/worklogs?project=${project}&user=${user}&logType=${logType}&fromDate=${fromDate}&toDate=${toDate}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, WORK_LOG_REPORT_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -159,7 +208,13 @@ const WeeklyProjectTimeLogSummary = async (projectId) => {
     let response = await API.get(
       `${Apis.TimeLogs}/users/weeklytimeproject/?projectId=${projectId}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
