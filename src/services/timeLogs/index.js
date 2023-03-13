@@ -3,6 +3,7 @@ import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
 import {
   decrypt,
+  LOG_KEY,
   LOG_TYPE_KEY,
   WEEKLY_REPORT_KEY,
   WORK_LOG_REPORT_KEY,
@@ -21,7 +22,13 @@ const getAllTimeLogs = async ({
     let response = await API.get(
       `${Apis.TimeLogs}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&project=${project}&user=${user}&logType=${logType}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -57,7 +64,13 @@ const addLogTime = async (payload) => {
 const getWeeklyTimeLogSummary = async () => {
   try {
     let response = await API.get(`${Apis.TimeLogs}/users/weeklytime`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -66,7 +79,13 @@ const getWeeklyTimeLogSummary = async () => {
 const getTodayTimeLogSummary = async () => {
   try {
     let response = await API.get(`${Apis.TimeLogs}/users/todaytime`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -183,7 +202,13 @@ const WeeklyProjectTimeLogSummary = async (projectId) => {
     let response = await API.get(
       `${Apis.TimeLogs}/users/weeklytimeproject/?projectId=${projectId}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
