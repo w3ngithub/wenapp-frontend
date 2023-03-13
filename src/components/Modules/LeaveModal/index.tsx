@@ -30,6 +30,7 @@ import {
   specifyParticularHalf,
   pendingLeaves,
   filterSpecificUser,
+  getRangeofDates,
 } from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
@@ -231,15 +232,6 @@ function LeaveModal({
       const leaveType = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
       )
-      // //calculation for maternity, paternity, pto leaves
-      // const numberOfLeaveDays = leaveType?.leaveDays - 1 // duration is dynamic based on settings values
-      // const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
-      // const newDate = new Date(values?.leaveDatesPeriod?._d)
-      // const endDate = new Date(
-      //   newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
-      // )
-      // const appliedDateUTC = appliedDate ? MuiFormatDate(appliedDate) : ''
-      // const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
 
       let LeaveDaysUTC: any = []
 
@@ -247,23 +239,10 @@ function LeaveModal({
 
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       if (leaveType?.isSpecial) {
-        const newDate = new Date(values?.leaveDatesPeriod?._d)
-        const ArrayofDates = []
-        for (let i = 1; i < leaveType?.leaveDays; i++) {
-          ArrayofDates.push(
-            `${MuiFormatDate(
-              new Date(newDate.setDate(appliedDate?.getDate() + i))
-            )}T00:00:00Z`
-          )
-        }
-        // const endDate = new Date(
-        //   newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
-        // )
-        const appliedDateUTC = appliedDate
-          ? `${MuiFormatDate(appliedDate)}T00:00:00Z`
-          : ''
-
-        LeaveDaysUTC = [appliedDateUTC, ...ArrayofDates]
+        LeaveDaysUTC = getRangeofDates(
+          values?.leaveDatesPeriod?._d,
+          leaveType?.leaveDays
+        )
         // const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
       } else {
         const casualLeaveDays = [
@@ -275,14 +254,6 @@ function LeaveModal({
           .sort((a, b) => a.localeCompare(b))
       }
 
-      //calculation for sick, casual leaves
-      // const casualLeaveDays = appliedDate
-      //   ? []
-      //   : values?.leaveDatesCasual?.join(',').split(',')
-      // const casualLeaveDaysUTC = casualLeaveDays
-      //   ?.map((leave: string) => `${MuiFormatDate(new Date(leave))}T00:00:00Z`)
-      //   .sort((a: any, b: any) => a.localeCompare(b))
-      //deleting existing document image from firebase if the uses updates the image
       if (isDocumentDeleted) {
         const imageRef = ref(storage, values?.leaveDocument)
         await deleteObject(imageRef)
@@ -297,9 +268,7 @@ function LeaveModal({
         uploadTask.on(
           'state_changed',
           (snapshot) => {},
-          (error) => {
-            console.log(error.message)
-          },
+          (error) => {},
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               const newLeave = {
@@ -601,7 +570,7 @@ function LeaveModal({
                       )}
                     </Select>
                   </Form.Item>
-                  {((leaveType && calendarClicked) || readOnly) && (
+                  {!leaveType?.isSpecial && (calendarClicked || readOnly) && (
                     <Form.Item
                       {...formItemLayout}
                       label="Leave Interval"

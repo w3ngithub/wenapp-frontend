@@ -17,6 +17,7 @@ import {
   filterOptions,
   getDateRangeArray,
   getIsAdmin,
+  getRangeofDates,
   handleResponse,
   MuiFormatDate,
   pendingLeaves,
@@ -149,12 +150,12 @@ function Apply({user}) {
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
     select: (res) => {
       return [
-        ...res?.data?.data?.data?.map((type) => ({
+        ...(res?.data?.data?.data?.map((type) => ({
           ...type,
           id: type._id,
           value: type?.name.replace('Leave', '').trim(),
           leaveDays: type?.leaveDays,
-        })),
+        })) || []),
       ]
     },
   })
@@ -383,24 +384,10 @@ function Apply({user}) {
 
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       if (leaveType?.isSpecial) {
-        const newDate = new Date(values?.leaveDatesPeriod?._d)
-        const ArrayofDates = []
-        for (let i = 1; i < leaveType?.leaveDays; i++) {
-          ArrayofDates.push(
-            `${MuiFormatDate(
-              new Date(newDate.setDate(appliedDate?.getDate() + i))
-            )}T00:00:00Z`
-          )
-        }
-        // const endDate = new Date(
-        //   newDate.setDate(appliedDate?.getDate() + numberOfLeaveDays)
-        // )
-        const appliedDateUTC = appliedDate
-          ? `${MuiFormatDate(appliedDate)}T00:00:00Z`
-          : ''
-
-        LeaveDaysUTC = [appliedDateUTC, ...ArrayofDates]
-        // const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
+        LeaveDaysUTC = getRangeofDates(
+          values?.leaveDatesPeriod?._d,
+          leaveType?.leaveDays
+        )
       }
 
       //calculation for sick, casual leaves
