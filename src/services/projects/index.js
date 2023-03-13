@@ -44,7 +44,13 @@ const getAllProjects = async ({
 const getProject = async (projectId) => {
   try {
     let response = await API.get(`${Apis.Projects}/${projectId}`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, PROJECT_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
