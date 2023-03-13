@@ -14,9 +14,9 @@ import {
 import moment from 'moment'
 import {useEffect} from 'react'
 import {filterOptions} from 'helpers/utils'
-import {getNoticeTypes} from 'services/noticeboard'
 import {disabledBeforeToday} from 'util/antDatePickerDisabled'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {getNoticeboardTypes} from 'services/settings/noticeBoard'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -32,7 +32,7 @@ function NoticeModal({
   loading = false,
   isEditMode = false,
 }) {
-  const noticeTypesQuery = useQuery(['noticeTypes'], getNoticeTypes, {
+  const noticeTypesQuery = useQuery(['noticeTypes'], getNoticeboardTypes, {
     enabled: false,
   })
   const [form] = Form.useForm()

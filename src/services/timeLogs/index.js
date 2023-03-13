@@ -1,6 +1,7 @@
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
+import {decrypt, LOG_TYPE_KEY} from 'util/crypto'
 
 const getAllTimeLogs = async ({
   page = '',
@@ -24,7 +25,13 @@ const getAllTimeLogs = async ({
 const getLogTypes = async () => {
   try {
     let response = await API.get(`${Apis.TimeLogs}/types`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_TYPE_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
