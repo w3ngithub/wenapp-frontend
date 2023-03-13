@@ -27,6 +27,11 @@ export const PROJECT_STATUS_KEY = 'projectstatuskey123456789'
 export const PROJECCT_TAG_KEY = 'projecttagkey123456789'
 export const PROJECT_TYPE_KEY = 'projecttypekey123456789'
 
+export const USER_POSITION_KEY = 'userpositionkey123456789'
+export const USER_POSITION_TYPE_KEY = 'userpositiontypekey123456789'
+export const USER_ROLE_KEY = 'userrolekey123456789'
+export const USER_INVITE_KEY = 'userinvitekey123456789'
+
 export const LOG_TYPE_KEY = 'logtypekey123456789'
 export const LOG_KEY = 'logkey123456789'
 

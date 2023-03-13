@@ -1,8 +1,14 @@
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
-import {decrypt} from 'util/crypto'
-import {PROJECT_KEY} from './../../util/crypto'
+import {
+  CLIENT_KEY,
+  decrypt,
+  PROJECCT_TAG_KEY,
+  PROJECT_STATUS_KEY,
+  PROJECT_TYPE_KEY,
+  PROJECT_KEY,
+} from 'util/crypto'
 
 const getAllProjects = async ({
   page = '',
@@ -47,7 +53,13 @@ const getProject = async (projectId) => {
 const getProjectTypes = async () => {
   try {
     let response = await API.get(`${Apis.Projects}/types`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, PROJECT_TYPE_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -56,7 +68,13 @@ const getProjectTypes = async () => {
 const getProjectStatus = async () => {
   try {
     let response = await API.get(`${Apis.Projects}/status`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, PROJECT_STATUS_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -65,7 +83,13 @@ const getProjectStatus = async () => {
 const getProjectTags = async () => {
   try {
     let response = await API.get(`${Apis.ProjectTags}`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, PROJECCT_TAG_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }
@@ -74,7 +98,13 @@ const getProjectTags = async () => {
 const getProjectClients = async () => {
   try {
     let response = await API.get(`${Apis.Projects}/clients`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, CLIENT_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err.response)
   }

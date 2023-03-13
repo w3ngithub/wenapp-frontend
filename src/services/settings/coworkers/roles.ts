@@ -2,15 +2,6 @@ import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
 
-export const getRoles = async () => {
-  try {
-    let response = await API.get(`${Apis.Roles}`)
-    return getAPIResponse(response)
-  } catch (err) {
-    return getAPIResponse(err?.response)
-  }
-}
-
 export const addRole = async (payload: {value: string; key: string}) => {
   try {
     let response = await API.post(`${Apis.Users}/roles`, payload)
