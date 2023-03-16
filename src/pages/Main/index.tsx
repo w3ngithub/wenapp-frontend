@@ -30,6 +30,7 @@ import {
   LOGTIME,
   MAINTAINANCE_MODE,
   NOTICEBOARD,
+  OVERTIME_REPORT,
   OVERVIEW,
   POLICY,
   PROFILE,
@@ -72,6 +73,7 @@ import ActivityLogs from 'pages/Reports/ActivityLogs'
 import MaintenanceMode from 'pages/MaintenanceMode'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import SalaryReviewPage from 'pages/Reports/SalaryReview'
+import OvertimePage from 'pages/Reports/OvertimeReport'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -300,6 +302,14 @@ function App(props: any) {
                   element={
                     <AccessRoute roles={NavigationReports?.viewActivityLog}>
                       <ActivityLogs />
+                    </AccessRoute>
+                  }
+                />
+                <Route
+                  path={OVERTIME_REPORT}
+                  element={
+                    <AccessRoute roles={NavigationReports?.viewOvertimeReport}>
+                      <OvertimePage />
                     </AccessRoute>
                   }
                 />
