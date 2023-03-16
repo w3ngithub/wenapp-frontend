@@ -4,7 +4,20 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS} from 'constants/Overtime'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {useMutation, useQueryClient} from '@tanstack/react-query'
-import {handleResponse} from 'helpers/utils'
+import {changeDate, handleResponse} from 'helpers/utils'
+
+const formattedReports = (overtimeData) => {
+  return overtimeData?.map((log) => ({
+    ...log,
+    key: log?._id,
+    logType: log?.logType?.name,
+    logDate: changeDate(log?.logDate),
+    user: log?.user?.name,
+    project: log?.project?.name || 'Other',
+    slug: log?.project?.slug,
+    projectId: log?.project?.id,
+  }))
+}
 
 const OvertimePage = () => {
   const queryClient = useQueryClient()
@@ -14,20 +27,20 @@ const OvertimePage = () => {
   const [openOvertimeModal, setOpenOvertimeModal] = useState(false)
   const [leaveDetails, setleaveDetails] = useState({})
 
-  const overtimeApproveMutation = useMutation(
-    (payload) => overtimeApprove(payload.id, payload.type),
-    {
-      onSuccess: (response) => {
-        if (response.status) {
-          Notification({message: 'Overtime approved'})
-          queryClient.invalidateQueries('')
-        }
-      },
-      onError: (error) => {
-        Notification({message: 'Could not approve leave', type: 'error'})
-      },
-    }
-  )
+  // const overtimeApproveMutation = useMutation(
+  //   (payload) => overtimeApprove(payload.id, payload.type),
+  //   {
+  //     onSuccess: (response) => {
+  //       if (response.status) {
+  //         Notification({message: 'Overtime approved'})
+  //         queryClient.invalidateQueries('')
+  //       }
+  //     },
+  //     onError: (error) => {
+  //       Notification({message: 'Could not approve leave', type: 'error'})
+  //     },
+  //   }
+  // )
 
   const handleTableChange = (pagination, filters, sorter) => {
     setSort(sorter)
@@ -38,16 +51,24 @@ const OvertimePage = () => {
   }
 
   const handleApproveOvertime = (leave) => {
-    const approveReason = leave?.leaveApproveReason
-    leaveApproveMutation.mutate({
-      id: leave._id,
-      type: 'approve',
-      reason: approveReason,
-    })
+    //   const approveReason = leave?.leaveApproveReason
+    //   leaveApproveMutation.mutate({
+    //     id: leave._id,
+    //     type: 'approve',
+    //     reason: approveReason,
+    //   })
+  }
+
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
+  }
+
+  const onShowSizeChange = (_, pageSize) => {
+    setPage((prev) => ({...page, limit: pageSize}))
   }
 
   return (
-    <Card title="Salary Review">
+    <Card title="Overtime Report">
       <CancelLeaveModal
         open={openOvertimeModal}
         onClose={handleCloseApproveModal}
@@ -58,23 +79,24 @@ const OvertimePage = () => {
         title={'Overtime  Approve'}
         isRequired={true}
         name={'overtimeApproveReason'}
+        label="Approve reason"
       />
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
         columns={OVERTIME_COLUMNS(sort)}
-        dataSource={[]}
+        dataSource={formattedReports([])}
         onChange={handleTableChange}
-        // pagination={{
-        //   current: page.page,
-        //   pageSize: page.limit,
-        //   pageSizeOptions: ['25', '50', '100'],
-        //   showSizeChanger: true,
-        //   total: salaryReview?.data?.data?.users.length || 1,
-        //   onShowSizeChange,
-        //   hideOnSinglePage: true,
-        //   onChange: handlePageChange,
-        // }}
+        pagination={{
+          current: page.page,
+          pageSize: page.limit,
+          pageSizeOptions: ['25', '50', '100'],
+          showSizeChanger: true,
+          // total: salaryReview?.data?.data?.users.length || 1,
+          onShowSizeChange,
+          hideOnSinglePage: true,
+          onChange: handlePageChange,
+        }}
         // loading={isLoading || isFetching || salaryLoading || salaryFetching}
       />
     </Card>

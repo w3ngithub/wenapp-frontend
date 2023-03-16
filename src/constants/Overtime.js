@@ -62,48 +62,32 @@ export const OVERTIME_COLUMNS = (
     sorter: true,
     // sortOrder: sortedInfo.columnKey === 'logType' && sortedInfo.order,
   },
-  {
-    title: 'Remarks',
-    dataIndex: 'remarks',
-    // width: 400,
-    key: 'remarks',
-    sorter: true,
-    // sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,
-    // render: (text, record) => {
-    //   return <p style={{whiteSpace: 'pre-wrap'}}>{text}</p>
-    // },
-  },
+  // {
+  //   title: 'Remarks',
+  //   dataIndex: 'remarks',
+  //   // width: 400,
+  //   key: 'remarks',
+  //   sorter: true,
+  // sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,
+  // render: (text, record) => {
+  //   return <p style={{whiteSpace: 'pre-wrap'}}>{text}</p>
+  // },
+  // },
   {
     title: 'Action',
     key: 'action',
     // width: 360,
     render: (text, record) => {
-      // let logDateTime = record?.logDate?.split('/')
-      // let sendDate = `${logDateTime[1]}/${logDateTime[0]}/${logDateTime[2]}`
       return (
         !getIsAdmin() && (
           <div style={{display: 'flex'}}>
-            {/* <AccessWrapper role={viewLeave}> */}
-            <>
-              <span
-                className="gx-link gx-text-primary"
-                // onClick={() => onEditClick(record, true)}
-              >
-                <CustomIcon name="view" />
-              </span>
-            </>
-            {/* </AccessWrapper> */}
-
-            <>
-              {/* <AccessWrapper
-                role={
-                  !getIsAdmin() &&
-                  ![STATUS_TYPES[1].id, STATUS_TYPES[3].id].includes(
-                    record.leaveStatus
-                  ) &&
-                  approveLeave
-                }
-              > */}
+            <span
+              className="gx-link gx-text-primary"
+              // onClick={() => onEditClick(record, true)}
+            >
+              <CustomIcon name="view" />
+            </span>
+            <AccessWrapper role={!getIsAdmin()}>
               <>
                 {/* {viewLeave && <Divider type="vertical" />} */}
 
@@ -114,8 +98,7 @@ export const OVERTIME_COLUMNS = (
                   Approve
                 </span>
               </>
-              {/* </AccessWrapper> */}
-            </>
+            </AccessWrapper>
           </div>
         )
       )
