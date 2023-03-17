@@ -5,13 +5,9 @@ import {getIsAdmin, roundedToFixed} from 'helpers/utils'
 import moment from 'moment'
 
 export const OVERTIME_COLUMNS = (
-  sortedInfo,
-  onOpenEditModal,
-  confirmDelete,
-  hideAdminFeature,
-  user,
-  role,
-  navigateToProjectLogs
+  sort,
+  handleOpenApproveModal,
+  handleViewOnly
 ) => [
   {
     title: 'Project',
@@ -62,17 +58,6 @@ export const OVERTIME_COLUMNS = (
     sorter: true,
     // sortOrder: sortedInfo.columnKey === 'logType' && sortedInfo.order,
   },
-  // {
-  //   title: 'Remarks',
-  //   dataIndex: 'remarks',
-  //   // width: 400,
-  //   key: 'remarks',
-  //   sorter: true,
-  // sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,
-  // render: (text, record) => {
-  //   return <p style={{whiteSpace: 'pre-wrap'}}>{text}</p>
-  // },
-  // },
   {
     title: 'Action',
     key: 'action',
@@ -83,22 +68,24 @@ export const OVERTIME_COLUMNS = (
           <div style={{display: 'flex'}}>
             <span
               className="gx-link gx-text-primary"
-              // onClick={() => onEditClick(record, true)}
+              onClick={() => handleViewOnly(record, true)}
             >
               <CustomIcon name="view" />
             </span>
-            <AccessWrapper role={!getIsAdmin()}>
-              <>
-                {/* {viewLeave && <Divider type="vertical" />} */}
+            {record?.oTStatus === 'pending' && (
+              <AccessWrapper role={!getIsAdmin()}>
+                <>
+                  <Divider type="vertical" />
 
-                <span
-                  // onClick={() => onApproveClick(record)}
-                  className="gx-link gx-text-green"
-                >
-                  Approve
-                </span>
-              </>
-            </AccessWrapper>
+                  <span
+                    onClick={() => handleOpenApproveModal(record)}
+                    className="gx-link gx-text-green"
+                  >
+                    Approve
+                  </span>
+                </>
+              </AccessWrapper>
+            )}
           </div>
         )
       )
