@@ -137,8 +137,8 @@ const OvertimePage = () => {
         onClose={handleViewClose}
         approveReason={readOnlyApproveReason}
         title="Overtime Approve Reason"
-        label="Overtime Approved Reason"
-        name="overtimeApproveReason"
+        label="Reason"
+        // name="overtimeApproveReason"
       />
       <Table
         locale={{emptyText}}

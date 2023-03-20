@@ -31,10 +31,11 @@ function OvertimeApproveReasonModal({
   name = '',
 }) {
   const [form] = Form.useForm()
-  const {themeType} = useSelector((state: any) => state.settings)
+  const {themeType} = useSelector((state) => state.settings)
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   useEffect(() => {
+    form.setFieldsValue({overtimeApproveReason: approveReason})
     if (!open) {
       form.resetFields()
     }
@@ -63,7 +64,11 @@ function OvertimeApproveReasonModal({
       >
         <Row>
           <Col xs={24} sm={24} xl={24}>
-            <Form.Item {...formItemLayout} name={name} label={label}>
+            <Form.Item
+              {...formItemLayout}
+              name={name}
+              name="overtimeApproveReason"
+            >
               <Input.TextArea
                 disabled={true}
                 allowClear

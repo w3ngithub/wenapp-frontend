@@ -66,16 +66,17 @@ export const OVERTIME_COLUMNS = (
       return (
         !getIsAdmin() && (
           <div style={{display: 'flex'}}>
-            <span
-              className="gx-link gx-text-primary"
-              onClick={() => handleViewOnly(record, true)}
-            >
-              <CustomIcon name="view" />
-            </span>
-            {record?.oTStatus === 'pending' && (
+            {record?.oTStatus === 'approved' ? (
+              <span
+                className="gx-link gx-text-primary"
+                onClick={() => handleViewOnly(record, true)}
+              >
+                <CustomIcon name="view" />
+              </span>
+            ) : (
               <AccessWrapper role={!getIsAdmin()}>
                 <>
-                  <Divider type="vertical" />
+                  {/* <Divider type="vertical" /> */}
 
                   <span
                     onClick={() => handleOpenApproveModal(record)}
