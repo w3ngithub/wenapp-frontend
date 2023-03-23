@@ -302,6 +302,7 @@ function CoworkersPage() {
   if (isLoading) {
     return <CircularProgress />
   }
+
   return (
     <div>
       <ImportUsers
@@ -426,8 +427,8 @@ function CoworkersPage() {
                       [
                         'Name',
                         'Email',
+                        'Primary Phone',
                         'Role',
-                        'RoleId',
                         'Position',
                         'PositionId',
                         'DOB',
@@ -436,6 +437,7 @@ function CoworkersPage() {
                       ...selectedRows?.map((d) => [
                         d?.name,
                         d?.email,
+                        d?.primaryPhone,
                         d?.role?.value,
                         d?.role?._id,
                         d?.position?.name,
