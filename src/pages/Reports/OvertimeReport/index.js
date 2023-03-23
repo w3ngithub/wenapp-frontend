@@ -95,10 +95,6 @@ const OvertimePage = () => {
     }
   )
 
-  const handleTableChange = (pagination, filters, sorter) => {
-    setSort(sorter)
-  }
-
   const handleCloseApproveModal = () => {
     setOpenOvertimeModal(false)
   }
@@ -112,14 +108,6 @@ const OvertimePage = () => {
         oTStatus: 'approved',
       },
     })
-  }
-
-  const handlePageChange = (pageNumber) => {
-    setPage((prev) => ({...prev, page: pageNumber}))
-  }
-
-  const onShowSizeChange = (_, pageSize) => {
-    setPage((prev) => ({...page, limit: pageSize}))
   }
 
   const handleOpenApproveModal = (record) => {
@@ -136,21 +124,6 @@ const OvertimePage = () => {
     setIsViewOnly(true)
   }
 
-  const handleAuthorChange = (logAuthor) => {
-    setAuthor(logAuthor)
-    setPage({page: 1, limit: 50})
-  }
-
-  const handleStatusChange = (status) => {
-    setOtStatus(status)
-    setPage({page: 1, limit: 50})
-  }
-
-  const handleResetFilter = () => {
-    setOtStatus(undefined)
-    setAuthor(undefined)
-    setPage({page: 1, limit: 50})
-  }
   const handleSearch = async (projectName) => {
     if (!projectName) {
       setProjectData([])
@@ -165,6 +138,36 @@ const OvertimePage = () => {
   const handleProjectChange = (ProjectId) => {
     setProject(ProjectId)
   }
+
+  const handleAuthorChange = (logAuthor) => {
+    setAuthor(logAuthor)
+    setPage({page: 1, limit: 50})
+  }
+
+  const handleStatusChange = (status) => {
+    setOtStatus(status)
+    setPage({page: 1, limit: 50})
+  }
+
+  const handleResetFilter = () => {
+    setProject(undefined)
+    setOtStatus(undefined)
+    setAuthor(undefined)
+    setPage({page: 1, limit: 50})
+  }
+
+  const handleTableChange = (pagination, filters, sorter) => {
+    setSort(sorter)
+  }
+
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
+  }
+
+  const onShowSizeChange = (_, pageSize) => {
+    setPage((prev) => ({...page, limit: pageSize}))
+  }
+
   return (
     <Card title="Overtime Report">
       <CancelLeaveModal
@@ -223,8 +226,7 @@ const OvertimePage = () => {
             onChange={handleStatusChange}
             value={otStatus}
             options={OT_STATUS?.map((x) => ({
-              ...x,
-              id: x._id,
+              id: x.id,
               value: x.value,
             }))}
           />
