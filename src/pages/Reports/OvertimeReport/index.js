@@ -50,21 +50,18 @@ const OvertimePage = () => {
   )
 
   const allUsers = useQuery(['users'], () => getAllUsers({sort: 'name'}))
-  // const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
-  //   id: user._id,
-  //   value: user.name,
-  // }))
 
   const {
     data: logTimeDetails,
     isLoading: timelogLoading,
     isFetching: timeLogFetching,
-  } = useQuery(['timeLogs', page, sort, isOT, otStatus, author], () =>
+  } = useQuery(['timeLogs', page, sort, isOT, otStatus, author, project], () =>
     getAllTimeLogs({
       ...page,
       isreport: true,
       logType: isOT?._id,
       user: author,
+      project: project,
       oTStatus: otStatus ? otStatus : undefined,
       sort:
         sort.order === undefined || sort.column === undefined
@@ -154,7 +151,7 @@ const OvertimePage = () => {
     setAuthor(undefined)
     setPage({page: 1, limit: 50})
   }
-  const handleSearch = async (projectName: any) => {
+  const handleSearch = async (projectName) => {
     if (!projectName) {
       setProjectData([])
       return
