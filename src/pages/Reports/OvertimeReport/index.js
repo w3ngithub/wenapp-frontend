@@ -1,4 +1,4 @@
-import {Card, Form, notification, Select, Table} from 'antd'
+import {Button, Card, Form, notification, Select, Table} from 'antd'
 import React, {useState} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
@@ -7,6 +7,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {changeDate, filterOptions, handleResponse} from 'helpers/utils'
 import {getAllTimeLogs, getLogTypes, updateTimeLog} from 'services/timeLogs'
 import OvertimeApproveReasonModal from 'components/Modules/OvertimeApproveReasonModal'
+import {getAllUsers} from 'services/users/userDetails'
 
 const formattedReports = (overtimeData) => {
   return overtimeData?.map((log) => ({
@@ -42,19 +43,22 @@ const OvertimePage = () => {
 
   const isOT = logTypes?.data?.data?.data?.find((d) => d?.name === 'Ot')
 
-  //   const {data: projectDetail} = useQuery(['singleProject', projectId], () =>
-  //   getProject(projectId)
-  // )
+  const usersQuery = useQuery(['users'], () => getAllUsers({sort: 'name'}))
+  const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
+    id: user._id,
+    name: user.name,
+  }))
 
   const {
     data: logTimeDetails,
     isLoading: timelogLoading,
     isFetching: timeLogFetching,
-  } = useQuery(['timeLogs', page, sort, isOT, otStatus], () =>
+  } = useQuery(['timeLogs', page, sort, isOT, otStatus, author], () =>
     getAllTimeLogs({
       ...page,
       isreport: true,
       logType: isOT?._id,
+      user: author,
       oTStatus: otStatus ? otStatus : undefined,
       sort:
         sort.order === undefined || sort.column === undefined
@@ -134,8 +138,15 @@ const OvertimePage = () => {
     setPage({page: 1, limit: 50})
   }
 
+  console.log('set auther', author)
   const handleStatusChange = (status) => {
     setOtStatus(status)
+    setPage({page: 1, limit: 50})
+  }
+
+  const handleResetFilter = () => {
+    setOtStatus(undefined)
+    setAuthor(undefined)
     setPage({page: 1, limit: 50})
   }
 
@@ -171,12 +182,12 @@ const OvertimePage = () => {
             onChange={handleAuthorChange}
             value={author}
           >
-            {/* {LogAuthors &&
-              LogAuthors?.map((status) => (
-                <Option value={status._id} key={status._id}>
-                  {status.name}
+            {allUsers &&
+              allUsers?.map((user) => (
+                <Option value={user.id} key={user.id}>
+                  {user.name}
                 </Option>
-              ))} */}
+              ))}
           </Select>
         </FormItem>
         <FormItem className="direct-form-item">
@@ -194,6 +205,14 @@ const OvertimePage = () => {
               </Option>
             ))}
           </Select>
+        </FormItem>
+        <FormItem style={{marginBottom: '0.8rem'}}>
+          <Button
+            className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+            onClick={handleResetFilter}
+          >
+            Reset
+          </Button>
         </FormItem>
       </Form>
       <Table

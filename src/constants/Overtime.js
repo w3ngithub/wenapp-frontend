@@ -114,6 +114,7 @@ export const OVERTIME_COLUMNS = (
 ]
 
 export const OT_STATUS = [
-  {id: 'approved', name: 'approved'},
-  {id: 'pending', name: 'pending'},
+  {id: 'approved', name: 'Approved'},
+  {id: 'pending', name: 'Pending'},
+  {id: '', name: 'All'},
 ]
