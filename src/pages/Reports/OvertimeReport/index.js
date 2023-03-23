@@ -1,5 +1,5 @@
-import {Button, Card, Form, notification, Select, Table} from 'antd'
-import React, {useState} from 'react'
+import {Button, Card, Form, Input, notification, Table} from 'antd'
+import React, {useState, useCallback} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
@@ -8,7 +8,9 @@ import {changeDate, filterOptions, handleResponse} from 'helpers/utils'
 import {getAllTimeLogs, getLogTypes, updateTimeLog} from 'services/timeLogs'
 import OvertimeApproveReasonModal from 'components/Modules/OvertimeApproveReasonModal'
 import {getAllUsers} from 'services/users/userDetails'
-
+import Select from 'components/Elements/Select'
+import {debounce} from 'helpers/utils'
+import {getAllProjects} from 'services/projects'
 const formattedReports = (overtimeData) => {
   return overtimeData?.map((log) => ({
     ...log,
@@ -25,6 +27,7 @@ const formattedReports = (overtimeData) => {
 
 const FormItem = Form.Item
 const Option = Select.Option
+const Search = Input.Search
 
 const OvertimePage = () => {
   const [form] = Form.useForm()
@@ -38,16 +41,19 @@ const OvertimePage = () => {
   const [readOnlyApproveReason, setReadonlyApproveReason] = useState('')
   const [author, setAuthor] = useState(undefined)
   const [otStatus, setOtStatus] = useState(undefined)
-
+  const [projectData, setProjectData] = useState([])
+  const [project, setProject] = useState(undefined)
   const {data: logTypes} = useQuery(['logTypes'], () => getLogTypes())
 
-  const isOT = logTypes?.data?.data?.data?.find((d) => d?.name === 'Ot')
+  const isOT = logTypes?.data?.data?.data?.find(
+    (d) => d?.name.toLowerCase() === 'ot'
+  )
 
-  const usersQuery = useQuery(['users'], () => getAllUsers({sort: 'name'}))
-  const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
-    id: user._id,
-    name: user.name,
-  }))
+  const allUsers = useQuery(['users'], () => getAllUsers({sort: 'name'}))
+  // const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
+  //   id: user._id,
+  //   value: user.name,
+  // }))
 
   const {
     data: logTimeDetails,
@@ -148,7 +154,20 @@ const OvertimePage = () => {
     setAuthor(undefined)
     setPage({page: 1, limit: 50})
   }
+  const handleSearch = async (projectName: any) => {
+    if (!projectName) {
+      setProjectData([])
+      return
+    } else {
+      const projects = await getAllProjects({project: projectName})
+      setProjectData(projects?.data?.data?.data)
+    }
+  }
+  const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
+  const handleProjectChange = (ProjectId) => {
+    setProject(ProjectId)
+  }
   return (
     <Card title="Overtime Report">
       <CancelLeaveModal
@@ -174,36 +193,44 @@ const OvertimePage = () => {
       <Form layout="inline" form={form}>
         <FormItem className="direct-form-item">
           <Select
-            notFoundContent={emptyText}
+            placeholder="Select Project"
+            onChange={handleProjectChange}
+            value={project}
+            handleSearch={optimizedFn}
+            options={projectData?.map((x) => ({
+              ...x,
+              id: x._id,
+              value: x.name,
+            }))}
+            inputSelect
+          />
+        </FormItem>
+        <FormItem className="direct-form-item">
+          <Select
             showSearch
             filterOption={filterOptions}
             placeholder="Select Log Author"
             onChange={handleAuthorChange}
             value={author}
-          >
-            {allUsers &&
-              allUsers?.map((user) => (
-                <Option value={user.id} key={user.id}>
-                  {user.name}
-                </Option>
-              ))}
-          </Select>
+            options={allUsers?.data?.data?.data?.data?.map((user) => ({
+              id: user._id,
+              value: user.name,
+            }))}
+          />
         </FormItem>
         <FormItem className="direct-form-item">
           <Select
-            notFoundContent={emptyText}
             showSearch
             filterOption={filterOptions}
             placeholder="Select OT Status"
             onChange={handleStatusChange}
             value={otStatus}
-          >
-            {OT_STATUS.map((status) => (
-              <Option value={status.id} key={status.id}>
-                {status.name}
-              </Option>
-            ))}
-          </Select>
+            options={OT_STATUS?.map((x) => ({
+              ...x,
+              id: x._id,
+              value: x.value,
+            }))}
+          />
         </FormItem>
         <FormItem style={{marginBottom: '0.8rem'}}>
           <Button

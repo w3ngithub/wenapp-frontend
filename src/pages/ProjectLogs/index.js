@@ -241,8 +241,9 @@ function ProjectLogs() {
 
   const handleLogTypeSubmit = (newLogtime, reset) => {
     const isTypeOT =
-      logTypes?.data?.data?.data?.find((d) => d._id === newLogtime?.logType)
-        ?.name === 'Ot'
+      logTypes?.data?.data?.data
+        ?.find((d) => d._id === newLogtime?.logType)
+        ?.name.toLowerCase() === 'ot'
     const formattedNewLogtime = {
       ...newLogtime,
       hours: +newLogtime.hours,
