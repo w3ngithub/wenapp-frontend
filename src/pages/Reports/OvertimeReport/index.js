@@ -1,10 +1,10 @@
-import {Card, notification, Table} from 'antd'
+import {Card, Form, notification, Select, Table} from 'antd'
 import React, {useState} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
-import {OVERTIME_COLUMNS} from 'constants/Overtime'
+import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {changeDate, handleResponse} from 'helpers/utils'
+import {changeDate, filterOptions, handleResponse} from 'helpers/utils'
 import {getAllTimeLogs, getLogTypes, updateTimeLog} from 'services/timeLogs'
 import OvertimeApproveReasonModal from 'components/Modules/OvertimeApproveReasonModal'
 
@@ -18,10 +18,15 @@ const formattedReports = (overtimeData) => {
     project: log?.project?.name || 'Other',
     slug: log?.project?.slug,
     projectId: log?.project?.id,
+    remarks: log?.remarks,
   }))
 }
 
+const FormItem = Form.Item
+const Option = Select.Option
+
 const OvertimePage = () => {
+  const [form] = Form.useForm()
   const queryClient = useQueryClient()
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 50})
@@ -30,20 +35,27 @@ const OvertimePage = () => {
   const [approveDetails, setApproveDetails] = useState({})
   const [isViewOnly, setIsViewOnly] = useState(false)
   const [readOnlyApproveReason, setReadonlyApproveReason] = useState('')
+  const [author, setAuthor] = useState(undefined)
+  const [otStatus, setOtStatus] = useState(undefined)
 
   const {data: logTypes} = useQuery(['logTypes'], () => getLogTypes())
 
   const isOT = logTypes?.data?.data?.data?.find((d) => d?.name === 'Ot')
 
+  //   const {data: projectDetail} = useQuery(['singleProject', projectId], () =>
+  //   getProject(projectId)
+  // )
+
   const {
     data: logTimeDetails,
     isLoading: timelogLoading,
     isFetching: timeLogFetching,
-  } = useQuery(['timeLogs', page, sort, isOT], () =>
+  } = useQuery(['timeLogs', page, sort, isOT, otStatus], () =>
     getAllTimeLogs({
       ...page,
       isreport: true,
       logType: isOT?._id,
+      oTStatus: otStatus ? otStatus : undefined,
       sort:
         sort.order === undefined || sort.column === undefined
           ? '-logDate'
@@ -117,6 +129,16 @@ const OvertimePage = () => {
     setIsViewOnly(true)
   }
 
+  const handleAuthorChange = (logAuthor) => {
+    setAuthor(logAuthor)
+    setPage({page: 1, limit: 50})
+  }
+
+  const handleStatusChange = (status) => {
+    setOtStatus(status)
+    setPage({page: 1, limit: 50})
+  }
+
   return (
     <Card title="Overtime Report">
       <CancelLeaveModal
@@ -139,6 +161,41 @@ const OvertimePage = () => {
         title="Overtime Approve Reason"
         label="Reason"
       />
+      <Form layout="inline" form={form}>
+        <FormItem className="direct-form-item">
+          <Select
+            notFoundContent={emptyText}
+            showSearch
+            filterOption={filterOptions}
+            placeholder="Select Log Author"
+            onChange={handleAuthorChange}
+            value={author}
+          >
+            {/* {LogAuthors &&
+              LogAuthors?.map((status) => (
+                <Option value={status._id} key={status._id}>
+                  {status.name}
+                </Option>
+              ))} */}
+          </Select>
+        </FormItem>
+        <FormItem className="direct-form-item">
+          <Select
+            notFoundContent={emptyText}
+            showSearch
+            filterOption={filterOptions}
+            placeholder="Select OT Status"
+            onChange={handleStatusChange}
+            value={otStatus}
+          >
+            {OT_STATUS.map((status) => (
+              <Option value={status.id} key={status.id}>
+                {status.name}
+              </Option>
+            ))}
+          </Select>
+        </FormItem>
+      </Form>
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"

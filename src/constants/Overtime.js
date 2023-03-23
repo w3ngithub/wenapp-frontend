@@ -59,6 +59,25 @@ export const OVERTIME_COLUMNS = (
     // sortOrder: sortedInfo.columnKey === 'logType' && sortedInfo.order,
   },
   {
+    title: 'Remarks',
+    dataIndex: 'remarks',
+    // width: 400,
+    key: 'remarks',
+    sorter: true,
+    // sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,
+    render: (text, record) => {
+      return <p style={{whiteSpace: 'pre-wrap'}}>{text}</p>
+    },
+  },
+  {
+    title: 'Added By',
+    dataIndex: 'user',
+    // width: 150,
+    key: 'user',
+    sorter: true,
+    // sortOrder: sortedInfo.columnKey === 'user' && sortedInfo.order,
+  },
+  {
     title: 'Action',
     key: 'action',
     // width: 360,
@@ -92,4 +111,9 @@ export const OVERTIME_COLUMNS = (
       )
     },
   },
+]
+
+export const OT_STATUS = [
+  {id: 'approved', name: 'approved'},
+  {id: 'pending', name: 'pending'},
 ]

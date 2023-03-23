@@ -18,12 +18,13 @@ const getAllTimeLogs = async ({
   user = '',
   logType = '',
   isreport = '',
+  oTStatus = '',
 }) => {
   try {
     let response = await API.get(
       `${
         Apis.TimeLogs
-      }?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&project=${project}&user=${user}&logType=${logType}${
+      }?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&project=${project}&user=${user}&logType=${logType}&oTStatus=${oTStatus}&${
         isreport && `&isreport=${isreport}`
       }`
     )
