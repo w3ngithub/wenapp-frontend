@@ -138,7 +138,6 @@ const OvertimePage = () => {
     setPage({page: 1, limit: 50})
   }
 
-  console.log('set auther', author)
   const handleStatusChange = (status) => {
     setOtStatus(status)
     setPage({page: 1, limit: 50})
