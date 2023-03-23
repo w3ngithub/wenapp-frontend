@@ -287,7 +287,7 @@ function CoworkersPage() {
       let changeRowsId = changeRows?.map((d) => d?._id)
       setSelectedIds((prev) => prev.filter((d) => !changeRowsId.includes(d)))
       setSelectedRows((prev) =>
-        prev.filter((d) => !changeRows.includes(d?._id))
+        prev.filter((d) => !changeRowsId.includes(d?._id))
       )
     }
   }
