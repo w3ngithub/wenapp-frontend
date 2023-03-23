@@ -46,6 +46,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {useSelector} from 'react-redux'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -376,7 +377,11 @@ function AdminAttendance({userRole}) {
             <Form layout="inline" form={form}>
               <div className="gx-d-flex gx-justify-content-between gx-flex-row">
                 <FormItem>
-                  <RangePicker onChange={handleChangeDate} value={date} />
+                  <RangePicker
+                    onChange={handleChangeDate}
+                    value={date}
+                    disabledDate={disabledAfterToday}
+                  />
                 </FormItem>
                 <FormItem className="direct-form-item">
                   <Select
@@ -518,7 +523,11 @@ function AdminAttendance({userRole}) {
             <Form layout="inline" form={form}>
               <div className="gx-d-flex gx-justify-content-between gx-flex-row">
                 <FormItem>
-                  <RangePicker onChange={handleChangeDate} value={date} />
+                  <RangePicker
+                    onChange={handleChangeDate}
+                    value={date}
+                    disabledDate={disabledAfterToday}
+                  />
                 </FormItem>
                 <FormItem className="direct-form-item">
                   <Select
