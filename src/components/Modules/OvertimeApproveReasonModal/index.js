@@ -66,7 +66,7 @@ function OvertimeApproveReasonModal({
           <Col xs={24} sm={24} xl={24}>
             <Form.Item
               {...formItemLayout}
-              name={name}
+              label={label}
               name="overtimeApproveReason"
             >
               <Input.TextArea

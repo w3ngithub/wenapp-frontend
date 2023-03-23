@@ -13,7 +13,7 @@ export const OVERTIME_COLUMNS = (
     title: 'Project',
     dataIndex: 'project',
     key: 'project',
-    // width: 120,
+    // width: 400,
     sorter: true,
     // sortOrder: sortedInfo.columnKey === 'project' && sortedInfo.order,
     //   render: (text, record) => {

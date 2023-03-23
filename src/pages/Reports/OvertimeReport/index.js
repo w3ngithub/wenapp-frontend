@@ -138,7 +138,6 @@ const OvertimePage = () => {
         approveReason={readOnlyApproveReason}
         title="Overtime Approve Reason"
         label="Reason"
-        // name="overtimeApproveReason"
       />
       <Table
         locale={{emptyText}}
