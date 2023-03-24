@@ -2,7 +2,6 @@ import {Button, Card, Form, Input, notification, Table} from 'antd'
 import React, {useState, useCallback} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
-import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {changeDate, filterOptions, handleResponse} from 'helpers/utils'
 import {getAllTimeLogs, getLogTypes, updateTimeLog} from 'services/timeLogs'
@@ -26,8 +25,6 @@ const formattedReports = (overtimeData) => {
 }
 
 const FormItem = Form.Item
-const Option = Select.Option
-const Search = Input.Search
 
 const OvertimePage = () => {
   const [form] = Form.useForm()
@@ -97,6 +94,7 @@ const OvertimePage = () => {
 
   const handleCloseApproveModal = () => {
     setOpenOvertimeModal(false)
+    setIsViewOnly(false)
   }
 
   const handleApproveOvertime = (approve) => {
@@ -115,13 +113,10 @@ const OvertimePage = () => {
     setOpenOvertimeModal(true)
   }
 
-  const handleViewClose = () => {
-    setIsViewOnly(false)
-  }
-
   const handleOpenViewModal = (details) => {
     setReadonlyApproveReason(details?.oTReason)
     setIsViewOnly(true)
+    setOpenOvertimeModal(true)
   }
 
   const handleSearch = async (projectName) => {
@@ -170,25 +165,25 @@ const OvertimePage = () => {
 
   return (
     <Card title="Overtime Report">
-      <CancelLeaveModal
+      <OvertimeApproveReasonModal
         open={openOvertimeModal}
         onClose={handleCloseApproveModal}
         onSubmit={handleApproveOvertime}
-        leaveData={approveDetails}
+        approveDetails={approveDetails}
         loader={loader}
         setLoader={setLoader}
         title={'Overtime  Approve'}
         isRequired={true}
-        name={'overtimeApproveReason'}
         label="Approve reason"
       />
 
       <OvertimeApproveReasonModal
         open={isViewOnly}
-        onClose={handleViewClose}
+        onClose={handleCloseApproveModal}
         approveReason={readOnlyApproveReason}
         title="Overtime Approve Reason"
         label="Reason"
+        isReadOnly={isViewOnly}
       />
       <Form layout="inline" form={form}>
         <FormItem className="direct-form-item">

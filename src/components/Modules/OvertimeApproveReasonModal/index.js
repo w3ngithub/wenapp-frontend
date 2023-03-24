@@ -26,9 +26,13 @@ function OvertimeApproveReasonModal({
   open,
   onClose,
   approveReason,
+  onSubmit,
+  approveDetails,
+  setLoader,
   title = '',
   label = '',
-  name = '',
+  isRequired = false,
+  isReadOnly = false,
 }) {
   const [form] = Form.useForm()
   const {themeType} = useSelector((state) => state.settings)
@@ -39,7 +43,14 @@ function OvertimeApproveReasonModal({
     if (!open) {
       form.resetFields()
     }
-  }, [open])
+  }, [approveReason, form, open])
+
+  const onFinish = (values) => {
+    form.validateFields().then((values) => {
+      setLoader(true)
+      onSubmit({...approveDetails, ...values})
+    })
+  }
 
   return (
     <Modal
@@ -48,12 +59,24 @@ function OvertimeApproveReasonModal({
       style={{flexDirection: 'row'}}
       visible={open}
       mask={false}
+      onOk={isReadOnly ? () => {} : onFinish}
       onCancel={onClose}
-      footer={[
-        <Button key="back" onClick={onClose}>
-          Cancel
-        </Button>,
-      ]}
+      footer={
+        isReadOnly
+          ? [
+              <Button key="back" onClick={onClose}>
+                Cancel
+              </Button>,
+            ]
+          : [
+              <Button key="back" onClick={onClose}>
+                Cancel
+              </Button>,
+              <Button key="submit" type="primary" onClick={onFinish}>
+                Submit
+              </Button>,
+            ]
+      }
     >
       <Form
         {...layout}
@@ -68,9 +91,32 @@ function OvertimeApproveReasonModal({
               {...formItemLayout}
               label={label}
               name="overtimeApproveReason"
+              rules={[
+                {
+                  required: isRequired,
+                  validator: async (rule, value) => {
+                    try {
+                      if (!value && isRequired)
+                        throw new Error(`${label} is required.`)
+
+                      const trimmedValue = value && value.trim()
+                      if (trimmedValue?.length < 10 && isRequired) {
+                        throw new Error('Reason should be at least 10 letters!')
+                      }
+                      if (trimmedValue?.length > 500 && isRequired) {
+                        throw new Error(
+                          'Reason should be less than 500 letters!'
+                        )
+                      }
+                    } catch (err) {
+                      throw new Error(err.message)
+                    }
+                  },
+                },
+              ]}
             >
               <Input.TextArea
-                disabled={true}
+                disabled={isReadOnly}
                 allowClear
                 rows={10}
                 defaultValue={approveReason}
