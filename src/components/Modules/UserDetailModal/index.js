@@ -94,6 +94,13 @@ function UserDetailForm({
     return current && current > moment().endOf('day')
   }
 
+  const disableExitDate = (current) => {
+    const joinDate = form.getFieldValue('joinDate')
+    return (
+      current && (current < moment(joinDate) || current > moment().endOf('day'))
+    )
+  }
+
   const disableJoinDate = (current) => {
     return (
       (current && current < moment('2012-1-2')) ||
@@ -440,7 +447,7 @@ function UserDetailForm({
             name="exitDate"
           >
             <DatePicker
-              disabledDate={disableDate}
+              disabledDate={disableExitDate}
               className=" gx-w-100"
               disabled={readOnly}
             />

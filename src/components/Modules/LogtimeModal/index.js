@@ -171,11 +171,22 @@ function LogtimeModal({
               disabledDate={
                 LOG_TIME_OLD_EDIT.includes(role)
                   ? false
-                  : (current) =>
-                      (current &&
-                        current <
-                          moment().subtract(1, 'days').startOf('day')) ||
-                      current > moment().endOf('day')
+                  : (current) => {
+                      if (+moment().format('d') === 1) {
+                        return (
+                          [0, 6].includes(+current.format('d')) ||
+                          current <
+                            moment().subtract(3, 'days').startOf('day') ||
+                          current > moment().endOf('day')
+                        )
+                      }
+                      return (
+                        (current &&
+                          current <
+                            moment().subtract(1, 'days').startOf('day')) ||
+                        current > moment().endOf('day')
+                      )
+                    }
               }
             />
           </FormItem>

@@ -1,8 +1,9 @@
 import crypto from 'crypto-js'
-import {SALARY_REVIEW} from './../helpers/routePath'
 
 export const decrypt = (cipherText, secretKey) => {
-  // if (process.env.NODE_ENV === 'development') return cipherText
+  // if (process.env.NODE_ENV !== 'production') {
+  //   return cipherText
+  // }
   if (!cipherText) {
     return undefined
   }
