@@ -50,7 +50,21 @@ function* signInUserWithEmailPassword({payload}) {
       instance.defaults.headers[
         'Authorization'
       ] = `Bearer ${signInUser.data.token}`
-      yield put(userSignInSuccess(signInUser.data.data))
+
+      const signuser = signInUser.data.data
+
+      const updatedParsed = {
+        ...signuser,
+        user: {
+          ...signuser?.user,
+          role: {
+            ...signuser?.user?.role,
+            permission: JSON.parse(signuser?.user?.role?.permission)[0],
+          },
+        },
+      }
+
+      yield put(userSignInSuccess(updatedParsed))
     }
   } catch (error) {
     yield put(showAuthMessage(error))
