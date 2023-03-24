@@ -287,7 +287,7 @@ function CoworkersPage() {
       let changeRowsId = changeRows?.map((d) => d?._id)
       setSelectedIds((prev) => prev.filter((d) => !changeRowsId.includes(d)))
       setSelectedRows((prev) =>
-        prev.filter((d) => !changeRows.includes(d?._id))
+        prev.filter((d) => !changeRowsId.includes(d?._id))
       )
     }
   }
@@ -302,6 +302,7 @@ function CoworkersPage() {
   if (isLoading) {
     return <CircularProgress />
   }
+
   return (
     <div>
       <ImportUsers
@@ -426,20 +427,19 @@ function CoworkersPage() {
                       [
                         'Name',
                         'Email',
+                        'Primary Phone',
                         'Role',
-                        'RoleId',
                         'Position',
-                        'PositionId',
                         'DOB',
                         'Join Date',
                       ],
                       ...selectedRows?.map((d) => [
                         d?.name,
                         d?.email,
+                        d?.primaryPhone,
                         d?.role?.value,
                         d?.role?._id,
                         d?.position?.name,
-                        d?.position?._id,
                         d?.dob,
                         d?.joinDate,
                       ]),
