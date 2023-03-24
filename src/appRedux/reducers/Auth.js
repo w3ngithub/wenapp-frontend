@@ -38,6 +38,7 @@ const reducer = (state = INIT_STATE, action) => {
         ...state,
         showLoader: false,
         authUser: action.payload,
+        profileLoading: false,
       }
     }
     case INIT_URL: {
