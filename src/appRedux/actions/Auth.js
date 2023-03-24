@@ -13,8 +13,12 @@ import {
   SIGNOUT_USER_SUCCESS,
   SIGNUP_USER,
   SIGNUP_USER_SUCCESS,
+  PROFILE_LOADING_SUCCESS,
   UPDATE_JOIN_DATE,
 } from 'constants/ActionTypes'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {getMyProfile} from 'services/users/userDetails'
+import {decrypt, USERS_KEY} from 'util/crypto'
 
 export const userSignUp = (user) => {
   return {
@@ -110,5 +114,29 @@ export const updateJoinDate = (joinDate) => {
   return {
     type: UPDATE_JOIN_DATE,
     payload: joinDate,
+  }
+}
+
+export function getProfile(userId) {
+  return async (dispatch) => {
+    try {
+      const encrypted = await getMyProfile(userId)
+
+      const decryptedData = decrypt(encrypted?.data, USERS_KEY)
+
+      dispatch(
+        getUserProfile({
+          user: decryptedData?.data?.data[0],
+        })
+      )
+
+      localStorage.setItem(
+        LOCALSTORAGE_USER,
+        JSON.stringify(decryptedData?.data?.data[0]?._id)
+      )
+    } catch (error) {
+    } finally {
+      dispatch({type: PROFILE_LOADING_SUCCESS})
+    }
   }
 }
