@@ -36,7 +36,7 @@ export const MainApp = (props) => {
   const auth = useSelector((state) => state.auth)
 
   useEffect(() => {
-    if (userId && !auth.authUser) {
+    if (userId && auth.authUser === null) {
       dispatch(getProfile(userId))
     }
   }, [userId, dispatch, auth])

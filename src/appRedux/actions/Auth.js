@@ -122,11 +122,11 @@ export function getProfile(userId) {
     try {
       const encrypted = await getMyProfile(userId)
 
-      const decryptedData = decrypt(encrypted?.data, USERS_KEY)
+      const decryptedData = decrypt(encrypted?.data?.data, USERS_KEY)
 
       dispatch(
         getUserProfile({
-          user: decryptedData?.data?.data[0],
+          user: decryptedData?.data?.[0],
         })
       )
 
