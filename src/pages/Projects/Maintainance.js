@@ -1,6 +1,7 @@
-import {Checkbox, Collapse, Input, Form} from 'antd'
-
 import React from 'react'
+import {useSelector} from 'react-redux'
+import {Checkbox, Collapse, Input, Form} from 'antd'
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 
 const {Panel} = Collapse
 const CheckboxGroup = Checkbox.Group
@@ -33,6 +34,10 @@ const plainOptions = [
 ]
 
 function Maintainance({maintenance, setMaintenance, readOnly}) {
+  const {themeType} = useSelector((state) => state.settings)
+
+  const darkMode = themeType === THEME_TYPE_DARK
+
   const handleMonthChange = (value) => {
     if (value.includes('Toggle All')) {
       const valuesWithoutToggleAll = value.slice(1)
@@ -144,7 +149,7 @@ function Maintainance({maintenance, setMaintenance, readOnly}) {
         </FormItem>
         <p
           style={{
-            color: 'rgba(0,0,0,0.45)',
+            color: darkMode ? '#e0e0e0' : 'rgba(0, 0, 0, 0.45)',
             marginLeft: '1rem',
           }}
         >

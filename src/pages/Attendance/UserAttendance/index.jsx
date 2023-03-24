@@ -38,6 +38,7 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 import getLocation, {checkLocationPermission} from 'helpers/getLocation'
 import {PUNCH_IN, PUNCH_OUT} from 'constants/ActionTypes'
 import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -355,7 +356,11 @@ function UserAttendance({userRole}) {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
             <FormItem>
-              <RangePicker onChange={handleChangeDate} value={date} />
+              <RangePicker
+                onChange={handleChangeDate}
+                value={date}
+                disabledDate={disabledAfterToday}
+              />
             </FormItem>
             <FormItem className="direct-form-item">
               <Select
