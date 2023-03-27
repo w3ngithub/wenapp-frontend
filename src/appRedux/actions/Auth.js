@@ -101,7 +101,7 @@ export const getUserProfile = (userData) => {
     payload: {
       user: {
         ...userData.user,
-        role: {...userData.user.role, permission: data[0]},
+        role: {...userData?.user?.role, permission: data?.[0]},
       },
     },
   }
