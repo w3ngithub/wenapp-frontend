@@ -141,7 +141,10 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
 
       case 'Leave':
         navigate(LEAVE, {
-          state: {tabKey: showTo?.includes('admin') ? '3' : '2'},
+          state: {
+            tabKey: showTo?.includes('admin') ? '3' : '2',
+            leaveStatus: 'pending',
+          },
         })
         setVisible(false)
         return
