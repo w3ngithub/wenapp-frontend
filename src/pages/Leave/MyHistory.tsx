@@ -21,7 +21,6 @@ import {leaveHistoryDays} from 'constants/LeaveTypes'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {useSelector} from 'react-redux'
 import {PAGE25} from 'constants/Common'
-import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
@@ -34,8 +33,12 @@ const formattedLeaves = (leaves: any) => {
       dates: leave?.leaveType?.isSpecial
         ? [leave?.leaveDates?.[0], leave?.leaveDates?.at(-1)]
             ?.map((date) => changeDate(date))
-            .join('-')
-        : leave?.leaveDates?.map((date: any) => changeDate(date))?.join(' '),
+            ?.reverse()
+            ?.join('-')
+        : leave?.leaveDates
+            ?.map((date: any) => changeDate(date))
+            ?.reverse()
+            ?.join(' '),
       type: `${leave?.leaveType?.name} ${
         leave?.halfDay === 'first-half' || leave?.halfDay === 'second-half'
           ? '- ' + removeDash(leave?.halfDay)
