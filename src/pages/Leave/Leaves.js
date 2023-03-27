@@ -55,8 +55,12 @@ const formattedLeaves = (leaves) => {
       dates: leave?.leaveType?.isSpecial
         ? [leave?.leaveDates?.[0], leave?.leaveDates?.at(-1)]
             ?.map((date) => changeDate(date))
+            ?.reverse()
             .join('-')
-        : leave?.leaveDates?.map((date) => changeDate(date)).join(' '),
+        : leave?.leaveDates
+            ?.map((date) => changeDate(date))
+            ?.reverse()
+            ?.join(' '),
       type: `${leave?.leaveType?.name} ${
         leave?.halfDay === FIRST_HALF || leave?.halfDay === SECOND_HALF
           ? '- ' + removeDash(leave?.halfDay)
