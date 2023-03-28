@@ -202,7 +202,7 @@ function LogTime() {
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
-      user: idUser,
+      user: idUser?._id,
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
