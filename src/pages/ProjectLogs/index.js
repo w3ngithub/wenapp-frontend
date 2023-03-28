@@ -73,7 +73,7 @@ function ProjectLogs() {
   const [projectId] = slug.split('-')
   const {
     name,
-    role: {permission},
+    role: {permission, key},
   } = useSelector(selectAuthUser)
 
   const logPermissions = permission?.['Log Time']
@@ -381,6 +381,7 @@ function ProjectLogs() {
           initialValues={timeLogToUpdate}
           isEditMode={isEditMode}
           isAdminTimeLog={isAdminTimeLog}
+          role={key}
         />
       )}
       {openLogHoursModal && (

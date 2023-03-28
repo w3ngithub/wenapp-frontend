@@ -186,7 +186,7 @@ function LogtimeModal({
               placeholder="Select Date"
               format={dateFormat}
               disabledDate={
-                LOG_TIME_OLD_EDIT.includes(role)
+                LOG_TIME_OLD_EDIT.includes(role) || isAdminTimeLog
                   ? false
                   : (current) => {
                       if (+moment().format('d') === 1) {
@@ -282,9 +282,11 @@ function LogtimeModal({
               rules={[{required: true, message: 'Co-Worker is required.'}]}
             >
               <Select
+                notFoundContent={emptyText}
+                showSearch
                 placeholder="Select Co-worker"
                 onChange={handleUserChange}
-                value={user}
+                filterOption={filterOptions}
               >
                 {' '}
                 {filterSpecificUser(
