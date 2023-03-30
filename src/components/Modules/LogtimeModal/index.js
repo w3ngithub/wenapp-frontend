@@ -148,7 +148,13 @@ function LogtimeModal({
   }, [toggle])
   return (
     <Modal
-      title={isEditMode ? 'Update Log Time' : 'Add Log Time'}
+      title={
+        isEditMode
+          ? 'Update Log Time'
+          : isAdminTimeLog
+          ? 'Add Co-worker Log Time'
+          : 'Add Log Time'
+      }
       visible={toggle}
       mask={false}
       onOk={handleSubmit}
