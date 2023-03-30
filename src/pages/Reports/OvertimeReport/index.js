@@ -1,10 +1,10 @@
-import {Button, Card, Form, Input, notification, Table} from 'antd'
+import {Button, Card, Form, notification, Table} from 'antd'
 import React, {useState, useCallback} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {changeDate, filterOptions, handleResponse} from 'helpers/utils'
-import {getAllTimeLogs, getLogTypes, updateTimeLog} from 'services/timeLogs'
+import {getAllTimeLogs, updateTimeLog} from 'services/timeLogs'
 import OvertimeApproveReasonModal from 'components/Modules/OvertimeApproveReasonModal'
 import {getAllUsers} from 'services/users/userDetails'
 import Select from 'components/Elements/Select'
@@ -40,11 +40,6 @@ const OvertimePage = () => {
   const [otStatus, setOtStatus] = useState(undefined)
   const [projectData, setProjectData] = useState([])
   const [project, setProject] = useState(undefined)
-  const {data: logTypes} = useQuery(['logTypes'], () => getLogTypes())
-
-  const isOT = logTypes?.data?.data?.data?.find(
-    (d) => d?.name.toLowerCase() === 'ot'
-  )
 
   const allUsers = useQuery(['users'], () => getAllUsers({sort: 'name'}))
 
@@ -52,11 +47,10 @@ const OvertimePage = () => {
     data: logTimeDetails,
     isLoading: timelogLoading,
     isFetching: timeLogFetching,
-  } = useQuery(['timeLogs', page, sort, isOT, otStatus, author, project], () =>
+  } = useQuery(['timeLogs', page, sort, otStatus, author, project], () =>
     getAllTimeLogs({
       ...page,
       isreport: true,
-      logType: isOT?._id,
       user: author,
       project: project,
       oTStatus: otStatus ? otStatus : undefined,
