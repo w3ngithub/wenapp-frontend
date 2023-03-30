@@ -488,7 +488,7 @@ function ProjectLogs() {
                   style={{marginBottom: '16px'}}
                   disabled={getIsAdmin()}
                 >
-                  Add User TimeLog
+                  Add Co-worker TimeLog
                 </Button>
               )}
             </div>
