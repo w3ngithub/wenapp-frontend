@@ -375,7 +375,9 @@ function ProjectLogs() {
           onClose={handleCloseTimelogModal}
           onSubmit={handleLogTypeSubmit}
           loading={
-            addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
+            addLogTimeMutation.isLoading ||
+            UpdateLogTimeMutation.isLoading ||
+            addAdminLogTimeMutation.isLoading
           }
           logTypes={logTypes}
           initialValues={timeLogToUpdate}
