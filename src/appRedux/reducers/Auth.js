@@ -11,6 +11,7 @@ import {
   SIGNOUT_USER_SUCCESS,
   SIGNUP_USER_SUCCESS,
   UPDATE_JOIN_DATE,
+  PROFILE_LOADING_SUCCESS,
 } from 'constants/ActionTypes'
 
 const INIT_STATE = {
@@ -20,6 +21,7 @@ const INIT_STATE = {
   showMessage: false,
   initURL: '',
   authUser: null,
+  profileLoading: true,
 }
 
 const reducer = (state = INIT_STATE, action) => {
@@ -36,6 +38,7 @@ const reducer = (state = INIT_STATE, action) => {
         ...state,
         showLoader: false,
         authUser: action.payload,
+        profileLoading: false,
       }
     }
     case INIT_URL: {
@@ -102,6 +105,12 @@ const reducer = (state = INIT_STATE, action) => {
           ...state.authUser,
           user: {...action.payload.user},
         },
+      }
+
+    case PROFILE_LOADING_SUCCESS:
+      return {
+        ...state,
+        profileLoading: false,
       }
 
     case UPDATE_JOIN_DATE:

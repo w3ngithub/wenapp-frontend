@@ -4,12 +4,14 @@ import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
 import {getAllProjects, getProject} from 'services/projects'
-import {filterOptions} from 'helpers/utils'
+import {filterOptions, filterSpecificUser} from 'helpers/utils'
 import {LOG_TIME_OLD_EDIT} from 'constants/RoleAccess'
 import {SearchOutlined} from '@ant-design/icons'
 import {debounce} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {getAllUsers} from 'services/users/userDetails'
+import {ADMINISTRATOR} from 'constants/UserNames'
 const FormItem = Form.Item
 const Option = Select.Option
 const {TextArea} = Input
@@ -34,8 +36,11 @@ function LogtimeModal({
   loading = false,
   isEditMode,
   isUserLogtime = false,
+  isAdminTimeLog = false,
   role,
 }) {
+  const Option = Select.Option
+
   // const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
   const [searchValue, setSearchValue] = useState('')
 
@@ -44,9 +49,17 @@ function LogtimeModal({
   const [zeroHourMinutes, setZeroHourMinutes] = useState(false)
   const [project, setProject] = useState()
   const [projectArray, setProjectArray] = useState([])
+  const [user, setUser] = useState(undefined)
   const projectsQuery = useQuery(['projects'], getAllProjects, {
     enabled: false,
   })
+  const {data: users} = useQuery(
+    ['userForAttendances'],
+    () => getAllUsers({fields: 'name', active: 'true', sort: 'name'}),
+    {
+      enabled: !!isAdminTimeLog,
+    }
+  )
 
   const dateFormat = 'YYYY-MM-DD'
   const handleCancel = () => {
@@ -84,6 +97,10 @@ function LogtimeModal({
   }
 
   const optimizedFn = useCallback(debounce(handleSearch, 100), [])
+
+  const handleUserChange = (name, detail) => {
+    setUser(detail?.id)
+  }
 
   useEffect(() => {
     if (toggle) {
@@ -169,13 +186,24 @@ function LogtimeModal({
               placeholder="Select Date"
               format={dateFormat}
               disabledDate={
-                LOG_TIME_OLD_EDIT.includes(role)
+                LOG_TIME_OLD_EDIT.includes(role) || isAdminTimeLog
                   ? false
-                  : (current) =>
-                      (current &&
-                        current <
-                          moment().subtract(1, 'days').startOf('day')) ||
-                      current > moment().endOf('day')
+                  : (current) => {
+                      if (+moment().format('d') === 1) {
+                        return (
+                          [0, 6].includes(+current.format('d')) ||
+                          current <
+                            moment().subtract(3, 'days').startOf('day') ||
+                          current > moment().endOf('day')
+                        )
+                      }
+                      return (
+                        (current &&
+                          current <
+                            moment().subtract(1, 'days').startOf('day')) ||
+                        current > moment().endOf('day')
+                      )
+                    }
               }
             />
           </FormItem>
@@ -246,6 +274,32 @@ function LogtimeModal({
               max={45}
             />
           </FormItem>
+          {isAdminTimeLog && (
+            <FormItem
+              {...formItemLayout}
+              label="Co-Workers"
+              name="user"
+              rules={[{required: true, message: 'Co-Worker is required.'}]}
+            >
+              <Select
+                notFoundContent={emptyText}
+                showSearch
+                placeholder="Select Co-worker"
+                onChange={handleUserChange}
+                filterOption={filterOptions}
+              >
+                {' '}
+                {filterSpecificUser(
+                  users?.data?.data?.data,
+                  ADMINISTRATOR
+                )?.map((user) => (
+                  <Option value={user._id} key={user._id}>
+                    {user.name}
+                  </Option>
+                ))}
+              </Select>
+            </FormItem>
+          )}
           <FormItem
             {...formItemLayout}
             label="Log Type"

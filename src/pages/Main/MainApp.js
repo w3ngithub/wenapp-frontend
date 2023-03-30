@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import {Layout} from 'antd'
 import {Outlet} from 'react-router-dom'
-import {connect, useDispatch} from 'react-redux'
+import {connect, useDispatch, useSelector} from 'react-redux'
 import Sidebar from 'containers/Sidebar/index'
 import Topbar from 'containers/Topbar/index'
 import {footerText} from 'util/config'
@@ -15,16 +15,13 @@ import {
 import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {useQuery} from '@tanstack/react-query'
-import {getUserProfile, getUserRolePermission} from 'appRedux/actions'
-import {getMyProfile} from 'services/users/userDetails'
+import {getProfile} from 'appRedux/actions'
 import CircularProgress from 'components/Elements/CircularProgress'
-import {getRoles} from 'services/settings/coworkers/roles'
 import {getMaintenance} from 'services/configurations'
 import {
   getAllocatedOfficeHours,
   getLateArrivalThreshold,
 } from 'appRedux/actions/Configurations'
-import {decrypt, USERS_KEY} from './../../util/crypto'
 
 const {Content, Footer} = Layout
 
@@ -36,29 +33,31 @@ export const MainApp = (props) => {
       ? JSON.parse(localStorage.getItem(LOCALSTORAGE_USER) || '')
       : ''
 
-  const {data: details, isFetching} = useQuery(
-    ['userDetail', userId],
-    () => getMyProfile(userId),
-    {
-      onSuccess: (data) => {
-        if (data.status) {
-          // decrypt encrypted data from api response
-          const decryptedData = decrypt(data.data?.data, USERS_KEY)
+  const auth = useSelector((state) => state.auth)
 
-          localStorage.setItem(
-            LOCALSTORAGE_USER,
-            JSON.stringify(decryptedData?.data[0]?._id)
-          )
-          dispatch(
-            getUserProfile({
-              user: decryptedData?.data[0],
-            })
-          )
-        }
-      },
-      enabled: !!userId,
+  useEffect(() => {
+    if (userId && auth.authUser === null) {
+      dispatch(getProfile(userId))
     }
-  )
+  }, [userId, dispatch, auth])
+
+  useEffect(() => {
+    if (props?.authUser)
+      dispatch(fetchLoggedInUserAttendance(props?.authUser?.user?._id))
+  }, [dispatch, props?.authUser])
+
+  useEffect(() => {
+    const timeout = setInterval(() => {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {},
+          () => {},
+          {maximumAge: 60000, timeout: 15000, enableHighAccuracy: true}
+        )
+      }
+    }, 1000 * 60 * 5)
+    return () => clearInterval(timeout)
+  }, [])
 
   const {data: configurations, isFetching: isConfigurationsFetching} = useQuery(
     ['configuration'],
@@ -79,24 +78,6 @@ export const MainApp = (props) => {
     }
   )
 
-  useEffect(() => {
-    if (props?.authUser)
-      dispatch(fetchLoggedInUserAttendance(props?.authUser?.user?._id))
-  }, [dispatch, props?.authUser])
-
-  useEffect(() => {
-    const timeout = setInterval(() => {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          function (position) {},
-          () => {},
-          {maximumAge: 60000, timeout: 15000, enableHighAccuracy: true}
-        )
-      }
-    }, 1000 * 60 * 5)
-    return () => clearInterval(timeout)
-  }, [])
-
   const getContainerClass = (navStyle) => {
     switch (navStyle) {
       case NAV_STYLE_DARK_HORIZONTAL:
@@ -115,7 +96,8 @@ export const MainApp = (props) => {
   }
 
   const {navStyle, switchingUser} = props
-  if (isFetching || switchingUser) return <CircularProgress />
+
+  if (auth.profileLoading || switchingUser) return <CircularProgress />
 
   return (
     <Layout className="gx-app-layout">

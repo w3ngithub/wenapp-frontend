@@ -40,6 +40,7 @@ import ViewDetailModel from '../ViewDetailModel'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {decrypt, LATE_ARRIVAL_KEY} from '../../../util/crypto'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 
@@ -375,7 +376,11 @@ function LateAttendance({userRole}: {userRole: any}) {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
             <FormItem>
-              <RangePicker handleChangeDate={handleChangeDate} date={date} />
+              <RangePicker
+                handleChangeDate={handleChangeDate}
+                date={date}
+                disabledDate={disabledAfterToday}
+              />
             </FormItem>
             <FormItem className="direct-form-item">
               <Select

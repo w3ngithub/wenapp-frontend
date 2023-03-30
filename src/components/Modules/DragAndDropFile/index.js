@@ -29,6 +29,7 @@ function DragAndDropFile({
   allowMultiple = true,
   accept = '',
   maxSize = 3,
+  label,
 }) {
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
@@ -93,7 +94,7 @@ function DragAndDropFile({
           <InboxOutlined />
         </p>
         <p className="ant-upload-text">
-          Click or drag file to this area to upload
+          {label ?? 'Click or drag file to this area to upload'}
         </p>
       </Dragger>
       <Modal
