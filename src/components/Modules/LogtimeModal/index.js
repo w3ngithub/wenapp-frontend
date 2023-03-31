@@ -284,7 +284,7 @@ function LogtimeModal({
           {isAdminTimeLog && (
             <FormItem
               {...formItemLayout}
-              label="Co-Workers"
+              label="Co-Worker"
               name="user"
               rules={[{required: true, message: 'Co-Worker is required.'}]}
             >
