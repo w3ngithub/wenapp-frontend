@@ -59,7 +59,6 @@ function ProjectLogs() {
   const [logType, setLogType] = useState(undefined)
   const [author, setAuthor] = useState(undefined)
   const [openModal, setOpenModal] = useState(false)
-  const [isAdminTimeLog, setIsAdminTimeLog] = useState(false)
   const [page, setPage] = useState({page: 1, limit: 50})
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
@@ -138,26 +137,6 @@ function ProjectLogs() {
         type: 'error',
       }),
   })
-  const addAdminLogTimeMutation = useMutation(
-    (details) => addUserTimeLog(details),
-    {
-      onSuccess: (response) =>
-        handleResponse(
-          response,
-          'Added time log successfully',
-          'Could not add time log',
-          [
-            () => queryClient.invalidateQueries(['timeLogs']),
-            () => queryClient.invalidateQueries(['singleProject']),
-            () => queryClient.invalidateQueries(['projectWeeklyTime']),
-            () => handleCloseTimelogModal(),
-          ]
-        ),
-      onError: (error) => {
-        notification({message: 'Could not add time log!', type: 'error'})
-      },
-    }
-  )
 
   const UpdateLogTimeMutation = useMutation(
     (details) => updateTimeLog(details),
@@ -255,12 +234,6 @@ function ProjectLogs() {
     setOpenModal(false)
     setTimelogToUpdate({})
     setIsEditMode(false)
-    setIsAdminTimeLog(false)
-  }
-
-  const handleOpenCoworkersModal = () => {
-    setOpenModal(true)
-    setIsAdminTimeLog(true)
   }
 
   const confirmDelete = (log) => {
@@ -274,28 +247,20 @@ function ProjectLogs() {
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
     }
-    if (!isAdminTimeLog) {
-      if (isEditMode)
-        UpdateLogTimeMutation.mutate({
-          id: formattedNewLogtime.id,
-          details: {
-            ...formattedNewLogtime,
-            project: newLogtime.project._id,
-            user: newLogtime.user,
-          },
-        })
-      else
-        addLogTimeMutation.mutate({
-          id: projectId,
-          details: formattedNewLogtime,
-        })
-    } else {
-      const updatedLog = {
-        ...formattedNewLogtime,
-        project: projectId,
-      }
-      addAdminLogTimeMutation.mutate(updatedLog)
-    }
+    if (isEditMode)
+      UpdateLogTimeMutation.mutate({
+        id: formattedNewLogtime.id,
+        details: {
+          ...formattedNewLogtime,
+          project: newLogtime.project._id,
+          user: newLogtime.user,
+        },
+      })
+    else
+      addLogTimeMutation.mutate({
+        id: projectId,
+        details: formattedNewLogtime,
+      })
   }
   const {
     designers,
@@ -375,14 +340,11 @@ function ProjectLogs() {
           onClose={handleCloseTimelogModal}
           onSubmit={handleLogTypeSubmit}
           loading={
-            addLogTimeMutation.isLoading ||
-            UpdateLogTimeMutation.isLoading ||
-            addAdminLogTimeMutation.isLoading
+            addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
           }
           logTypes={logTypes}
           initialValues={timeLogToUpdate}
           isEditMode={isEditMode}
-          isAdminTimeLog={isAdminTimeLog}
           role={key}
         />
       )}
@@ -481,16 +443,6 @@ function ProjectLogs() {
                   disabled={getIsAdmin()}
                 >
                   Add New TimeLog
-                </Button>
-              )}
-              {logPermissions?.createUserLogTime && (
-                <Button
-                  className="gx-btn gx-btn-primary gx-text-white "
-                  onClick={handleOpenCoworkersModal}
-                  style={{marginBottom: '16px'}}
-                  disabled={getIsAdmin()}
-                >
-                  Add Co-worker TimeLog
                 </Button>
               )}
             </div>
