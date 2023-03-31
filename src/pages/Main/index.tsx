@@ -108,15 +108,15 @@ function App(props: any) {
     }
   }, [themeType])
 
-  useEffect(() => {
-    if (
-      Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
-        'Katmandu' &&
-      Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
-        'Kathmandu'
-    )
-      navigate('notAllowed')
-  }, [])
+  // useEffect(() => {
+  //   if (
+  //     Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
+  //       'Katmandu' &&
+  //     Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
+  //       'Kathmandu'
+  //   )
+  //     navigate('notAllowed')
+  // }, [])
 
   const {
     role: {

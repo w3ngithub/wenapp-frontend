@@ -1,9 +1,9 @@
 import crypto from 'crypto-js'
 
 export const decrypt = (cipherText, secretKey) => {
-  // if (process.env.NODE_ENV !== 'production') {
-  //   return cipherText
-  // }
+  if (process.env.NODE_ENV !== 'production') {
+    return cipherText
+  }
   if (!cipherText) {
     return undefined
   }

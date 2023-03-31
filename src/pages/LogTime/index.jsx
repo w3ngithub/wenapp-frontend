@@ -52,6 +52,7 @@ function LogTime() {
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 50})
   const [openModal, setOpenModal] = useState(false)
+  const [isAdminTimeLog, setIsAdminTimeLog] = useState(false)
 
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
@@ -190,10 +191,16 @@ function LogTime() {
     setOpenModal(false)
     setTimelogToUpdate({})
     setIsEditMode(false)
+    setIsAdminTimeLog(false)
   }
 
   const handleOpenModal = () => {
     setOpenModal(true)
+  }
+
+  const handleOpenCoworkersModal = () => {
+    setOpenModal(true)
+    setIsAdminTimeLog(true)
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
@@ -208,6 +215,9 @@ function LogTime() {
       minutes: +newLogtime.minutes,
       oTStatus: isTypeOT ? 'pending' : undefined,
       user: idUser?._id,
+    }
+    if (!isAdminTimeLog) {
+      formattedNewLogtime = {...formattedNewLogtime, user: idUser?._id}
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
@@ -238,6 +248,7 @@ function LogTime() {
           initialValues={timeLogToUpdate}
           isEditMode={isEditMode}
           isUserLogtime={true}
+          isAdminTimeLog={isAdminTimeLog}
           role={key}
         />
       )}
@@ -257,19 +268,32 @@ function LogTime() {
         />
       </Card>
       <Card title={'Time Logs'}>
-        {logPermissions?.createLogTime && (
-          <div className="components-table-demo-control-bar">
-            <div className="gx-d-flex gx-justify-content-between gx-flex-row">
-              <Button
-                className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
-                onClick={handleOpenModal}
-                disabled={getIsAdmin()}
-              >
-                Add New Log Time
-              </Button>
+        <div className="gx-f-flex gx-flex-row gx-column-gap-10">
+          {logPermissions?.createLogTime && (
+            <div className="components-table-demo-control-bar">
+              <div className="gx-d-flex gx-justify-content-between gx-flex-row">
+                <Button
+                  className="gx-btn-form gx-btn-primary gx-text-white gx-mt-auto"
+                  onClick={handleOpenModal}
+                  disabled={getIsAdmin()}
+                >
+                  Add New Log Time
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+          {logPermissions?.createUserLogTime && (
+            <Button
+              className="gx-btn gx-btn-primary gx-text-white "
+              onClick={handleOpenCoworkersModal}
+              // onClick={handleOpenModal}
+              style={{marginBottom: '16px'}}
+              disabled={getIsAdmin()}
+            >
+              Add Co-worker TimeLog
+            </Button>
+          )}
+        </div>
         <Table
           locale={{emptyText}}
           className="gx-table-responsive"
