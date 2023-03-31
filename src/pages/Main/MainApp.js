@@ -35,11 +35,16 @@ export const MainApp = (props) => {
 
   const auth = useSelector((state) => state.auth)
 
+  const {navStyle, switchingUser} = props
+
   useEffect(() => {
-    if (userId && auth.authUser === null && !auth.profileLoadingFail) {
+    if (
+      switchingUser ||
+      (userId && auth.authUser === null && !auth.profileLoadingFail)
+    ) {
       dispatch(getProfile(userId))
     }
-  }, [userId, dispatch, auth])
+  }, [userId, dispatch, auth, switchingUser])
 
   useEffect(() => {
     if (props?.authUser)
@@ -94,8 +99,6 @@ export const MainApp = (props) => {
         return ''
     }
   }
-
-  const {navStyle, switchingUser} = props
 
   if (auth.profileLoading || switchingUser) return <CircularProgress />
 
