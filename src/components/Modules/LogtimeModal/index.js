@@ -12,7 +12,10 @@ import {notification} from 'helpers/notification'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {getAllUsers} from 'services/users/userDetails'
 import {ADMINISTRATOR} from 'constants/UserNames'
-import {disabledAfterToday} from 'util/antDatePickerDisabled'
+import {
+  disabledAfterToday,
+  disableFromTomorrow,
+} from 'util/antDatePickerDisabled'
 const FormItem = Form.Item
 const Option = Select.Option
 const {TextArea} = Input
@@ -194,7 +197,7 @@ function LogtimeModal({
               format={dateFormat}
               disabledDate={
                 LOG_TIME_OLD_EDIT.includes(role) || isAdminTimeLog
-                  ? disabledAfterToday
+                  ? disableFromTomorrow
                   : (current) => {
                       if (+moment().format('d') === 1) {
                         return (
