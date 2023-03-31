@@ -15,6 +15,7 @@ import {
   SIGNUP_USER_SUCCESS,
   PROFILE_LOADING_SUCCESS,
   UPDATE_JOIN_DATE,
+  PROFILE_LOADING_FAIL,
 } from 'constants/ActionTypes'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
 import {getMyProfile} from 'services/users/userDetails'
@@ -134,9 +135,10 @@ export function getProfile(userId) {
         LOCALSTORAGE_USER,
         JSON.stringify(decryptedData?.data?.data[0]?._id)
       )
-    } catch (error) {
-    } finally {
+
       dispatch({type: PROFILE_LOADING_SUCCESS})
+    } catch (error) {
+      dispatch({type: PROFILE_LOADING_FAIL})
     }
   }
 }
