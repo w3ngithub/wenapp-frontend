@@ -124,7 +124,6 @@ export function getProfile(userId) {
       const encrypted = await getMyProfile(userId)
 
       const decryptedData = decrypt(encrypted?.data?.data, USERS_KEY)
-
       dispatch(
         getUserProfile({
           user: decryptedData?.data?.[0],
@@ -133,12 +132,16 @@ export function getProfile(userId) {
 
       localStorage.setItem(
         LOCALSTORAGE_USER,
-        JSON.stringify(decryptedData?.data?.data[0]?._id)
+        JSON.stringify(decryptedData?.data[0]?._id)
       )
 
       dispatch({type: PROFILE_LOADING_SUCCESS})
     } catch (error) {
       dispatch({type: PROFILE_LOADING_FAIL})
+      const admin = JSON.parse(localStorage.getItem('admin')) || null
+
+      localStorage.setItem('user_id', JSON.stringify(admin))
+      localStorage.removeItem('admin')
     } finally {
       dispatch(switchedUser())
     }
