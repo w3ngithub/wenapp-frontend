@@ -139,6 +139,8 @@ export function getProfile(userId) {
       dispatch({type: PROFILE_LOADING_SUCCESS})
     } catch (error) {
       dispatch({type: PROFILE_LOADING_FAIL})
+    } finally {
+      dispatch(switchedUser())
     }
   }
 }

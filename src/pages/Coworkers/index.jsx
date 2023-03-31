@@ -297,7 +297,6 @@ function CoworkersPage() {
     const adminId = getLocalStorageData('user_id')
     localStorage.setItem('admin', JSON.stringify(adminId))
     localStorage.setItem('user_id', JSON.stringify(user?._id))
-    dispatch(switchedUser())
   }
   if (isLoading) {
     return <CircularProgress />
