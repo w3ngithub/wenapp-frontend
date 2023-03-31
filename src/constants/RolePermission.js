@@ -141,7 +141,7 @@ export const permissionRole = {
     {name: 'editLogTime', label: 'Edit Log Time', rule: []},
     {name: 'viewLogTime', label: 'View Log Time Detail', rule: []},
     {name: 'deleteLogTime', label: 'Delete Log Time', rule: []},
-    {name: 'createUserLogTime', label: 'Create User Log Time', rule: []},
+    {name: 'createUserLogTime', label: 'Create Co-worker Log Time', rule: []},
   ],
 
   'Leave Management': [

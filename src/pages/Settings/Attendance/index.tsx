@@ -13,6 +13,7 @@ import {
   getAllocatedOfficeHours,
   getLateArrivalThreshold,
 } from 'appRedux/actions/Configurations'
+import {socket} from 'pages/Main'
 
 function Attendance() {
   const queryClient = useQueryClient()
@@ -42,6 +43,7 @@ function Attendance() {
                   response?.data?.data?.lateArrivalThreshold
                 )
               )
+              socket.emit('CUD')
             } else if (
               response.status &&
               response?.data?.data?.hasOwnProperty('officeHour')

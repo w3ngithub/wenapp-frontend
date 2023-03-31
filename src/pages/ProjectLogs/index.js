@@ -380,7 +380,9 @@ function ProjectLogs() {
           onClose={handleCloseTimelogModal}
           onSubmit={handleLogTypeSubmit}
           loading={
-            addLogTimeMutation.isLoading || UpdateLogTimeMutation.isLoading
+            addLogTimeMutation.isLoading ||
+            UpdateLogTimeMutation.isLoading ||
+            addAdminLogTimeMutation.isLoading
           }
           logTypes={logTypes}
           initialValues={timeLogToUpdate}
@@ -493,7 +495,7 @@ function ProjectLogs() {
                   style={{marginBottom: '16px'}}
                   disabled={getIsAdmin()}
                 >
-                  Add User TimeLog
+                  Add Co-worker TimeLog
                 </Button>
               )}
             </div>
