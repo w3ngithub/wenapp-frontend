@@ -5,10 +5,6 @@ export const disabledDate = (current) => {
 }
 
 export const disabledAfterToday = (current) => {
-  return current && current.valueOf() >= Date.now()
-}
-
-export const disableFromTomorrow = (current) => {
   return current && current.valueOf() >= moment().endOf('day')
 }
 
