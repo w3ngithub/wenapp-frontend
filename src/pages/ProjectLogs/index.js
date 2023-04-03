@@ -381,6 +381,7 @@ function ProjectLogs() {
                   placeholder="Select Log Type"
                   onChange={handlelogTypeChange}
                   value={logType}
+                  allowClear
                 >
                   {logTypes &&
                     logTypes.data?.data?.data?.map((type) => (
@@ -398,6 +399,7 @@ function ProjectLogs() {
                   placeholder="Select Log Author"
                   onChange={handleAuthorChange}
                   value={author}
+                  allowClear
                 >
                   {LogAuthors &&
                     LogAuthors?.map((status) => (
