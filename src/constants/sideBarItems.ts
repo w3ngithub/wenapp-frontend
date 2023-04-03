@@ -71,9 +71,23 @@ export const SIDEBAR_ITEMS = ({
     icon: 'ckeditor',
     name: 'sidebar.logtime',
     url: LOGTIME,
-    isExpandable: false,
+    isExpandable: true,
     id: 5,
     roles: Navigation?.logTime,
+    subItems: [
+      {
+        name: 'sidebar.logtime',
+        url: '',
+        id: 1,
+        roles: Navigation?.logTime,
+      },
+      {
+        name: 'Other Log Time',
+        url: 'other-logtime',
+        id: 1,
+        roles: Navigation?.logTime,
+      },
+    ],
   },
   {
     icon: 'hotel-booking',

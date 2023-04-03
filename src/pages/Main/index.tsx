@@ -217,7 +217,24 @@ function App(props: any) {
                     </AccessRoute>
                   </Suspense>
                 }
-              />
+              >
+                <Route
+                  element={
+                    <AccessRoute roles={Navigation?.logTime}>
+                      <LogTime />
+                    </AccessRoute>
+                  }
+                />
+
+                <Route
+                  path="other-logtime"
+                  element={
+                    <AccessRoute roles={Navigation?.logTime}>
+                      <LogTime />
+                    </AccessRoute>
+                  }
+                />
+              </Route>
               <Route
                 path={LEAVE}
                 element={
