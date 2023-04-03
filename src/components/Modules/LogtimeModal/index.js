@@ -211,7 +211,6 @@ function LogtimeModal({
                   : (current) => {
                       if (+moment().format('d') === 1) {
                         return (
-                          [0, 6].includes(+current.format('d')) ||
                           current <
                             moment().subtract(3, 'days').startOf('day') ||
                           current > moment().endOf('day')
