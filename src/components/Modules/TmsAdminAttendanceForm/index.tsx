@@ -65,6 +65,7 @@ function TmsAdminAttendanceForm({
           [
             () => queryClient.invalidateQueries(['adminAttendance']),
             () => queryClient.invalidateQueries(['userAttendance']),
+            () => queryClient.invalidateQueries(['lateAttendaceAttendance']),
             () => {
               socket.emit('CUD')
             },
