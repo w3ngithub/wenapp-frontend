@@ -10,6 +10,8 @@ import {getAllUsers} from 'services/users/userDetails'
 import Select from 'components/Elements/Select'
 import {debounce} from 'helpers/utils'
 import {getAllProjects} from 'services/projects'
+import {LOG_STATUS} from 'constants/logTimes'
+
 const formattedReports = (overtimeData) => {
   return overtimeData?.map((log) => ({
     ...log,
@@ -21,6 +23,7 @@ const formattedReports = (overtimeData) => {
     slug: log?.project?.slug,
     projectId: log?.project?.id,
     remarks: log?.remarks,
+    status: LOG_STATUS[log?.otStatus],
   }))
 }
 
@@ -50,7 +53,7 @@ const OvertimePage = () => {
   } = useQuery(['timeLogs', page, sort, otStatus, author, project], () =>
     getAllTimeLogs({
       ...page,
-      isreport: true,
+      isOt: true,
       user: author,
       project: project,
       oTStatus: otStatus ? otStatus : undefined,
@@ -97,12 +100,27 @@ const OvertimePage = () => {
       id: approve?._id,
       details: {
         oTReason: approveReason,
-        oTStatus: 'approved',
+        oTStatus: 'A',
       },
     })
   }
 
-  const handleOpenApproveModal = (record) => {
+  const handleRejectOvertime = (approve) => {
+    const approveReason = approve?.overtimeApproveReason
+    UpdateLogTimeMutation.mutate({
+      id: approve?._id,
+      details: {
+        oTReason: approveReason,
+        oTStatus: 'R',
+      },
+    })
+  }
+
+  const handleApprove = (data) => {
+    console.log('testing', data)
+  }
+
+  const handleOpenRejectModal = (record) => {
     setApproveDetails(record)
     setOpenOvertimeModal(true)
   }
@@ -162,7 +180,7 @@ const OvertimePage = () => {
       <OvertimeApproveReasonModal
         open={openOvertimeModal}
         onClose={handleCloseApproveModal}
-        onSubmit={handleApproveOvertime}
+        onSubmit={handleRejectOvertime}
         approveDetails={approveDetails}
         loader={loader}
         setLoader={setLoader}
@@ -232,11 +250,12 @@ const OvertimePage = () => {
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        columns={OVERTIME_COLUMNS(
+        columns={OVERTIME_COLUMNS({
           sort,
-          handleOpenApproveModal,
-          handleOpenViewModal
-        )}
+          handleApprove,
+          handleOpenViewModal,
+          handleOpenRejectModal,
+        })}
         dataSource={formattedReports(logTimeDetails?.data?.data?.data)}
         onChange={handleTableChange}
         pagination={{

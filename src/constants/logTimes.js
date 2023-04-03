@@ -211,3 +211,9 @@ const LOGTIMES_COLUMNS = (
       ]
 
 export {LOGTIMES_COLUMNS}
+
+export const LOG_STATUS = {
+  P: 'Pending',
+  A: 'Accepted',
+  R: 'Rejected',
+}

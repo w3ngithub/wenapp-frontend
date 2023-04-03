@@ -182,6 +182,7 @@ function LogTime() {
       logType: originalTimelog?.logType,
       user: originalTimelog?.user,
       project: originalTimelog?.project,
+      isOt: originalTimelog?.isOt,
     })
     setOpenModal(true)
     setIsEditMode(true)
@@ -204,21 +205,13 @@ function LogTime() {
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
-    console.log('newlogtime', newLogtime)
-    const isTypeOT =
-      logTypes?.data?.data?.data
-        ?.find((d) => d._id === newLogtime?.logType)
-        ?.name.toLowerCase() === 'ot'
-    const formattedNewLogtime = {
+    let formattedNewLogtime = {
       ...newLogtime,
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
-      oTStatus: isTypeOT ? 'pending' : undefined,
-      user: idUser?._id,
-      isStatus: newLogtime?.overtime ? 'pending' : undefined,
+      otStatus: newLogtime?.isOt ? 'P' : undefined,
     }
-    console.log('formattedLog', formattedNewLogtime)
     if (!isAdminTimeLog) {
       formattedNewLogtime = {...formattedNewLogtime, user: idUser?._id}
     }

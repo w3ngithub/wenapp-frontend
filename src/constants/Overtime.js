@@ -4,11 +4,12 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import {getIsAdmin, roundedToFixed} from 'helpers/utils'
 import moment from 'moment'
 
-export const OVERTIME_COLUMNS = (
+export const OVERTIME_COLUMNS = ({
   sort,
-  handleOpenApproveModal,
-  handleViewOnly
-) => [
+  handleApprove,
+  handleViewOnly,
+  handleOpenRejectModal,
+}) => [
   {
     title: 'Project',
     dataIndex: 'project',
@@ -78,6 +79,14 @@ export const OVERTIME_COLUMNS = (
     // sortOrder: sortedInfo.columnKey === 'user' && sortedInfo.order,
   },
   {
+    title: 'Status',
+    dataIndex: 'status',
+    // width: 150,
+    key: 'status',
+    sorter: true,
+    // sortOrder: sortedInfo.columnKey === 'user' && sortedInfo.order,
+  },
+  {
     title: 'Action',
     key: 'action',
     // width: 360,
@@ -85,7 +94,8 @@ export const OVERTIME_COLUMNS = (
       return (
         !getIsAdmin() && (
           <div style={{display: 'flex'}}>
-            {record?.oTStatus === 'approved' ? (
+            {/* {record?.oTStatus === 'approve' ? ( */}
+            {record?.otStatus === 'R' ? (
               <span
                 className="gx-link gx-text-primary"
                 onClick={() => handleViewOnly(record, true)}
@@ -96,12 +106,32 @@ export const OVERTIME_COLUMNS = (
               <AccessWrapper role={!getIsAdmin()}>
                 <>
                   {/* <Divider type="vertical" /> */}
+                  <Popconfirm
+                    title="Are you sure to approve this overtime?"
+                    onConfirm={() => handleApprove(record)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <span
+                      // onClick={() => handleApprove(record)}
+                      className="gx-link gx-text-green"
+                    >
+                      Approve
+                    </span>
+                  </Popconfirm>
 
-                  <span
-                    onClick={() => handleOpenApproveModal(record)}
+                  {/* <span
+                    onClick={() => handleApprove(record)}
                     className="gx-link gx-text-green"
                   >
                     Approve
+                  </span> */}
+                  <Divider type="vertical" />
+                  <span
+                    onClick={() => handleOpenRejectModal(record)}
+                    className="gx-link gx-text-red"
+                  >
+                    Reject
                   </span>
                 </>
               </AccessWrapper>

@@ -22,6 +22,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {getAllUsers} from 'services/users/userDetails'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
+import useWindowsSize from 'hooks/useWindowsSize'
 const FormItem = Form.Item
 const Option = Select.Option
 const {TextArea} = Input
@@ -55,7 +56,7 @@ function LogtimeModal({
   const [searchValue, setSearchValue] = useState('')
 
   const [form] = Form.useForm()
-  // const [otChecked, setOtChecked] = useState(false)
+  const {innerWidth} = useWindowsSize()
   const [types, setTypes] = useState([])
   const [zeroHourMinutes, setZeroHourMinutes] = useState(false)
   const [project, setProject] = useState()
@@ -81,7 +82,6 @@ function LogtimeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      console.log(values)
       if (!parseInt(values?.hours) && !parseInt(values?.minutes)) {
         setZeroHourMinutes(true)
         return
@@ -111,14 +111,8 @@ function LogtimeModal({
   const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
   const handleUserChange = (name, detail) => {
-    console.log('name', name)
     setUser(detail?.id)
   }
-
-  // const handleChange = (e) => {
-  //   setOtChecked(e.target.checked)
-  //   console.log(e.target.checked)
-  // }
 
   useEffect(() => {
     if (toggle) {
@@ -148,6 +142,7 @@ function LogtimeModal({
                 project:
                   initialValues?.project?._id ||
                   process.env.REACT_APP_OTHER_PROJECT_ID,
+                isOt: initialValues?.isOt,
               }
             : {
                 logDate: moment(initialValues?.logDate),
@@ -155,6 +150,7 @@ function LogtimeModal({
                 minutes: initialValues?.minutes || '0',
                 logType: initialValues?.logType._id,
                 remarks: initialValues?.remarks,
+                isOt: initialValues?.isOt,
               }
         )
       } else {
@@ -420,12 +416,11 @@ function LogtimeModal({
             label=""
             hasFeedback
             initialValue={false}
-            name="overtime"
+            name="isOt"
           >
-            <Checkbox style={{marginLeft: '10.3rem'}}>Overtime</Checkbox>
-            {/* <Checkbox checked={otChecked} onChange={handleChange}>
+            <Checkbox style={{marginLeft: innerWidth > 575 ? '10.3rem' : '0'}}>
               Overtime
-            </Checkbox> */}
+            </Checkbox>
           </FormItem>
           {zeroHourMinutes && (
             <p className="suggestion-text">
