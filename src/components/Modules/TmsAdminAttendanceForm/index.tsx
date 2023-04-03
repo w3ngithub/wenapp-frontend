@@ -93,6 +93,7 @@ function TmsAdminAttendanceForm({
               'T' +
               punchInTime.split('T')[1],
             punchInNote: values.punchInNote,
+            isLateArrival: values?.isLateArrival,
           }
         : {
             attendanceDate: moment(date).startOf('day').format().split('T')[0],
@@ -103,6 +104,7 @@ function TmsAdminAttendanceForm({
 
             punchInNote: values.punchInNote,
             punchInLocation: await getLocation(),
+            isLateArrival: values?.isLateArrival,
             user: user,
           }
     updateAttendances.mutate({
@@ -203,42 +205,48 @@ function TmsAdminAttendanceForm({
               initialValues={{
                 punchInTime: moment(AttToEdit?.punchInTime, 'HH:mm:ss a'),
                 punchInNote: AttToEdit?.punchInNote,
+                isLateArrival: AttToEdit?.isLateArrival,
               }}
             >
-              <Form.Item
-                name="punchInTime"
-                rules={[
-                  ({getFieldValue}) => ({
-                    validator(_, value) {
-                      if (!value) {
-                        return Promise.reject('Required!')
-                      }
-                      if (
-                        value &&
-                        !PUnchOutform.getFieldValue('punchOutTime')
-                      ) {
-                        return Promise.resolve()
-                      }
+              <div className="gx-d-flex" style={{gap: 20}}>
+                <Form.Item
+                  name="punchInTime"
+                  rules={[
+                    ({getFieldValue}) => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject('Required!')
+                        }
+                        if (
+                          value &&
+                          !PUnchOutform.getFieldValue('punchOutTime')
+                        ) {
+                          return Promise.resolve()
+                        }
 
-                      if (
-                        value.isBefore(
-                          PUnchOutform.getFieldValue('punchOutTime')
+                        if (
+                          value.isBefore(
+                            PUnchOutform.getFieldValue('punchOutTime')
+                          )
+                        ) {
+                          return Promise.resolve()
+                        }
+                        return Promise.reject(
+                          new Error(
+                            'Punch In Time should be before Punch Out Time'
+                          )
                         )
-                      ) {
-                        return Promise.resolve()
-                      }
-                      return Promise.reject(
-                        new Error(
-                          'Punch In Time should be before Punch Out Time'
-                        )
-                      )
-                    },
-                  }),
-                ]}
-                hasFeedback
-              >
-                <TimePicker use12Hours format="h:mm:ss A" />
-              </Form.Item>
+                      },
+                    }),
+                  ]}
+                  hasFeedback
+                >
+                  <TimePicker use12Hours format="h:mm:ss A" />
+                </Form.Item>
+                <Form.Item name="isLateArrival" valuePropName="checked">
+                  <Checkbox>Late Arrival</Checkbox>
+                </Form.Item>
+              </div>
               <Form.Item label="Punch In Note" name="punchInNote" hasFeedback>
                 <Input.TextArea rows={5} />
               </Form.Item>
