@@ -13,7 +13,7 @@ import {
 import IntlMessages from 'util/IntlMessages'
 import {connect, useSelector} from 'react-redux'
 import {SIDEBAR_ITEMS} from 'constants/sideBarItems'
-import {REPORTS, RESOURCES} from 'helpers/routePath'
+import {LOGTIME, REPORTS, RESOURCES} from 'helpers/routePath'
 import RoleAccess from 'constants/RoleAccess'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
@@ -34,7 +34,9 @@ function SidebarContent(props) {
   } = useSelector(selectAuthUser)
 
   const selectedOpenKeys =
-    paths[1] === REPORTS || paths[1] === RESOURCES ? paths[2] : paths[1]
+    paths[1] === REPORTS || paths[1] === RESOURCES || paths[1] === LOGTIME
+      ? paths[2]
+      : paths[1]
 
   const collapseNav = collapse ? collapse : () => {}
 

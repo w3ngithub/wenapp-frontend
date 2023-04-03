@@ -72,6 +72,8 @@ import ActivityLogs from 'pages/Reports/ActivityLogs'
 import MaintenanceMode from 'pages/MaintenanceMode'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import SalaryReviewPage from 'pages/Reports/SalaryReview'
+import OtherLogTime from 'pages/LogTime/OtherLogTime'
+import LogTimes from 'pages/LogTime/LogTimes'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -219,18 +221,19 @@ function App(props: any) {
                 }
               >
                 <Route
+                  path={'all-work-logs'}
                   element={
                     <AccessRoute roles={Navigation?.logTime}>
-                      <LogTime />
+                      <LogTimes />
                     </AccessRoute>
                   }
                 />
 
                 <Route
-                  path="other-logtime"
+                  path={'other-logtime'}
                   element={
                     <AccessRoute roles={Navigation?.logTime}>
-                      <LogTime />
+                      <OtherLogTime />
                     </AccessRoute>
                   }
                 />
