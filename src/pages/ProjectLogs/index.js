@@ -247,7 +247,7 @@ function ProjectLogs() {
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
-      otStatus: newLogtime?.isOt ? 'P' : undefined,
+      otStatus: newLogtime?.otStatus || (newLogtime?.isOt ? 'P' : undefined),
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({

@@ -210,7 +210,7 @@ function LogTime() {
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
-      otStatus: newLogtime?.isOt ? 'P' : undefined,
+      otStatus: newLogtime?.otStatus || (newLogtime?.isOt ? 'P' : undefined),
     }
     if (!isAdminTimeLog) {
       formattedNewLogtime = {...formattedNewLogtime, user: idUser?._id}
