@@ -7,7 +7,7 @@ import moment from 'moment'
 export const OVERTIME_COLUMNS = ({
   sort,
   handleApprove,
-  handleViewOnly,
+  handleOpenViewModal,
   handleOpenRejectModal,
 }) => [
   {
@@ -98,11 +98,11 @@ export const OVERTIME_COLUMNS = ({
             {record?.otStatus === 'R' ? (
               <span
                 className="gx-link gx-text-primary"
-                onClick={() => handleViewOnly(record, true)}
+                onClick={() => handleOpenViewModal(record, true)}
               >
                 <CustomIcon name="view" />
               </span>
-            ) : (
+            ) : record?.otStatus === 'P' ? (
               <AccessWrapper role={!getIsAdmin()}>
                 <>
                   {/* <Divider type="vertical" /> */}
@@ -135,7 +135,7 @@ export const OVERTIME_COLUMNS = ({
                   </span>
                 </>
               </AccessWrapper>
-            )}
+            ) : null}
           </div>
         )
       )
@@ -144,7 +144,8 @@ export const OVERTIME_COLUMNS = ({
 ]
 
 export const OT_STATUS = [
-  {id: 'approved', value: 'Approved'},
-  {id: 'pending', value: 'Pending'},
+  {id: 'A', value: 'Approved'},
+  {id: 'P', value: 'Pending'},
+  {id: 'R', value: 'Rejected'},
   {id: '', value: 'All'},
 ]

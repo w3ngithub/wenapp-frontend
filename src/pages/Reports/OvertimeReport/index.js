@@ -94,30 +94,34 @@ const OvertimePage = () => {
     setIsViewOnly(false)
   }
 
-  const handleApproveOvertime = (approve) => {
-    const approveReason = approve?.overtimeApproveReason
-    UpdateLogTimeMutation.mutate({
-      id: approve?._id,
-      details: {
-        oTReason: approveReason,
-        oTStatus: 'A',
-      },
-    })
-  }
+  // const handleApproveOvertime = (approve) => {
+  //   const approveReason = approve?.overtimeApproveReason
+  //   UpdateLogTimeMutation.mutate({
+  //     id: approve?._id,
+  //     details: {
+  //       oTStatus: 'A',
+  //     },
+  //   })
+  // }
 
   const handleRejectOvertime = (approve) => {
     const approveReason = approve?.overtimeApproveReason
     UpdateLogTimeMutation.mutate({
       id: approve?._id,
       details: {
-        oTReason: approveReason,
-        oTStatus: 'R',
+        otRejectReason: approveReason,
+        otStatus: 'R',
       },
     })
   }
 
   const handleApprove = (data) => {
-    console.log('testing', data)
+    UpdateLogTimeMutation.mutate({
+      id: data?._id,
+      details: {
+        otStatus: 'A',
+      },
+    })
   }
 
   const handleOpenRejectModal = (record) => {
@@ -126,7 +130,7 @@ const OvertimePage = () => {
   }
 
   const handleOpenViewModal = (details) => {
-    setReadonlyApproveReason(details?.oTReason)
+    setReadonlyApproveReason(details?.otRejectReason)
     setIsViewOnly(true)
     setOpenOvertimeModal(true)
   }
@@ -184,16 +188,16 @@ const OvertimePage = () => {
         approveDetails={approveDetails}
         loader={loader}
         setLoader={setLoader}
-        title={'Overtime  Approve'}
+        title={'Overtime  Reject'}
         isRequired={true}
-        label="Approve reason"
+        label="Reject reason"
       />
 
       <OvertimeApproveReasonModal
         open={isViewOnly}
         onClose={handleCloseApproveModal}
         approveReason={readOnlyApproveReason}
-        title="Overtime Approve Reason"
+        title="Overtime Reject Reason"
         label="Reason"
         isReadOnly={isViewOnly}
       />
