@@ -56,7 +56,7 @@ const OvertimePage = () => {
       isOt: true,
       user: author,
       project: project,
-      oTStatus: otStatus ? otStatus : undefined,
+      otStatus: otStatus ? otStatus : undefined,
       sort:
         sort.order === undefined || sort.column === undefined
           ? '-logDate'
@@ -94,22 +94,12 @@ const OvertimePage = () => {
     setIsViewOnly(false)
   }
 
-  // const handleApproveOvertime = (approve) => {
-  //   const approveReason = approve?.overtimeApproveReason
-  //   UpdateLogTimeMutation.mutate({
-  //     id: approve?._id,
-  //     details: {
-  //       oTStatus: 'A',
-  //     },
-  //   })
-  // }
-
-  const handleRejectOvertime = (approve) => {
-    const approveReason = approve?.overtimeApproveReason
+  const handleRejectOvertime = (reject) => {
+    const rejectReason = reject?.overtimeApproveReason
     UpdateLogTimeMutation.mutate({
-      id: approve?._id,
+      id: reject?._id,
       details: {
-        otRejectReason: approveReason,
+        otRejectReason: rejectReason,
         otStatus: 'R',
       },
     })
