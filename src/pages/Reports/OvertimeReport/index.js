@@ -34,7 +34,6 @@ const OvertimePage = () => {
   const queryClient = useQueryClient()
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 50})
-  const [loader, setLoader] = useState(false)
   const [openOvertimeModal, setOpenOvertimeModal] = useState(false)
   const [approveDetails, setApproveDetails] = useState({})
   const [isViewOnly, setIsViewOnly] = useState(false)
@@ -76,7 +75,6 @@ const OvertimePage = () => {
           'Could not update time log',
           [
             () => queryClient.invalidateQueries(['timeLogs']),
-            () => setLoader(false),
             () => handleCloseApproveModal(),
           ]
         ),
@@ -176,21 +174,14 @@ const OvertimePage = () => {
         onClose={handleCloseApproveModal}
         onSubmit={handleRejectOvertime}
         approveDetails={approveDetails}
-        loader={loader}
-        setLoader={setLoader}
-        title={'Overtime  Reject'}
-        isRequired={true}
-        label="Reject reason"
-      />
-
-      <OvertimeApproveReasonModal
-        open={isViewOnly}
-        onClose={handleCloseApproveModal}
         approveReason={readOnlyApproveReason}
-        title="Overtime Reject Reason"
-        label="Reason"
+        loader={UpdateLogTimeMutation?.isLoading}
+        title={isViewOnly ? 'Overtime Reject Reason' : 'Overtime  Reject'}
+        isRequired={isViewOnly ? false : true}
+        label={isViewOnly ? 'Reason' : 'Reject reason'}
         isReadOnly={isViewOnly}
       />
+
       <Form layout="inline" form={form}>
         <FormItem className="direct-form-item">
           <Select

@@ -28,7 +28,7 @@ function OvertimeApproveReasonModal({
   approveReason,
   onSubmit,
   approveDetails,
-  setLoader,
+  loader,
   title = '',
   label = '',
   isRequired = false,
@@ -43,11 +43,10 @@ function OvertimeApproveReasonModal({
     if (!open) {
       form.resetFields()
     }
-  }, [approveReason, form, open])
+  }, [open])
 
   const onFinish = (values) => {
     form.validateFields().then((values) => {
-      setLoader(true)
       onSubmit({...approveDetails, ...values})
     })
   }
@@ -78,56 +77,60 @@ function OvertimeApproveReasonModal({
             ]
       }
     >
-      <Form
-        {...layout}
-        form={form}
-        name="control-hooks"
-        layout="vertical"
-        className="padding-lt-0"
-      >
-        <Row>
-          <Col xs={24} sm={24} xl={24}>
-            <Form.Item
-              {...formItemLayout}
-              label={label}
-              name="overtimeApproveReason"
-              rules={[
-                {
-                  required: isRequired,
-                  validator: async (rule, value) => {
-                    try {
-                      if (!value && isRequired)
-                        throw new Error(`${label} is required.`)
+      <Spin spinning={loader}>
+        <Form
+          {...layout}
+          form={form}
+          name="control-hooks"
+          layout="vertical"
+          className="padding-lt-0"
+        >
+          <Row>
+            <Col xs={24} sm={24} xl={24}>
+              <Form.Item
+                {...formItemLayout}
+                label={label}
+                name="overtimeApproveReason"
+                rules={[
+                  {
+                    required: isRequired,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value && isRequired)
+                          throw new Error(`${label} is required.`)
 
-                      const trimmedValue = value && value.trim()
-                      if (trimmedValue?.length < 10 && isRequired) {
-                        throw new Error('Reason should be at least 10 letters!')
+                        const trimmedValue = value && value.trim()
+                        if (trimmedValue?.length < 10 && isRequired) {
+                          throw new Error(
+                            'Reason should be at least 10 letters!'
+                          )
+                        }
+                        if (trimmedValue?.length > 500 && isRequired) {
+                          throw new Error(
+                            'Reason should be less than 500 letters!'
+                          )
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
                       }
-                      if (trimmedValue?.length > 500 && isRequired) {
-                        throw new Error(
-                          'Reason should be less than 500 letters!'
-                        )
-                      }
-                    } catch (err) {
-                      throw new Error(err.message)
-                    }
+                    },
                   },
-                },
-              ]}
-            >
-              <Input.TextArea
-                disabled={isReadOnly}
-                allowClear
-                rows={10}
-                defaultValue={approveReason}
-                style={{
-                  background: darkCalendar ? '#434f5a' : '',
-                }}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
+                ]}
+              >
+                <Input.TextArea
+                  disabled={isReadOnly}
+                  allowClear
+                  rows={10}
+                  defaultValue={approveReason}
+                  style={{
+                    background: darkCalendar ? '#434f5a' : '',
+                  }}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </Spin>
     </Modal>
   )
 }
