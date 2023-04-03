@@ -221,7 +221,7 @@ function Holiday() {
           pagination={false}
           loading={isLoading || isFetching}
           footer={() => (
-            <AccessWrapper role={Resources?.createHoliday}>
+            <AccessWrapper role={isMutable}>
               <Button
                 type="dashed"
                 className="btn-link "
