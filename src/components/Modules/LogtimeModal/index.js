@@ -1,6 +1,15 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import '@ant-design/compatible/assets/index.css'
-import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
+import {
+  Button,
+  DatePicker,
+  Input,
+  Modal,
+  Select,
+  Spin,
+  Form,
+  Checkbox,
+} from 'antd'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
 import {getAllProjects, getProject} from 'services/projects'
@@ -46,6 +55,7 @@ function LogtimeModal({
   const [searchValue, setSearchValue] = useState('')
 
   const [form] = Form.useForm()
+  // const [otChecked, setOtChecked] = useState(false)
   const [types, setTypes] = useState([])
   const [zeroHourMinutes, setZeroHourMinutes] = useState(false)
   const [project, setProject] = useState()
@@ -71,6 +81,7 @@ function LogtimeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
+      console.log(values)
       if (!parseInt(values?.hours) && !parseInt(values?.minutes)) {
         setZeroHourMinutes(true)
         return
@@ -100,8 +111,14 @@ function LogtimeModal({
   const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
   const handleUserChange = (name, detail) => {
+    console.log('name', name)
     setUser(detail?.id)
   }
+
+  // const handleChange = (e) => {
+  //   setOtChecked(e.target.checked)
+  //   console.log(e.target.checked)
+  // }
 
   useEffect(() => {
     if (toggle) {
@@ -396,6 +413,19 @@ function LogtimeModal({
             ]}
           >
             <TextArea placeholder="Enter Remarks" rows={6} />
+          </FormItem>
+          <FormItem
+            valuePropName="checked"
+            {...formItemLayout}
+            label=""
+            hasFeedback
+            initialValue={false}
+            name="overtime"
+          >
+            <Checkbox style={{marginLeft: '10.3rem'}}>Overtime</Checkbox>
+            {/* <Checkbox checked={otChecked} onChange={handleChange}>
+              Overtime
+            </Checkbox> */}
           </FormItem>
           {zeroHourMinutes && (
             <p className="suggestion-text">

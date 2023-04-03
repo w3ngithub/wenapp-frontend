@@ -204,6 +204,7 @@ function LogTime() {
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
+    console.log('newlogtime', newLogtime)
     const isTypeOT =
       logTypes?.data?.data?.data
         ?.find((d) => d._id === newLogtime?.logType)
@@ -215,7 +216,9 @@ function LogTime() {
       minutes: +newLogtime.minutes,
       oTStatus: isTypeOT ? 'pending' : undefined,
       user: idUser?._id,
+      isStatus: newLogtime?.overtime ? 'pending' : undefined,
     }
+    console.log('formattedLog', formattedNewLogtime)
     if (!isAdminTimeLog) {
       formattedNewLogtime = {...formattedNewLogtime, user: idUser?._id}
     }
