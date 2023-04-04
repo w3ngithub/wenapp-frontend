@@ -105,6 +105,7 @@ const OvertimePage = () => {
   const handleCloseApproveModal = () => {
     setOpenOvertimeModal(false)
     setIsViewOnly(false)
+    setReadonlyApproveReason('')
   }
 
   const handleRejectOvertime = (reject) => {
