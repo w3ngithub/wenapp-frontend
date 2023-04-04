@@ -3,7 +3,12 @@ import React, {useState, useCallback} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {changeDate, filterOptions, handleResponse} from 'helpers/utils'
+import {
+  MuiFormatDate,
+  changeDate,
+  filterOptions,
+  handleResponse,
+} from 'helpers/utils'
 import {getAllTimeLogs, updateTimeLog} from 'services/timeLogs'
 import OvertimeApproveReasonModal from 'components/Modules/OvertimeApproveReasonModal'
 import {getAllUsers} from 'services/users/userDetails'
@@ -11,6 +16,7 @@ import Select from 'components/Elements/Select'
 import {debounce} from 'helpers/utils'
 import {getAllProjects} from 'services/projects'
 import {LOG_STATUS} from 'constants/logTimes'
+import RangePicker from 'components/Elements/RangePicker'
 
 const formattedReports = (overtimeData) => {
   return overtimeData?.map((log) => ({
@@ -42,6 +48,7 @@ const OvertimePage = () => {
   const [otStatus, setOtStatus] = useState(undefined)
   const [projectData, setProjectData] = useState([])
   const [project, setProject] = useState(undefined)
+  const [rangeDate, setRangeDate] = useState(undefined)
 
   const allUsers = useQuery(['users'], () => getAllUsers({sort: 'name'}))
 
@@ -49,20 +56,28 @@ const OvertimePage = () => {
     data: logTimeDetails,
     isLoading: timelogLoading,
     isFetching: timeLogFetching,
-  } = useQuery(['timeLogs', page, sort, otStatus, author, project], () =>
-    getAllTimeLogs({
-      ...page,
-      isOt: true,
-      user: author,
-      project: project,
-      otStatus: otStatus ? otStatus : undefined,
-      sort:
-        sort.order === undefined || sort.column === undefined
-          ? '-logDate'
-          : sort.order === 'ascend'
-          ? sort.field
-          : `-${sort.field}`,
-    })
+  } = useQuery(
+    ['timeLogs', page, sort, otStatus, author, project, rangeDate],
+    () =>
+      getAllTimeLogs({
+        ...page,
+        isOt: true,
+        user: author,
+        project: project,
+        otStatus: otStatus ? otStatus : undefined,
+        fromDate: rangeDate?.[0]
+          ? MuiFormatDate(rangeDate[0].format()) + 'T00:00:00Z'
+          : '',
+        toDate: rangeDate?.[1]
+          ? MuiFormatDate(rangeDate[1]?.format()) + 'T00:00:00Z'
+          : '',
+        sort:
+          sort.order === undefined || sort.column === undefined
+            ? '-logDate'
+            : sort.order === 'ascend'
+            ? sort.field
+            : `-${sort.field}`,
+      })
   )
 
   const UpdateLogTimeMutation = useMutation(
@@ -152,6 +167,7 @@ const OvertimePage = () => {
     setProject(undefined)
     setOtStatus(undefined)
     setAuthor(undefined)
+    setRangeDate(undefined)
     setPage({page: 1, limit: 50})
   }
 
@@ -165,6 +181,10 @@ const OvertimePage = () => {
 
   const onShowSizeChange = (_, pageSize) => {
     setPage((prev) => ({...page, limit: pageSize}))
+  }
+
+  const handleChangeDate = (date) => {
+    setRangeDate(date)
   }
 
   return (
@@ -183,6 +203,9 @@ const OvertimePage = () => {
       />
 
       <Form layout="inline" form={form}>
+        <FormItem>
+          <RangePicker handleChangeDate={handleChangeDate} date={rangeDate} />
+        </FormItem>
         <FormItem className="direct-form-item">
           <Select
             placeholder="Select Project"
@@ -223,6 +246,7 @@ const OvertimePage = () => {
             }))}
           />
         </FormItem>
+
         <FormItem style={{marginBottom: '0.8rem'}}>
           <Button
             className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
