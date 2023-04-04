@@ -1,8 +1,7 @@
 import {Divider, Popconfirm} from 'antd'
 import CustomIcon from 'components/Elements/Icons'
 import AccessWrapper from 'components/Modules/AccessWrapper'
-import {getIsAdmin, roundedToFixed} from 'helpers/utils'
-import moment from 'moment'
+import {getIsAdmin} from 'helpers/utils'
 
 export const OVERTIME_COLUMNS = ({
   sort,
@@ -14,58 +13,37 @@ export const OVERTIME_COLUMNS = ({
     title: 'Project',
     dataIndex: 'project',
     key: 'project',
-    // width: 400,
     sorter: true,
-    // sortOrder: sortedInfo.columnKey === 'project' && sortedInfo.order,
-    //   render: (text, record) => {
-    //     return (
-    //       <p
-    //         onClick={() => {
-    //           if (!record?.projectId) return
-    //           navigateToProjectLogs(
-    //             `../projects/${record?.projectId}-${record?.slug}`
-    //           )
-    //         }}
-    //         className={record?.projectId && 'project-name'}
-    //       >
-    //         {text}
-    //       </p>
-    //     )
-    //   },
+    sortOrder: sort.columnKey === 'project' && sort.order,
   },
   {
     title: 'Date',
     dataIndex: 'logDate',
     key: 'logDate',
-    // width: 120,
     sorter: true,
-    // sortOrder: sortedInfo.columnKey === 'logDate' && sortedInfo.order,
+    sortOrder: sort.columnKey === 'logDate' && sort.order,
   },
   {
     title: 'Hours',
     dataIndex: 'totalHours',
     key: 'totalHours',
-    // width: 70,
     sorter: true,
-    // sortOrder: sortedInfo.columnKey === 'totalHours' && sortedInfo.order,
-    // render: (value) => roundedToFixed(value || 0, 2),
+    sortOrder: sort.columnKey === 'totalHours' && sort.order,
   },
 
   {
     title: 'Type',
     dataIndex: 'logType',
-    // width: 100,
     key: 'logType',
     sorter: true,
-    // sortOrder: sortedInfo.columnKey === 'logType' && sortedInfo.order,
+    sortOrder: sort.columnKey === 'logType' && sort.order,
   },
   {
     title: 'Remarks',
     dataIndex: 'remarks',
-    // width: 400,
     key: 'remarks',
     sorter: true,
-    // sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,
+    sortOrder: sort.columnKey === 'remarks' && sort.order,
     render: (text, record) => {
       return <p style={{whiteSpace: 'pre-wrap'}}>{text}</p>
     },
@@ -73,28 +51,24 @@ export const OVERTIME_COLUMNS = ({
   {
     title: 'Added By',
     dataIndex: 'user',
-    // width: 150,
     key: 'user',
     sorter: true,
-    // sortOrder: sortedInfo.columnKey === 'user' && sortedInfo.order,
+    sortOrder: sort.columnKey === 'user' && sort.order,
   },
   {
     title: 'Status',
     dataIndex: 'status',
-    // width: 150,
     key: 'status',
     sorter: true,
-    // sortOrder: sortedInfo.columnKey === 'user' && sortedInfo.order,
+    sortOrder: sort.columnKey === 'status' && sort.order,
   },
   {
     title: 'Action',
     key: 'action',
-    // width: 360,
     render: (text, record) => {
       return (
         !getIsAdmin() && (
           <div style={{display: 'flex'}}>
-            {/* {record?.oTStatus === 'approve' ? ( */}
             {record?.otStatus === 'R' ? (
               <span
                 className="gx-link gx-text-primary"
@@ -112,20 +86,8 @@ export const OVERTIME_COLUMNS = ({
                     okText="Yes"
                     cancelText="No"
                   >
-                    <span
-                      // onClick={() => handleApprove(record)}
-                      className="gx-link gx-text-green"
-                    >
-                      Approve
-                    </span>
+                    <span className="gx-link gx-text-green">Approve</span>
                   </Popconfirm>
-
-                  {/* <span
-                    onClick={() => handleApprove(record)}
-                    className="gx-link gx-text-green"
-                  >
-                    Approve
-                  </span> */}
                   <Divider type="vertical" />
                   <span
                     onClick={() => handleOpenRejectModal(record)}
