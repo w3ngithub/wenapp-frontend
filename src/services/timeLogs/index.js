@@ -17,10 +17,18 @@ const getAllTimeLogs = async ({
   project = '',
   user = '',
   logType = '',
+  isOt = '',
+  otStatus = '',
+  fromDate = '',
+  toDate = '',
 }) => {
   try {
     let response = await API.get(
-      `${Apis.TimeLogs}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&project=${project}&user=${user}&logType=${logType}`
+      `${
+        Apis.TimeLogs
+      }?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&project=${project}&user=${user}&logType=${logType}&otStatus=${otStatus}&isOt=${isOt}${
+        fromDate && toDate && `&logDate[gte]=${fromDate}&logDate[lte]=${toDate}`
+      }`
     )
     return getAPIResponse({
       ...response,

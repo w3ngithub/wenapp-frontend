@@ -225,6 +225,7 @@ function ProjectLogs() {
       logDate: originalTimelog?.logDate,
       logType: originalTimelog?.logType,
       user: originalTimelog?.user,
+      isOt: originalTimelog?.isOt,
     })
     setOpenModal(true)
     setIsEditMode(true)
@@ -241,11 +242,12 @@ function ProjectLogs() {
   }
 
   const handleLogTypeSubmit = (newLogtime, reset) => {
-    let formattedNewLogtime = {
+    const formattedNewLogtime = {
       ...newLogtime,
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
+      otStatus: newLogtime?.otStatus || (newLogtime?.isOt ? 'P' : undefined),
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({

@@ -182,6 +182,7 @@ function LogTime() {
       logType: originalTimelog?.logType,
       user: originalTimelog?.user,
       project: originalTimelog?.project,
+      isOt: originalTimelog?.isOt,
     })
     setOpenModal(true)
     setIsEditMode(true)
@@ -209,6 +210,7 @@ function LogTime() {
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
+      otStatus: newLogtime?.otStatus || (newLogtime?.isOt ? 'P' : undefined),
     }
     if (!isAdminTimeLog) {
       formattedNewLogtime = {...formattedNewLogtime, user: idUser?._id}

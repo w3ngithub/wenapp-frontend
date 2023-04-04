@@ -1,6 +1,15 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import '@ant-design/compatible/assets/index.css'
-import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
+import {
+  Button,
+  DatePicker,
+  Input,
+  Modal,
+  Select,
+  Spin,
+  Form,
+  Checkbox,
+} from 'antd'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
 import {getAllProjects, getProject} from 'services/projects'
@@ -13,6 +22,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {getAllUsers} from 'services/users/userDetails'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
+import useWindowsSize from 'hooks/useWindowsSize'
 const FormItem = Form.Item
 const Option = Select.Option
 const {TextArea} = Input
@@ -46,6 +56,7 @@ function LogtimeModal({
   const [searchValue, setSearchValue] = useState('')
 
   const [form] = Form.useForm()
+  const {innerWidth} = useWindowsSize()
   const [types, setTypes] = useState([])
   const [zeroHourMinutes, setZeroHourMinutes] = useState(false)
   const [project, setProject] = useState()
@@ -131,6 +142,7 @@ function LogtimeModal({
                 project:
                   initialValues?.project?._id ||
                   process.env.REACT_APP_OTHER_PROJECT_ID,
+                isOt: initialValues?.isOt,
               }
             : {
                 logDate: moment(initialValues?.logDate),
@@ -138,6 +150,7 @@ function LogtimeModal({
                 minutes: initialValues?.minutes || '0',
                 logType: initialValues?.logType._id,
                 remarks: initialValues?.remarks,
+                isOt: initialValues?.isOt,
               }
         )
       } else {
@@ -395,6 +408,18 @@ function LogtimeModal({
             ]}
           >
             <TextArea placeholder="Enter Remarks" rows={6} />
+          </FormItem>
+          <FormItem
+            valuePropName="checked"
+            {...formItemLayout}
+            label=""
+            hasFeedback
+            initialValue={false}
+            name="isOt"
+          >
+            <Checkbox style={{marginLeft: innerWidth > 575 ? '10.3rem' : '0'}}>
+              Overtime
+            </Checkbox>
           </FormItem>
           {zeroHourMinutes && (
             <p className="suggestion-text">
