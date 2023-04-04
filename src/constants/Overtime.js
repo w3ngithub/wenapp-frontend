@@ -57,26 +57,27 @@ export const OVERTIME_COLUMNS = ({
   },
   {
     title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
+    dataIndex: 'otStatus',
+    key: 'otStatus',
     sorter: true,
-    sortOrder: sort.columnKey === 'status' && sort.order,
+    sortOrder: sort.columnKey === 'otStatus' && sort.order,
   },
   {
     title: 'Action',
     key: 'action',
     render: (text, record) => {
+      console.log('record', record)
       return (
         !getIsAdmin() && (
           <div style={{display: 'flex'}}>
-            {record?.otStatus === 'R' ? (
+            {record?.otStatus === 'Rejected' ? (
               <span
                 className="gx-link gx-text-primary"
                 onClick={() => handleOpenViewModal(record, true)}
               >
                 <CustomIcon name="view" />
               </span>
-            ) : record?.otStatus === 'P' ? (
+            ) : record?.otStatus === 'Pending' ? (
               <AccessWrapper role={!getIsAdmin()}>
                 <>
                   {/* <Divider type="vertical" /> */}

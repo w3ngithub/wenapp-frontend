@@ -29,7 +29,7 @@ const formattedReports = (overtimeData) => {
     slug: log?.project?.slug,
     projectId: log?.project?.id,
     remarks: log?.remarks,
-    status: LOG_STATUS[log?.otStatus],
+    otStatus: LOG_STATUS[log?.otStatus],
   }))
 }
 
