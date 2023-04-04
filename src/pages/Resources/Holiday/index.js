@@ -221,14 +221,16 @@ function Holiday() {
           pagination={false}
           loading={isLoading || isFetching}
           footer={() => (
-            <Button
-              type="dashed"
-              className="btn-link "
-              onClick={() => handleOpenEditModal()}
-              icon={<PlusOutlined />}
-            >
-              Add More Holiday
-            </Button>
+            <AccessWrapper role={isMutable}>
+              <Button
+                type="dashed"
+                className="btn-link "
+                onClick={() => handleOpenEditModal()}
+                icon={<PlusOutlined />}
+              >
+                Add More Holiday
+              </Button>
+            </AccessWrapper>
           )}
         />
       </Card>

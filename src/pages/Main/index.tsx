@@ -1,7 +1,7 @@
 import React, {useEffect, lazy, Suspense} from 'react'
 import {connect, useSelector} from 'react-redux'
 import socketIOClient from 'socket.io-client'
-import {Navigate, Route, Routes, useNavigate} from 'react-router-dom'
+import {Navigate, Route, Routes} from 'react-router-dom'
 import {ConfigProvider} from 'antd'
 import moment from 'moment'
 import 'moment/locale/en-gb'
@@ -30,6 +30,7 @@ import {
   LOGTIME,
   MAINTAINANCE_MODE,
   NOTICEBOARD,
+  OVERTIME_REPORT,
   OVERVIEW,
   POLICY,
   PROFILE,
@@ -62,11 +63,6 @@ import ForgotPassword from 'containers/ForgotPassword'
 import ResetPassword from 'containers/ResetPassword'
 import CircularProgress from 'components/Elements/CircularProgress'
 import AccessRoute from 'components/Hoc/AccessRoute'
-import RoleAccess, {
-  LEAVE_REPORT_REPORT_ACESS,
-  WEEKLY_REPORT_ACCESS,
-  WORK_LOG_REPORT_ACESS,
-} from 'constants/RoleAccess'
 import Error404 from 'components/Modules/404'
 import ActivityLogs from 'pages/Reports/ActivityLogs'
 import MaintenanceMode from 'pages/MaintenanceMode'
@@ -74,6 +70,7 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 import SalaryReviewPage from 'pages/Reports/SalaryReview'
 import OtherLogTime from 'pages/LogTime/OtherLogTime'
 import LogTimes from 'pages/LogTime/LogTimes'
+import OvertimePage from 'pages/Reports/OvertimeReport'
 
 const Dashboard = lazy(() => import('pages/Dashboard'))
 const Overview = lazy(() => import('pages/Overview'))
@@ -98,7 +95,6 @@ export const socket = socketIOClient(process.env.REACT_APP_API_ENDPOINT || '', {
 function App(props: any) {
   const {locale, authUser, themeType} = props
   const currentAppLocale = AppLocale[locale.locale]
-  const navigate = useNavigate()
 
   useEffect(() => {
     if (themeType === THEME_TYPE_DARK) {
@@ -107,16 +103,6 @@ function App(props: any) {
       document.body.classList.remove('dark-theme')
     }
   }, [themeType])
-
-  // useEffect(() => {
-  //   if (
-  //     Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
-  //       'Katmandu' &&
-  //     Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1] !==
-  //       'Kathmandu'
-  //   )
-  //     navigate('notAllowed')
-  // }, [])
 
   const {
     role: {
@@ -320,6 +306,14 @@ function App(props: any) {
                   element={
                     <AccessRoute roles={NavigationReports?.viewActivityLog}>
                       <ActivityLogs />
+                    </AccessRoute>
+                  }
+                />
+                <Route
+                  path={OVERTIME_REPORT}
+                  element={
+                    <AccessRoute roles={NavigationReports?.viewOvertimeReport}>
+                      <OvertimePage />
                     </AccessRoute>
                   }
                 />
