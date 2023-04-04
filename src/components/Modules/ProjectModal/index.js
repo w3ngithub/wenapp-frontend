@@ -422,6 +422,9 @@ function ProjectModal({
                         if (value.trim().length === 0) {
                           throw new Error('Please enter a valid Path.')
                         }
+                        if (!regex.test(value)) {
+                          throw new Error('Please enter match regex')
+                        }
                       } catch (err) {
                         scrollForm(form, 'path')
                         throw new Error(err.message)
