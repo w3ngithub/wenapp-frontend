@@ -29,12 +29,15 @@ function SidebarContent(props) {
         Navigation = {},
         Reports = {},
         Resources: NavigationResources = {},
+        ['Log Time']: logtimePermission = {},
       } = {},
     } = {},
   } = useSelector(selectAuthUser)
 
   const selectedOpenKeys =
-    paths[1] === REPORTS || paths[1] === RESOURCES || paths[1] === LOGTIME
+    paths[1] === REPORTS ||
+    paths[1] === RESOURCES ||
+    (paths[1] === LOGTIME && logtimePermission?.viewOtherLogTime)
       ? paths[2]
       : paths[1]
 
@@ -58,7 +61,12 @@ function SidebarContent(props) {
             mode="inline"
             // items={items}
           >
-            {SIDEBAR_ITEMS({Navigation, Reports, NavigationResources})
+            {SIDEBAR_ITEMS({
+              Navigation,
+              Reports,
+              NavigationResources,
+              logtimePermission,
+            })
               .filter((item) => item.roles === true)
               .map((item) =>
                 item.isExpandable ? (

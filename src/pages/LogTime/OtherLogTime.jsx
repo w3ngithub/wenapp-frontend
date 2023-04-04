@@ -3,7 +3,12 @@ import {Button, Card, Form, Table} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import LogModal from 'components/Modules/LogtimeModal'
 import '@ant-design/compatible/assets/index.css'
-import {changeDate, roundedToFixed, handleResponse} from 'helpers/utils'
+import {
+  changeDate,
+  roundedToFixed,
+  handleResponse,
+  MuiFormatDate,
+} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
 import React, {useState} from 'react'
@@ -11,12 +16,12 @@ import {
   deleteTimeLog,
   getAllTimeLogs,
   getLogTypes,
-  getTodayTimeLogSummary,
-  getWeeklyTimeLogSummary,
+  getOtherTodayTimeLogSummary,
+  getOtherWeeklyTimeLogSummary,
   updateTimeLog,
 } from 'services/timeLogs'
 import TimeSummary from './TimeSummary'
-import {useNavigate} from 'react-router-dom'
+import {intialDate} from 'constants/Attendance'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -42,11 +47,14 @@ const formattedLogs = (logs) => {
 function OtherLogTime() {
   // init hooks
   const queryClient = useQueryClient()
+  const defaultPageSize = {page: 1, limit: 50}
 
   // init states
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState({page: 1, limit: 50})
+  const [page, setPage] = useState(defaultPageSize)
+  const [date, setDate] = useState(intialDate)
   const [user, setUser] = useState(undefined)
+  const [logType, setLogType] = useState(undefined)
   const [openModal, setOpenModal] = useState(false)
   const [isAdminTimeLog, setIsAdminTimeLog] = useState(false)
   const FormItem = Form.Item
@@ -58,12 +66,25 @@ function OtherLogTime() {
     role: {key, permission},
   } = useSelector(selectAuthUser)
 
-  const {data: users, isLoading} = useQuery(['userForAttendances'], () =>
+  const {data: users} = useQuery(['userForAttendances'], () =>
     getAllUsers({fields: 'name'})
   )
 
   const handleUserChange = (id) => {
     setUser(id)
+    setPage(defaultPageSize)
+  }
+
+  const handlelogTypeChange = (id) => {
+    setLogType(id)
+    setPage(defaultPageSize)
+  }
+
+  const handleReset = () => {
+    setLogType(undefined)
+    setPage(defaultPageSize)
+    setUser(undefined)
+    setDate(intialDate)
   }
 
   const {
@@ -71,11 +92,15 @@ function OtherLogTime() {
     isLoading: timelogLoading,
     isFetching: timeLogFetching,
   } = useQuery(
-    ['timeLogs', page, sort],
+    ['timeLogs', page, sort, user, logType, date],
     () =>
       getAllTimeLogs({
         ...page,
         project: process.env.REACT_APP_OTHER_PROJECT_ID,
+        logType: logType,
+        user,
+        fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
+        toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T00:00:00Z' : '',
         sort:
           sort.order === undefined || sort.column === undefined
             ? '-logDate'
@@ -87,12 +112,12 @@ function OtherLogTime() {
   )
 
   const {data: todayTimeSpent, isLoading: todayLoading} = useQuery(
-    ['userTodayTimeSpent'],
-    getTodayTimeLogSummary
+    ['otherTodayTimeSpent'],
+    getOtherTodayTimeLogSummary
   )
   const {data: weeklyTimeSpent, isLoading: weeklyLoading} = useQuery(
-    ['userweeklyTimeSpent'],
-    getWeeklyTimeLogSummary
+    ['otherweeklyTimeSpent'],
+    getOtherWeeklyTimeLogSummary
   )
 
   const UpdateLogTimeMutation = useMutation(
@@ -104,9 +129,9 @@ function OtherLogTime() {
           'Updated time log successfully',
           'Could not update time log',
           [
-            () => queryClient.invalidateQueries(['UsertimeLogs']),
-            () => queryClient.invalidateQueries(['userTodayTimeSpent']),
-            () => queryClient.invalidateQueries(['userweeklyTimeSpent']),
+            () => queryClient.invalidateQueries(['timeLogs']),
+            () => queryClient.invalidateQueries(['otherTodayTimeSpent']),
+            () => queryClient.invalidateQueries(['otherweeklyTimeSpent']),
             () => handleCloseTimelogModal(),
           ]
         ),
@@ -125,9 +150,9 @@ function OtherLogTime() {
         'Deleted time log successfully',
         'Could not delete time log',
         [
-          () => queryClient.invalidateQueries(['UsertimeLogs']),
-          () => queryClient.invalidateQueries(['userTodayTimeSpent']),
-          () => queryClient.invalidateQueries(['userweeklyTimeSpent']),
+          () => queryClient.invalidateQueries(['timeLogs']),
+          () => queryClient.invalidateQueries(['otherTodayTimeSpent']),
+          () => queryClient.invalidateQueries(['otherweeklyTimeSpent']),
           () => {
             socket.emit('CUD')
           },
@@ -152,6 +177,10 @@ function OtherLogTime() {
 
   const confirmDelete = (log) => {
     deleteLogMutation.mutate(log._id)
+  }
+
+  const handleChangeDate = (date) => {
+    setDate(date ? date : intialDate)
   }
 
   const handleOpenEditModal = (log) => {
@@ -232,7 +261,7 @@ function OtherLogTime() {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline">
             <FormItem>
-              <RangePicker />
+              <RangePicker handleChangeDate={handleChangeDate} date={date} />
             </FormItem>
 
             <FormItem className="direct-form-item">
@@ -248,13 +277,21 @@ function OtherLogTime() {
             </FormItem>
 
             <FormItem className="direct-form-item">
-              <Select placeholder="Log Type" />
+              <Select
+                placeholder="Log Type"
+                value={logType}
+                onChange={handlelogTypeChange}
+                options={logTypes?.data?.data?.data.map((x) => ({
+                  id: x?._id,
+                  value: x?.name,
+                }))}
+              />
             </FormItem>
 
             <FormItem>
               <Button
                 className="gx-btn gx-btn-primary gx-text-white "
-                onClick={() => console.log('clicked')}
+                onClick={handleReset}
               >
                 Reset
               </Button>

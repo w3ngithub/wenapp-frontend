@@ -17,10 +17,18 @@ const getAllTimeLogs = async ({
   project = '',
   user = '',
   logType = '',
+  isOt = '',
+  otStatus = '',
+  fromDate = '',
+  toDate = '',
 }) => {
   try {
     let response = await API.get(
-      `${Apis.TimeLogs}?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&project=${project}&user=${user}&logType=${logType}`
+      `${
+        Apis.TimeLogs
+      }?page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&project=${project}&user=${user}&logType=${logType}&otStatus=${otStatus}&isOt=${isOt}${
+        fromDate && toDate && `&logDate[gte]=${fromDate}&logDate[lte]=${toDate}`
+      }`
     )
     return getAPIResponse({
       ...response,
@@ -33,7 +41,6 @@ const getAllTimeLogs = async ({
     return getAPIResponse(err.response)
   }
 }
-
 const getLogTypes = async () => {
   try {
     let response = await API.get(`${Apis.TimeLogs}/types`)
@@ -79,6 +86,36 @@ const getWeeklyTimeLogSummary = async () => {
 const getTodayTimeLogSummary = async () => {
   try {
     let response = await API.get(`${Apis.TimeLogs}/users/todaytime`)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
+  } catch (err) {
+    return getAPIResponse(err.response)
+  }
+}
+
+const getOtherWeeklyTimeLogSummary = async () => {
+  try {
+    let response = await API.get(`${Apis.TimeLogs}/other/weeklytime`)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
+  } catch (err) {
+    return getAPIResponse(err.response)
+  }
+}
+
+const getOtherTodayTimeLogSummary = async () => {
+  try {
+    let response = await API.get(`${Apis.TimeLogs}/other/todaytime`)
     return getAPIResponse({
       ...response,
       data: {
@@ -234,4 +271,6 @@ export {
   getWeeklyTimeLogs,
   getWorkLogReport,
   WeeklyProjectTimeLogSummary,
+  getOtherTodayTimeLogSummary,
+  getOtherWeeklyTimeLogSummary,
 }

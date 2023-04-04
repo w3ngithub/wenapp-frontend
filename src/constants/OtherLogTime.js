@@ -41,7 +41,7 @@ const OTHER_LOGTIMES_COLUMNS = (
   {
     title: 'Remarks',
     dataIndex: 'remarks',
-    // maxWidth: 350,
+    width: 600,
     key: 'remarks',
     sorter: true,
     sortOrder: sortedInfo.columnKey === 'remarks' && sortedInfo.order,

@@ -26,8 +26,9 @@ export const SIDEBAR_ITEMS = ({
   Navigation,
   Reports,
   NavigationResources,
+  logtimePermission,
 }: any): sidebarItemsInterface[] => {
-  const logOption = Navigation?.logTime
+  const logOption = logtimePermission?.viewOtherLogTime
     ? [
         {
           icon: 'ckeditor',
