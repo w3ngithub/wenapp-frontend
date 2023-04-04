@@ -10,6 +10,7 @@ import {
   LEAVE_REPORT,
   LOGTIME,
   NOTICEBOARD,
+  OTHER_TIME_LOG,
   OVERTIME_REPORT,
   OVERVIEW,
   POLICY,
@@ -18,6 +19,7 @@ import {
   RESOURCES,
   SALARY_REVIEW,
   SETTINGS,
+  USER_TIME_LOG,
   WEEKLY_REPORT,
   WORK_LOG_REPORT,
 } from '../helpers/routePath'
@@ -41,13 +43,13 @@ export const SIDEBAR_ITEMS = ({
           subItems: [
             {
               name: 'sidebar.logtime.allworklogs',
-              url: 'all-work-logs',
+              url: USER_TIME_LOG,
               id: 1,
               roles: Navigation?.logTime,
             },
             {
               name: 'sidebar.logtime.other',
-              url: 'other-logtime',
+              url: OTHER_TIME_LOG,
               id: 2,
               roles: Navigation?.logTime,
             },

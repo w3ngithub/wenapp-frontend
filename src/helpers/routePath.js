@@ -22,6 +22,10 @@ export const OVERVIEW = 'todays-overview'
 // Project Log page
 export const PROJECT_LOG = `${PROJECTS}/:slug`
 
+//logtime
+export const USER_TIME_LOG = 'all-work-logs'
+export const OTHER_TIME_LOG = 'other-logtime'
+
 // User
 export const PROFILE = 'profile'
 export const INVITE = 'users/signup/:token'

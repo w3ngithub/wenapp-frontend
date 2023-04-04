@@ -30,6 +30,7 @@ import {
   LOGTIME,
   MAINTAINANCE_MODE,
   NOTICEBOARD,
+  OTHER_TIME_LOG,
   OVERTIME_REPORT,
   OVERVIEW,
   POLICY,
@@ -43,6 +44,7 @@ import {
   SETTINGS,
   SIGNIN,
   SIGNUP,
+  USER_TIME_LOG,
   WEEKLY_REPORT,
   WORK_LOG_REPORT,
 } from 'helpers/routePath'
@@ -207,7 +209,7 @@ function App(props: any) {
                 }
               >
                 <Route
-                  path={'all-work-logs'}
+                  path={USER_TIME_LOG}
                   element={
                     <AccessRoute roles={Navigation?.logTime}>
                       <LogTimes />
@@ -216,7 +218,7 @@ function App(props: any) {
                 />
 
                 <Route
-                  path={'other-logtime'}
+                  path={OTHER_TIME_LOG}
                   element={
                     <AccessRoute roles={Navigation?.logTime}>
                       <OtherLogTime />
