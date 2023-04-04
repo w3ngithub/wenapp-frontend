@@ -415,15 +415,13 @@ function ProjectModal({
                   {
                     required: true,
                     validator: async (rule, value) => {
+                      const regex = /^[A-Z]:\\.*(?<!\\)$/
                       try {
                         if (!value) {
                           throw new Error('Path is required.')
                         }
-                        if (value.trim().length === 0) {
+                        if (value.trim().length === 0 || !regex.test(value)) {
                           throw new Error('Please enter a valid Path.')
-                        }
-                        if (!regex.test(value)) {
-                          throw new Error('Please enter match regex')
                         }
                       } catch (err) {
                         scrollForm(form, 'path')
