@@ -66,7 +66,6 @@ export const OVERTIME_COLUMNS = ({
     title: 'Action',
     key: 'action',
     render: (text, record) => {
-      console.log('record', record)
       return (
         !getIsAdmin() && (
           <div style={{display: 'flex'}}>
