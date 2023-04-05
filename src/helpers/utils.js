@@ -160,7 +160,7 @@ export const csvFileToArray = (string) => {
       continue
     }
     //filtering with index as an extra id is present which is not necessary
-    var words = lines[i].split(',')?.filter((item, index) => index !== 4)
+    var words = lines[i].split(',')
     for (var j = 0; j < words.length; j++) {
       obj[headers[j]?.trim()?.toLowerCase().replaceAll('"', '')] = words[
         j
