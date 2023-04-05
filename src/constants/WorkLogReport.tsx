@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react'
-import {changeDate} from 'helpers/utils'
+import {arraySortFromDate, changeDate} from 'helpers/utils'
 import {Divider, Tag} from 'antd'
 
 interface report {
@@ -30,7 +30,8 @@ const WORK_LOG_REPORT_COLUMNS = (
     dataIndex: 'details',
     key: 'details',
     render: (text: any, record: any) => {
-      return record?.details?.map((x: any, i: number, totalTimeLogs: any) => {
+      let sortedDatas: any = arraySortFromDate(record?.details, 'logDate')
+      return sortedDatas?.map((x: any, i: number, totalTimeLogs: any) => {
         const totalTimeOfAllProjects = x?.map((log: any) => {
           return log?.totalHours
         })

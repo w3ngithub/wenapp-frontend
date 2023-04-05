@@ -143,6 +143,12 @@ export const sortFromDate = (data = [], sortField) => {
   })
 }
 
+export const arraySortFromDate = (data = [], sortField) => {
+  return data?.sort(function (a, b) {
+    return new Date(b[0]?.[sortField]) - new Date(a[0]?.[sortField])
+  })
+}
+
 export const csvFileToArray = (string) => {
   var lines = string.split('\n')
   var result = []
@@ -162,7 +168,6 @@ export const csvFileToArray = (string) => {
     }
     result.push(obj)
   }
-  console.log({lines, headers, result})
   return result
 }
 
