@@ -42,7 +42,7 @@ const WORK_LOG_REPORT_COLUMNS = (
           iniVal
         )
         return (
-          <React.Fragment key={i + x?.logType}>
+          <React.Fragment key={i + x[0]?.logDate + x[0]?.logType}>
             <div>
               <span style={{marginLeft: '-1px'}}>
                 <Tag color="">{changeDate(x?.[0]?.logDate)}</Tag>
@@ -52,8 +52,17 @@ const WORK_LOG_REPORT_COLUMNS = (
                 Time Spent : {sumHours} Hours
               </Tag>
             </div>
-            {x.map((item: any) => (
-              <div className=" gx-d-flex" key={item.remarks + item.totalHours}>
+            {x.map((item: any, i: number) => (
+              <div
+                className=" gx-d-flex"
+                key={
+                  i +
+                  item?.logDate +
+                  item?.remarks +
+                  item?.totalHours +
+                  item?.logType
+                }
+              >
                 <span className="table-longtext" style={{width: '10rem'}}>
                   {item.project?.[0]?.name || 'Other'}
                 </span>
