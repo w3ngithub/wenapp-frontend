@@ -7,6 +7,8 @@
   "sidebar.projects": "Projects",
   "sidebar.attendance": "Attendance",
   "sidebar.logtime": "Log Time",
+  "sidebar.logtime.allworklogs": " Add Log Time",
+  "sidebar.logtime.other": "Other Log Time",
   "sidebar.leavemanagement": "Leave Management",
   "sidebar.noticeboard": "Notice Board",
   "sidebar.blog": "Blog",

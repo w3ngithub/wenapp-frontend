@@ -71,7 +71,12 @@ function OvertimeApproveReasonModal({
               <Button key="back" onClick={onClose}>
                 Cancel
               </Button>,
-              <Button key="submit" type="primary" onClick={onFinish}>
+              <Button
+                key="submit"
+                type="primary"
+                onClick={onFinish}
+                disabled={loader}
+              >
                 Submit
               </Button>,
             ]
