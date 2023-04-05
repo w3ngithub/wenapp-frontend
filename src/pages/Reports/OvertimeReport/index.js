@@ -69,7 +69,7 @@ const OvertimePage = () => {
           ? MuiFormatDate(rangeDate[0].format()) + 'T00:00:00Z'
           : '',
         toDate: rangeDate?.[1]
-          ? MuiFormatDate(rangeDate[1]?.format()) + 'T00:00:00Z'
+          ? MuiFormatDate(rangeDate[1]?.format()) + 'T23:59:59Z'
           : '',
         sort:
           sort.order === undefined || sort.column === undefined
