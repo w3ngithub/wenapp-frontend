@@ -18,6 +18,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {debounce, filterSpecificUser} from 'helpers/utils'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {ADMINISTRATOR} from 'constants/UserNames'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 let screenWidth: number
@@ -155,7 +156,11 @@ function WorkLogReport() {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
             <FormItem>
-              <RangePicker handleChangeDate={handleChangeDate} date={date} />
+              <RangePicker
+                handleChangeDate={handleChangeDate}
+                date={date}
+                disabledDate={disabledAfterToday}
+              />
             </FormItem>
             <FormItem className="direct-form-item">
               <Select

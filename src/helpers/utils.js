@@ -143,22 +143,32 @@ export const sortFromDate = (data = [], sortField) => {
   })
 }
 
-export const csvFileToArray = (string) => {
-  const csvHeader = string?.slice(0, string?.indexOf('\r\n'))?.split(',')
-  const csvRows = string?.slice(string?.indexOf('\r\n') + 1)?.split('\r\n')
-
-  const array = csvRows?.map((i) => {
-    const values = i?.split(',')
-    const obj = csvHeader?.reduce((object, header, index) => {
-      if (header && values[index]) {
-        object[header?.replaceAll('"', '')] = values[index]?.replaceAll('"', '')
-      }
-      return object
-    }, {})
-    return obj
+export const arraySortFromDate = (data = [], sortField) => {
+  return data?.sort(function (a, b) {
+    return new Date(b[0]?.[sortField]) - new Date(a[0]?.[sortField])
   })
+}
 
-  return array
+export const csvFileToArray = (string) => {
+  var lines = string.split('\n')
+  var result = []
+  var headers
+  headers = lines[0]?.split(',')?.map((item) => item.split(' ').join(''))
+  for (var i = 1; i < lines.length; i++) {
+    var obj = {}
+    if (lines[i] === undefined || lines[i].trim() === '') {
+      continue
+    }
+    //filtering with index as an extra id is present which is not necessary
+    var words = lines[i].split(',')
+    for (var j = 0; j < words.length; j++) {
+      obj[headers[j]?.trim()?.toLowerCase().replaceAll('"', '')] = words[
+        j
+      ].replaceAll('"', '')
+    }
+    result.push(obj)
+  }
+  return result
 }
 
 export const convertDateToUTC = (date) => {

@@ -7,9 +7,11 @@ const {RangePicker: DateRangePicker} = DatePicker
 function RangePicker({
   handleChangeDate,
   date,
+  disabledDate,
 }: {
   handleChangeDate: any
   date: any
+  disabledDate?: any
 }) {
   const {innerWidth} = useWindowsSize()
 
@@ -18,6 +20,7 @@ function RangePicker({
       onChange={handleChangeDate}
       value={date}
       style={{width: innerWidth <= 640 ? '100%' : '240px'}}
+      disabledDate={disabledDate ? disabledDate : false}
     />
   )
 }

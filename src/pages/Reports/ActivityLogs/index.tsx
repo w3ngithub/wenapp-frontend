@@ -90,6 +90,7 @@ function ActivityLogs() {
   if (isLoading) {
     return <CircularProgress className="" />
   }
+
   return (
     <div>
       <Card title="Activity Logs">

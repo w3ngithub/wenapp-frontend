@@ -90,6 +90,7 @@ function ImportUsers({toggle, onClose, files, setFiles}) {
           allowMultiple={false}
           files={files}
           setFiles={setFiles}
+          label={'Click or drag valid CSV file to this area to upload'}
         />
       </Spin>
 

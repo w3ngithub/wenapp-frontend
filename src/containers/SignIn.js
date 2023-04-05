@@ -18,6 +18,7 @@ function SignIn(props) {
       email: values.emails.trim().toLowerCase(),
       password: values?.passwords,
     }
+
     props.showAuthLoader()
     props.userSignIn(values)
   }
@@ -89,7 +90,7 @@ function SignIn(props) {
                   },
                 ]}
               >
-                <Input />
+                <Input className="ant-input-email" />
               </FormItem>
               <FormItem
                 label="Password"

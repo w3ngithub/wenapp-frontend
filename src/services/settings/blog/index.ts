@@ -1,11 +1,18 @@
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
+import {BLOG_CATEGORY_KEY, decrypt} from 'util/crypto'
 
 export const getBlogCategories = async () => {
   try {
     let response = await API.get(`${Apis.Blog}/categories`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, BLOG_CATEGORY_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }

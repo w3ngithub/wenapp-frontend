@@ -18,6 +18,7 @@ import {useParams} from 'react-router-dom'
 import {getProject} from 'services/projects'
 import {
   addLogTime,
+  addUserTimeLog,
   deleteTimeLog,
   getAllTimeLogs,
   getLogTypes,
@@ -72,7 +73,7 @@ function ProjectLogs() {
   const [projectId] = slug.split('-')
   const {
     name,
-    role: {permission},
+    role: {permission, key},
   } = useSelector(selectAuthUser)
 
   const logPermissions = permission?.['Log Time']
@@ -225,6 +226,7 @@ function ProjectLogs() {
       logDate: originalTimelog?.logDate,
       logType: originalTimelog?.logType,
       user: originalTimelog?.user,
+      isOt: originalTimelog?.isOt,
     })
     setOpenModal(true)
     setIsEditMode(true)
@@ -246,6 +248,7 @@ function ProjectLogs() {
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
+      otStatus: newLogtime?.otStatus || (newLogtime?.isOt ? 'P' : undefined),
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
@@ -345,6 +348,7 @@ function ProjectLogs() {
           logTypes={logTypes}
           initialValues={timeLogToUpdate}
           isEditMode={isEditMode}
+          role={key}
         />
       )}
       {openLogHoursModal && (
@@ -380,6 +384,7 @@ function ProjectLogs() {
                   placeholder="Select Log Type"
                   onChange={handlelogTypeChange}
                   value={logType}
+                  allowClear
                 >
                   {logTypes &&
                     logTypes.data?.data?.data?.map((type) => (
@@ -397,6 +402,7 @@ function ProjectLogs() {
                   placeholder="Select Log Author"
                   onChange={handleAuthorChange}
                   value={author}
+                  allowClear
                 >
                   {LogAuthors &&
                     LogAuthors?.map((status) => (
