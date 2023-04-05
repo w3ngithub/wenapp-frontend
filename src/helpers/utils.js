@@ -143,9 +143,9 @@ export const sortFromDate = (data = [], sortField) => {
   })
 }
 
-export const arraySortFromDate = (data = []) => {
+export const arraySortFromDate = (data = [], sortField) => {
   return data?.sort(function (a, b) {
-    return new Date(b[0]?.logDate) - new Date(a[0]?.logDate)
+    return new Date(b[0]?.[sortField]) - new Date(a[0]?.[sortField])
   })
 }
 

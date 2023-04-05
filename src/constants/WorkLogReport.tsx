@@ -30,7 +30,7 @@ const WORK_LOG_REPORT_COLUMNS = (
     dataIndex: 'details',
     key: 'details',
     render: (text: any, record: any) => {
-      let sortedDatas: any = arraySortFromDate(record?.details)
+      let sortedDatas: any = arraySortFromDate(record?.details, 'logDate')
       return sortedDatas?.map((x: any, i: number, totalTimeLogs: any) => {
         const totalTimeOfAllProjects = x?.map((log: any) => {
           return log?.totalHours
