@@ -381,10 +381,9 @@ function CoworkersPage() {
                         d?.email,
                         d?.primaryPhone,
                         d?.role?.value,
-                        d?.role?._id,
                         d?.position?.name,
-                        d?.dob,
-                        d?.joinDate,
+                        d?.dob?.split('/')?.reverse()?.join('/'),
+                        d?.joinDate?.split('/')?.reverse()?.join('/'),
                       ]),
                     ]}
                   >
