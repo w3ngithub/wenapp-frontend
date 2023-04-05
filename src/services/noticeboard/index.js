@@ -57,15 +57,6 @@ const deleteNotice = async (noticeId) => {
   }
 }
 
-const getNoticeTypes = async () => {
-  try {
-    let response = await API.get(`${Apis.NoticeBoard}/types`)
-    return getAPIResponse(response)
-  } catch (err) {
-    return getAPIResponse(err?.response)
-  }
-}
-
 const getWeeklyNotices = async () => {
   try {
     let response = await API.get(`${Apis.NoticeBoard}/weekNotices`)
@@ -81,6 +72,5 @@ export {
   deleteNotice,
   addNotice,
   updateNotice,
-  getNoticeTypes,
   getWeeklyNotices,
 }

@@ -71,7 +71,6 @@ const SalaryReviewTab = () => {
   }
 
   const handleTableChange = (pagination, filters, sorter) => {
-    console.log('sorter', sorter)
     setSort(sorter)
   }
 

@@ -2,6 +2,7 @@ import axios from 'axios'
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
+import {ATTENDANCE_KEY, decrypt} from 'util/crypto'
 
 const getAllAttendances = async ({
   page = '',
@@ -114,7 +115,7 @@ const searchAttendacentOfUser = async ({
 }) => {
   try {
     let response
-    if (officehourop && officehourValue) {
+    if (officehourop && officehourValue >= 0) {
       response = await API.get(
         `${Apis.Attendances}/search?user=${userId}&fromDate=${fromDate}&toDate=${toDate}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&officehour[${officehourop}]=${officehourValue}`
       )
@@ -124,7 +125,13 @@ const searchAttendacentOfUser = async ({
       )
     }
 
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, ATTENDANCE_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }
@@ -134,10 +141,24 @@ const UserTotalofficehour = async ({
   userId = '',
   fromDate = '',
   toDate = '',
+  officehourop = '',
+  officehourValue = '',
+}: {
+  userId?: any
+  fromDate?: any
+  toDate?: any
+  officehourop?: any
+  officehourValue?: number | string
 }) => {
   try {
     let response = await API.get(
-      `${Apis.Attendances}/totalofficehour?user=${userId}&fromDate=${fromDate}&toDate=${toDate}`
+      `${
+        Apis.Attendances
+      }/totalofficehour?user=${userId}&fromDate=${fromDate}&toDate=${toDate}${
+        officehourop &&
+        officehourValue >= 0 &&
+        `&officehour[${officehourop}]=${officehourValue}`
+      }`
     )
     return getAPIResponse(response)
   } catch (err) {

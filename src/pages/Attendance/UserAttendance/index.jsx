@@ -39,6 +39,7 @@ import getLocation, {checkLocationPermission} from 'helpers/getLocation'
 import {PUNCH_IN, PUNCH_OUT} from 'constants/ActionTypes'
 import {fetchLoggedInUserAttendance} from 'appRedux/actions/Attendance'
 import {PAGE50} from 'constants/Common'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -100,6 +101,7 @@ function UserAttendance({userRole}) {
   // set inital date to date selected from my attendance calendar
   useEffect(() => {
     if (state?.date) {
+      console.log('hello')
       setDate([moment(state.date), moment(state.date)])
     }
   }, [state?.date])
@@ -357,7 +359,11 @@ function UserAttendance({userRole}) {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
             <FormItem>
-              <RangePicker onChange={handleChangeDate} value={date} />
+              <RangePicker
+                onChange={handleChangeDate}
+                value={date}
+                disabledDate={disabledAfterToday}
+              />
             </FormItem>
             <FormItem className="direct-form-item">
               <Select

@@ -8,7 +8,7 @@ import draftToHtml from 'draftjs-to-html'
 import {CameraOutlined, RollbackOutlined} from '@ant-design/icons'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import {useMutation, useQuery} from '@tanstack/react-query'
-import {addBlog, getBlog, getBlogCatogories, updateBlog} from 'services/blog'
+import {addBlog, getBlog, updateBlog} from 'services/blog'
 import {filterOptions, handleResponse, scrollForm} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {Link, useNavigate, useParams} from 'react-router-dom'
@@ -21,6 +21,7 @@ import {useSelector} from 'react-redux'
 import {socket} from 'pages/Main'
 import RoleAccess from 'constants/RoleAccess'
 import {BLOG_LANGUAGES_LIST} from 'constants/BlogLanguages'
+import {getBlogCategories} from 'services/settings/blog'
 
 function CustomToolbar(props) {
   const {editorState, setEditorState} = props
@@ -87,7 +88,7 @@ function AddBlog() {
   )
 
   const {data: catogories} = useQuery(['blogCatogories'], () =>
-    getBlogCatogories()
+    getBlogCategories()
   )
 
   const addBlogMutation = useMutation((details) => addBlog(details), {

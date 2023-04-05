@@ -247,7 +247,7 @@ const attendanceFilter = [
 
 export const intialDate = [moment().startOf('day'), moment().endOf('day')]
 export const weeklyState = [moment().startOf('week'), moment().endOf('day')]
-export const monthlyState = [moment().startOf('month'), moment().endOf('month')]
+export const monthlyState = [moment().startOf('month'), moment().endOf('day')]
 
 export {ATTENDANCE_COLUMNS, attendanceFilter, LATE_ATTENDANCE_COLUMNS}
 
