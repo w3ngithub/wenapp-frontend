@@ -5,6 +5,12 @@ import {notification} from 'helpers/notification'
 import {capitalizeInput, getIsAdmin, handleResponse} from 'helpers/utils'
 import React, {useState} from 'react'
 import {
+  getProjectClients,
+  getProjectStatus,
+  getProjectTags,
+  getProjectTypes,
+} from 'services/projects'
+import {
   addClient,
   addProjectStatus,
   addProjectTag,
@@ -17,10 +23,6 @@ import {
   editProjectStatus,
   editProjectTag,
   editProjectType,
-  getClients,
-  getProjectStatus,
-  getProjectTags,
-  getProjectTypes,
 } from 'services/settings/projects'
 import CommonModal from '../CommonModal'
 import SettingTable from '../CommonTable'
@@ -53,7 +55,10 @@ function Projects() {
     ['projectTags'],
     getProjectTags
   )
-  const {data: clients, isLoading}: any = useQuery(['clients'], getClients)
+  const {data: clients, isLoading}: any = useQuery(
+    ['clients'],
+    getProjectClients
+  )
 
   const addProjectTypeMutation = useMutation(addProjectType, {
     onSuccess: (response) =>

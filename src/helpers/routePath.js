@@ -22,6 +22,10 @@ export const OVERVIEW = 'todays-overview'
 // Project Log page
 export const PROJECT_LOG = `${PROJECTS}/:slug`
 
+//logtime
+export const USER_TIME_LOG = 'all-work-logs'
+export const OTHER_TIME_LOG = 'other-logtime'
+
 // User
 export const PROFILE = 'profile'
 export const INVITE = 'users/signup/:token'
@@ -32,6 +36,7 @@ export const WORK_LOG_REPORT = `work-log-report`
 export const LEAVE_REPORT = `leave-report`
 export const ACTIVITY_LOGS = `activity-logs`
 export const SALARY_REVIEW = 'salary-review'
+export const OVERTIME_REPORT = 'overtime-report'
 
 // Resources
 export const FAQS = `faq`

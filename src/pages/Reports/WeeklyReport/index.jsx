@@ -13,6 +13,7 @@ import {roundedToFixed} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {PAGE50} from 'constants/Common'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
@@ -136,7 +137,11 @@ function WeeklyReport() {
           <div className="gx-d-flex gx-justify-content-between gx-flex-row">
             <Form layout="inline" form={form}>
               <FormItem style={{width: innerWidth <= 748 ? '100%' : 250}}>
-                <RangePicker onChange={handleChangeDate} value={date} />
+                <RangePicker
+                  onChange={handleChangeDate}
+                  value={date}
+                  disabledDate={disabledAfterToday}
+                />
               </FormItem>
               <FormItem className="direct-form-item">
                 <Select

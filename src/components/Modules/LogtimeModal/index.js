@@ -1,15 +1,28 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import '@ant-design/compatible/assets/index.css'
-import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
+import {
+  Button,
+  DatePicker,
+  Input,
+  Modal,
+  Select,
+  Spin,
+  Form,
+  Checkbox,
+} from 'antd'
 import moment from 'moment'
 import {useQuery} from '@tanstack/react-query'
 import {getAllProjects, getProject} from 'services/projects'
-import {filterOptions} from 'helpers/utils'
+import {filterOptions, filterSpecificUser} from 'helpers/utils'
 import {LOG_TIME_OLD_EDIT} from 'constants/RoleAccess'
 import {SearchOutlined} from '@ant-design/icons'
 import {debounce} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {getAllUsers} from 'services/users/userDetails'
+import {ADMINISTRATOR} from 'constants/UserNames'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
+import useWindowsSize from 'hooks/useWindowsSize'
 const FormItem = Form.Item
 const Option = Select.Option
 const {TextArea} = Input
@@ -34,19 +47,31 @@ function LogtimeModal({
   loading = false,
   isEditMode,
   isUserLogtime = false,
+  isAdminTimeLog = false,
   role,
 }) {
+  const Option = Select.Option
+
   // const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
   const [searchValue, setSearchValue] = useState('')
 
   const [form] = Form.useForm()
+  const {innerWidth} = useWindowsSize()
   const [types, setTypes] = useState([])
   const [zeroHourMinutes, setZeroHourMinutes] = useState(false)
   const [project, setProject] = useState()
   const [projectArray, setProjectArray] = useState([])
+  const [user, setUser] = useState(undefined)
   const projectsQuery = useQuery(['projects'], getAllProjects, {
     enabled: false,
   })
+  const {data: users} = useQuery(
+    ['userForAttendances'],
+    () => getAllUsers({fields: 'name', active: 'true', sort: 'name'}),
+    {
+      enabled: !!isAdminTimeLog,
+    }
+  )
 
   const dateFormat = 'YYYY-MM-DD'
   const handleCancel = () => {
@@ -85,6 +110,10 @@ function LogtimeModal({
 
   const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
+  const handleUserChange = (name, detail) => {
+    setUser(detail?.id)
+  }
+
   useEffect(() => {
     if (toggle) {
       setTypes(logTypes.data?.data?.data)
@@ -113,6 +142,7 @@ function LogtimeModal({
                 project:
                   initialValues?.project?._id ||
                   process.env.REACT_APP_OTHER_PROJECT_ID,
+                isOt: initialValues?.isOt,
               }
             : {
                 logDate: moment(initialValues?.logDate),
@@ -120,6 +150,7 @@ function LogtimeModal({
                 minutes: initialValues?.minutes || '0',
                 logType: initialValues?.logType._id,
                 remarks: initialValues?.remarks,
+                isOt: initialValues?.isOt,
               }
         )
       } else {
@@ -131,7 +162,13 @@ function LogtimeModal({
   }, [toggle])
   return (
     <Modal
-      title={isEditMode ? 'Update Log Time' : 'Add Log Time'}
+      title={
+        isEditMode
+          ? 'Update Log Time'
+          : isAdminTimeLog
+          ? 'Add Co-worker Log Time'
+          : 'Add Log Time'
+      }
       visible={toggle}
       mask={false}
       onOk={handleSubmit}
@@ -169,13 +206,23 @@ function LogtimeModal({
               placeholder="Select Date"
               format={dateFormat}
               disabledDate={
-                LOG_TIME_OLD_EDIT.includes(role)
-                  ? false
-                  : (current) =>
-                      (current &&
-                        current <
-                          moment().subtract(1, 'days').startOf('day')) ||
-                      current > moment().endOf('day')
+                LOG_TIME_OLD_EDIT.includes(role) || isAdminTimeLog
+                  ? disabledAfterToday
+                  : (current) => {
+                      if (+moment().format('d') === 1) {
+                        return (
+                          current <
+                            moment().subtract(3, 'days').startOf('day') ||
+                          current > moment().endOf('day')
+                        )
+                      }
+                      return (
+                        (current &&
+                          current <
+                            moment().subtract(1, 'days').startOf('day')) ||
+                        current > moment().endOf('day')
+                      )
+                    }
               }
             />
           </FormItem>
@@ -246,6 +293,32 @@ function LogtimeModal({
               max={45}
             />
           </FormItem>
+          {isAdminTimeLog && (
+            <FormItem
+              {...formItemLayout}
+              label="Co-Worker"
+              name="user"
+              rules={[{required: true, message: 'Co-Worker is required.'}]}
+            >
+              <Select
+                notFoundContent={emptyText}
+                showSearch
+                placeholder="Select Co-worker"
+                onChange={handleUserChange}
+                filterOption={filterOptions}
+              >
+                {' '}
+                {filterSpecificUser(
+                  users?.data?.data?.data,
+                  ADMINISTRATOR
+                )?.map((user) => (
+                  <Option value={user._id} key={user._id}>
+                    {user.name}
+                  </Option>
+                ))}
+              </Select>
+            </FormItem>
+          )}
           <FormItem
             {...formItemLayout}
             label="Log Type"
@@ -335,6 +408,18 @@ function LogtimeModal({
             ]}
           >
             <TextArea placeholder="Enter Remarks" rows={6} />
+          </FormItem>
+          <FormItem
+            valuePropName="checked"
+            {...formItemLayout}
+            label=""
+            hasFeedback
+            initialValue={false}
+            name="isOt"
+          >
+            <Checkbox style={{marginLeft: innerWidth > 575 ? '10.3rem' : '0'}}>
+              Overtime
+            </Checkbox>
           </FormItem>
           {zeroHourMinutes && (
             <p className="suggestion-text">

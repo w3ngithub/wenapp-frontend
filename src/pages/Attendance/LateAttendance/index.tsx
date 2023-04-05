@@ -19,6 +19,7 @@ import {
   dateDifference,
   filterSpecificUser,
   handleResponse,
+  MuiFormatDate,
   sortFromDate,
 } from 'helpers/utils'
 import Select from 'components/Elements/Select'
@@ -38,6 +39,8 @@ import CustomIcon from 'components/Elements/Icons'
 import ViewDetailModel from '../ViewDetailModel'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
+import {decrypt, LATE_ARRIVAL_KEY} from '../../../util/crypto'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
 
 const FormItem = Form.Item
 
@@ -100,8 +103,12 @@ function LateAttendance({userRole}: {userRole: any}) {
       searchLateAttendacentOfUser({
         userId: user || '',
         lateArrivalLeaveCut: leaveCut,
-        fromDate: date?.[0] ? moment.utc(date[0]).format() : '',
-        toDate: date?.[1] ? moment.utc(date[1]).format() : '',
+        fromDate: date?.[0]
+          ? MuiFormatDate(date[0].format()) + 'T00:00:00Z'
+          : '',
+        toDate: date?.[1]
+          ? MuiFormatDate(date[1]?.format()) + 'T00:00:00Z'
+          : '',
       })
   )
 
@@ -327,12 +334,13 @@ function LateAttendance({userRole}: {userRole: any}) {
     }, [])
   }
 
-  const formattedAttendaces = data?.data?.data?.attendances?.map(
-    (att: any) => ({
-      ...att,
-      data: att.data && sortedData(att.data),
-    })
-  )
+  const formattedAttendaces = decrypt(
+    data?.data?.data?.attendances,
+    LATE_ARRIVAL_KEY
+  )?.map((att: any) => ({
+    ...att,
+    data: att.data && sortedData(att.data),
+  }))
 
   const hanldeLeaveCutModal = (record: any) => {
     setAttendanceRecord(record)
@@ -368,7 +376,11 @@ function LateAttendance({userRole}: {userRole: any}) {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline" form={form}>
             <FormItem>
-              <RangePicker handleChangeDate={handleChangeDate} date={date} />
+              <RangePicker
+                handleChangeDate={handleChangeDate}
+                date={date}
+                disabledDate={disabledAfterToday}
+              />
             </FormItem>
             <FormItem className="direct-form-item">
               <Select

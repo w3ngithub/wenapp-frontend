@@ -151,6 +151,8 @@ export const permissionRole = {
     {name: 'editLogTime', label: 'Edit Log Time', rule: []},
     {name: 'viewLogTime', label: 'View Log Time Detail', rule: []},
     {name: 'deleteLogTime', label: 'Delete Log Time', rule: []},
+    {name: 'createUserLogTime', label: 'Create Co-worker Log Time', rule: []},
+    {name: 'viewOtherLogTime', label: 'View Other Log Time', rule: []},
   ],
 
   'Leave Management': [
@@ -203,6 +205,7 @@ export const permissionRole = {
     {name: 'viewWorkLogReport', label: 'View Work Log Report', rule: []},
     {name: 'viewSalaryReview', label: 'View Salary Review', rule: []},
     {name: 'viewActivityLog', label: 'View Activity Log', rule: []},
+    {name: 'viewOvertimeReport', label: 'View Overtime Report', rule: []},
   ],
   Resources: [
     {name: 'createFAQ', label: 'Create FAQ', rule: []},

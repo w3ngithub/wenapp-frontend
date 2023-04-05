@@ -56,20 +56,4 @@ const deleteBlog = async (BlogId: number | string) => {
   }
 }
 
-const getBlogCatogories = async () => {
-  try {
-    let response = await API.get(`${Apis.Blog}/categories`)
-    return getAPIResponse(response)
-  } catch (err) {
-    return getAPIResponse(err?.response)
-  }
-}
-
-export {
-  getAllBlogs,
-  getBlog,
-  deleteBlog,
-  addBlog,
-  updateBlog,
-  getBlogCatogories,
-}
+export {getAllBlogs, getBlog, deleteBlog, addBlog, updateBlog}

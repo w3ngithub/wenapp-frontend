@@ -1,6 +1,14 @@
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
+import {
+  decrypt,
+  SALARY_REVIEW_KEY,
+  USERS_KEY,
+  USER_POSITION_KEY,
+  USER_POSITION_TYPE_KEY,
+  USER_ROLE_KEY,
+} from 'util/crypto'
 
 // login user api
 const loginInUsers = async (loginDetail) => {
@@ -37,7 +45,10 @@ const getAllUsers = async ({
     let response = await API.get(
       `${Apis.Users}?search=${name}&page=${page}&sort=${sort}&limit=${limit}&fields=${fields}&role=${role}&position=${position}&positionType=${positionType}&active=${active}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {...response?.data, data: decrypt(response?.data?.data, USERS_KEY)},
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }
@@ -64,7 +75,13 @@ const getMyProfile = async (payload) => {
 const getUserRoles = async () => {
   try {
     let response = await API.get(`${Apis.Roles}`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, USER_ROLE_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }
@@ -73,7 +90,13 @@ const getUserRoles = async () => {
 const getUserPositionTypes = async () => {
   try {
     let response = await API.get(`${Apis.PositionTypes}`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, USER_POSITION_TYPE_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }
@@ -93,7 +116,13 @@ const getTeamLeads = async () => {
 const getUserPosition = async () => {
   try {
     let response = await API.get(`${Apis.Positions}`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, USER_POSITION_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }
@@ -158,7 +187,13 @@ const getSalaryReviewUsers = async ({days, user}) => {
     let response = await API.get(
       `${Apis.Users}/salaryReview?user=${user}&days=${days}`
     )
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, SALARY_REVIEW_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }

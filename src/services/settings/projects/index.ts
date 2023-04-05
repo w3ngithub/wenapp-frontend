@@ -3,14 +3,6 @@ import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
 
 // Project Types
-export const getProjectTypes = async () => {
-  try {
-    let response = await API.get(`${Apis.Projects}/types`)
-    return getAPIResponse(response)
-  } catch (err) {
-    return getAPIResponse(err?.response)
-  }
-}
 
 export const addProjectType = async (payload: {name: string}) => {
   try {
@@ -36,16 +28,6 @@ export const editProjectType = async (payload: {name: string; id: string}) => {
 export const deleteProjectType = async (payload: {id: string}) => {
   try {
     let response = await API.delete(`${Apis.Projects}/types/${payload.id}`)
-    return getAPIResponse(response)
-  } catch (err) {
-    return getAPIResponse(err?.response)
-  }
-}
-
-// Project Status
-export const getProjectStatus = async () => {
-  try {
-    let response = await API.get(`${Apis.Projects}/status`)
     return getAPIResponse(response)
   } catch (err) {
     return getAPIResponse(err?.response)
@@ -85,16 +67,6 @@ export const deleteProjectStatus = async (payload: {id: string}) => {
   }
 }
 
-// Tags
-export const getProjectTags = async () => {
-  try {
-    let response = await API.get(`${Apis.ProjectTags}`)
-    return getAPIResponse(response)
-  } catch (err) {
-    return getAPIResponse(err?.response)
-  }
-}
-
 export const addProjectTag = async (payload: {name: string}) => {
   try {
     let response = await API.post(`${Apis.ProjectTags}`, payload)
@@ -126,15 +98,6 @@ export const deleteProjectTag = async (payload: {id: string}) => {
 }
 
 //Clients
-
-export const getClients = async () => {
-  try {
-    let response = await API.get(`${Apis.Projects}/clients`)
-    return getAPIResponse(response)
-  } catch (err) {
-    return getAPIResponse(err?.response)
-  }
-}
 
 export const addClient = async (payload: {name: string}) => {
   try {
