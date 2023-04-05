@@ -289,7 +289,7 @@ function LogTimes() {
               style={{marginBottom: '16px'}}
               disabled={getIsAdmin()}
             >
-              Add Co-worker TimeLog
+              Add New Co-worker Log Time
             </Button>
           )}
         </div>
