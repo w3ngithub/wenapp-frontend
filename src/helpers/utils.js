@@ -168,7 +168,6 @@ export const csvFileToArray = (string) => {
     }
     result.push(obj)
   }
-  console.log({lines, headers, result})
   return result
 }
 
