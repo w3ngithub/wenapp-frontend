@@ -19,6 +19,7 @@ import {ATTENDANCE} from 'helpers/routePath'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {useSelector} from 'react-redux'
+import {getAllHolidays} from 'services/resources'
 
 const localizer = momentLocalizer(moment)
 const FormItem = Form.Item
@@ -53,6 +54,19 @@ function AdminAttendanceCalendar() {
         return res?.data?.data?.data
       },
     }
+  )
+
+  const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
+    getAllHolidays({sort: '-createdAt', limit: '1'})
+  )
+
+  const holidaysCalendar = Holidays?.data?.data?.data?.[0]?.holidays?.map(
+    (x: any) => ({
+      title: x.title,
+      start: new Date(x.date),
+      end: new Date(x.date),
+      type: 'holiday',
+    })
   )
 
   const handleCalendarRangeChange = (calendarDate: any) => {
@@ -112,6 +126,11 @@ function AdminAttendanceCalendar() {
       style = {
         ...style,
         backgroundColor: '#E14B4B',
+      }
+    if (event.type === 'holiday')
+      style = {
+        ...style,
+        backgroundColor: 'rgb(235 68 68)',
       }
 
     return {
@@ -244,7 +263,15 @@ function AdminAttendanceCalendar() {
         <div className="gx-rbc-calendar">
           <Calendar
             localizer={localizer}
-            events={user ? [...(attendances || []), ...(leaves || [])] : []}
+            events={
+              user
+                ? [
+                    ...(attendances || []),
+                    ...(leaves || []),
+                    ...(holidaysCalendar || []),
+                  ]
+                : []
+            }
             startAccessor="start"
             endAccessor="end"
             onRangeChange={handleCalendarRangeChange}
