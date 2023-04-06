@@ -18,18 +18,15 @@ import {
   addPosition,
   deletePosition,
   editPosition,
-  getPosition,
 } from 'services/settings/coworkers/positions'
 import {
   addPositionTypes,
   deletePositionTypes,
   editPositionType,
-  getPositionTypes,
 } from 'services/settings/coworkers/positionType'
 import {
   addRole,
   deleteRole,
-  getRoles,
   updateRole,
 } from 'services/settings/coworkers/roles'
 import {officeDomain} from 'constants/OfficeDomain'
@@ -41,6 +38,11 @@ import {RolePermissionProvider} from 'context/RolePermissionConext'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {useDispatch, useSelector} from 'react-redux'
 import {updateRolePermission} from 'appRedux/actions'
+import {
+  getUserPosition,
+  getUserPositionTypes,
+  getUserRoles,
+} from 'services/users/userDetails'
 
 const layout = {
   // labelCol: { span: 8 },
@@ -80,16 +82,16 @@ function Coworkers() {
     data: positions,
     isFetching: isPositionsFetching,
     isLoading,
-  } = useQuery(['positions'], getPosition)
+  } = useQuery(['positions'], getUserPosition)
   const {data: invitedUsers, isFetching: isInviteUsersFetching} = useQuery(
     ['inviteUsers'],
     getInvitedUsers
   )
   const {data: positionTypes, isFetching: isPositionTypesFetching} = useQuery(
     ['positionTypes'],
-    getPositionTypes
+    getUserPositionTypes
   )
-  const {data: roles} = useQuery(['roles'], getRoles, {
+  const {data: roles} = useQuery(['roles'], getUserRoles, {
     onError: (err) => console.log(err),
     select: (res) =>
       res?.data?.data?.data?.map(

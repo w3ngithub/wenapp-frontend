@@ -1,11 +1,18 @@
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
+import {decrypt, EMAIL_KEY} from 'util/crypto'
 
 export const getEmails = async ({page = '', limit = ''}) => {
   try {
     let response = await API.get(`${Apis.Email}?page=${page}&limit=${limit}`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, EMAIL_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }

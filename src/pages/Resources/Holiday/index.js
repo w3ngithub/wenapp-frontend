@@ -16,6 +16,7 @@ import {notification} from 'helpers/notification'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {PlusOutlined} from '@ant-design/icons'
 
 const localizer = momentLocalizer(moment)
 
@@ -222,6 +223,18 @@ function Holiday() {
           onChange={handleTableChange}
           pagination={false}
           loading={isLoading || isFetching}
+          footer={() => (
+            <AccessWrapper role={isMutable}>
+              <Button
+                type="dashed"
+                className="btn-link "
+                onClick={() => handleOpenEditModal()}
+                icon={<PlusOutlined />}
+              >
+                Add More Holiday
+              </Button>
+            </AccessWrapper>
+          )}
         />
       </Card>
       <Card title="Holidays Calendar">

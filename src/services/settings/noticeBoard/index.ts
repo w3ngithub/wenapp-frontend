@@ -1,11 +1,18 @@
 import API from 'helpers/api'
 import {Apis} from 'services/api'
 import {getAPIResponse} from 'helpers/getApiResponse'
+import {decrypt, NOTICE_TYPE_KEY} from 'util/crypto'
 
 export const getNoticeboardTypes = async () => {
   try {
     let response = await API.get(`${Apis.NoticeBoard}/types`)
-    return getAPIResponse(response)
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, NOTICE_TYPE_KEY),
+      },
+    })
   } catch (err) {
     return getAPIResponse(err?.response)
   }

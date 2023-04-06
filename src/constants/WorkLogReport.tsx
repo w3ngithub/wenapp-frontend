@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react'
-import {changeDate} from 'helpers/utils'
+import {arraySortFromDate, changeDate} from 'helpers/utils'
 import {Divider, Tag} from 'antd'
 
 interface report {
@@ -30,7 +30,8 @@ const WORK_LOG_REPORT_COLUMNS = (
     dataIndex: 'details',
     key: 'details',
     render: (text: any, record: any) => {
-      return record?.details?.map((x: any, i: number, totalTimeLogs: any) => {
+      let sortedDatas: any = arraySortFromDate(record?.details, 'logDate')
+      return sortedDatas?.map((x: any, i: number, totalTimeLogs: any) => {
         const totalTimeOfAllProjects = x?.map((log: any) => {
           return log?.totalHours
         })
@@ -41,7 +42,7 @@ const WORK_LOG_REPORT_COLUMNS = (
           iniVal
         )
         return (
-          <React.Fragment key={i + x?.logType}>
+          <React.Fragment key={i + x[0]?.logDate + x[0]?.logType}>
             <div>
               <span style={{marginLeft: '-1px'}}>
                 <Tag color="">{changeDate(x?.[0]?.logDate)}</Tag>
@@ -51,8 +52,17 @@ const WORK_LOG_REPORT_COLUMNS = (
                 Time Spent : {sumHours} Hours
               </Tag>
             </div>
-            {x.map((item: any) => (
-              <div className=" gx-d-flex" key={item.remarks + item.totalHours}>
+            {x.map((item: any, i: number) => (
+              <div
+                className=" gx-d-flex"
+                key={
+                  i +
+                  item?.logDate +
+                  item?.remarks +
+                  item?.totalHours +
+                  item?.logType
+                }
+              >
                 <span className="table-longtext" style={{width: '10rem'}}>
                   {item.project?.[0]?.name || 'Other'}
                 </span>
