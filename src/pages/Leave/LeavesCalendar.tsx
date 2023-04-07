@@ -11,10 +11,18 @@ import {
   LEAVES_TYPES,
   SECOND_HALF,
 } from 'constants/Leaves'
+import {useCleanCalendar} from 'hooks/useCleanCalendar'
 
 const localizer = momentLocalizer(moment)
 
 const LeavesCalendar = () => {
+  const {
+    currentMonth,
+    thisMonthsStartDate,
+    thisMonthsEndDate,
+    monthChangeHandler,
+  } = useCleanCalendar()
+
   const leavesQuery = useQuery(
     ['leavesCalendar'],
     () => getFiscalYearLeaves(),
@@ -75,7 +83,19 @@ const LeavesCalendar = () => {
         extraInfo = 'Late'
       }
 
+      const eventStartsInPrevMonthForLongEvents =
+        moment(leaveDates?.[0]) < thisMonthsStartDate
+
+      const eventEndsInNextMonthForLongEvents =
+        moment(leaveDates?.[leaveDates?.length - 1]) > thisMonthsEndDate
+
+      const eventStartsInNextMonth = thisMonthsEndDate < moment(leaveDates?.[0])
+
       const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
+
+      if (eventStartsInNextMonth) {
+        return {hide: true}
+      }
 
       if (
         [
@@ -85,18 +105,36 @@ const LeavesCalendar = () => {
           LEAVES_TYPES.Bereavement,
         ].includes(leaveType[0]?.toLowerCase())
       )
+        //for long leaves
         return {
           title: shortName,
-          start: new Date(leaveDates[0]),
-          end: new Date(leaveDates[1]),
+          start: eventStartsInPrevMonthForLongEvents
+            ? new Date(thisMonthsStartDate?.format())
+            : new Date(leaveDates?.[0]),
+          end: new Date(
+            eventEndsInNextMonthForLongEvents
+              ? thisMonthsEndDate.format()
+              : leaveDates?.[leaveDates?.length - 1]
+          ),
           fullWidth: true,
         }
-      else
+      else {
+        //for 1 day leaves
+        const isEventInPreviousMonth =
+          moment(leaveDates) < moment(currentMonth).startOf('month')
+        const isEventInNextMonth =
+          moment(leaveDates) > moment(currentMonth).endOf('month')
+        const isOffRange = isEventInPreviousMonth || isEventInNextMonth
+
+        if (isOffRange) {
+          return null //if the day is off range return nothing
+        }
         return {
           title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
           start: new Date(leaveDates),
           end: new Date(leaveDates),
         }
+      }
     }
   )
 
@@ -108,6 +146,10 @@ const LeavesCalendar = () => {
       margin: 'auto',
       marginBottom: '0.2rem',
       height: 'auto',
+    }
+
+    if (moment(event?.start) > moment(event?.end) || event?.hide) {
+      style = {...style, display: 'none'}
     }
 
     return {
@@ -130,6 +172,7 @@ const LeavesCalendar = () => {
             startAccessor="start"
             endAccessor="end"
             popup
+            onNavigate={monthChangeHandler}
           />
         </div>
       )}
