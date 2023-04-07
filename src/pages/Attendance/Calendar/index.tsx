@@ -14,6 +14,7 @@ import {LEAVES_TYPES} from 'constants/Leaves'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {getAllHolidays} from 'services/resources'
+import {useCleanCalendar} from 'hooks/useCleanCalendar'
 
 const localizer = momentLocalizer(moment)
 
@@ -26,6 +27,12 @@ function AttendanceCalendar() {
   )
   const {innerWidth} = useWindowsSize()
   const [date, setDate] = useState(monthlyState)
+  const {
+    currentMonth,
+    thisMonthsEndDate,
+    thisMonthsStartDate,
+    monthChangeHandler,
+  } = useCleanCalendar()
 
   const {data, isLoading} = useQuery(['userAttendance', user, date], () =>
     searchAttendacentOfUser({
@@ -77,6 +84,12 @@ function AttendanceCalendar() {
   }
 
   const handleEventStyle = (event: any) => {
+    const isEventInPreviousMonth =
+      moment(event?.end) < moment(currentMonth).startOf('month')
+    const isEventInNextMonth =
+      moment(event?.end) > moment(currentMonth).endOf('month')
+    const isOffRange = isEventInPreviousMonth || isEventInNextMonth
+
     let style: any = {
       fontSize: '13px',
       width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
@@ -85,6 +98,12 @@ function AttendanceCalendar() {
       height: '27px',
       padding: '5px 10px',
       color: 'white',
+    }
+    if (isOffRange && event.type !== 'longLeaves') {
+      style = {...style, display: 'none'}
+    }
+    if (event?.hide) {
+      style = {...style, display: 'none'}
     }
     if (event.type === 'leave')
       style = {
@@ -126,24 +145,37 @@ function AttendanceCalendar() {
   let leaves: any[] = []
 
   userLeaves?.forEach((leave: any) => {
+    const isUsualLeave =
+      leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
+        LEAVES_TYPES.Casual ||
+      leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
+
+    const eventStartsInPrevMonth =
+      moment(leave?.leaveDates?.[0]) < thisMonthsStartDate
+
+    const eventEndsInNextMonth =
+      moment(leave?.leaveDates?.[leave?.leaveDates?.length - 1]) >
+      thisMonthsEndDate
+
+    const eventStartsInNextMonth =
+      thisMonthsEndDate < moment(leave?.leaveDates?.[0])
+
     leaves.push({
       id: leave?._id,
       title: leave?.leaveType?.name,
-      start: new Date(leave?.leaveDates?.[0]),
+      start: eventStartsInPrevMonth
+        ? new Date(thisMonthsStartDate?.format())
+        : new Date(leave?.leaveDates?.[0]),
       end: new Date(
-        leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
-          LEAVES_TYPES.Casual ||
-        leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
+        isUsualLeave
           ? leave?.leaveDates?.[0]
-          : leave?.leaveDates?.[1]
+          : eventEndsInNextMonth
+          ? thisMonthsEndDate.format()
+          : leave?.leaveDates?.[leave?.leaveDates?.length - 1]
       ),
-      type:
-        leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
-          LEAVES_TYPES.Casual ||
-        leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
-          ? 'leave'
-          : 'longLeaves',
+      type: isUsualLeave ? 'leave' : 'longLeaves',
       allDay: true,
+      hide: eventStartsInNextMonth,
     })
   })
   const attendances = data?.data?.data?.attendances[0]?.data?.map(
@@ -227,6 +259,7 @@ function AttendanceCalendar() {
             views={['month', 'week', 'day']}
             eventPropGetter={handleEventStyle}
             onSelectEvent={handleSelectEvent}
+            onNavigate={monthChangeHandler}
           />
         </div>
       </Spin>
