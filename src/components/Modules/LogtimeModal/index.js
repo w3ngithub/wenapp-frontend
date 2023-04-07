@@ -164,7 +164,7 @@ function LogtimeModal({
   //for modal title
   let message = `Update Log Time`
 
-  if (initialValues?.isOt) {
+  if (isEditMode && initialValues?.isOt) {
     if (initialValues?.otStatus === 'A') {
       message = (
         <>
