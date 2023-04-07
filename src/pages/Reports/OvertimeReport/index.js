@@ -323,7 +323,7 @@ const OvertimePage = () => {
           pageSize: page.limit,
           pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
-          total: logTimeDetails?.data?.data?.data?.length || 1,
+          total: logTimeDetails?.data?.data?.count || 1,
           onShowSizeChange,
           hideOnSinglePage: true,
           onChange: handlePageChange,
