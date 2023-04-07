@@ -1,4 +1,4 @@
-import {Button, Card, Form, notification, Table} from 'antd'
+import {Button, Card, Form, Input, notification, Table, Typography} from 'antd'
 import React, {useState, useCallback} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
@@ -9,7 +9,11 @@ import {
   filterOptions,
   handleResponse,
 } from 'helpers/utils'
-import {getAllTimeLogs, updateTimeLog} from 'services/timeLogs'
+import {
+  getAllTimeLogs,
+  getOtherTimeLogTotal,
+  updateTimeLog,
+} from 'services/timeLogs'
 import OvertimeApproveReasonModal from 'components/Modules/OvertimeApproveReasonModal'
 import {getAllUsers} from 'services/users/userDetails'
 import Select from 'components/Elements/Select'
@@ -78,6 +82,24 @@ const OvertimePage = () => {
             ? sort.field
             : `-${sort.field}`,
       })
+  )
+
+  const {
+    data: totalTime,
+    isLoading: totalLoading,
+    isFetching: totalFetching,
+  } = useQuery(['timeLogs', author, rangeDate, otStatus, project], () =>
+    getOtherTimeLogTotal({
+      project: project,
+      otStatus: otStatus ? otStatus : undefined,
+      user: author,
+      fromDate: rangeDate?.[0]
+        ? MuiFormatDate(rangeDate[0].format()) + 'T00:00:00Z'
+        : '',
+      toDate: rangeDate?.[1]
+        ? MuiFormatDate(rangeDate[1]?.format()) + 'T23:59:59Z'
+        : '',
+    })
   )
 
   const UpdateLogTimeMutation = useMutation(
@@ -255,6 +277,14 @@ const OvertimePage = () => {
           >
             Reset
           </Button>
+        </FormItem>
+
+        <FormItem style={{marginLeft: '20px'}}>
+          <Typography.Text strong>Total OT hour</Typography.Text>{' '}
+          <Input
+            value={`${totalTime?.data?.data?.data?.[0]?.totalHour ?? 0} hr`}
+            style={{width: '100px', marginLeft: '5px'}}
+          />
         </FormItem>
       </Form>
       <Table
