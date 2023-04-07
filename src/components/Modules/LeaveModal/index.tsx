@@ -338,7 +338,7 @@ function LeaveModal({
         form.setFieldsValue({
           leaveType: leaveData.leaveType._id,
           leaveDatesCasual: leaveData?.leaveDates,
-          leaveDatesPeriod: moment(leaveData),
+          leaveDatesPeriod: moment(leaveData?.leaveDates?.[0]),
           reason: leaveData.reason,
           user: leaveData.user._id,
           halfDay: leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
