@@ -56,7 +56,6 @@ function OtherLogTime() {
   const [user, setUser] = useState(undefined)
   const [logType, setLogType] = useState(undefined)
   const [openModal, setOpenModal] = useState(false)
-  const [isAdminTimeLog, setIsAdminTimeLog] = useState(false)
   const FormItem = Form.Item
 
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
@@ -202,7 +201,6 @@ function OtherLogTime() {
     setOpenModal(false)
     setTimelogToUpdate({})
     setIsEditMode(false)
-    setIsAdminTimeLog(false)
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
@@ -239,7 +237,6 @@ function OtherLogTime() {
           initialValues={timeLogToUpdate}
           isEditMode={isEditMode}
           isUserLogtime={true}
-          isAdminTimeLog={isAdminTimeLog}
           role={key}
         />
       )}
