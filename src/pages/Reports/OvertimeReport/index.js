@@ -182,13 +182,17 @@ const OvertimePage = () => {
   }
 
   const handleStatusChange = (status) => {
-    setOtStatus(status)
+    if (!status) {
+      setOtStatus('')
+    } else {
+      setOtStatus(status)
+    }
     setPage({page: 1, limit: 50})
   }
 
   const handleResetFilter = () => {
     setProject(undefined)
-    setOtStatus(undefined)
+    setOtStatus('')
     setAuthor(undefined)
     setRangeDate(undefined)
     setPage({page: 1, limit: 50})
