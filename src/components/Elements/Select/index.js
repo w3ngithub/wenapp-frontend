@@ -15,6 +15,7 @@ const Select = ({
   placeholder,
   style,
   mode,
+  emptyAll = false,
   sortAscend = false,
   inputSelect = false,
   initialValues = '',
@@ -58,7 +59,11 @@ const Select = ({
           ))}
       </Dropdown>
       {placeholderClass ? (
-        <span className={value ? 'floating-label-fixed' : 'floating-label'}>
+        <span
+          className={
+            value || emptyAll ? 'floating-label-fixed' : 'floating-label'
+          }
+        >
           {placeholder}
         </span>
       ) : null}
