@@ -102,8 +102,6 @@ const OvertimePage = () => {
     })
   )
 
-  console.log()
-
   const UpdateLogTimeMutation = useMutation(
     (details) => updateTimeLog(details),
     {
