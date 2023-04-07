@@ -61,6 +61,7 @@ import {
   uploadBytesResumable,
 } from 'firebase/storage'
 import {storage} from 'firebase'
+import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 
 const {Option} = Select
 
@@ -386,6 +387,47 @@ function LeaveModal({
       })
     }
   })
+
+  const {data: leaveQuarter} = useQuery(['leaveQuarter'], () =>
+    getLeaveQuarter()
+  )
+
+  const disableSpecialHoliday = (current: any) => {
+    const firstQuarterDate =
+      leaveQuarter?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate
+
+    const utcCurrent = new Date(current)
+    utcCurrent.setUTCHours(0, 0, 0, 0)
+
+    const isLessthanFirstQuarter = utcCurrent < new Date(firstQuarterDate)
+
+    const isWeekend =
+      new Date(current).getDay() === 0 || new Date(current).getDay() === 6
+
+    const testDate = new Date(current)
+    const currentDate = testDate
+      .toISOString()
+      .substring(0, 10)
+      ?.replaceAll('-', '/')
+
+    let holidayList = holidays?.filter(
+      (holiday: any) => currentDate === holiday?.date
+    )
+    let isHoliday = holidayList?.length > 0
+
+    let leaveDate = userLeaves?.filter((leave) => leave.date === currentDate)
+
+    const leavePending = pendingLeaves(leaveDate)
+    let leaveAlreadyTakenDates = filterHalfDayLeaves(leaveDate)
+
+    return (
+      isWeekend ||
+      isHoliday ||
+      leavePending ||
+      leaveAlreadyTakenDates ||
+      isLessthanFirstQuarter
+    )
+  }
 
   const disableInterval = (index: number) => {
     if (multipleDatesSelected) {
@@ -837,7 +879,14 @@ function LeaveModal({
                         className="gx-mb-3 "
                         style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
                         disabled={readOnly}
-                        disabledDate={disabledDate}
+                        disabledDate={disableSpecialHoliday}
+                        onPanelChange={(value, mode) => {
+                          const startOfMonth = moment(value).startOf('month')
+                          const endOfMonth = moment(value).endOf('month')
+
+                          setFromDate(startOfMonth.utc().format())
+                          setToDate(endOfMonth.utc().format())
+                        }}
                       />
                     </Form.Item>
                   </ConfigProvider>

@@ -1,0 +1,287 @@
+import {Button, Card, Form, notification, Table} from 'antd'
+import React, {useState, useCallback} from 'react'
+import {emptyText} from 'constants/EmptySearchAntd'
+import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import {
+  MuiFormatDate,
+  changeDate,
+  filterOptions,
+  handleResponse,
+} from 'helpers/utils'
+import {getAllTimeLogs, updateTimeLog} from 'services/timeLogs'
+import OvertimeApproveReasonModal from 'components/Modules/OvertimeApproveReasonModal'
+import {getAllUsers} from 'services/users/userDetails'
+import Select from 'components/Elements/Select'
+import {debounce} from 'helpers/utils'
+import {getAllProjects} from 'services/projects'
+import {LOG_STATUS} from 'constants/logTimes'
+import RangePicker from 'components/Elements/RangePicker'
+
+const formattedReports = (overtimeData) => {
+  return overtimeData?.map((log) => ({
+    ...log,
+    key: log?._id,
+    logType: log?.logType?.name,
+    logDate: changeDate(log?.logDate),
+    user: log?.user?.name,
+    project: log?.project?.name || 'Other',
+    slug: log?.project?.slug,
+    projectId: log?.project?.id,
+    remarks: log?.remarks,
+    otStatus: LOG_STATUS[log?.otStatus],
+  }))
+}
+
+const FormItem = Form.Item
+
+const OvertimePage = () => {
+  const [form] = Form.useForm()
+  const queryClient = useQueryClient()
+  const [sort, setSort] = useState({})
+  const [page, setPage] = useState({page: 1, limit: 50})
+  const [openOvertimeModal, setOpenOvertimeModal] = useState(false)
+  const [approveDetails, setApproveDetails] = useState({})
+  const [isViewOnly, setIsViewOnly] = useState(false)
+  const [readOnlyApproveReason, setReadonlyApproveReason] = useState('')
+  const [author, setAuthor] = useState(undefined)
+  const [otStatus, setOtStatus] = useState(undefined)
+  const [projectData, setProjectData] = useState([])
+  const [project, setProject] = useState(undefined)
+  const [rangeDate, setRangeDate] = useState(undefined)
+
+  const allUsers = useQuery(['users'], () => getAllUsers({sort: 'name'}))
+
+  const {
+    data: logTimeDetails,
+    isLoading: timelogLoading,
+    isFetching: timeLogFetching,
+  } = useQuery(
+    ['timeLogs', page, sort, otStatus, author, project, rangeDate],
+    () =>
+      getAllTimeLogs({
+        ...page,
+        isOt: true,
+        user: author,
+        project: project,
+        otStatus: otStatus ? otStatus : undefined,
+        fromDate: rangeDate?.[0]
+          ? MuiFormatDate(rangeDate[0].format()) + 'T00:00:00Z'
+          : '',
+        toDate: rangeDate?.[1]
+          ? MuiFormatDate(rangeDate[1]?.format()) + 'T23:59:59Z'
+          : '',
+        sort:
+          sort.order === undefined || sort.column === undefined
+            ? '-logDate'
+            : sort.order === 'ascend'
+            ? sort.field
+            : `-${sort.field}`,
+      })
+  )
+
+  const UpdateLogTimeMutation = useMutation(
+    (details) => updateTimeLog(details),
+    {
+      onSuccess: (response) =>
+        handleResponse(
+          response,
+          'Updated time log successfully',
+          'Could not update time log',
+          [
+            () => queryClient.invalidateQueries(['timeLogs']),
+            () => handleCloseApproveModal(),
+          ]
+        ),
+      onError: (error) => {
+        notification({
+          message: 'Could not approve overtime report',
+          type: 'error',
+        })
+      },
+    }
+  )
+
+  const handleCloseApproveModal = () => {
+    setOpenOvertimeModal(false)
+    setIsViewOnly(false)
+    setReadonlyApproveReason('')
+  }
+
+  const handleRejectOvertime = (reject) => {
+    const rejectReason = reject?.overtimeApproveReason
+    UpdateLogTimeMutation.mutate({
+      id: reject?._id,
+      details: {
+        otRejectReason: rejectReason,
+        otStatus: 'R',
+      },
+    })
+  }
+
+  const handleApprove = (data) => {
+    UpdateLogTimeMutation.mutate({
+      id: data?._id,
+      details: {
+        otStatus: 'A',
+      },
+    })
+  }
+
+  const handleOpenRejectModal = (record) => {
+    setApproveDetails(record)
+    setOpenOvertimeModal(true)
+  }
+
+  const handleOpenViewModal = (details) => {
+    setReadonlyApproveReason(details?.otRejectReason)
+    setIsViewOnly(true)
+    setOpenOvertimeModal(true)
+  }
+
+  const handleSearch = async (projectName) => {
+    if (!projectName) {
+      setProjectData([])
+      return
+    } else {
+      const projects = await getAllProjects({project: projectName})
+      setProjectData(projects?.data?.data?.data)
+    }
+  }
+  const optimizedFn = useCallback(debounce(handleSearch, 100), [])
+
+  const handleProjectChange = (ProjectId) => {
+    setProject(ProjectId)
+  }
+
+  const handleAuthorChange = (logAuthor) => {
+    setAuthor(logAuthor)
+    setPage({page: 1, limit: 50})
+  }
+
+  const handleStatusChange = (status) => {
+    setOtStatus(status)
+    setPage({page: 1, limit: 50})
+  }
+
+  const handleResetFilter = () => {
+    setProject(undefined)
+    setOtStatus(undefined)
+    setAuthor(undefined)
+    setRangeDate(undefined)
+    setPage({page: 1, limit: 50})
+  }
+
+  const handleTableChange = (pagination, filters, sorter) => {
+    setSort(sorter)
+  }
+
+  const handlePageChange = (pageNumber) => {
+    setPage((prev) => ({...prev, page: pageNumber}))
+  }
+
+  const onShowSizeChange = (_, pageSize) => {
+    setPage((prev) => ({...page, limit: pageSize}))
+  }
+
+  const handleChangeDate = (date) => {
+    setRangeDate(date)
+  }
+
+  return (
+    <Card title="Overtime Report">
+      <OvertimeApproveReasonModal
+        open={openOvertimeModal}
+        onClose={handleCloseApproveModal}
+        onSubmit={handleRejectOvertime}
+        approveDetails={approveDetails}
+        approveReason={readOnlyApproveReason}
+        loader={UpdateLogTimeMutation?.isLoading}
+        title={isViewOnly ? 'Overtime Reject Reason' : 'Overtime  Reject'}
+        isRequired={isViewOnly ? false : true}
+        label={isViewOnly ? 'Reason' : 'Reject reason'}
+        isReadOnly={isViewOnly}
+      />
+
+      <Form layout="inline" form={form}>
+        <FormItem>
+          <RangePicker handleChangeDate={handleChangeDate} date={rangeDate} />
+        </FormItem>
+        <FormItem className="direct-form-item">
+          <Select
+            placeholder="Select Project"
+            onChange={handleProjectChange}
+            value={project}
+            handleSearch={optimizedFn}
+            options={projectData?.map((x) => ({
+              ...x,
+              id: x._id,
+              value: x.name,
+            }))}
+            inputSelect
+          />
+        </FormItem>
+        <FormItem className="direct-form-item">
+          <Select
+            showSearch
+            filterOption={filterOptions}
+            placeholder="Select Log Author"
+            onChange={handleAuthorChange}
+            value={author}
+            options={allUsers?.data?.data?.data?.data?.map((user) => ({
+              id: user._id,
+              value: user.name,
+            }))}
+          />
+        </FormItem>
+        <FormItem className="direct-form-item">
+          <Select
+            showSearch
+            filterOption={filterOptions}
+            placeholder="Select OT Status"
+            onChange={handleStatusChange}
+            value={otStatus}
+            options={OT_STATUS?.map((x) => ({
+              id: x.id,
+              value: x.value,
+            }))}
+          />
+        </FormItem>
+
+        <FormItem style={{marginBottom: '0.8rem'}}>
+          <Button
+            className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+            onClick={handleResetFilter}
+          >
+            Reset
+          </Button>
+        </FormItem>
+      </Form>
+      <Table
+        locale={{emptyText}}
+        className="gx-table-responsive"
+        columns={OVERTIME_COLUMNS({
+          sort,
+          handleApprove,
+          handleOpenViewModal,
+          handleOpenRejectModal,
+        })}
+        dataSource={formattedReports(logTimeDetails?.data?.data?.data)}
+        onChange={handleTableChange}
+        pagination={{
+          current: page.page,
+          pageSize: page.limit,
+          pageSizeOptions: ['25', '50', '100'],
+          showSizeChanger: true,
+          total: logTimeDetails?.data?.data?.data?.length || 1,
+          onShowSizeChange,
+          hideOnSinglePage: true,
+          onChange: handlePageChange,
+        }}
+        loading={timelogLoading || timeLogFetching}
+      />
+    </Card>
+  )
+}
+
+export default OvertimePage

@@ -3,15 +3,11 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Button, Card} from 'antd'
 import SettingTable from '../CommonTable'
 import {LOGTYPE_COLUMN} from 'constants/Settings'
-import {
-  addLogType,
-  deleteLogType,
-  editLogType,
-  getLogtypes,
-} from 'services/settings/logTime'
+import {addLogType, deleteLogType, editLogType} from 'services/settings/logTime'
 import {getIsAdmin, handleResponse} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import CommonLogTypeModal from '../CommonLogTypeModal'
+import {getLogTypes} from 'services/timeLogs'
 
 function Logtime() {
   const queryClient = useQueryClient()
@@ -24,7 +20,7 @@ function Logtime() {
   const [hexCode, setHexCode] = useState<string>('')
   const [dataToEdit, setDataToEdit] = useState<any>({})
 
-  const {data: logTypes, isLoading}: any = useQuery(['logTypes'], getLogtypes)
+  const {data: logTypes, isLoading}: any = useQuery(['logTypes'], getLogTypes)
 
   const addLogTypeMutation = useMutation(addLogType, {
     onSuccess: (response) =>

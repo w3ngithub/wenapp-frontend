@@ -13,9 +13,14 @@ import {
   SIGNOUT_USER_SUCCESS,
   SIGNUP_USER,
   SIGNUP_USER_SUCCESS,
+  PROFILE_LOADING_SUCCESS,
   UPDATE_JOIN_DATE,
   UPDATE_PERMISSION_ROLE,
+  PROFILE_LOADING_FAIL,
 } from 'constants/ActionTypes'
+import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {getMyProfile} from 'services/users/userDetails'
+import {decrypt, USERS_KEY} from 'util/crypto'
 
 export const userSignUp = (user) => {
   return {
@@ -101,7 +106,7 @@ export const getUserProfile = (userData) => {
     payload: {
       user: {
         ...userData.user,
-        role: {...userData.user.role, permission: data[0]},
+        role: {...userData?.user?.role, permission: data?.[0]},
       },
     },
   }
@@ -119,5 +124,34 @@ export const updateRolePermission = (payload) => {
   return {
     type: UPDATE_PERMISSION_ROLE,
     payload: updatedRolePermission?.[0],
+  }
+}
+export function getProfile(userId) {
+  return async (dispatch) => {
+    try {
+      const encrypted = await getMyProfile(userId)
+
+      const decryptedData = decrypt(encrypted?.data?.data, USERS_KEY)
+      dispatch(
+        getUserProfile({
+          user: decryptedData?.data?.[0],
+        })
+      )
+
+      localStorage.setItem(
+        LOCALSTORAGE_USER,
+        JSON.stringify(decryptedData?.data[0]?._id)
+      )
+
+      dispatch({type: PROFILE_LOADING_SUCCESS})
+    } catch (error) {
+      dispatch({type: PROFILE_LOADING_FAIL})
+      const admin = JSON.parse(localStorage.getItem('admin')) || null
+
+      localStorage.setItem('user_id', JSON.stringify(admin))
+      localStorage.removeItem('admin')
+    } finally {
+      dispatch(switchedUser())
+    }
   }
 }

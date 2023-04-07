@@ -94,19 +94,19 @@ function Profile(props) {
   const aboutData = aboutList.map((about) => ({
     ...about,
     desc:
-      about.name === 'dob' || about.name === 'joinDate'
+      about?.name === 'dob' || about?.name === 'joinDate'
         ? moment(props?.user?.[about?.name]).format('YYYY-MM-DD')
-        : props?.user[about?.name],
+        : props?.user?.[about?.name],
   }))
 
   const handleProfileUpdate = async (user, removedFile) => {
     setIsLoading(true)
     let updatedUser = {
       ...user,
-      dob: moment.utc(user.dob._d).endOf('day').format().split('T')[0],
-      joinDate: moment.utc(user.joinDate._d).format(),
-      primaryPhone: +user.primaryPhone,
-      secondaryPhone: +user.secondaryPhone || null,
+      dob: moment.utc(user?.dob._d).endOf('day').format().split('T')[0],
+      joinDate: moment.utc(user?.joinDate?._d).format(),
+      primaryPhone: +user?.primaryPhone,
+      secondaryPhone: +user?.secondaryPhone || null,
       photoURL: user?.photoURL?.url,
     }
     if (removedFile) {

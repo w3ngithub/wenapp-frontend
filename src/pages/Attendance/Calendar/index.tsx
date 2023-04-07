@@ -13,6 +13,7 @@ import {ATTENDANCE} from 'helpers/routePath'
 import {LEAVES_TYPES} from 'constants/Leaves'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {getAllHolidays} from 'services/resources'
 
 const localizer = momentLocalizer(moment)
 
@@ -41,6 +42,17 @@ function AttendanceCalendar() {
         return res?.data?.data?.data
       },
     }
+  )
+  const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
+    getAllHolidays({sort: '-createdAt', limit: '1'})
+  )
+  const holidaysCalendar = Holidays?.data?.data?.data?.[0]?.holidays?.map(
+    (x: any) => ({
+      title: x.title,
+      start: new Date(x.date),
+      end: new Date(x.date),
+      type: 'holiday',
+    })
   )
 
   const handleCalendarRangeChange = (calendarDate: any) => {
@@ -99,6 +111,11 @@ function AttendanceCalendar() {
       style = {
         ...style,
         backgroundColor: '#038fde',
+      }
+    if (event.type === 'holiday')
+      style = {
+        ...style,
+        backgroundColor: 'rgb(235 68 68)',
       }
 
     return {
@@ -198,7 +215,11 @@ function AttendanceCalendar() {
         <div className="gx-rbc-calendar">
           <Calendar
             localizer={localizer}
-            events={[...(attendances || []), ...(leaves || [])]}
+            events={[
+              ...(attendances || []),
+              ...(leaves || []),
+              ...(holidaysCalendar || []),
+            ]}
             startAccessor="start"
             endAccessor="end"
             onRangeChange={handleCalendarRangeChange}

@@ -92,6 +92,21 @@ function UserDetailForm({
   const disableDate = (current) => {
     return current && current > moment().endOf('day')
   }
+
+  const disableExitDate = (current) => {
+    const joinDate = form.getFieldValue('joinDate')
+    return (
+      current && (current < moment(joinDate) || current > moment().endOf('day'))
+    )
+  }
+
+  const disableJoinDate = (current) => {
+    return (
+      (current && current < moment('2012-1-2')) ||
+      (current && current > moment().endOf('day'))
+    )
+  }
+
   const disableReviewDate = (current) => {
     return (
       (current && current > moment().endOf('day')) ||
@@ -102,13 +117,6 @@ function UserDetailForm({
               intialValues?.lastReviewDate?.length - 1
             ]
           ))
-    )
-  }
-
-  const disableJoinDate = (current) => {
-    return (
-      (current && current < moment('2012-1-2')) ||
-      (current && current > moment().endOf('day'))
     )
   }
 
@@ -410,7 +418,7 @@ function UserDetailForm({
             name="exitDate"
           >
             <DatePicker
-              disabledDate={disableDate}
+              disabledDate={disableExitDate}
               className=" gx-w-100"
               disabled={readOnly}
             />
