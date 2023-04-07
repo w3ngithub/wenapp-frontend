@@ -1,4 +1,4 @@
-import {Button, Card, Form, notification, Table} from 'antd'
+import {Button, Card, Form, Input, notification, Table, Typography} from 'antd'
 import React, {useState, useCallback} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
@@ -9,7 +9,11 @@ import {
   filterOptions,
   handleResponse,
 } from 'helpers/utils'
-import {getAllTimeLogs, updateTimeLog} from 'services/timeLogs'
+import {
+  getAllTimeLogs,
+  getOtherTimeLogTotal,
+  updateTimeLog,
+} from 'services/timeLogs'
 import OvertimeApproveReasonModal from 'components/Modules/OvertimeApproveReasonModal'
 import {getAllUsers} from 'services/users/userDetails'
 import Select from 'components/Elements/Select'
@@ -45,7 +49,7 @@ const OvertimePage = () => {
   const [isViewOnly, setIsViewOnly] = useState(false)
   const [readOnlyApproveReason, setReadonlyApproveReason] = useState('')
   const [author, setAuthor] = useState(undefined)
-  const [otStatus, setOtStatus] = useState(undefined)
+  const [otStatus, setOtStatus] = useState('')
   const [projectData, setProjectData] = useState([])
   const [project, setProject] = useState(undefined)
   const [rangeDate, setRangeDate] = useState(undefined)
@@ -78,6 +82,24 @@ const OvertimePage = () => {
             ? sort.field
             : `-${sort.field}`,
       })
+  )
+
+  const {
+    data: totalTime,
+    isLoading: totalLoading,
+    isFetching: totalFetching,
+  } = useQuery(['timeLogs', author, rangeDate, otStatus, project], () =>
+    getOtherTimeLogTotal({
+      project: project,
+      otStatus: otStatus ? otStatus : undefined,
+      user: author,
+      fromDate: rangeDate?.[0]
+        ? MuiFormatDate(rangeDate[0].format()) + 'T00:00:00Z'
+        : '',
+      toDate: rangeDate?.[1]
+        ? MuiFormatDate(rangeDate[1]?.format()) + 'T23:59:59Z'
+        : '',
+    })
   )
 
   const UpdateLogTimeMutation = useMutation(
@@ -160,13 +182,17 @@ const OvertimePage = () => {
   }
 
   const handleStatusChange = (status) => {
-    setOtStatus(status)
+    if (!status) {
+      setOtStatus('')
+    } else {
+      setOtStatus(status)
+    }
     setPage({page: 1, limit: 50})
   }
 
   const handleResetFilter = () => {
     setProject(undefined)
-    setOtStatus(undefined)
+    setOtStatus('')
     setAuthor(undefined)
     setRangeDate(undefined)
     setPage({page: 1, limit: 50})
@@ -203,60 +229,88 @@ const OvertimePage = () => {
         isReadOnly={isViewOnly}
       />
 
-      <Form layout="inline" form={form}>
-        <FormItem>
-          <RangePicker handleChangeDate={handleChangeDate} date={rangeDate} />
-        </FormItem>
-        <FormItem className="direct-form-item">
-          <Select
-            placeholder="Select Project"
-            onChange={handleProjectChange}
-            value={project}
-            handleSearch={optimizedFn}
-            options={projectData?.map((x) => ({
-              ...x,
-              id: x._id,
-              value: x.name,
-            }))}
-            inputSelect
-          />
-        </FormItem>
-        <FormItem className="direct-form-item">
-          <Select
-            showSearch
-            filterOption={filterOptions}
-            placeholder="Select Log Author"
-            onChange={handleAuthorChange}
-            value={author}
-            options={allUsers?.data?.data?.data?.data?.map((user) => ({
-              id: user._id,
-              value: user.name,
-            }))}
-          />
-        </FormItem>
-        <FormItem className="direct-form-item">
-          <Select
-            showSearch
-            filterOption={filterOptions}
-            placeholder="Select OT Status"
-            onChange={handleStatusChange}
-            value={otStatus}
-            options={OT_STATUS?.map((x) => ({
-              id: x.id,
-              value: x.value,
-            }))}
-          />
-        </FormItem>
+      <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <Form layout="inline" form={form}>
+          <FormItem>
+            <RangePicker handleChangeDate={handleChangeDate} date={rangeDate} />
+          </FormItem>
+          <FormItem className="direct-form-item">
+            <Select
+              placeholderClass
+              placeholder="Select Project"
+              onChange={handleProjectChange}
+              value={project}
+              handleSearch={optimizedFn}
+              options={projectData?.map((x) => ({
+                ...x,
+                id: x._id,
+                value: x.name,
+              }))}
+              inputSelect
+            />
+          </FormItem>
+          <FormItem className="direct-form-item">
+            <Select
+              placeholderClass
+              showSearch
+              filterOption={filterOptions}
+              placeholder="Select Log Author"
+              onChange={handleAuthorChange}
+              value={author}
+              options={allUsers?.data?.data?.data?.data?.map((user) => ({
+                id: user._id,
+                value: user.name,
+              }))}
+            />
+          </FormItem>
+          <FormItem className="direct-form-item">
+            <Select
+              placeholderClass
+              showSearch
+              filterOption={filterOptions}
+              placeholder="Select OT Status"
+              onChange={handleStatusChange}
+              value={otStatus}
+              emptyAll={true}
+              options={OT_STATUS?.map((x) => ({
+                id: x.id,
+                value: x.value,
+              }))}
+            />
+          </FormItem>
 
-        <FormItem style={{marginBottom: '0.8rem'}}>
-          <Button
-            className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-            onClick={handleResetFilter}
-          >
-            Reset
-          </Button>
+          <FormItem style={{marginBottom: '0.8rem'}}>
+            <Button
+              className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+              onClick={handleResetFilter}
+            >
+              Reset
+            </Button>
+          </FormItem>
+        </Form>
+
+        <FormItem style={{marginLeft: '20px'}}>
+          <Input
+            defaultValue="Total OT hour"
+            disabled={true}
+            style={{width: '120px', fontWeight: '500'}}
+          />
+          <Input
+            value={
+              timelogLoading
+                ? 'Calculating...'
+                : `${totalTime?.data?.data?.data?.[0]?.totalHour ?? 0} ${
+                    totalTime?.data?.data?.data?.[0]?.totalHour > 0
+                      ? 'hrs'
+                      : 'hr'
+                  }`
+            }
+            style={{width: '100px', marginLeft: '5px'}}
+            disabled
+          />
         </FormItem>
-      </Form>
+      </div>
+
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
@@ -273,7 +327,7 @@ const OvertimePage = () => {
           pageSize: page.limit,
           pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
-          total: logTimeDetails?.data?.data?.data?.length || 1,
+          total: logTimeDetails?.data?.data?.count || 1,
           onShowSizeChange,
           hideOnSinglePage: true,
           onChange: handlePageChange,
