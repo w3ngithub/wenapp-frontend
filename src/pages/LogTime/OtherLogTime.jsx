@@ -184,6 +184,7 @@ function OtherLogTime() {
   }
 
   const handleOpenEditModal = (log) => {
+    setIsAdminTimeLog(true)
     const originalTimelog = logTimeDetails?.data?.data?.data.find(
       (project) => project.id === log.id
     )
@@ -211,6 +212,11 @@ function OtherLogTime() {
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
+      otStatus: isAdminTimeLog
+        ? newLogtime?.isOt
+          ? 'A'
+          : undefined
+        : newLogtime?.otStatus || (newLogtime?.isOt ? 'P' : undefined),
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
