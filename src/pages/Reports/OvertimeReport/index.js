@@ -229,7 +229,7 @@ const OvertimePage = () => {
         isReadOnly={isViewOnly}
       />
 
-      <div style={{display: 'flex', justifyContent: 'space-between'}}>
+      <div className="overtime-hour">
         <Form layout="inline" form={form}>
           <FormItem>
             <RangePicker handleChangeDate={handleChangeDate} date={rangeDate} />
@@ -289,7 +289,7 @@ const OvertimePage = () => {
           </FormItem>
         </Form>
 
-        <FormItem style={{marginLeft: '20px'}}>
+        <FormItem className="overtime-total-hour">
           <Input
             defaultValue="Total OT hour"
             disabled={true}
