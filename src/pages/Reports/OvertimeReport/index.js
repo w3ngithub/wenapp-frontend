@@ -225,68 +225,84 @@ const OvertimePage = () => {
         isReadOnly={isViewOnly}
       />
 
-      <Form layout="inline" form={form}>
-        <FormItem>
-          <RangePicker handleChangeDate={handleChangeDate} date={rangeDate} />
-        </FormItem>
-        <FormItem className="direct-form-item">
-          <Select
-            placeholder="Select Project"
-            onChange={handleProjectChange}
-            value={project}
-            handleSearch={optimizedFn}
-            options={projectData?.map((x) => ({
-              ...x,
-              id: x._id,
-              value: x.name,
-            }))}
-            inputSelect
-          />
-        </FormItem>
-        <FormItem className="direct-form-item">
-          <Select
-            showSearch
-            filterOption={filterOptions}
-            placeholder="Select Log Author"
-            onChange={handleAuthorChange}
-            value={author}
-            options={allUsers?.data?.data?.data?.data?.map((user) => ({
-              id: user._id,
-              value: user.name,
-            }))}
-          />
-        </FormItem>
-        <FormItem className="direct-form-item">
-          <Select
-            showSearch
-            filterOption={filterOptions}
-            placeholder="Select OT Status"
-            onChange={handleStatusChange}
-            value={otStatus}
-            options={OT_STATUS?.map((x) => ({
-              id: x.id,
-              value: x.value,
-            }))}
-          />
-        </FormItem>
+      <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <Form layout="inline" form={form}>
+          <FormItem>
+            <RangePicker handleChangeDate={handleChangeDate} date={rangeDate} />
+          </FormItem>
+          <FormItem className="direct-form-item">
+            <Select
+              placeholder="Select Project"
+              onChange={handleProjectChange}
+              value={project}
+              handleSearch={optimizedFn}
+              options={projectData?.map((x) => ({
+                ...x,
+                id: x._id,
+                value: x.name,
+              }))}
+              inputSelect
+            />
+          </FormItem>
+          <FormItem className="direct-form-item">
+            <Select
+              showSearch
+              filterOption={filterOptions}
+              placeholder="Select Log Author"
+              onChange={handleAuthorChange}
+              value={author}
+              options={allUsers?.data?.data?.data?.data?.map((user) => ({
+                id: user._id,
+                value: user.name,
+              }))}
+            />
+          </FormItem>
+          <FormItem className="direct-form-item">
+            <Select
+              showSearch
+              filterOption={filterOptions}
+              placeholder="Select OT Status"
+              onChange={handleStatusChange}
+              value={otStatus}
+              options={OT_STATUS?.map((x) => ({
+                id: x.id,
+                value: x.value,
+              }))}
+            />
+          </FormItem>
 
-        <FormItem style={{marginBottom: '0.8rem'}}>
-          <Button
-            className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-            onClick={handleResetFilter}
-          >
-            Reset
-          </Button>
-        </FormItem>
+          <FormItem style={{marginBottom: '0.8rem'}}>
+            <Button
+              className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+              onClick={handleResetFilter}
+            >
+              Reset
+            </Button>
+          </FormItem>
+        </Form>
 
         <FormItem style={{marginLeft: '20px'}}>
-          <Typography.Text strong>Total OT hour</Typography.Text>{' '}
           <Input
-            value={`${totalTime?.data?.data?.data?.[0]?.totalHour ?? 0} hr`}
+            defaultValue="Total OT hour"
+            disabled={true}
+            style={{width: '120px', fontWeight: '500'}}
+          />
+          <Input
+            value={
+              timelogLoading
+                ? 'Calculating...'
+                : `${totalTime?.data?.data?.data?.[0]?.totalHour ?? 0} ${
+                    totalTime?.data?.data?.data?.[0]?.totalHour > 0
+                      ? 'hrs'
+                      : 'hr'
+                  }`
+            }
             style={{width: '100px', marginLeft: '5px'}}
+            disabled
           />
         </FormItem>
-      </Form>
+      </div>
+
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
