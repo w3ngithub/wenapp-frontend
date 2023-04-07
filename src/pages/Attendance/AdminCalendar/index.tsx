@@ -20,6 +20,7 @@ import {LEAVES_TYPES} from 'constants/Leaves'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {useSelector} from 'react-redux'
 import {getAllHolidays} from 'services/resources'
+import {useCleanCalendar} from 'hooks/useCleanCalendar'
 
 const localizer = momentLocalizer(moment)
 const FormItem = Form.Item
@@ -33,6 +34,12 @@ function AdminAttendanceCalendar() {
 
   const [date, setDate] = useState(monthlyState)
   const [user, setUser] = useState<undefined | string>(undefined)
+  const {
+    currentMonth,
+    thisMonthsEndDate,
+    thisMonthsStartDate,
+    monthChangeHandler,
+  } = useCleanCalendar()
 
   const {data: users, isLoading} = useQuery(['userForAttendances'], () =>
     getAllUsers({fields: 'name'})
@@ -99,6 +106,11 @@ function AdminAttendanceCalendar() {
   }
 
   const handleEventStyle = (event: any) => {
+    const isEventInPreviousMonth =
+      moment(event?.end) < moment(currentMonth).startOf('month')
+    const isEventInNextMonth =
+      moment(event?.end) > moment(currentMonth).endOf('month')
+    const isOffRange = isEventInPreviousMonth || isEventInNextMonth
     let style: any = {
       fontSize: '14px',
       width: 'fit-content',
@@ -107,6 +119,12 @@ function AdminAttendanceCalendar() {
       height: '27px',
       padding: '5px 10px',
       color: 'white',
+    }
+    if (isOffRange && event.type !== 'longLeaves') {
+      style = {...style, display: 'none'}
+    }
+    if (event?.hide) {
+      style = {...style, display: 'none'}
     }
 
     if (event.type === 'leave')
@@ -141,24 +159,37 @@ function AdminAttendanceCalendar() {
   let leaves: any[] = []
 
   userLeaves?.forEach((leave: any) => {
+    const isUsualLeave =
+      leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
+        LEAVES_TYPES.Casual ||
+      leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
+
+    const eventStartsInPrevMonth =
+      moment(leave?.leaveDates?.[0]) < thisMonthsStartDate
+
+    const eventEndsInNextMonth =
+      moment(leave?.leaveDates?.[leave?.leaveDates?.length - 1]) >
+      thisMonthsEndDate
+
+    const eventStartsInNextMonth =
+      thisMonthsEndDate < moment(leave?.leaveDates?.[0])
+
     leaves.push({
       id: leave?._id,
       title: leave?.leaveType?.name,
-      start: new Date(leave?.leaveDates?.[0]),
+      start: eventStartsInPrevMonth
+        ? new Date(thisMonthsStartDate?.format())
+        : new Date(leave?.leaveDates?.[0]),
       end: new Date(
-        leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
-          LEAVES_TYPES.Casual ||
-        leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
+        isUsualLeave
           ? leave?.leaveDates?.[0]
-          : leave?.leaveDates?.[1]
+          : eventEndsInNextMonth
+          ? thisMonthsEndDate.format()
+          : leave?.leaveDates?.[leave?.leaveDates?.length - 1]
       ),
-      type:
-        leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
-          LEAVES_TYPES.Casual ||
-        leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
-          ? 'leave'
-          : 'longLeaves',
+      type: isUsualLeave ? 'leave' : 'longLeaves',
       allDay: true,
+      hide: eventStartsInNextMonth,
     })
   })
 
@@ -279,6 +310,7 @@ function AdminAttendanceCalendar() {
             eventPropGetter={handleEventStyle}
             views={['month', 'week', 'day']}
             onSelectEvent={handleSelectEvent}
+            onNavigate={monthChangeHandler}
           />
         </div>
       </Spin>

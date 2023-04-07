@@ -42,6 +42,7 @@ import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
 import {socket} from 'pages/Main'
+import {useCleanCalendar} from 'hooks/useCleanCalendar'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -66,6 +67,12 @@ const Dashboard = () => {
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const {themeType} = useSelector((state: any) => state.settings)
+  const {
+    currentMonth,
+    thisMonthsStartDate,
+    thisMonthsEndDate,
+    monthChangeHandler,
+  } = useCleanCalendar()
   const darkTheme = themeType === THEME_TYPE_DARK
 
   const darkThemeTextColor = '#e0e0e0'
@@ -187,6 +194,14 @@ const Dashboard = () => {
     fetchChartQuery(project, logType)
   }
   const handleEventStyle = (event: any) => {
+    let eventCopy = {...event}
+    const isEventInPreviousMonth =
+      moment(eventCopy?.end) < moment(currentMonth).startOf('month')
+    const isEventInNextMonth =
+      moment(eventCopy?.end) > moment(currentMonth).endOf('month')
+
+    const isOffRange = isEventInPreviousMonth || isEventInNextMonth
+
     let style: any = {
       fontSize: innerWidth <= 1500 ? '7px' : '9px',
       width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
@@ -196,7 +211,19 @@ const Dashboard = () => {
 
       background: 'transparent',
     }
-    if (event.type === 'birthday')
+    if (isOffRange && eventCopy.type !== 'notice') {
+      style = {
+        ...style,
+        display: 'none',
+      }
+    }
+    if (event?.hide) {
+      style = {
+        ...style,
+        display: 'none',
+      }
+    }
+    if (eventCopy.type === 'birthday')
       style = {
         ...style,
         fontWeight: '400',
@@ -205,7 +232,7 @@ const Dashboard = () => {
         marginLeft: '11px',
         color: '#05ccf9',
       }
-    if (event.type === 'holiday')
+    if (eventCopy.type === 'holiday')
       style = {
         ...style,
         fontWeight: '400',
@@ -214,7 +241,7 @@ const Dashboard = () => {
         marginLeft: '11px',
         color: 'rgb(235 68 68)',
       }
-    if (event.type === 'leave')
+    if (eventCopy.type === 'leave') {
       style = {
         ...style,
         fontWeight: '400',
@@ -228,15 +255,16 @@ const Dashboard = () => {
             ? '#eb9293'
             : '#3DBF4D',
       }
-    if (event.type === 'notice')
-      style = {
-        ...style,
-        width: '100%',
-        fontWeight: '500',
-        background: '#a7acaf',
-        color: darkTheme ? darkThemeTextColor : 'black',
-        marginBottom: '6px',
-      }
+      if (event.type === 'notice')
+        style = {
+          ...style,
+          width: `100%`,
+          fontWeight: '500',
+          background: '#a7acaf',
+          color: darkTheme ? darkThemeTextColor : 'black',
+          marginBottom: '6px',
+        }
+    }
 
     return {
       style,
@@ -422,13 +450,26 @@ const Dashboard = () => {
     }))
     ?.sort(compareString)
 
-  const noticesCalendar = notices?.data?.data?.notices?.map((x: any) => ({
-    title: x?.noticeType?.name,
-    end: x.endDate ? new Date(x.endDate) : new Date(x.startDate),
-    start: new Date(x.startDate),
-    type: 'notice',
-    name: x?.title,
-  }))
+  let noticesCalendar = notices?.data?.data?.notices?.map((notice: any) => {
+    const eventEndsInNextMonth = moment(notice?.endDate) > thisMonthsEndDate
+    const eventStartsInPrevMonth =
+      moment(notice?.startDate) < thisMonthsStartDate
+    const eventStartsInNextMonth = thisMonthsEndDate < moment(notice?.startDate)
+    return {
+      title: notice?.noticeType?.name,
+      end: eventEndsInNextMonth
+        ? new Date(thisMonthsEndDate.format())
+        : notice.endDate
+        ? new Date(notice?.endDate)
+        : new Date(notice?.startDate),
+      start: eventStartsInPrevMonth
+        ? new Date(thisMonthsStartDate.format())
+        : new Date(notice.startDate),
+      type: 'notice',
+      name: notice?.title,
+      hide: eventStartsInNextMonth,
+    }
+  })
 
   const holidaysCalendar = Holidays?.data?.data?.data?.[0]?.holidays
     ?.filter(oneWeekFilterCheck)
@@ -609,6 +650,7 @@ const Dashboard = () => {
                     popup
                     eventPropGetter={handleEventStyle}
                     views={['month', 'week', 'day']}
+                    onNavigate={monthChangeHandler}
                   />
                 </div>
               )}
