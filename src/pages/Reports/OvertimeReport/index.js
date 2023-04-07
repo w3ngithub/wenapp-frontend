@@ -49,7 +49,7 @@ const OvertimePage = () => {
   const [isViewOnly, setIsViewOnly] = useState(false)
   const [readOnlyApproveReason, setReadonlyApproveReason] = useState('')
   const [author, setAuthor] = useState(undefined)
-  const [otStatus, setOtStatus] = useState(undefined)
+  const [otStatus, setOtStatus] = useState('')
   const [projectData, setProjectData] = useState([])
   const [project, setProject] = useState(undefined)
   const [rangeDate, setRangeDate] = useState(undefined)
@@ -182,13 +182,17 @@ const OvertimePage = () => {
   }
 
   const handleStatusChange = (status) => {
-    setOtStatus(status)
+    if (!status) {
+      setOtStatus('')
+    } else {
+      setOtStatus(status)
+    }
     setPage({page: 1, limit: 50})
   }
 
   const handleResetFilter = () => {
     setProject(undefined)
-    setOtStatus(undefined)
+    setOtStatus('')
     setAuthor(undefined)
     setRangeDate(undefined)
     setPage({page: 1, limit: 50})
@@ -232,6 +236,7 @@ const OvertimePage = () => {
           </FormItem>
           <FormItem className="direct-form-item">
             <Select
+              placeholderClass
               placeholder="Select Project"
               onChange={handleProjectChange}
               value={project}
@@ -246,6 +251,7 @@ const OvertimePage = () => {
           </FormItem>
           <FormItem className="direct-form-item">
             <Select
+              placeholderClass
               showSearch
               filterOption={filterOptions}
               placeholder="Select Log Author"
@@ -259,11 +265,13 @@ const OvertimePage = () => {
           </FormItem>
           <FormItem className="direct-form-item">
             <Select
+              placeholderClass
               showSearch
               filterOption={filterOptions}
               placeholder="Select OT Status"
               onChange={handleStatusChange}
               value={otStatus}
+              emptyAll={true}
               options={OT_STATUS?.map((x) => ({
                 id: x.id,
                 value: x.value,
@@ -319,7 +327,7 @@ const OvertimePage = () => {
           pageSize: page.limit,
           pageSizeOptions: ['25', '50', '100'],
           showSizeChanger: true,
-          total: logTimeDetails?.data?.data?.data?.length || 1,
+          total: logTimeDetails?.data?.data?.count || 1,
           onShowSizeChange,
           hideOnSinglePage: true,
           onChange: handlePageChange,
