@@ -160,11 +160,31 @@ function LogtimeModal({
 
     if (!toggle) form.resetFields()
   }, [toggle])
+
+  //for modal title
+  let message = `Update Log Time`
+
+  if (isEditMode && initialValues?.isOt) {
+    if (initialValues?.otStatus === 'A') {
+      message = (
+        <>
+          Update Log Time <span className="overtime-approved">(Approved)</span>
+        </>
+      )
+    } else if (initialValues?.otStatus === 'R') {
+      message = (
+        <>
+          Update Log Time <span className="overtime-rejected">(Rejected)</span>
+        </>
+      )
+    }
+  }
+
   return (
     <Modal
       title={
         isEditMode
-          ? 'Update Log Time'
+          ? message
           : isAdminTimeLog
           ? 'Add Co-worker Log Time'
           : 'Add Log Time'
