@@ -56,7 +56,6 @@ function OtherLogTime() {
   const [user, setUser] = useState(undefined)
   const [logType, setLogType] = useState(undefined)
   const [openModal, setOpenModal] = useState(false)
-  const [isAdminTimeLog, setIsAdminTimeLog] = useState(false)
   const FormItem = Form.Item
 
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
@@ -202,7 +201,6 @@ function OtherLogTime() {
     setOpenModal(false)
     setTimelogToUpdate({})
     setIsEditMode(false)
-    setIsAdminTimeLog(false)
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
@@ -211,6 +209,7 @@ function OtherLogTime() {
       hours: +newLogtime.hours,
       logDate: moment.utc(newLogtime.logDate).format(),
       minutes: +newLogtime.minutes,
+      otStatus: newLogtime?.isOt ? 'A' : undefined,
     }
     if (isEditMode)
       UpdateLogTimeMutation.mutate({
@@ -238,7 +237,6 @@ function OtherLogTime() {
           initialValues={timeLogToUpdate}
           isEditMode={isEditMode}
           isUserLogtime={true}
-          isAdminTimeLog={isAdminTimeLog}
           role={key}
         />
       )}
