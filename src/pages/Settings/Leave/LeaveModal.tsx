@@ -236,7 +236,7 @@ function LeaveModal({
                     }
                     if (value > 365) {
                       throw new Error(
-                        'Number of leaves cannot exceed 365 days.'
+                        'Number of leave days cannot exceed 365 days.'
                       )
                     }
                   } catch (err) {
