@@ -234,6 +234,11 @@ function LeaveModal({
                     if (value - Math.floor(value) !== 0) {
                       throw new Error('Leave Days cannot be decimal.')
                     }
+                    if (value > 365) {
+                      throw new Error(
+                        'Number of leave days cannot exceed 365 days.'
+                      )
+                    }
                   } catch (err) {
                     throw new Error(err.message)
                   }
