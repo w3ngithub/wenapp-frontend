@@ -31,6 +31,7 @@ import {
   pendingLeaves,
   filterSpecificUser,
   getRangeofDates,
+  momentRangeofDates,
 } from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
@@ -39,8 +40,7 @@ import {useSelector} from 'react-redux'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
-import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
-import {disabledDate} from 'util/antDatePickerDisabled'
+
 import {
   FIRST_HALF,
   FULL_DAY,
@@ -109,6 +109,7 @@ function LeaveModal({
 }) {
   const queryClient = useQueryClient()
   const [colorState, setColorState] = useState(true)
+  const [datePickerValue, setDatePickerValue] = useState([])
   const [form] = Form.useForm()
   const [leaveType, setLeaveType] = useState<leaveTypeInterface>({})
   const [user, setUser] = useState('')
@@ -325,6 +326,7 @@ function LeaveModal({
   }
 
   const handleLeaveTypeChange = (value: string) => {
+    setDatePickerValue([])
     setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value))
   }
 
@@ -338,7 +340,7 @@ function LeaveModal({
         form.setFieldsValue({
           leaveType: leaveData.leaveType._id,
           leaveDatesCasual: leaveData?.leaveDates,
-          leaveDatesPeriod: moment(leaveData),
+          leaveDatesPeriod: moment(leaveData?.leaveDates?.[0]),
           reason: leaveData.reason,
           user: leaveData.user._id,
           halfDay: leaveData.halfDay === '' ? 'full-day' : leaveData?.halfDay,
@@ -886,6 +888,35 @@ function LeaveModal({
 
                           setFromDate(startOfMonth.utc().format())
                           setToDate(endOfMonth.utc().format())
+                        }}
+                        onChange={(date) => {
+                          const leaveTypeId = form?.getFieldValue('leaveType')
+
+                          const leaveType = leaveTypeQuery?.data?.find(
+                            (type) => type?.id === leaveTypeId
+                          )
+                          let Initdates: any = momentRangeofDates(
+                            date,
+                            leaveType?.leaveDays
+                          )
+
+                          setDatePickerValue(Initdates)
+                        }}
+                        dateRender={(current) => {
+                          let style = {}
+                          if (
+                            datePickerValue.some((d: any) => d.isSame(current))
+                          ) {
+                            style = {color: '#fff', background: '#038fde'}
+                          }
+                          return (
+                            <div
+                              className="ant-picker-cell-inner"
+                              style={style}
+                            >
+                              {current.date()}
+                            </div>
+                          )
                         }}
                       />
                     </Form.Item>

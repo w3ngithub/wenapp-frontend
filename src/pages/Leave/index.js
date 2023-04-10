@@ -24,7 +24,7 @@ import MyHistory from './MyHistory'
 import {getLeaveTypes} from 'services/settings/leaveType'
 import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
 import QuarterlyLeavesRemainingAndAppliedCards from './QuarterlyLeavesRemainingAndAppliedCards'
-import {EmployeeStatus} from 'constants/RoleAccess'
+import RoleAccess, {EmployeeStatus} from 'constants/RoleAccess'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -142,14 +142,19 @@ function Leave() {
             () => queryClient.invalidateQueries(['userLeaves']),
             () => queryClient.invalidateQueries(['leaves']),
             () => queryClient.invalidateQueries(['substitute']),
+            () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
             () => {
               socket.emit('CUD')
             },
             () => {
               socket.emit('cancel-leave', {
-                showTo: [response.data.data.data.user._id],
+                showTo: IsUserCancel
+                  ? [RoleAccess.Admin, RoleAccess.HumanResource]
+                  : [response.data.data.data.user._id],
                 remarks: `${
-                  IsReject
+                  IsUserCancel
+                    ? `${user.name} has Cancelled Leave. Please review`
+                    : IsReject
                     ? 'Your leave has been rejected.'
                     : 'Your leave has been cancelled'
                 }`,
@@ -177,6 +182,7 @@ function Leave() {
             () => sendEmailNotification({...response, reapply: true}),
             () => queryClient.invalidateQueries(['userLeaves']),
             () => queryClient.invalidateQueries(['leaves']),
+            () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
             () => {
               socket.emit('CUD')
             },

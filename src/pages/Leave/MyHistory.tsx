@@ -33,7 +33,6 @@ const formattedLeaves = (leaves: any) => {
       dates: leave?.leaveType?.isSpecial
         ? [leave?.leaveDates?.[0], leave?.leaveDates?.at(-1)]
             ?.map((date) => changeDate(date))
-            ?.reverse()
             ?.join('-')
         : leave?.leaveDates
             ?.map((date: any) => changeDate(date))
