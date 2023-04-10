@@ -331,6 +331,7 @@ function LeaveModal({
   }
 
   const handleUserChange = (user: string) => {
+    form.setFieldsValue({leaveDatesCasual: []})
     setDatePickerValue([])
     setUser(user)
   }
