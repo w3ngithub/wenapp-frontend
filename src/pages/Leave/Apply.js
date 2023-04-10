@@ -19,6 +19,7 @@ import {
   getIsAdmin,
   getRangeofDates,
   handleResponse,
+  momentRangeofDates,
   MuiFormatDate,
   pendingLeaves,
   removeDash,
@@ -59,6 +60,7 @@ function Apply({user}) {
   const [form] = Form.useForm()
 
   const queryClient = useQueryClient()
+  const [datePickerValue, setDatePickerValue] = useState([])
   const {themeType} = useSelector((state) => state.settings)
   const {innerWidth} = useWindowsSize()
   const [specificHalf, setSpecificHalf] = useState(false)
@@ -264,6 +266,7 @@ function Apply({user}) {
   }
 
   const handleTypesChange = (value) => {
+    setDatePickerValue([])
     setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value))
   }
 
@@ -595,6 +598,7 @@ function Apply({user}) {
       setCalendarClicked(false)
     }
   }
+
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Modal
@@ -835,6 +839,30 @@ function Apply({user}) {
 
                         setFromDate(startOfMonth.utc().format())
                         setToDate(endOfMonth.utc().format())
+                      }}
+                      onChange={(date) => {
+                        const leaveTypeId = form?.getFieldValue('leaveType')
+
+                        const leaveType = leaveTypeQuery?.data?.find(
+                          (type) => type?.id === leaveTypeId
+                        )
+                        let Initdates = momentRangeofDates(
+                          date,
+                          leaveType?.leaveDays
+                        )
+
+                        setDatePickerValue(Initdates)
+                      }}
+                      dateRender={(current) => {
+                        let style = {}
+                        if (datePickerValue.some((d) => d.isSame(current))) {
+                          style = {color: '#fff', background: '#038fde'}
+                        }
+                        return (
+                          <div className="ant-picker-cell-inner" style={style}>
+                            {current.date()}
+                          </div>
+                        )
                       }}
                     />
                   </FormItem>
