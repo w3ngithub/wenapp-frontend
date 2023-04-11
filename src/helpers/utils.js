@@ -143,6 +143,12 @@ export const sortFromDate = (data = [], sortField) => {
   })
 }
 
+export const arraySortFromDate = (data = [], sortField) => {
+  return data?.sort(function (a, b) {
+    return new Date(b[0]?.[sortField]) - new Date(a[0]?.[sortField])
+  })
+}
+
 export const csvFileToArray = (string) => {
   var lines = string.split('\n')
   var result = []
@@ -154,7 +160,7 @@ export const csvFileToArray = (string) => {
       continue
     }
     //filtering with index as an extra id is present which is not necessary
-    var words = lines[i].split(',')?.filter((item, index) => index !== 4)
+    var words = lines[i].split(',')
     for (var j = 0; j < words.length; j++) {
       obj[headers[j]?.trim()?.toLowerCase().replaceAll('"', '')] = words[
         j
@@ -162,7 +168,6 @@ export const csvFileToArray = (string) => {
     }
     result.push(obj)
   }
-  console.log({lines, headers, result})
   return result
 }
 
