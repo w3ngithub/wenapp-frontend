@@ -128,6 +128,34 @@ const getOtherTodayTimeLogSummary = async () => {
   }
 }
 
+const getOtherTimeLogTotal = async ({
+  user = '',
+  logType = '',
+  otStatus = '',
+  fromDate = '',
+  toDate = '',
+  project = '',
+}) => {
+  try {
+    let response = await API.get(
+      `${
+        Apis.TimeLogs
+      }/other/totalhour?project=${project}&user=${user}&logType=${logType}&otStatus=${otStatus}${
+        fromDate && toDate && `&logDate[gte]=${fromDate}&logDate[lte]=${toDate}`
+      }`
+    )
+    return getAPIResponse({
+      ...response,
+      data: {
+        ...response?.data,
+        data: decrypt(response?.data?.data, LOG_KEY),
+      },
+    })
+  } catch (err) {
+    return getAPIResponse(err.response)
+  }
+}
+
 const deleteTimeLog = async (logId) => {
   try {
     let response = await API.delete(`${Apis.TimeLogs}/${logId}`)
@@ -273,4 +301,5 @@ export {
   WeeklyProjectTimeLogSummary,
   getOtherTodayTimeLogSummary,
   getOtherWeeklyTimeLogSummary,
+  getOtherTimeLogTotal,
 }

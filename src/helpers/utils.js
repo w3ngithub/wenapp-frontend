@@ -561,6 +561,21 @@ export const getCurrentFiscalYear = () => {
   return new Date(new Date().getFullYear(), 0, 1)
 }
 
+export const momentRangeofDates = (startd, leaveDays) => {
+  let Initdates = []
+  let start = moment(startd)
+  const endDate = moment(startd).add(Number(leaveDays), 'days')
+
+  for (
+    let InitialDate = start;
+    InitialDate.isBefore(endDate);
+    InitialDate.add(1, 'days')
+  ) {
+    Initdates = [...Initdates, moment(InitialDate)]
+  }
+  return Initdates
+}
+
 export const getRangeofDates = (startDate, leaveDays) => {
   let newDate = new Date(startDate)
   let endDate = new Date(newDate)

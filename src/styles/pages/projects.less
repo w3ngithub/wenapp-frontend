@@ -1,14 +1,38 @@
-.project-name{
-    display: inline-block;
-    margin: 0 !important;
+.project-name {
+  display: inline-block;
+  margin: 0 !important;
 }
 
-.project-name:hover{
-    color:@primary-color;
-    cursor: pointer;
+.project-name:hover {
+  color: @primary-color;
+  cursor: pointer;
 }
 
-.staging-urls{
-    display: inline-block;
-    margin-right: 10px;
+.staging-urls {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.overtime-approved {
+  color: #52c41a;
+}
+.overtime-rejected {
+  color: #ff4d4f;
+}
+
+.overtime-hour {
+  display: flex;
+  justify-content: space-between;
+}
+
+.overtime-hour .ant-row {
+  margin-right: 0px;
+}
+
+.overtime-total-hour {
+  margin-left: 20px;
+}
+
+.overtime-total-hour .ant-form-item-control-input-content {
+  display: flex;
 }
