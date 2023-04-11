@@ -21,6 +21,7 @@ import {debounce} from 'helpers/utils'
 import {getAllProjects} from 'services/projects'
 import {LOG_STATUS} from 'constants/logTimes'
 import RangePicker from 'components/Elements/RangePicker'
+import {PLACE_HOLDER_CLASS} from 'constants/Common'
 
 const formattedReports = (overtimeData) => {
   return overtimeData?.map((log) => ({
@@ -236,7 +237,7 @@ const OvertimePage = () => {
           </FormItem>
           <FormItem className="direct-form-item">
             <Select
-              placeholderClass
+              placeholderClass={PLACE_HOLDER_CLASS}
               placeholder="Select Project"
               onChange={handleProjectChange}
               value={project}
@@ -251,7 +252,7 @@ const OvertimePage = () => {
           </FormItem>
           <FormItem className="direct-form-item">
             <Select
-              placeholderClass
+              placeholderClass={PLACE_HOLDER_CLASS}
               showSearch
               filterOption={filterOptions}
               placeholder="Select Log Author"
@@ -265,7 +266,7 @@ const OvertimePage = () => {
           </FormItem>
           <FormItem className="direct-form-item">
             <Select
-              placeholderClass
+              placeholderClass={PLACE_HOLDER_CLASS}
               showSearch
               filterOption={filterOptions}
               placeholder="Select OT Status"
