@@ -30,6 +30,7 @@ import {OTHER_LOGTIMES_COLUMNS} from 'constants/OtherLogTime'
 import RangePicker from 'components/Elements/RangePicker'
 import {getAllUsers} from 'services/users/userDetails'
 import Select from 'components/Elements/Select'
+import {PLACE_HOLDER_CLASS} from 'constants/Common'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -264,6 +265,7 @@ function OtherLogTime() {
 
             <FormItem className="direct-form-item">
               <Select
+                placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Search Co-worker"
                 onChange={handleUserChange}
                 value={user}
@@ -276,6 +278,7 @@ function OtherLogTime() {
 
             <FormItem className="direct-form-item">
               <Select
+                placeholderClass={PLACE_HOLDER_CLASS}
                 placeholder="Log Type"
                 value={logType}
                 onChange={handlelogTypeChange}
