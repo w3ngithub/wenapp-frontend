@@ -39,6 +39,8 @@ function SidebarContent(props) {
     paths[1] === RESOURCES ||
     (paths[1] === LOGTIME && logtimePermission?.viewOtherLogTime)
       ? paths[2]
+      : paths[1] === LOGTIME
+      ? `${paths[1]}/${paths[2]}`
       : paths[1]
 
   const collapseNav = collapse ? collapse : () => {}
