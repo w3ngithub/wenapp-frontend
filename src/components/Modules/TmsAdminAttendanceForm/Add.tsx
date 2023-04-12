@@ -78,13 +78,7 @@ function TmsAdminAddAttendanceForm({
         'T' +
         moment.utc(values.punchOutTime).format().split('T')[1]
       : undefined
-    console.log('values', punchInTime, punchOutTime)
 
-    const isSameTime = punchInTime === punchOutTime
-
-    // if (isSameTime) {
-    //   setIsSame(true)
-    // }
     if (!values?.isLateArrival) {
       delete values.isLateArrival
     }
