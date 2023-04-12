@@ -1,5 +1,6 @@
 import {
   ACTIVITY_LOGS,
+  ALL_TIME_LOG,
   ATTENDANCE,
   BLOG,
   COWORKERS,
@@ -60,7 +61,7 @@ export const SIDEBAR_ITEMS = ({
         {
           icon: 'ckeditor',
           name: 'sidebar.logtime',
-          url: `${LOGTIME}/all-work-logs`,
+          url: ALL_TIME_LOG,
           isExpandable: false,
           id: 5,
           roles: Navigation?.logTime,

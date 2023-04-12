@@ -182,7 +182,29 @@ function TmsAdminAddAttendanceForm({
                 <Form.Item
                   name="punchInTime"
                   rules={[
-                    {required: true, message: 'Punch In Time is required.'},
+                    ({getFieldValue}) => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject('Required!')
+                        }
+                        if (value && !PUnchform.getFieldValue('punchOutTime')) {
+                          return Promise.resolve()
+                        }
+
+                        if (
+                          value.isBefore(
+                            PUnchform.getFieldValue('punchOutTime')
+                          )
+                        ) {
+                          return Promise.resolve()
+                        }
+                        return Promise.reject(
+                          new Error(
+                            'Punch In Time should be before Punch Out Time'
+                          )
+                        )
+                      },
+                    }),
                   ]}
                   hasFeedback
                 >
@@ -202,7 +224,29 @@ function TmsAdminAddAttendanceForm({
             </Col>
             <Col span={24} sm={12}>
               <div className="gx-d-flex" style={{gap: 20}}>
-                <Form.Item name="punchOutTime" hasFeedback>
+                <Form.Item
+                  name="punchOutTime"
+                  rules={[
+                    ({getFieldValue}) => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject(new Error('Required!'))
+                        }
+                        if (
+                          value.isAfter(PUnchform.getFieldValue('punchInTime'))
+                        ) {
+                          return Promise.resolve()
+                        }
+                        return Promise.reject(
+                          new Error(
+                            'Punch Out Time should be after Punch In Time'
+                          )
+                        )
+                      },
+                    }),
+                  ]}
+                  hasFeedback
+                >
                   <TimePicker
                     use12Hours
                     format="h:mm:ss A"
