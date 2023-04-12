@@ -51,19 +51,21 @@ const formattedProjects = (projects) => {
 }
 
 function ProjectsPage() {
+  const projectSession = JSON.parse(sessionStorage.getItem('project-session'))
+
   // init hooks
   const [sort, setSort] = useState({})
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
   const [project, setProject] = useState('')
   const [page, setPage] = useState({page: 1, limit: 25})
-  const [projectStatus, setProjectStatus] = useState(undefined)
-  const [projectTags, setProjectTags] = useState(undefined)
-  const [projectType, setProjectType] = useState(undefined)
-  const [projectClient, setprojectClient] = useState(undefined)
-  const [developer, setDeveloper] = useState(undefined)
-  const [designer, setDesigner] = useState(undefined)
-  const [qa, setQa] = useState(undefined)
+  const [projectStatus, setProjectStatus] = useState(projectSession?.statusId)
+  const [projectTags, setProjectTags] = useState(projectSession?.tagId)
+  const [projectType, setProjectType] = useState(projectSession?.typeId)
+  const [projectClient, setprojectClient] = useState(projectSession?.clientId)
+  const [developer, setDeveloper] = useState(projectSession?.developerId)
+  const [designer, setDesigner] = useState(projectSession?.designerId)
+  const [qa, setQa] = useState(projectSession?.qaId)
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
   const [userRecord, setUserRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)
@@ -296,27 +298,55 @@ function ProjectsPage() {
   }
 
   const handleProjectTypeChange = (typeId) => {
+    sessionStorage.setItem(
+      'project-session',
+      JSON.stringify({...projectSession, typeId})
+    )
     setProjectType(typeId)
   }
 
   const handleProjectStatusChange = (statusId) => {
+    sessionStorage.setItem(
+      'project-session',
+      JSON.stringify({...projectSession, statusId})
+    )
     setProjectStatus(statusId)
   }
 
   const handleClientChange = (clientId) => {
+    sessionStorage.setItem(
+      'project-session',
+      JSON.stringify({...projectSession, clientId})
+    )
     setprojectClient(clientId)
   }
 
   const handleProjectTagsChange = (tagId) => {
+    sessionStorage.setItem(
+      'project-session',
+      JSON.stringify({...projectSession, tagId})
+    )
     setProjectTags(tagId)
   }
   const handleDeveloperChange = (developerId) => {
+    sessionStorage.setItem(
+      'project-session',
+      JSON.stringify({...projectSession, developerId})
+    )
     setDeveloper(developerId)
   }
   const handleDesignerChange = (designerId) => {
+    sessionStorage.setItem(
+      'project-session',
+      JSON.stringify({...projectSession, designerId})
+    )
     setDesigner(designerId)
   }
   const handleQaChange = (qaId) => {
+    sessionStorage.setItem(
+      'project-session',
+      JSON.stringify({...projectSession, qaId})
+    )
     setQa(qaId)
   }
 
@@ -330,6 +360,7 @@ function ProjectsPage() {
     setDeveloper(undefined)
     setDesigner(undefined)
     setQa(undefined)
+    sessionStorage.removeItem('project-session')
   }
 
   const confirmDeleteProject = (project) => {
@@ -375,6 +406,10 @@ function ProjectsPage() {
             <Search
               placeholder="Search Projects"
               onSearch={(value) => {
+                sessionStorage.setItem(
+                  'project-session',
+                  JSON.stringify({...projectSession, Search: value})
+                )
                 setPage((prev) => ({...prev, page: 1}))
                 setProject(value)
               }}
