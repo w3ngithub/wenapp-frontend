@@ -431,12 +431,13 @@ export const oneWeekFilterCheck = (x) => {
   )
 }
 export const checkIfTimeISBetweenOfficeHour = (
-  officeStartTime = '09:10:00'
+  officeStartTime = '09:10:00',
+  officeEndTime = '18:00:00'
 ) => {
   const now = new Date()
 
   const startTime = officeStartTime
-  const endTime = '17:30:00'
+  const endTime = officeEndTime
 
   const s = startTime.split(':')
   const startTime1 = new Date(
@@ -526,4 +527,20 @@ export const persistSession = (sessionName, currentSession, name, value) => {
     `${sessionName}`,
     JSON.stringify({...currentSession, [name]: value})
   )
+}
+
+export const timeToMilisecond = (date) => {
+  const dateArr = date.split(':')
+  const milisecond =
+    dateArr[0] * 60 * 60 * 1000 + dateArr[1] * 60 * 1000 + dateArr[2] * 1000
+  return milisecond
+}
+
+export const subtractHourTime = (officeUTC, punchUTC) => {
+  const officeTime = officeUTC.split('T')[1].replace('Z', '')
+  const punchInTime = punchUTC.split('T')[1].split('.')[0]
+  const lateTime = convertMsToHM(
+    timeToMilisecond(officeTime) - timeToMilisecond(punchInTime)
+  )
+  return lateTime
 }
