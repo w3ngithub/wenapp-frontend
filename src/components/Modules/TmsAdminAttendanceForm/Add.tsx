@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
   Button,
   Col,
@@ -37,6 +37,7 @@ function TmsAdminAddAttendanceForm({
   const [PUnchform] = Form.useForm()
   const queryClient = useQueryClient()
   const {innerWidth} = useWindowsSize()
+  const [isSame, setIsSame] = useState(false)
 
   const addAttendances: any = useMutation(
     (payload: any) => addUserAttendance(payload.id, payload.payload),
@@ -78,6 +79,13 @@ function TmsAdminAddAttendanceForm({
         'T' +
         moment.utc(values.punchOutTime).format().split('T')[1]
       : undefined
+    console.log('values', punchInTime, punchOutTime)
+
+    const isSameTime = punchInTime === punchOutTime
+
+    if (isSameTime) {
+      setIsSame(true)
+    }
     if (!values?.isLateArrival) {
       delete values.isLateArrival
     }
@@ -89,7 +97,8 @@ function TmsAdminAddAttendanceForm({
       punchOutLocation: await getLocation(),
       punchInLocation: await getLocation(),
     }
-    addAttendances.mutate({id: values.user, payload})
+
+    !isSameTime && addAttendances.mutate({id: values.user, payload})
   }
 
   const closeModel = () => {
@@ -218,6 +227,11 @@ function TmsAdminAddAttendanceForm({
               </Form.Item>
             </Col>
           </Row>
+          {isSame && (
+            <p className="suggestion-text">
+              Punch In Time and Punch Out Time cannot be same.
+            </p>
+          )}
         </Form>
       </Spin>
     </Modal>
