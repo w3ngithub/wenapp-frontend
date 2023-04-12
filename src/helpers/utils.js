@@ -431,12 +431,13 @@ export const oneWeekFilterCheck = (x) => {
   )
 }
 export const checkIfTimeISBetweenOfficeHour = (
-  officeStartTime = '09:10:00'
+  officeStartTime = '09:10:00',
+  officeEndTime = '18:00:00'
 ) => {
   const now = new Date()
 
   const startTime = officeStartTime
-  const endTime = '17:30:00'
+  const endTime = officeEndTime
 
   const s = startTime.split(':')
   const startTime1 = new Date(
