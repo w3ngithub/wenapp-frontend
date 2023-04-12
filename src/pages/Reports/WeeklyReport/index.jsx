@@ -35,13 +35,19 @@ const formattedWeeklyReports = (reports, clients) => {
 }
 
 function WeeklyReport() {
+  const weeklySession = JSON.parse(sessionStorage.getItem('weekly-session'))
+
   // init states
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 50})
-  const [projectStatus, setProjectStatus] = useState(undefined)
-  const [logType, setLogType] = useState(undefined)
-  const [projectClient, setprojectClient] = useState(undefined)
-  const [date, setDate] = useState(intialDate)
+  const [projectStatus, setProjectStatus] = useState(weeklySession?.statusId)
+  const [logType, setLogType] = useState(weeklySession?.typeId)
+  const [projectClient, setprojectClient] = useState(weeklySession?.clientId)
+  const [date, setDate] = useState(
+    weeklySession?.date
+      ? [moment(weeklySession?.date[0]), moment(weeklySession?.date[1])]
+      : intialDate
+  )
   const [form] = Form.useForm()
   const {innerWidth} = useWindowsSize()
 
@@ -89,14 +95,26 @@ function WeeklyReport() {
   }
 
   const handleLogTypeChange = (typeId) => {
+    sessionStorage.setItem(
+      'weekly-session',
+      JSON.stringify({...weeklySession, typeId})
+    )
     setLogType(typeId)
   }
 
   const handleProjectStatusChange = (statusId) => {
+    sessionStorage.setItem(
+      'weekly-session',
+      JSON.stringify({...weeklySession, statusId})
+    )
     setProjectStatus(statusId)
   }
 
   const handleClientChange = (clientId) => {
+    sessionStorage.setItem(
+      'weekly-session',
+      JSON.stringify({...weeklySession, clientId})
+    )
     setprojectClient(clientId)
   }
 
@@ -105,6 +123,7 @@ function WeeklyReport() {
     setLogType(undefined)
     setProjectStatus(undefined)
     setprojectClient(undefined)
+    sessionStorage.removeItem('weekly-session')
   }
 
   const navigateToProjectLogs = (projectSlug, newPage = false) => {
@@ -116,6 +135,10 @@ function WeeklyReport() {
   }
 
   const handleChangeDate = (date) => {
+    sessionStorage.setItem(
+      'weekly-session',
+      JSON.stringify({...weeklySession, date: [date[0], date[1].endOf('day')]})
+    )
     setDate([date[0], date[1].endOf('day')])
   }
 

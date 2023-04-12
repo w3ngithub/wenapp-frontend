@@ -34,6 +34,10 @@ const formattedWorkLogReport: any = (logs: any) => {
 }
 
 function WorkLogReport() {
+  const workLogSession = JSON.parse(
+    sessionStorage.getItem('worklog-session') || '{}'
+  )
+
   //init state
   const [sort, setSort] = useState({
     column: undefined,
@@ -42,13 +46,26 @@ function WorkLogReport() {
     columnKey: 'user',
   })
   const [form] = Form.useForm()
-  const [date, setDate] = useState(intialDate)
+  const [date, setDate] = useState(
+    workLogSession?.date
+      ? [moment(workLogSession?.date[0]), moment(workLogSession?.date[1])]
+      : intialDate
+  )
   const {innerWidth} = useWindowsSize()
-  const [logType, setLogType] = useState<string | undefined>(undefined)
-  const [project, setProject] = useState<string | undefined>(undefined)
-  const [user, setUser] = useState<string | undefined>(undefined)
-  const [projectData, setProjectData] = useState([])
-  const [dateFilter, setDateFilter] = useState({id: '1', value: 'Daily'})
+  const [logType, setLogType] = useState<string | undefined>(
+    workLogSession?.typeId
+  )
+  const [project, setProject] = useState<string | undefined>(
+    workLogSession?.projectDetail?._id
+  )
+
+  const [user, setUser] = useState<string | undefined>(workLogSession?.userId)
+  const [projectData, setProjectData] = useState<any>(
+    workLogSession?.projectDetail ? [workLogSession?.projectDetail] : []
+  )
+  const [dateFilter, setDateFilter] = useState(
+    workLogSession?.dateWord || {id: '1', value: 'Daily'}
+  )
 
   screenWidth = innerWidth
   //init hooks
@@ -95,18 +112,38 @@ function WorkLogReport() {
   )
 
   const handleChangeDate = (date: any[]) => {
+    sessionStorage.setItem(
+      'worklog-session',
+      JSON.stringify({...workLogSession, date: [date[0], date[1].endOf('day')]})
+    )
     setDate([date[0], date[1].endOf('day')])
   }
 
   const handleLogTypeChange = (typeId: string) => {
+    sessionStorage.setItem(
+      'worklog-session',
+      JSON.stringify({...workLogSession, typeId})
+    )
     setLogType(typeId)
   }
 
   const handleProjectChange = (ProjectId: string) => {
+    const projectDetail = projectData?.find((d: any) => d?._id === ProjectId)
+    sessionStorage.setItem(
+      'worklog-session',
+      JSON.stringify({
+        ...workLogSession,
+        projectDetail: {_id: ProjectId, name: projectDetail?.name},
+      })
+    )
     setProject(ProjectId)
   }
 
   const handleUserChange = (userId: string) => {
+    sessionStorage.setItem(
+      'worklog-session',
+      JSON.stringify({...workLogSession, userId})
+    )
     setUser(userId)
   }
 
@@ -120,6 +157,7 @@ function WorkLogReport() {
     setLogType(undefined)
     setProject(undefined)
     setUser(undefined)
+    sessionStorage.removeItem('worklog-session')
   }
 
   const logData: any[] =
@@ -137,12 +175,24 @@ function WorkLogReport() {
     switch (val) {
       case 1:
         setDate(intialDate)
+        sessionStorage.setItem(
+          'worklog-session',
+          JSON.stringify({...workLogSession, date: intialDate, dateWord: val})
+        )
         break
       case 2:
         setDate(weeklyState)
+        sessionStorage.setItem(
+          'worklog-session',
+          JSON.stringify({...workLogSession, date: weeklyState, dateWord: val})
+        )
         break
       case 3:
         setDate(monthlyState)
+        sessionStorage.setItem(
+          'worklog-session',
+          JSON.stringify({...workLogSession, date: monthlyState, dateWord: val})
+        )
         break
 
       default:
@@ -224,7 +274,9 @@ function WorkLogReport() {
       </div>
       <Table
         locale={{emptyText}}
-        className="gx-table-responsive align-longtext"
+        className={`gx-table-responsive align-longtext ${
+          logData.length > 0 && 'worklog'
+        }`}
         columns={WORK_LOG_REPORT_COLUMNS(sort, screenWidth)}
         dataSource={formattedWorkLogReport(logData)}
         onChange={handleTableChange}
