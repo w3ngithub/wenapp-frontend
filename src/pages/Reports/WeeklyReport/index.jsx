@@ -9,7 +9,7 @@ import {notification} from 'helpers/notification'
 import {getLogTypes, getWeeklyReport} from 'services/timeLogs'
 import Select from 'components/Elements/Select'
 import {WEEKLY_REPORT_COLUMNS} from 'constants/weeklyReport'
-import {roundedToFixed} from 'helpers/utils'
+import {persistSession, roundedToFixed} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
@@ -95,26 +95,17 @@ function WeeklyReport() {
   }
 
   const handleLogTypeChange = (typeId) => {
-    sessionStorage.setItem(
-      'weekly-session',
-      JSON.stringify({...weeklySession, typeId})
-    )
+    persistSession('weekly-session', weeklySession, 'typeId', typeId)
     setLogType(typeId)
   }
 
   const handleProjectStatusChange = (statusId) => {
-    sessionStorage.setItem(
-      'weekly-session',
-      JSON.stringify({...weeklySession, statusId})
-    )
+    persistSession('weekly-session', weeklySession, 'statusId', statusId)
     setProjectStatus(statusId)
   }
 
   const handleClientChange = (clientId) => {
-    sessionStorage.setItem(
-      'weekly-session',
-      JSON.stringify({...weeklySession, clientId})
-    )
+    persistSession('weekly-session', weeklySession, 'clientId', clientId)
     setprojectClient(clientId)
   }
 
@@ -135,10 +126,11 @@ function WeeklyReport() {
   }
 
   const handleChangeDate = (date) => {
-    sessionStorage.setItem(
-      'weekly-session',
-      JSON.stringify({...weeklySession, date: [date[0], date[1].endOf('day')]})
-    )
+    persistSession('weekly-session', weeklySession, 'date', [
+      date[0],
+      date[1].endOf('day'),
+    ])
+
     setDate([date[0], date[1].endOf('day')])
   }
 
