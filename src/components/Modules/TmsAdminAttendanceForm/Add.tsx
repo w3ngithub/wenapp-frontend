@@ -78,7 +78,6 @@ function TmsAdminAddAttendanceForm({
         'T' +
         moment.utc(values.punchOutTime).format().split('T')[1]
       : undefined
-
     if (!values?.isLateArrival) {
       delete values.isLateArrival
     }
@@ -90,7 +89,6 @@ function TmsAdminAddAttendanceForm({
       punchOutLocation: await getLocation(),
       punchInLocation: await getLocation(),
     }
-
     addAttendances.mutate({id: values.user, payload})
   }
 
@@ -183,9 +181,6 @@ function TmsAdminAddAttendanceForm({
               <div className="gx-d-flex" style={{gap: 20}}>
                 <Form.Item
                   name="punchInTime"
-                  // rules={[
-                  //   {required: true, message: 'Punch In Time is required.'},
-                  // ]}
                   rules={[
                     ({getFieldValue}) => ({
                       validator(_, value) {
