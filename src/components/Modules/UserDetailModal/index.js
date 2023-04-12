@@ -85,6 +85,7 @@ function UserDetailForm({
           hour: moment(values.officeTime._d).add(10, 'm').utc().format('h'),
           minute: moment(values.officeTime._d).add(10, 'm').utc().format('m'),
         },
+        officeEndTime: moment(values.officeEndTime._d).utc().format(),
       })
     })
   }
@@ -153,6 +154,9 @@ function UserDetailForm({
         officeTime: intialValues?.officeTime?.utcDate
           ? moment(new Date(intialValues?.officeTime?.utcDate), 'h:mm:ss a')
           : moment('09:00:00 AM', 'HH:mm:ss a'),
+        officeEndTime: intialValues?.officeEndTime
+          ? moment(new Date(intialValues?.officeEndTime), 'h:mm:ss a')
+          : moment('06:00:00 PM', 'HH:mm:ss a'),
       })
       setStatus(intialValues?.status)
     }
@@ -258,9 +262,17 @@ function UserDetailForm({
               {
                 required: true,
                 validator: async (rule, value) => {
+                  let startTime = `${value.format('HH:mm:ss ')}`
+                  let endTime = `${form
+                    .getFieldValue('officeEndTime')
+                    .format('HH:mm:ss ')}`
                   try {
                     if (!value) {
                       throw new Error('Office Start Time is required.')
+                    } else if (endTime <= startTime) {
+                      throw new Error(
+                        'Office start time shoule be before office end time'
+                      )
                     }
                   } catch (err) {
                     scrollForm(form, 'officeTime')
@@ -275,6 +287,42 @@ function UserDetailForm({
               style={{width: '100%'}}
               format="h:mm:ss A"
               initialValues={moment('09:00:00 AM', 'HH:mm:ss a')}
+            />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="Office End Time"
+            name="officeEndTime"
+            hasFeedback={readOnly ? false : true}
+            rules={[
+              {
+                required: true,
+                validator: async (rule, value) => {
+                  let endTime = `${value.format('HH:mm:ss ')}`
+                  let startTime = `${form
+                    .getFieldValue('officeTime')
+                    .format('HH:mm:ss ')}`
+                  try {
+                    if (!value) {
+                      throw new Error('Office End Time is required.')
+                    } else if (endTime <= startTime) {
+                      throw new Error(
+                        'Office end time should be after office start time.'
+                      )
+                    }
+                  } catch (err) {
+                    scrollForm(form, 'officeEndTime')
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
+          >
+            <TimePicker
+              disabled={readOnly}
+              style={{width: '100%'}}
+              format="h:mm:ss A"
+              initialValues={moment('06:00:00 PM', 'HH:mm:ss a')}
             />
           </FormItem>
           <FormItem
