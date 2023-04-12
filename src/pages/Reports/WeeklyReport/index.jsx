@@ -58,10 +58,8 @@ function WeeklyReport() {
   )
   const [form] = Form.useForm()
   const {innerWidth} = useWindowsSize()
-  console.log('test', projectArray, project)
 
   const navigate = useNavigate()
-  console.log({project, projectClient})
 
   const {data: logTypesData} = useQuery(['logTypes'], getLogTypes)
   const {data: projectStatusData} = useQuery(
