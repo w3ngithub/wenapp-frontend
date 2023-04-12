@@ -536,7 +536,7 @@ export const timeToMilisecond = (date) => {
   return milisecond
 }
 
-export const subHourTime = (officeUTC, punchUTC) => {
+export const subtractHourTime = (officeUTC, punchUTC) => {
   const officeTime = officeUTC.split('T')[1].replace('Z', '')
   const punchInTime = punchUTC.split('T')[1].split('.')[0]
   const lateTime = convertMsToHM(

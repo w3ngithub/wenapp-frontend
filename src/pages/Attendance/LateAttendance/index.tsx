@@ -21,7 +21,7 @@ import {
   handleResponse,
   MuiFormatDate,
   sortFromDate,
-  subHourTime,
+  subtractHourTime,
 } from 'helpers/utils'
 import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
@@ -314,7 +314,7 @@ function LateAttendance({userRole}: {userRole: any}) {
       officeHour: att?.punchOutTime
         ? dateDifference(att?.punchOutTime, att?.punchInTime)
         : '',
-      lateBy: subHourTime(att?.officeTime?.utcDate, att?.punchInTime),
+      lateBy: subtractHourTime(att?.officeTime?.utcDate, att?.punchInTime),
     }))
 
     return <Table columns={columns} dataSource={data} pagination={false} />
