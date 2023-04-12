@@ -299,10 +299,6 @@ function ProjectsPage() {
   }
 
   const handleProjectTypeChange = (typeId) => {
-    // sessionStorage.setItem(
-    //   'project-session',
-    //   JSON.stringify({...projectSession, typeId})
-    // )
     persistSession('project-session', projectSession, 'typeId', typeId)
     setProjectType(typeId)
   }
