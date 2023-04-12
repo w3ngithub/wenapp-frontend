@@ -29,7 +29,7 @@ const LOGTIMES_COLUMNS = (
                 onClick={() => {
                   if (!record?.projectId) return
                   navigateToProjectLogs(
-                    `../projects/${record?.projectId}-${record?.slug}`
+                    `/projects/${record?.projectId}-${record?.slug}`
                   )
                 }}
                 className={record?.projectId && 'project-name'}
