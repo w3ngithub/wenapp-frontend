@@ -43,6 +43,7 @@ const WORK_LOG_REPORT_COLUMNS = (
         )
         return (
           <React.Fragment key={i + x[0]?.logDate + x[0]?.logType}>
+            {i !== 0 && <Divider type="horizontal" />}
             <div>
               <span style={{marginLeft: '-1px'}}>
                 <Tag color="">{changeDate(x?.[0]?.logDate)}</Tag>
@@ -77,7 +78,6 @@ const WORK_LOG_REPORT_COLUMNS = (
                 </span>
               </div>
             ))}
-            <Divider type="horizontal" />
           </React.Fragment>
         )
       })

@@ -77,6 +77,7 @@ function UserDetailForm({
           hour: moment(values.officeTime._d).add(10, 'm').utc().format('h'),
           minute: moment(values.officeTime._d).add(10, 'm').utc().format('m'),
         },
+        officeEndTime: moment(values.officeEndTime._d).utc().format(),
         allocatedLeaves: {
           ...data,
           [currentQuarter?.data?.name]: values?.allocatedLeaves,
@@ -171,6 +172,9 @@ function UserDetailForm({
         officeTime: intialValues?.officeTime?.utcDate
           ? moment(new Date(intialValues?.officeTime?.utcDate), 'h:mm:ss a')
           : moment('09:00:00 AM', 'HH:mm:ss a'),
+        officeEndTime: intialValues?.officeEndTime
+          ? moment(new Date(intialValues?.officeEndTime), 'h:mm:ss a')
+          : moment('06:00:00 PM', 'HH:mm:ss a'),
       })
     }
 
@@ -292,6 +296,34 @@ function UserDetailForm({
               style={{width: '100%'}}
               format="h:mm:ss A"
               initialValues={moment('09:00:00 AM', 'HH:mm:ss a')}
+            />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="Office End Time"
+            name="officeEndTime"
+            hasFeedback={readOnly ? false : true}
+            rules={[
+              {
+                required: true,
+                validator: async (rule, value) => {
+                  try {
+                    if (!value) {
+                      throw new Error('Office End Time is required.')
+                    }
+                  } catch (err) {
+                    scrollForm(form, 'officeEndTime')
+                    throw new Error(err.message)
+                  }
+                },
+              },
+            ]}
+          >
+            <TimePicker
+              disabled={readOnly}
+              style={{width: '100%'}}
+              format="h:mm:ss A"
+              initialValues={moment('06:00:00 PM', 'HH:mm:ss a')}
             />
           </FormItem>
           <FormItem

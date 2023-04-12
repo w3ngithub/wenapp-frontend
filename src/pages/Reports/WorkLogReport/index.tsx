@@ -15,7 +15,7 @@ import {
   weeklyState,
 } from 'constants/Attendance'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {debounce, filterSpecificUser} from 'helpers/utils'
+import {debounce, filterSpecificUser, persistSession} from 'helpers/utils'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
@@ -112,38 +112,29 @@ function WorkLogReport() {
   )
 
   const handleChangeDate = (date: any[]) => {
-    sessionStorage.setItem(
-      'worklog-session',
-      JSON.stringify({...workLogSession, date: [date[0], date[1].endOf('day')]})
-    )
+    persistSession('worklog-session', workLogSession, 'date', [
+      date[0],
+      date[1].endOf('day'),
+    ])
     setDate([date[0], date[1].endOf('day')])
   }
 
   const handleLogTypeChange = (typeId: string) => {
-    sessionStorage.setItem(
-      'worklog-session',
-      JSON.stringify({...workLogSession, typeId})
-    )
+    persistSession('worklog-session', workLogSession, 'typeId', typeId)
     setLogType(typeId)
   }
 
   const handleProjectChange = (ProjectId: string) => {
     const projectDetail = projectData?.find((d: any) => d?._id === ProjectId)
-    sessionStorage.setItem(
-      'worklog-session',
-      JSON.stringify({
-        ...workLogSession,
-        projectDetail: {_id: ProjectId, name: projectDetail?.name},
-      })
-    )
+    persistSession('worklog-session', workLogSession, 'projectDetail', {
+      _id: ProjectId,
+      name: projectDetail?.name,
+    })
     setProject(ProjectId)
   }
 
   const handleUserChange = (userId: string) => {
-    sessionStorage.setItem(
-      'worklog-session',
-      JSON.stringify({...workLogSession, userId})
-    )
+    persistSession('worklog-session', workLogSession, 'userId', userId)
     setUser(userId)
   }
 
