@@ -185,6 +185,48 @@ const OVERVIEW_NOTCHECKEDIN = (sortedInfo: any): tableCol[] => [
   },
 ]
 
+const OVERVIEW_LATEPUNCHIN = (sortedInfo: any): tableCol[] => [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    width: 150,
+    sorter: (a, b) => {
+      return a.name.toString().localeCompare(b.name.toString())
+    },
+    sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
+  },
+  {
+    title: 'Punched In At',
+    dataIndex: 'checkIn',
+    key: 'checkIn',
+    width: 150,
+    sorter: (a, b) => a.checkIn.toString().localeCompare(b.checkIn.toString()),
+    sortOrder: sortedInfo.columnKey === 'checkIn' && sortedInfo.order,
+  },
+
+  {
+    title: 'Punched Out At',
+    dataIndex: 'checkOut',
+    width: 150,
+    key: 'checkOut',
+    sorter: (a, b) =>
+      a.checkOut.toString().localeCompare(b.checkOut.toString()),
+
+    sortOrder: sortedInfo.columnKey === 'checkOut' && sortedInfo.order,
+  },
+
+  {
+    title: 'Late By',
+    dataIndex: 'lateBy',
+    width: 150,
+    key: 'lateBy',
+    sorter: (a, b) => a.lateBy.toString().localeCompare(b.lateBy.toString()),
+
+    sortOrder: sortedInfo.columnKey === 'lateBy' && sortedInfo.order,
+  },
+]
+
 const DEADLINE_PROJECTS = (
   sortedInfo: any,
   navigateToProjectLogs: (a: string) => void
@@ -221,4 +263,5 @@ export {
   OVERVIEW_CHECKEDIN,
   OVERVIEW_NOTCHECKEDIN,
   DEADLINE_PROJECTS,
+  OVERVIEW_LATEPUNCHIN,
 }
