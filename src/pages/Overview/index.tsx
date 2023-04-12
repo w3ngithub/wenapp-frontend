@@ -7,7 +7,10 @@ import {notification} from 'helpers/notification'
 import LeaveEmployee from './LeaveEmployee'
 import CheckedInEmployee from './CheckInEmployee'
 import {intialDate} from 'constants/Attendance'
-import {searchAttendacentOfUser} from 'services/attendances'
+import {
+  searchAttendacentOfUser,
+  searchLateAttendacentOfUser,
+} from 'services/attendances'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {getAllUsers} from 'services/users/userDetails'
 import UnCheckedInEmployee from './UnCheckedEmployee'
@@ -17,6 +20,7 @@ import {Collapse} from 'antd'
 import {WalletOutlined} from '@ant-design/icons'
 import {useLocation} from 'react-router-dom'
 import {ADMINISTRATOR} from 'constants/UserNames'
+import LatePunchedIn from './LatePunchIn'
 
 const {Panel} = Collapse
 
@@ -73,6 +77,16 @@ const Overview = () => {
         toDate: moment.utc(intialDate[1]).format(),
       })
   )
+
+  const {data: lateAttendance} = useQuery(['lateAttendaceAttendance'], () =>
+    searchLateAttendacentOfUser({
+      fromDate: MuiFormatDate(moment().format()) + 'T00:00:00Z',
+
+      toDate: MuiFormatDate(moment().format()) + 'T00:00:00Z',
+      lateArrivalLeaveCut: '1',
+    })
+  )
+
   const leavesSection = leaves?.data?.data?.users || []
 
   const checkInSecition =
@@ -151,6 +165,17 @@ const Overview = () => {
             <DeadlineProjects projects={deadlineProject} />
           </Panel>
         )}
+        <Panel
+          header={
+            <h3>
+              <WalletOutlined />
+              <span className="gx-ml-3">Co-workers who punched in late</span>
+            </h3>
+          }
+          key="5"
+        >
+          <LatePunchedIn latePunchInSection={lateAttendance} />
+        </Panel>
       </Collapse>
     </div>
   )
