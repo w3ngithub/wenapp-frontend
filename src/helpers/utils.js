@@ -537,7 +537,6 @@ export const filterSpecificUser = (group, name) => {
   return group?.filter((user) => user.name !== name)
 }
 
-<<<<<<< HEAD
 //get date range from a start date to end date
 export const getDateRangeArray = function (s, e) {
   let a = []
@@ -594,11 +593,10 @@ export const getRangeofDates = (startDate, leaveDays) => {
 }
 
 export const convertMsToDay = (num) => num / (1000 * 60 * 60 * 24)
-=======
+
 export const persistSession = (sessionName, currentSession, name, value) => {
   sessionStorage.setItem(
     `${sessionName}`,
     JSON.stringify({...currentSession, [name]: value})
   )
 }
->>>>>>> ffa44b810f2c979752474ca4d9101979787da65e
