@@ -281,17 +281,17 @@ function TmsAdminAttendanceForm({
                           return Promise.reject(new Error('Required!'))
                         }
                         if (
-                          value.isBefore(
+                          value.isAfter(
                             PUnchInform.getFieldValue('punchInTime')
                           )
                         ) {
-                          return Promise.reject(
-                            new Error(
-                              'Punch Out Time should not be before Punch In Time'
-                            )
-                          )
+                          return Promise.resolve()
                         }
-                        return Promise.resolve()
+                        return Promise.reject(
+                          new Error(
+                            'Punch Out Time should be after Punch In Time'
+                          )
+                        )
                       },
                     }),
                   ]}

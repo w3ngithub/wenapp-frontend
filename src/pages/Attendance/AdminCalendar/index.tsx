@@ -16,7 +16,7 @@ import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
 import {useNavigate} from 'react-router-dom'
 import {ATTENDANCE} from 'helpers/routePath'
-import {LEAVES_TYPES} from 'constants/Leaves'
+import {FIRST_HALF, LEAVES_TYPES} from 'constants/Leaves'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {useSelector} from 'react-redux'
 import {getAllHolidays} from 'services/resources'
@@ -174,9 +174,17 @@ function AdminAttendanceCalendar() {
     const eventStartsInNextMonth =
       thisMonthsEndDate < moment(leave?.leaveDates?.[0])
 
+    let extraInfo = ''
+
+    if (leave?.halfDay) {
+      extraInfo = leave?.halfDay === FIRST_HALF ? '1st' : `2nd`
+    }
+
     leaves.push({
       id: leave?._id,
-      title: leave?.leaveType?.name,
+      title: `${leave?.leaveType?.name}${
+        extraInfo ? '(' + extraInfo + ')' : ''
+      }`,
       start: eventStartsInPrevMonth
         ? new Date(thisMonthsStartDate?.format())
         : new Date(leave?.leaveDates?.[0]),

@@ -17,6 +17,7 @@ import AccessWrapper from 'components/Modules/AccessWrapper'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {PlusOutlined} from '@ant-design/icons'
+import {useCleanCalendar} from 'hooks/useCleanCalendar'
 
 const localizer = momentLocalizer(moment)
 
@@ -35,6 +36,13 @@ function Holiday() {
   const [sort, setSort] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const [dataToEdit, setDataToEdit] = useState({})
+
+  const {
+    currentMonth,
+    thisMonthsStartDate,
+    thisMonthsEndDate,
+    monthChangeHandler,
+  } = useCleanCalendar()
 
   const {
     role: {
@@ -156,6 +164,12 @@ function Holiday() {
   )
 
   const handleEventStyle = (event) => {
+    const isEventInPreviousMonth =
+      moment(event?.end) < moment(currentMonth).startOf('month')
+    const isEventInNextMonth =
+      moment(event?.end) > moment(currentMonth).endOf('month')
+
+    const isOffRange = isEventInPreviousMonth || isEventInNextMonth
     let style = {
       color: 'white',
       padding: '1px 10px',
@@ -163,6 +177,12 @@ function Holiday() {
       margin: 'auto',
       marginBottom: '0.2rem',
       height: 'auto',
+    }
+    if (isOffRange) {
+      style = {
+        ...style,
+        display: 'none',
+      }
     }
 
     return {
@@ -252,6 +272,7 @@ function Holiday() {
               endAccessor="end"
               views={['month']}
               popup
+              onNavigate={monthChangeHandler}
             />
           </div>
         )}

@@ -8,6 +8,7 @@ import {
   getIsAdmin,
   handleResponse,
   MuiFormatDate,
+  persistSession,
 } from 'helpers/utils'
 import {
   addProject,
@@ -51,24 +52,26 @@ const formattedProjects = (projects) => {
 }
 
 function ProjectsPage() {
+  const projectSession = JSON.parse(sessionStorage.getItem('project-session'))
+
   // init hooks
   const [sort, setSort] = useState({})
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
-  const [project, setProject] = useState('')
+  const [project, setProject] = useState(projectSession?.Search || '')
   const [page, setPage] = useState(PAGE25)
-  const [projectStatus, setProjectStatus] = useState(undefined)
-  const [projectTags, setProjectTags] = useState(undefined)
-  const [projectType, setProjectType] = useState(undefined)
-  const [projectClient, setprojectClient] = useState(undefined)
-  const [developer, setDeveloper] = useState(undefined)
-  const [designer, setDesigner] = useState(undefined)
-  const [qa, setQa] = useState(undefined)
+  const [projectStatus, setProjectStatus] = useState(projectSession?.statusId)
+  const [projectTags, setProjectTags] = useState(projectSession?.tagId)
+  const [projectType, setProjectType] = useState(projectSession?.typeId)
+  const [projectClient, setprojectClient] = useState(projectSession?.clientId)
+  const [developer, setDeveloper] = useState(projectSession?.developerId)
+  const [designer, setDesigner] = useState(projectSession?.designerId)
+  const [qa, setQa] = useState(projectSession?.qaId)
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
   const [userRecord, setUserRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [projectName, setProjectName] = useState('')
+  const [projectName, setProjectName] = useState(projectSession?.Search || '')
   const [positionTypeData, setPositionTypeData] = useState({})
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -297,33 +300,45 @@ function ProjectsPage() {
 
   const handleProjectTypeChange = (typeId) => {
     setPage(PAGE25)
+    persistSession('project-session', projectSession, 'typeId', typeId)
     setProjectType(typeId)
   }
 
   const handleProjectStatusChange = (statusId) => {
     setPage(PAGE25)
+    persistSession('project-session', projectSession, 'statusId', statusId)
     setProjectStatus(statusId)
   }
 
   const handleClientChange = (clientId) => {
     setPage(PAGE25)
+    persistSession('project-session', projectSession, 'clientId', clientId)
     setprojectClient(clientId)
   }
 
   const handleProjectTagsChange = (tagId) => {
     setPage(PAGE25)
+    persistSession('project-session', projectSession, 'tagId', tagId)
     setProjectTags(tagId)
   }
   const handleDeveloperChange = (developerId) => {
     setPage(PAGE25)
+    persistSession(
+      'project-session',
+      projectSession,
+      'developerId',
+      developerId
+    )
     setDeveloper(developerId)
   }
   const handleDesignerChange = (designerId) => {
     setPage(PAGE25)
+    persistSession('project-session', projectSession, 'designerId', designerId)
     setDesigner(designerId)
   }
   const handleQaChange = (qaId) => {
     setPage(PAGE25)
+    persistSession('project-session', projectSession, 'qaId', qaId)
     setQa(qaId)
   }
 
@@ -337,6 +352,7 @@ function ProjectsPage() {
     setDeveloper(undefined)
     setDesigner(undefined)
     setQa(undefined)
+    sessionStorage.removeItem('project-session')
   }
 
   const confirmDeleteProject = (project) => {
@@ -382,6 +398,12 @@ function ProjectsPage() {
             <Search
               placeholder="Search Projects"
               onSearch={(value) => {
+                persistSession(
+                  'project-session',
+                  projectSession,
+                  'Search',
+                  value
+                )
                 setPage((prev) => ({...prev, page: 1}))
                 setProject(value)
               }}
