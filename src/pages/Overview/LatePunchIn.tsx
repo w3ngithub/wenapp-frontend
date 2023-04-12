@@ -3,7 +3,7 @@ import {Card, Table} from 'antd'
 import {OVERVIEW_LATEPUNCHIN} from 'constants/Overview'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {LATE_ARRIVAL_KEY, decrypt} from 'util/crypto'
-import {sortFromDate} from 'helpers/utils'
+import {sortFromDate, subtractHourTime} from 'helpers/utils'
 import moment from 'moment'
 
 function LatePunchedIn({latePunchInSection}: {latePunchInSection: any}) {
@@ -32,18 +32,17 @@ function LatePunchedIn({latePunchInSection}: {latePunchInSection: any}) {
 
   const formattedAttendancesFunction = (attendances: any) => {
     return attendances?.map((att: any) => {
-      const checkInTime = moment(att?.data?.[0]?.punchInTime)
-      const officeTime = moment(att?.data?.[0]?.officeTime?.utcDate)
+      const checkInTime = att?.data?.[0]?.punchInTime
+      const officeTime = att?.data?.[0]?.officeTime?.utcDate
 
-      const lateBy = checkInTime.diff(officeTime, 'minute')
-      console.log({lateBy})
+      const lateBy = subtractHourTime(officeTime, checkInTime)
       return {
         ...att,
         key: att?._id?.userId,
         name: att?._id?.user,
         checkIn: moment(att?.data?.[0]?.punchInTime).format('LTS'),
         checkOut: moment(att?.data?.[0]?.punchOutTime).format('LTS'),
-        lateBy: 'bob',
+        lateBy,
       }
     })
   }
@@ -55,8 +54,6 @@ function LatePunchedIn({latePunchInSection}: {latePunchInSection: any}) {
     ...att,
     data: att.data && sortedData(att.data),
   }))
-
-  console.log({formattedAttendacesData})
 
   const onShowSizeChange = (_: any, pageSize: number) => {
     setPage((prev) => ({...page, limit: pageSize}))
