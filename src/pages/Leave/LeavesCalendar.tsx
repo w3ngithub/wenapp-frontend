@@ -65,7 +65,7 @@ const LeavesCalendar = () => {
   const leaveUsers = leavesQuery?.data?.map(
     ({user, leaveDates, leaveType, halfDay}: any) => {
       const nameSplitted = user[0].split(' ')
-      let extraInfo = ''
+      let extraInfo = leaveType?.[0]?.split(' ')?.[0]
       let lastName
       if (nameSplitted.length === 1) {
         lastName = ''
@@ -74,10 +74,10 @@ const LeavesCalendar = () => {
       }
 
       if (halfDay === FIRST_HALF) {
-        extraInfo = '1st'
+        extraInfo += ' 1st'
       }
       if (halfDay === SECOND_HALF) {
-        extraInfo = '2nd'
+        extraInfo += ' 2nd'
       }
       if (leaveType.includes(LATE_ARRIVAL)) {
         extraInfo = 'Late'
@@ -107,7 +107,7 @@ const LeavesCalendar = () => {
       )
         //for long leaves
         return {
-          title: shortName,
+          title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
           start: eventStartsInPrevMonthForLongEvents
             ? new Date(thisMonthsStartDate?.format())
             : new Date(leaveDates?.[0]),
