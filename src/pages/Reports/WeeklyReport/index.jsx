@@ -1,15 +1,19 @@
-import React, {useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useState, useCallback} from 'react'
 import {useQuery} from '@tanstack/react-query'
 import moment from 'moment'
 import {Card, Table, Form, Button, DatePicker} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
-import {getProjectClients, getProjectStatus} from 'services/projects'
+import {
+  getAllProjects,
+  getProjectClients,
+  getProjectStatus,
+} from 'services/projects'
 import {useNavigate} from 'react-router-dom'
 import {notification} from 'helpers/notification'
 import {getLogTypes, getWeeklyReport} from 'services/timeLogs'
 import Select from 'components/Elements/Select'
 import {WEEKLY_REPORT_COLUMNS} from 'constants/weeklyReport'
-import {roundedToFixed} from 'helpers/utils'
+import {debounce, roundedToFixed} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
@@ -41,6 +45,8 @@ function WeeklyReport() {
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 50})
   const [projectStatus, setProjectStatus] = useState(weeklySession?.statusId)
+  const [projectArray, setProjectArray] = useState([])
+  const [project, setProject] = useState('')
   const [logType, setLogType] = useState(weeklySession?.typeId)
   const [projectClient, setprojectClient] = useState(weeklySession?.clientId)
   const [date, setDate] = useState(
@@ -52,6 +58,7 @@ function WeeklyReport() {
   const {innerWidth} = useWindowsSize()
 
   const navigate = useNavigate()
+  console.log({project, projectClient})
 
   const {data: logTypesData} = useQuery(['logTypes'], getLogTypes)
   const {data: projectStatusData} = useQuery(
@@ -63,7 +70,7 @@ function WeeklyReport() {
     getProjectClients
   )
   const {data, isLoading, isError, isFetching} = useQuery(
-    ['projects', logType, projectStatus, projectClient, date],
+    ['projects', logType, projectStatus, projectClient, date, project],
     () =>
       getWeeklyReport({
         ...page,
@@ -72,9 +79,23 @@ function WeeklyReport() {
         client: projectClient,
         fromDate: moment.utc(date[0]).format(),
         toDate: moment.utc(date[1]).format(),
+        project: project,
       }),
     {keepPreviousData: true}
   )
+
+  const handleSearch = async (projectName) => {
+    if (!projectName) {
+      setProjectArray([])
+      return
+    } else {
+      const projects = await getAllProjects({project: projectName})
+      setProjectArray(projects?.data?.data?.data)
+    }
+    //else fetch projects from api
+  }
+
+  const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
   useEffect(() => {
     if (isError) {
@@ -101,6 +122,13 @@ function WeeklyReport() {
     )
     setLogType(typeId)
   }
+  const handleProjectNameChange = (projectId) => {
+    setProject(projectId)
+    sessionStorage.setItem(
+      'weekly-session',
+      JSON.stringify({...weeklySession, projectId})
+    )
+  }
 
   const handleProjectStatusChange = (statusId) => {
     sessionStorage.setItem(
@@ -123,6 +151,7 @@ function WeeklyReport() {
     setLogType(undefined)
     setProjectStatus(undefined)
     setprojectClient(undefined)
+    setProject('')
     sessionStorage.removeItem('weekly-session')
   }
 
@@ -163,6 +192,20 @@ function WeeklyReport() {
                   onChange={handleChangeDate}
                   value={date}
                   disabledDate={disabledAfterToday}
+                />
+              </FormItem>
+              <FormItem className="direct-form-item" name="project">
+                <Select
+                  showSearchIcon={true}
+                  value={project}
+                  onChange={handleProjectNameChange}
+                  handleSearch={optimizedFn}
+                  placeholder="Search Project"
+                  options={(projectArray || [])?.map((project) => ({
+                    id: project._id,
+                    value: project.name,
+                  }))}
+                  inputSelect
                 />
               </FormItem>
               <FormItem className="direct-form-item">
