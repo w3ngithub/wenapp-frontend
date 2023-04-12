@@ -130,17 +130,18 @@ export function getProfile(userId) {
         })
       )
 
-      localStorage.setItem(
-        LOCALSTORAGE_USER,
-        JSON.stringify(decryptedData?.data[0]?._id)
-      )
+      decryptedData?.data[0]?._id &&
+        localStorage.setItem(
+          LOCALSTORAGE_USER,
+          JSON.stringify(decryptedData?.data[0]?._id)
+        )
 
       dispatch({type: PROFILE_LOADING_SUCCESS})
     } catch (error) {
       dispatch({type: PROFILE_LOADING_FAIL})
       const admin = JSON.parse(localStorage.getItem('admin')) || null
 
-      localStorage.setItem('user_id', JSON.stringify(admin))
+      admin && localStorage.setItem(LOCALSTORAGE_USER, JSON.stringify(admin))
       localStorage.removeItem('admin')
     } finally {
       dispatch(switchedUser())
