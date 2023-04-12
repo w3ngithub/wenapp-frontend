@@ -37,7 +37,7 @@ function TmsAdminAddAttendanceForm({
   const [PUnchform] = Form.useForm()
   const queryClient = useQueryClient()
   const {innerWidth} = useWindowsSize()
-  const [isSame, setIsSame] = useState(false)
+  // const [isSame, setIsSame] = useState(false)
 
   const addAttendances: any = useMutation(
     (payload: any) => addUserAttendance(payload.id, payload.payload),
@@ -83,9 +83,9 @@ function TmsAdminAddAttendanceForm({
 
     const isSameTime = punchInTime === punchOutTime
 
-    if (isSameTime) {
-      setIsSame(true)
-    }
+    // if (isSameTime) {
+    //   setIsSame(true)
+    // }
     if (!values?.isLateArrival) {
       delete values.isLateArrival
     }
@@ -98,7 +98,7 @@ function TmsAdminAddAttendanceForm({
       punchInLocation: await getLocation(),
     }
 
-    !isSameTime && addAttendances.mutate({id: values.user, payload})
+    addAttendances.mutate({id: values.user, payload})
   }
 
   const closeModel = () => {
@@ -190,8 +190,33 @@ function TmsAdminAddAttendanceForm({
               <div className="gx-d-flex" style={{gap: 20}}>
                 <Form.Item
                   name="punchInTime"
+                  // rules={[
+                  //   {required: true, message: 'Punch In Time is required.'},
+                  // ]}
                   rules={[
-                    {required: true, message: 'Punch In Time is required.'},
+                    ({getFieldValue}) => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject('Required!')
+                        }
+                        if (value && !PUnchform.getFieldValue('punchOutTime')) {
+                          return Promise.resolve()
+                        }
+
+                        if (
+                          value.isBefore(
+                            PUnchform.getFieldValue('punchOutTime')
+                          )
+                        ) {
+                          return Promise.resolve()
+                        }
+                        return Promise.reject(
+                          new Error(
+                            'Punch In Time should be before Punch Out Time'
+                          )
+                        )
+                      },
+                    }),
                   ]}
                   hasFeedback
                 >
@@ -211,7 +236,29 @@ function TmsAdminAddAttendanceForm({
             </Col>
             <Col span={24} sm={12}>
               <div className="gx-d-flex" style={{gap: 20}}>
-                <Form.Item name="punchOutTime" hasFeedback>
+                <Form.Item
+                  name="punchOutTime"
+                  rules={[
+                    ({getFieldValue}) => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject(new Error('Required!'))
+                        }
+                        if (
+                          value.isAfter(PUnchform.getFieldValue('punchInTime'))
+                        ) {
+                          return Promise.resolve()
+                        }
+                        return Promise.reject(
+                          new Error(
+                            'Punch Out Time should be after Punch In Time'
+                          )
+                        )
+                      },
+                    }),
+                  ]}
+                  hasFeedback
+                >
                   <TimePicker
                     use12Hours
                     format="h:mm:ss A"
@@ -227,11 +274,6 @@ function TmsAdminAddAttendanceForm({
               </Form.Item>
             </Col>
           </Row>
-          {isSame && (
-            <p className="suggestion-text">
-              Punch In Time and Punch Out Time cannot be same.
-            </p>
-          )}
         </Form>
       </Spin>
     </Modal>
