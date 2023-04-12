@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {
   Button,
   Col,
@@ -37,7 +37,6 @@ function TmsAdminAddAttendanceForm({
   const [PUnchform] = Form.useForm()
   const queryClient = useQueryClient()
   const {innerWidth} = useWindowsSize()
-  // const [isSame, setIsSame] = useState(false)
 
   const addAttendances: any = useMutation(
     (payload: any) => addUserAttendance(payload.id, payload.payload),
