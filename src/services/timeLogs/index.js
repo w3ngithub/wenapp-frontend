@@ -192,10 +192,11 @@ const getWeeklyReport = async ({
   logType = '',
   projectStatus = '',
   client = '',
+  project = '',
 }) => {
   try {
     let response = await API.post(
-      `${Apis.TimeLogs}/weeklyreport/?fromDate=${fromDate}&toDate=${toDate}&logType=${logType}&projectStatus=${projectStatus}&client=${client}`
+      `${Apis.TimeLogs}/weeklyreport/?fromDate=${fromDate}&toDate=${toDate}&logType=${logType}&projectStatus=${projectStatus}&client=${client}&project=${project}`
     )
     return getAPIResponse({
       ...response,
