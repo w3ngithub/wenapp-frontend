@@ -528,3 +528,19 @@ export const persistSession = (sessionName, currentSession, name, value) => {
     JSON.stringify({...currentSession, [name]: value})
   )
 }
+
+export const timeToMilisecond = (date) => {
+  const dateArr = date.split(':')
+  const milisecond =
+    dateArr[0] * 60 * 60 * 1000 + dateArr[1] * 60 * 1000 + dateArr[2] * 1000
+  return milisecond
+}
+
+export const subtractHourTime = (officeUTC, punchUTC) => {
+  const officeTime = officeUTC.split('T')[1].replace('Z', '')
+  const punchInTime = punchUTC.split('T')[1].split('.')[0]
+  const lateTime = convertMsToHM(
+    timeToMilisecond(officeTime) - timeToMilisecond(punchInTime)
+  )
+  return lateTime
+}
