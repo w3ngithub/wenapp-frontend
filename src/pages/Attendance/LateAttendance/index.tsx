@@ -21,6 +21,7 @@ import {
   handleResponse,
   MuiFormatDate,
   sortFromDate,
+  subtractHourTime,
 } from 'helpers/utils'
 import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
@@ -284,6 +285,11 @@ function LateAttendance({userRole}: {userRole: any}) {
         key: 'officeHour',
       },
       {
+        title: 'Late By',
+        dataIndex: 'lateBy',
+        key: 'lateBy',
+      },
+      {
         title: 'Action',
         key: 'action',
         render: (text: any, record: any) => {
@@ -308,6 +314,7 @@ function LateAttendance({userRole}: {userRole: any}) {
       officeHour: att?.punchOutTime
         ? dateDifference(att?.punchOutTime, att?.punchInTime)
         : '',
+      lateBy: subtractHourTime(att?.officeTime?.utcDate, att?.punchInTime),
     }))
 
     return <Table columns={columns} dataSource={data} pagination={false} />
