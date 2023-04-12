@@ -279,9 +279,17 @@ function UserDetailForm({
               {
                 required: true,
                 validator: async (rule, value) => {
+                  let startTime = `${value.format('HH:mm:ss ')}`
+                  let endTime = `${form
+                    .getFieldValue('officeEndTime')
+                    .format('HH:mm:ss ')}`
                   try {
                     if (!value) {
                       throw new Error('Office Start Time is required.')
+                    } else if (endTime <= startTime) {
+                      throw new Error(
+                        'Office start time shoule be before office end time'
+                      )
                     }
                   } catch (err) {
                     scrollForm(form, 'officeTime')
@@ -307,9 +315,17 @@ function UserDetailForm({
               {
                 required: true,
                 validator: async (rule, value) => {
+                  let endTime = `${value.format('HH:mm:ss ')}`
+                  let startTime = `${form
+                    .getFieldValue('officeTime')
+                    .format('HH:mm:ss ')}`
                   try {
                     if (!value) {
                       throw new Error('Office End Time is required.')
+                    } else if (endTime <= startTime) {
+                      throw new Error(
+                        'Office end time should be after office start time.'
+                      )
                     }
                   } catch (err) {
                     scrollForm(form, 'officeEndTime')
