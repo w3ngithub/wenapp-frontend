@@ -310,7 +310,7 @@ function LateAttendance({userRole}: {userRole: any}) {
       punchInTime: moment(att?.punchInTime).format('LTS'),
       punchOutTime: att?.punchOutTime
         ? moment(att?.punchOutTime).format('LTS')
-        : '',
+        : 'N/A',
       officeHour: att?.punchOutTime
         ? dateDifference(att?.punchOutTime, att?.punchInTime)
         : '',

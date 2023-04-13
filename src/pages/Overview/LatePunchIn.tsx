@@ -41,7 +41,9 @@ function LatePunchedIn({latePunchInSection}: {latePunchInSection: any}) {
         key: att?._id?.userId,
         name: att?._id?.user,
         checkIn: moment(att?.data?.[0]?.punchInTime).format('LTS'),
-        checkOut: moment(att?.data?.[0]?.punchOutTime).format('LTS'),
+        checkOut: att?.data?.[0]?.punchOutTime
+          ? moment(att?.data?.[0]?.punchOutTime).format('LTS')
+          : 'N/A',
         lateBy,
       }
     })
