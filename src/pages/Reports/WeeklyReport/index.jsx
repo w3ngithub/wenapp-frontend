@@ -146,7 +146,7 @@ function WeeklyReport() {
     setLogType(undefined)
     setProjectStatus(undefined)
     setprojectClient(undefined)
-    setProject('')
+    setProject(undefined)
     sessionStorage.removeItem('weekly-session')
   }
 
