@@ -5,12 +5,7 @@ import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import {Spin} from 'antd'
 import {getFiscalYearLeaves} from 'services/leaves'
-import {
-  FIRST_HALF,
-  LATE_ARRIVAL,
-  LEAVES_TYPES,
-  SECOND_HALF,
-} from 'constants/Leaves'
+import {FIRST_HALF, LATE_ARRIVAL, SECOND_HALF} from 'constants/Leaves'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
 
 const localizer = momentLocalizer(moment)
@@ -32,16 +27,7 @@ const LeavesCalendar = () => {
         let allLeaves: any[] = []
 
         res?.data?.data?.data.forEach((leave: any) => {
-          // const isLeavePaternity =
-          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Paternity
-          // const isLeaveMaternity =
-          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Maternity
-          // const isLeavePTO =
-          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.PTO
-          // const isLeaveBereavement =
-          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Bereavement
-
-          if (leave?._id?.isSpecial[0]) {
+          if (leave?._id?.isSpecial?.[0]) {
             allLeaves.push({
               ...leave?._id,
               leaveDates: [...leave?.leaveDates],
@@ -92,15 +78,7 @@ const LeavesCalendar = () => {
         return {hide: true}
       }
 
-      if (
-        // [
-        //   LEAVES_TYPES.Paternity,
-        //   LEAVES_TYPES.Maternity,
-        //   LEAVES_TYPES.PTO,
-        //   LEAVES_TYPES.Bereavement,
-        // ].includes(leaveType[0]?.toLowerCase())
-        isSpecial[0]
-      )
+      if (isSpecial?.[0])
         //for long leaves
         return {
           title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,

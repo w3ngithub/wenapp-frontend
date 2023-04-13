@@ -2,11 +2,10 @@ import React from 'react'
 import Widget from 'components/Elements/Widget/index'
 import {connect} from 'react-redux'
 import {Col, Row} from 'antd'
-import useWindowsSize from 'hooks/useWindowsSize'
 import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const InfoCard = (props) => {
-  const {icon, title, cardColor, YearlyLeaveExceptCasualandSick, style} = props
+  const {title, cardColor, YearlyLeaveExceptCasualandSick, style} = props
   let {iconColor} = props
   // if (props.themeType === THEME_TYPE_DARK) {
   iconColor = 'white'

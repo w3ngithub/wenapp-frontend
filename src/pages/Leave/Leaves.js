@@ -4,7 +4,6 @@ import Select from 'components/Elements/Select'
 import {
   FIRST_HALF,
   LEAVES_COLUMN,
-  PAID_TIME_OFF,
   SECOND_HALF,
   STATUS_TYPES,
 } from 'constants/Leaves'
@@ -19,7 +18,6 @@ import {
 import {
   capitalizeInput,
   changeDate,
-  filterOptions,
   filterSpecificUser,
   getIsAdmin,
   handleResponse,
@@ -29,17 +27,14 @@ import {
 import Notification from 'components/Elements/Notification'
 import {getAllUsers} from 'services/users/userDetails'
 import moment from 'moment'
-import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import CancelLeaveModal from 'components/Modules/CancelLeaveModal'
 import {getLeaveTypes} from 'services/leaves'
-import {disabledDate} from 'util/antDatePickerDisabled'
 import {sendEmailforLeave} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
-import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
-import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
+import {customLeaves} from 'constants/LeaveDuration'
 import {PAGE25} from 'constants/Common'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
 
@@ -100,7 +95,6 @@ function Leaves({
   const [leaveId, setLeaveId] = useState(undefined)
   const [leaveTitle, setLeaveTitle] = useState('')
   const [leaveInterval, setLeaveInterval] = useState(undefined)
-  const {innerWidth} = useWindowsSize()
   const [leaveFilter, setLeaveFilter] = useState(undefined)
 
   const [form] = Form.useForm()
@@ -339,10 +333,6 @@ function Leaves({
     setRangeDate(value)
   }
   const data = formattedLeaves(leavesQuery?.data?.data?.data?.data)
-  const allUsers = usersQuery?.data?.data?.data?.data?.map((user) => ({
-    id: user._id,
-    value: user.name,
-  }))
 
   return (
     <div>
