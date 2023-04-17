@@ -37,7 +37,7 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {DASHBOARD_ICON_ACCESS} from 'constants/RoleAccess'
-import {FIRST_HALF, LEAVES_TYPES, SECOND_HALF} from 'constants/Leaves'
+import {FIRST_HALF, SECOND_HALF} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
@@ -444,9 +444,9 @@ const Dashboard = () => {
       date: x?.leaveDates,
       startDate: x?.date,
       halfDay: x?.halfDay,
-      leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
-      id: x?._id[0],
-      isSpecial: x?.isSpecial[0],
+      leaveType: x?.leaveType?.[0].split(' ').slice(0, 2).join(' '),
+      id: x?._id?.[0],
+      isSpecial: x?.isSpecial?.[0],
     }))
     ?.sort(compareString)
 
