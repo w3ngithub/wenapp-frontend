@@ -890,6 +890,11 @@ function Apply({user}) {
                             </div>
                           )
                         }}
+                        renderExtraFooter={() => (
+                          <small style={{color: 'red', fontSize: '12px'}}>
+                            *Disabled dates are holidays"
+                          </small>
+                        )}
                       />
                     </div>
                   </FormItem>
