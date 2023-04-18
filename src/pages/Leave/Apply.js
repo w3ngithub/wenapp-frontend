@@ -25,7 +25,7 @@ import {
   removeDash,
   specifyParticularHalf,
 } from 'helpers/utils'
-import React, {useState} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import {Calendar, DateObject} from 'react-multi-date-picker'
 import {
   createLeave,
@@ -72,6 +72,7 @@ function Apply({user}) {
   const [yearEndDate, setYearEndDate] = useState(undefined)
   const [openModal, setOpenModal] = useState(false)
   const [newDateArr, setNewDateArr] = useState([])
+  const [datepickerOpen, setDatepickerOpen] = useState(false)
   const [files, setFiles] = useState([])
   const [, setRemovedFile] = useState(null)
   const [openCasualLeaveExceedModal, setOpenCasualLeaveExceedModal] =
@@ -93,6 +94,20 @@ function Apply({user}) {
     `${MuiFormatDate(firstDay)}T00:00:00Z`
   )
   const [toDate, setToDate] = useState(`${MuiFormatDate(lastDay)}T00:00:00Z`)
+
+  const datePIckerRef = useRef()
+
+  const handleOutsideClick = (event) => {
+    if (datePIckerRef && !datePIckerRef.current.contains(event.target)) {
+      setDatepickerOpen(false)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick)
+
+    return () => document.removeEventListener('mousedown', handleOutsideClick)
+  }, [])
 
   const monthChangeHandler = (date) => {
     const newMonthDate = new Date(date)
@@ -599,6 +614,10 @@ function Apply({user}) {
     }
   }
 
+  function handleOpenChange(open) {
+    setDatepickerOpen(true)
+  }
+
   return (
     <Spin spinning={leaveMutation.isLoading}>
       <Modal
@@ -829,42 +848,55 @@ function Apply({user}) {
                       },
                     ]}
                   >
-                    <DatePicker
-                      className="gx-mb-3 "
-                      style={{width: '100%'}}
-                      disabledDate={disableSpecialHoliday}
-                      onPanelChange={(value, mode) => {
-                        const startOfMonth = moment(value).startOf('month')
-                        const endOfMonth = moment(value).endOf('month')
+                    <div ref={datePIckerRef}>
+                      <DatePicker
+                        className="gx-mb-3 "
+                        style={{width: '100%'}}
+                        open={datepickerOpen}
+                        disabledDate={disableSpecialHoliday}
+                        onOpenChange={handleOpenChange}
+                        onPanelChange={(value, mode) => {
+                          const startOfMonth = moment(value).startOf('month')
+                          const endOfMonth = moment(value).endOf('month')
 
-                        setFromDate(startOfMonth.utc().format())
-                        setToDate(endOfMonth.utc().format())
-                      }}
-                      onChange={(date) => {
-                        const leaveTypeId = form?.getFieldValue('leaveType')
+                          setFromDate(startOfMonth.utc().format())
+                          setToDate(endOfMonth.utc().format())
+                        }}
+                        onChange={(date) => {
+                          setDatepickerOpen(true)
+                          const leaveTypeId = form?.getFieldValue('leaveType')
 
-                        const leaveType = leaveTypeQuery?.data?.find(
-                          (type) => type?.id === leaveTypeId
-                        )
-                        let Initdates = momentRangeofDates(
-                          date,
-                          leaveType?.leaveDays
-                        )
+                          const leaveType = leaveTypeQuery?.data?.find(
+                            (type) => type?.id === leaveTypeId
+                          )
+                          let Initdates = momentRangeofDates(
+                            date,
+                            leaveType?.leaveDays
+                          )
 
-                        setDatePickerValue(Initdates)
-                      }}
-                      dateRender={(current) => {
-                        let style = {}
-                        if (datePickerValue.some((d) => d.isSame(current))) {
-                          style = {color: '#fff', background: '#038fde'}
-                        }
-                        return (
-                          <div className="ant-picker-cell-inner" style={style}>
-                            {current.date()}
-                          </div>
-                        )
-                      }}
-                    />
+                          setDatePickerValue(Initdates)
+                        }}
+                        dateRender={(current) => {
+                          let style = {}
+                          if (datePickerValue.some((d) => d.isSame(current))) {
+                            style = {color: '#fff', background: '#038fde'}
+                          }
+                          return (
+                            <div
+                              className="ant-picker-cell-inner"
+                              style={style}
+                            >
+                              {current.date()}
+                            </div>
+                          )
+                        }}
+                        renderExtraFooter={() => (
+                          <small style={{color: 'red', fontSize: '12px'}}>
+                            *Disabled dates are holidays"
+                          </small>
+                        )}
+                      />
+                    </div>
                   </FormItem>
                 </Col>
               )}
