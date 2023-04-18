@@ -52,13 +52,13 @@ import moment from 'moment'
 import {ExclamationCircleFilled} from '@ant-design/icons'
 import DragAndDropFile from 'components/Modules/DragAndDropFile'
 import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
-import {storage} from 'firebase'
 import en_GB from 'antd/lib/locale-provider/en_GB'
+import {storage} from 'firebase'
 const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
 
-function Apply({user}) {
+function Apply({user, YearlyLeaveExceptCasualandSick}) {
   const [form] = Form.useForm()
 
   const queryClient = useQueryClient()
@@ -439,6 +439,17 @@ function Apply({user}) {
 
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       if (leaveType?.isSpecial) {
+        const specialLeavesApproved = YearlyLeaveExceptCasualandSick?.map(
+          (item) => item?.[0]
+        )
+        if (specialLeavesApproved?.includes(leaveType?.name)) {
+          return notification({
+            type: 'error',
+            message: `Sorry,You have already taken ${
+              leaveType?.name?.split(' ')?.[0]
+            } leave in this fiscal year.`,
+          })
+        }
         LeaveDaysUTC = getRangeofDates(
           values?.leaveDatesPeriod?._d,
           leaveType?.leaveDays

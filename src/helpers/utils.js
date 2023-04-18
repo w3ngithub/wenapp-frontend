@@ -370,12 +370,15 @@ export const filterHalfDayLeaves = (leaves) => {
   const approvedLeaves = leaves.filter(
     (leave) => leave.leaveStatus === 'approved'
   )
+  //i.e full day leave applied
   if (approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay === '') {
     return true
   }
-  if (approvedLeaves.length === 2) {
+  // 2 half days applied or more than 2 leaves on the same day  due to special leaves inclusion
+  if (approvedLeaves.length >= 2) {
     return true
   }
+
   return false
 }
 
