@@ -81,6 +81,7 @@ function Leaves({
   isExportDisabled,
   userRole,
   permissions,
+  isCancelLoading,
 }) {
   const queryClient = useQueryClient()
 
@@ -500,7 +501,11 @@ function Leaves({
           hideOnSinglePage: leavesQuery?.data?.data?.data?.count ? false : true,
           onChange: handlePageChange,
         }}
-        loading={leavesQuery.isFetching || leaveApproveMutation.isLoading}
+        loading={
+          leavesQuery.isFetching ||
+          leaveApproveMutation.isLoading ||
+          isCancelLoading
+        }
       />
     </div>
   )
