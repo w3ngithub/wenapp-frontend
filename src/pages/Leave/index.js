@@ -410,6 +410,7 @@ function Leave() {
                 permissions={leavePermissions}
                 handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
                 reApplyLeave={reApplyLeave}
+                isCancelLoading={leaveCancelMutation.isLoading}
               />
             </TabPane>
           )}
@@ -421,6 +422,7 @@ function Leave() {
                 selectedDate={location?.state?.date}
                 selectedRows={selectedRows}
                 handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
+                isCancelLoading={leaveCancelMutation.isLoading}
                 rowSelection={{
                   onChange: handleRowSelect,
                   selectedRowKeys: selectedRows,

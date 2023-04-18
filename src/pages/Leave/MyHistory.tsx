@@ -54,6 +54,7 @@ function MyHistory({
   isLoading,
   permissions,
   reApplyLeave,
+  isCancelLoading,
 }: {
   userId: string
   handleCancelLeave: (leave: any) => void
@@ -61,6 +62,7 @@ function MyHistory({
   isLoading: boolean
   permissions: any
   reApplyLeave: (leave: any) => void
+  isCancelLoading: boolean
 }) {
   const [form] = Form.useForm()
   const location: any = useLocation()
@@ -278,7 +280,7 @@ function MyHistory({
             : true,
           onChange: handlePageChange,
         }}
-        loading={userLeavesQuery.isFetching || isLoading}
+        loading={userLeavesQuery.isFetching || isLoading || isCancelLoading}
       />
     </div>
   )

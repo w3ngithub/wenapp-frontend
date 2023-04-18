@@ -39,7 +39,6 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {customLeaves, leaveInterval} from 'constants/LeaveDuration'
-import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 import {PAGE25} from 'constants/Common'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
 
@@ -86,6 +85,7 @@ function Leaves({
   isExportDisabled,
   userRole,
   permissions,
+  isCancelLoading,
 }) {
   const queryClient = useQueryClient()
 
@@ -510,7 +510,11 @@ function Leaves({
           hideOnSinglePage: leavesQuery?.data?.data?.data?.count ? false : true,
           onChange: handlePageChange,
         }}
-        loading={leavesQuery.isFetching || leaveApproveMutation.isLoading}
+        loading={
+          leavesQuery.isFetching ||
+          leaveApproveMutation.isLoading ||
+          isCancelLoading
+        }
       />
     </div>
   )
