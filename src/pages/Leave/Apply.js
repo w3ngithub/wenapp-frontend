@@ -10,7 +10,6 @@ import {
   Form,
   DatePicker,
   Modal,
-  ConfigProvider,
 } from 'antd'
 import {
   compare,
@@ -53,12 +52,11 @@ import {ExclamationCircleFilled} from '@ant-design/icons'
 import DragAndDropFile from 'components/Modules/DragAndDropFile'
 import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import {storage} from 'firebase'
-import en_GB from 'antd/lib/locale-provider/en_GB'
 const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
 
-function Apply({user}) {
+function Apply({user, YearlyLeaveExceptCasualandSick}) {
   const [form] = Form.useForm()
 
   const queryClient = useQueryClient()
@@ -439,6 +437,17 @@ function Apply({user}) {
 
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       if (leaveType?.isSpecial) {
+        const specialLeavesApproved = YearlyLeaveExceptCasualandSick?.map(
+          (item) => item?.[0]
+        )
+        if (specialLeavesApproved?.includes(leaveType?.name)) {
+          return notification({
+            type: 'error',
+            message: `Sorry,You have already taken ${
+              leaveType?.name?.split(' ')?.[0]
+            } leave in this fiscal year.`,
+          })
+        }
         LeaveDaysUTC = getRangeofDates(
           values?.leaveDatesPeriod?._d,
           leaveType?.leaveDays
@@ -839,7 +848,7 @@ function Apply({user}) {
                     paddingRight: innerWidth < 981 ? '15px' : 0,
                   }}
                 >
-                  <ConfigProvider locale={en_GB}>
+                  <div ref={datePIckerRef}>
                     <FormItem
                       style={{marginBottom: '0.5px'}}
                       label="Leave Starting Date"
@@ -851,59 +860,55 @@ function Apply({user}) {
                         },
                       ]}
                     >
-                      <div ref={datePIckerRef}>
-                        <DatePicker
-                          className="gx-mb-3 "
-                          style={{width: '100%'}}
-                          open={datepickerOpen}
-                          disabledDate={disableSpecialHoliday}
-                          onOpenChange={handleOpenChange}
-                          onPanelChange={(value, mode) => {
-                            const startOfMonth = moment(value).startOf('month')
-                            const endOfMonth = moment(value).endOf('month')
+                      <DatePicker
+                        className="gx-mb-3 "
+                        style={{width: '100%'}}
+                        open={datepickerOpen}
+                        disabledDate={disableSpecialHoliday}
+                        onOpenChange={handleOpenChange}
+                        onPanelChange={(value, mode) => {
+                          const startOfMonth = moment(value).startOf('month')
+                          const endOfMonth = moment(value).endOf('month')
 
-                            setFromDate(startOfMonth.utc().format())
-                            setToDate(endOfMonth.utc().format())
-                          }}
-                          onChange={(date) => {
-                            setDatepickerOpen(true)
-                            const leaveTypeId = form?.getFieldValue('leaveType')
+                          setFromDate(startOfMonth.utc().format())
+                          setToDate(endOfMonth.utc().format())
+                        }}
+                        onChange={(date) => {
+                          setDatepickerOpen(true)
+                          const leaveTypeId = form?.getFieldValue('leaveType')
 
-                            const leaveType = leaveTypeQuery?.data?.find(
-                              (type) => type?.id === leaveTypeId
-                            )
-                            let Initdates = momentRangeofDates(
-                              date,
-                              leaveType?.leaveDays
-                            )
+                          const leaveType = leaveTypeQuery?.data?.find(
+                            (type) => type?.id === leaveTypeId
+                          )
+                          let Initdates = momentRangeofDates(
+                            date,
+                            leaveType?.leaveDays
+                          )
 
-                            setDatePickerValue(Initdates)
-                          }}
-                          dateRender={(current) => {
-                            let style = {}
-                            if (
-                              datePickerValue.some((d) => d.isSame(current))
-                            ) {
-                              style = {color: '#fff', background: '#038fde'}
-                            }
-                            return (
-                              <div
-                                className="ant-picker-cell-inner"
-                                style={style}
-                              >
-                                {current.date()}
-                              </div>
-                            )
-                          }}
-                          renderExtraFooter={() => (
-                            <small style={{color: 'red', fontSize: '12px'}}>
-                              *Disabled dates are holidays"
-                            </small>
-                          )}
-                        />
-                      </div>
+                          setDatePickerValue(Initdates)
+                        }}
+                        dateRender={(current) => {
+                          let style = {}
+                          if (datePickerValue.some((d) => d.isSame(current))) {
+                            style = {color: '#fff', background: '#038fde'}
+                          }
+                          return (
+                            <div
+                              className="ant-picker-cell-inner"
+                              style={style}
+                            >
+                              {current.date()}
+                            </div>
+                          )
+                        }}
+                        renderExtraFooter={() => (
+                          <small style={{color: 'red', fontSize: '12px'}}>
+                            *Disabled dates are holidays"
+                          </small>
+                        )}
+                      />
                     </FormItem>
-                  </ConfigProvider>
+                  </div>
                 </Col>
               )}
             </Row>
