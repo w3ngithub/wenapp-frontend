@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {
   Button,
   Modal,
@@ -124,6 +124,7 @@ function LeaveModal({
   const [calendarClicked, setCalendarClicked] = useState(false)
   const [files, setFiles] = useState<any>([])
   const [, setRemovedFile] = useState<any>(null)
+  const [datepickerOpen, setDatepickerOpen] = useState<boolean>(false)
   const [documentURL, setDocumentURL] = useState<any>(
     leaveData?.leaveDocument ? leaveData?.leaveDocument : ''
   )
@@ -336,6 +337,23 @@ function LeaveModal({
     setUser(user)
   }
 
+  const datePIckerRef = useRef<HTMLDivElement | null>(null)
+
+  const handleOutsideClick = (event: any) => {
+    if (
+      datePIckerRef.current &&
+      !datePIckerRef.current.contains(event.target)
+    ) {
+      setDatepickerOpen(false)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick)
+
+    return () => document.removeEventListener('mousedown', handleOutsideClick)
+  }, [])
+
   useEffect(() => {
     if (open) {
       if (isEditMode) {
@@ -508,6 +526,10 @@ function LeaveModal({
   const onDeleteClick = async (data: any) => {
     setIsDocumentDeleted(true)
     setDocumentURL('')
+  }
+
+  function handleOpenChange() {
+    setDatepickerOpen(true)
   }
   return (
     <Modal
@@ -868,60 +890,71 @@ function LeaveModal({
               (leaveType?.isSpecial ? (
                 <Col xs={24} sm={8}>
                   <ConfigProvider locale={en_GB}>
-                    <Form.Item
-                      style={{marginBottom: '0.5px'}}
-                      label="Leave Start Date"
-                      name="leaveDatesPeriod"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Leave Start Date is required.',
-                        },
-                      ]}
-                    >
-                      <DatePicker
-                        className="gx-mb-3 "
-                        style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
-                        disabled={readOnly}
-                        disabledDate={disableSpecialHoliday}
-                        onPanelChange={(value, mode) => {
-                          const startOfMonth = moment(value).startOf('month')
-                          const endOfMonth = moment(value).endOf('month')
+                    <div ref={datePIckerRef}>
+                      <Form.Item
+                        style={{marginBottom: '0.5px'}}
+                        label="Leave Start Date"
+                        name="leaveDatesPeriod"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Leave Start Date is required.',
+                          },
+                        ]}
+                      >
+                        <DatePicker
+                          className="gx-mb-3 "
+                          style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+                          open={datepickerOpen}
+                          disabled={readOnly}
+                          disabledDate={disableSpecialHoliday}
+                          onOpenChange={handleOpenChange}
+                          onPanelChange={(value, mode) => {
+                            const startOfMonth = moment(value).startOf('month')
+                            const endOfMonth = moment(value).endOf('month')
 
-                          setFromDate(startOfMonth.utc().format())
-                          setToDate(endOfMonth.utc().format())
-                        }}
-                        onChange={(date) => {
-                          const leaveTypeId = form?.getFieldValue('leaveType')
+                            setFromDate(startOfMonth.utc().format())
+                            setToDate(endOfMonth.utc().format())
+                          }}
+                          onChange={(date) => {
+                            const leaveTypeId = form?.getFieldValue('leaveType')
 
-                          const leaveType = leaveTypeQuery?.data?.find(
-                            (type) => type?.id === leaveTypeId
-                          )
-                          let Initdates: any = momentRangeofDates(
-                            date,
-                            leaveType?.leaveDays
-                          )
+                            const leaveType = leaveTypeQuery?.data?.find(
+                              (type) => type?.id === leaveTypeId
+                            )
+                            let Initdates: any = momentRangeofDates(
+                              date,
+                              leaveType?.leaveDays
+                            )
 
-                          setDatePickerValue(Initdates)
-                        }}
-                        dateRender={(current) => {
-                          let style = {}
-                          if (
-                            datePickerValue.some((d: any) => d.isSame(current))
-                          ) {
-                            style = {color: '#fff', background: '#038fde'}
-                          }
-                          return (
-                            <div
-                              className="ant-picker-cell-inner"
-                              style={style}
-                            >
-                              {current.date()}
-                            </div>
-                          )
-                        }}
-                      />
-                    </Form.Item>
+                            setDatePickerValue(Initdates)
+                          }}
+                          dateRender={(current) => {
+                            let style = {}
+                            if (
+                              datePickerValue.some((d: any) =>
+                                d.isSame(current)
+                              )
+                            ) {
+                              style = {color: '#fff', background: '#038fde'}
+                            }
+                            return (
+                              <div
+                                className="ant-picker-cell-inner"
+                                style={style}
+                              >
+                                {current.date()}
+                              </div>
+                            )
+                          }}
+                          renderExtraFooter={() => (
+                            <small style={{color: 'red', fontSize: '12px'}}>
+                              *Disabled dates are holidays"
+                            </small>
+                          )}
+                        />
+                      </Form.Item>
+                    </div>
                   </ConfigProvider>
                 </Col>
               ) : (

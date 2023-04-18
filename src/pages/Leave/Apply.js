@@ -840,18 +840,18 @@ function Apply({user}) {
                   }}
                 >
                   <ConfigProvider locale={en_GB}>
-                    <FormItem
-                      style={{marginBottom: '0.5px'}}
-                      label="Leave Starting Date"
-                      name="leaveDatesPeriod"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Leave Starting Date is required.',
-                        },
-                      ]}
-                    >
-                      <div ref={datePIckerRef}>
+                    <div ref={datePIckerRef}>
+                      <FormItem
+                        style={{marginBottom: '0.5px'}}
+                        label="Leave Starting Date"
+                        name="leaveDatesPeriod"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Leave Starting Date is required.',
+                          },
+                        ]}
+                      >
                         <DatePicker
                           className="gx-mb-3 "
                           style={{width: '100%'}}
@@ -901,8 +901,8 @@ function Apply({user}) {
                             </small>
                           )}
                         />
-                      </div>
-                    </FormItem>
+                      </FormItem>
+                    </div>
                   </ConfigProvider>
                 </Col>
               )}
