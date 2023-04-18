@@ -1,6 +1,5 @@
 import {Col, Row} from 'antd'
 import IconAndInfoCard from 'components/Modules/Metrics/IconAndInfoCard'
-import InfoCard from 'components/Modules/Metrics/InfoCard'
 import {AnnualApprovedLeaveCardClassName} from 'constants/DOM'
 import React from 'react'
 

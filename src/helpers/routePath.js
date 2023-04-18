@@ -26,6 +26,8 @@ export const PROJECT_LOG = `${PROJECTS}/:slug`
 export const USER_TIME_LOG = 'all-work-logs'
 export const OTHER_TIME_LOG = 'other-logtime'
 
+export const ALL_TIME_LOG = `${LOGTIME}/${USER_TIME_LOG}`
+
 // User
 export const PROFILE = 'profile'
 export const INVITE = 'users/signup/:token'

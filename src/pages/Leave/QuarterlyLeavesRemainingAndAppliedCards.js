@@ -1,5 +1,4 @@
 import {Col, Row} from 'antd'
-import IconAndNumber from 'components/Modules/Metrics/IconAndNumber'
 import IconAndInfoCard from 'components/Modules/Metrics/IconAndInfoCard'
 import React from 'react'
 import useWindowsSize from 'hooks/useWindowsSize'

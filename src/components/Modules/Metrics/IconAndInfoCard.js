@@ -3,7 +3,6 @@ import Widget from 'components/Elements/Widget/index'
 import {connect} from 'react-redux'
 import {Col, Row} from 'antd'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const IconAndInfoCard = (props) => {
   const {

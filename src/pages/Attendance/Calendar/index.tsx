@@ -10,7 +10,7 @@ import {monthlyState} from 'constants/Attendance'
 import {getLeavesOfAllUsers} from 'services/leaves'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {ATTENDANCE} from 'helpers/routePath'
-import {LEAVES_TYPES} from 'constants/Leaves'
+import {FIRST_HALF, LEAVES_TYPES} from 'constants/Leaves'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {getAllHolidays} from 'services/resources'
@@ -160,9 +160,17 @@ function AttendanceCalendar() {
     const eventStartsInNextMonth =
       thisMonthsEndDate < moment(leave?.leaveDates?.[0])
 
+    let extraInfo = ''
+
+    if (leave?.halfDay) {
+      extraInfo = leave?.halfDay === FIRST_HALF ? '1st' : `2nd`
+    }
+
     leaves.push({
       id: leave?._id,
-      title: leave?.leaveType?.name,
+      title: `${leave?.leaveType?.name}${
+        extraInfo ? '(' + extraInfo + ')' : ''
+      }`,
       start: eventStartsInPrevMonth
         ? new Date(thisMonthsStartDate?.format())
         : new Date(leave?.leaveDates?.[0]),

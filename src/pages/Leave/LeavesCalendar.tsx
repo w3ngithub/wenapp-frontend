@@ -5,12 +5,7 @@ import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import {Spin} from 'antd'
 import {getFiscalYearLeaves} from 'services/leaves'
-import {
-  FIRST_HALF,
-  LATE_ARRIVAL,
-  LEAVES_TYPES,
-  SECOND_HALF,
-} from 'constants/Leaves'
+import {FIRST_HALF, LATE_ARRIVAL, SECOND_HALF} from 'constants/Leaves'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
 
 const localizer = momentLocalizer(moment)
@@ -32,16 +27,7 @@ const LeavesCalendar = () => {
         let allLeaves: any[] = []
 
         res?.data?.data?.data.forEach((leave: any) => {
-          // const isLeavePaternity =
-          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Paternity
-          // const isLeaveMaternity =
-          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Maternity
-          // const isLeavePTO =
-          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.PTO
-          // const isLeaveBereavement =
-          //   leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Bereavement
-
-          if (leave?._id?.isSpecial[0]) {
+          if (leave?._id?.isSpecial?.[0]) {
             allLeaves.push({
               ...leave?._id,
               leaveDates: [...leave?.leaveDates],
@@ -60,7 +46,7 @@ const LeavesCalendar = () => {
   const leaveUsers = leavesQuery?.data?.map(
     ({user, leaveDates, leaveType, isSpecial, halfDay}: any) => {
       const nameSplitted = user[0].split(' ')
-      let extraInfo = ''
+      let extraInfo = leaveType?.[0]?.split(' ')?.[0]
       let lastName
       if (nameSplitted.length === 1) {
         lastName = ''
@@ -69,10 +55,10 @@ const LeavesCalendar = () => {
       }
 
       if (halfDay === FIRST_HALF) {
-        extraInfo = '1st'
+        extraInfo += ' 1st'
       }
       if (halfDay === SECOND_HALF) {
-        extraInfo = '2nd'
+        extraInfo += ' 2nd'
       }
       if (leaveType.includes(LATE_ARRIVAL)) {
         extraInfo = 'Late'
@@ -92,18 +78,10 @@ const LeavesCalendar = () => {
         return {hide: true}
       }
 
-      if (
-        // [
-        //   LEAVES_TYPES.Paternity,
-        //   LEAVES_TYPES.Maternity,
-        //   LEAVES_TYPES.PTO,
-        //   LEAVES_TYPES.Bereavement,
-        // ].includes(leaveType[0]?.toLowerCase())
-        isSpecial[0]
-      )
+      if (isSpecial?.[0])
         //for long leaves
         return {
-          title: shortName,
+          title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
           start: eventStartsInPrevMonthForLongEvents
             ? new Date(thisMonthsStartDate?.format())
             : new Date(leaveDates?.[0]),

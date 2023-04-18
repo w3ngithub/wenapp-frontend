@@ -1,15 +1,19 @@
-import React, {useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useState, useCallback} from 'react'
 import {useQuery} from '@tanstack/react-query'
 import moment from 'moment'
 import {Card, Table, Form, Button, DatePicker} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
-import {getProjectClients, getProjectStatus} from 'services/projects'
+import {
+  getAllProjects,
+  getProjectClients,
+  getProjectStatus,
+} from 'services/projects'
 import {useNavigate} from 'react-router-dom'
 import {notification} from 'helpers/notification'
 import {getLogTypes, getWeeklyReport} from 'services/timeLogs'
 import Select from 'components/Elements/Select'
 import {WEEKLY_REPORT_COLUMNS} from 'constants/weeklyReport'
-import {roundedToFixed} from 'helpers/utils'
+import {debounce, roundedToFixed, persistSession} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {PAGE50} from 'constants/Common'
@@ -36,13 +40,23 @@ const formattedWeeklyReports = (reports, clients) => {
 }
 
 function WeeklyReport() {
+  const weeklySession = JSON.parse(sessionStorage.getItem('weekly-session'))
+
   // init states
   const [sort, setSort] = useState({})
-  const [page, setPage] = useState(PAGE50)
-  const [projectStatus, setProjectStatus] = useState(undefined)
-  const [logType, setLogType] = useState(undefined)
-  const [projectClient, setprojectClient] = useState(undefined)
-  const [date, setDate] = useState(intialDate)
+  const [page, setPage] = useState({page: 1, limit: 50})
+  const [projectStatus, setProjectStatus] = useState(weeklySession?.statusId)
+  const [projectArray, setProjectArray] = useState(
+    weeklySession?.projectDetails ? [weeklySession?.projectDetails] : []
+  )
+  const [project, setProject] = useState(weeklySession?.projectDetails?._id)
+  const [logType, setLogType] = useState(weeklySession?.typeId)
+  const [projectClient, setprojectClient] = useState(weeklySession?.clientId)
+  const [date, setDate] = useState(
+    weeklySession?.date
+      ? [moment(weeklySession?.date[0]), moment(weeklySession?.date[1])]
+      : intialDate
+  )
   const [form] = Form.useForm()
   const {innerWidth} = useWindowsSize()
 
@@ -58,7 +72,7 @@ function WeeklyReport() {
     getProjectClients
   )
   const {data, isLoading, isError, isFetching} = useQuery(
-    ['projects', logType, projectStatus, projectClient, date],
+    ['projects', logType, projectStatus, projectClient, date, project],
     () =>
       getWeeklyReport({
         ...page,
@@ -67,9 +81,23 @@ function WeeklyReport() {
         client: projectClient,
         fromDate: moment.utc(date[0]).format(),
         toDate: moment.utc(date[1]).format(),
+        project: project,
       }),
     {keepPreviousData: true}
   )
+
+  const handleSearch = async (projectName) => {
+    if (!projectName) {
+      setProjectArray([])
+      return
+    } else {
+      const projects = await getAllProjects({project: projectName})
+      setProjectArray(projects?.data?.data?.data)
+    }
+    //else fetch projects from api
+  }
+
+  const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
   useEffect(() => {
     if (isError) {
@@ -90,14 +118,27 @@ function WeeklyReport() {
   }
 
   const handleLogTypeChange = (typeId) => {
+    persistSession('weekly-session', weeklySession, 'typeId', typeId)
     setLogType(typeId)
+  }
+  const handleProjectNameChange = (projectId) => {
+    const projectName = projectArray?.find(
+      (project) => project?._id === projectId
+    )?.name
+    persistSession('weekly-session', weeklySession, 'projectDetails', {
+      _id: projectId,
+      name: projectName,
+    })
+    setProject(projectId)
   }
 
   const handleProjectStatusChange = (statusId) => {
+    persistSession('weekly-session', weeklySession, 'statusId', statusId)
     setProjectStatus(statusId)
   }
 
   const handleClientChange = (clientId) => {
+    persistSession('weekly-session', weeklySession, 'clientId', clientId)
     setprojectClient(clientId)
   }
 
@@ -106,6 +147,8 @@ function WeeklyReport() {
     setLogType(undefined)
     setProjectStatus(undefined)
     setprojectClient(undefined)
+    setProject(undefined)
+    sessionStorage.removeItem('weekly-session')
   }
 
   const navigateToProjectLogs = (projectSlug, newPage = false) => {
@@ -117,6 +160,11 @@ function WeeklyReport() {
   }
 
   const handleChangeDate = (date) => {
+    persistSession('weekly-session', weeklySession, 'date', [
+      date[0],
+      date[1].endOf('day'),
+    ])
+
     setDate([date[0], date[1].endOf('day')])
   }
 
@@ -141,6 +189,20 @@ function WeeklyReport() {
                   onChange={handleChangeDate}
                   value={date}
                   disabledDate={disabledAfterToday}
+                />
+              </FormItem>
+              <FormItem className="direct-form-item">
+                <Select
+                  showSearchIcon={true}
+                  value={project}
+                  onChange={handleProjectNameChange}
+                  handleSearch={optimizedFn}
+                  placeholder="Search Project"
+                  options={(projectArray || [])?.map((project) => ({
+                    id: project._id,
+                    value: project.name,
+                  }))}
+                  inputSelect
                 />
               </FormItem>
               <FormItem className="direct-form-item">
