@@ -56,7 +56,7 @@ const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
 
-function Apply({user}) {
+function Apply({user, YearlyLeaveExceptCasualandSick}) {
   const [form] = Form.useForm()
 
   const queryClient = useQueryClient()
@@ -437,6 +437,17 @@ function Apply({user}) {
 
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
       if (leaveType?.isSpecial) {
+        const specialLeavesApproved = YearlyLeaveExceptCasualandSick?.map(
+          (item) => item?.[0]
+        )
+        if (specialLeavesApproved?.includes(leaveType?.name)) {
+          return notification({
+            type: 'error',
+            message: `Sorry,You have already taken ${
+              leaveType?.name?.split(' ')?.[0]
+            } leave in this fiscal year.`,
+          })
+        }
         LeaveDaysUTC = getRangeofDates(
           values?.leaveDatesPeriod?._d,
           leaveType?.leaveDays
@@ -837,18 +848,18 @@ function Apply({user}) {
                     paddingRight: innerWidth < 981 ? '15px' : 0,
                   }}
                 >
-                  <FormItem
-                    style={{marginBottom: '0.5px'}}
-                    label="Leave Starting Date"
-                    name="leaveDatesPeriod"
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Leave Starting Date is required.',
-                      },
-                    ]}
-                  >
-                    <div ref={datePIckerRef}>
+                  <div ref={datePIckerRef}>
+                    <FormItem
+                      style={{marginBottom: '0.5px'}}
+                      label="Leave Starting Date"
+                      name="leaveDatesPeriod"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Leave Starting Date is required.',
+                        },
+                      ]}
+                    >
                       <DatePicker
                         className="gx-mb-3 "
                         style={{width: '100%'}}
@@ -896,8 +907,8 @@ function Apply({user}) {
                           </small>
                         )}
                       />
-                    </div>
-                  </FormItem>
+                    </FormItem>
+                  </div>
                 </Col>
               )}
             </Row>
