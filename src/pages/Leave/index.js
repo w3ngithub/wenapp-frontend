@@ -400,6 +400,7 @@ function Leave() {
               <LeavesApply
                 user={loggedInUser?._id}
                 permissions={leavePermissions}
+                YearlyLeaveExceptCasualandSick={YearlyLeaveExceptCasualandSick}
               />
             </TabPane>
           )}
