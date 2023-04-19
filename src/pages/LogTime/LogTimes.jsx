@@ -95,7 +95,6 @@ function LogTimes() {
   )
   const addLogTimeMutation = useMutation((details) => addUserTimeLog(details), {
     onSuccess: (response) => {
-      console.log('response', response?.data?.data?.data)
       if (
         response?.data?.data?.data?.isOt &&
         response?.data?.data?.data?.otStatus === 'P'
