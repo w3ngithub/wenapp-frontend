@@ -48,7 +48,9 @@ function ProjectModal({
   const [endDate, setEndDate] = useState(undefined)
 
   const handleCancel = () => {
-    form.resetFields()
+    if (isEditMode) {
+      form.resetFields()
+    }
     onClose()
   }
 
@@ -271,12 +273,13 @@ function ProjectModal({
         })
       }
     }
-
     if (!toggle) {
       setMaintenance([])
       setStartDate(undefined)
       setEndDate(undefined)
-      form.resetFields()
+      if (isEditMode) {
+        form.resetFields()
+      }
     }
   }, [toggle])
 
@@ -306,6 +309,10 @@ function ProjectModal({
     } else setEndDate(e)
   }
 
+  const handleReset = () => {
+    form.resetFields()
+  }
+
   const disableDate = (current, date, time) => {
     if (time === 'start' && date) {
       return current && current > date
@@ -331,12 +338,15 @@ function ProjectModal({
         readOnly
           ? [
               <Button key="back" onClick={handleCancel}>
-                Cancel
+                Close
               </Button>,
             ]
           : [
-              <Button key="back" onClick={handleCancel}>
-                Cancel
+              <Button
+                key="back"
+                onClick={isEditMode ? handleCancel : handleReset}
+              >
+                {isEditMode ? 'Close' : 'Reset'}
               </Button>,
               <Button
                 key="submit"
