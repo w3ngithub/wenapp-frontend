@@ -41,7 +41,6 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import {getAllHolidays} from 'services/resources'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {disabledDate} from 'util/antDatePickerDisabled'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {emptyText} from 'constants/EmptySearchAntd'
@@ -445,9 +444,7 @@ function Apply({user, YearlyLeaveExceptCasualandSick}) {
         if (specialLeavesApproved?.includes(leaveType?.name)) {
           return notification({
             type: 'error',
-            message: `Sorry,You have already taken ${
-              leaveType?.name?.split(' ')?.[0]
-            } leave in this fiscal year.`,
+            message: `Sorry,You have already taken ${leaveType?.name} leave in this fiscal year.`,
           })
         }
         LeaveDaysUTC = getRangeofDates(
