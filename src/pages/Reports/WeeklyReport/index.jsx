@@ -83,7 +83,10 @@ function WeeklyReport() {
       setProjectArray([])
       return
     } else {
-      const projects = await getAllProjects({project: projectName})
+      const projects = await getAllProjects({
+        project: projectName,
+        sort: 'name',
+      })
       setProjectArray(projects?.data?.data?.data)
     }
     //else fetch projects from api

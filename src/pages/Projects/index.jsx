@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useCallback} from 'react'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import '@ant-design/compatible/assets/index.css'
 import {Card, Table, Input, Button, Form} from 'antd'
 import CircularProgress from 'components/Elements/CircularProgress'
 import {
   changeDate,
+  debounce,
   getIsAdmin,
   handleResponse,
   MuiFormatDate,
@@ -56,7 +57,9 @@ function ProjectsPage() {
   const [sort, setSort] = useState({})
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
-  const [project, setProject] = useState(searchParams?.get('search') || '')
+  const [projectId, setProjectId] = useState(
+    searchParams?.get('projectId') || undefined
+  )
   const [page, setPage] = useState({page: 1, limit: 25})
   const [projectStatus, setProjectStatus] = useState(
     searchParams.get('statusId') || undefined
@@ -76,14 +79,21 @@ function ProjectsPage() {
   const [designer, setDesigner] = useState(
     searchParams?.get('designerId') || undefined
   )
+  const [projectArray, setProjectArray] = useState(
+    searchParams?.get('projectId')
+      ? [
+          {
+            _id: searchParams?.get('projectId'),
+            name: searchParams?.get('projectName'),
+          },
+        ]
+      : []
+  )
   const [qa, setQa] = useState(searchParams?.get('qaId') || undefined)
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
   const [userRecord, setUserRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [projectName, setProjectName] = useState(
-    searchParams?.get('search') || ''
-  )
   const [positionTypeData, setPositionTypeData] = useState({})
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -129,10 +139,10 @@ function ProjectsPage() {
       projectStatus,
       projectTags,
       projectClient,
-      project,
       developer,
       designer,
       qa,
+      projectId,
     ],
     () =>
       getAllProjects({
@@ -141,10 +151,10 @@ function ProjectsPage() {
         projectStatus,
         projectTags,
         projectClient,
-        project,
         developer,
         designer,
         qa,
+        projectId,
         sort:
           sort.order === undefined || sort.column === undefined
             ? ''
@@ -405,9 +415,24 @@ function ProjectsPage() {
     setQa(qaId)
   }
 
+  const handleProjectNameChange = (projectId) => {
+    if (!projectId) {
+      searchParams.delete('projectId')
+      searchParams.delete('projectName')
+      settingQuery(searchParams)
+    } else {
+      const projectName = projectArray?.find(
+        (project) => project?._id === projectId
+      )?.name
+      searchParams.set('projectName', projectName)
+      searchParams.set('projectId', projectId)
+      settingQuery(searchParams)
+    }
+    setProjectId(projectId)
+  }
+
   const handleResetFilter = () => {
-    setProjectName('')
-    setProject('')
+    setProjectId(undefined)
     setProjectTags(undefined)
     setProjectType(undefined)
     setProjectStatus(undefined)
@@ -417,6 +442,21 @@ function ProjectsPage() {
     setQa(undefined)
     setSearchParams({})
   }
+
+  const handleSearch = async (projectName) => {
+    if (!projectName) {
+      setProjectArray([])
+      return
+    } else {
+      const projects = await getAllProjects({
+        project: projectName,
+        sort: 'name',
+      })
+      setProjectArray(projects?.data?.data?.data)
+    }
+  }
+
+  const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
   const confirmDeleteProject = (project) => {
     deleteProjectMutation.mutate(project._id)
@@ -458,25 +498,20 @@ function ProjectsPage() {
         <div className="components-table-demo-control-bar">
           <div className="gx-d-flex gx-flex-row">
             {' '}
-            <Search
-              placeholder="Search Projects"
-              onSearch={(value) => {
-                if (!value) {
-                  searchParams.delete('search')
-                  settingQuery(searchParams)
-                } else {
-                  searchParams.set('search', value)
-                  settingQuery(searchParams)
-                }
-                setPage((prev) => ({...prev, page: 1}))
-                setProject(value)
-              }}
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-              enterButton
-              allowClear
-              className="direct-form-item"
-            />
+            <FormItem className="search-project-item">
+              <Select
+                showSearchIcon={true}
+                value={projectId}
+                onChange={handleProjectNameChange}
+                handleSearch={optimizedFn}
+                placeholder="Search Project"
+                options={(projectArray || [])?.map((project) => ({
+                  id: project._id,
+                  value: project.name,
+                }))}
+                inputSelect
+              />
+            </FormItem>
             <AccessWrapper role={permission?.Projects?.createProjects}>
               <div
                 style={{

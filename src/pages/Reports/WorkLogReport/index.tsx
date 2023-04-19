@@ -80,7 +80,10 @@ function WorkLogReport() {
       setProjectData([])
       return
     } else {
-      const projects = await getAllProjects({project: projectName})
+      const projects = await getAllProjects({
+        project: projectName,
+        sort: 'name',
+      })
       setProjectData(projects?.data?.data?.data)
     }
   }
