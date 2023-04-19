@@ -2213,6 +2213,17 @@ body.dark-theme {
       color: rgba(0, 0, 0, 0.6);
     }
 
+    & .ant-picker-cell-disabled {
+      background-color: @dark-theme-secondary-color !important;
+    }
+    & .ant-picker-cell-disabled::before {
+      background-color: @dark-theme-secondary-color !important;
+    }
+
+    & .ant-picker-today-btn.ant-picker-today-btn-disabled {
+      color: @dark-theme-text-color;
+  }
+
     &-picker-clear {
       color: @dark-theme-text-color;
       background: none;
