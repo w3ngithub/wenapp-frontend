@@ -362,27 +362,25 @@ function ProjectsPage() {
 
   return (
     <div>
-      {openUserDetailModal && (
-        <ProjectModal
-          toggle={openUserDetailModal}
-          onClose={handleCloseModal}
-          onSubmit={handleUserDetailSubmit}
-          loading={
-            addProjectMutation?.isLoading || updateProjectMutation?.isLoading
-          }
-          types={projectTypesData}
-          statuses={projectStatusData}
-          client={projectClientsData}
-          developers={developers}
-          designers={designers}
-          tags={projectTagsData}
-          qas={QAs}
-          devops={devops}
-          initialValues={userRecord?.project}
-          readOnly={readOnly}
-          isEditMode={isEditMode}
-        />
-      )}
+      <ProjectModal
+        toggle={openUserDetailModal}
+        onClose={handleCloseModal}
+        onSubmit={handleUserDetailSubmit}
+        loading={
+          addProjectMutation?.isLoading || updateProjectMutation?.isLoading
+        }
+        types={projectTypesData}
+        statuses={projectStatusData}
+        client={projectClientsData}
+        developers={developers}
+        designers={designers}
+        tags={projectTagsData}
+        qas={QAs}
+        devops={devops}
+        initialValues={userRecord?.project}
+        readOnly={readOnly}
+        isEditMode={isEditMode}
+      />
 
       <Card title="Projects">
         <div className="components-table-demo-control-bar">
