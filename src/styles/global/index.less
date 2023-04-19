@@ -710,3 +710,13 @@
 .worklog .ant-table-tbody > tr > td {
   border-bottom: 2px solid #7d7777 !important;
 }
+
+.ant-picker-date-panel
+  .ant-picker-cell:not(.ant-picker-cell-in-view)
+  .ant-picker-cell-inner {
+  display: none;
+}
+
+.ant-picker-date-panel .ant-picker-cell:not(.ant-picker-cell-in-view) {
+  pointer-events: none;
+}
