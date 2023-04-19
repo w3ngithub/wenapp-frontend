@@ -5,6 +5,7 @@ import DragAndDropFile from 'components/Modules/DragAndDropFile'
 import {importUsers} from 'services/users/userDetails'
 import {csvFileToArray} from 'helpers/utils'
 import {notification} from 'helpers/notification'
+import {CANCEL_TEXT} from 'constants/Common'
 
 function ImportUsers({toggle, onClose, files, setFiles}) {
   const fileReader = new FileReader()
@@ -73,7 +74,7 @@ function ImportUsers({toggle, onClose, files, setFiles}) {
       mask={false}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

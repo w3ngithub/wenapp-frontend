@@ -11,6 +11,8 @@ import {
   Spin,
   Table,
 } from 'antd'
+
+import {CANCEL_TEXT} from 'constants/Common'
 import {notification} from 'helpers/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
@@ -105,7 +107,7 @@ const CommonModal = (props: modalType) => {
       mask={false}
       footer={[
         <Button key="back" onClick={onCancel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
           Submit

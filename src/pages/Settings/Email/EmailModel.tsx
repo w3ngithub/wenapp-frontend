@@ -6,6 +6,7 @@ import draftToHtml from 'draftjs-to-html'
 import htmlToDraft from 'html-to-draftjs'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
+import {CANCEL_TEXT} from 'constants/Common'
 
 interface modalInterface {
   isEditMode: boolean
@@ -83,7 +84,7 @@ function EmailModal({
       onCancel={onCancel}
       footer={[
         <Button key="back" onClick={onCancel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

@@ -1,4 +1,5 @@
 import {Modal, Button, Radio, Form, Spin} from 'antd'
+import {CANCEL_TEXT} from 'constants/Common'
 import React, {useEffect} from 'react'
 const FormItem = Form.Item
 
@@ -30,7 +31,7 @@ const LeaveCutModal = ({open, onSubmit, onClose, loading, coWorker}) => {
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
           Submit

@@ -1,6 +1,7 @@
 import {Button, Form, Input, Modal, Spin} from 'antd'
 import React, {useEffect, useState} from 'react'
 import ColorPicker from './ColorPicker'
+import {CANCEL_TEXT} from 'constants/Common'
 
 interface modalInterface {
   isEditMode: boolean
@@ -131,7 +132,7 @@ function CommonLogTypeModal({
             onCancel(setDuplicateValue, setHexCode)
           }}
         >
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"
