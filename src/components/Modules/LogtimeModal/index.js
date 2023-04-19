@@ -103,7 +103,11 @@ function LogtimeModal({
       return
     } else {
       setSearchValue(projectName)
-      const projects = await getAllProjects({project: projectName})
+      const projects = await getAllProjects({
+        project: projectName,
+        sort: 'ascend',
+        fields: 'name',
+      })
       setProjectArray(projects?.data?.data?.data)
     }
     //else fetch projects from api
