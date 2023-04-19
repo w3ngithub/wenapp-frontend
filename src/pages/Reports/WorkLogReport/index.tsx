@@ -82,8 +82,7 @@ function WorkLogReport() {
     } else {
       const projects = await getAllProjects({
         project: projectName,
-        sort: 'ascend',
-        fields: 'name',
+        sort: 'name',
       })
       setProjectData(projects?.data?.data?.data)
     }

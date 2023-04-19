@@ -142,8 +142,7 @@ const Dashboard = () => {
     } else {
       const projects = await getAllProjects({
         project: projectName,
-        sort: 'ascend',
-        fields: 'name',
+        sort: 'name',
       })
       setProjectArray(projects?.data?.data?.data)
     }
