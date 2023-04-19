@@ -949,7 +949,7 @@ function LeaveModal({
                           }}
                           renderExtraFooter={() => (
                             <small style={{color: 'red', fontSize: '12px'}}>
-                              *Disabled dates are holidays"
+                              *Disabled dates are holidays/ leaves taken
                             </small>
                           )}
                         />

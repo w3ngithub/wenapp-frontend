@@ -757,7 +757,7 @@ function Apply({user, YearlyLeaveExceptCasualandSick}) {
                 />
               </FormItem>
               <small style={{color: 'red', fontSize: '14px'}}>
-                *Disabled dates are holidays"
+                *Disabled dates are holidays
               </small>
             </Col>
           )}
@@ -905,7 +905,7 @@ function Apply({user, YearlyLeaveExceptCasualandSick}) {
                           }}
                           renderExtraFooter={() => (
                             <small style={{color: 'red', fontSize: '12px'}}>
-                              *Disabled dates are holidays"
+                              *Disabled dates are holidays/ leaves taken
                             </small>
                           )}
                         />
