@@ -4,3 +4,4 @@ export const PLACE_HOLDER_CLASS = 'select-without-label'
 export const ADMIN_KEY = '_admin'
 export const SHOW_MAINTENANCE_BUTTON_TO_ADMIN_ONLY =
   'showMaintenanceButtonToAdminOnly'
+export const CANCEL_TEXT = 'Close'

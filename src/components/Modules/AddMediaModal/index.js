@@ -1,6 +1,7 @@
 import {Button, Modal, Spin} from 'antd'
 import React, {useState} from 'react'
 import UploadFiles from './UploadFiles'
+import {CANCEL_TEXT} from 'constants/Common'
 
 function AddMediaModel({
   toogle,
@@ -24,7 +25,7 @@ function AddMediaModel({
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Close
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

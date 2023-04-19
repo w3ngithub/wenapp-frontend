@@ -1,4 +1,5 @@
 import {Button, Form, Input, Modal, Spin} from 'antd'
+import {CANCEL_TEXT} from 'constants/Common'
 import React, {useEffect} from 'react'
 
 interface modalInterface {
@@ -50,7 +51,7 @@ function CommonResourceModal({
       onCancel={onCancel}
       footer={[
         <Button key="back" onClick={onCancel}>
-          Close
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

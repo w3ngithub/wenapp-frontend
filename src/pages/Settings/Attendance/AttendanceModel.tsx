@@ -1,4 +1,5 @@
 import {Button, Form, Input, Modal, Spin} from 'antd'
+import {CANCEL_TEXT} from 'constants/Common'
 import React, {useEffect} from 'react'
 import {useSelector} from 'react-redux'
 
@@ -62,7 +63,7 @@ function AttendanceModal({
       onCancel={() => onCancel()}
       footer={[
         <Button key="back" onClick={() => onCancel()}>
-          Close
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

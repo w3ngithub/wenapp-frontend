@@ -17,6 +17,7 @@ import {filterOptions} from 'helpers/utils'
 import {disabledBeforeToday} from 'util/antDatePickerDisabled'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {getNoticeboardTypes} from 'services/settings/noticeBoard'
+import {CANCEL_TEXT} from 'constants/Common'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -87,7 +88,7 @@ function NoticeModal({
         readOnly
           ? [
               <Button key="back" onClick={handleCancel}>
-                Close
+                {CANCEL_TEXT}
               </Button>,
             ]
           : [

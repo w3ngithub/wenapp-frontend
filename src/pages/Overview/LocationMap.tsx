@@ -1,5 +1,6 @@
 import {Button, Modal} from 'antd'
 import Map from 'components/Elements/Map'
+import {CANCEL_TEXT} from 'constants/Common'
 import React from 'react'
 
 function LocationMap({
@@ -22,7 +23,7 @@ function LocationMap({
       onCancel={onClose}
       footer={[
         <Button key="back" onClick={onClose}>
-          Close
+          {CANCEL_TEXT}
         </Button>,
       ]}
     >

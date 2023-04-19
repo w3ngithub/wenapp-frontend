@@ -1,5 +1,6 @@
 import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
 import {Button, Col, DatePicker, Form, Input, Modal, Row, Spin} from 'antd'
+import {CANCEL_TEXT} from 'constants/Common'
 import {notification} from 'helpers/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment from 'moment'
@@ -90,7 +91,7 @@ const CommonModal = (props: modalType) => {
       mask={false}
       footer={[
         <Button key="back" onClick={onCancel}>
-          Close
+          {CANCEL_TEXT}
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
           Submit
