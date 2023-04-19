@@ -8,7 +8,6 @@ import {
   getIsAdmin,
   handleResponse,
   MuiFormatDate,
-  persistSession,
 } from 'helpers/utils'
 import {
   addProject,
@@ -21,7 +20,7 @@ import {
 } from 'services/projects'
 import {POSITION_TYPES, PROJECT_COLUMNS} from 'constants/Projects'
 import ProjectModal from 'components/Modules/ProjectModal'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useSearchParams} from 'react-router-dom'
 import moment from 'moment'
 import {notification} from 'helpers/notification'
 import {getAllUsers, getUserPositionTypes} from 'services/users/userDetails'
@@ -52,26 +51,39 @@ const formattedProjects = (projects) => {
 }
 
 function ProjectsPage() {
-  const projectSession = JSON.parse(sessionStorage.getItem('project-session'))
-
   // init hooks
+  let [searchParams, setSearchParams] = useSearchParams()
   const [sort, setSort] = useState({})
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
-  const [project, setProject] = useState(projectSession?.Search || '')
+  const [project, setProject] = useState(searchParams?.get('search') || '')
   const [page, setPage] = useState({page: 1, limit: 25})
-  const [projectStatus, setProjectStatus] = useState(projectSession?.statusId)
-  const [projectTags, setProjectTags] = useState(projectSession?.tagId)
-  const [projectType, setProjectType] = useState(projectSession?.typeId)
-  const [projectClient, setprojectClient] = useState(projectSession?.clientId)
-  const [developer, setDeveloper] = useState(projectSession?.developerId)
-  const [designer, setDesigner] = useState(projectSession?.designerId)
-  const [qa, setQa] = useState(projectSession?.qaId)
+  const [projectStatus, setProjectStatus] = useState(
+    searchParams.get('statusId') || undefined
+  )
+  const [projectTags, setProjectTags] = useState(
+    searchParams?.get('tagId') || undefined
+  )
+  const [projectType, setProjectType] = useState(
+    searchParams?.get('typeId') || undefined
+  )
+  const [projectClient, setprojectClient] = useState(
+    searchParams?.get('clientId') || undefined
+  )
+  const [developer, setDeveloper] = useState(
+    searchParams?.get('developerId') || undefined
+  )
+  const [designer, setDesigner] = useState(
+    searchParams?.get('designerId') || undefined
+  )
+  const [qa, setQa] = useState(searchParams?.get('qaId') || undefined)
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
   const [userRecord, setUserRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [projectName, setProjectName] = useState(projectSession?.Search || '')
+  const [projectName, setProjectName] = useState(
+    searchParams?.get('search') || ''
+  )
   const [positionTypeData, setPositionTypeData] = useState({})
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -298,40 +310,91 @@ function ProjectsPage() {
     setPage((prev) => ({...page, limit: pageSize}))
   }
 
+  const settingQuery = (values) => {
+    let queryString = {}
+    if (!values.toString()) {
+      return setSearchParams({})
+    }
+    values.forEach((value, key) => {
+      queryString = {
+        ...queryString,
+        [key]: value,
+      }
+    })
+    setSearchParams(queryString)
+  }
+
   const handleProjectTypeChange = (typeId) => {
-    persistSession('project-session', projectSession, 'typeId', typeId)
+    if (!typeId) {
+      searchParams.delete('typeId')
+      settingQuery(searchParams)
+    } else {
+      searchParams.set('typeId', typeId)
+      settingQuery(searchParams)
+    }
     setProjectType(typeId)
   }
 
   const handleProjectStatusChange = (statusId) => {
-    persistSession('project-session', projectSession, 'statusId', statusId)
+    if (!statusId) {
+      searchParams.delete('statusId')
+      settingQuery(searchParams)
+    } else {
+      searchParams.set('statusId', statusId)
+      settingQuery(searchParams)
+    }
     setProjectStatus(statusId)
   }
 
   const handleClientChange = (clientId) => {
-    persistSession('project-session', projectSession, 'clientId', clientId)
+    if (!clientId) {
+      searchParams.delete('clientId')
+      settingQuery(searchParams)
+    } else {
+      searchParams.set('clientId', clientId)
+      settingQuery(searchParams)
+    }
     setprojectClient(clientId)
   }
 
   const handleProjectTagsChange = (tagId) => {
-    persistSession('project-session', projectSession, 'tagId', tagId)
+    if (!tagId) {
+      searchParams.delete('tagId')
+      settingQuery(searchParams)
+    } else {
+      searchParams.set('tagId', tagId)
+      settingQuery(searchParams)
+    }
     setProjectTags(tagId)
   }
   const handleDeveloperChange = (developerId) => {
-    persistSession(
-      'project-session',
-      projectSession,
-      'developerId',
-      developerId
-    )
+    if (!developerId) {
+      searchParams.delete('developerId')
+      settingQuery(searchParams)
+    } else {
+      searchParams.set('developerId', developerId)
+      settingQuery(searchParams)
+    }
     setDeveloper(developerId)
   }
   const handleDesignerChange = (designerId) => {
-    persistSession('project-session', projectSession, 'designerId', designerId)
+    if (!designerId) {
+      searchParams.delete('designerId')
+      settingQuery(searchParams)
+    } else {
+      searchParams.set('designerId', designerId)
+      settingQuery(searchParams)
+    }
     setDesigner(designerId)
   }
   const handleQaChange = (qaId) => {
-    persistSession('project-session', projectSession, 'qaId', qaId)
+    if (!qaId) {
+      searchParams.delete('qaId')
+      settingQuery(searchParams)
+    } else {
+      searchParams.set('qaId', qaId)
+      settingQuery(searchParams)
+    }
     setQa(qaId)
   }
 
@@ -345,7 +408,7 @@ function ProjectsPage() {
     setDeveloper(undefined)
     setDesigner(undefined)
     setQa(undefined)
-    sessionStorage.removeItem('project-session')
+    setSearchParams({})
   }
 
   const confirmDeleteProject = (project) => {
@@ -391,12 +454,13 @@ function ProjectsPage() {
             <Search
               placeholder="Search Projects"
               onSearch={(value) => {
-                persistSession(
-                  'project-session',
-                  projectSession,
-                  'Search',
-                  value
-                )
+                if (!value) {
+                  searchParams.delete('search')
+                  settingQuery(searchParams)
+                } else {
+                  searchParams.set('search', value)
+                  settingQuery(searchParams)
+                }
                 setPage((prev) => ({...prev, page: 1}))
                 setProject(value)
               }}
