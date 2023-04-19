@@ -34,6 +34,7 @@ import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import LogHoursModal from './LogHours'
 import {socket} from 'pages/Main'
+import RoleAccess from 'constants/RoleAccess'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -118,7 +119,17 @@ function ProjectLogs() {
   )
 
   const addLogTimeMutation = useMutation((details) => addLogTime(details), {
-    onSuccess: (response) =>
+    onSuccess: (response) => {
+      if (
+        response?.data?.data?.data?.isOt &&
+        response?.data?.data?.data?.otStatus === 'P'
+      ) {
+        socket.emit('ot-log', {
+          showTo: [RoleAccess.Admin],
+          remarks: `${name} has applied for ot logtime. Please review.`,
+          module: 'Logtime',
+        })
+      }
       handleResponse(
         response,
         'Added time log successfully',
@@ -129,7 +140,8 @@ function ProjectLogs() {
           () => queryClient.invalidateQueries(['projectWeeklyTime']),
           () => handleCloseTimelogModal(),
         ]
-      ),
+      )
+    },
 
     onError: () =>
       notification({
@@ -141,7 +153,17 @@ function ProjectLogs() {
   const UpdateLogTimeMutation = useMutation(
     (details) => updateTimeLog(details),
     {
-      onSuccess: (response) =>
+      onSuccess: (response) => {
+        if (
+          response?.data?.data?.data?.isOt &&
+          response?.data?.data?.data?.otStatus === 'P'
+        ) {
+          socket.emit('ot-log', {
+            showTo: [RoleAccess.Admin],
+            remarks: `${name} has applied for ot logtime. Please review.`,
+            module: 'Logtime',
+          })
+        }
         handleResponse(
           response,
           'Updated time log successfully',
@@ -152,7 +174,8 @@ function ProjectLogs() {
             () => queryClient.invalidateQueries(['projectWeeklyTime']),
             () => handleCloseTimelogModal(),
           ]
-        ),
+        )
+      },
 
       onError: () =>
         notification({
