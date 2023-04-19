@@ -54,6 +54,7 @@ import DragAndDropFile from 'components/Modules/DragAndDropFile'
 import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import en_GB from 'antd/lib/locale-provider/en_GB'
 import {storage} from 'firebase'
+import {Substitute} from 'constants/LeaveTypes'
 const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
@@ -445,9 +446,7 @@ function Apply({user, YearlyLeaveExceptCasualandSick}) {
         if (specialLeavesApproved?.includes(leaveType?.name)) {
           return notification({
             type: 'error',
-            message: `Sorry,You have already taken ${
-              leaveType?.name?.split(' ')?.[0]
-            } leave in this fiscal year.`,
+            message: `Sorry,You have already taken ${leaveType?.name} leave in this fiscal year.`,
           })
         }
         LeaveDaysUTC = getRangeofDates(
