@@ -3,6 +3,7 @@ import '@ant-design/compatible/assets/index.css'
 import {Button, DatePicker, Input, Modal, Select, Spin, Form} from 'antd'
 import moment from 'moment'
 import DragAndDropFile from 'components/Modules/DragAndDropFile'
+import {CANCEL_TEXT} from 'constants/Common'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -79,7 +80,7 @@ function UserProfileModal({user, toggle, onToggle, onSubmit, isLoading}) {
       mask={false}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
           Submit

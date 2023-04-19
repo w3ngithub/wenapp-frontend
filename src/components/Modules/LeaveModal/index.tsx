@@ -44,6 +44,7 @@ import {leaveInterval} from 'constants/LeaveDuration'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
+import {CANCEL_TEXT} from 'constants/Common'
 
 const {Option} = Select
 
@@ -411,7 +412,7 @@ function LeaveModal({
                   )
                 }
               >
-                Cancel
+                {CANCEL_TEXT}
               </Button>,
             ]
           : [
@@ -427,7 +428,7 @@ function LeaveModal({
                   )
                 }
               >
-                Cancel
+                {CANCEL_TEXT}
               </Button>,
               <Button
                 key="submit"
