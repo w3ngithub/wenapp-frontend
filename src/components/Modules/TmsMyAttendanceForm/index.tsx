@@ -222,7 +222,27 @@ function TmsMyAttendanceForm({
                   label="Punch In Note"
                   name="punchInNote"
                   rules={[
-                    {required: true, message: 'Punch In Note is required.'},
+                    {
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Punch In Note is required.')
+                          }
+                          const trimmedValue = value && value.trim()
+
+                          if (
+                            trimmedValue?.length < 10 ||
+                            trimmedValue?.length > 250
+                          ) {
+                            throw new Error(
+                              'Please enter between 10 to 250 characters for punch in note.'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
                   ]}
                   hasFeedback
                 >
@@ -250,7 +270,26 @@ function TmsMyAttendanceForm({
                   label="Punch Out Note"
                   name="punchOutNote"
                   rules={[
-                    {required: true, message: 'Punch Out Note is required.'},
+                    {
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Punch Out Note is required.')
+                          }
+                          const trimmedValue = value && value.trim()
+                          if (
+                            trimmedValue?.length < 10 ||
+                            trimmedValue?.length > 250
+                          ) {
+                            throw new Error(
+                              'Please enter between 10 to 250 characters for punch out note.'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
                   ]}
                   hasFeedback
                 >
