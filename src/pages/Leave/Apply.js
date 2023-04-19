@@ -41,7 +41,6 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import {getAllHolidays} from 'services/resources'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {disabledDate} from 'util/antDatePickerDisabled'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {emptyText} from 'constants/EmptySearchAntd'
@@ -54,7 +53,6 @@ import DragAndDropFile from 'components/Modules/DragAndDropFile'
 import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import en_GB from 'antd/lib/locale-provider/en_GB'
 import {storage} from 'firebase'
-import {Substitute} from 'constants/LeaveTypes'
 const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
