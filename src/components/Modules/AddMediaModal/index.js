@@ -1,6 +1,7 @@
 import {Button, Modal, Spin} from 'antd'
 import React, {useState} from 'react'
 import UploadFiles from './UploadFiles'
+import {CANCEL_TEXT} from 'constants/Common'
 
 function AddMediaModel({
   toogle,
@@ -8,7 +9,7 @@ function AddMediaModel({
   handleCancel,
   loading,
   progress,
-  maxSize
+  maxSize,
 }) {
   const [files, setFiles] = useState([])
 
@@ -24,7 +25,7 @@ function AddMediaModel({
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

@@ -6,6 +6,7 @@ import {notification} from 'helpers/notification'
 import {handleResponse} from 'helpers/utils'
 import instance from 'helpers/api'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
+import {CANCEL_TEXT} from 'constants/Common'
 
 function ChangePasswordModel({open, onClose}: {open: boolean; onClose: any}) {
   const [form] = Form.useForm()
@@ -68,7 +69,7 @@ function ChangePasswordModel({open, onClose}: {open: boolean; onClose: any}) {
           Update Password
         </Button>,
         <Button key="back" onClick={handleClose}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
       ]}
     >

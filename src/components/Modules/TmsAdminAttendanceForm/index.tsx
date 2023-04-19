@@ -24,6 +24,7 @@ import getLocation from 'helpers/getLocation'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
 import {socket} from 'pages/Main'
+import {CANCEL_TEXT} from 'constants/Common'
 
 function TmsAdminAttendanceForm({
   toogle,
@@ -168,7 +169,7 @@ function TmsAdminAttendanceForm({
       onCancel={closeModel}
       footer={[
         <Button key="back" onClick={closeModel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
       ]}
     >

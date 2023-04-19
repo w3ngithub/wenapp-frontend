@@ -22,6 +22,7 @@ import {
 } from 'helpers/utils'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {CANCEL_TEXT} from 'constants/Common'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -174,12 +175,12 @@ function UserDetailForm({
         readOnly
           ? [
               <Button key="back" onClick={handleCancel}>
-                Cancel
+                {CANCEL_TEXT}
               </Button>,
             ]
           : [
               <Button key="back" onClick={handleCancel}>
-                Cancel
+                {CANCEL_TEXT}
               </Button>,
               <Button
                 key="submit"

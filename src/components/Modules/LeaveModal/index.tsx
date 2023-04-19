@@ -62,6 +62,7 @@ import {
 } from 'firebase/storage'
 import {storage} from 'firebase'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
+import {CANCEL_TEXT} from 'constants/Common'
 
 const {Option} = Select
 
@@ -565,7 +566,7 @@ function LeaveModal({
                   )
                 }
               >
-                Cancel
+                {CANCEL_TEXT}
               </Button>,
             ]
           : [
@@ -582,7 +583,7 @@ function LeaveModal({
                   )
                 }
               >
-                Cancel
+                {CANCEL_TEXT}
               </Button>,
               <Button
                 key="submit"

@@ -13,6 +13,7 @@ import {
 } from 'constants/RolePermission'
 import {RolePermissionContext} from 'context/RolePermissionConext'
 import {scrollForm} from 'helpers/utils'
+import {CANCEL_TEXT} from 'constants/Common'
 
 interface modalInterface {
   toggle: boolean
@@ -55,24 +56,32 @@ const RolePermissionModal = ({
         d.name !== 'todaysOverview'
     ).map((d) => d.label)
 
-    const MenuItems = activeKeys.map((d:string) => {
-      const logo:any = permissionRoleLogo 
+    const MenuItems = activeKeys.map((d: string) => {
+      const logo: any = permissionRoleLogo
       return {
         label: d,
         key: d,
-        icon:<i className={`icon icon-${logo[d]} gx-fs-xlxl`}/>
+        icon: <i className={`icon icon-${logo[d]} gx-fs-xlxl`} />,
       }
     })
     setItems([
       {
         label: 'Navigation',
         key: 'Navigation',
-        icon:<i className={`icon icon-${permissionRoleLogo['Navigation']} gx-fs-xlxl`}/>
+        icon: (
+          <i
+            className={`icon icon-${permissionRoleLogo['Navigation']} gx-fs-xlxl`}
+          />
+        ),
       },
       {
-        label:'Dashboard',
-        key:'Dashboard',
-        icon:<i className={`icon icon-${permissionRoleLogo['Dashboard']} gx-fs-xlxl`}/>
+        label: 'Dashboard',
+        key: 'Dashboard',
+        icon: (
+          <i
+            className={`icon icon-${permissionRoleLogo['Dashboard']} gx-fs-xlxl`}
+          />
+        ),
       },
       ...MenuItems,
     ])
@@ -234,7 +243,7 @@ const RolePermissionModal = ({
       bodyStyle={{paddingBottom: 0}}
       footer={[
         <Button key="back" onClick={() => onCancel(setDuplicateValue)}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

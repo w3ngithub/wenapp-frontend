@@ -1,4 +1,5 @@
 import {Button, Form, Input, Modal, Spin} from 'antd'
+import {CANCEL_TEXT} from 'constants/Common'
 import React, {useEffect, useState} from 'react'
 import {Checkbox} from 'antd'
 import type {CheckboxValueType} from 'antd/es/checkbox/Group'
@@ -163,7 +164,7 @@ function LeaveModal({
             onCancel(setDuplicateValue)
           }}
         >
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

@@ -24,6 +24,7 @@ import getLocation from 'helpers/getLocation'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {socket} from 'pages/Main'
+import {CANCEL_TEXT} from 'constants/Common'
 
 function TmsAdminAddAttendanceForm({
   toogle,
@@ -124,7 +125,7 @@ function TmsAdminAddAttendanceForm({
             Add
           </Button>
           <Button key="back" onClick={closeModel}>
-            Cancel
+            {CANCEL_TEXT}
           </Button>
         </>,
       ]}
