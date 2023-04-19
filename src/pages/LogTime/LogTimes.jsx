@@ -101,7 +101,7 @@ function LogTimes() {
       ) {
         socket.emit('ot-log', {
           showTo: [RoleAccess.Admin],
-          remarks: `${idUser?.name} has applied for leave. Please review.`,
+          remarks: `${idUser?.name} has added OT logtime. Please review.`,
           module: 'Logtime',
         })
       }
@@ -131,7 +131,7 @@ function LogTimes() {
         ) {
           socket.emit('ot-log', {
             showTo: [RoleAccess.Admin],
-            remarks: `${idUser?.name} has applied for ot logtime. Please review.`,
+            remarks: `${idUser?.name} has added OT logtime. Please review.`,
             module: 'Logtime',
           })
         }
