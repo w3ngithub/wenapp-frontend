@@ -83,6 +83,7 @@ function LogtimeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
+      const logDateFormat = values.logDate.startOf('day').format().split('T')[0]
       if (!parseInt(values?.hours) && !parseInt(values?.minutes)) {
         setZeroHourMinutes(true)
         return
@@ -91,8 +92,16 @@ function LogtimeModal({
       }
       onSubmit(
         isEditMode
-          ? {...initialValues, ...values, user: initialValues?.user._id}
-          : {...values}
+          ? {
+              ...initialValues,
+              ...values,
+              user: initialValues?.user._id,
+              logDate: logDateFormat,
+            }
+          : {
+              ...values,
+              logDate: logDateFormat,
+            }
       )
     })
   }
@@ -103,7 +112,10 @@ function LogtimeModal({
       return
     } else {
       setSearchValue(projectName)
-      const projects = await getAllProjects({project: projectName})
+      const projects = await getAllProjects({
+        project: projectName,
+        sort: 'name',
+      })
       setProjectArray(projects?.data?.data?.data)
     }
     //else fetch projects from api

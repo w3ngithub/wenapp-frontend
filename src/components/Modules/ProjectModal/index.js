@@ -274,10 +274,10 @@ function ProjectModal({
       }
     }
     if (!toggle) {
-      setMaintenance([])
       setStartDate(undefined)
       setEndDate(undefined)
       if (isEditMode) {
+        setMaintenance([])
         form.resetFields()
       }
     }
@@ -311,6 +311,7 @@ function ProjectModal({
 
   const handleReset = () => {
     form.resetFields()
+    setMaintenance([])
   }
 
   const disableDate = (current, date, time) => {
