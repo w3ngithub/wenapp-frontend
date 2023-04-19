@@ -597,13 +597,6 @@ export const getRangeofDates = (startDate, leaveDays) => {
 
 export const convertMsToDay = (num) => num / (1000 * 60 * 60 * 24)
 
-export const persistSession = (sessionName, currentSession, name, value) => {
-  sessionStorage.setItem(
-    `${sessionName}`,
-    JSON.stringify({...currentSession, [name]: value})
-  )
-}
-
 export const timeToMilisecond = (date) => {
   const dateArr = date.split(':')
   const milisecond =
