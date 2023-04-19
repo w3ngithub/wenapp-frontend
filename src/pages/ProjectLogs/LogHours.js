@@ -1,6 +1,7 @@
 import React from 'react'
 import '@ant-design/compatible/assets/index.css'
 import {Button, Modal} from 'antd'
+import {CANCEL_TEXT} from 'constants/Common'
 
 function LogHoursModal({toggle, onClose, totalHours}) {
   const handleCancel = () => {
@@ -14,7 +15,7 @@ function LogHoursModal({toggle, onClose, totalHours}) {
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Close
+          {CANCEL_TEXT}
         </Button>,
       ]}
     >

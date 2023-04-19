@@ -23,6 +23,7 @@ import {getAllUsers} from 'services/users/userDetails'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {CANCEL_TEXT} from 'constants/Common'
 const FormItem = Form.Item
 const Option = Select.Option
 const {TextArea} = Input
@@ -195,7 +196,7 @@ function LogtimeModal({
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

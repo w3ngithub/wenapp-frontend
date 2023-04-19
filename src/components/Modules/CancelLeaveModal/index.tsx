@@ -5,6 +5,7 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {CANCEL_TEXT} from 'constants/Common'
 
 const layout = {
   labelCol: {span: 8},
@@ -73,7 +74,7 @@ function CancelLeaveModal({
       onCancel={onClose}
       footer={[
         <Button key="back" onClick={onClose}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button key="submit" type="primary" onClick={onFinish}>
           Submit
