@@ -298,8 +298,8 @@ function UserAttendance({userRole}) {
 
     if (
       checkIfTimeISBetweenOfficeHour(
-        moment(user?.officeTime?.utcDate).add(10, 'm').format('h:mm:ss'),
-        moment(user?.officeEndTime).format('h:mm:ss')
+        moment(user?.officeTime?.utcDate).add(10, 'm').format('HH:mm:ss'),
+        moment(user?.officeEndTime).format('HH:mm:ss')
       )
     ) {
       setToogle(true)

@@ -11,11 +11,25 @@ import {useSelector} from 'react-redux'
 import moment from 'moment'
 import RecentActivity from '../dashboard/CRM/RecentActivity'
 import {getIsAdmin} from 'helpers/utils'
-import {BLOG, NOTICEBOARD, COWORKERS, LEAVE} from 'helpers/routePath'
+import {
+  BLOG,
+  NOTICEBOARD,
+  COWORKERS,
+  LEAVE,
+  REPORTS,
+  OVERTIME_REPORT,
+} from 'helpers/routePath'
 import {NOTIFICATION_ICONS} from 'constants/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 
-const NOTIFICATION_TO_CLICK = ['Blog', 'Notice', 'Leave', 'User', 'Attendance']
+const NOTIFICATION_TO_CLICK = [
+  'Blog',
+  'Notice',
+  'Leave',
+  'User',
+  'Attendance',
+  'Logtime',
+]
 
 function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
   const [visible, setVisible] = useState<boolean>(false)
@@ -156,6 +170,11 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
 
       case 'User':
         navigate(COWORKERS)
+        setVisible(false)
+        return
+
+      case 'Logtime':
+        navigate(`${REPORTS}/${OVERTIME_REPORT}`)
         setVisible(false)
         return
 
