@@ -235,7 +235,7 @@ function TmsMyAttendanceForm({
                             trimmedValue?.length > 250
                           ) {
                             throw new Error(
-                              'Please enter between 10 to 250 characters for punch in note.'
+                              'Please enter between 10 to 250 characters for Punch In Note.'
                             )
                           }
                         } catch (err) {
@@ -282,7 +282,7 @@ function TmsMyAttendanceForm({
                             trimmedValue?.length > 250
                           ) {
                             throw new Error(
-                              'Please enter between 10 to 250 characters for punch out note.'
+                              'Please enter between 10 to 250 characters for Punch Out Note.'
                             )
                           }
                         } catch (err) {
