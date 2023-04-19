@@ -64,7 +64,7 @@ function LeaveQuarterModal({
       onCancel={onCancel}
       footer={[
         <Button key="back" onClick={onCancel}>
-          Cancel
+          Close
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
           Submit

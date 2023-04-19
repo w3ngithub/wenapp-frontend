@@ -30,7 +30,7 @@ const LeaveCutModal = ({open, onSubmit, onClose, loading, coWorker}) => {
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          Close
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
           Submit

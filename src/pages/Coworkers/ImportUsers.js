@@ -73,7 +73,7 @@ function ImportUsers({toggle, onClose, files, setFiles}) {
       mask={false}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          Close
         </Button>,
         <Button
           key="submit"

@@ -22,7 +22,7 @@ function LocationMap({
       onCancel={onClose}
       footer={[
         <Button key="back" onClick={onClose}>
-          Cancel
+          Close
         </Button>,
       ]}
     >

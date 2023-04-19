@@ -131,7 +131,7 @@ function CommonLogTypeModal({
             onCancel(setDuplicateValue, setHexCode)
           }}
         >
-          Cancel
+          Close
         </Button>,
         <Button
           key="submit"

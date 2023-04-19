@@ -83,7 +83,7 @@ function EmailModal({
       onCancel={onCancel}
       footer={[
         <Button key="back" onClick={onCancel}>
-          Cancel
+          Close
         </Button>,
         <Button
           key="submit"

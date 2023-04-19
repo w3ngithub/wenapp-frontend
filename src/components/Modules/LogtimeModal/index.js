@@ -195,7 +195,7 @@ function LogtimeModal({
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          Close
         </Button>,
         <Button
           key="submit"

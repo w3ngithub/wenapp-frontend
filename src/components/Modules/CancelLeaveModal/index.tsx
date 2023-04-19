@@ -73,7 +73,7 @@ function CancelLeaveModal({
       onCancel={onClose}
       footer={[
         <Button key="back" onClick={onClose}>
-          Cancel
+          Close
         </Button>,
         <Button key="submit" type="primary" onClick={onFinish}>
           Submit

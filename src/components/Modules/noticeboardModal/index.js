@@ -87,12 +87,12 @@ function NoticeModal({
         readOnly
           ? [
               <Button key="back" onClick={handleCancel}>
-                Cancel
+                Close
               </Button>,
             ]
           : [
               <Button key="back" onClick={handleCancel}>
-                Cancel
+                Close
               </Button>,
               <Button
                 key="submit"

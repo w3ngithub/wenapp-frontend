@@ -168,7 +168,7 @@ function TmsAdminAttendanceForm({
       onCancel={closeModel}
       footer={[
         <Button key="back" onClick={closeModel}>
-          Cancel
+          Close
         </Button>,
       ]}
     >

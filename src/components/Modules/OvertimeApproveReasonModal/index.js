@@ -64,12 +64,12 @@ function OvertimeApproveReasonModal({
         isReadOnly
           ? [
               <Button key="back" onClick={onClose}>
-                Cancel
+                Close
               </Button>,
             ]
           : [
               <Button key="back" onClick={onClose}>
-                Cancel
+                Close
               </Button>,
               <Button
                 key="submit"

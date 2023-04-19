@@ -68,7 +68,7 @@ function ChangePasswordModel({open, onClose}: {open: boolean; onClose: any}) {
           Update Password
         </Button>,
         <Button key="back" onClick={handleClose}>
-          Cancel
+          Close
         </Button>,
       ]}
     >

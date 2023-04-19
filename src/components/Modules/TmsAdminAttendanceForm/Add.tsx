@@ -124,7 +124,7 @@ function TmsAdminAddAttendanceForm({
             Add
           </Button>
           <Button key="back" onClick={closeModel}>
-            Cancel
+            Close
           </Button>
         </>,
       ]}

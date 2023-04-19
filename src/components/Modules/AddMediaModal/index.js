@@ -8,7 +8,7 @@ function AddMediaModel({
   handleCancel,
   loading,
   progress,
-  maxSize
+  maxSize,
 }) {
   const [files, setFiles] = useState([])
 
@@ -24,7 +24,7 @@ function AddMediaModel({
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          Close
         </Button>,
         <Button
           key="submit"

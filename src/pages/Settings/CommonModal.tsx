@@ -67,7 +67,7 @@ function CommonModal({
       onCancel={() => onCancel(setDuplicateValue)}
       footer={[
         <Button key="back" onClick={() => onCancel(setDuplicateValue)}>
-          Cancel
+          Close
         </Button>,
         <Button
           key="submit"

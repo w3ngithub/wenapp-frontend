@@ -411,7 +411,7 @@ function LeaveModal({
                   )
                 }
               >
-                Cancel
+                Close
               </Button>,
             ]
           : [
@@ -427,7 +427,7 @@ function LeaveModal({
                   )
                 }
               >
-                Cancel
+                Close
               </Button>,
               <Button
                 key="submit"
