@@ -57,7 +57,12 @@ const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
 
-function Apply({user, YearlyLeaveExceptCasualandSick}) {
+function Apply({
+  user,
+  YearlyLeaveExceptCasualandSick,
+  nextYearSpecialLeaves,
+  fiscalYearEndDate,
+}) {
   const [form] = Form.useForm()
 
   const queryClient = useQueryClient()
@@ -441,12 +446,36 @@ function Apply({user, YearlyLeaveExceptCasualandSick}) {
         const specialLeavesApproved = YearlyLeaveExceptCasualandSick?.map(
           (item) => item?.[0]
         )
-        if (specialLeavesApproved?.includes(leaveType?.name)) {
-          return notification({
-            type: 'error',
-            message: `Sorry,You have already taken ${leaveType?.name} leave in this fiscal year.`,
-          })
+        //if special leave is applied before the end of the current fiscal year
+        if (moment(fiscalYearEndDate) > moment(appliedDate)) {
+          if (specialLeavesApproved?.includes(leaveType?.name)) {
+            return notification({
+              type: 'error',
+              message: `Sorry,You have already taken ${leaveType?.name} leave in this fiscal year.`,
+            })
+          }
+        } else {
+          // checking if the special leave already exists in the next fiscal year
+          const leaveAppliedInNextYear = nextYearSpecialLeaves?.find(
+            (leave) => leave?.leaveType?.name === leaveType?.name
+          )
+          //calculating the number of days the leave is allocated in the next fiscal year
+          const numberOfAppliedDaysInNextYear =
+            leaveAppliedInNextYear?.leaveDates?.filter(
+              (date) => moment(date) > moment(fiscalYearEndDate)
+            )?.length
+          if (
+            leaveAppliedInNextYear &&
+            numberOfAppliedDaysInNextYear >=
+              leaveAppliedInNextYear?.leaveDates?.length
+          ) {
+            return notification({
+              type: 'error',
+              message: `Sorry,You have already taken ${leaveType?.name} leave in this fiscal year.`,
+            })
+          }
         }
+
         LeaveDaysUTC = getRangeofDates(
           values?.leaveDatesPeriod?._d,
           leaveType?.leaveDays
