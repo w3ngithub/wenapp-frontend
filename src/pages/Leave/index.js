@@ -3,14 +3,14 @@ import {Card, Col, Row, Tabs} from 'antd'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {
   changeLeaveStatus,
+  getLeavesOfUser,
   getQuarters,
-  getQuarterTakenAndRemainingLeaveDaysOfUser,
   getTakenAndRemainingLeaveDaysOfUser,
   getUserLeavesSummary,
   sendEmailforLeave,
 } from 'services/leaves'
 import {
-  convertMsToDay,
+  MuiFormatDate,
   getCurrentFiscalYear,
   handleResponse,
 } from 'helpers/utils'
@@ -33,6 +33,7 @@ import ReapplyLeaveModal from 'components/Modules/ReapplyLeaveModal'
 import {STATUS_TYPES} from 'constants/Leaves'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {AnnualApprovedLeaveCardClassName} from 'constants/DOM'
+import moment from 'moment'
 
 const TabPane = Tabs.TabPane
 
@@ -101,6 +102,36 @@ function Leave() {
     getQuarters()
   )
 
+  const fiscalYearEndDate =
+    quarters?.data?.data?.data?.[0]?.quarters?.[3]?.toDate
+  const nextYearStartDate = `${MuiFormatDate(
+    moment(fiscalYearEndDate).add(1, 'days').format()
+  )}T00:00:00Z`
+  const nextYearEndDate = `${MuiFormatDate(
+    moment(nextYearStartDate).add(1, 'years').format()
+  )}T00:00:00Z`
+
+  const {data: userNextYearLeaves} = useQuery(
+    ['userLeaves'],
+    () =>
+      getLeavesOfUser(
+        loggedInUser?._id,
+        '',
+        undefined,
+        '',
+        '',
+        nextYearStartDate,
+        nextYearEndDate
+      ),
+    {
+      refetchOnWindowFocus: true,
+      enabled: !!quarters,
+    }
+  )
+
+  const nextYearSpecialLeaves = userNextYearLeaves?.data?.data?.data?.filter(
+    (leave) => leave?.leaveStatus === 'approved' && leave?.leaveType?.isSpecial
+  )
   const leavesSummary = useQuery(
     ['leavesSummary'],
     () => {
@@ -401,6 +432,8 @@ function Leave() {
                 user={loggedInUser?._id}
                 permissions={leavePermissions}
                 YearlyLeaveExceptCasualandSick={YearlyLeaveExceptCasualandSick}
+                nextYearSpecialLeaves={nextYearSpecialLeaves}
+                fiscalYearEndDate={fiscalYearEndDate}
               />
             </TabPane>
           )}
