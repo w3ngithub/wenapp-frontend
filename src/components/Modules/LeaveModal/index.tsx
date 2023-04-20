@@ -32,6 +32,8 @@ import {
   filterSpecificUser,
   getRangeofDates,
   momentRangeofDates,
+  compare,
+  getDateRangeArray,
 } from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
@@ -63,6 +65,7 @@ import {
 import {storage} from 'firebase'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {CANCEL_TEXT} from 'constants/Common'
+import {getAllHolidays} from 'services/resources'
 
 const {Option} = Select
 
@@ -170,6 +173,17 @@ function LeaveModal({
       })),
     ],
   })
+  const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
+    getAllHolidays({sort: '-createdAt', limit: '1'})
+  )
+
+  const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays
+    ?.map((holiday: any) => ({
+      date: new DateObject(holiday?.date).format(),
+      name: holiday?.title,
+      allowLeaveApply: holiday?.allowLeaveApply,
+    }))
+    .filter((d: any) => !d?.allowLeaveApply)
 
   const userLeavesQuery = useQuery(['userLeaves', fromDate, toDate, user], () =>
     getLeavesOfUser(user, '', undefined, 1, 30, fromDate, toDate)
@@ -239,6 +253,58 @@ function LeaveModal({
 
       let LeaveDaysUTC: any = []
 
+      let selectedDatesArr: any = []
+
+      // calculation to check holidays and weekends in between the applied dates
+      if (!leaveType?.isSpecial) {
+        const selectedDates = form?.getFieldValue('leaveDatesCasual')
+        const formattedDate = selectedDates?.map((d: any) => ({
+          index: moment(MuiFormatDate(new Date(d))).day(),
+          date: MuiFormatDate(new Date(d)),
+        }))
+        const sortedDate = formattedDate.sort(compare)
+        let holidayList = holidaysThisYear?.map((holiday: any) => {
+          return MuiFormatDate(moment(holiday?.date).format())
+        })
+
+        // if leave applied for more than one day
+        if (selectedDates.length > 1) {
+          sortedDate?.forEach((d: any, index: number) => {
+            if (sortedDate[index + 1]) {
+              let dateRange = getDateRangeArray(
+                d?.date,
+                sortedDate[index + 1]?.date
+              )
+              let filteredDateRange = dateRange.filter(
+                (d, index) => index !== 0 && index !== dateRange.length - 1
+              )
+              let filteredDateRangeWithIndex = filteredDateRange?.map((d) => ({
+                index: moment(d).day(),
+                date: d,
+              }))
+
+              let includesHolidayAndWeekend =
+                filteredDateRangeWithIndex.length > 0 &&
+                filteredDateRangeWithIndex?.every(
+                  (d) =>
+                    d.index === 0 ||
+                    d.index === 6 ||
+                    holidayList.includes(d.date)
+                )
+
+              //if holidays and weekends lie in between add them to the list
+              if (includesHolidayAndWeekend) {
+                selectedDatesArr.push(
+                  ...filteredDateRangeWithIndex.map((d) =>
+                    moment(d.date).format('YYYY/MM/DD')
+                  )
+                )
+              }
+            }
+          })
+        }
+      }
+
       // calculation for maternity, paternity, pto leaves
 
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
@@ -249,8 +315,10 @@ function LeaveModal({
         )
         // const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
       } else {
+        //adding the holidays in between to the applied dates
         const casualLeaveDays = [
           ...values?.leaveDatesCasual?.join(',').split(','),
+          ...selectedDatesArr,
         ]
 
         LeaveDaysUTC = casualLeaveDays
