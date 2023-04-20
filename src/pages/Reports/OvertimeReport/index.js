@@ -118,7 +118,7 @@ const OvertimePage = () => {
             () => queryClient.invalidateQueries(['timeLogs']),
             () => handleCloseApproveModal(),
             () => {
-              socket.emit('approve-ot-log', {
+              socket.emit('resolve-ot-log', {
                 showTo: [response.data.data.data.user._id],
                 remarks: `Your OT has been ${
                   LOG_STATUS[response.data?.data?.data?.otStatus]
