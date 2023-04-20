@@ -18,9 +18,12 @@ import {
   LEAVE,
   REPORTS,
   OVERTIME_REPORT,
+  USER_TIME_LOG,
+  LOGTIME,
 } from 'helpers/routePath'
 import {NOTIFICATION_ICONS} from 'constants/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
+import RoleAccess from 'constants/RoleAccess'
 
 const NOTIFICATION_TO_CLICK = [
   'Blog',
@@ -174,7 +177,11 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
         return
 
       case 'Logtime':
-        navigate(`${REPORTS}/${OVERTIME_REPORT}`)
+        if (showTo[0] === RoleAccess.Admin) {
+          navigate(`${REPORTS}/${OVERTIME_REPORT}`)
+        } else {
+          navigate(`${LOGTIME}/${USER_TIME_LOG}`)
+        }
         setVisible(false)
         return
 
