@@ -1,4 +1,4 @@
-import {Button, Card, Form, Input, notification, Table, Typography} from 'antd'
+import {Button, Card, Form, Input, Table, Typography} from 'antd'
 import React, {useState, useCallback} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
@@ -22,6 +22,9 @@ import {getAllProjects} from 'services/projects'
 import {LOG_STATUS} from 'constants/logTimes'
 import RangePicker from 'components/Elements/RangePicker'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
+import {socket} from 'pages/Main'
+import {notification} from 'helpers/notification'
+import {dateToDateFormat} from 'helpers/utils'
 
 const formattedReports = (overtimeData) => {
   return overtimeData?.map((log) => ({
@@ -106,7 +109,7 @@ const OvertimePage = () => {
   const UpdateLogTimeMutation = useMutation(
     (details) => updateTimeLog(details),
     {
-      onSuccess: (response) =>
+      onSuccess: (response) => {
         handleResponse(
           response,
           'Updated time log successfully',
@@ -114,9 +117,20 @@ const OvertimePage = () => {
           [
             () => queryClient.invalidateQueries(['timeLogs']),
             () => handleCloseApproveModal(),
+            () => {
+              socket.emit('approve-ot-log', {
+                showTo: [response.data.data.data.user._id],
+                remarks: `Your OT has been ${
+                  LOG_STATUS[response.data?.data?.data?.otStatus]
+                }.`,
+                module: 'Logtime',
+              })
+            },
           ]
-        ),
+        )
+      },
       onError: (error) => {
+        handleCloseApproveModal()
         notification({
           message: 'Could not approve overtime report',
           type: 'error',
@@ -138,6 +152,7 @@ const OvertimePage = () => {
       details: {
         otRejectReason: rejectReason,
         otStatus: 'R',
+        logDate: dateToDateFormat(reject?.logDate),
       },
     })
   }
@@ -147,6 +162,7 @@ const OvertimePage = () => {
       id: data?._id,
       details: {
         otStatus: 'A',
+        logDate: dateToDateFormat(data?.logDate),
       },
     })
   }
