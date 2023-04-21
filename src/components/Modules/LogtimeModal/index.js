@@ -83,6 +83,9 @@ function LogtimeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
+      const selectedProject = projectArray.find(
+        (p) => p?._id === values.project
+      )
       const logDateFormat = values.logDate.startOf('day').format().split('T')[0]
       if (!parseInt(values?.hours) && !parseInt(values?.minutes)) {
         setZeroHourMinutes(true)
@@ -97,10 +100,18 @@ function LogtimeModal({
               ...values,
               user: initialValues?.user._id,
               logDate: logDateFormat,
+              projectName:
+                process.env.REACT_APP_OTHER_PROJECT_ID === values.project
+                  ? undefined
+                  : selectedProject?.name || initialValues?.project?.name,
             }
           : {
               ...values,
               logDate: logDateFormat,
+              projectName:
+                process.env.REACT_APP_OTHER_PROJECT_ID === values.project
+                  ? undefined
+                  : selectedProject?.name,
             }
       )
     })
