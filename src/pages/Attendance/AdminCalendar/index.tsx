@@ -10,17 +10,18 @@ import {
   sortFromDate,
 } from 'helpers/utils'
 import {searchAttendacentOfUser} from 'services/attendances'
-import {ATTENDANCE_COLUMNS, monthlyState} from 'constants/Attendance'
+import {monthlyState} from 'constants/Attendance'
 import {getLeavesOfAllUsers} from 'services/leaves'
 import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
 import {useNavigate} from 'react-router-dom'
 import {ATTENDANCE} from 'helpers/routePath'
-import {FIRST_HALF, LEAVES_TYPES} from 'constants/Leaves'
+import {FIRST_HALF} from 'constants/Leaves'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {useSelector} from 'react-redux'
 import {getAllHolidays} from 'services/resources'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 
 const localizer = momentLocalizer(moment)
 const FormItem = Form.Item
@@ -34,6 +35,8 @@ function AdminAttendanceCalendar() {
 
   const [date, setDate] = useState(monthlyState)
   const [user, setUser] = useState<undefined | string>(undefined)
+  const {themeType} = useSelector((state: any) => state.settings)
+  const darkMode = themeType === THEME_TYPE_DARK
   const {
     currentMonth,
     thisMonthsEndDate,
@@ -74,6 +77,10 @@ function AdminAttendanceCalendar() {
       end: new Date(x.date),
       type: 'holiday',
     })
+  )
+
+  let holidaysDates: any[] = holidaysCalendar?.map((holiday: any) =>
+    MuiFormatDate(holiday?.start)
   )
 
   const handleCalendarRangeChange = (calendarDate: any) => {
@@ -118,9 +125,9 @@ function AdminAttendanceCalendar() {
       fontWeight: '500',
       height: '27px',
       padding: '5px 10px',
-      color: 'white',
+      color: darkMode ? 'white' : '#100c0ca6',
     }
-    if (isOffRange && event.type !== 'longLeaves') {
+    if (isOffRange) {
       style = {...style, display: 'none'}
     }
     if (event?.hide) {
@@ -130,14 +137,8 @@ function AdminAttendanceCalendar() {
     if (event.type === 'leave')
       style = {
         ...style,
-        backgroundColor: '#FC6BAB',
-      }
-
-    if (event.type === 'longLeaves')
-      style = {
-        ...style,
-        width: 'auto',
-        backgroundColor: '#FC6BAB',
+        padding: '4rem 1rem 0 0rem',
+        backgroundColor: 'transparent',
       }
 
     if (event.isLessHourWorked)
@@ -145,10 +146,12 @@ function AdminAttendanceCalendar() {
         ...style,
         backgroundColor: '#E14B4B',
       }
+
     if (event.type === 'holiday')
       style = {
         ...style,
-        backgroundColor: 'rgb(235 68 68)',
+        backgroundColor: 'transparent',
+        padding: '4rem 1rem 0 0',
       }
 
     return {
@@ -159,18 +162,6 @@ function AdminAttendanceCalendar() {
   let leaves: any[] = []
 
   userLeaves?.forEach((leave: any) => {
-    const isUsualLeave =
-      leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
-        LEAVES_TYPES.Casual ||
-      leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
-
-    const eventStartsInPrevMonth =
-      moment(leave?.leaveDates?.[0]) < thisMonthsStartDate
-
-    const eventEndsInNextMonth =
-      moment(leave?.leaveDates?.[leave?.leaveDates?.length - 1]) >
-      thisMonthsEndDate
-
     const eventStartsInNextMonth =
       thisMonthsEndDate < moment(leave?.leaveDates?.[0])
 
@@ -179,27 +170,48 @@ function AdminAttendanceCalendar() {
     if (leave?.halfDay) {
       extraInfo = leave?.halfDay === FIRST_HALF ? '1st' : `2nd`
     }
-
-    leaves.push({
-      id: leave?._id,
-      title: `${leave?.leaveType?.name}${
-        extraInfo ? '(' + extraInfo + ')' : ''
-      }`,
-      start: eventStartsInPrevMonth
-        ? new Date(thisMonthsStartDate?.format())
-        : new Date(leave?.leaveDates?.[0]),
-      end: new Date(
-        isUsualLeave
-          ? leave?.leaveDates?.[0]
-          : eventEndsInNextMonth
-          ? thisMonthsEndDate.format()
-          : leave?.leaveDates?.[leave?.leaveDates?.length - 1]
-      ),
-      type: isUsualLeave ? 'leave' : 'longLeaves',
-      allDay: true,
-      hide: eventStartsInNextMonth,
+    leave?.leaveDates?.forEach((date: string) => {
+      leaves.push({
+        id: leave?._id,
+        title: `${leave?.leaveType?.name}${
+          extraInfo ? '(' + extraInfo + ')' : ''
+        }`,
+        start: new Date(date),
+        end: new Date(date),
+        type: 'leave',
+        allDay: true,
+        hide: eventStartsInNextMonth,
+      })
     })
   })
+
+  let leaveDates: any[] = leaves?.map((leave) => MuiFormatDate(leave?.start))
+
+  const DayPropGetter = (date: any) => {
+    if (!user) {
+      return
+    }
+    // if the day lies in the prev month or next month don't decorate
+    if (
+      moment(date) < moment(currentMonth).startOf('month') ||
+      moment(date) > moment(currentMonth).endOf('month')
+    ) {
+      return
+    }
+
+    return {
+      ...(leaveDates?.includes(MuiFormatDate(date)) && {
+        style: {
+          backgroundColor: '#efbad280',
+        },
+      }),
+      ...(holidaysDates?.includes(MuiFormatDate(date)) && {
+        style: {
+          backgroundColor: '#d38282b3',
+        },
+      }),
+    }
+  }
 
   const attendances = data?.data?.data?.attendances?.[0]?.data?.map(
     (attendance: any) => {
@@ -319,6 +331,7 @@ function AdminAttendanceCalendar() {
             views={['month', 'week', 'day']}
             onSelectEvent={handleSelectEvent}
             onNavigate={monthChangeHandler}
+            dayPropGetter={DayPropGetter}
           />
         </div>
       </Spin>
