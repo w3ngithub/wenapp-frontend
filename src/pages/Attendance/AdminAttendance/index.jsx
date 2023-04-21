@@ -105,6 +105,8 @@ function AdminAttendance({userRole}) {
     data: [],
     loading: false,
   })
+  const [activeExpandedRow, setActiveExpandedRow] = useState([])
+
   const CSVRef = useRef()
 
   const {allocatedOfficeHours} = useSelector((state) => state.configurations)
@@ -576,6 +578,16 @@ function AdminAttendance({userRole}) {
         )}
         dataSource={formattedAttendances(sortedData)}
         expandable={{expandedRowRender}}
+        onExpandedRowsChange={function (expandedRows) {
+          if (expandedRows.length > 0) {
+            setActiveExpandedRow([
+              expandedRows[expandedRows.length - 1]?.toString(),
+            ])
+          } else {
+            setActiveExpandedRow([''])
+          }
+        }}
+        expandedRowKeys={activeExpandedRow}
         onChange={handleTableChange}
         pagination={{
           current: page.page,

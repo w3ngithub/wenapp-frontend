@@ -91,6 +91,7 @@ function UserAttendance({userRole}) {
   const [date, setDate] = useState(intialDate)
   const [attFilter, setAttFilter] = useState({id: '1', value: 'Daily'})
   const [toogle, setToogle] = useState(false)
+  const [activeExpandedRow, setActiveExpandedRow] = useState([])
 
   const user = useSelector(selectAuthUser)
 
@@ -409,6 +410,16 @@ function UserAttendance({userRole}) {
         )}
         dataSource={formattedAttendances(sortedData)}
         expandable={{expandedRowRender}}
+        onExpandedRowsChange={function (expandedRows) {
+          if (expandedRows.length > 0) {
+            setActiveExpandedRow([
+              expandedRows[expandedRows.length - 1]?.toString(),
+            ])
+          } else {
+            setActiveExpandedRow([''])
+          }
+        }}
+        expandedRowKeys={activeExpandedRow}
         onChange={handleTableChange}
         pagination={{
           current: page.page,
