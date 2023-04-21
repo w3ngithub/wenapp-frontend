@@ -84,6 +84,7 @@ function LateAttendance({userRole}: {userRole: any}) {
   const [openView, setOpenView] = useState<boolean>(false)
   const [attToView, setAttToView] = useState<any>({})
   const [openLeaveCutModal, setOpenLeaveCutModal] = useState<boolean>(false)
+  const [activeExpandedRow, setActiveExpandedRow] = useState<string[]>([])
   const [attendanceRecord, setAttendanceRecord] = useState<recordAttendance>({
     _id: {userId: '', user: ''},
     data: [{attendanceDate: '', userId: ''}],
@@ -436,6 +437,16 @@ function LateAttendance({userRole}: {userRole: any}) {
         columns={LATE_ATTENDANCE_COLUMNS(sort, hanldeLeaveCutModal, userRole)}
         dataSource={formattedAttendances(formattedAttendaces)}
         expandable={{expandedRowRender}}
+        onExpandedRowsChange={function (expandedRows) {
+          if (expandedRows.length > 0) {
+            setActiveExpandedRow([
+              expandedRows[expandedRows.length - 1]?.toString(),
+            ])
+          } else {
+            setActiveExpandedRow([''])
+          }
+        }}
+        expandedRowKeys={activeExpandedRow}
         onChange={handleTableChange}
         loading={isFetching}
         pagination={{

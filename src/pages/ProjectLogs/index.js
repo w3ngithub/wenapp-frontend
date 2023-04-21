@@ -72,6 +72,7 @@ function ProjectLogs() {
 
   const [projectId] = slug.split('-')
   const {
+    _id: userId,
     name,
     role: {permission, key},
   } = useSelector(selectAuthUser)
@@ -126,8 +127,9 @@ function ProjectLogs() {
       ) {
         socket.emit('ot-log', {
           showTo: [RoleAccess.Admin],
-          remarks: `${name} has added OT logtime. Please review.`,
+          remarks: `${name} has added OT logtime for project ${projectSlug}. Please review.`,
           module: 'Logtime',
+          extraInfo: JSON.stringify({userId}),
         })
       }
       handleResponse(
@@ -160,8 +162,9 @@ function ProjectLogs() {
         ) {
           socket.emit('ot-log', {
             showTo: [RoleAccess.Admin],
-            remarks: `${name} has added OT logtime. Please review.`,
+            remarks: `${name} has added OT logtime for project ${projectSlug}. Please review.`,
             module: 'Logtime',
+            extraInfo: JSON.stringify({userId}),
           })
         }
         handleResponse(
