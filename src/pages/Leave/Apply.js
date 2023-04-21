@@ -104,7 +104,7 @@ function Apply({
   const datePIckerRef = useRef()
 
   const handleOutsideClick = (event) => {
-    if (datePIckerRef && !datePIckerRef.current.contains(event.target)) {
+    if (datePIckerRef && !datePIckerRef?.current?.contains(event?.target)) {
       setDatepickerOpen(false)
     }
   }
@@ -415,24 +415,32 @@ function Apply({
         (data) => data?.value === 'Substitute'
       )
       if (isSubstitute?.id === form.getFieldValue('leaveType')) {
+        let substituteLeaveTaken = 0
+        const hasSubstitute =
+          userSubstituteLeave?.data?.data?.data?.data.filter(
+            (sub) =>
+              sub?.leaveType?.name === 'Substitute Leave' &&
+              sub?.leaveStatus === 'approved'
+          )
+        hasSubstitute.forEach((e) => {
+          substituteLeaveTaken += e.leaveDates.length
+        })
+
+        if (substituteLeaveTaken >= isSubstitute?.leaveDays) {
+          return notification({
+            type: 'error',
+            message: 'Substitute Leave Already Taken',
+          })
+        }
+
         if (
-          form.getFieldValue('leaveDatesCasual')?.length >
+          substituteLeaveTaken +
+            form.getFieldValue('leaveDatesCasual')?.length >
           isSubstitute?.leaveDays
         ) {
           return notification({
             type: 'error',
             message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} day`,
-          })
-        }
-        let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
-          (sub) =>
-            sub?.leaveType?.name === 'Substitute Leave' &&
-            sub?.leaveStatus === 'approved'
-        )
-        if (hasSubstitute) {
-          return notification({
-            type: 'error',
-            message: 'Substitute Leave Already Taken',
           })
         }
       }
