@@ -89,7 +89,6 @@ function OtherLogTime() {
 
   const handleReset = () => {
     setDateFilter({id: '1', value: 'Daily'})
-
     setLogType(undefined)
     setPage(defaultPageSize)
     setUser(undefined)
