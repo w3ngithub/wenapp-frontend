@@ -25,6 +25,7 @@ import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {socket} from 'pages/Main'
 import {notification} from 'helpers/notification'
 import {dateToDateFormat} from 'helpers/utils'
+import {useLocation} from 'react-router'
 
 const formattedReports = (overtimeData) => {
   return overtimeData?.map((log) => ({
@@ -44,6 +45,7 @@ const formattedReports = (overtimeData) => {
 const FormItem = Form.Item
 
 const OvertimePage = () => {
+  const location = useLocation()
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
   const [sort, setSort] = useState({})
@@ -52,7 +54,7 @@ const OvertimePage = () => {
   const [approveDetails, setApproveDetails] = useState({})
   const [isViewOnly, setIsViewOnly] = useState(false)
   const [readOnlyApproveReason, setReadonlyApproveReason] = useState('')
-  const [author, setAuthor] = useState(undefined)
+  const [author, setAuthor] = useState(location?.state?.extraData)
   const [otStatus, setOtStatus] = useState('')
   const [projectData, setProjectData] = useState([])
   const [project, setProject] = useState(undefined)
@@ -122,6 +124,8 @@ const OvertimePage = () => {
                 showTo: [response.data.data.data.user._id],
                 remarks: `Your OT has been ${
                   LOG_STATUS[response.data?.data?.data?.otStatus]
+                } for project ${
+                  response?.data?.data?.data?.project?.name || 'Other'
                 }.`,
                 module: 'Logtime',
               })
