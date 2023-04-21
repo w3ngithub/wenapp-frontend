@@ -102,7 +102,7 @@ function LogtimeModal({
               logDate: logDateFormat,
               projectName:
                 process.env.REACT_APP_OTHER_PROJECT_ID === values.project
-                  ? undefined
+                  ? 'Other'
                   : selectedProject?.name || initialValues?.project?.name,
             }
           : {
@@ -110,7 +110,7 @@ function LogtimeModal({
               logDate: logDateFormat,
               projectName:
                 process.env.REACT_APP_OTHER_PROJECT_ID === values.project
-                  ? undefined
+                  ? 'Other'
                   : selectedProject?.name,
             }
       )
