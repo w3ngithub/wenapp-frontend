@@ -90,7 +90,7 @@ function LatePunchedIn({latePunchInSection}: {latePunchInSection: any}) {
             </Button>,
           ]}
         >
-          <p style={{fontSize: '18px'}}>{lateReason}</p>
+          <p style={{fontSize: '14px'}}>{lateReason}</p>
         </Modal>
       )}
       <Table
