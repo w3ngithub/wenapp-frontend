@@ -12,7 +12,7 @@ import {
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
 import {
   addUserTimeLog,
   deleteTimeLog,
@@ -54,9 +54,9 @@ function LogTimes() {
   const [page, setPage] = useState({page: 1, limit: 50})
   const [openModal, setOpenModal] = useState(false)
   const [isAdminTimeLog, setIsAdminTimeLog] = useState(false)
-
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
+  const projectNameRef = useRef('')
 
   const {
     _id,
@@ -101,7 +101,7 @@ function LogTimes() {
       ) {
         socket.emit('ot-log', {
           showTo: [RoleAccess.Admin],
-          remarks: `${idUser?.name} has added OT logtime. Please review.`,
+          remarks: `${idUser?.name} has added OT logtime for project ${projectNameRef.current}. Please review.`,
           module: 'Logtime',
         })
       }
@@ -131,7 +131,7 @@ function LogTimes() {
         ) {
           socket.emit('ot-log', {
             showTo: [RoleAccess.Admin],
-            remarks: `${idUser?.name} has added OT logtime. Please review.`,
+            remarks: `${idUser?.name} has added OT logtime for project ${projectNameRef.current}. Please review.`,
             module: 'Logtime',
           })
         }
@@ -227,6 +227,7 @@ function LogTimes() {
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
+    projectNameRef.current = newLogtime?.projectName
     let formattedNewLogtime = {
       ...newLogtime,
       hours: +newLogtime.hours,

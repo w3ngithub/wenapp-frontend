@@ -127,7 +127,7 @@ function ProjectLogs() {
       ) {
         socket.emit('ot-log', {
           showTo: [RoleAccess.Admin],
-          remarks: `${name} has added OT logtime. Please review.`,
+          remarks: `${name} has added OT logtime for project ${projectSlug}. Please review.`,
           module: 'Logtime',
         })
       }
@@ -161,7 +161,7 @@ function ProjectLogs() {
         ) {
           socket.emit('ot-log', {
             showTo: [RoleAccess.Admin],
-            remarks: `${name} has added OT logtime. Please review.`,
+            remarks: `${name} has added OT logtime for project ${projectSlug}. Please review.`,
             module: 'Logtime',
           })
         }
