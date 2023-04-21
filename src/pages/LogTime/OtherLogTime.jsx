@@ -21,7 +21,12 @@ import {
   updateTimeLog,
 } from 'services/timeLogs'
 import TimeSummary from './TimeSummary'
-import {intialDate} from 'constants/Attendance'
+import {
+  attendanceFilter,
+  intialDate,
+  monthlyState,
+  weeklyState,
+} from 'constants/Attendance'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -31,6 +36,7 @@ import RangePicker from 'components/Elements/RangePicker'
 import {getAllUsers} from 'services/users/userDetails'
 import Select from 'components/Elements/Select'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
+import {disabledAfterToday} from 'util/antDatePickerDisabled'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -61,6 +67,7 @@ function OtherLogTime() {
 
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
+  const [dateFilter, setDateFilter] = useState({id: '1', value: 'Daily'})
 
   const {
     role: {key, permission},
@@ -163,6 +170,27 @@ function OtherLogTime() {
     },
   })
 
+  const handleOptionChange = (val) => {
+    setDateFilter(val)
+    switch (val) {
+      case 1:
+        setDate(intialDate)
+
+        break
+      case 2:
+        setDate(weeklyState)
+
+        break
+      case 3:
+        setDate(monthlyState)
+
+        break
+
+      default:
+        break
+    }
+  }
+
   const handleTableChange = (pagination, filters, sorter) => {
     setSort(sorter)
   }
@@ -260,9 +288,19 @@ function OtherLogTime() {
         <div className="gx-d-flex gx-justify-content-between gx-flex-row">
           <Form layout="inline">
             <FormItem>
-              <RangePicker handleChangeDate={handleChangeDate} date={date} />
+              <RangePicker
+                handleChangeDate={handleChangeDate}
+                date={date}
+                disabledDate={disabledAfterToday}
+              />
             </FormItem>
-
+            <FormItem className="direct-form-item">
+              <Select
+                onChange={handleOptionChange}
+                value={dateFilter}
+                options={attendanceFilter}
+              />
+            </FormItem>
             <FormItem className="direct-form-item">
               <Select
                 placeholderClass={PLACE_HOLDER_CLASS}
