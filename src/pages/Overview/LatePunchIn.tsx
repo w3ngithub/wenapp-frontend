@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Card, Table} from 'antd'
+import {Button, Card, Modal, Table} from 'antd'
 import {OVERVIEW_LATEPUNCHIN} from 'constants/Overview'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {LATE_ARRIVAL_KEY, decrypt} from 'util/crypto'
@@ -13,6 +13,8 @@ function LatePunchedIn({latePunchInSection}: {latePunchInSection: any}) {
     field: 'name',
     columnKey: 'name',
   })
+  const [lateModal, setLateModal] = useState(false)
+  const [lateReason, setLateReason] = useState('')
   const [page, setPage] = useState({page: 1, limit: 50})
 
   const sortedData = (datas: any[]) => {
@@ -45,6 +47,7 @@ function LatePunchedIn({latePunchInSection}: {latePunchInSection: any}) {
           ? moment(att?.data?.[0]?.punchOutTime).format('LTS')
           : 'N/A',
         lateBy,
+        lateReason: att?.data?.[0]?.punchInNote,
       }
     })
   }
@@ -68,12 +71,32 @@ function LatePunchedIn({latePunchInSection}: {latePunchInSection: any}) {
   const handleTableChange = (pagination: any, filters: any, sorter: any) => {
     setSort(sorter)
   }
+
+  const handleToggleModal = (lateReason: string) => {
+    setLateModal((prev) => !prev)
+    setLateReason(lateReason)
+  }
   return (
     <Card title={''}>
+      {lateModal && (
+        <Modal
+          title={'Late Punch In Reason'}
+          visible={lateModal}
+          mask={false}
+          onCancel={() => setLateModal(false)}
+          footer={[
+            <Button key="back" onClick={() => setLateModal(false)}>
+              Close
+            </Button>,
+          ]}
+        >
+          <p style={{fontSize: '18px'}}>{lateReason}</p>
+        </Modal>
+      )}
       <Table
         locale={{emptyText}}
         className="gx-table-responsive"
-        columns={OVERVIEW_LATEPUNCHIN(sort)}
+        columns={OVERVIEW_LATEPUNCHIN(sort, handleToggleModal)}
         dataSource={formattedAttendancesFunction(formattedAttendacesData)}
         onChange={handleTableChange}
         pagination={{
