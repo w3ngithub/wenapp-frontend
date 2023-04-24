@@ -112,7 +112,7 @@ function LeaveModal({
   showWorker: boolean
 }) {
   const queryClient = useQueryClient()
-  const [colorState, setColorState] = useState(true)
+  const colorState = useRef<any>()
   const [datePickerValue, setDatePickerValue] = useState([])
   const [form] = Form.useForm()
   const [leaveType, setLeaveType] = useState<leaveTypeInterface>({})
@@ -1101,11 +1101,11 @@ function LeaveModal({
                         } else {
                           if (disableSelectedDate || editLeave) {
                             return {
-                              onClick: () => setColorState(false),
+                              onClick: () => (colorState.current = false),
                               disabled: false,
                               style: {
-                                color: colorState ? 'white' : 'null',
-                                backgroundColor: colorState
+                                color: colorState.current ? 'white' : 'null',
+                                backgroundColor: colorState.current
                                   ? '#0074d9'
                                   : 'null',
                               },
