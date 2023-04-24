@@ -144,7 +144,11 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
     }
   }, [visible])
 
-  const handleNotificationClick = (module: String, showTo: any[]) => {
+  const handleNotificationClick = (
+    module: String,
+    showTo: any[],
+    extraInfo: any
+  ) => {
     switch (module) {
       case 'Blog':
         navigate(BLOG)
@@ -178,7 +182,12 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
 
       case 'Logtime':
         if (showTo[0] === RoleAccess.Admin) {
-          navigate(`${REPORTS}/${OVERTIME_REPORT}`)
+          const extraData = JSON.parse(extraInfo)?.userId
+          navigate(`${REPORTS}/${OVERTIME_REPORT}`, {
+            state: {
+              extraData,
+            },
+          })
         } else {
           navigate(`${LOGTIME}/${USER_TIME_LOG}`)
         }
@@ -216,7 +225,11 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
                 NOTIFICATION_TO_CLICK.includes(log?.module) ? 'gx-link' : ''
               }
               onClick={() => {
-                handleNotificationClick(log?.module, log?.showTo)
+                handleNotificationClick(
+                  log?.module,
+                  log?.showTo,
+                  log?.extraInfo
+                )
               }}
               key={1}
             >

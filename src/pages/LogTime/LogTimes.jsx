@@ -102,6 +102,7 @@ function LogTimes() {
         socket.emit('ot-log', {
           showTo: [RoleAccess.Admin],
           remarks: `${idUser?.name} has added OT logtime for project ${projectNameRef.current}. Please review.`,
+          extraInfo: JSON.stringify({userId: idUser?._id}),
           module: 'Logtime',
         })
       }
@@ -133,6 +134,7 @@ function LogTimes() {
             showTo: [RoleAccess.Admin],
             remarks: `${idUser?.name} has added OT logtime for project ${projectNameRef.current}. Please review.`,
             module: 'Logtime',
+            extraInfo: JSON.stringify({userId: idUser?._id}),
           })
         }
         handleResponse(
