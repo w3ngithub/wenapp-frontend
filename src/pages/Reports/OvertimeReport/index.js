@@ -90,9 +90,13 @@ const OvertimePage = () => {
           : '',
         sort:
           sort.order === undefined || sort.column === undefined
-            ? '-logDate'
+            ? '-logDate,-createdAt'
             : sort.order === 'ascend'
-            ? sort.field
+            ? sort.field === 'logDate'
+              ? `${sort.field},createdAt`
+              : sort.field
+            : sort.field === 'logDate'
+            ? `-${sort.field},-createdAt`
             : `-${sort.field}`,
       })
   )
