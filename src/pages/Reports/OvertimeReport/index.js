@@ -50,7 +50,6 @@ const OvertimePage = () => {
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
   const [sort, setSort] = useState({})
-  console.log(sort.field)
   const [page, setPage] = useState({page: 1, limit: 50})
   const [openOvertimeModal, setOpenOvertimeModal] = useState(false)
   const [approveDetails, setApproveDetails] = useState({})
