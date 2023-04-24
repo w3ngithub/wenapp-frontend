@@ -469,6 +469,8 @@ function LeaveModal({
   useEffect(() => {
     if (open) {
       if (isEditMode) {
+        setCalendarClicked(true)
+
         form.setFieldsValue({
           leaveType: leaveData.leaveType._id,
           leaveDatesCasual: leaveData?.leaveDates,
@@ -501,6 +503,11 @@ function LeaveModal({
       setUser('')
     }
   }, [open])
+  useEffect(() => {
+    if (isEditMode && leaveData?.leaveDates?.length > 1) {
+      calendarClickHandler()
+    }
+  }, [])
 
   let userLeaves: any[] = []
 
@@ -632,7 +639,9 @@ function LeaveModal({
         let leaveDate = userLeaves?.filter(
           (leave) => leave.date === formattedDate?.[0]?.split('-')?.join('/')
         )
+
         let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
+
         if (specificHalf === FIRST_HALF) {
           form.setFieldValue('halfDay', SECOND_HALF)
         } else if (specificHalf === SECOND_HALF) {
@@ -640,6 +649,10 @@ function LeaveModal({
         } else {
           form.setFieldValue('halfDay', FULL_DAY)
         }
+      }
+
+      if (selectedDates?.length > 1) {
+        setMultipleDatesSelected(true)
       }
     } else {
       setCalendarClicked(false)
@@ -653,6 +666,7 @@ function LeaveModal({
   function handleOpenChange() {
     setDatepickerOpen(true)
   }
+
   return (
     <Modal
       width={1100}
