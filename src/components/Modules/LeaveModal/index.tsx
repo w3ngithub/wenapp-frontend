@@ -136,6 +136,8 @@ function LeaveModal({
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+  const [yearStartDate, setYearStartDate] = useState<any>(undefined)
+  const [yearEndDate, setYearEndDate] = useState<any>(undefined)
 
   const [fromDate, setFromDate] = useState<any>(
     `${MuiFormatDate(firstDay)}T00:00:00Z`
@@ -175,6 +177,12 @@ function LeaveModal({
   })
   const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
     getAllHolidays({sort: '-createdAt', limit: '1'})
+  )
+  const userSubstituteLeave = useQuery(
+    ['substitute', yearStartDate, yearEndDate],
+    () =>
+      getLeavesOfUser(user, '', undefined, 1, 30, yearStartDate, yearEndDate),
+    {enabled: !!yearStartDate && !!yearEndDate}
   )
 
   const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays
@@ -301,6 +309,41 @@ function LeaveModal({
                 )
               }
             }
+          })
+        }
+      }
+
+      //calculation for substitute leaves
+      const isSubstitute = leaveTypeQuery?.data?.find(
+        (data) => data?.value === 'Substitute'
+      )
+      if (isSubstitute?.id === form.getFieldValue('leaveType')) {
+        let substituteLeaveTaken = 0
+        const hasSubstitute =
+          userSubstituteLeave?.data?.data?.data?.data.filter(
+            (sub: any) =>
+              sub?.leaveType?.name === 'Substitute Leave' &&
+              sub?.leaveStatus === 'approved'
+          )
+        hasSubstitute.forEach((e: any) => {
+          substituteLeaveTaken += e.leaveDates.length
+        })
+
+        if (substituteLeaveTaken >= isSubstitute?.leaveDays) {
+          return notification({
+            type: 'error',
+            message: 'Substitute Leave Already Taken',
+          })
+        }
+
+        if (
+          substituteLeaveTaken +
+            form.getFieldValue('leaveDatesCasual')?.length >
+          isSubstitute?.leaveDays
+        ) {
+          return notification({
+            type: 'error',
+            message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} day`,
           })
         }
       }
@@ -479,8 +522,18 @@ function LeaveModal({
     }
   })
 
-  const {data: leaveQuarter} = useQuery(['leaveQuarter'], () =>
-    getLeaveQuarter()
+  const {data: leaveQuarter} = useQuery(
+    ['leaveQuarter'],
+    () => getLeaveQuarter(),
+    {
+      onSuccess: (data) => {
+        const quarterLength = data?.data?.data?.data?.[0]?.quarters?.length - 1
+        setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
+        setYearEndDate(
+          data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
+        )
+      },
+    }
   )
 
   const disableSpecialHoliday = (current: any) => {
