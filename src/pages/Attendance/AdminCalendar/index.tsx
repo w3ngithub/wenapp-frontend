@@ -22,6 +22,7 @@ import {useSelector} from 'react-redux'
 import {getAllHolidays} from 'services/resources'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
+import useWindowsSize from 'hooks/useWindowsSize'
 
 const localizer = momentLocalizer(moment)
 const FormItem = Form.Item
@@ -36,13 +37,11 @@ function AdminAttendanceCalendar() {
   const [date, setDate] = useState(monthlyState)
   const [user, setUser] = useState<undefined | string>(undefined)
   const {themeType} = useSelector((state: any) => state.settings)
+  const {innerWidth} = useWindowsSize()
+
   const darkMode = themeType === THEME_TYPE_DARK
-  const {
-    currentMonth,
-    thisMonthsEndDate,
-    thisMonthsStartDate,
-    monthChangeHandler,
-  } = useCleanCalendar()
+  const {currentMonth, thisMonthsEndDate, monthChangeHandler} =
+    useCleanCalendar()
 
   const {data: users, isLoading} = useQuery(['userForAttendances'], () =>
     getAllUsers({fields: 'name'})
@@ -151,7 +150,10 @@ function AdminAttendanceCalendar() {
       style = {
         ...style,
         backgroundColor: 'transparent',
-        padding: '4rem 1rem 0 0',
+        padding:
+          innerWidth < 1556 && event?.title?.length > 19
+            ? '3rem 3px 0 1.1rem'
+            : '4rem 0.3rem 0 0',
       }
 
     return {
