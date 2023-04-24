@@ -1,5 +1,5 @@
 import {Button, Card, Form, Input, Table, Typography} from 'antd'
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
@@ -46,6 +46,7 @@ const FormItem = Form.Item
 
 const OvertimePage = () => {
   const location = useLocation()
+  const otAuthorId = location?.state?.extraData
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
   const [sort, setSort] = useState({})
@@ -54,13 +55,19 @@ const OvertimePage = () => {
   const [approveDetails, setApproveDetails] = useState({})
   const [isViewOnly, setIsViewOnly] = useState(false)
   const [readOnlyApproveReason, setReadonlyApproveReason] = useState('')
-  const [author, setAuthor] = useState(location?.state?.extraData)
+  const [author, setAuthor] = useState(otAuthorId)
   const [otStatus, setOtStatus] = useState('')
   const [projectData, setProjectData] = useState([])
   const [project, setProject] = useState(undefined)
   const [rangeDate, setRangeDate] = useState(undefined)
 
   const allUsers = useQuery(['users'], () => getAllUsers({sort: 'name'}))
+
+  useEffect(() => {
+    if (otAuthorId) {
+      setAuthor(otAuthorId)
+    }
+  }, [otAuthorId])
 
   const {
     data: logTimeDetails,
@@ -83,9 +90,13 @@ const OvertimePage = () => {
           : '',
         sort:
           sort.order === undefined || sort.column === undefined
-            ? '-logDate'
+            ? '-logDate,-createdAt'
             : sort.order === 'ascend'
-            ? sort.field
+            ? sort.field === 'logDate'
+              ? `${sort.field},createdAt`
+              : sort.field
+            : sort.field === 'logDate'
+            ? `-${sort.field},-createdAt`
             : `-${sort.field}`,
       })
   )
