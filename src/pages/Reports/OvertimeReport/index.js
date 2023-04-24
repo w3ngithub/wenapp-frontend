@@ -46,6 +46,7 @@ const FormItem = Form.Item
 
 const OvertimePage = () => {
   const location = useLocation()
+  const otAuthorId = location?.state?.extraData
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
   const [sort, setSort] = useState({})
@@ -54,7 +55,7 @@ const OvertimePage = () => {
   const [approveDetails, setApproveDetails] = useState({})
   const [isViewOnly, setIsViewOnly] = useState(false)
   const [readOnlyApproveReason, setReadonlyApproveReason] = useState('')
-  const [author, setAuthor] = useState(location?.state?.extraData)
+  const [author, setAuthor] = useState(otAuthorId)
   const [otStatus, setOtStatus] = useState('')
   const [projectData, setProjectData] = useState([])
   const [project, setProject] = useState(undefined)
@@ -63,10 +64,10 @@ const OvertimePage = () => {
   const allUsers = useQuery(['users'], () => getAllUsers({sort: 'name'}))
 
   useEffect(() => {
-    if (location?.state?.extraData) {
-      setAuthor(location?.state?.extraData)
+    if (otAuthorId) {
+      setAuthor(otAuthorId)
     }
-  }, [location?.state?.extraData])
+  }, [otAuthorId])
 
   const {
     data: logTimeDetails,
