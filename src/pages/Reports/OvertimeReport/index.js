@@ -1,5 +1,5 @@
 import {Button, Card, Form, Input, Table, Typography} from 'antd'
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
@@ -61,6 +61,12 @@ const OvertimePage = () => {
   const [rangeDate, setRangeDate] = useState(undefined)
 
   const allUsers = useQuery(['users'], () => getAllUsers({sort: 'name'}))
+
+  useEffect(() => {
+    if (location?.state?.extraData) {
+      setAuthor(location?.state?.extraData)
+    }
+  }, [location?.state?.extraData])
 
   const {
     data: logTimeDetails,
