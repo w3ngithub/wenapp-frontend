@@ -131,7 +131,10 @@ function AttendanceCalendar() {
       style = {
         ...style,
         backgroundColor: 'transparent',
-        padding: '4rem 1rem 0 0',
+        padding:
+          innerWidth < 1556 && event?.title?.length > 19
+            ? '3rem 3px 0 1.1rem'
+            : '4rem 0.3rem 0 0',
       }
 
     return {
@@ -184,7 +187,7 @@ function AttendanceCalendar() {
       }),
       ...(holidaysDates?.includes(MuiFormatDate(date)) && {
         style: {
-          backgroundColor: '#d38282b3',
+          backgroundColor: '#d3828259',
         },
       }),
     }
