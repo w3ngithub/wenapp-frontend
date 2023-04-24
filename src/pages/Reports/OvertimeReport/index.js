@@ -50,6 +50,7 @@ const OvertimePage = () => {
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
   const [sort, setSort] = useState({})
+  console.log(sort.field)
   const [page, setPage] = useState({page: 1, limit: 50})
   const [openOvertimeModal, setOpenOvertimeModal] = useState(false)
   const [approveDetails, setApproveDetails] = useState({})
@@ -90,9 +91,13 @@ const OvertimePage = () => {
           : '',
         sort:
           sort.order === undefined || sort.column === undefined
-            ? '-logDate'
+            ? '-logDate,-createdAt'
             : sort.order === 'ascend'
-            ? sort.field
+            ? sort.field === 'logDate'
+              ? `${sort.field},createdAt`
+              : sort.field
+            : sort.field === 'logDate'
+            ? `-${sort.field},-createdAt`
             : `-${sort.field}`,
       })
   )
