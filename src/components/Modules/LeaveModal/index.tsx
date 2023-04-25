@@ -66,6 +66,8 @@ import {storage} from 'firebase'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {CANCEL_TEXT} from 'constants/Common'
 import {getAllHolidays} from 'services/resources'
+import {APPROVED} from 'constants/LeaveStatus'
+import {FULLDAY} from 'constants/HalfDays'
 
 const {Option} = Select
 
@@ -392,11 +394,10 @@ function LeaveModal({
                 reason: values.reason,
                 leaveType: values.leaveType,
                 halfDay:
-                  values?.halfDay === 'full-day' ||
-                  values?.halfDay === 'Full Day'
+                  values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
                     ? ''
                     : values?.halfDay,
-                leaveStatus: appliedDate ? 'approved' : 'pending',
+                leaveStatus: APPROVED,
                 leaveDocument: downloadURL,
               }
               setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
@@ -418,10 +419,10 @@ function LeaveModal({
           leaveDates: LeaveDaysUTC,
           leaveType: values.leaveType,
           halfDay:
-            values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
+            values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
               ? ''
               : values?.halfDay,
-          leaveStatus: appliedDate ? 'approved' : 'pending',
+          leaveStatus: APPROVED,
           leaveDocument: !isDocumentDeleted ? leaveData.leaveDocument : '',
         }
         setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
