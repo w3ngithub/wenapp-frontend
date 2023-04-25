@@ -173,17 +173,16 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
         return
 
       case 'Attendance':
-        navigate(LEAVE, {state: {tabKey: '2'}})
+        if (showTo[0] === RoleAccess.Admin) {
+          navigate(SETTINGS, {state: {tabKey: '3'}})
+        } else {
+          navigate(LEAVE, {state: {tabKey: '2'}})
+        }
         setVisible(false)
         return
 
       case 'User':
         navigate(COWORKERS)
-        setVisible(false)
-        return
-
-      case 'Setting_Attendance':
-        navigate(SETTINGS, {state: {tabKey: '3'}})
         setVisible(false)
         return
 
