@@ -17,7 +17,7 @@ const TabPane = Tabs.TabPane
 
 function Settings() {
   const location: any = useLocation()
-  const [activeKey, setActiveKey] = useState(location?.state?.tabKey || '')
+  const [activeKey, setActiveKey] = useState(location?.state?.tabKey || '1')
   const {
     role: {
       permission: {Settings},
@@ -29,7 +29,7 @@ function Settings() {
   }
 
   useEffect(() => {
-    if (location.state.tabKey === '3') setActiveKey(location?.state?.tabKey)
+    if (location?.state?.tabKey === '3') setActiveKey(location?.state?.tabKey)
   }, [location?.state])
 
   return (
