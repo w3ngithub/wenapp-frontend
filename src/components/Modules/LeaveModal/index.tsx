@@ -212,7 +212,7 @@ function LeaveModal({
       const leaveDates = leaveTypes?.isSpecial
         ? [finalData?.leaveDates?.[0], finalData?.leaveDates?.at(-1)]
             ?.map((date) => changeDate(date))
-            ?.join('-')
+            ?.join(' - ')
         : finalData?.leaveDates.map((d: any) => changeDate(d))
 
       handleResponse(
@@ -249,7 +249,7 @@ function LeaveModal({
   })
 
   const leaveUpdateMutation = useMutation((leave: any) => updateLeave(leave), {
-    onSuccess: (response) => {
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Leave updated successfully',
@@ -276,8 +276,7 @@ function LeaveModal({
               setIsDocumentDeleted(false)
             ),
         ]
-      )
-    },
+      ),
     onError: (error) => {
       notification({message: 'Leave update failed!', type: 'error'})
     },
