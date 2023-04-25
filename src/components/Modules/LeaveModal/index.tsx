@@ -400,7 +400,7 @@ function LeaveModal({
                   values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
                     ? ''
                     : values?.halfDay,
-                leaveStatus: adminOpened ? APPROVED : PENDING,
+                leaveStatus: adminOpened || appliedDate ? APPROVED : PENDING,
                 leaveDocument: downloadURL,
               }
               setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
@@ -425,7 +425,7 @@ function LeaveModal({
             values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
               ? ''
               : values?.halfDay,
-          leaveStatus: adminOpened ? APPROVED : PENDING,
+          leaveStatus: adminOpened || appliedDate ? APPROVED : PENDING,
           leaveDocument: !isDocumentDeleted ? leaveData.leaveDocument : '',
         }
         setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
