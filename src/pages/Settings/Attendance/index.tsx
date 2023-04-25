@@ -59,7 +59,7 @@ function Attendance() {
               )
               socket.emit('setting-attendance', {
                 showTo: [RoleAccess.Admin],
-                remarks: `Office hour has changed to ${response?.data?.data?.officeHour} hours.`,
+                remarks: `Office hour has been changed to ${response?.data?.data?.officeHour} hours.`,
                 module: 'Setting_Attendance',
               })
             }
