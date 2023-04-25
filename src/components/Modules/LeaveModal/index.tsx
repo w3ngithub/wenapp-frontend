@@ -69,6 +69,7 @@ import {getAllHolidays} from 'services/resources'
 import {APPROVED, PENDING} from 'constants/LeaveStatus'
 import {FULLDAY} from 'constants/HalfDays'
 import {FaLaptopHouse} from 'react-icons/fa'
+import {changeDate} from 'helpers/utils'
 
 const {Option} = Select
 
@@ -203,7 +204,17 @@ function LeaveModal({
   )
 
   const leaveMutation = useMutation((leave: any) => createLeaveOfUser(leave), {
-    onSuccess: (response) =>
+    onSuccess: (response) => {
+      const finalData = response?.data?.data?.data
+      const leaveTypes = leaveTypeQuery?.data?.find(
+        (data: any) => data.id === response?.data?.data?.data?.leaveType
+      )
+      const leaveDates = leaveTypes?.isSpecial
+        ? [finalData?.leaveDates?.[0], finalData?.leaveDates?.at(-1)]
+            ?.map((date) => changeDate(date))
+            ?.join(' - ')
+        : finalData?.leaveDates.map((d: any) => changeDate(d))
+
       handleResponse(
         response,
         'Leave created successfully',
@@ -215,6 +226,12 @@ function LeaveModal({
             socket.emit('CUD')
           },
           () =>
+            socket.emit('approve-leave', {
+              showTo: [response.data.data.data.user],
+              remarks: `Your leave has been added for ${leaveDates}`,
+              module: 'Leave',
+            }),
+          () =>
             onClose(
               setSpecificHalf,
               setHalfLeaveApproved,
@@ -224,7 +241,8 @@ function LeaveModal({
               setIsDocumentDeleted
             ),
         ]
-      ),
+      )
+    },
     onError: (error) => {
       notification({message: 'Leave creation failed!', type: 'error'})
     },
@@ -242,6 +260,12 @@ function LeaveModal({
           () => {
             socket.emit('CUD')
           },
+          () =>
+            socket.emit('approve-leave', {
+              showTo: [response.data.data.data.user._id],
+              remarks: `Your leave has been approved.`,
+              module: 'Leave',
+            }),
           () =>
             onClose(
               setSpecificHalf,
