@@ -39,6 +39,8 @@ function ProjectModal({
   qas,
   devops,
   isFromLog = false,
+  clearModal,
+  setClearModal,
 }) {
   const [form] = Form.useForm()
   const [projectTypes, setProjectTypes] = useState([])
@@ -104,8 +106,6 @@ function ProjectModal({
           },
         ],
       })
-      setMaintenance([])
-      form.resetFields()
     })
   }
 
@@ -301,6 +301,14 @@ function ProjectModal({
       setProjectStatuses(statuses?.data?.data?.data)
     }
   }, [startDate])
+
+  useEffect(() => {
+    if (clearModal) {
+      form.resetFields()
+      setMaintenance([])
+      setClearModal(false)
+    }
+  }, [clearModal])
 
   const handleDateChange = (e, time) => {
     if (time === 'start') {
