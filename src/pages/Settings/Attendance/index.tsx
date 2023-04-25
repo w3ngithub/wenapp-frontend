@@ -14,6 +14,7 @@ import {
   getLateArrivalThreshold,
 } from 'appRedux/actions/Configurations'
 import {socket} from 'pages/Main'
+import RoleAccess from 'constants/RoleAccess'
 
 function Attendance() {
   const queryClient = useQueryClient()
@@ -26,7 +27,8 @@ function Attendance() {
   const [openModal, setOpenModal] = useState(false)
 
   const editLateArrivalMutation = useMutation(editAttendanceParams, {
-    onSuccess: (response) =>
+    onSuccess: (response) => {
+      console.log('response', response)
       handleResponse(
         response,
         'Attendance parameter updated successfully',
@@ -44,6 +46,11 @@ function Attendance() {
                 )
               )
               socket.emit('CUD')
+              socket.emit('setting-attendance', {
+                showTo: [RoleAccess.Admin],
+                remarks: `Late arrival threshold has been changed to ${response?.data?.data?.lateArrivalThreshold} minutes.`,
+                module: 'Setting_Attendance',
+              })
             } else if (
               response.status &&
               response?.data?.data?.hasOwnProperty('officeHour')
@@ -51,10 +58,16 @@ function Attendance() {
               dispatch(
                 getAllocatedOfficeHours(response?.data?.data?.officeHour)
               )
+              socket.emit('setting-attendance', {
+                showTo: [RoleAccess.Admin],
+                remarks: `Office hour has changed to ${response?.data?.data?.officeHour} hours.`,
+                module: 'Setting_Attendance',
+              })
             }
           },
         ]
-      ),
+      )
+    },
     onError: (error) => {
       notification({
         message: 'Attendance parameter update failed!',

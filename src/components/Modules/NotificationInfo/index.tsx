@@ -24,6 +24,7 @@ import {
 import {NOTIFICATION_ICONS} from 'constants/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
 import RoleAccess from 'constants/RoleAccess'
+import {SETTINGS} from 'helpers/routePath'
 
 const NOTIFICATION_TO_CLICK = [
   'Blog',
@@ -32,6 +33,7 @@ const NOTIFICATION_TO_CLICK = [
   'User',
   'Attendance',
   'Logtime',
+  'Setting_Attendance',
 ]
 
 function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
@@ -177,6 +179,11 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
 
       case 'User':
         navigate(COWORKERS)
+        setVisible(false)
+        return
+
+      case 'Setting_Attendance':
+        navigate(SETTINGS, {state: {tabKey: '3'}})
         setVisible(false)
         return
 
