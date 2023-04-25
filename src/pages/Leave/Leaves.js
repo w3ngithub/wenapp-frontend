@@ -346,6 +346,7 @@ function Leaves({
           onClose={handleCloseModal}
           users={usersQuery?.data?.data?.data?.data}
           readOnly={readOnly}
+          adminOpened={true}
         />
       )}
       {openApproveLeaveModal && (

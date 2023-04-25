@@ -66,6 +66,9 @@ import {storage} from 'firebase'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {CANCEL_TEXT} from 'constants/Common'
 import {getAllHolidays} from 'services/resources'
+import {APPROVED, PENDING} from 'constants/LeaveStatus'
+import {FULLDAY} from 'constants/HalfDays'
+import {FaLaptopHouse} from 'react-icons/fa'
 
 const {Option} = Select
 
@@ -95,10 +98,12 @@ function LeaveModal({
   onClose,
   users,
   showWorker = true,
+  adminOpened = false,
 }: {
   leaveData: any
   isEditMode: boolean
   open: boolean
+  adminOpened: boolean
   onClose: (
     setSpecificHalf: any,
     setHalfLeaveApproved: any,
@@ -392,11 +397,10 @@ function LeaveModal({
                 reason: values.reason,
                 leaveType: values.leaveType,
                 halfDay:
-                  values?.halfDay === 'full-day' ||
-                  values?.halfDay === 'Full Day'
+                  values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
                     ? ''
                     : values?.halfDay,
-                leaveStatus: appliedDate ? 'approved' : 'pending',
+                leaveStatus: adminOpened || appliedDate ? APPROVED : PENDING,
                 leaveDocument: downloadURL,
               }
               setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
@@ -418,10 +422,10 @@ function LeaveModal({
           leaveDates: LeaveDaysUTC,
           leaveType: values.leaveType,
           halfDay:
-            values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
+            values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
               ? ''
               : values?.halfDay,
-          leaveStatus: appliedDate ? 'approved' : 'pending',
+          leaveStatus: adminOpened || appliedDate ? APPROVED : PENDING,
           leaveDocument: !isDocumentDeleted ? leaveData.leaveDocument : '',
         }
         setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
