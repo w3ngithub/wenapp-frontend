@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Card, Tabs} from 'antd'
 import Coworkers from './Coworkers'
 import Projects from './Projects'
@@ -11,18 +11,30 @@ import Email from './Email'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import Attendance from './Attendance'
+import {useLocation} from 'react-router-dom'
 
 const TabPane = Tabs.TabPane
 
 function Settings() {
+  const location: any = useLocation()
+  const [activeKey, setActiveKey] = useState(location?.state?.tabKey || '')
   const {
     role: {
       permission: {Settings},
     },
   } = useSelector(selectAuthUser)
+
+  const handleTabChange = (val: string) => {
+    setActiveKey(val)
+  }
+
+  useEffect(() => {
+    if (location.state.tabKey === '3') setActiveKey(location?.state?.tabKey)
+  }, [location?.state])
+
   return (
     <Card title="Settings">
-      <Tabs type="card">
+      <Tabs type="card" activeKey={activeKey} onChange={handleTabChange}>
         {Settings?.coWorker && (
           <TabPane tab="Co-Workers" key="1">
             <Coworkers />
