@@ -56,6 +56,7 @@ function ProjectsPage() {
   let [searchParams, setSearchParams] = useSearchParams()
   const [sort, setSort] = useState({})
   const {innerWidth} = useWindowsSize()
+  const [clearModal, setClearModal] = useState(false)
   const [form] = Form.useForm()
   const [projectId, setProjectId] = useState(
     searchParams?.get('projectId') || undefined
@@ -174,6 +175,7 @@ function ProjectsPage() {
         [
           () => queryClient.invalidateQueries(['projects']),
           () => handleCloseModal(),
+          () => setClearModal(true),
           () => {
             socket.emit('CUD')
           },
@@ -194,6 +196,7 @@ function ProjectsPage() {
           [
             () => queryClient.invalidateQueries(['projects']),
             () => handleCloseModal(),
+            () => setClearModal(true),
             () => {
               socket.emit('CUD')
             },
@@ -483,6 +486,8 @@ function ProjectsPage() {
         initialValues={userRecord?.project}
         readOnly={readOnly}
         isEditMode={isEditMode}
+        clearModal={clearModal}
+        setClearModal={setClearModal}
       />
 
       <Card title="Projects">
