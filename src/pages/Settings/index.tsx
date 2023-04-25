@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Card, Tabs} from 'antd'
 import Coworkers from './Coworkers'
 import Projects from './Projects'
