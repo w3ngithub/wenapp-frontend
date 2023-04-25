@@ -6,7 +6,4 @@ export const NOTIFICATION_ICONS: any = {
   Blog: <i className={`icon icon-chat-new gx-fs-md`} style={style} />,
   Notice: <i className={`icon icon-calendar-new gx-fs-md`} style={style} />,
   Logtime: <i className={`icon icon-ckeditor gx-fs-md`} style={style} />,
-  Setting_Attendance: (
-    <i className={`icon icon-select gx-fs-md`} style={style} />
-  ),
 }

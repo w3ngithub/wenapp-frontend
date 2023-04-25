@@ -48,7 +48,7 @@ function Attendance() {
               socket.emit('setting-attendance', {
                 showTo: [RoleAccess.Admin],
                 remarks: `Late arrival threshold has been changed to ${response?.data?.data?.lateArrivalThreshold} minutes.`,
-                module: 'Setting_Attendance',
+                module: 'Attendance',
               })
             } else if (
               response.status &&
@@ -60,7 +60,7 @@ function Attendance() {
               socket.emit('setting-attendance', {
                 showTo: [RoleAccess.Admin],
                 remarks: `Office hour has been changed to ${response?.data?.data?.officeHour} hours.`,
-                module: 'Setting_Attendance',
+                module: 'Attendance',
               })
             }
           },
