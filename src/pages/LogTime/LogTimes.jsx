@@ -12,7 +12,7 @@ import {
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
 import {
   addUserTimeLog,
   deleteTimeLog,
@@ -28,6 +28,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
+import RoleAccess from 'constants/RoleAccess'
 
 const formattedLogs = (logs) => {
   return logs?.map((log) => ({
@@ -53,9 +54,9 @@ function LogTimes() {
   const [page, setPage] = useState({page: 1, limit: 50})
   const [openModal, setOpenModal] = useState(false)
   const [isAdminTimeLog, setIsAdminTimeLog] = useState(false)
-
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
+  const projectNameRef = useRef('')
 
   const {
     _id,
@@ -93,7 +94,18 @@ function LogTimes() {
     getWeeklyTimeLogSummary
   )
   const addLogTimeMutation = useMutation((details) => addUserTimeLog(details), {
-    onSuccess: (response) =>
+    onSuccess: (response) => {
+      if (
+        response?.data?.data?.data?.isOt &&
+        response?.data?.data?.data?.otStatus === 'P'
+      ) {
+        socket.emit('ot-log', {
+          showTo: [RoleAccess.Admin],
+          remarks: `${idUser?.name} has added OT logtime for project ${projectNameRef.current}. Please review.`,
+          extraInfo: JSON.stringify({userId: idUser?._id}),
+          module: 'Logtime',
+        })
+      }
       handleResponse(
         response,
         'Added time log successfully',
@@ -104,7 +116,8 @@ function LogTimes() {
           () => queryClient.invalidateQueries(['userweeklyTimeSpent']),
           () => handleCloseTimelogModal(),
         ]
-      ),
+      )
+    },
     onError: (error) => {
       notification({message: 'Could not add time log!', type: 'error'})
     },
@@ -112,7 +125,18 @@ function LogTimes() {
   const UpdateLogTimeMutation = useMutation(
     (details) => updateTimeLog(details),
     {
-      onSuccess: (response) =>
+      onSuccess: (response) => {
+        if (
+          response?.data?.data?.data?.isOt &&
+          response?.data?.data?.data?.otStatus === 'P'
+        ) {
+          socket.emit('ot-log', {
+            showTo: [RoleAccess.Admin],
+            remarks: `${idUser?.name} has added OT logtime for project ${projectNameRef.current}. Please review.`,
+            module: 'Logtime',
+            extraInfo: JSON.stringify({userId: idUser?._id}),
+          })
+        }
         handleResponse(
           response,
           'Updated time log successfully',
@@ -123,7 +147,8 @@ function LogTimes() {
             () => queryClient.invalidateQueries(['userweeklyTimeSpent']),
             () => handleCloseTimelogModal(),
           ]
-        ),
+        )
+      },
       onError: (error) => {
         notification({message: 'Could not update time log!', type: 'error'})
       },
@@ -204,6 +229,7 @@ function LogTimes() {
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
+    projectNameRef.current = newLogtime?.projectName
     let formattedNewLogtime = {
       ...newLogtime,
       hours: +newLogtime.hours,

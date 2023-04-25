@@ -1,3 +1,4 @@
+import CustomIcon from 'components/Elements/Icons'
 import moment from 'moment'
 import React, {ReactElement} from 'react'
 
@@ -185,7 +186,10 @@ const OVERVIEW_NOTCHECKEDIN = (sortedInfo: any): tableCol[] => [
   },
 ]
 
-const OVERVIEW_LATEPUNCHIN = (sortedInfo: any): tableCol[] => [
+const OVERVIEW_LATEPUNCHIN = (
+  sortedInfo: any,
+  handleToggleModal: any
+): tableCol[] => [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -224,6 +228,23 @@ const OVERVIEW_LATEPUNCHIN = (sortedInfo: any): tableCol[] => [
     sorter: (a, b) => a.lateBy.toString().localeCompare(b.lateBy.toString()),
 
     sortOrder: sortedInfo.columnKey === 'lateBy' && sortedInfo.order,
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    width: 110,
+    render: (text, record) => {
+      return (
+        <div className="gx-d-flex">
+          <span
+            className="gx-link"
+            onClick={() => handleToggleModal(record?.lateReason)}
+          >
+            <CustomIcon name="view" />
+          </span>
+        </div>
+      )
+    },
   },
 ]
 

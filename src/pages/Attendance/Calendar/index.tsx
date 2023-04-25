@@ -10,11 +10,12 @@ import {monthlyState} from 'constants/Attendance'
 import {getLeavesOfAllUsers} from 'services/leaves'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {ATTENDANCE} from 'helpers/routePath'
-import {FIRST_HALF, LEAVES_TYPES} from 'constants/Leaves'
+import {FIRST_HALF} from 'constants/Leaves'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {getAllHolidays} from 'services/resources'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 
 const localizer = momentLocalizer(moment)
 
@@ -27,12 +28,10 @@ function AttendanceCalendar() {
   )
   const {innerWidth} = useWindowsSize()
   const [date, setDate] = useState(monthlyState)
-  const {
-    currentMonth,
-    thisMonthsEndDate,
-    thisMonthsStartDate,
-    monthChangeHandler,
-  } = useCleanCalendar()
+  const {themeType} = useSelector((state: any) => state.settings)
+  const darkMode = themeType === THEME_TYPE_DARK
+  const {currentMonth, thisMonthsEndDate, monthChangeHandler} =
+    useCleanCalendar()
 
   const {data, isLoading} = useQuery(['userAttendance', user, date], () =>
     searchAttendacentOfUser({
@@ -60,6 +59,10 @@ function AttendanceCalendar() {
       end: new Date(x.date),
       type: 'holiday',
     })
+  )
+
+  let holidaysDates: any[] = holidaysCalendar?.map((holiday: any) =>
+    MuiFormatDate(holiday?.start)
   )
 
   const handleCalendarRangeChange = (calendarDate: any) => {
@@ -91,42 +94,35 @@ function AttendanceCalendar() {
     const isOffRange = isEventInPreviousMonth || isEventInNextMonth
 
     let style: any = {
-      fontSize: '13px',
+      fontSize: '14px',
       width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
       margin: '0px auto',
       fontWeight: '500',
       height: '27px',
       padding: '5px 10px',
-      color: 'white',
+      color: darkMode ? 'white' : '#100c0ca6',
+      backgroundColor: 'transparent',
     }
-    if (isOffRange && event.type !== 'longLeaves') {
+
+    if (isOffRange) {
       style = {...style, display: 'none'}
     }
     if (event?.hide) {
       style = {...style, display: 'none'}
     }
-    if (event.type === 'leave')
+    if (event.type === 'leave') {
       style = {
         ...style,
-        backgroundColor: '#FC6BAB',
+        padding: '4rem 1rem 0 0rem',
       }
-    if (event.type === 'longLeaves')
-      style = {
-        ...style,
-        width: 'auto',
-        backgroundColor: '#FC6BAB',
-      }
+    }
 
     if (event.isLessHourWorked)
       style = {
         ...style,
         backgroundColor: '#E14B4B',
       }
-    if (
-      !event.isLessHourWorked &&
-      event.type !== 'leave' &&
-      event.type !== 'longLeaves'
-    )
+    if (!event.isLessHourWorked && event.type !== 'leave')
       style = {
         ...style,
         backgroundColor: '#038fde',
@@ -134,7 +130,11 @@ function AttendanceCalendar() {
     if (event.type === 'holiday')
       style = {
         ...style,
-        backgroundColor: 'rgb(235 68 68)',
+        backgroundColor: 'transparent',
+        padding:
+          innerWidth < 1556 && event?.title?.length > 19
+            ? '3rem 3px 0 1.1rem'
+            : '4rem 0.3rem 0 0',
       }
 
     return {
@@ -145,18 +145,6 @@ function AttendanceCalendar() {
   let leaves: any[] = []
 
   userLeaves?.forEach((leave: any) => {
-    const isUsualLeave =
-      leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
-        LEAVES_TYPES.Casual ||
-      leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
-
-    const eventStartsInPrevMonth =
-      moment(leave?.leaveDates?.[0]) < thisMonthsStartDate
-
-    const eventEndsInNextMonth =
-      moment(leave?.leaveDates?.[leave?.leaveDates?.length - 1]) >
-      thisMonthsEndDate
-
     const eventStartsInNextMonth =
       thisMonthsEndDate < moment(leave?.leaveDates?.[0])
 
@@ -166,26 +154,45 @@ function AttendanceCalendar() {
       extraInfo = leave?.halfDay === FIRST_HALF ? '1st' : `2nd`
     }
 
-    leaves.push({
-      id: leave?._id,
-      title: `${leave?.leaveType?.name}${
-        extraInfo ? '(' + extraInfo + ')' : ''
-      }`,
-      start: eventStartsInPrevMonth
-        ? new Date(thisMonthsStartDate?.format())
-        : new Date(leave?.leaveDates?.[0]),
-      end: new Date(
-        isUsualLeave
-          ? leave?.leaveDates?.[0]
-          : eventEndsInNextMonth
-          ? thisMonthsEndDate.format()
-          : leave?.leaveDates?.[leave?.leaveDates?.length - 1]
-      ),
-      type: isUsualLeave ? 'leave' : 'longLeaves',
-      allDay: true,
-      hide: eventStartsInNextMonth,
+    leave?.leaveDates?.forEach((date: string) => {
+      leaves.push({
+        id: leave?._id,
+        title: `${leave?.leaveType?.name}${
+          extraInfo ? '(' + extraInfo + ')' : ''
+        }`,
+        start: new Date(date),
+        end: new Date(date),
+        type: 'leave',
+        allDay: true,
+        hide: eventStartsInNextMonth,
+      })
     })
   })
+  let leaveDates: any[] = leaves?.map((leave) => MuiFormatDate(leave?.start))
+
+  const DayPropGetter = (date: any) => {
+    // if the day lies in the prev month or next month don't decorate
+    if (
+      moment(date) < moment(currentMonth).startOf('month') ||
+      moment(date) > moment(currentMonth).endOf('month')
+    ) {
+      return
+    }
+
+    return {
+      ...(leaveDates?.includes(MuiFormatDate(date)) && {
+        style: {
+          backgroundColor: '#efbad280',
+        },
+      }),
+      ...(holidaysDates?.includes(MuiFormatDate(date)) && {
+        style: {
+          backgroundColor: '#d3828259',
+        },
+      }),
+    }
+  }
+
   const attendances = data?.data?.data?.attendances[0]?.data?.map(
     (attendance: any) => {
       const sortedAttendance = sortFromDate(
@@ -268,6 +275,7 @@ function AttendanceCalendar() {
             eventPropGetter={handleEventStyle}
             onSelectEvent={handleSelectEvent}
             onNavigate={monthChangeHandler}
+            dayPropGetter={DayPropGetter}
           />
         </div>
       </Spin>

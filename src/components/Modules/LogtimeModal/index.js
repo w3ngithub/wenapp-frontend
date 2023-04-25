@@ -23,6 +23,7 @@ import {getAllUsers} from 'services/users/userDetails'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {CANCEL_TEXT} from 'constants/Common'
 const FormItem = Form.Item
 const Option = Select.Option
 const {TextArea} = Input
@@ -82,6 +83,10 @@ function LogtimeModal({
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
+      const selectedProject = projectArray.find(
+        (p) => p?._id === values.project
+      )
+      const logDateFormat = values.logDate.startOf('day').format().split('T')[0]
       if (!parseInt(values?.hours) && !parseInt(values?.minutes)) {
         setZeroHourMinutes(true)
         return
@@ -90,8 +95,24 @@ function LogtimeModal({
       }
       onSubmit(
         isEditMode
-          ? {...initialValues, ...values, user: initialValues?.user._id}
-          : {...values}
+          ? {
+              ...initialValues,
+              ...values,
+              user: initialValues?.user._id,
+              logDate: logDateFormat,
+              projectName:
+                process.env.REACT_APP_OTHER_PROJECT_ID === values.project
+                  ? 'Other'
+                  : selectedProject?.name || initialValues?.project?.name,
+            }
+          : {
+              ...values,
+              logDate: logDateFormat,
+              projectName:
+                process.env.REACT_APP_OTHER_PROJECT_ID === values.project
+                  ? 'Other'
+                  : selectedProject?.name,
+            }
       )
     })
   }
@@ -102,7 +123,10 @@ function LogtimeModal({
       return
     } else {
       setSearchValue(projectName)
-      const projects = await getAllProjects({project: projectName})
+      const projects = await getAllProjects({
+        project: projectName,
+        sort: 'name',
+      })
       setProjectArray(projects?.data?.data?.data)
     }
     //else fetch projects from api
@@ -195,7 +219,7 @@ function LogtimeModal({
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

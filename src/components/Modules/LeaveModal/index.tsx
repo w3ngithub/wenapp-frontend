@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {
   Button,
   Modal,
@@ -32,6 +32,8 @@ import {
   filterSpecificUser,
   getRangeofDates,
   momentRangeofDates,
+  compare,
+  getDateRangeArray,
 } from 'helpers/utils'
 import leaveTypeInterface from 'types/Leave'
 import {notification} from 'helpers/notification'
@@ -62,6 +64,11 @@ import {
 } from 'firebase/storage'
 import {storage} from 'firebase'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
+import {CANCEL_TEXT} from 'constants/Common'
+import {getAllHolidays} from 'services/resources'
+import {APPROVED, PENDING} from 'constants/LeaveStatus'
+import {FULLDAY} from 'constants/HalfDays'
+import {FaLaptopHouse} from 'react-icons/fa'
 
 const {Option} = Select
 
@@ -91,10 +98,12 @@ function LeaveModal({
   onClose,
   users,
   showWorker = true,
+  adminOpened = false,
 }: {
   leaveData: any
   isEditMode: boolean
   open: boolean
+  adminOpened: boolean
   onClose: (
     setSpecificHalf: any,
     setHalfLeaveApproved: any,
@@ -108,7 +117,7 @@ function LeaveModal({
   showWorker: boolean
 }) {
   const queryClient = useQueryClient()
-  const [colorState, setColorState] = useState(true)
+  const colorState = useRef<any>()
   const [datePickerValue, setDatePickerValue] = useState([])
   const [form] = Form.useForm()
   const [leaveType, setLeaveType] = useState<leaveTypeInterface>({})
@@ -124,6 +133,7 @@ function LeaveModal({
   const [calendarClicked, setCalendarClicked] = useState(false)
   const [files, setFiles] = useState<any>([])
   const [, setRemovedFile] = useState<any>(null)
+  const [datepickerOpen, setDatepickerOpen] = useState<boolean>(false)
   const [documentURL, setDocumentURL] = useState<any>(
     leaveData?.leaveDocument ? leaveData?.leaveDocument : ''
   )
@@ -131,6 +141,8 @@ function LeaveModal({
   const date = new Date()
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+  const [yearStartDate, setYearStartDate] = useState<any>(undefined)
+  const [yearEndDate, setYearEndDate] = useState<any>(undefined)
 
   const [fromDate, setFromDate] = useState<any>(
     `${MuiFormatDate(firstDay)}T00:00:00Z`
@@ -168,6 +180,23 @@ function LeaveModal({
       })),
     ],
   })
+  const {data: Holidays} = useQuery(['DashBoardHolidays'], () =>
+    getAllHolidays({sort: '-createdAt', limit: '1'})
+  )
+  const userSubstituteLeave = useQuery(
+    ['substitute', yearStartDate, yearEndDate],
+    () =>
+      getLeavesOfUser(user, '', undefined, 1, 30, yearStartDate, yearEndDate),
+    {enabled: !!yearStartDate && !!yearEndDate}
+  )
+
+  const holidaysThisYear = Holidays?.data?.data?.data?.[0]?.holidays
+    ?.map((holiday: any) => ({
+      date: new DateObject(holiday?.date).format(),
+      name: holiday?.title,
+      allowLeaveApply: holiday?.allowLeaveApply,
+    }))
+    .filter((d: any) => !d?.allowLeaveApply)
 
   const userLeavesQuery = useQuery(['userLeaves', fromDate, toDate, user], () =>
     getLeavesOfUser(user, '', undefined, 1, 30, fromDate, toDate)
@@ -237,6 +266,93 @@ function LeaveModal({
 
       let LeaveDaysUTC: any = []
 
+      let selectedDatesArr: any = []
+
+      // calculation to check holidays and weekends in between the applied dates
+      if (!leaveType?.isSpecial) {
+        const selectedDates = form?.getFieldValue('leaveDatesCasual')
+        const formattedDate = selectedDates?.map((d: any) => ({
+          index: moment(MuiFormatDate(new Date(d))).day(),
+          date: MuiFormatDate(new Date(d)),
+        }))
+        const sortedDate = formattedDate.sort(compare)
+        let holidayList = holidaysThisYear?.map((holiday: any) => {
+          return MuiFormatDate(moment(holiday?.date).format())
+        })
+
+        // if leave applied for more than one day
+        if (selectedDates.length > 1) {
+          sortedDate?.forEach((d: any, index: number) => {
+            if (sortedDate[index + 1]) {
+              let dateRange = getDateRangeArray(
+                d?.date,
+                sortedDate[index + 1]?.date
+              )
+              let filteredDateRange = dateRange.filter(
+                (d, index) => index !== 0 && index !== dateRange.length - 1
+              )
+              let filteredDateRangeWithIndex = filteredDateRange?.map((d) => ({
+                index: moment(d).day(),
+                date: d,
+              }))
+
+              let includesHolidayAndWeekend =
+                filteredDateRangeWithIndex.length > 0 &&
+                filteredDateRangeWithIndex?.every(
+                  (d) =>
+                    d.index === 0 ||
+                    d.index === 6 ||
+                    holidayList.includes(d.date)
+                )
+
+              //if holidays and weekends lie in between add them to the list
+              if (includesHolidayAndWeekend) {
+                selectedDatesArr.push(
+                  ...filteredDateRangeWithIndex.map((d) =>
+                    moment(d.date).format('YYYY/MM/DD')
+                  )
+                )
+              }
+            }
+          })
+        }
+      }
+
+      //calculation for substitute leaves
+      const isSubstitute = leaveTypeQuery?.data?.find(
+        (data) => data?.value === 'Substitute'
+      )
+      if (isSubstitute?.id === form.getFieldValue('leaveType')) {
+        let substituteLeaveTaken = 0
+        const hasSubstitute =
+          userSubstituteLeave?.data?.data?.data?.data.filter(
+            (sub: any) =>
+              sub?.leaveType?.name === 'Substitute Leave' &&
+              sub?.leaveStatus === 'approved'
+          )
+        hasSubstitute.forEach((e: any) => {
+          substituteLeaveTaken += e.leaveDates.length
+        })
+
+        if (substituteLeaveTaken >= isSubstitute?.leaveDays) {
+          return notification({
+            type: 'error',
+            message: 'Substitute Leave Already Taken',
+          })
+        }
+
+        if (
+          substituteLeaveTaken +
+            form.getFieldValue('leaveDatesCasual')?.length >
+          isSubstitute?.leaveDays
+        ) {
+          return notification({
+            type: 'error',
+            message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} day`,
+          })
+        }
+      }
+
       // calculation for maternity, paternity, pto leaves
 
       const appliedDate = values?.leaveDatesPeriod?.startOf('day')?._d
@@ -247,8 +363,10 @@ function LeaveModal({
         )
         // const endDateUTC = appliedDate ? MuiFormatDate(endDate) : ''
       } else {
+        //adding the holidays in between to the applied dates
         const casualLeaveDays = [
           ...values?.leaveDatesCasual?.join(',').split(','),
+          ...selectedDatesArr,
         ]
 
         LeaveDaysUTC = casualLeaveDays
@@ -279,11 +397,10 @@ function LeaveModal({
                 reason: values.reason,
                 leaveType: values.leaveType,
                 halfDay:
-                  values?.halfDay === 'full-day' ||
-                  values?.halfDay === 'Full Day'
+                  values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
                     ? ''
                     : values?.halfDay,
-                leaveStatus: appliedDate ? 'approved' : 'pending',
+                leaveStatus: adminOpened || appliedDate ? APPROVED : PENDING,
                 leaveDocument: downloadURL,
               }
               setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
@@ -305,10 +422,10 @@ function LeaveModal({
           leaveDates: LeaveDaysUTC,
           leaveType: values.leaveType,
           halfDay:
-            values?.halfDay === 'full-day' || values?.halfDay === 'Full Day'
+            values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
               ? ''
               : values?.halfDay,
-          leaveStatus: appliedDate ? 'approved' : 'pending',
+          leaveStatus: adminOpened || appliedDate ? APPROVED : PENDING,
           leaveDocument: !isDocumentDeleted ? leaveData.leaveDocument : '',
         }
         setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
@@ -336,9 +453,28 @@ function LeaveModal({
     setUser(user)
   }
 
+  const datePIckerRef = useRef<HTMLDivElement | null>(null)
+
+  const handleOutsideClick = (event: any) => {
+    if (
+      datePIckerRef.current &&
+      !datePIckerRef.current.contains(event.target)
+    ) {
+      setDatepickerOpen(false)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick)
+
+    return () => document.removeEventListener('mousedown', handleOutsideClick)
+  }, [])
+
   useEffect(() => {
     if (open) {
       if (isEditMode) {
+        setCalendarClicked(true)
+
         form.setFieldsValue({
           leaveType: leaveData.leaveType._id,
           leaveDatesCasual: leaveData?.leaveDates,
@@ -371,6 +507,11 @@ function LeaveModal({
       setUser('')
     }
   }, [open])
+  useEffect(() => {
+    if (isEditMode && leaveData?.leaveDates?.length > 1) {
+      calendarClickHandler()
+    }
+  }, [])
 
   let userLeaves: any[] = []
 
@@ -392,8 +533,18 @@ function LeaveModal({
     }
   })
 
-  const {data: leaveQuarter} = useQuery(['leaveQuarter'], () =>
-    getLeaveQuarter()
+  const {data: leaveQuarter} = useQuery(
+    ['leaveQuarter'],
+    () => getLeaveQuarter(),
+    {
+      onSuccess: (data) => {
+        const quarterLength = data?.data?.data?.data?.[0]?.quarters?.length - 1
+        setYearStartDate(data?.data?.data?.data?.[0]?.quarters?.[0]?.fromDate)
+        setYearEndDate(
+          data?.data?.data?.data?.[0]?.quarters?.[quarterLength]?.toDate
+        )
+      },
+    }
   )
 
   const disableSpecialHoliday = (current: any) => {
@@ -492,7 +643,9 @@ function LeaveModal({
         let leaveDate = userLeaves?.filter(
           (leave) => leave.date === formattedDate?.[0]?.split('-')?.join('/')
         )
+
         let specificHalf = specifyParticularHalf(leaveDate)?.specificHalf
+
         if (specificHalf === FIRST_HALF) {
           form.setFieldValue('halfDay', SECOND_HALF)
         } else if (specificHalf === SECOND_HALF) {
@@ -500,6 +653,10 @@ function LeaveModal({
         } else {
           form.setFieldValue('halfDay', FULL_DAY)
         }
+      }
+
+      if (selectedDates?.length > 1) {
+        setMultipleDatesSelected(true)
       }
     } else {
       setCalendarClicked(false)
@@ -509,6 +666,11 @@ function LeaveModal({
     setIsDocumentDeleted(true)
     setDocumentURL('')
   }
+
+  function handleOpenChange() {
+    setDatepickerOpen(true)
+  }
+
   return (
     <Modal
       width={1100}
@@ -543,7 +705,7 @@ function LeaveModal({
                   )
                 }
               >
-                Cancel
+                {CANCEL_TEXT}
               </Button>,
             ]
           : [
@@ -560,7 +722,7 @@ function LeaveModal({
                   )
                 }
               >
-                Cancel
+                {CANCEL_TEXT}
               </Button>,
               <Button
                 key="submit"
@@ -868,60 +1030,71 @@ function LeaveModal({
               (leaveType?.isSpecial ? (
                 <Col xs={24} sm={8}>
                   <ConfigProvider locale={en_GB}>
-                    <Form.Item
-                      style={{marginBottom: '0.5px'}}
-                      label="Leave Start Date"
-                      name="leaveDatesPeriod"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Leave Start Date is required.',
-                        },
-                      ]}
-                    >
-                      <DatePicker
-                        className="gx-mb-3 "
-                        style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
-                        disabled={readOnly}
-                        disabledDate={disableSpecialHoliday}
-                        onPanelChange={(value, mode) => {
-                          const startOfMonth = moment(value).startOf('month')
-                          const endOfMonth = moment(value).endOf('month')
+                    <div ref={datePIckerRef}>
+                      <Form.Item
+                        style={{marginBottom: '0.5px'}}
+                        label="Leave Start Date"
+                        name="leaveDatesPeriod"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Leave Start Date is required.',
+                          },
+                        ]}
+                      >
+                        <DatePicker
+                          className="gx-mb-3 "
+                          style={{width: innerWidth <= 1096 ? '100%' : '300px'}}
+                          open={datepickerOpen}
+                          disabled={readOnly}
+                          disabledDate={disableSpecialHoliday}
+                          onOpenChange={handleOpenChange}
+                          onPanelChange={(value, mode) => {
+                            const startOfMonth = moment(value).startOf('month')
+                            const endOfMonth = moment(value).endOf('month')
 
-                          setFromDate(startOfMonth.utc().format())
-                          setToDate(endOfMonth.utc().format())
-                        }}
-                        onChange={(date) => {
-                          const leaveTypeId = form?.getFieldValue('leaveType')
+                            setFromDate(startOfMonth.utc().format())
+                            setToDate(endOfMonth.utc().format())
+                          }}
+                          onChange={(date) => {
+                            const leaveTypeId = form?.getFieldValue('leaveType')
 
-                          const leaveType = leaveTypeQuery?.data?.find(
-                            (type) => type?.id === leaveTypeId
-                          )
-                          let Initdates: any = momentRangeofDates(
-                            date,
-                            leaveType?.leaveDays
-                          )
+                            const leaveType = leaveTypeQuery?.data?.find(
+                              (type) => type?.id === leaveTypeId
+                            )
+                            let Initdates: any = momentRangeofDates(
+                              date,
+                              leaveType?.leaveDays
+                            )
 
-                          setDatePickerValue(Initdates)
-                        }}
-                        dateRender={(current) => {
-                          let style = {}
-                          if (
-                            datePickerValue.some((d: any) => d.isSame(current))
-                          ) {
-                            style = {color: '#fff', background: '#038fde'}
-                          }
-                          return (
-                            <div
-                              className="ant-picker-cell-inner"
-                              style={style}
-                            >
-                              {current.date()}
-                            </div>
-                          )
-                        }}
-                      />
-                    </Form.Item>
+                            setDatePickerValue(Initdates)
+                          }}
+                          dateRender={(current) => {
+                            let style = {}
+                            if (
+                              datePickerValue.some((d: any) =>
+                                d.isSame(current)
+                              )
+                            ) {
+                              style = {color: '#fff', background: '#038fde'}
+                            }
+                            return (
+                              <div
+                                className="ant-picker-cell-inner"
+                                style={style}
+                              >
+                                {current.date()}
+                              </div>
+                            )
+                          }}
+                          renderExtraFooter={() => (
+                            <small style={{color: 'red', fontSize: '12px'}}>
+                              *Disabled dates are holidays/ leaves taken
+                            </small>
+                          )}
+                        />
+                      </Form.Item>
+                    </div>
                   </ConfigProvider>
                 </Col>
               ) : (
@@ -999,11 +1172,11 @@ function LeaveModal({
                         } else {
                           if (disableSelectedDate || editLeave) {
                             return {
-                              onClick: () => setColorState(false),
+                              onClick: () => (colorState.current = false),
                               disabled: false,
                               style: {
-                                color: colorState ? 'white' : 'null',
-                                backgroundColor: colorState
+                                color: colorState.current ? 'white' : 'null',
+                                backgroundColor: colorState.current
                                   ? '#0074d9'
                                   : 'null',
                               },

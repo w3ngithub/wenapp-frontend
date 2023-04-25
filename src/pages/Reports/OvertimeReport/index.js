@@ -1,5 +1,5 @@
-import {Button, Card, Form, Input, notification, Table, Typography} from 'antd'
-import React, {useState, useCallback} from 'react'
+import {Button, Card, Form, Input, Table, Typography} from 'antd'
+import React, {useState, useCallback, useEffect} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
@@ -22,6 +22,10 @@ import {getAllProjects} from 'services/projects'
 import {LOG_STATUS} from 'constants/logTimes'
 import RangePicker from 'components/Elements/RangePicker'
 import {PLACE_HOLDER_CLASS} from 'constants/Common'
+import {socket} from 'pages/Main'
+import {notification} from 'helpers/notification'
+import {dateToDateFormat} from 'helpers/utils'
+import {useLocation} from 'react-router'
 
 const formattedReports = (overtimeData) => {
   return overtimeData?.map((log) => ({
@@ -41,6 +45,8 @@ const formattedReports = (overtimeData) => {
 const FormItem = Form.Item
 
 const OvertimePage = () => {
+  const location = useLocation()
+  const otAuthorId = location?.state?.extraData
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
   const [sort, setSort] = useState({})
@@ -49,13 +55,19 @@ const OvertimePage = () => {
   const [approveDetails, setApproveDetails] = useState({})
   const [isViewOnly, setIsViewOnly] = useState(false)
   const [readOnlyApproveReason, setReadonlyApproveReason] = useState('')
-  const [author, setAuthor] = useState(undefined)
+  const [author, setAuthor] = useState(otAuthorId)
   const [otStatus, setOtStatus] = useState('')
   const [projectData, setProjectData] = useState([])
   const [project, setProject] = useState(undefined)
   const [rangeDate, setRangeDate] = useState(undefined)
 
   const allUsers = useQuery(['users'], () => getAllUsers({sort: 'name'}))
+
+  useEffect(() => {
+    if (otAuthorId) {
+      setAuthor(otAuthorId)
+    }
+  }, [otAuthorId])
 
   const {
     data: logTimeDetails,
@@ -78,9 +90,13 @@ const OvertimePage = () => {
           : '',
         sort:
           sort.order === undefined || sort.column === undefined
-            ? '-logDate'
+            ? '-logDate,-createdAt'
             : sort.order === 'ascend'
-            ? sort.field
+            ? sort.field === 'logDate'
+              ? `${sort.field},createdAt`
+              : sort.field
+            : sort.field === 'logDate'
+            ? `-${sort.field},-createdAt`
             : `-${sort.field}`,
       })
   )
@@ -106,7 +122,7 @@ const OvertimePage = () => {
   const UpdateLogTimeMutation = useMutation(
     (details) => updateTimeLog(details),
     {
-      onSuccess: (response) =>
+      onSuccess: (response) => {
         handleResponse(
           response,
           'Updated time log successfully',
@@ -114,9 +130,22 @@ const OvertimePage = () => {
           [
             () => queryClient.invalidateQueries(['timeLogs']),
             () => handleCloseApproveModal(),
+            () => {
+              socket.emit('resolve-ot-log', {
+                showTo: [response.data.data.data.user._id],
+                remarks: `Your OT has been ${
+                  LOG_STATUS[response.data?.data?.data?.otStatus]
+                } for project ${
+                  response?.data?.data?.data?.project?.name || 'Other'
+                }.`,
+                module: 'Logtime',
+              })
+            },
           ]
-        ),
+        )
+      },
       onError: (error) => {
+        handleCloseApproveModal()
         notification({
           message: 'Could not approve overtime report',
           type: 'error',
@@ -138,6 +167,7 @@ const OvertimePage = () => {
       details: {
         otRejectReason: rejectReason,
         otStatus: 'R',
+        logDate: dateToDateFormat(reject?.logDate),
       },
     })
   }
@@ -147,6 +177,7 @@ const OvertimePage = () => {
       id: data?._id,
       details: {
         otStatus: 'A',
+        logDate: dateToDateFormat(data?.logDate),
       },
     })
   }
@@ -167,7 +198,10 @@ const OvertimePage = () => {
       setProjectData([])
       return
     } else {
-      const projects = await getAllProjects({project: projectName})
+      const projects = await getAllProjects({
+        project: projectName,
+        sort: 'name',
+      })
       setProjectData(projects?.data?.data?.data)
     }
   }

@@ -13,7 +13,7 @@ import {notification} from 'helpers/notification'
 import {getLogTypes, getWeeklyReport} from 'services/timeLogs'
 import Select from 'components/Elements/Select'
 import {WEEKLY_REPORT_COLUMNS} from 'constants/weeklyReport'
-import {debounce, roundedToFixed, persistSession} from 'helpers/utils'
+import {debounce, roundedToFixed} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {PAGE50} from 'constants/Common'
@@ -40,23 +40,15 @@ const formattedWeeklyReports = (reports, clients) => {
 }
 
 function WeeklyReport() {
-  const weeklySession = JSON.parse(sessionStorage.getItem('weekly-session'))
-
   // init states
   const [sort, setSort] = useState({})
   const [page, setPage] = useState({page: 1, limit: 50})
-  const [projectStatus, setProjectStatus] = useState(weeklySession?.statusId)
-  const [projectArray, setProjectArray] = useState(
-    weeklySession?.projectDetails ? [weeklySession?.projectDetails] : []
-  )
-  const [project, setProject] = useState(weeklySession?.projectDetails?._id)
-  const [logType, setLogType] = useState(weeklySession?.typeId)
-  const [projectClient, setprojectClient] = useState(weeklySession?.clientId)
-  const [date, setDate] = useState(
-    weeklySession?.date
-      ? [moment(weeklySession?.date[0]), moment(weeklySession?.date[1])]
-      : intialDate
-  )
+  const [projectStatus, setProjectStatus] = useState(undefined)
+  const [projectArray, setProjectArray] = useState([])
+  const [project, setProject] = useState(undefined)
+  const [logType, setLogType] = useState(undefined)
+  const [projectClient, setprojectClient] = useState(undefined)
+  const [date, setDate] = useState(intialDate)
   const [form] = Form.useForm()
   const {innerWidth} = useWindowsSize()
 
@@ -91,7 +83,10 @@ function WeeklyReport() {
       setProjectArray([])
       return
     } else {
-      const projects = await getAllProjects({project: projectName})
+      const projects = await getAllProjects({
+        project: projectName,
+        sort: 'name',
+      })
       setProjectArray(projects?.data?.data?.data)
     }
     //else fetch projects from api
@@ -118,27 +113,17 @@ function WeeklyReport() {
   }
 
   const handleLogTypeChange = (typeId) => {
-    persistSession('weekly-session', weeklySession, 'typeId', typeId)
     setLogType(typeId)
   }
   const handleProjectNameChange = (projectId) => {
-    const projectName = projectArray?.find(
-      (project) => project?._id === projectId
-    )?.name
-    persistSession('weekly-session', weeklySession, 'projectDetails', {
-      _id: projectId,
-      name: projectName,
-    })
     setProject(projectId)
   }
 
   const handleProjectStatusChange = (statusId) => {
-    persistSession('weekly-session', weeklySession, 'statusId', statusId)
     setProjectStatus(statusId)
   }
 
   const handleClientChange = (clientId) => {
-    persistSession('weekly-session', weeklySession, 'clientId', clientId)
     setprojectClient(clientId)
   }
 
@@ -148,7 +133,6 @@ function WeeklyReport() {
     setProjectStatus(undefined)
     setprojectClient(undefined)
     setProject(undefined)
-    sessionStorage.removeItem('weekly-session')
   }
 
   const navigateToProjectLogs = (projectSlug, newPage = false) => {
@@ -160,11 +144,6 @@ function WeeklyReport() {
   }
 
   const handleChangeDate = (date) => {
-    persistSession('weekly-session', weeklySession, 'date', [
-      date[0],
-      date[1].endOf('day'),
-    ])
-
     setDate([date[0], date[1].endOf('day')])
   }
 

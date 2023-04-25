@@ -5,6 +5,7 @@ import {Row} from 'antd'
 import {Col} from 'antd'
 import moment from 'moment'
 import {notification} from 'helpers/notification'
+import {CANCEL_TEXT} from 'constants/Common'
 
 interface modalInterface {
   isEditMode: boolean
@@ -81,7 +82,7 @@ function LeaveQuarterModal({
       onCancel={onCancel}
       footer={[
         <Button key="back" onClick={onCancel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
           Submit

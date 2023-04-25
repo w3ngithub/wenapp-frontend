@@ -1,4 +1,5 @@
 import {Button, Form, Input, Modal, Spin} from 'antd'
+import {CANCEL_TEXT} from 'constants/Common'
 import React, {useEffect} from 'react'
 
 interface modalInterface {
@@ -67,7 +68,7 @@ function CommonModal({
       onCancel={() => onCancel(setDuplicateValue)}
       footer={[
         <Button key="back" onClick={() => onCancel(setDuplicateValue)}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
         <Button
           key="submit"

@@ -204,6 +204,7 @@ function MyHistory({
           users={[]}
           readOnly={modalReadOnly}
           showWorker={false}
+          adminOpened={false}
         />
       )}
 

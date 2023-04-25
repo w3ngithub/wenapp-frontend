@@ -39,6 +39,8 @@ function ProjectModal({
   qas,
   devops,
   isFromLog = false,
+  clearModal,
+  setClearModal,
 }) {
   const [form] = Form.useForm()
   const [projectTypes, setProjectTypes] = useState([])
@@ -48,7 +50,9 @@ function ProjectModal({
   const [endDate, setEndDate] = useState(undefined)
 
   const handleCancel = () => {
-    form.resetFields()
+    if (isEditMode) {
+      form.resetFields()
+    }
     onClose()
   }
 
@@ -271,12 +275,13 @@ function ProjectModal({
         })
       }
     }
-
     if (!toggle) {
-      setMaintenance([])
       setStartDate(undefined)
       setEndDate(undefined)
-      form.resetFields()
+      if (isEditMode) {
+        setMaintenance([])
+        form.resetFields()
+      }
     }
   }, [toggle])
 
@@ -297,6 +302,14 @@ function ProjectModal({
     }
   }, [startDate])
 
+  useEffect(() => {
+    if (clearModal) {
+      form.resetFields()
+      setMaintenance([])
+      setClearModal(false)
+    }
+  }, [clearModal])
+
   const handleDateChange = (e, time) => {
     if (time === 'start') {
       if (!e) {
@@ -304,6 +317,11 @@ function ProjectModal({
       }
       setStartDate(e)
     } else setEndDate(e)
+  }
+
+  const handleReset = () => {
+    form.resetFields()
+    setMaintenance([])
   }
 
   const disableDate = (current, date, time) => {
@@ -331,12 +349,15 @@ function ProjectModal({
         readOnly
           ? [
               <Button key="back" onClick={handleCancel}>
-                Cancel
+                Close
               </Button>,
             ]
           : [
-              <Button key="back" onClick={handleCancel}>
-                Cancel
+              <Button
+                key="back"
+                onClick={isEditMode ? handleCancel : handleReset}
+              >
+                {isEditMode ? 'Close' : 'Reset'}
               </Button>,
               <Button
                 key="submit"
@@ -415,7 +436,8 @@ function ProjectModal({
                   {
                     required: true,
                     validator: async (rule, value) => {
-                      const regex = /^[A-Z]:\\.*(?<!\\)$/
+                      const regex =
+                        /^[a-z]:((\\|\/)[a-z0-9\s_@\-^!#$%&+={}\[\]]+)+\.*$/i
                       try {
                         if (!value) {
                           throw new Error('Path is required.')

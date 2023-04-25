@@ -22,6 +22,7 @@ import {
 } from 'helpers/utils'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
+import {CANCEL_TEXT} from 'constants/Common'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -56,6 +57,8 @@ function UserDetailForm({
     form.resetFields()
     onToggleModal({})
   }
+
+  const isAdmin = intialValues?.role?.key === 'admin'
 
   const user = useSelector(selectAuthUser)
 
@@ -174,12 +177,12 @@ function UserDetailForm({
         readOnly
           ? [
               <Button key="back" onClick={handleCancel}>
-                Cancel
+                {CANCEL_TEXT}
               </Button>,
             ]
           : [
               <Button key="back" onClick={handleCancel}>
-                Cancel
+                {CANCEL_TEXT}
               </Button>,
               <Button
                 key="submit"
@@ -236,7 +239,7 @@ function UserDetailForm({
             <Select
               showSearch
               placeholder="Select Role"
-              disabled={readOnly}
+              disabled={readOnly || isAdmin}
               filterOption={filterOptions}
             >
               {roles &&
@@ -340,7 +343,7 @@ function UserDetailForm({
             <Select
               showSearch
               placeholder="Select Position"
-              disabled={readOnly}
+              disabled={readOnly || isAdmin}
               filterOption={filterOptions}
             >
               {position &&

@@ -10,6 +10,7 @@ import {
   Form,
   DatePicker,
   Modal,
+  ConfigProvider,
 } from 'antd'
 import {
   compare,
@@ -40,7 +41,6 @@ import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'
 import {getAllHolidays} from 'services/resources'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {disabledDate} from 'util/antDatePickerDisabled'
 import {leaveInterval} from 'constants/LeaveDuration'
 import {getLeaveQuarter} from 'services/settings/leaveQuarter'
 import {emptyText} from 'constants/EmptySearchAntd'
@@ -51,12 +51,18 @@ import moment from 'moment'
 import {ExclamationCircleFilled} from '@ant-design/icons'
 import DragAndDropFile from 'components/Modules/DragAndDropFile'
 import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
+import en_GB from 'antd/lib/locale-provider/en_GB'
 import {storage} from 'firebase'
 const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
 
-function Apply({user, YearlyLeaveExceptCasualandSick}) {
+function Apply({
+  user,
+  YearlyLeaveExceptCasualandSick,
+  nextYearSpecialLeaves,
+  fiscalYearEndDate,
+}) {
   const [form] = Form.useForm()
 
   const queryClient = useQueryClient()
@@ -98,7 +104,7 @@ function Apply({user, YearlyLeaveExceptCasualandSick}) {
   const datePIckerRef = useRef()
 
   const handleOutsideClick = (event) => {
-    if (datePIckerRef && !datePIckerRef.current.contains(event.target)) {
+    if (datePIckerRef && !datePIckerRef?.current?.contains(event?.target)) {
       setDatepickerOpen(false)
     }
   }
@@ -409,24 +415,32 @@ function Apply({user, YearlyLeaveExceptCasualandSick}) {
         (data) => data?.value === 'Substitute'
       )
       if (isSubstitute?.id === form.getFieldValue('leaveType')) {
+        let substituteLeaveTaken = 0
+        const hasSubstitute =
+          userSubstituteLeave?.data?.data?.data?.data.filter(
+            (sub) =>
+              sub?.leaveType?.name === 'Substitute Leave' &&
+              sub?.leaveStatus === 'approved'
+          )
+        hasSubstitute.forEach((e) => {
+          substituteLeaveTaken += e.leaveDates.length
+        })
+
+        if (substituteLeaveTaken >= isSubstitute?.leaveDays) {
+          return notification({
+            type: 'error',
+            message: 'Substitute Leave Already Taken',
+          })
+        }
+
         if (
-          form.getFieldValue('leaveDatesCasual')?.length >
+          substituteLeaveTaken +
+            form.getFieldValue('leaveDatesCasual')?.length >
           isSubstitute?.leaveDays
         ) {
           return notification({
             type: 'error',
             message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} day`,
-          })
-        }
-        let hasSubstitute = userSubstituteLeave?.data?.data?.data?.data.find(
-          (sub) =>
-            sub?.leaveType?.name === 'Substitute Leave' &&
-            sub?.leaveStatus === 'approved'
-        )
-        if (hasSubstitute) {
-          return notification({
-            type: 'error',
-            message: 'Substitute Leave Already Taken',
           })
         }
       }
@@ -440,14 +454,36 @@ function Apply({user, YearlyLeaveExceptCasualandSick}) {
         const specialLeavesApproved = YearlyLeaveExceptCasualandSick?.map(
           (item) => item?.[0]
         )
-        if (specialLeavesApproved?.includes(leaveType?.name)) {
-          return notification({
-            type: 'error',
-            message: `Sorry,You have already taken ${
-              leaveType?.name?.split(' ')?.[0]
-            } leave in this fiscal year.`,
-          })
+        //if special leave is applied before the end of the current fiscal year
+        if (moment(fiscalYearEndDate) > moment(appliedDate)) {
+          if (specialLeavesApproved?.includes(leaveType?.name)) {
+            return notification({
+              type: 'error',
+              message: `Sorry,You have already taken ${leaveType?.name} leave in this fiscal year.`,
+            })
+          }
+        } else {
+          // checking if the special leave already exists in the next fiscal year
+          const leaveAppliedInNextYear = nextYearSpecialLeaves?.find(
+            (leave) => leave?.leaveType?.name === leaveType?.name
+          )
+          //calculating the number of days the leave is allocated in the next fiscal year
+          const numberOfAppliedDaysInNextYear =
+            leaveAppliedInNextYear?.leaveDates?.filter(
+              (date) => moment(date) > moment(fiscalYearEndDate)
+            )?.length
+          if (
+            leaveAppliedInNextYear &&
+            numberOfAppliedDaysInNextYear >=
+              leaveAppliedInNextYear?.leaveDates?.length
+          ) {
+            return notification({
+              type: 'error',
+              message: `Sorry,You have already taken ${leaveType?.name} leave in this fiscal year.`,
+            })
+          }
         }
+
         LeaveDaysUTC = getRangeofDates(
           values?.leaveDatesPeriod?._d,
           leaveType?.leaveDays
@@ -758,7 +794,7 @@ function Apply({user, YearlyLeaveExceptCasualandSick}) {
                 />
               </FormItem>
               <small style={{color: 'red', fontSize: '14px'}}>
-                *Disabled dates are holidays"
+                *Disabled dates are holidays
               </small>
             </Col>
           )}
@@ -848,67 +884,71 @@ function Apply({user, YearlyLeaveExceptCasualandSick}) {
                     paddingRight: innerWidth < 981 ? '15px' : 0,
                   }}
                 >
-                  <div ref={datePIckerRef}>
-                    <FormItem
-                      style={{marginBottom: '0.5px'}}
-                      label="Leave Starting Date"
-                      name="leaveDatesPeriod"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Leave Starting Date is required.',
-                        },
-                      ]}
-                    >
-                      <DatePicker
-                        className="gx-mb-3 "
-                        style={{width: '100%'}}
-                        open={datepickerOpen}
-                        disabledDate={disableSpecialHoliday}
-                        onOpenChange={handleOpenChange}
-                        onPanelChange={(value, mode) => {
-                          const startOfMonth = moment(value).startOf('month')
-                          const endOfMonth = moment(value).endOf('month')
+                  <ConfigProvider locale={en_GB}>
+                    <div ref={datePIckerRef}>
+                      <FormItem
+                        style={{marginBottom: '0.5px'}}
+                        label="Leave Starting Date"
+                        name="leaveDatesPeriod"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Leave Starting Date is required.',
+                          },
+                        ]}
+                      >
+                        <DatePicker
+                          className="gx-mb-3 "
+                          style={{width: '100%'}}
+                          open={datepickerOpen}
+                          disabledDate={disableSpecialHoliday}
+                          onOpenChange={handleOpenChange}
+                          onPanelChange={(value, mode) => {
+                            const startOfMonth = moment(value).startOf('month')
+                            const endOfMonth = moment(value).endOf('month')
 
-                          setFromDate(startOfMonth.utc().format())
-                          setToDate(endOfMonth.utc().format())
-                        }}
-                        onChange={(date) => {
-                          setDatepickerOpen(true)
-                          const leaveTypeId = form?.getFieldValue('leaveType')
+                            setFromDate(startOfMonth.utc().format())
+                            setToDate(endOfMonth.utc().format())
+                          }}
+                          onChange={(date) => {
+                            setDatepickerOpen(true)
+                            const leaveTypeId = form?.getFieldValue('leaveType')
 
-                          const leaveType = leaveTypeQuery?.data?.find(
-                            (type) => type?.id === leaveTypeId
-                          )
-                          let Initdates = momentRangeofDates(
-                            date,
-                            leaveType?.leaveDays
-                          )
+                            const leaveType = leaveTypeQuery?.data?.find(
+                              (type) => type?.id === leaveTypeId
+                            )
+                            let Initdates = momentRangeofDates(
+                              date,
+                              leaveType?.leaveDays
+                            )
 
-                          setDatePickerValue(Initdates)
-                        }}
-                        dateRender={(current) => {
-                          let style = {}
-                          if (datePickerValue.some((d) => d.isSame(current))) {
-                            style = {color: '#fff', background: '#038fde'}
-                          }
-                          return (
-                            <div
-                              className="ant-picker-cell-inner"
-                              style={style}
-                            >
-                              {current.date()}
-                            </div>
-                          )
-                        }}
-                        renderExtraFooter={() => (
-                          <small style={{color: 'red', fontSize: '12px'}}>
-                            *Disabled dates are holidays"
-                          </small>
-                        )}
-                      />
-                    </FormItem>
-                  </div>
+                            setDatePickerValue(Initdates)
+                          }}
+                          dateRender={(current) => {
+                            let style = {}
+                            if (
+                              datePickerValue.some((d) => d.isSame(current))
+                            ) {
+                              style = {color: '#fff', background: '#038fde'}
+                            }
+                            return (
+                              <div
+                                className="ant-picker-cell-inner"
+                                style={style}
+                              >
+                                {current.date()}
+                              </div>
+                            )
+                          }}
+                          renderExtraFooter={() => (
+                            <small style={{color: 'red', fontSize: '12px'}}>
+                              *Disabled dates are holidays/ leaves taken
+                            </small>
+                          )}
+                        />
+                      </FormItem>
+                    </div>
+                  </ConfigProvider>
                 </Col>
               )}
             </Row>

@@ -11,11 +11,30 @@ import {useSelector} from 'react-redux'
 import moment from 'moment'
 import RecentActivity from '../dashboard/CRM/RecentActivity'
 import {getIsAdmin} from 'helpers/utils'
-import {BLOG, NOTICEBOARD, COWORKERS, LEAVE} from 'helpers/routePath'
+import {
+  BLOG,
+  NOTICEBOARD,
+  COWORKERS,
+  LEAVE,
+  REPORTS,
+  OVERTIME_REPORT,
+  USER_TIME_LOG,
+  LOGTIME,
+} from 'helpers/routePath'
 import {NOTIFICATION_ICONS} from 'constants/notification'
 import useWindowsSize from 'hooks/useWindowsSize'
+import RoleAccess from 'constants/RoleAccess'
+import {SETTINGS} from 'helpers/routePath'
 
-const NOTIFICATION_TO_CLICK = ['Blog', 'Notice', 'Leave', 'User', 'Attendance']
+const NOTIFICATION_TO_CLICK = [
+  'Blog',
+  'Notice',
+  'Leave',
+  'User',
+  'Attendance',
+  'Logtime',
+  'Setting_Attendance',
+]
 
 function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
   const [visible, setVisible] = useState<boolean>(false)
@@ -127,7 +146,11 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
     }
   }, [visible])
 
-  const handleNotificationClick = (module: String, showTo: any[]) => {
+  const handleNotificationClick = (
+    module: String,
+    showTo: any[],
+    extraInfo: any
+  ) => {
     switch (module) {
       case 'Blog':
         navigate(BLOG)
@@ -156,6 +179,25 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
 
       case 'User':
         navigate(COWORKERS)
+        setVisible(false)
+        return
+
+      case 'Setting_Attendance':
+        navigate(SETTINGS, {state: {tabKey: '3'}})
+        setVisible(false)
+        return
+
+      case 'Logtime':
+        if (showTo[0] === RoleAccess.Admin) {
+          const extraData = JSON.parse(extraInfo)?.userId
+          navigate(`${REPORTS}/${OVERTIME_REPORT}`, {
+            state: {
+              extraData,
+            },
+          })
+        } else {
+          navigate(`${LOGTIME}/${USER_TIME_LOG}`)
+        }
         setVisible(false)
         return
 
@@ -190,7 +232,11 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
                 NOTIFICATION_TO_CLICK.includes(log?.module) ? 'gx-link' : ''
               }
               onClick={() => {
-                handleNotificationClick(log?.module, log?.showTo)
+                handleNotificationClick(
+                  log?.module,
+                  log?.showTo,
+                  log?.extraInfo
+                )
               }}
               key={1}
             >

@@ -15,6 +15,7 @@ import getLocation, {checkLocationPermission} from 'helpers/getLocation'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {getLeavesOfUser} from 'services/leaves'
 import {FIRST_HALF} from 'constants/Leaves'
+import {CANCEL_TEXT} from 'constants/Common'
 
 function TmsMyAttendanceForm({
   title,
@@ -187,7 +188,7 @@ function TmsMyAttendanceForm({
       onCancel={closeModel}
       footer={[
         <Button key="back" onClick={closeModel}>
-          Cancel
+          {CANCEL_TEXT}
         </Button>,
       ]}
     >
@@ -221,7 +222,27 @@ function TmsMyAttendanceForm({
                   label="Punch In Note"
                   name="punchInNote"
                   rules={[
-                    {required: true, message: 'Punch In Note is required.'},
+                    {
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Punch In Note is required.')
+                          }
+                          const trimmedValue = value && value.trim()
+
+                          if (
+                            trimmedValue?.length < 10 ||
+                            trimmedValue?.length > 250
+                          ) {
+                            throw new Error(
+                              'Please enter between 10 to 250 characters for Punch In Note.'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
                   ]}
                   hasFeedback
                 >
@@ -249,7 +270,26 @@ function TmsMyAttendanceForm({
                   label="Punch Out Note"
                   name="punchOutNote"
                   rules={[
-                    {required: true, message: 'Punch Out Note is required.'},
+                    {
+                      validator: async (rule, value) => {
+                        try {
+                          if (!value) {
+                            throw new Error('Punch Out Note is required.')
+                          }
+                          const trimmedValue = value && value.trim()
+                          if (
+                            trimmedValue?.length < 10 ||
+                            trimmedValue?.length > 250
+                          ) {
+                            throw new Error(
+                              'Please enter between 10 to 250 characters for Punch Out Note.'
+                            )
+                          }
+                        } catch (err) {
+                          throw new Error(err.message)
+                        }
+                      },
+                    },
                   ]}
                   hasFeedback
                 >
