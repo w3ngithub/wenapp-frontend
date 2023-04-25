@@ -61,6 +61,7 @@ const formattedLeaves = (leaves) => {
           : ''
       }`,
       status: leave?.leaveStatus ? capitalizeInput(leave?.leaveStatus) : '',
+      addedBy: leave?.createdBy?.name,
     }
   })
 }
