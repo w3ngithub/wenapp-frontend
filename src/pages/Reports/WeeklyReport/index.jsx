@@ -18,17 +18,17 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {PAGE50} from 'constants/Common'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
+import {
+  LastWeekState,
+  attendanceFilter,
+  attendanceFilterWithLastWeek,
+  intialDate,
+  monthlyState,
+  weeklyState,
+} from 'constants/Attendance'
 
 const {RangePicker} = DatePicker
 const FormItem = Form.Item
-
-const intialDate = [
-  moment().startOf('isoWeek'),
-
-  moment().day() === 0 || moment().day() === 6
-    ? moment().startOf('isoWeek').add(4, 'days')
-    : moment(),
-]
 
 const formattedWeeklyReports = (reports, clients) => {
   return reports?.map((report) => ({
@@ -49,6 +49,7 @@ function WeeklyReport() {
   const [logType, setLogType] = useState(undefined)
   const [projectClient, setprojectClient] = useState(undefined)
   const [date, setDate] = useState(intialDate)
+  const [dateFilter, setDateFilter] = useState({id: '1', value: 'Daily'})
   const [form] = Form.useForm()
   const {innerWidth} = useWindowsSize()
 
@@ -128,11 +129,12 @@ function WeeklyReport() {
   }
 
   const handleResetFilter = () => {
-    setDate(intialDate)
+    setDate(weeklyState)
     setLogType(undefined)
     setProjectStatus(undefined)
     setprojectClient(undefined)
     setProject(undefined)
+    setDateFilter(attendanceFilter.find((d) => d.value === 'Weekly')?.id)
   }
 
   const navigateToProjectLogs = (projectSlug, newPage = false) => {
@@ -154,6 +156,30 @@ function WeeklyReport() {
     }, {})
   }, [projectClientsData])
 
+  const handleOptionChnageChange = (val) => {
+    setDateFilter(val)
+    switch (val) {
+      case 1:
+        setDate(intialDate)
+        break
+
+      case 2:
+        setDate(weeklyState)
+        break
+
+      case 3:
+        setDate(monthlyState)
+        break
+
+      case 4:
+        setDate(LastWeekState)
+        break
+
+      default:
+        break
+    }
+  }
+
   if (isLoading) {
     return <CircularProgress />
   }
@@ -170,6 +196,14 @@ function WeeklyReport() {
                   disabledDate={disabledAfterToday}
                 />
               </FormItem>
+              <FormItem className="direct-form-item">
+                <Select
+                  onChange={handleOptionChnageChange}
+                  value={dateFilter}
+                  options={attendanceFilterWithLastWeek}
+                />
+              </FormItem>
+
               <FormItem className="direct-form-item">
                 <Select
                   showSearchIcon={true}
