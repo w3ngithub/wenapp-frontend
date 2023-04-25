@@ -104,6 +104,8 @@ function ProjectModal({
           },
         ],
       })
+      setMaintenance([])
+      form.resetFields()
     })
   }
 
@@ -426,7 +428,8 @@ function ProjectModal({
                   {
                     required: true,
                     validator: async (rule, value) => {
-                      const regex = /^[A-Z]:\\.*(?<!\\)$/
+                      const regex =
+                        /^[a-z]:((\\|\/)[a-z0-9\s_@\-^!#$%&+={}\[\]]+)+\.*$/i
                       try {
                         if (!value) {
                           throw new Error('Path is required.')
