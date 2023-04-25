@@ -56,6 +56,7 @@ function ProjectsPage() {
   let [searchParams, setSearchParams] = useSearchParams()
   const [sort, setSort] = useState({})
   const {innerWidth} = useWindowsSize()
+  const [clearModal, setClearModal] = useState(false)
   const [form] = Form.useForm()
   const [projectId, setProjectId] = useState(
     searchParams?.get('projectId') || undefined
@@ -174,6 +175,7 @@ function ProjectsPage() {
         [
           () => queryClient.invalidateQueries(['projects']),
           () => handleCloseModal(),
+          () => setClearModal(true),
           () => {
             socket.emit('CUD')
           },
@@ -194,6 +196,7 @@ function ProjectsPage() {
           [
             () => queryClient.invalidateQueries(['projects']),
             () => handleCloseModal(),
+            () => setClearModal(true),
             () => {
               socket.emit('CUD')
             },
@@ -472,27 +475,27 @@ function ProjectsPage() {
 
   return (
     <div>
-      {openUserDetailModal && (
-        <ProjectModal
-          toggle={openUserDetailModal}
-          onClose={handleCloseModal}
-          onSubmit={handleUserDetailSubmit}
-          loading={
-            addProjectMutation?.isLoading || updateProjectMutation?.isLoading
-          }
-          types={projectTypesData}
-          statuses={projectStatusData}
-          client={projectClientsData}
-          developers={developers}
-          designers={designers}
-          tags={projectTagsData}
-          qas={QAs}
-          devops={devops}
-          initialValues={userRecord?.project}
-          readOnly={readOnly}
-          isEditMode={isEditMode}
-        />
-      )}
+      <ProjectModal
+        toggle={openUserDetailModal}
+        onClose={handleCloseModal}
+        onSubmit={handleUserDetailSubmit}
+        loading={
+          addProjectMutation?.isLoading || updateProjectMutation?.isLoading
+        }
+        types={projectTypesData}
+        statuses={projectStatusData}
+        client={projectClientsData}
+        developers={developers}
+        designers={designers}
+        tags={projectTagsData}
+        qas={QAs}
+        devops={devops}
+        initialValues={userRecord?.project}
+        readOnly={readOnly}
+        isEditMode={isEditMode}
+        clearModal={clearModal}
+        setClearModal={setClearModal}
+      />
 
       <Card title="Projects">
         <div className="components-table-demo-control-bar">
