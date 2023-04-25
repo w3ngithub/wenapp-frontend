@@ -99,6 +99,12 @@ const LEAVES_COLUMN = ({
           },
         },
         {
+          title: 'Added By',
+          dataIndex: 'addedBy',
+          width: 150,
+          key: 'addedBy',
+        },
+        {
           title: 'Status',
           dataIndex: 'status',
           width: 10,
