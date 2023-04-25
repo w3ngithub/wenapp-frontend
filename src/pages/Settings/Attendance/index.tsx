@@ -27,8 +27,7 @@ function Attendance() {
   const [openModal, setOpenModal] = useState(false)
 
   const editLateArrivalMutation = useMutation(editAttendanceParams, {
-    onSuccess: (response) => {
-      console.log('response', response)
+    onSuccess: (response) =>
       handleResponse(
         response,
         'Attendance parameter updated successfully',
@@ -66,8 +65,7 @@ function Attendance() {
             }
           },
         ]
-      )
-    },
+      ),
     onError: (error) => {
       notification({
         message: 'Attendance parameter update failed!',
