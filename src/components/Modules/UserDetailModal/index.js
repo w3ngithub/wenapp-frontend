@@ -49,6 +49,8 @@ function UserDetailForm({
     onToggleModal({})
   }
 
+  const isAdmin = intialValues?.role?.key === 'admin'
+
   const user = useSelector(selectAuthUser)
 
   const handleSubmit = () => {
@@ -254,7 +256,7 @@ function UserDetailForm({
             <Select
               showSearch
               placeholder="Select Role"
-              disabled={readOnly}
+              disabled={readOnly || isAdmin}
               filterOption={filterOptions}
             >
               {roles &&
@@ -358,7 +360,7 @@ function UserDetailForm({
             <Select
               showSearch
               placeholder="Select Position"
-              disabled={readOnly}
+              disabled={readOnly || isAdmin}
               filterOption={filterOptions}
               onChange={handlePositionChange}
             >
@@ -411,7 +413,7 @@ function UserDetailForm({
             <Select
               showSearch
               placeholder="Select Status"
-              disabled={readOnly}
+              disabled={readOnly || isAdmin}
               filterOption={filterOptions}
               onChange={handleStatusChange}
             >
