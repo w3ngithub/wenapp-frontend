@@ -56,6 +56,7 @@ function LogTimes() {
   const [isAdminTimeLog, setIsAdminTimeLog] = useState(false)
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
+  const [isReadOnly, setIsReadOnly] = useState(false)
   const projectNameRef = useRef('')
 
   const {
@@ -197,7 +198,8 @@ function LogTimes() {
     deleteLogMutation.mutate(log._id)
   }
 
-  const handleOpenEditModal = (log) => {
+  const handleOpenEditModal = (log, readOnly) => {
+    console.log('readonly', log, readOnly)
     const originalTimelog = logTimeDetails?.data?.data?.data.find(
       (project) => project.id === log.id
     )
@@ -210,6 +212,9 @@ function LogTimes() {
     })
     setOpenModal(true)
     setIsEditMode(true)
+    if (readOnly) {
+      setIsReadOnly(true)
+    }
   }
 
   const handleCloseTimelogModal = () => {
@@ -217,6 +222,7 @@ function LogTimes() {
     setTimelogToUpdate({})
     setIsEditMode(false)
     setIsAdminTimeLog(false)
+    setIsReadOnly(false)
   }
 
   const handleOpenModal = () => {
@@ -275,6 +281,7 @@ function LogTimes() {
           isUserLogtime={true}
           isAdminTimeLog={isAdminTimeLog}
           role={key}
+          isReadOnly={isReadOnly}
         />
       )}
       <div style={{marginTop: 20}}></div>
