@@ -228,7 +228,7 @@ function LeaveModal({
           () =>
             socket.emit('approve-leave', {
               showTo: [response.data.data.data.user],
-              remarks: `Your leave has been added for ${leaveDates}`,
+              remarks: `Your leave has been added by admin for ${leaveDates}`,
               module: 'Leave',
             }),
           () =>
