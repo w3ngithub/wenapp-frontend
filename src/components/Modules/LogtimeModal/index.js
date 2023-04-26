@@ -50,7 +50,7 @@ function LogtimeModal({
   isUserLogtime = false,
   isAdminTimeLog = false,
   role,
-  isReadOnly,
+  isReadOnly = false,
 }) {
   const Option = Select.Option
   // const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
