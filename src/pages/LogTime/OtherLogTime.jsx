@@ -63,6 +63,7 @@ function OtherLogTime() {
   const [user, setUser] = useState(undefined)
   const [logType, setLogType] = useState(undefined)
   const [openModal, setOpenModal] = useState(false)
+  const [isReadOnly, setIsReadOnly] = useState(false)
   const FormItem = Form.Item
 
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
@@ -212,7 +213,7 @@ function OtherLogTime() {
     setDate(date ? date : intialDate)
   }
 
-  const handleOpenEditModal = (log) => {
+  const handleOpenEditModal = (log, readOnly) => {
     const originalTimelog = logTimeDetails?.data?.data?.data.find(
       (project) => project.id === log.id
     )
@@ -225,12 +226,14 @@ function OtherLogTime() {
     })
     setOpenModal(true)
     setIsEditMode(true)
+    if (readOnly) setIsReadOnly(true)
   }
 
   const handleCloseTimelogModal = () => {
     setOpenModal(false)
     setTimelogToUpdate({})
     setIsEditMode(false)
+    setIsReadOnly(false)
   }
 
   const handleLogTypeSubmit = (newLogtime) => {
@@ -268,6 +271,7 @@ function OtherLogTime() {
           isEditMode={isEditMode}
           isUserLogtime={true}
           role={key}
+          isReadOnly={isReadOnly}
         />
       )}
       <div style={{marginTop: 20}}></div>
@@ -347,7 +351,6 @@ function OtherLogTime() {
             sort,
             handleOpenEditModal,
             confirmDelete,
-
             undefined,
             permission
           )}
