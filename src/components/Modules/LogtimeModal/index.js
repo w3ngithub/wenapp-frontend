@@ -53,8 +53,6 @@ function LogtimeModal({
   isReadOnly,
 }) {
   const Option = Select.Option
-  console.log('inittialValues', isReadOnly)
-
   // const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
   const [searchValue, setSearchValue] = useState('')
 

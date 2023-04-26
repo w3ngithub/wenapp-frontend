@@ -199,7 +199,6 @@ function LogTimes() {
   }
 
   const handleOpenEditModal = (log, readOnly) => {
-    console.log('readonly', log, readOnly)
     const originalTimelog = logTimeDetails?.data?.data?.data.find(
       (project) => project.id === log.id
     )
