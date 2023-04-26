@@ -93,9 +93,9 @@ const LeavesCalendar = () => {
 
       const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
-      if (eventStartsInNextMonth) {
-        return {hide: true}
-      }
+      // if (eventStartsInNextMonth) {
+      //   return {hide: true}
+      // }
 
       if (
         [
@@ -108,14 +108,16 @@ const LeavesCalendar = () => {
         //for long leaves
         return {
           title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
-          start: eventStartsInPrevMonthForLongEvents
-            ? new Date(thisMonthsStartDate?.format())
-            : new Date(leaveDates?.[0]),
-          end: new Date(
-            eventEndsInNextMonthForLongEvents
-              ? thisMonthsEndDate.format()
-              : leaveDates?.[leaveDates?.length - 1]
-          ),
+          start: new Date(leaveDates?.[0]),
+          end: new Date(leaveDates?.[leaveDates?.length - 1]),
+          // start: eventStartsInPrevMonthForLongEvents
+          //   ? new Date(thisMonthsStartDate?.format())
+          //   : new Date(leaveDates?.[0]),
+          // end: new Date(
+          //   eventEndsInNextMonthForLongEvents
+          //     ? thisMonthsEndDate.format()
+          //     : leaveDates?.[leaveDates?.length - 1]
+          // ),
           fullWidth: true,
         }
       else {
@@ -126,9 +128,9 @@ const LeavesCalendar = () => {
           moment(leaveDates) > moment(currentMonth).endOf('month')
         const isOffRange = isEventInPreviousMonth || isEventInNextMonth
 
-        if (isOffRange) {
-          return null //if the day is off range return nothing
-        }
+        // if (isOffRange) {
+        //   return null //if the day is off range return nothing
+        // }
         return {
           title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
           start: new Date(leaveDates),
@@ -148,9 +150,9 @@ const LeavesCalendar = () => {
       height: 'auto',
     }
 
-    if (moment(event?.start) > moment(event?.end) || event?.hide) {
-      style = {...style, display: 'none'}
-    }
+    // if (moment(event?.start) > moment(event?.end) || event?.hide) {
+    //   style = {...style, display: 'none'}
+    // }
 
     return {
       style,

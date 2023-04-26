@@ -10,7 +10,7 @@ import {
   sortFromDate,
 } from 'helpers/utils'
 import {searchAttendacentOfUser} from 'services/attendances'
-import {ATTENDANCE_COLUMNS, monthlyState} from 'constants/Attendance'
+import {monthlyState} from 'constants/Attendance'
 import {getLeavesOfAllUsers} from 'services/leaves'
 import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
@@ -120,12 +120,12 @@ function AdminAttendanceCalendar() {
       padding: '5px 10px',
       color: 'white',
     }
-    if (isOffRange && event.type !== 'longLeaves') {
-      style = {...style, display: 'none'}
-    }
-    if (event?.hide) {
-      style = {...style, display: 'none'}
-    }
+    // if (isOffRange && event.type !== 'longLeaves') {
+    //   style = {...style, display: 'none'}
+    // }
+    // if (event?.hide) {
+    //   style = {...style, display: 'none'}
+    // }
 
     if (event.type === 'leave')
       style = {
@@ -185,16 +185,22 @@ function AdminAttendanceCalendar() {
       title: `${leave?.leaveType?.name}${
         extraInfo ? '(' + extraInfo + ')' : ''
       }`,
-      start: eventStartsInPrevMonth
-        ? new Date(thisMonthsStartDate?.format())
-        : new Date(leave?.leaveDates?.[0]),
+      start: new Date(leave?.leaveDates?.[0]),
       end: new Date(
         isUsualLeave
           ? leave?.leaveDates?.[0]
-          : eventEndsInNextMonth
-          ? thisMonthsEndDate.format()
           : leave?.leaveDates?.[leave?.leaveDates?.length - 1]
       ),
+      // start: eventStartsInPrevMonth
+      //   ? new Date(thisMonthsStartDate?.format())
+      //   : new Date(leave?.leaveDates?.[0]),
+      // end: new Date(
+      //   isUsualLeave
+      //     ? leave?.leaveDates?.[0]
+      //     : eventEndsInNextMonth
+      //     ? thisMonthsEndDate.format()
+      //     : leave?.leaveDates?.[leave?.leaveDates?.length - 1]
+      // ),
       type: isUsualLeave ? 'leave' : 'longLeaves',
       allDay: true,
       hide: eventStartsInNextMonth,

@@ -84,11 +84,11 @@ function AttendanceCalendar() {
   }
 
   const handleEventStyle = (event: any) => {
-    const isEventInPreviousMonth =
-      moment(event?.end) < moment(currentMonth).startOf('month')
-    const isEventInNextMonth =
-      moment(event?.end) > moment(currentMonth).endOf('month')
-    const isOffRange = isEventInPreviousMonth || isEventInNextMonth
+    // const isEventInPreviousMonth =
+    //   moment(event?.end) < moment(currentMonth).startOf('month')
+    // const isEventInNextMonth =
+    //   moment(event?.end) > moment(currentMonth).endOf('month')
+    // const isOffRange = isEventInPreviousMonth || isEventInNextMonth
 
     let style: any = {
       fontSize: '13px',
@@ -99,12 +99,12 @@ function AttendanceCalendar() {
       padding: '5px 10px',
       color: 'white',
     }
-    if (isOffRange && event.type !== 'longLeaves') {
-      style = {...style, display: 'none'}
-    }
-    if (event?.hide) {
-      style = {...style, display: 'none'}
-    }
+    // if (isOffRange && event.type !== 'longLeaves') {
+    //   style = {...style, display: 'none'}
+    // }
+    // if (event?.hide) {
+    //   style = {...style, display: 'none'}
+    // }
     if (event.type === 'leave')
       style = {
         ...style,
@@ -171,16 +171,22 @@ function AttendanceCalendar() {
       title: `${leave?.leaveType?.name}${
         extraInfo ? '(' + extraInfo + ')' : ''
       }`,
-      start: eventStartsInPrevMonth
-        ? new Date(thisMonthsStartDate?.format())
-        : new Date(leave?.leaveDates?.[0]),
+      start: new Date(leave?.leaveDates?.[0]),
       end: new Date(
         isUsualLeave
           ? leave?.leaveDates?.[0]
-          : eventEndsInNextMonth
-          ? thisMonthsEndDate.format()
           : leave?.leaveDates?.[leave?.leaveDates?.length - 1]
       ),
+      // start: eventStartsInPrevMonth
+      //   ? new Date(thisMonthsStartDate?.format())
+      //   : new Date(leave?.leaveDates?.[0]),
+      // end: new Date(
+      //   isUsualLeave
+      //     ? leave?.leaveDates?.[0]
+      //     : eventEndsInNextMonth
+      //     ? thisMonthsEndDate.format()
+      //     : leave?.leaveDates?.[leave?.leaveDates?.length - 1]
+      // ),
       type: isUsualLeave ? 'leave' : 'longLeaves',
       allDay: true,
       hide: eventStartsInNextMonth,
