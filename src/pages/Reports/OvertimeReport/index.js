@@ -25,6 +25,7 @@ import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {socket} from 'pages/Main'
 import {notification} from 'helpers/notification'
 import {dateToDateFormat} from 'helpers/utils'
+import moment from 'moment'
 
 const formattedReports = (overtimeData) => {
   return overtimeData?.map((log) => ({
@@ -252,7 +253,11 @@ const OvertimePage = () => {
       <div className="overtime-hour">
         <Form layout="inline" form={form}>
           <FormItem>
-            <RangePicker handleChangeDate={handleChangeDate} date={rangeDate} />
+            <RangePicker
+              handleChangeDate={handleChangeDate}
+              date={rangeDate}
+              defaultPickerValue={[moment().add(-1, 'month'), moment()]}
+            />
           </FormItem>
           <FormItem className="direct-form-item">
             <Select
