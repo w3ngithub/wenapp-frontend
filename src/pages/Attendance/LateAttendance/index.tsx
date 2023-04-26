@@ -27,12 +27,7 @@ import Select from 'components/Elements/Select'
 import {getAllUsers} from 'services/users/userDetails'
 import {createLeaveOfUser, getLeaveTypes} from 'services/leaves'
 import {notification} from 'helpers/notification'
-import {
-  CASUAL_LEAVE,
-  FIRST_HALF,
-  LATE_ARRIVAL,
-  LATE_LEAVE_TYPE_ID,
-} from 'constants/Leaves'
+import {FIRST_HALF, LATE_ARRIVAL} from 'constants/Leaves'
 import RangePicker from 'components/Elements/RangePicker'
 import {emptyText} from 'constants/EmptySearchAntd'
 import LeaveCutModal from 'components/Modules/LeaveCutAttendance/LeaveCutModal'
@@ -388,6 +383,7 @@ function LateAttendance({userRole}: {userRole: any}) {
                 handleChangeDate={handleChangeDate}
                 date={date}
                 disabledDate={disabledAfterToday}
+                defaultPickerValue={[moment().add(-1, 'month'), moment()]}
               />
             </FormItem>
             <FormItem className="direct-form-item">

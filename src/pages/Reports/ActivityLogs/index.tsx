@@ -98,7 +98,11 @@ function ActivityLogs() {
           <div className="gx-d-flex gx-justify-content-between gx-flex-row">
             <Form layout="inline" form={form}>
               <FormItem>
-                <RangePicker handleChangeDate={handleChangeDate} date={date} />
+                <RangePicker
+                  handleChangeDate={handleChangeDate}
+                  date={date}
+                  defaultPickerValue={[moment().add(-1, 'month'), moment()]}
+                />
               </FormItem>
               <FormItem className="direct-form-item">
                 <Select

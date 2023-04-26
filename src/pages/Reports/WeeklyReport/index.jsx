@@ -194,6 +194,7 @@ function WeeklyReport() {
                   onChange={handleChangeDate}
                   value={date}
                   disabledDate={disabledAfterToday}
+                  defaultPickerValue={[moment().add(-1, 'month'), moment()]}
                 />
               </FormItem>
               <FormItem className="direct-form-item">
