@@ -22,7 +22,7 @@ function CustomIcon({name}: {name: string}) {
       return <DeleteOutlined style={style} />
 
     case 'activeUser':
-      return <UserAddOutlined style={style} />
+      return <UserAddOutlined style={{...style, color: '#06cc3b'}} />
     case 'deactiveUser':
       return (
         <UserDeleteOutlined style={style} className="gx-link gx-text-danger" />
