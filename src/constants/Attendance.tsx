@@ -246,8 +246,10 @@ const attendanceFilter = [
 ]
 
 const attendanceFilterWithLastWeek = [
-  ...attendanceFilter,
+  {id: 1, value: 'Daily'},
+  {id: 2, value: 'This Week'},
   {id: 4, value: 'Last Week'},
+  {id: 3, value: 'Monthly'},
 ]
 
 export const intialDate = [moment().startOf('day'), moment().endOf('day')]
