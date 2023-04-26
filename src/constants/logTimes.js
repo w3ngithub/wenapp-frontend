@@ -186,7 +186,7 @@ const LOGTIMES_COLUMNS = (
                 <span style={{display: 'flex'}}>
                   <span
                     className="gx-link"
-                    onClick={() => onOpenEditModal(record, 'readOnly')}
+                    onClick={() => onOpenEditModal(record, true)}
                   >
                     <CustomIcon name="view" />
                     {(role?.[`Log Time`]?.deleteLogTime ||
