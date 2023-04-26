@@ -194,13 +194,15 @@ function LogtimeModal({
     if (initialValues?.otStatus === 'A') {
       message = (
         <>
-          Update Log Time <span className="overtime-approved">(Approved)</span>
+          {isReadOnly ? 'View' : 'Update'} Log Time{' '}
+          <span className="overtime-approved">(Approved)</span>
         </>
       )
     } else if (initialValues?.otStatus === 'R') {
       message = (
         <>
-          Update Log Time <span className="overtime-rejected">(Rejected)</span>
+          {isReadOnly ? 'View' : 'Update'} Log Time{' '}
+          <span className="overtime-rejected">(Rejected)</span>
         </>
       )
     }
