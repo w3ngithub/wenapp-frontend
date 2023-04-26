@@ -86,6 +86,16 @@ const LOGTIMES_COLUMNS = (
             return (
               !getIsAdmin() && (
                 <span>
+                  <span
+                    className="gx-link"
+                    onClick={() => onOpenEditModal(record, true)}
+                  >
+                    <CustomIcon name="view" />
+                    {(role?.[`Log Time`]?.deleteLogTime ||
+                      role?.[`Log Time`]?.editLogTime) && (
+                      <Divider type="vertical" />
+                    )}
+                  </span>
                   {moment(sendDate) >=
                     moment().subtract(1, 'days').startOf('day') && (
                     <span
@@ -174,6 +184,17 @@ const LOGTIMES_COLUMNS = (
             return (
               !getIsAdmin() && (
                 <span style={{display: 'flex'}}>
+                  <span
+                    className="gx-link"
+                    onClick={() => onOpenEditModal(record, 'readOnly')}
+                  >
+                    <CustomIcon name="view" />
+                    {(role?.[`Log Time`]?.deleteLogTime ||
+                      role?.[`Log Time`]?.editLogTime) && (
+                      <Divider type="vertical" />
+                    )}
+                  </span>
+
                   {(record.user === user &&
                     moment(sendDate) >=
                       moment().subtract(1, 'days').startOf('day')) ||
