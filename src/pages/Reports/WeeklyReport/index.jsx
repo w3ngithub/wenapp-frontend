@@ -48,8 +48,8 @@ function WeeklyReport() {
   const [project, setProject] = useState(undefined)
   const [logType, setLogType] = useState(undefined)
   const [projectClient, setprojectClient] = useState(undefined)
-  const [date, setDate] = useState(intialDate)
-  const [dateFilter, setDateFilter] = useState({id: '1', value: 'Daily'})
+  const [date, setDate] = useState(weeklyState)
+  const [dateFilter, setDateFilter] = useState({id: 2, value: 'Weekly'})
   const [form] = Form.useForm()
   const {innerWidth} = useWindowsSize()
 
