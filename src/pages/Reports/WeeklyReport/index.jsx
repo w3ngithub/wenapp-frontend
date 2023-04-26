@@ -49,7 +49,9 @@ function WeeklyReport() {
   const [logType, setLogType] = useState(undefined)
   const [projectClient, setprojectClient] = useState(undefined)
   const [date, setDate] = useState(weeklyState)
-  const [dateFilter, setDateFilter] = useState({id: 2, value: 'Weekly'})
+  const [dateFilter, setDateFilter] = useState(
+    attendanceFilterWithLastWeek.find((d) => d.id === 2)
+  )
   const [form] = Form.useForm()
   const {innerWidth} = useWindowsSize()
 
@@ -134,7 +136,7 @@ function WeeklyReport() {
     setProjectStatus(undefined)
     setprojectClient(undefined)
     setProject(undefined)
-    setDateFilter(attendanceFilter.find((d) => d.value === 'Weekly')?.id)
+    setDateFilter(2)
   }
 
   const navigateToProjectLogs = (projectSlug, newPage = false) => {
