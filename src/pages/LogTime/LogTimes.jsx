@@ -9,6 +9,7 @@ import {
   roundedToFixed,
   handleResponse,
   getIsAdmin,
+  sortTableDatas,
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
@@ -76,12 +77,7 @@ function LogTimes() {
       getWeeklyTimeLogs({
         ...page,
         user: _id,
-        sort:
-          sort.order === undefined || sort.column === undefined
-            ? '-logDate'
-            : sort.order === 'ascend'
-            ? sort.field
-            : `-${sort.field}`,
+        sort: sortTableDatas(sort.order, sort.column, sort.field),
       }),
     {keepPreviousData: true}
   )
