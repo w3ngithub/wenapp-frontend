@@ -286,13 +286,17 @@ const Dashboard = () => {
     const isOffRange = isEventInPreviousMonth || isEventInNextMonth
 
     let style: any = {
-      fontSize: innerWidth <= 1500 ? '7px' : '9px',
-      width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
+      fontSize: innerWidth <= 1500 ? '10px' : '11px',
+      width:
+        event.type === 'notice'
+          ? '100%'
+          : innerWidth <= 729
+          ? '2.5rem'
+          : 'fit-content',
       margin: '0px auto',
       fontWeight: '600',
       height: 'fit-content',
-
-      background: 'transparent',
+      background: event.type === 'notice' ? 'rgb(223 220 220)' : 'transparent',
     }
     if (isOffRange && eventCopy.type !== 'notice') {
       style = {
@@ -340,7 +344,7 @@ const Dashboard = () => {
         ...style,
         width: `100%`,
         fontWeight: '500',
-        background: '#a7acaf',
+        background: darkTheme ? '#a7acaf' : 'rgb(223 220 220)',
         color: darkTheme ? darkThemeTextColor : 'black',
         marginBottom: '6px',
       }
