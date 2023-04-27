@@ -8,6 +8,7 @@ import {
   roundedToFixed,
   handleResponse,
   MuiFormatDate,
+  sortTableDatas,
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
@@ -110,12 +111,7 @@ function OtherLogTime() {
         user,
         fromDate: date?.[0] ? MuiFormatDate(date[0]._d) + 'T00:00:00Z' : '',
         toDate: date?.[1] ? MuiFormatDate(date[1]._d) + 'T23:59:59Z' : '',
-        sort:
-          sort.order === undefined || sort.column === undefined
-            ? '-logDate'
-            : sort.order === 'ascend'
-            ? sort.field
-            : `-${sort.field}`,
+        sort: sortTableDatas(sort.order, sort.column, sort.field),
       }),
     {keepPreviousData: true}
   )
