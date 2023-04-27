@@ -82,6 +82,29 @@
   z-index: 10;
 }
 
+.rbc-overlay::-webkit-scrollbar {
+  height: 4px;
+  /* This is more usable for users trying to click it. */
+  background-color: rgba(100, 100, 100, 0.1);
+  -webkit-border-radius: 100px;
+}
+/* hover effect for both scrollbar area, and scrollbar 'thumb' */
+.rbc-overlay::-webkit-scrollbar:hover {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+/* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
+.rbc-overlay::-webkit-scrollbar-thumb:horizontal {
+  /* This is the EXACT color of Mac OS scrollbars.
+     Yes, I pulled out digital color meter */
+  background: rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 100px;
+}
+.rbc-overlay::-webkit-scrollbar-thumb:horizontal:active {
+  background: rgba(0, 0, 0, 0.61); /* Some darker color when you click it */
+  -webkit-border-radius: 100px;
+}
+
 .rbc-overlay-header {
   border-bottom: 1px solid #e5e5e5;
   margin: -10px -10px 5px -10px;
