@@ -17,6 +17,56 @@
   }
 }
 
+.rbc-header {
+  padding: 12px;
+  color: #919191;
+  border-bottom: 1px solid #ebebeb;
+  font-weight: 500;
+}
+
+.rbc-date-cell {
+  color: #b6b4b4;
+  padding: 5px;
+  font-weight: 500;
+}
+
+.rbc-today {
+  background-color: transparent;
+}
+
+.rbc-date-cell {
+  button {
+    padding: 5px;
+  }
+}
+.rbc-date-cell.rbc-now {
+  button {
+    background-color: #315ebf;
+    border-radius: 50%;
+    color: #fff;
+  }
+}
+
+.rbc-off-range-bg {
+  background: #f5f7f9;
+}
+
+.rbc-month-view {
+  border-radius: 5px;
+  border: 1px solid #ebebeb;
+}
+
+.rbc-month-row + .rbc-month-row {
+  border-top: 1px solid #ebebeb;
+}
+.rbc-day-bg + .rbc-day-bg {
+  border-left: 1px solid #ebebeb;
+}
+
+.rbc-button-link {
+  margin-left: 17px;
+}
+
 .rbc-event {
   color: #342d2d;
   background-color: #4eb4de;
@@ -32,6 +82,29 @@
   z-index: 10;
 }
 
+.rbc-overlay::-webkit-scrollbar {
+  height: 4px;
+  /* This is more usable for users trying to click it. */
+  background-color: rgba(100, 100, 100, 0.1);
+  -webkit-border-radius: 100px;
+}
+/* hover effect for both scrollbar area, and scrollbar 'thumb' */
+.rbc-overlay::-webkit-scrollbar:hover {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+/* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
+.rbc-overlay::-webkit-scrollbar-thumb:horizontal {
+  /* This is the EXACT color of Mac OS scrollbars.
+     Yes, I pulled out digital color meter */
+  background: rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 100px;
+}
+.rbc-overlay::-webkit-scrollbar-thumb:horizontal:active {
+  background: rgba(0, 0, 0, 0.61); /* Some darker color when you click it */
+  -webkit-border-radius: 100px;
+}
+
 .rbc-overlay-header {
   border-bottom: 1px solid #e5e5e5;
   margin: -10px -10px 5px -10px;
@@ -42,11 +115,11 @@
 .rbc-show-more {
   background-color: rgba(255, 255, 255, 0.3);
   z-index: 4;
-  font-weight: bold;
+  font-weight: 500;
   font-size: 85%;
   height: auto;
   line-height: normal;
-  color: #7d8183;
+  color: rgb(161, 168, 176);
 }
 
 .rbc-event.rbc-selected {
