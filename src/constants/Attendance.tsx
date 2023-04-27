@@ -245,11 +245,30 @@ const attendanceFilter = [
   {id: 3, value: 'Monthly'},
 ]
 
-export const intialDate = [moment().startOf('day'), moment().endOf('day')]
-export const weeklyState = [moment().startOf('week'), moment().endOf('day')]
-export const monthlyState = [moment().startOf('month'), moment().endOf('day')]
+const attendanceFilterWithLastWeek = [
+  {id: 1, value: 'Daily'},
+  {id: 2, value: 'This Week'},
+  {id: 4, value: 'Last Week'},
+  {id: 3, value: 'Monthly'},
+]
 
-export {ATTENDANCE_COLUMNS, attendanceFilter, LATE_ATTENDANCE_COLUMNS}
+export const intialDate = [moment().startOf('day'), moment().endOf('day')]
+export const weeklyState = [
+  moment().startOf('week').subtract(1, 'days'),
+  moment().endOf('day'),
+]
+export const monthlyState = [moment().startOf('month'), moment().endOf('day')]
+export const LastWeekState = [
+  moment().subtract(1, 'weeks').startOf('week').subtract(1, 'days'),
+  moment().subtract(1, 'weeks').endOf('week').subtract(1, 'days'),
+]
+
+export {
+  ATTENDANCE_COLUMNS,
+  attendanceFilter,
+  LATE_ATTENDANCE_COLUMNS,
+  attendanceFilterWithLastWeek,
+}
 
 export const leaveCutStatus = [
   {id: '1', value: 'Leave Not Cut '},
