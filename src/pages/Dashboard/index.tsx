@@ -198,34 +198,16 @@ const Dashboard = () => {
   }
   const handleEventStyle = (event: any) => {
     let eventCopy = {...event}
-    const isEventInPreviousMonth =
-      moment(eventCopy?.end) < moment(currentMonth).startOf('month')
-    const isEventInNextMonth =
-      moment(eventCopy?.end) > moment(currentMonth).endOf('month')
-
-    const isOffRange = isEventInPreviousMonth || isEventInNextMonth
 
     let style: any = {
-      fontSize: innerWidth <= 1500 ? '7px' : '9px',
+      fontSize: innerWidth <= 1500 ? '10px' : '11px',
       width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
       margin: '0px auto',
       fontWeight: '600',
       height: 'fit-content',
-
       background: 'transparent',
     }
-    if (isOffRange && eventCopy.type !== 'notice') {
-      style = {
-        ...style,
-        display: 'none',
-      }
-    }
-    if (event?.hide) {
-      style = {
-        ...style,
-        display: 'none',
-      }
-    }
+
     if (eventCopy.type === 'birthday')
       style = {
         ...style,
@@ -233,7 +215,7 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: '#05ccf9',
+        color: 'rgb(12 149 180)',
       }
     if (eventCopy.type === 'holiday')
       style = {
@@ -286,7 +268,7 @@ const Dashboard = () => {
       alignItems: 'center',
       gap: '4px',
       margin: '0 !important',
-      fontSize: '9px',
+      fontSize: '10px',
     }
 
     if (props.event.type === 'birthday') {

@@ -17,6 +17,56 @@
   }
 }
 
+.rbc-header {
+  padding: 12px;
+  color: #919191;
+  border-bottom: 1px solid #ebebeb;
+  font-weight: 500;
+}
+
+.rbc-date-cell {
+  color: #b6b4b4;
+  padding: 5px;
+  font-weight: 500;
+}
+
+.rbc-today {
+  background-color: transparent;
+}
+
+.rbc-date-cell {
+  button {
+    padding: 5px;
+  }
+}
+.rbc-date-cell.rbc-now {
+  button {
+    background-color: #315ebf;
+    border-radius: 50%;
+    color: #fff;
+  }
+}
+
+.rbc-off-range-bg {
+  background: #f5f7f9;
+}
+
+.rbc-month-view {
+  border-radius: 5px;
+  border: 1px solid #ebebeb;
+}
+
+.rbc-month-row + .rbc-month-row {
+  border-top: 1px solid #ebebeb;
+}
+.rbc-day-bg + .rbc-day-bg {
+  border-left: 1px solid #ebebeb;
+}
+
+.rbc-button-link {
+  margin-left: 17px;
+}
+
 .rbc-event {
   color: #342d2d;
   background-color: #4eb4de;
@@ -42,11 +92,11 @@
 .rbc-show-more {
   background-color: rgba(255, 255, 255, 0.3);
   z-index: 4;
-  font-weight: bold;
+  font-weight: 500;
   font-size: 85%;
   height: auto;
   line-height: normal;
-  color: #7d8183;
+  color: rgb(161, 168, 176);
 }
 
 .rbc-event.rbc-selected {

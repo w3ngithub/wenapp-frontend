@@ -78,10 +78,6 @@ function AdminAttendanceCalendar() {
     })
   )
 
-  let holidaysDates: any[] = holidaysCalendar?.map((holiday: any) =>
-    MuiFormatDate(holiday?.start)
-  )
-
   const handleCalendarRangeChange = (calendarDate: any) => {
     const mom = moment(moment(calendarDate[0]).add(1, 'days')).utc().format()
     const filterByWeek = calendarDate.length === 7
@@ -112,55 +108,52 @@ function AdminAttendanceCalendar() {
   }
 
   const handleEventStyle = (event: any) => {
-    const isEventInPreviousMonth =
-      moment(event?.end) < moment(currentMonth).startOf('month')
-    const isEventInNextMonth =
-      moment(event?.end) > moment(currentMonth).endOf('month')
-    const isOffRange = isEventInPreviousMonth || isEventInNextMonth
     let style: any = {
-      fontSize: '14px',
-      width: 'fit-content',
+      fontSize: '11.5px',
       margin: '0px auto',
+      marginTop: '2rem',
       fontWeight: '500',
       height: '27px',
       padding: '5px 10px',
       color: darkMode ? 'white' : '#100c0ca6',
-    }
-    if (isOffRange) {
-      style = {...style, display: 'none'}
-    }
-    if (event?.hide) {
-      style = {...style, display: 'none'}
+      backgroundColor: 'transparent',
+      borderRadius: '16px',
+      width: '90%',
+      letterSpacing: '0.3px',
+      paddingLeft: '15px',
     }
 
-    if (event.type === 'leave')
+    if (event.type === 'leave') {
       style = {
         ...style,
-        padding: '4rem 1rem 0 0rem',
-        backgroundColor: 'transparent',
+        backgroundColor: '#DAF6F4',
+        color: '#547362',
       }
+    }
 
     if (event.isLessHourWorked)
       style = {
         ...style,
-        backgroundColor: '#E14B4B',
+        backgroundColor: 'rgb(242 208 208)',
+        color: '#b52325',
       }
-
+    if (!event.isLessHourWorked && event.type !== 'leave')
+      style = {
+        ...style,
+        backgroundColor: '#EFEBFF',
+        color: '#3C3467',
+      }
     if (event.type === 'holiday')
       style = {
         ...style,
-        backgroundColor: 'transparent',
-        padding:
-          innerWidth < 1556 && event?.title?.length > 19
-            ? '3rem 3px 0 1.1rem'
-            : '4rem 0.3rem 0 0',
+        backgroundColor: '#FFE8D0',
+        color: 'rgb(99 92 92)',
       }
 
     return {
       style,
     }
   }
-
   let leaves: any[] = []
 
   userLeaves?.forEach((leave: any) => {
@@ -186,34 +179,6 @@ function AdminAttendanceCalendar() {
       })
     })
   })
-
-  let leaveDates: any[] = leaves?.map((leave) => MuiFormatDate(leave?.start))
-
-  const DayPropGetter = (date: any) => {
-    if (!user) {
-      return
-    }
-    // if the day lies in the prev month or next month don't decorate
-    if (
-      moment(date) < moment(currentMonth).startOf('month') ||
-      moment(date) > moment(currentMonth).endOf('month')
-    ) {
-      return
-    }
-
-    return {
-      ...(leaveDates?.includes(MuiFormatDate(date)) && {
-        style: {
-          backgroundColor: '#efbad280',
-        },
-      }),
-      ...(holidaysDates?.includes(MuiFormatDate(date)) && {
-        style: {
-          backgroundColor: '#d38282b3',
-        },
-      }),
-    }
-  }
 
   const attendances = data?.data?.data?.attendances?.[0]?.data?.map(
     (attendance: any) => {
@@ -333,7 +298,6 @@ function AdminAttendanceCalendar() {
             views={['month', 'week', 'day']}
             onSelectEvent={handleSelectEvent}
             onNavigate={monthChangeHandler}
-            dayPropGetter={DayPropGetter}
           />
         </div>
       </Spin>

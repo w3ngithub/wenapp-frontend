@@ -5,29 +5,43 @@ import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import {Spin} from 'antd'
 import {getFiscalYearLeaves} from 'services/leaves'
-import {FIRST_HALF, LATE_ARRIVAL, SECOND_HALF} from 'constants/Leaves'
+import {
+  FIRST_HALF,
+  LATE_ARRIVAL,
+  LEAVES_TYPES,
+  SECOND_HALF,
+} from 'constants/Leaves'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
 
 const localizer = momentLocalizer(moment)
 
 const LeavesCalendar = () => {
-  const {
-    currentMonth,
-    thisMonthsStartDate,
-    thisMonthsEndDate,
-    monthChangeHandler,
-  } = useCleanCalendar()
+  const {monthChangeHandler} = useCleanCalendar()
 
   const leavesQuery = useQuery(
     ['leavesCalendar'],
     () => getFiscalYearLeaves(),
     {
-      onError: (err) => {},
+      onError: (err) => console.log(err),
       select: (res) => {
         let allLeaves: any[] = []
 
         res?.data?.data?.data.forEach((leave: any) => {
-          if (leave?._id?.isSpecial?.[0]) {
+          const isLeavePaternity =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Paternity
+          const isLeaveMaternity =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Maternity
+          const isLeavePTO =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.PTO
+          const isLeaveBereavement =
+            leave?._id?.leaveType[0]?.toLowerCase() === LEAVES_TYPES.Bereavement
+
+          if (
+            isLeavePaternity ||
+            isLeaveMaternity ||
+            isLeavePTO ||
+            isLeaveBereavement
+          ) {
             allLeaves.push({
               ...leave?._id,
               leaveDates: [...leave?.leaveDates],
@@ -44,7 +58,7 @@ const LeavesCalendar = () => {
   )
 
   const leaveUsers = leavesQuery?.data?.map(
-    ({user, leaveDates, leaveType, isSpecial, halfDay}: any) => {
+    ({user, leaveDates, leaveType, halfDay}: any) => {
       const nameSplitted = user[0].split(' ')
       let extraInfo = leaveType?.[0]?.split(' ')?.[0]
       let lastName
@@ -64,66 +78,27 @@ const LeavesCalendar = () => {
         extraInfo = 'Late'
       }
 
-      const eventStartsInPrevMonthForLongEvents =
-        moment(leaveDates?.[0]) < thisMonthsStartDate
-
-      const eventEndsInNextMonthForLongEvents =
-        moment(leaveDates?.[leaveDates?.length - 1]) > thisMonthsEndDate
-
-      const eventStartsInNextMonth = thisMonthsEndDate < moment(leaveDates?.[0])
-
       const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
-      if (eventStartsInNextMonth) {
-        return {hide: true}
-      }
-
-      if (isSpecial?.[0])
-        //for long leaves
-        return {
-          title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
-          start: eventStartsInPrevMonthForLongEvents
-            ? new Date(thisMonthsStartDate?.format())
-            : new Date(leaveDates?.[0]),
-          end: new Date(
-            eventEndsInNextMonthForLongEvents
-              ? thisMonthsEndDate.format()
-              : leaveDates?.[leaveDates?.length - 1]
-          ),
-          fullWidth: true,
-        }
-      else {
-        //for 1 day leaves
-        const isEventInPreviousMonth =
-          moment(leaveDates) < moment(currentMonth).startOf('month')
-        const isEventInNextMonth =
-          moment(leaveDates) > moment(currentMonth).endOf('month')
-        const isOffRange = isEventInPreviousMonth || isEventInNextMonth
-
-        if (isOffRange) {
-          return null //if the day is off range return nothing
-        }
-        return {
-          title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
-          start: new Date(leaveDates),
-          end: new Date(leaveDates),
-        }
+      return {
+        title: `${shortName}${extraInfo ? ' (' + extraInfo + ')' : ''}`,
+        start: new Date(leaveDates),
+        end: new Date(leaveDates),
       }
     }
   )
 
   const handleEventStyle = (event: any) => {
     let style: any = {
-      color: 'white',
+      color: 'rgb(0 128 128 / 73%)',
+      fontSize: '12.5px',
       padding: '1px 10px',
-      width: event.fullWidth ? '100%' : 'fit-content',
+      width: event.fullWidth ? '100%' : '100%',
       margin: 'auto',
-      marginBottom: '0.2rem',
+      marginLeft: '11px',
+      marginBottom: '0.1rem',
       height: 'auto',
-    }
-
-    if (moment(event?.start) > moment(event?.end) || event?.hide) {
-      style = {...style, display: 'none'}
+      backgroundColor: 'transparent',
     }
 
     return {
