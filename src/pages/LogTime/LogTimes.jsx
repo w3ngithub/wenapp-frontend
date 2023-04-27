@@ -9,6 +9,7 @@ import {
   roundedToFixed,
   handleResponse,
   getIsAdmin,
+  sortTableDatas,
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
@@ -56,6 +57,7 @@ function LogTimes() {
   const [isAdminTimeLog, setIsAdminTimeLog] = useState(false)
   const [timeLogToUpdate, setTimelogToUpdate] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
+  const [isReadOnly, setIsReadOnly] = useState(false)
   const projectNameRef = useRef('')
 
   const {
@@ -75,12 +77,7 @@ function LogTimes() {
       getWeeklyTimeLogs({
         ...page,
         user: _id,
-        sort:
-          sort.order === undefined || sort.column === undefined
-            ? '-logDate'
-            : sort.order === 'ascend'
-            ? sort.field
-            : `-${sort.field}`,
+        sort: sortTableDatas(sort.order, sort.column, sort.field),
       }),
     {keepPreviousData: true}
   )
@@ -197,7 +194,7 @@ function LogTimes() {
     deleteLogMutation.mutate(log._id)
   }
 
-  const handleOpenEditModal = (log) => {
+  const handleOpenEditModal = (log, readOnly) => {
     const originalTimelog = logTimeDetails?.data?.data?.data.find(
       (project) => project.id === log.id
     )
@@ -210,6 +207,9 @@ function LogTimes() {
     })
     setOpenModal(true)
     setIsEditMode(true)
+    if (readOnly) {
+      setIsReadOnly(true)
+    }
   }
 
   const handleCloseTimelogModal = () => {
@@ -217,6 +217,7 @@ function LogTimes() {
     setTimelogToUpdate({})
     setIsEditMode(false)
     setIsAdminTimeLog(false)
+    setIsReadOnly(false)
   }
 
   const handleOpenModal = () => {
@@ -275,6 +276,7 @@ function LogTimes() {
           isUserLogtime={true}
           isAdminTimeLog={isAdminTimeLog}
           role={key}
+          isReadOnly={isReadOnly}
         />
       )}
       <div style={{marginTop: 20}}></div>

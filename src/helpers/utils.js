@@ -537,3 +537,16 @@ export const subtractHourTime = (officeUTC, punchUTC) => {
   )
   return lateTime
 }
+
+//sort function with date and created at
+export const sortTableDatas = (order, column, field) => {
+  return order === undefined || column === undefined
+    ? '-logDate,-createdAt'
+    : order === 'ascend'
+    ? field === 'logDate'
+      ? `${field},createdAt`
+      : field
+    : field === 'logDate'
+    ? `-${field},-createdAt`
+    : `-${field}`
+}

@@ -50,9 +50,9 @@ function LogtimeModal({
   isUserLogtime = false,
   isAdminTimeLog = false,
   role,
+  isReadOnly = false,
 }) {
   const Option = Select.Option
-
   // const { getFieldDecorator, validateFieldsAndScroll } = rest.form;
   const [searchValue, setSearchValue] = useState('')
 
@@ -167,6 +167,7 @@ function LogtimeModal({
                   initialValues?.project?._id ||
                   process.env.REACT_APP_OTHER_PROJECT_ID,
                 isOt: initialValues?.isOt,
+                rejectReason: initialValues?.otRejectReason,
               }
             : {
                 logDate: moment(initialValues?.logDate),
@@ -175,6 +176,7 @@ function LogtimeModal({
                 logType: initialValues?.logType._id,
                 remarks: initialValues?.remarks,
                 isOt: initialValues?.isOt,
+                rejectReason: initialValues?.otRejectReason,
               }
         )
       } else {
@@ -192,13 +194,15 @@ function LogtimeModal({
     if (initialValues?.otStatus === 'A') {
       message = (
         <>
-          Update Log Time <span className="overtime-approved">(Approved)</span>
+          {isReadOnly ? 'View' : 'Update'} Log Time{' '}
+          <span className="overtime-approved">(Approved)</span>
         </>
       )
     } else if (initialValues?.otStatus === 'R') {
       message = (
         <>
-          Update Log Time <span className="overtime-rejected">(Rejected)</span>
+          {isReadOnly ? 'View' : 'Update'} Log Time{' '}
+          <span className="overtime-rejected">(Rejected)</span>
         </>
       )
     }
@@ -217,26 +221,34 @@ function LogtimeModal({
       mask={false}
       onOk={handleSubmit}
       onCancel={handleCancel}
-      footer={[
-        <Button key="back" onClick={handleCancel}>
-          {CANCEL_TEXT}
-        </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          onClick={handleSubmit}
-          disabled={loading}
-        >
-          Submit
-        </Button>,
-      ]}
+      footer={
+        isReadOnly
+          ? [
+              <Button key="back" onClick={handleCancel}>
+                {CANCEL_TEXT}
+              </Button>,
+            ]
+          : [
+              <Button key="back" onClick={handleCancel}>
+                {CANCEL_TEXT}
+              </Button>,
+              <Button
+                key="submit"
+                type="primary"
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                Submit
+              </Button>,
+            ]
+      }
     >
       <Spin spinning={loading}>
         <Form form={form}>
           <FormItem
             {...formItemLayout}
             label="Date"
-            hasFeedback
+            hasFeedback={!isReadOnly}
             name="logDate"
             rules={[
               {
@@ -249,6 +261,7 @@ function LogtimeModal({
               className=" gx-w-100"
               placeholder="Select Date"
               format={dateFormat}
+              disabled={isReadOnly}
               disabledDate={
                 LOG_TIME_OLD_EDIT.includes(role) || isAdminTimeLog
                   ? disabledAfterToday
@@ -273,7 +286,7 @@ function LogtimeModal({
           <FormItem
             {...formItemLayout}
             label="Hours"
-            hasFeedback
+            hasFeedback={!isReadOnly}
             name="hours"
             rules={[
               {
@@ -298,12 +311,18 @@ function LogtimeModal({
               },
             ]}
           >
-            <Input placeholder="Enter Hours" type="number" min={0} max={9} />
+            <Input
+              placeholder="Enter Hours"
+              type="number"
+              min={0}
+              max={9}
+              disabled={isReadOnly}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}
             label="Minutes"
-            hasFeedback
+            hasFeedback={!isReadOnly}
             name="minutes"
             rules={[
               {
@@ -335,6 +354,7 @@ function LogtimeModal({
               step={15}
               min={0}
               max={45}
+              disabled={isReadOnly}
             />
           </FormItem>
           {isAdminTimeLog && (
@@ -346,6 +366,7 @@ function LogtimeModal({
             >
               <Select
                 notFoundContent={emptyText}
+                disabled={isReadOnly}
                 showSearch
                 placeholder="Select Co-worker"
                 onChange={handleUserChange}
@@ -366,7 +387,7 @@ function LogtimeModal({
           <FormItem
             {...formItemLayout}
             label="Log Type"
-            hasFeedback
+            hasFeedback={!isReadOnly}
             name="logType"
             rules={[{required: true, message: 'Log Type is required'}]}
           >
@@ -374,6 +395,7 @@ function LogtimeModal({
               notFoundContent={emptyText}
               showSearch
               filterOption={filterOptions}
+              disabled={isReadOnly}
               placeholder="Select Log Type"
             >
               {types.map((logType) => (
@@ -387,7 +409,7 @@ function LogtimeModal({
             <FormItem
               {...formItemLayout}
               label="Project Name"
-              hasFeedback
+              hasFeedback={!isReadOnly}
               name="project"
               rules={[{required: true, message: 'Project Name is required.'}]}
             >
@@ -395,6 +417,7 @@ function LogtimeModal({
                 notFoundContent={emptyText}
                 showSearch
                 suffixIcon={<SearchOutlined />}
+                disabled={isReadOnly}
                 filterOption={filterOptions}
                 placeholder="Search Project"
                 onSearch={optimizedFn}
@@ -431,7 +454,7 @@ function LogtimeModal({
           <FormItem
             {...formItemLayout}
             label="Remarks"
-            hasFeedback
+            hasFeedback={!isReadOnly}
             name="remarks"
             rules={[
               {
@@ -451,17 +474,55 @@ function LogtimeModal({
               },
             ]}
           >
-            <TextArea placeholder="Enter Remarks" rows={6} />
+            <TextArea
+              placeholder="Enter Remarks"
+              rows={6}
+              disabled={isReadOnly}
+            />
           </FormItem>
+          {isEditMode &&
+            isReadOnly &&
+            initialValues?.isOt === true &&
+            initialValues.otStatus === 'R' && (
+              <FormItem
+                {...formItemLayout}
+                label="Reject Reason"
+                name="rejectReason"
+                rules={[
+                  {
+                    required: true,
+                    validator: async (rule, value) => {
+                      try {
+                        if (!value) throw new Error('Remarks is required.')
+
+                        const trimmedValue = value && value.trim()
+                        if (trimmedValue?.length < 10) {
+                          throw new Error(
+                            'Remarks should be at least 10 letters!'
+                          )
+                        }
+                      } catch (err) {
+                        throw new Error(err.message)
+                      }
+                    },
+                  },
+                ]}
+              >
+                <TextArea rows={6} disabled={isReadOnly} />
+              </FormItem>
+            )}
           <FormItem
             valuePropName="checked"
             {...formItemLayout}
             label=""
-            hasFeedback
+            hasFeedback={!isReadOnly}
             initialValue={false}
             name="isOt"
           >
-            <Checkbox style={{marginLeft: innerWidth > 575 ? '10.3rem' : '0'}}>
+            <Checkbox
+              style={{marginLeft: innerWidth > 575 ? '10.3rem' : '0'}}
+              disabled={isReadOnly}
+            >
               Overtime
             </Checkbox>
           </FormItem>

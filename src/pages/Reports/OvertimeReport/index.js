@@ -8,6 +8,7 @@ import {
   changeDate,
   filterOptions,
   handleResponse,
+  sortTableDatas,
 } from 'helpers/utils'
 import {
   getAllTimeLogs,
@@ -25,6 +26,7 @@ import {PLACE_HOLDER_CLASS} from 'constants/Common'
 import {socket} from 'pages/Main'
 import {notification} from 'helpers/notification'
 import {dateToDateFormat} from 'helpers/utils'
+import moment from 'moment'
 import {useLocation} from 'react-router'
 
 const formattedReports = (overtimeData) => {
@@ -88,16 +90,7 @@ const OvertimePage = () => {
         toDate: rangeDate?.[1]
           ? MuiFormatDate(rangeDate[1]?.format()) + 'T23:59:59Z'
           : '',
-        sort:
-          sort.order === undefined || sort.column === undefined
-            ? '-logDate,-createdAt'
-            : sort.order === 'ascend'
-            ? sort.field === 'logDate'
-              ? `${sort.field},createdAt`
-              : sort.field
-            : sort.field === 'logDate'
-            ? `-${sort.field},-createdAt`
-            : `-${sort.field}`,
+        sort: sortTableDatas(sort.order, sort.column, sort.field),
       })
   )
 
@@ -267,7 +260,11 @@ const OvertimePage = () => {
       <div className="overtime-hour">
         <Form layout="inline" form={form}>
           <FormItem>
-            <RangePicker handleChangeDate={handleChangeDate} date={rangeDate} />
+            <RangePicker
+              handleChangeDate={handleChangeDate}
+              date={rangeDate}
+              defaultPickerValue={[moment().add(-1, 'month'), moment()]}
+            />
           </FormItem>
           <FormItem className="direct-form-item">
             <Select
@@ -367,7 +364,9 @@ const OvertimePage = () => {
           hideOnSinglePage: true,
           onChange: handlePageChange,
         }}
-        loading={timelogLoading || timeLogFetching}
+        loading={
+          timelogLoading || timeLogFetching || UpdateLogTimeMutation?.isLoading
+        }
       />
     </Card>
   )

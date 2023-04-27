@@ -10,6 +10,7 @@ import {
   roundedToFixed,
   handleResponse,
   getIsAdmin,
+  sortTableDatas,
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
@@ -69,6 +70,7 @@ function ProjectLogs() {
   const [openLogHoursModal, setOpenLogHoursModal] = useState(false)
   const [selectedLogsIds, setSelectedLogsIds] = useState([])
   const [selectedLogObject, setSelectedLogObject] = useState([])
+  const [isReadOnly, setIsReadOnly] = useState(false)
 
   const [projectId] = slug.split('-')
   const {
@@ -99,12 +101,7 @@ function ProjectLogs() {
         logType,
         project: projectId,
         user: author,
-        sort:
-          sort.order === undefined || sort.column === undefined
-            ? '-logDate'
-            : sort.order === 'ascend'
-            ? sort.field
-            : `-${sort.field}`,
+        sort: sortTableDatas(sort.order, sort.column, sort.field),
       }),
     {keepPreviousData: true}
   )
@@ -242,7 +239,7 @@ function ProjectLogs() {
     setAuthor(undefined)
   }
 
-  const handleOpenEditModal = (log) => {
+  const handleOpenEditModal = (log, readOnly) => {
     const originalTimelog = logTimeDetails?.data?.data?.data.find(
       (project) => project.id === log.id
     )
@@ -255,12 +252,14 @@ function ProjectLogs() {
     })
     setOpenModal(true)
     setIsEditMode(true)
+    if (readOnly) setIsReadOnly(true)
   }
 
   const handleCloseTimelogModal = () => {
     setOpenModal(false)
     setTimelogToUpdate({})
     setIsEditMode(false)
+    setIsReadOnly(false)
   }
 
   const confirmDelete = (log) => {
@@ -374,6 +373,7 @@ function ProjectLogs() {
           initialValues={timeLogToUpdate}
           isEditMode={isEditMode}
           role={key}
+          isReadOnly={isReadOnly}
         />
       )}
       {openLogHoursModal && (

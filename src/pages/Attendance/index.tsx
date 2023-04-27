@@ -6,10 +6,6 @@ import LateAttendance from './LateAttendance'
 import AttendanceCalendar from './Calendar'
 import AdminAttendanceCalendar from './AdminCalendar'
 import {useLocation} from 'react-router-dom'
-import {
-  ATTENDANCE_ALL_TAB_NO_ACCESS,
-  ATTENDANCE_LATE_ARRIVAL_ADMIN_CALENDAR_NO_ACCESS,
-} from 'constants/RoleAccess'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
