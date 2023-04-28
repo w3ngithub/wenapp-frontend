@@ -66,16 +66,7 @@ const Dashboard = () => {
   const navigate = useNavigate()
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
-  const {themeType} = useSelector((state: any) => state.settings)
-  const {
-    currentMonth,
-    thisMonthsStartDate,
-    thisMonthsEndDate,
-    monthChangeHandler,
-  } = useCleanCalendar()
-  const darkTheme = themeType === THEME_TYPE_DARK
-
-  const darkThemeTextColor = '#e0e0e0'
+  const {monthChangeHandler} = useCleanCalendar()
 
   useEffect(() => {
     socket.on('pending-leave-count', (response: number) => {
@@ -203,7 +194,7 @@ const Dashboard = () => {
       fontSize: innerWidth <= 1500 ? '10px' : '11px',
       width:
         event.type === 'notice'
-          ? '100%'
+          ? '80%'
           : innerWidth <= 729
           ? '2.5rem'
           : 'fit-content',
@@ -245,15 +236,15 @@ const Dashboard = () => {
             ? '#eb9293'
             : '#3DBF4D',
       }
-      if (event.type === 'notice')
-        style = {
-          ...style,
-          width: `100%`,
-          fontWeight: '500',
-          // backgroundColor: '#a7acaf',
-          color: darkTheme ? darkThemeTextColor : 'black',
-          marginBottom: '6px',
-        }
+    }
+    if (event.type === 'notice') {
+      style = {
+        ...style,
+        width: 'calc(100% - 30px)',
+        fontWeight: '500',
+        color: '#3D3D3D',
+        marginBottom: '6px',
+      }
     }
 
     return {
@@ -392,11 +383,8 @@ const Dashboard = () => {
     if (props.event.type === 'notice') {
       return (
         <p
-          onClick={
-            isAdmin
-              ? () =>
-                  navigate('/noticeboard', {state: {name: props?.event?.name}})
-              : () => {}
+          onClick={() =>
+            navigate('/noticeboard', {state: {name: props?.event?.name}})
           }
           style={{
             margin: '0',
@@ -441,23 +429,12 @@ const Dashboard = () => {
     ?.sort(compareString)
 
   let noticesCalendar = notices?.data?.data?.notices?.map((notice: any) => {
-    const eventEndsInNextMonth = moment(notice?.endDate) > thisMonthsEndDate
-    const eventStartsInPrevMonth =
-      moment(notice?.startDate) < thisMonthsStartDate
-    const eventStartsInNextMonth = thisMonthsEndDate < moment(notice?.startDate)
     return {
       title: notice?.noticeType?.name,
-      end: eventEndsInNextMonth
-        ? new Date(thisMonthsEndDate.format())
-        : notice.endDate
-        ? new Date(notice?.endDate)
-        : new Date(notice?.startDate),
-      start: eventStartsInPrevMonth
-        ? new Date(thisMonthsStartDate.format())
-        : new Date(notice.startDate),
+      end: new Date(notice?.endDate),
+      start: new Date(notice.startDate),
       type: 'notice',
       name: notice?.title,
-      hide: eventStartsInNextMonth,
     }
   })
 

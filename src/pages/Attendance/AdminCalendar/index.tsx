@@ -22,7 +22,6 @@ import {useSelector} from 'react-redux'
 import {getAllHolidays} from 'services/resources'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
-import useWindowsSize from 'hooks/useWindowsSize'
 
 const localizer = momentLocalizer(moment)
 const FormItem = Form.Item
@@ -37,11 +36,9 @@ function AdminAttendanceCalendar() {
   const [date, setDate] = useState(monthlyState)
   const [user, setUser] = useState<undefined | string>(undefined)
   const {themeType} = useSelector((state: any) => state.settings)
-  const {innerWidth} = useWindowsSize()
 
   const darkMode = themeType === THEME_TYPE_DARK
-  const {currentMonth, thisMonthsEndDate, monthChangeHandler} =
-    useCleanCalendar()
+  const {monthChangeHandler} = useCleanCalendar()
 
   const {data: users, isLoading} = useQuery(['userForAttendances'], () =>
     getAllUsers({fields: 'name'})
@@ -111,9 +108,9 @@ function AdminAttendanceCalendar() {
     let style: any = {
       fontSize: '11.5px',
       margin: '0px auto',
-      marginTop: '2rem',
+      marginTop: '1rem',
       fontWeight: '500',
-      height: '27px',
+      height: 'auto',
       padding: '5px 10px',
       color: darkMode ? 'white' : '#100c0ca6',
       backgroundColor: 'transparent',
@@ -157,9 +154,6 @@ function AdminAttendanceCalendar() {
   let leaves: any[] = []
 
   userLeaves?.forEach((leave: any) => {
-    const eventStartsInNextMonth =
-      thisMonthsEndDate < moment(leave?.leaveDates?.[0])
-
     let extraInfo = ''
 
     if (leave?.halfDay) {
@@ -175,7 +169,6 @@ function AdminAttendanceCalendar() {
         end: new Date(date),
         type: 'leave',
         allDay: true,
-        hide: eventStartsInNextMonth,
       })
     })
   })
@@ -246,6 +239,49 @@ function AdminAttendanceCalendar() {
       })
   }
 
+  //process to show only one event in a day
+
+  //to prioritize attendance, calculating dates where the user has attendance
+  const datesWithAttendances = attendances
+    ?.filter((attendance: any) => attendance?.id)
+    ?.map((attendance: any) => MuiFormatDate(attendance?.start))
+
+  // removing the holidays where attendance is also present
+  const filteredHolidays = holidaysCalendar?.filter(
+    (holiday: any) =>
+      !datesWithAttendances?.includes(MuiFormatDate(holiday?.start))
+  )
+
+  const filteredHolidaysDates = filteredHolidays?.map((holiday: any) =>
+    MuiFormatDate(holiday?.start)
+  )
+  // leaves should be filtered based on both attendance and holidays dates
+  //before that finding unique leaves i.e. one per day
+
+  let uniqueLeaves: any[] = []
+
+  for (let leave of leaves) {
+    let isDuplicate = false
+
+    for (let uniqueLeave of uniqueLeaves) {
+      if (MuiFormatDate(leave?.start) === MuiFormatDate(uniqueLeave?.start)) {
+        isDuplicate = true
+        break
+      }
+    }
+
+    if (!isDuplicate) {
+      uniqueLeaves.push(leave)
+    }
+  }
+  const filteredLeaves = uniqueLeaves?.filter(
+    (leave: any) =>
+      !(
+        datesWithAttendances?.includes(MuiFormatDate(leave?.start)) ||
+        filteredHolidaysDates?.includes(MuiFormatDate(leave?.start))
+      )
+  )
+
   return (
     <Card className="gx-card" title="Calendar">
       <div className="components-table-demo-control-bar">
@@ -285,8 +321,8 @@ function AdminAttendanceCalendar() {
               user
                 ? [
                     ...(attendances || []),
-                    ...(leaves || []),
-                    ...(holidaysCalendar || []),
+                    ...(filteredHolidays || []),
+                    ...(filteredLeaves || []),
                   ]
                 : []
             }

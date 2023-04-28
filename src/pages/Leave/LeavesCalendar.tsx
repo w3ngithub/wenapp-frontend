@@ -12,10 +12,15 @@ import {
   SECOND_HALF,
 } from 'constants/Leaves'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
+import {useSelector} from 'react-redux'
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 
 const localizer = momentLocalizer(moment)
 
 const LeavesCalendar = () => {
+  const {themeType} = useSelector((state: any) => state.settings)
+
+  const darkMode = themeType === THEME_TYPE_DARK
   const {monthChangeHandler} = useCleanCalendar()
 
   const leavesQuery = useQuery(
@@ -57,40 +62,47 @@ const LeavesCalendar = () => {
     }
   )
 
-  const leaveUsers = leavesQuery?.data?.map(
-    ({user, leaveDates, leaveType, halfDay}: any) => {
-      const nameSplitted = user[0].split(' ')
-      let extraInfo = leaveType?.[0]?.split(' ')?.[0]
-      let lastName
-      if (nameSplitted.length === 1) {
-        lastName = ''
-      } else {
-        lastName = `${nameSplitted.pop().substring(0, 1)}.`
-      }
+  let leaveUsers: any[] = []
 
-      if (halfDay === FIRST_HALF) {
-        extraInfo += ' 1st'
-      }
-      if (halfDay === SECOND_HALF) {
-        extraInfo += ' 2nd'
-      }
-      if (leaveType.includes(LATE_ARRIVAL)) {
-        extraInfo = 'Late'
-      }
-
-      const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
-
-      return {
-        title: `${shortName}${extraInfo ? ' (' + extraInfo + ')' : ''}`,
-        start: new Date(leaveDates),
-        end: new Date(leaveDates),
-      }
+  leavesQuery?.data?.forEach(({user, leaveDates, leaveType, halfDay}: any) => {
+    const nameSplitted = user[0].split(' ')
+    let extraInfo = leaveType?.[0]?.split(' ')?.[0]
+    let lastName
+    if (nameSplitted.length === 1) {
+      lastName = ''
+    } else {
+      lastName = `${nameSplitted.pop().substring(0, 1)}.`
     }
-  )
+
+    if (halfDay === FIRST_HALF) {
+      extraInfo += ' 1st'
+    }
+    if (halfDay === SECOND_HALF) {
+      extraInfo += ' 2nd'
+    }
+    if (leaveType.includes(LATE_ARRIVAL)) {
+      extraInfo = 'Late'
+    }
+
+    const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
+
+    let leaveDatesCopy = leaveDates
+
+    if (typeof leaveDates === 'string') {
+      leaveDatesCopy = [leaveDatesCopy]
+    }
+    leaveDatesCopy?.forEach((date: string) => {
+      leaveUsers.push({
+        title: `${shortName}${extraInfo ? ' (' + extraInfo + ')' : ''}`,
+        start: new Date(date),
+        end: new Date(date),
+      })
+    })
+  })
 
   const handleEventStyle = (event: any) => {
     let style: any = {
-      color: 'rgb(0 128 128 / 73%)',
+      color: darkMode ? 'rgb(77 241 241 / 73%)' : 'rgb(0 128 128 / 73%)',
       fontSize: '12.5px',
       padding: '1px 10px',
       width: event.fullWidth ? '100%' : '100%',
