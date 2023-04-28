@@ -440,7 +440,11 @@ function Apply({
         ) {
           return notification({
             type: 'error',
-            message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} day`,
+            message: `Substitute leave cannot exceed more than ${
+              isSubstitute?.leaveDays
+            } day as your remaining leave is ${
+              isSubstitute?.leaveDays - substituteLeaveTaken
+            }.`,
           })
         }
       }
