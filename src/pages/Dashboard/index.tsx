@@ -205,7 +205,7 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: 'rgb(12 149 180)',
+        color: 'rgb(239 138 222)',
       }
     if (eventCopy.type === 'holiday')
       style = {
