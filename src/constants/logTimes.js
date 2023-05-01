@@ -91,23 +91,19 @@ const LOGTIMES_COLUMNS = (
                     onClick={() => onOpenEditModal(record, true)}
                   >
                     <CustomIcon name="view" />
-                    {(role?.[`Log Time`]?.deleteLogTime ||
-                      role?.[`Log Time`]?.editLogTime) && (
-                      <Divider type="vertical" />
-                    )}
                   </span>
                   {moment(sendDate) >=
-                    moment().subtract(1, 'days').startOf('day') && (
-                    <span
-                      className="gx-link"
-                      onClick={() => onOpenEditModal(record)}
-                    >
-                      <CustomIcon name="edit" />
-                      {role?.[`Log Time`]?.deleteLogTime && (
+                    moment().subtract(1, 'days').startOf('day') &&
+                    record?.otStatus !== 'R' &&
+                    record?.otStatus !== 'A' && (
+                      <span
+                        className="gx-link"
+                        onClick={() => onOpenEditModal(record)}
+                      >
                         <Divider type="vertical" />
-                      )}
-                    </span>
-                  )}
+                        <CustomIcon name="edit" />
+                      </span>
+                    )}
 
                   <AccessWrapper role={role?.[`Log Time`]?.deleteLogTime}>
                     <Popconfirm
@@ -117,6 +113,7 @@ const LOGTIMES_COLUMNS = (
                       cancelText="No"
                     >
                       <span className="gx-link gx-text-danger">
+                        <Divider type="vertical" />
                         <CustomIcon name="delete" />
                       </span>
                     </Popconfirm>
@@ -189,24 +186,20 @@ const LOGTIMES_COLUMNS = (
                     onClick={() => onOpenEditModal(record, true)}
                   >
                     <CustomIcon name="view" />
-                    {(role?.[`Log Time`]?.deleteLogTime ||
-                      role?.[`Log Time`]?.editLogTime) && (
-                      <Divider type="vertical" />
-                    )}
                   </span>
 
                   {(record.user === user &&
                     moment(sendDate) >=
-                      moment().subtract(1, 'days').startOf('day')) ||
+                      moment().subtract(1, 'days').startOf('day') &&
+                    record?.otStatus !== 'R' &&
+                    record?.otStatus !== 'A') ||
                   role?.[`Log Time`]?.editLogTime ? (
                     <span
                       className="gx-link"
                       onClick={() => onOpenEditModal(record)}
                     >
+                      <Divider type="vertical" />
                       <CustomIcon name="edit" />
-                      {role?.[`Log Time`]?.deleteLogTime && (
-                        <Divider type="vertical" />
-                      )}
                     </span>
                   ) : (
                     ''
@@ -220,6 +213,7 @@ const LOGTIMES_COLUMNS = (
                       cancelText="No"
                     >
                       <span className="gx-link gx-text-danger">
+                        <Divider type="vertical" />
                         <CustomIcon name="delete" />
                       </span>
                     </Popconfirm>
