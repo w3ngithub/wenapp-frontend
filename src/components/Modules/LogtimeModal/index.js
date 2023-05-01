@@ -194,13 +194,15 @@ function LogtimeModal({
     if (initialValues?.otStatus === 'A') {
       message = (
         <>
-          Update Log Time <span className="overtime-approved">(Approved)</span>
+          {isReadOnly ? 'View' : 'Update'} Log Time{' '}
+          <span className="overtime-approved">(Approved)</span>
         </>
       )
     } else if (initialValues?.otStatus === 'R') {
       message = (
         <>
-          Update Log Time <span className="overtime-rejected">(Rejected)</span>
+          {isReadOnly ? 'View' : 'Update'} Log Time{' '}
+          <span className="overtime-rejected">(Rejected)</span>
         </>
       )
     }
@@ -246,7 +248,7 @@ function LogtimeModal({
           <FormItem
             {...formItemLayout}
             label="Date"
-            hasFeedback
+            hasFeedback={!isReadOnly}
             name="logDate"
             rules={[
               {
@@ -284,7 +286,7 @@ function LogtimeModal({
           <FormItem
             {...formItemLayout}
             label="Hours"
-            hasFeedback
+            hasFeedback={!isReadOnly}
             name="hours"
             rules={[
               {
@@ -320,7 +322,7 @@ function LogtimeModal({
           <FormItem
             {...formItemLayout}
             label="Minutes"
-            hasFeedback
+            hasFeedback={!isReadOnly}
             name="minutes"
             rules={[
               {
@@ -385,7 +387,7 @@ function LogtimeModal({
           <FormItem
             {...formItemLayout}
             label="Log Type"
-            hasFeedback
+            hasFeedback={!isReadOnly}
             name="logType"
             rules={[{required: true, message: 'Log Type is required'}]}
           >
@@ -407,7 +409,7 @@ function LogtimeModal({
             <FormItem
               {...formItemLayout}
               label="Project Name"
-              hasFeedback
+              hasFeedback={!isReadOnly}
               name="project"
               rules={[{required: true, message: 'Project Name is required.'}]}
             >
@@ -452,7 +454,7 @@ function LogtimeModal({
           <FormItem
             {...formItemLayout}
             label="Remarks"
-            hasFeedback
+            hasFeedback={!isReadOnly}
             name="remarks"
             rules={[
               {
@@ -485,7 +487,6 @@ function LogtimeModal({
               <FormItem
                 {...formItemLayout}
                 label="Reject Reason"
-                hasFeedback
                 name="rejectReason"
                 rules={[
                   {
@@ -514,7 +515,7 @@ function LogtimeModal({
             valuePropName="checked"
             {...formItemLayout}
             label=""
-            hasFeedback
+            hasFeedback={!isReadOnly}
             initialValue={false}
             name="isOt"
           >
