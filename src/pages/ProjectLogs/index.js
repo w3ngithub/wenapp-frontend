@@ -10,6 +10,7 @@ import {
   roundedToFixed,
   handleResponse,
   getIsAdmin,
+  sortTableDatas,
 } from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import moment from 'moment'
@@ -101,12 +102,7 @@ function ProjectLogs() {
         logType,
         project: projectId,
         user: author,
-        sort:
-          sort.order === undefined || sort.column === undefined
-            ? '-logDate'
-            : sort.order === 'ascend'
-            ? sort.field
-            : `-${sort.field}`,
+        sort: sortTableDatas(sort.order, sort.column, sort.field),
       }),
     {keepPreviousData: true}
   )

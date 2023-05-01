@@ -8,6 +8,7 @@ import {
   changeDate,
   filterOptions,
   handleResponse,
+  sortTableDatas,
 } from 'helpers/utils'
 import {
   getAllTimeLogs,
@@ -89,16 +90,7 @@ const OvertimePage = () => {
         toDate: rangeDate?.[1]
           ? MuiFormatDate(rangeDate[1]?.format()) + 'T23:59:59Z'
           : '',
-        sort:
-          sort.order === undefined || sort.column === undefined
-            ? '-logDate,-createdAt'
-            : sort.order === 'ascend'
-            ? sort.field === 'logDate'
-              ? `${sort.field},createdAt`
-              : sort.field
-            : sort.field === 'logDate'
-            ? `-${sort.field},-createdAt`
-            : `-${sort.field}`,
+        sort: sortTableDatas(sort.order, sort.column, sort.field),
       })
   )
 
@@ -372,7 +364,9 @@ const OvertimePage = () => {
           hideOnSinglePage: true,
           onChange: handlePageChange,
         }}
-        loading={timelogLoading || timeLogFetching}
+        loading={
+          timelogLoading || timeLogFetching || UpdateLogTimeMutation?.isLoading
+        }
       />
     </Card>
   )

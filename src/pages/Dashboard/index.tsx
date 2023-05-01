@@ -192,18 +192,12 @@ const Dashboard = () => {
 
     let style: any = {
       fontSize: innerWidth <= 1500 ? '10px' : '11px',
-      width:
-        event.type === 'notice'
-          ? '80%'
-          : innerWidth <= 729
-          ? '2.5rem'
-          : 'fit-content',
+      width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
       margin: '0px auto',
       fontWeight: '600',
       height: 'fit-content',
       background: event.type === 'notice' ? 'rgb(223 220 220)' : 'transparent',
     }
-
     if (eventCopy.type === 'birthday')
       style = {
         ...style,
