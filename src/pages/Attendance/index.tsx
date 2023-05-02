@@ -5,12 +5,13 @@ import AdminAttendance from './AdminAttendance'
 import LateAttendance from './LateAttendance'
 import AttendanceCalendar from './Calendar'
 import AdminAttendanceCalendar from './AdminCalendar'
-import {useLocation} from 'react-router-dom'
+import {useLocation, useSearchParams} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function Attendace() {
   const {state}: {state: any} = useLocation()
+  let [searchParams, setSearchParams] = useSearchParams()
 
   const [tabKey, setTabKey] = useState('1')
 
@@ -37,12 +38,20 @@ function Attendace() {
     }
   }, [state, NavigationAttendance])
 
+  useEffect(() => {
+    if (!state?.tab) {
+      setTabKey(searchParams.toString().split('=')[1])
+    }
+  }, [])
+
   return (
     <Card title="Attendance">
       <Tabs
         type="card"
         activeKey={tabKey || '1'}
         onChange={(tab) => {
+          searchParams.set('tab', tab)
+          setSearchParams({tab})
           setTabKey(tab)
         }}
       >
