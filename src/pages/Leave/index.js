@@ -19,7 +19,7 @@ import LeavesApply from './Apply'
 import Leaves from './Leaves'
 import CircularProgress from 'components/Elements/CircularProgress'
 import LeavesCalendar from './LeavesCalendar'
-import {useLocation} from 'react-router-dom'
+import {useLocation, useSearchParams} from 'react-router-dom'
 import MyHistory from './MyHistory'
 import {getLeaveTypes} from 'services/settings/leaveType'
 import AnnualLeavesRemainingAndAppliedCards from './AnnualLeavesRemainingAndAppliedCards'
@@ -40,6 +40,7 @@ const TabPane = Tabs.TabPane
 function Leave() {
   const location = useLocation()
   const queryClient = useQueryClient()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   let leaveCancelReason = ''
   const [selectedRows, setSelectedRows] = useState([])
@@ -387,6 +388,8 @@ function Leave() {
       </Col>
     </Row>
   )
+  const activeTab =
+    location?.state?.tabKey || searchParams.toString().split('=')[1] || '1'
 
   if (leaveDaysQuery.isLoading) return <CircularProgress />
   return (
@@ -425,7 +428,14 @@ function Leave() {
           </p>
         )}
 
-        <Tabs type="card" defaultActiveKey={location?.state?.tabKey}>
+        <Tabs
+          type="card"
+          activeKey={activeTab}
+          onChange={(tab) => {
+            searchParams.set('leaveTab', tab)
+            setSearchParams({leaveTab: tab})
+          }}
+        >
           {leavePermissions?.applyLeave && (
             <TabPane tab="Apply" key="1">
               <LeavesApply
