@@ -8,13 +8,13 @@ import {milliSecondIntoHours, MuiFormatDate, sortFromDate} from 'helpers/utils'
 import {searchAttendacentOfUser} from 'services/attendances'
 import {monthlyState} from 'constants/Attendance'
 import {getLeavesOfAllUsers} from 'services/leaves'
-import useWindowsSize from 'hooks/useWindowsSize'
 import {ATTENDANCE} from 'helpers/routePath'
 import {FIRST_HALF, LEAVES_TYPES} from 'constants/Leaves'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {getAllHolidays} from 'services/resources'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 
 const localizer = momentLocalizer(moment)
 
@@ -25,14 +25,10 @@ function AttendanceCalendar() {
   const {allocatedOfficeHours} = useSelector(
     (state: any) => state.configurations
   )
-  const {innerWidth} = useWindowsSize()
+  const {themeType} = useSelector((state: any) => state.settings)
+  const darkMode = themeType === THEME_TYPE_DARK
   const [date, setDate] = useState(monthlyState)
-  const {
-    currentMonth,
-    thisMonthsEndDate,
-    thisMonthsStartDate,
-    monthChangeHandler,
-  } = useCleanCalendar()
+  const {monthChangeHandler} = useCleanCalendar()
 
   const {data, isLoading} = useQuery(['userAttendance', user, date], () =>
     searchAttendacentOfUser({
@@ -84,58 +80,46 @@ function AttendanceCalendar() {
   }
 
   const handleEventStyle = (event: any) => {
-    // const isEventInPreviousMonth =
-    //   moment(event?.end) < moment(currentMonth).startOf('month')
-    // const isEventInNextMonth =
-    //   moment(event?.end) > moment(currentMonth).endOf('month')
-    // const isOffRange = isEventInPreviousMonth || isEventInNextMonth
-
     let style: any = {
-      fontSize: '13px',
-      width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
+      fontSize: '11.5px',
       margin: '0px auto',
+      marginTop: '1rem',
       fontWeight: '500',
-      height: '27px',
-      padding: '5px 10px',
-      color: 'white',
+      height: 'auto',
+      padding: '6px 10px',
+      color: darkMode ? 'white' : '#100c0ca6',
+      backgroundColor: 'transparent',
+      borderRadius: '16px',
+      width: '90%',
+      letterSpacing: '0.3px',
+      paddingLeft: '15px',
     }
-    // if (isOffRange && event.type !== 'longLeaves') {
-    //   style = {...style, display: 'none'}
-    // }
-    // if (event?.hide) {
-    //   style = {...style, display: 'none'}
-    // }
     if (event.type === 'leave')
       style = {
         ...style,
-        backgroundColor: '#FC6BAB',
-      }
-    if (event.type === 'longLeaves')
-      style = {
-        ...style,
-        width: 'auto',
-        backgroundColor: '#FC6BAB',
+        backgroundColor: '#DAF6F4',
+        color: '#547362',
       }
 
     if (event.isLessHourWorked)
       style = {
         ...style,
-        backgroundColor: '#E14B4B',
+        backgroundColor: 'rgb(242 208 208)',
+        color: '#b52325',
       }
-    if (
-      !event.isLessHourWorked &&
-      event.type !== 'leave' &&
-      event.type !== 'longLeaves'
-    )
+    if (!event.isLessHourWorked && event.type !== 'leave')
       style = {
         ...style,
-        backgroundColor: '#038fde',
+        backgroundColor: '#EFEBFF',
+        color: '#3C3467',
       }
-    if (event.type === 'holiday')
+    if (event.type === 'holiday') {
       style = {
         ...style,
-        backgroundColor: 'rgb(235 68 68)',
+        backgroundColor: '#FFE8D0',
+        color: 'rgb(99 92 92)',
       }
+    }
 
     return {
       style,
@@ -145,51 +129,44 @@ function AttendanceCalendar() {
   let leaves: any[] = []
 
   userLeaves?.forEach((leave: any) => {
+    let leaveDates: any[] = leave?.leaveDates
     const isUsualLeave =
       leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
         LEAVES_TYPES.Casual ||
-      leave?.leaveType?.name.split(' ')[0].toLowerCase() === LEAVES_TYPES.Sick
+      leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
+        LEAVES_TYPES.Sick ||
+      leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
+        LEAVES_TYPES.Substitute
 
-    const eventStartsInPrevMonth =
-      moment(leave?.leaveDates?.[0]) < thisMonthsStartDate
+    if (!isUsualLeave && leave?.leaveDates?.length === 2) {
+      const startDate = new Date(leave?.leaveDates?.[0])
+      const endDate = new Date(leave?.leaveDates?.[1])
+      const allDatesInTheInterval = []
 
-    const eventEndsInNextMonth =
-      moment(leave?.leaveDates?.[leave?.leaveDates?.length - 1]) >
-      thisMonthsEndDate
+      while (startDate <= endDate) {
+        allDatesInTheInterval.push(new Date(startDate))
+        startDate.setDate(startDate.getDate() + 1)
+      }
 
-    const eventStartsInNextMonth =
-      thisMonthsEndDate < moment(leave?.leaveDates?.[0])
+      leaveDates = allDatesInTheInterval
+    }
 
     let extraInfo = ''
 
     if (leave?.halfDay) {
       extraInfo = leave?.halfDay === FIRST_HALF ? '1st' : `2nd`
     }
-
-    leaves.push({
-      id: leave?._id,
-      title: `${leave?.leaveType?.name}${
-        extraInfo ? '(' + extraInfo + ')' : ''
-      }`,
-      start: new Date(leave?.leaveDates?.[0]),
-      end: new Date(
-        isUsualLeave
-          ? leave?.leaveDates?.[0]
-          : leave?.leaveDates?.[leave?.leaveDates?.length - 1]
-      ),
-      // start: eventStartsInPrevMonth
-      //   ? new Date(thisMonthsStartDate?.format())
-      //   : new Date(leave?.leaveDates?.[0]),
-      // end: new Date(
-      //   isUsualLeave
-      //     ? leave?.leaveDates?.[0]
-      //     : eventEndsInNextMonth
-      //     ? thisMonthsEndDate.format()
-      //     : leave?.leaveDates?.[leave?.leaveDates?.length - 1]
-      // ),
-      type: isUsualLeave ? 'leave' : 'longLeaves',
-      allDay: true,
-      hide: eventStartsInNextMonth,
+    leaveDates?.forEach((date: string) => {
+      leaves.push({
+        id: leave?._id,
+        title: `${leave?.leaveType?.name}${
+          extraInfo ? '(' + extraInfo + ')' : ''
+        }`,
+        start: new Date(date),
+        end: new Date(date),
+        type: 'leave',
+        allDay: true,
+      })
     })
   })
   const attendances = data?.data?.data?.attendances[0]?.data?.map(
@@ -255,6 +232,51 @@ function AttendanceCalendar() {
       })
   }
 
+  //process to show only one event in a day
+
+  //to prioritize attendance, calculating dates where the user has attendance
+  const datesWithAttendances = attendances
+    ?.filter((attendance: any) => attendance?.id)
+    ?.map((attendance: any) => MuiFormatDate(attendance?.start))
+
+  // removing the holidays where attendance is also present
+  const filteredHolidays = holidaysCalendar?.filter(
+    (holiday: any) =>
+      !datesWithAttendances?.includes(MuiFormatDate(holiday?.start))
+  )
+
+  const filteredHolidaysDates = filteredHolidays?.map((holiday: any) =>
+    MuiFormatDate(holiday?.start)
+  )
+  // leaves should be filtered based on both attendance and holidays dates
+
+  //before that finding unique leaves i.e. one per day
+
+  let uniqueLeaves: any[] = []
+
+  for (let leave of leaves) {
+    let isDuplicate = false
+
+    for (let uniqueLeave of uniqueLeaves) {
+      if (MuiFormatDate(leave?.start) === MuiFormatDate(uniqueLeave?.start)) {
+        isDuplicate = true
+        break
+      }
+    }
+
+    if (!isDuplicate) {
+      uniqueLeaves.push(leave)
+    }
+  }
+
+  const filteredLeaves = uniqueLeaves?.filter(
+    (leave: any) =>
+      !(
+        datesWithAttendances?.includes(MuiFormatDate(leave?.start)) ||
+        filteredHolidaysDates?.includes(MuiFormatDate(leave?.start))
+      )
+  )
+
   return (
     <Card className="gx-card" title="Calendar">
       <Spin spinning={isLoading}>
@@ -263,8 +285,8 @@ function AttendanceCalendar() {
             localizer={localizer}
             events={[
               ...(attendances || []),
-              ...(leaves || []),
-              ...(holidaysCalendar || []),
+              ...(filteredHolidays || []),
+              ...(filteredLeaves || []),
             ]}
             startAccessor="start"
             endAccessor="end"

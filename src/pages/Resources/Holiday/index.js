@@ -164,25 +164,19 @@ function Holiday() {
   )
 
   const handleEventStyle = (event) => {
-    const isEventInPreviousMonth =
-      moment(event?.end) < moment(currentMonth).startOf('month')
-    const isEventInNextMonth =
-      moment(event?.end) > moment(currentMonth).endOf('month')
-
-    const isOffRange = isEventInPreviousMonth || isEventInNextMonth
     let style = {
-      color: 'white',
-      padding: '1px 10px',
-      width: event.fullWidth ? '100%' : 'fit-content',
-      margin: 'auto',
-      marginBottom: '0.2rem',
+      fontSize: '11.5px',
+      margin: '0px auto',
+      marginTop: '1rem',
+      fontWeight: '500',
       height: 'auto',
-    }
-    if (isOffRange) {
-      style = {
-        ...style,
-        display: 'none',
-      }
+      padding: '6px 10px',
+      borderRadius: '16px',
+      width: '90%',
+      letterSpacing: '0.3px',
+      paddingLeft: '15px',
+      backgroundColor: '#FFE8D0',
+      color: 'rgb(99 92 92)',
     }
 
     return {

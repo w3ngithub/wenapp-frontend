@@ -33,7 +33,6 @@ import {
 import {getTodaysUserAttendanceCount} from 'services/attendances'
 import {useNavigate} from 'react-router-dom'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {DASHBOARD_ICON_ACCESS} from 'constants/RoleAccess'
@@ -66,16 +65,7 @@ const Dashboard = () => {
   const navigate = useNavigate()
   const {innerWidth} = useWindowsSize()
   const [form] = Form.useForm()
-  const {themeType} = useSelector((state: any) => state.settings)
-  const {
-    currentMonth,
-    thisMonthsStartDate,
-    thisMonthsEndDate,
-    monthChangeHandler,
-  } = useCleanCalendar()
-  const darkTheme = themeType === THEME_TYPE_DARK
-
-  const darkThemeTextColor = '#e0e0e0'
+  const {monthChangeHandler} = useCleanCalendar()
 
   useEffect(() => {
     socket.on('pending-leave-count', (response: number) => {
@@ -278,12 +268,6 @@ const Dashboard = () => {
   }
   const handleEventStyle = (event: any) => {
     let eventCopy = {...event}
-    const isEventInPreviousMonth =
-      moment(eventCopy?.end) < moment(currentMonth).startOf('month')
-    const isEventInNextMonth =
-      moment(eventCopy?.end) > moment(currentMonth).endOf('month')
-
-    const isOffRange = isEventInPreviousMonth || isEventInNextMonth
 
     let style: any = {
       fontSize: innerWidth <= 1500 ? '10px' : '11px',
@@ -296,19 +280,7 @@ const Dashboard = () => {
       margin: '0px auto',
       fontWeight: '600',
       height: 'fit-content',
-      background: event.type === 'notice' ? 'rgb(223 220 220)' : 'transparent',
-    }
-    if (isOffRange && eventCopy.type !== 'notice') {
-      style = {
-        ...style,
-        display: 'none',
-      }
-    }
-    if (event?.hide) {
-      style = {
-        ...style,
-        display: 'none',
-      }
+      background: event.type === 'notice' ? '#EAEBEF' : 'transparent',
     }
     if (eventCopy.type === 'birthday')
       style = {
@@ -335,17 +307,17 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        // color: darkTheme ? darkThemeTextColor : '#038fde',
         color: eventCopy?.leaveType === 'Late Arrival' ? '#eb9293' : '#3DBF4D',
       }
     }
     if (eventCopy.type === 'notice') {
       style = {
         ...style,
-        width: `100%`,
+        width: 'calc(100% - 20px)',
         fontWeight: '500',
-        background: darkTheme ? '#a7acaf' : 'rgb(223 220 220)',
-        color: darkTheme ? darkThemeTextColor : 'black',
+        background: '#EAEBEF',
+        color: '#545454',
+        borderRadius: '10px',
         marginBottom: '6px',
       }
     }
@@ -525,23 +497,14 @@ const Dashboard = () => {
   }))
 
   let noticesCalendar = notices?.data?.data?.notices?.map((notice: any) => {
-    const eventEndsInNextMonth = moment(notice?.endDate) > thisMonthsEndDate
-    const eventStartsInPrevMonth =
-      moment(notice?.startDate) < thisMonthsStartDate
-    const eventStartsInNextMonth = thisMonthsEndDate < moment(notice?.startDate)
     return {
       title: notice?.noticeType?.name,
-      end: eventEndsInNextMonth
-        ? new Date(thisMonthsEndDate.format())
-        : notice.endDate
+      end: notice.endDate
         ? new Date(notice?.endDate)
         : new Date(notice?.startDate),
-      start: eventStartsInPrevMonth
-        ? new Date(thisMonthsStartDate.format())
-        : new Date(notice.startDate),
+      start: new Date(notice.startDate),
       type: 'notice',
       name: notice?.title,
-      hide: eventStartsInNextMonth,
     }
   })
 

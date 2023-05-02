@@ -550,3 +550,14 @@ export const sortTableDatas = (order, column, field) => {
     ? `-${field},-createdAt`
     : `-${field}`
 }
+
+export const getAllDatesInBetween = (startDate, endDate) => {
+  const allDatesInTheInterval = []
+
+  while (startDate <= endDate) {
+    allDatesInTheInterval.push(new Date(startDate))
+    startDate.setDate(startDate.getDate() + 1)
+  }
+
+  return allDatesInTheInterval
+}

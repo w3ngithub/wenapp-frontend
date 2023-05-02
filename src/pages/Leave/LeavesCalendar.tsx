@@ -12,16 +12,17 @@ import {
   SECOND_HALF,
 } from 'constants/Leaves'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
+import {useSelector} from 'react-redux'
+import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
 
 const localizer = momentLocalizer(moment)
 
 const LeavesCalendar = () => {
-  const {
-    currentMonth,
-    thisMonthsStartDate,
-    thisMonthsEndDate,
-    monthChangeHandler,
-  } = useCleanCalendar()
+  const {themeType} = useSelector((state: any) => state.settings)
+
+  const darkMode = themeType === THEME_TYPE_DARK
+  const {monthChangeHandler} = useCleanCalendar()
 
   const leavesQuery = useQuery(
     ['leavesCalendar'],
@@ -62,97 +63,69 @@ const LeavesCalendar = () => {
     }
   )
 
-  const leaveUsers = leavesQuery?.data?.map(
-    ({user, leaveDates, leaveType, halfDay}: any) => {
-      const nameSplitted = user[0].split(' ')
-      let extraInfo = leaveType?.[0]?.split(' ')?.[0]
-      let lastName
-      if (nameSplitted.length === 1) {
-        lastName = ''
-      } else {
-        lastName = `${nameSplitted.pop().substring(0, 1)}.`
-      }
+  let leaveUsers: any[] = []
 
-      if (halfDay === FIRST_HALF) {
-        extraInfo += ' 1st'
-      }
-      if (halfDay === SECOND_HALF) {
-        extraInfo += ' 2nd'
-      }
-      if (leaveType.includes(LATE_ARRIVAL)) {
-        extraInfo = 'Late'
-      }
-
-      const eventStartsInPrevMonthForLongEvents =
-        moment(leaveDates?.[0]) < thisMonthsStartDate
-
-      const eventEndsInNextMonthForLongEvents =
-        moment(leaveDates?.[leaveDates?.length - 1]) > thisMonthsEndDate
-
-      const eventStartsInNextMonth = thisMonthsEndDate < moment(leaveDates?.[0])
-
-      const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
-
-      // if (eventStartsInNextMonth) {
-      //   return {hide: true}
-      // }
-
-      if (
-        [
-          LEAVES_TYPES.Paternity,
-          LEAVES_TYPES.Maternity,
-          LEAVES_TYPES.PTO,
-          LEAVES_TYPES.Bereavement,
-        ].includes(leaveType[0]?.toLowerCase())
-      )
-        //for long leaves
-        return {
-          title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
-          start: new Date(leaveDates?.[0]),
-          end: new Date(leaveDates?.[leaveDates?.length - 1]),
-          // start: eventStartsInPrevMonthForLongEvents
-          //   ? new Date(thisMonthsStartDate?.format())
-          //   : new Date(leaveDates?.[0]),
-          // end: new Date(
-          //   eventEndsInNextMonthForLongEvents
-          //     ? thisMonthsEndDate.format()
-          //     : leaveDates?.[leaveDates?.length - 1]
-          // ),
-          fullWidth: true,
-        }
-      else {
-        //for 1 day leaves
-        const isEventInPreviousMonth =
-          moment(leaveDates) < moment(currentMonth).startOf('month')
-        const isEventInNextMonth =
-          moment(leaveDates) > moment(currentMonth).endOf('month')
-        const isOffRange = isEventInPreviousMonth || isEventInNextMonth
-
-        // if (isOffRange) {
-        //   return null //if the day is off range return nothing
-        // }
-        return {
-          title: `${shortName}${extraInfo ? '(' + extraInfo + ')' : ''}`,
-          start: new Date(leaveDates),
-          end: new Date(leaveDates),
-        }
-      }
+  leavesQuery?.data?.forEach(({user, leaveDates, leaveType, halfDay}: any) => {
+    const nameSplitted = user[0].split(' ')
+    let extraInfo = leaveType?.[0]?.split(' ')?.[0]
+    let lastName
+    if (nameSplitted.length === 1) {
+      lastName = ''
+    } else {
+      lastName = `${nameSplitted.pop().substring(0, 1)}.`
     }
-  )
+
+    if (halfDay === FIRST_HALF) {
+      extraInfo += ' 1st'
+    }
+    if (halfDay === SECOND_HALF) {
+      extraInfo += ' 2nd'
+    }
+    if (leaveType.includes(LATE_ARRIVAL)) {
+      extraInfo = 'Late'
+    }
+
+    const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
+
+    let leaveDatesCopy = leaveDates
+
+    if (immediateApprovalLeaveTypes?.includes(leaveType[0])) {
+      const startDate = new Date(leaveDates?.[0])
+      const endDate = new Date(leaveDates?.[1])
+      const allDatesInTheInterval = []
+
+      while (startDate <= endDate) {
+        allDatesInTheInterval.push(new Date(startDate))
+        startDate.setDate(startDate.getDate() + 1)
+      }
+
+      leaveDatesCopy = allDatesInTheInterval
+    }
+
+    if (typeof leaveDates === 'string') {
+      leaveDatesCopy = [leaveDatesCopy]
+    }
+    leaveDatesCopy?.forEach((date: string) => {
+      leaveUsers.push({
+        title: `${shortName}${extraInfo ? ' (' + extraInfo + ')' : ''}`,
+        start: new Date(date),
+        end: new Date(date),
+      })
+    })
+  })
 
   const handleEventStyle = (event: any) => {
     let style: any = {
-      color: 'white',
+      color: darkMode ? 'rgb(77 241 241 / 73%)' : 'rgb(0 128 128 / 73%)',
+      fontSize: '12.5px',
       padding: '1px 10px',
-      width: event.fullWidth ? '100%' : 'fit-content',
+      width: event.fullWidth ? '100%' : '100%',
       margin: 'auto',
-      marginBottom: '0.2rem',
+      marginLeft: '11px',
+      marginBottom: '0.1rem',
       height: 'auto',
+      backgroundColor: 'transparent',
     }
-
-    // if (moment(event?.start) > moment(event?.end) || event?.hide) {
-    //   style = {...style, display: 'none'}
-    // }
 
     return {
       style,
