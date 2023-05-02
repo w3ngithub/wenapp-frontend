@@ -11,13 +11,16 @@ import Email from './Email'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import Attendance from './Attendance'
-import {useLocation} from 'react-router-dom'
+import {useLocation, useSearchParams} from 'react-router-dom'
 
 const TabPane = Tabs.TabPane
 
 function Settings() {
   const location: any = useLocation()
-  const [activeKey, setActiveKey] = useState(location?.state?.tabKey || '1')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [activeKey, setActiveKey] = useState(
+    location?.state?.tabKey || searchParams.toString().split('=')[1] || '1'
+  )
   const {
     role: {
       permission: {Settings},
@@ -26,6 +29,8 @@ function Settings() {
 
   const handleTabChange = (val: string) => {
     setActiveKey(val)
+    searchParams.set('settingTab', val)
+    setSearchParams({settingTab: val})
   }
 
   useEffect(() => {
