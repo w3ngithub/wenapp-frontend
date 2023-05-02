@@ -225,7 +225,7 @@ const Dashboard = () => {
         marginLeft: '11px',
         color:
           event?.leaveStatus === 'pending'
-            ? '#CCBE00'
+            ? 'rgb(162 154 41) '
             : event?.leaveType === 'Late Arrival'
             ? '#eb9293'
             : '#3DBF4D',
