@@ -196,7 +196,7 @@ const Dashboard = () => {
       margin: '0px auto',
       fontWeight: '600',
       height: 'fit-content',
-      background: event.type === 'notice' ? 'rgb(223 220 220)' : 'transparent',
+      background: event.type === 'notice' ? 'rgb(234 235 239)' : 'transparent',
     }
     if (eventCopy.type === 'birthday')
       style = {
@@ -236,8 +236,9 @@ const Dashboard = () => {
         ...style,
         width: 'calc(100% - 30px)',
         fontWeight: '500',
-        color: '#3D3D3D',
+        color: '#4A4468',
         marginBottom: '6px',
+        borderRadius: '10px',
       }
     }
 
