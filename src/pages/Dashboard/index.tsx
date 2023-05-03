@@ -313,7 +313,7 @@ const Dashboard = () => {
     if (eventCopy.type === 'notice') {
       style = {
         ...style,
-        width: 'calc(100% - 20px)',
+        width: 'calc(100% - 30px)',
         fontWeight: '500',
         background: '#EAEBEF',
         color: '#545454',
@@ -339,7 +339,7 @@ const Dashboard = () => {
       alignItems: 'center',
       gap: '4px',
       margin: '0 !important',
-      fontSize: '9px',
+      fontSize: '10px',
     }
 
     if (props.event.type === 'birthday') {
@@ -385,10 +385,19 @@ const Dashboard = () => {
           }}
         >
           <p
-            style={{...style, margin: 0, flexWrap: 'nowrap', fontWeight: '500'}}
+            style={{
+              ...style,
+              margin: 0,
+              flexWrap: 'wrap',
+              fontWeight: '500',
+              gap: '6px',
+            }}
           >
-            <i className="icon icon-calendar gx-fs-xs gx-ml-2p" />
-            <span className="gx-ml-12p">{props?.event?.title}</span>
+            <i
+              className="icon icon-calendar gx-fs-sm"
+              style={{width: '12px', lineHeight: 2, marginLeft: '2px'}}
+            />
+            <span>{props?.event?.title}</span>
           </p>
         </div>
       )
