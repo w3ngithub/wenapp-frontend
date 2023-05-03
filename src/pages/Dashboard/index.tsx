@@ -214,7 +214,7 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: 'rgb(235 68 68)',
+        color: 'rgb(193 98 98)',
       }
     if (eventCopy.type === 'leave') {
       style = {
