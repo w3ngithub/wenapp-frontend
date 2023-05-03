@@ -33,7 +33,6 @@ import {
 import {getTodaysUserAttendanceCount} from 'services/attendances'
 import {useNavigate} from 'react-router-dom'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {DASHBOARD_ICON_ACCESS} from 'constants/RoleAccess'
@@ -43,7 +42,7 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
 import {socket} from 'pages/Main'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
-import { F10PX, F11PX } from 'constants/FontSizes'
+import {F10PX, F11PX} from 'constants/FontSizes'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -364,7 +363,7 @@ const Dashboard = () => {
               ...style,
               margin: 0,
               fontWeight: '500',
-              fontSize: '10px',
+              fontSize: F11PX,
             }}
           >
             <LeaveIcon
@@ -436,7 +435,9 @@ const Dashboard = () => {
   let noticesCalendar = notices?.data?.data?.notices?.map((notice: any) => {
     return {
       title: notice?.noticeType?.name,
-      end: new Date(notice?.endDate),
+      end: notice.endDate
+        ? new Date(notice?.endDate)
+        : new Date(notice?.startDate),
       start: new Date(notice.startDate),
       type: 'notice',
       name: notice?.title,

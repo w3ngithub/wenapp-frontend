@@ -188,7 +188,7 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
 
       case 'Logtime':
         if (showTo[0] === RoleAccess.Admin) {
-          const extraData = JSON.parse(extraInfo)?.userId
+          const extraData = JSON.parse(extraInfo)
           navigate(`${REPORTS}/${OVERTIME_REPORT}`, {
             state: {
               extraData,
