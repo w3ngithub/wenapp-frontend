@@ -43,6 +43,7 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
 import {socket} from 'pages/Main'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
+import { F10PX, F11PX } from 'constants/FontSizes'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -191,7 +192,7 @@ const Dashboard = () => {
     let eventCopy = {...event}
 
     let style: any = {
-      fontSize: innerWidth <= 1500 ? '10px' : '11px',
+      fontSize: innerWidth <= 1500 ? F10PX : F11PX,
       width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
       margin: '0px auto',
       fontWeight: '600',
@@ -259,7 +260,7 @@ const Dashboard = () => {
       alignItems: 'center',
       gap: '4px',
       margin: '0 !important',
-      fontSize: '10px',
+      fontSize: F11PX,
     }
 
     if (props.event.type === 'birthday') {
