@@ -126,7 +126,12 @@ function ProjectLogs() {
           showTo: [RoleAccess.Admin],
           remarks: `${name} has added OT logtime for project ${projectSlug}. Please review.`,
           module: 'Logtime',
-          extraInfo: JSON.stringify({userId}),
+          extraInfo: JSON.stringify({
+            userId,
+            project: [
+              {_id: response?.data?.data?.data?.project, name: projectSlug},
+            ],
+          }),
         })
       }
       handleResponse(
@@ -161,7 +166,15 @@ function ProjectLogs() {
             showTo: [RoleAccess.Admin],
             remarks: `${name} has added OT logtime for project ${projectSlug}. Please review.`,
             module: 'Logtime',
-            extraInfo: JSON.stringify({userId}),
+            extraInfo: JSON.stringify({
+              userId,
+              project: [
+                {
+                  _id: response?.data?.data?.data?.project?._id,
+                  name: projectSlug,
+                },
+              ],
+            }),
           })
         }
         handleResponse(
