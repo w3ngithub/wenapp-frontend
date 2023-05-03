@@ -42,6 +42,7 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
 import {socket} from 'pages/Main'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
+import {F10PX, F11PX} from 'constants/FontSizes'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -270,7 +271,7 @@ const Dashboard = () => {
     let eventCopy = {...event}
 
     let style: any = {
-      fontSize: innerWidth <= 1500 ? '10px' : '11px',
+      fontSize: innerWidth <= 1500 ? F10PX : F11PX,
       width:
         event.type === 'notice'
           ? '100%'
@@ -298,7 +299,7 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: 'rgb(235 68 68)',
+        color: 'rgb(193 98 98)',
       }
     if (eventCopy.type === 'leave') {
       style = {
@@ -339,7 +340,7 @@ const Dashboard = () => {
       alignItems: 'center',
       gap: '4px',
       margin: '0 !important',
-      fontSize: '10px',
+      fontSize: F11PX,
     }
 
     if (props.event.type === 'birthday') {
@@ -450,7 +451,7 @@ const Dashboard = () => {
               ...style,
               margin: 0,
               fontWeight: '500',
-              fontSize: '10px',
+              fontSize: F11PX,
             }}
           >
             <LeaveIcon
