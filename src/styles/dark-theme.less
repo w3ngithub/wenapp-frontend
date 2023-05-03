@@ -193,6 +193,11 @@ body.dark-theme {
     background: grey;
   }
 
+  & .rbc-header,
+  & .rbc-toolbar-label{
+  color: #b6b4b4;
+  }	
+
   & .rbc-show-more {
     background-color: transparent;
     color: #c5c5c5;
@@ -2213,6 +2218,17 @@ body.dark-theme {
       color: rgba(0, 0, 0, 0.6);
     }
 
+    & .ant-picker-cell-disabled {
+      background-color: @dark-theme-secondary-color !important;
+      }
+      & .ant-picker-cell-disabled::before {
+      background-color: @dark-theme-secondary-color !important;
+      }
+      	
+      & .ant-picker-today-btn.ant-picker-today-btn-disabled {
+      color: @dark-theme-text-color;
+      }
+
     &-picker-clear {
       color: @dark-theme-text-color;
       background: none;
@@ -2980,6 +2996,7 @@ body.dark-theme {
     border-color: @dark-theme-text-color;
   }
 
+
   & .rbc-toolbar button:active,
   & .rbc-toolbar button.rbc-active,
   & .rbc-toolbar button:active:hover,
@@ -2991,6 +3008,17 @@ body.dark-theme {
     color: @dark-theme-primary-color;
     background-color: @dark-theme-text-color;
     border-color: @dark-theme-text-color;
+  }
+
+  & .rbc-toolbar .rbc-btn-group button{
+  color:#b6b4b4;
+
+  }
+  .rbc-toolbar {
+  .rbc-btn-group {
+  border-radius: 5px;
+  border: 1px solid #5a5757;
+  }
   }
 
   & .rbc-month-view,
