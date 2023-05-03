@@ -109,7 +109,7 @@ function AdminAttendanceCalendar() {
     let style: any = {
       fontSize: '11.5px',
       margin: '0px auto',
-      marginTop: '1rem',
+      marginTop: '3px',
       fontWeight: '500',
       height: 'auto',
       padding: '6px 10px',
