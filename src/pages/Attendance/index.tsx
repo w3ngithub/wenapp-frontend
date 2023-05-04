@@ -54,7 +54,7 @@ function Attendace() {
     <Card title="Attendance">
       <Tabs
         type="card"
-        activeKey={tabKey || searchParams.toString().split('=')[1] || '1'}
+        activeKey={tabKey || '1'}
         onChange={(tab) => {
           searchParams.set('tab', tab)
           setSearchParams({tab})
