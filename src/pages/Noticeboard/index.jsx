@@ -25,6 +25,7 @@ import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
+import {PAGE50} from 'constants/Common'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -47,7 +48,7 @@ function NoticeBoardPage() {
   const [title, setTitle] = useState('')
   const [typedNotice, setTypedNotice] = useState('')
   const [date, setDate] = useState(undefined)
-  const [page, setPage] = useState({page: 1, limit: 50})
+  const [page, setPage] = useState(PAGE50)
   const [openUserDetailModal, setOpenUserDetailModal] = useState(false)
   const [noticeRecord, setNoticeRecord] = useState({})
   const [readOnly, setReadOnly] = useState(false)

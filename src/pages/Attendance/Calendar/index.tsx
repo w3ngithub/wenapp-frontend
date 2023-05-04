@@ -9,7 +9,7 @@ import {searchAttendacentOfUser} from 'services/attendances'
 import {monthlyState} from 'constants/Attendance'
 import {getLeavesOfAllUsers} from 'services/leaves'
 import {ATTENDANCE} from 'helpers/routePath'
-import {FIRST_HALF, LEAVES_TYPES} from 'constants/Leaves'
+import {FIRST_HALF} from 'constants/Leaves'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {getAllHolidays} from 'services/resources'
@@ -26,9 +26,9 @@ function AttendanceCalendar() {
   const {allocatedOfficeHours} = useSelector(
     (state: any) => state.configurations
   )
+  const [date, setDate] = useState(monthlyState)
   const {themeType} = useSelector((state: any) => state.settings)
   const darkMode = themeType === THEME_TYPE_DARK
-  const [date, setDate] = useState(monthlyState)
   const {monthChangeHandler} = useCleanCalendar()
 
   const {data, isLoading} = useQuery(['userAttendance', user, date], () =>
@@ -95,12 +95,14 @@ function AttendanceCalendar() {
       letterSpacing: '0.3px',
       paddingLeft: '15px',
     }
-    if (event.type === 'leave')
+
+    if (event.type === 'leave') {
       style = {
         ...style,
         backgroundColor: '#DAF6F4',
         color: '#547362',
       }
+    }
 
     if (event.isLessHourWorked)
       style = {
@@ -130,34 +132,13 @@ function AttendanceCalendar() {
   let leaves: any[] = []
 
   userLeaves?.forEach((leave: any) => {
-    let leaveDates: any[] = leave?.leaveDates
-    const isUsualLeave =
-      leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
-        LEAVES_TYPES.Casual ||
-      leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
-        LEAVES_TYPES.Sick ||
-      leave?.leaveType?.name.split(' ')[0].toLowerCase() ===
-        LEAVES_TYPES.Substitute
-
-    if (!isUsualLeave && leave?.leaveDates?.length === 2) {
-      const startDate = new Date(leave?.leaveDates?.[0])
-      const endDate = new Date(leave?.leaveDates?.[1])
-      const allDatesInTheInterval = []
-
-      while (startDate <= endDate) {
-        allDatesInTheInterval.push(new Date(startDate))
-        startDate.setDate(startDate.getDate() + 1)
-      }
-
-      leaveDates = allDatesInTheInterval
-    }
-
     let extraInfo = ''
 
     if (leave?.halfDay) {
       extraInfo = leave?.halfDay === FIRST_HALF ? '1st' : `2nd`
     }
-    leaveDates?.forEach((date: string) => {
+
+    leave?.leaveDates?.forEach((date: string) => {
       leaves.push({
         id: leave?._id,
         title: `${leave?.leaveType?.name}${
@@ -170,6 +151,7 @@ function AttendanceCalendar() {
       })
     })
   })
+
   const attendances = data?.data?.data?.attendances[0]?.data?.map(
     (attendance: any) => {
       const sortedAttendance = sortFromDate(
@@ -297,6 +279,7 @@ function AttendanceCalendar() {
             eventPropGetter={handleEventStyle}
             onSelectEvent={handleSelectEvent}
             onNavigate={monthChangeHandler}
+            // dayPropGetter={DayPropGetter}
           />
         </div>
       </Spin>

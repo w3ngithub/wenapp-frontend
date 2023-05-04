@@ -86,6 +86,7 @@ const PROJECT_COLUMNS = (
     key: 'action',
     width: 250,
     render: (text, record) => {
+      console.log('path', `${record._id}-${record.slug}`)
       return (
         <div style={{display: 'flex'}}>
           {role?.Navigation?.logTime && (

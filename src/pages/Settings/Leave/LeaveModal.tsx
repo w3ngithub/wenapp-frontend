@@ -1,6 +1,11 @@
 import {Button, Form, Input, Modal, Spin} from 'antd'
 import {CANCEL_TEXT} from 'constants/Common'
 import React, {useEffect, useState} from 'react'
+import {Checkbox} from 'antd'
+import type {CheckboxValueType} from 'antd/es/checkbox/Group'
+import type {CheckboxChangeEvent} from 'antd/es/checkbox'
+import type {RadioChangeEvent} from 'antd'
+import {Radio} from 'antd'
 
 interface modalInterface {
   isEditMode: boolean
@@ -8,15 +13,21 @@ interface modalInterface {
   currentData: any
   duplicateValue: boolean
   setDuplicateValue: (a: boolean) => void
-  onSubmit: (leave: {name: string; leaveDays: string}) => void
+  onSubmit: (leave: {
+    name: string
+    leaveDays: string
+    gender: Array<string>
+    Probation: Boolean
+    IsSpecial: Boolean
+  }) => void
   onCancel: (setDuplicateValue: any) => void
   isLoading: boolean
   editData: any
 }
 
-const layout = {
-  // labelCol: { span: 8 },
-  // wrapperCol: { span: 16 }
+interface GenderCheckInterface {
+  label: string
+  value: string
 }
 
 function LeaveModal({
@@ -33,6 +44,29 @@ function LeaveModal({
   const [form] = Form.useForm()
 
   const [nameChanged, setNameChanged] = useState<boolean | undefined>()
+  const [genderDefault, setgenderDefault] = useState<CheckboxValueType[]>([
+    'Male',
+    'Female',
+  ])
+  const [IsSpecial, setIsSpecial] = useState<boolean>(false)
+  const [probationStatus, setProbationStatus] = useState<boolean>(true)
+  const [isgenderEmpty, setgenderEmpty] = useState<boolean>(false)
+
+  const GenderCheckboxOptions: GenderCheckInterface[] = [
+    {
+      label: 'Male',
+      value: 'Male',
+    },
+    {
+      label: 'Female',
+      value: 'Female',
+    },
+  ]
+
+  const handleGenderCheckboxChange = (checkedValues: CheckboxValueType[]) => {
+    setgenderEmpty(false)
+    setgenderDefault(checkedValues)
+  }
 
   const formFieldChanges = (values: {name?: string}) => {
     if (values?.hasOwnProperty('name')) {
@@ -46,6 +80,10 @@ function LeaveModal({
     }
   }
 
+  const onProbationChange = (e: RadioChangeEvent) => {
+    setProbationStatus(e.target.value)
+  }
+
   const handleSubmit = () => {
     form.validateFields()
     const availableData = currentData?.data?.data?.data?.map(
@@ -53,7 +91,7 @@ function LeaveModal({
     )
     if (
       !isEditMode &&
-      availableData?.includes(form.getFieldValue('name').toLowerCase())
+      availableData?.includes(form.getFieldValue('name')?.toLowerCase())
     ) {
       setDuplicateValue(true)
       return
@@ -80,16 +118,32 @@ function LeaveModal({
       setDuplicateValue(true)
       return
     }
-    form.validateFields().then((values) => onSubmit(form.getFieldsValue()))
+    if (genderDefault.length === 0) {
+      setgenderEmpty(true)
+      return
+    }
+    // console.log({...form.getFieldsValue(),gender:genderDefault,Probation:probationStatus})
+    form.validateFields().then((values) =>
+      onSubmit({
+        ...form.getFieldsValue(),
+        gender: genderDefault,
+        Probation: probationStatus,
+        isSpecial: IsSpecial,
+      })
+    )
   }
 
   useEffect(() => {
     if (toggle) {
-      if (isEditMode)
+      if (isEditMode) {
         form.setFieldsValue({
           name: editData?.name,
           leaveDays: editData?.leaveDays,
         })
+        setgenderDefault(editData?.gender)
+        setProbationStatus(editData?.Probation)
+        setIsSpecial(editData?.isSpecial)
+      }
     }
     if (!toggle) form.resetFields()
   }, [toggle])
@@ -124,7 +178,6 @@ function LeaveModal({
     >
       <Spin spinning={isLoading}>
         <Form
-          {...layout}
           form={form}
           name="control-hooks"
           layout="vertical"
@@ -145,7 +198,7 @@ function LeaveModal({
                     if (value?.trim() === '') {
                       throw new Error('Please enter a valid name.')
                     }
-                    if (value?.trim()?.length > 1000) {
+                    if (value?.trim()?.length > 100) {
                       throw new Error(
                         'Leave name cannot exceed more than 100 characters'
                       )
@@ -182,6 +235,11 @@ function LeaveModal({
                     if (value - Math.floor(value) !== 0) {
                       throw new Error('Leave Days cannot be decimal.')
                     }
+                    if (value > 365) {
+                      throw new Error(
+                        'Number of leave days cannot exceed 365 days.'
+                      )
+                    }
                   } catch (err) {
                     throw new Error(err.message)
                   }
@@ -197,6 +255,33 @@ function LeaveModal({
               // onChange={handleInputChange}
             />
           </Form.Item>
+
+          <Form.Item label="Gender" required>
+            <Checkbox.Group
+              options={GenderCheckboxOptions}
+              onChange={handleGenderCheckboxChange}
+              value={genderDefault}
+            />
+          </Form.Item>
+
+          {isgenderEmpty && <p style={{color: 'red'}}>Gender is required.</p>}
+
+          <Form.Item label="Probation" required>
+            <Radio.Group onChange={onProbationChange} value={probationStatus}>
+              <Radio value={true}>Yes</Radio>
+              <Radio value={false}>No</Radio>
+            </Radio.Group>
+          </Form.Item>
+
+          <Checkbox
+            checked={IsSpecial}
+            onChange={(e: CheckboxChangeEvent) =>
+              setIsSpecial(e.target.checked)
+            }
+          >
+            Special Leave Type
+          </Checkbox>
+
           {duplicateValue && (
             <p style={{color: 'red'}}>Duplicate values cannot be accepted.</p>
           )}

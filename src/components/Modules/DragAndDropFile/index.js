@@ -29,7 +29,7 @@ function DragAndDropFile({
   allowMultiple = true,
   accept = '',
   maxSize = 3,
-  label,
+  label = '',
 }) {
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewImage, setPreviewImage] = useState('')

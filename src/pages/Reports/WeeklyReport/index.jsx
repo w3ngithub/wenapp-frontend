@@ -16,6 +16,7 @@ import {WEEKLY_REPORT_COLUMNS} from 'constants/weeklyReport'
 import {debounce, roundedToFixed} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {emptyText} from 'constants/EmptySearchAntd'
+import {PAGE50} from 'constants/Common'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
 import {
   LastWeekState,

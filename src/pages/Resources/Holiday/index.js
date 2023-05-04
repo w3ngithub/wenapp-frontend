@@ -192,6 +192,9 @@ function Holiday() {
           isLoading={
             createHolidaysMutation.isLoading || editHolidayMutation.isLoading
           }
+          dataSource={formattedHoliday(
+            Holidays?.data?.data?.data?.[0]?.holidays
+          )}
         />
       )}
 

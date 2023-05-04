@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react'
-import {useQuery} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {
   Button,
   Table,
@@ -8,6 +8,7 @@ import {
   Divider,
   Input,
   InputNumber,
+  Popconfirm,
 } from 'antd'
 import moment from 'moment'
 import {CSVLink} from 'react-csv'
@@ -20,6 +21,7 @@ import {
   weeklyState,
 } from 'constants/Attendance'
 import {
+  deleteAttendance,
   searchAttendacentOfUser,
   UserTotalofficehour,
 } from 'services/attendances'
@@ -28,6 +30,7 @@ import {
   dateDifference,
   filterSpecificUser,
   getIsAdmin,
+  handleResponse,
   hourIntoMilliSecond,
   milliSecondIntoHours,
   MuiFormatDate,
@@ -44,8 +47,10 @@ import {useLocation} from 'react-router-dom'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {emptyText} from 'constants/EmptySearchAntd'
 import useWindowsSize from 'hooks/useWindowsSize'
+import {socket} from 'pages/Main'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {useSelector} from 'react-redux'
+import {PAGE50} from 'constants/Common'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
 
 const {RangePicker} = DatePicker
@@ -89,7 +94,7 @@ function AdminAttendance({userRole}) {
     columnKey: 'attendanceDate',
   })
   const [form] = Form.useForm()
-  const [page, setPage] = useState({page: 1, limit: 50})
+  const [page, setPage] = useState(PAGE50)
   const [defaultFilter, setDefaultFilter] = useState(undefined)
   const [openView, setOpenView] = useState(false)
   const [attToView, setAttToView] = useState({})
@@ -100,6 +105,7 @@ function AdminAttendance({userRole}) {
   const [toggleEdit, setToggleEdit] = useState(false)
   const [AttToEdit, setAttToEdit] = useState({})
   const [btnClick, setbtnClick] = useState(false)
+  const queryClient = useQueryClient()
   const [dataToExport, setdataToExport] = useState({
     todownload: false,
     data: [],
@@ -153,6 +159,28 @@ function AdminAttendance({userRole}) {
         officehourop: defaultFilter?.op,
         officehourValue: hourIntoMilliSecond(defaultFilter?.num),
       })
+    }
+  )
+
+  const deleteAttendanceMutation = useMutation(
+    (attendanceId) => deleteAttendance(attendanceId),
+    {
+      onSuccess: (response) =>
+        handleResponse(
+          response,
+          'Attendance removed Successfully',
+          'Attendance deletion failed',
+          [
+            () => queryClient.invalidateQueries(['adminAttendance']),
+            () => queryClient.invalidateQueries(['userAttendance']),
+            () => {
+              socket.emit('CUD')
+            },
+          ]
+        ),
+      onError: (error) => {
+        notification({message: 'Attendance deletion failed', type: 'error'})
+      },
     }
   )
 
@@ -210,8 +238,12 @@ function AdminAttendance({userRole}) {
     setToggleEdit(true)
     setAttToEdit(record)
   }
+  const confirmDeleteAttendance = (a) => {
+    deleteAttendanceMutation.mutate(a._id)
+  }
 
   const handleAttChnageChange = (val) => {
+    setPage(PAGE50)
     setAttFilter(val)
     switch (val) {
       case 1:
@@ -229,6 +261,7 @@ function AdminAttendance({userRole}) {
     }
   }
   const handleUserChange = (id) => {
+    setPage(PAGE50)
     setUser(id)
   }
 
@@ -278,6 +311,21 @@ function AdminAttendance({userRole}) {
                   <span className="gx-link" onClick={() => handleEdit(record)}>
                     <CustomIcon name="edit" />
                   </span>
+                </>
+              )}
+              {userRole?.deleteCoworkersAttendance && !getIsAdmin() && (
+                <>
+                  <Divider type="vertical" />
+                  <Popconfirm
+                    title="Are you sure to delete this attendance?"
+                    onConfirm={() => confirmDeleteAttendance(record)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <span className="gx-link gx-text-danger">
+                      <CustomIcon name="delete" />
+                    </span>
+                  </Popconfirm>
                 </>
               )}
             </span>

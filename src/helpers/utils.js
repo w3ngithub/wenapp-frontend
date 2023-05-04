@@ -370,12 +370,15 @@ export const filterHalfDayLeaves = (leaves) => {
   const approvedLeaves = leaves.filter(
     (leave) => leave.leaveStatus === 'approved'
   )
+  //i.e full day leave applied
   if (approvedLeaves.length === 1 && approvedLeaves[0]?.isHalfDay === '') {
     return true
   }
-  if (approvedLeaves.length === 2) {
+  // 2 half days applied or more than 2 leaves on the same day  due to special leaves inclusion
+  if (approvedLeaves.length >= 2) {
     return true
   }
+
   return false
 }
 
@@ -516,11 +519,83 @@ export const scrollForm = (form, name) => {
   })
 }
 
-//filter specific User
+export const isLeavesBeforeToday = (leaveDates) => {
+  let firstDayofLeave
+  if (leaveDates.length === 1) {
+    firstDayofLeave = new Date(leaveDates[0]).setUTCHours(0, 0, 0, 0)
+  } else {
+    const ascSortedDate = leaveDates.sort(
+      (date1, date2) => new Date(date1) - new Date(date2)
+    )
+    firstDayofLeave = new Date(ascSortedDate[0])?.setUTCHours(0, 0, 0, 0)
+  }
+  const todayDate = new Date()
+  todayDate.setUTCHours(0, 0, 0, 0)
 
+  return new Date(todayDate) < new Date(firstDayofLeave)
+}
+
+//filter specific User
 export const filterSpecificUser = (group, name) => {
   return group?.filter((user) => user.name !== name)
 }
+
+//get date range from a start date to end date
+export const getDateRangeArray = function (s, e) {
+  let a = []
+  for (const d = new Date(s); d <= new Date(e); d.setDate(d.getDate() + 1)) {
+    a.push(`${MuiFormatDate(new Date(d))}`)
+  }
+  return a
+}
+
+//sorting array of objects
+export const compareString = (a, b) => {
+  let comparison = 0
+
+  if (a?.leaveStatus > b?.leaveStatus) {
+    comparison = 1
+  } else if (a?.leaveStatus < b?.leaveStatus) {
+    comparison = -1
+  }
+  return comparison
+}
+
+export const getCurrentFiscalYear = () => {
+  return new Date(new Date().getFullYear(), 0, 1)
+}
+
+export const momentRangeofDates = (startd, leaveDays) => {
+  let Initdates = []
+  let start = moment(startd)
+  const endDate = moment(startd).add(Number(leaveDays), 'days')
+
+  for (
+    let InitialDate = start;
+    InitialDate.isBefore(endDate);
+    InitialDate.add(1, 'days')
+  ) {
+    Initdates = [...Initdates, moment(InitialDate)]
+  }
+  return Initdates
+}
+
+export const getRangeofDates = (startDate, leaveDays) => {
+  let newDate = new Date(startDate)
+  let endDate = new Date(newDate)
+  endDate.setDate(newDate.getDate() + parseInt(leaveDays))
+  let ArrayofDates = []
+
+  let currentDate = new Date(newDate)
+
+  while (currentDate < endDate) {
+    ArrayofDates.push(`${MuiFormatDate(new Date(currentDate))}T00:00:00Z`)
+    currentDate.setDate(currentDate.getDate() + 1)
+  }
+  return ArrayofDates
+}
+
+export const convertMsToDay = (num) => num / (1000 * 60 * 60 * 24)
 
 export const timeToMilisecond = (date) => {
   const dateArr = date.split(':')

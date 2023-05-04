@@ -445,9 +445,6 @@ function LateAttendance({userRole}: {userRole: any}) {
         expandedRowKeys={activeExpandedRow}
         onChange={handleTableChange}
         loading={isFetching}
-        pagination={{
-          pageSize: 50,
-        }}
       />
     </div>
   )

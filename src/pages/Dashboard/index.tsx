@@ -21,9 +21,9 @@ import CustomActiveShapePieChart from 'routes/extensions/charts/recharts/pie/Com
 import {
   getPendingLeavesCount,
   getTodaysUserLeaveCount,
-  getWeekRangeLeaves,
+  getFutureLeaves,
 } from 'services/leaves'
-import {MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
+import {compareString, MuiFormatDate, oneWeekFilterCheck} from 'helpers/utils'
 import {getWeeklyNotices} from 'services/noticeboard'
 import {getAllHolidays} from 'services/resources'
 import {
@@ -36,7 +36,7 @@ import useWindowsSize from 'hooks/useWindowsSize'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {DASHBOARD_ICON_ACCESS} from 'constants/RoleAccess'
-import {FIRST_HALF, LEAVES_TYPES, SECOND_HALF} from 'constants/Leaves'
+import {FIRST_HALF, SECOND_HALF} from 'constants/Leaves'
 import {debounce} from 'helpers/utils'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
@@ -142,90 +142,10 @@ const Dashboard = () => {
 
   const optimizedFn = useCallback(debounce(handleSearch, 100), [])
 
-  const leavesQuery = useQuery(
-    ['DashBoardleaves'],
-    () => getWeekRangeLeaves(),
-    {
-      onError: (err) => console.log(err),
-      select: (res) => {
-        let updateLeaves: any[] = []
-
-        res?.data?.data?.users?.forEach((leave: any) => {
-          const isLeavePaternity =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Paternity
-          const isLeaveMaternity =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Maternity
-          const isLeavePTO =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.PTO
-          const isLeaveBereavement =
-            leave?.leaveType[0].toLowerCase() === LEAVES_TYPES.Bereavement
-          const weeksLastDate = new Date(
-            MuiFormatDate(new Date().setDate(new Date().getDate() + 7))
-          )
-          const todayDate = new Date(MuiFormatDate(new Date()))
-
-          if (
-            isLeavePaternity ||
-            isLeaveMaternity ||
-            isLeavePTO ||
-            isLeaveBereavement
-          ) {
-            const startLeaveDate = new Date(leave?.leaveDates[0])
-            const endLeaveDate = new Date(leave?.leaveDates[1])
-            for (let i = 0; i < 8; i++) {
-              const isHoliday =
-                startLeaveDate.getDay() === 0 || startLeaveDate.getDay() === 6
-
-              if (
-                startLeaveDate >= todayDate &&
-                startLeaveDate <= weeksLastDate &&
-                startLeaveDate <= endLeaveDate &&
-                !isHoliday
-              ) {
-                updateLeaves = [
-                  ...updateLeaves,
-                  {
-                    ...leave,
-                    date: leave?.leaveDates[0],
-
-                    leaveDates: new Date(
-                      startLeaveDate.setDate(startLeaveDate.getDate())
-                    ).toJSON(),
-                  },
-                ]
-              }
-
-              if (startLeaveDate < todayDate) {
-                startLeaveDate.setMonth(todayDate.getMonth())
-                startLeaveDate.setFullYear(todayDate.getFullYear())
-                updateLeaves = [
-                  ...updateLeaves,
-                  {
-                    ...leave,
-                    date: leave?.leaveDates[0],
-                    leaveDates: new Date(
-                      startLeaveDate.setDate(todayDate.getDate())
-                    ).toJSON(),
-                  },
-                ]
-              }
-              startLeaveDate.setDate(startLeaveDate.getDate() + 1)
-            }
-          } else {
-            leave?.leaveDates.forEach((date: string) => {
-              const leaveDate = new Date(date)
-              if (leaveDate >= todayDate && leaveDate <= weeksLastDate)
-                updateLeaves = [
-                  ...updateLeaves,
-                  {...leave, date: date, leaveDates: date},
-                ]
-            })
-          }
-        })
-        return updateLeaves
-      },
-    }
-  )
+  const todayDate = new Date(MuiFormatDate(new Date()))
+  const leavesQuery = useQuery(['DashBoardleaves'], () => getFutureLeaves(), {
+    onError: (err) => console.log(err),
+  })
   const {data, refetch: projectRefetch} = useQuery(
     ['DashBoardprojects'],
     () =>
@@ -272,16 +192,11 @@ const Dashboard = () => {
 
     let style: any = {
       fontSize: innerWidth <= 1500 ? F10PX : F11PX,
-      width:
-        event.type === 'notice'
-          ? '100%'
-          : innerWidth <= 729
-          ? '2.5rem'
-          : 'fit-content',
+      width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
       margin: '0px auto',
       fontWeight: '600',
       height: 'fit-content',
-      background: event.type === 'notice' ? '#EAEBEF' : 'transparent',
+      background: event.type === 'notice' ? 'rgb(234 235 239)' : 'transparent',
     }
     if (eventCopy.type === 'birthday')
       style = {
@@ -308,10 +223,15 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: eventCopy?.leaveType === 'Late Arrival' ? '#eb9293' : '#3DBF4D',
+        color:
+          event?.leaveStatus === 'pending'
+            ? 'rgb(162 154 41)'
+            : event?.leaveType === 'Late Arrival'
+            ? '#eb9293'
+            : '#3DBF4D',
       }
     }
-    if (eventCopy.type === 'notice') {
+    if (event.type === 'notice') {
       style = {
         ...style,
         width: 'calc(100% - 30px)',
@@ -320,6 +240,7 @@ const Dashboard = () => {
         color: '#35427e',
         borderRadius: '10px',
         marginBottom: '6px',
+  
       }
     }
 
@@ -352,7 +273,6 @@ const Dashboard = () => {
             alignItems: 'center',
             justifyContent: 'center',
             flexWrap: 'wrap',
-            textAlign: 'left',
           }}
         >
           <p
@@ -407,12 +327,7 @@ const Dashboard = () => {
       let extraInfo = ''
       if (props.event.leaveType === 'Late Arrival') {
         extraInfo = 'Late'
-      } else if (
-        props?.event?.leaveType === 'Maternity' ||
-        props?.event?.leaveType === 'Paternity' ||
-        props?.event?.leaveType === 'Paid Time' ||
-        props?.event?.halfDay === ''
-      ) {
+      } else if (props?.event?.isSpecial || props?.event?.halfDay === '') {
         extraInfo = ''
       } else {
         if (props?.event?.halfDay === FIRST_HALF) {
@@ -430,7 +345,6 @@ const Dashboard = () => {
             alignItems: 'center',
             justifyContent: 'center',
             flexWrap: 'wrap',
-            // height: '10px',
           }}
           onClick={
             isAdmin
@@ -438,7 +352,7 @@ const Dashboard = () => {
                   navigate('/leave', {
                     state: {
                       tabKey: '3',
-                      leaveStatus: 'approved',
+                      leaveStatus: props?.event?.leaveStatus,
                       date: props.event.startDate,
                       user: props.event.id,
                     },
@@ -456,7 +370,13 @@ const Dashboard = () => {
           >
             <LeaveIcon
               width="15px"
-              fill={extraInfo === 'Late' ? '#eb9293' : '#3DBF4D'}
+              fill={
+                props?.event?.leaveStatus === 'pending'
+                  ? 'rgb(162 154 41)'
+                  : extraInfo === 'Late'
+                  ? '#eb9293'
+                  : '#3DBF4D'
+              }
             />
             <span className="gx-mt-1p" style={{width: '80px'}}>{`${shortName}${
               extraInfo ? '(' + extraInfo + ')' : ''
@@ -469,11 +389,8 @@ const Dashboard = () => {
     if (props.event.type === 'notice') {
       return (
         <p
-          onClick={
-            isAdmin
-              ? () =>
-                  navigate('/noticeboard', {state: {name: props?.event?.name}})
-              : () => {}
+          onClick={() =>
+            navigate('/noticeboard', {state: {name: props?.event?.name}})
           }
           style={{
             margin: '0',
@@ -494,17 +411,28 @@ const Dashboard = () => {
     event: CustomEvent, // used by each view (Month, Day, Week)
   }
 
-  const leaveUsers = leavesQuery?.data?.map((x: any, index: number) => ({
-    title: x?.user[0],
-    start: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
-    end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
-    type: 'leave',
-    date: x?.leaveDates,
-    startDate: x?.date,
-    halfDay: x?.halfDay,
-    leaveType: x?.leaveType[0].split(' ').slice(0, 2).join(' '),
-    id: x?._id[0],
-  }))
+  const leaveUsers = leavesQuery?.data?.data?.data?.users
+    ?.filter(
+      (leaveData: any) =>
+        new Date(leaveData?.leaveDates) >= todayDate &&
+        ![0, 6].includes(new Date(leaveData?.leaveDates)?.getDay())
+    )
+    ?.map((x: any, index: number) => ({
+      title: x?.user[0],
+      leaveStatus: x?.leaveStatus,
+      start: new Date(
+        new Date(x.leaveDates).toLocaleDateString().split('T')[0]
+      ),
+      end: new Date(new Date(x.leaveDates).toLocaleDateString().split('T')[0]),
+      type: 'leave',
+      date: x?.leaveDates,
+      startDate: x?.date,
+      halfDay: x?.halfDay,
+      leaveType: x?.leaveType?.[0].split(' ').slice(0, 2).join(' '),
+      id: x?._id?.[0],
+      isSpecial: x?.isSpecial?.[0],
+    }))
+    ?.sort(compareString)
 
   let noticesCalendar = notices?.data?.data?.notices?.map((notice: any) => {
     return {

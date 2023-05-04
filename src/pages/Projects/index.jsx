@@ -28,7 +28,7 @@ import {getAllUsers, getUserPositionTypes} from 'services/users/userDetails'
 import useWindowsSize from 'hooks/useWindowsSize'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import Select from 'components/Elements/Select'
-import {PLACE_HOLDER_CLASS} from 'constants/Common'
+import {PAGE25, PLACE_HOLDER_CLASS} from 'constants/Common'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
@@ -338,6 +338,7 @@ function ProjectsPage() {
   }
 
   const handleProjectTypeChange = (typeId) => {
+    setPage(PAGE25)
     if (!typeId) {
       searchParams.delete('typeId')
       settingQuery(searchParams)
@@ -349,6 +350,7 @@ function ProjectsPage() {
   }
 
   const handleProjectStatusChange = (statusId) => {
+    setPage(PAGE25)
     if (!statusId) {
       searchParams.delete('statusId')
       settingQuery(searchParams)
@@ -360,6 +362,7 @@ function ProjectsPage() {
   }
 
   const handleClientChange = (clientId) => {
+    setPage(PAGE25)
     if (!clientId) {
       searchParams.delete('clientId')
       settingQuery(searchParams)
@@ -378,6 +381,7 @@ function ProjectsPage() {
       searchParams.set('tagId', tagId)
       settingQuery(searchParams)
     }
+    setPage(PAGE25)
     setProjectTags(tagId)
   }
   const handleDeveloperChange = (developerId) => {
@@ -388,6 +392,7 @@ function ProjectsPage() {
       searchParams.set('developerId', developerId)
       settingQuery(searchParams)
     }
+    setPage(PAGE25)
     setDeveloper(developerId)
   }
   const handleDesignerChange = (designerId) => {
@@ -398,6 +403,7 @@ function ProjectsPage() {
       searchParams.set('designerId', designerId)
       settingQuery(searchParams)
     }
+    setPage(PAGE25)
     setDesigner(designerId)
   }
   const handleQaChange = (qaId) => {
@@ -408,6 +414,7 @@ function ProjectsPage() {
       searchParams.set('qaId', qaId)
       settingQuery(searchParams)
     }
+    setPage(PAGE25)
     setQa(qaId)
   }
 

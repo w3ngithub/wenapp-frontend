@@ -36,7 +36,8 @@ import RoleAccess from 'constants/RoleAccess'
 import RolePermissionModal from '../RolePermissionModal'
 import {RolePermissionProvider} from 'context/RolePermissionConext'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
+import {updateRolePermission} from 'appRedux/actions'
 import {
   getUserPosition,
   getUserPositionTypes,
@@ -62,7 +63,7 @@ function Coworkers() {
   } = useSelector(selectAuthUser)
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
-
+  const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [type, setType] = useState('')
   const [openModal, setOpenModal] = useState(false)
@@ -230,7 +231,17 @@ function Coworkers() {
         response,
         'Role updated successfully',
         'Role update failed',
-        [handleCloseModal, () => queryClient.invalidateQueries(['roles'])]
+        [
+          handleCloseModal,
+          () => queryClient.invalidateQueries(['roles']),
+          () => {
+            if (response?.data?.data?.data?.key === 'admin') {
+              dispatch(
+                updateRolePermission(response?.data?.data?.data?.permission)
+              )
+            }
+          },
+        ]
       ),
     onError: (error) => {
       notification({

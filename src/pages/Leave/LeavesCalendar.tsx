@@ -12,9 +12,8 @@ import {
   SECOND_HALF,
 } from 'constants/Leaves'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
-import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
-import {immediateApprovalLeaveTypes} from 'constants/LeaveTypes'
+import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 
 const localizer = momentLocalizer(moment)
 
@@ -88,19 +87,6 @@ const LeavesCalendar = () => {
     const shortName = `${nameSplitted.join(' ')} ${lastName ? lastName : ''}`
 
     let leaveDatesCopy = leaveDates
-
-    if (immediateApprovalLeaveTypes?.includes(leaveType[0])) {
-      const startDate = new Date(leaveDates?.[0])
-      const endDate = new Date(leaveDates?.[1])
-      const allDatesInTheInterval = []
-
-      while (startDate <= endDate) {
-        allDatesInTheInterval.push(new Date(startDate))
-        startDate.setDate(startDate.getDate() + 1)
-      }
-
-      leaveDatesCopy = allDatesInTheInterval
-    }
 
     if (typeof leaveDates === 'string') {
       leaveDatesCopy = [leaveDatesCopy]

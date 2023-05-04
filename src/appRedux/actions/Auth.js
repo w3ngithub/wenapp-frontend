@@ -15,6 +15,7 @@ import {
   SIGNUP_USER_SUCCESS,
   PROFILE_LOADING_SUCCESS,
   UPDATE_JOIN_DATE,
+  UPDATE_PERMISSION_ROLE,
   PROFILE_LOADING_FAIL,
 } from 'constants/ActionTypes'
 import {LOCALSTORAGE_USER} from 'constants/Settings'
@@ -105,7 +106,7 @@ export const getUserProfile = (userData) => {
     payload: {
       user: {
         ...userData.user,
-        role: {...userData.user.role, permission: data[0]},
+        role: {...userData?.user?.role, permission: data?.[0]},
       },
     },
   }
@@ -118,6 +119,13 @@ export const updateJoinDate = (joinDate) => {
   }
 }
 
+export const updateRolePermission = (payload) => {
+  const updatedRolePermission = JSON.parse(payload || '[{}]')
+  return {
+    type: UPDATE_PERMISSION_ROLE,
+    payload: updatedRolePermission?.[0],
+  }
+}
 export function getProfile(userId) {
   return async (dispatch) => {
     try {

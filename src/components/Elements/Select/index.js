@@ -23,6 +23,7 @@ const Select = ({
   placeholderClass = false,
   handleSearch,
   showSearchIcon = false,
+  allowClear = true,
 }) => {
   const [searchValue, setSearchValue] = useState('')
   return (
@@ -32,7 +33,7 @@ const Select = ({
         suffixIcon={showSearchIcon ? <SearchOutlined /> : undefined}
         disabled={disabled}
         className={placeholderClass}
-        allowClear
+        allowClear={allowClear}
         showSearch
         placeholder={placeholderClass ? null : placeholder}
         style={style}

@@ -11,6 +11,7 @@ import {
   SIGNOUT_USER_SUCCESS,
   SIGNUP_USER_SUCCESS,
   UPDATE_JOIN_DATE,
+  UPDATE_PERMISSION_ROLE,
   PROFILE_LOADING_SUCCESS,
   PROFILE_LOADING_FAIL,
 } from 'constants/ActionTypes'
@@ -131,6 +132,18 @@ const reducer = (state = INIT_STATE, action) => {
           user: {
             ...state.authUser.user,
             joinDate: action.payload,
+          },
+        },
+      }
+
+    case UPDATE_PERMISSION_ROLE:
+      return {
+        ...state,
+        authUser: {
+          ...state.authUser,
+          user: {
+            ...state.authUser.user,
+            role: {...state.authUser.user.role, permission: action.payload},
           },
         },
       }

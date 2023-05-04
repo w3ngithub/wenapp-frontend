@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import '@ant-design/compatible/assets/index.css'
 import {
   Button,
@@ -9,9 +9,17 @@ import {
   Spin,
   Form,
   TimePicker,
+  Tooltip,
+  Radio,
+  Popconfirm,
 } from 'antd'
 import moment from 'moment'
-import {dateToDateFormat, filterOptions, scrollForm} from 'helpers/utils'
+import {
+  changeDate,
+  dateToDateFormat,
+  filterOptions,
+  scrollForm,
+} from 'helpers/utils'
 import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {CANCEL_TEXT} from 'constants/Common'
@@ -44,6 +52,7 @@ function UserDetailForm({
 }) {
   const [form] = Form.useForm()
 
+  const [status, setStatus] = useState(false)
   const handleCancel = () => {
     form.resetFields()
     onToggleModal({})
@@ -54,8 +63,6 @@ function UserDetailForm({
   const user = useSelector(selectAuthUser)
 
   const handleSubmit = () => {
-    const data = intialValues?.allocatedLeaves
-
     form.validateFields().then((values) => {
       let prevReviewDate =
         intialValues?.lastReviewDate?.length > 0
@@ -74,6 +81,7 @@ function UserDetailForm({
       onSubmit({
         ...intialValues,
         ...values,
+        status,
         lastReviewDate: prevReviewDate,
         officeTime: {
           utcDate: moment(values.officeTime._d).utc().format(),
@@ -81,19 +89,10 @@ function UserDetailForm({
           minute: moment(values.officeTime._d).add(10, 'm').utc().format('m'),
         },
         officeEndTime: moment(values.officeEndTime._d).utc().format(),
-        allocatedLeaves: {
-          ...data,
-          [currentQuarter?.data?.name]: values?.allocatedLeaves,
-        },
       })
     })
   }
 
-  const handleStatusChange = (value) => {
-    if (value === 'Probation')
-      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
-    else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
-  }
   const disableDate = (current) => {
     return current && current > moment().endOf('day')
   }
@@ -125,20 +124,6 @@ function UserDetailForm({
     )
   }
 
-  const handlePositionChange = (value) => {
-    const isIntern =
-      form.getFieldValue('position') ===
-      position?.data?.data?.data?.find((pos) => pos?.name === 'Intern')._id
-    const isTrainee =
-      form.getFieldValue('position') ===
-      position?.data?.data?.data?.find((pos) => pos?.name === 'Trainee')._id
-
-    const isOnProbation = form.getFieldValue('status') === 'Probation'
-
-    if (isIntern || isTrainee || isOnProbation)
-      form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves - 1)
-    else form.setFieldValue('allocatedLeaves', currentQuarter?.data?.leaves)
-  }
   useEffect(() => {
     if (toggle) {
       form.setFieldsValue({
@@ -155,9 +140,6 @@ function UserDetailForm({
           intialValues.positionType && intialValues.positionType._id
             ? intialValues.positionType._id
             : undefined,
-        status: intialValues?.status && intialValues?.status,
-        allocatedLeaves:
-          intialValues?.allocatedLeaves?.[currentQuarter?.data?.name],
 
         panNumber: intialValues.panNumber && intialValues.panNumber,
         citNumber: intialValues.citNumber && intialValues.citNumber,
@@ -179,6 +161,7 @@ function UserDetailForm({
           ? moment(new Date(intialValues?.officeEndTime), 'h:mm:ss a')
           : moment('06:00:00 PM', 'HH:mm:ss a'),
       })
+      setStatus(intialValues?.status)
     }
 
     if (!toggle) form.resetFields()
@@ -362,7 +345,6 @@ function UserDetailForm({
               placeholder="Select Position"
               disabled={readOnly || isAdmin}
               filterOption={filterOptions}
-              onChange={handlePositionChange}
             >
               {position &&
                 position?.data?.data?.data?.map((position) => (
@@ -401,8 +383,6 @@ function UserDetailForm({
           <FormItem
             {...formItemLayout}
             label="Status"
-            hasFeedback={readOnly ? false : true}
-            name="status"
             rules={[
               {
                 required: true,
@@ -410,53 +390,43 @@ function UserDetailForm({
               },
             ]}
           >
-            <Select
-              showSearch
-              placeholder="Select Status"
-              disabled={readOnly || isAdmin}
-              filterOption={filterOptions}
-              onChange={handleStatusChange}
+            <Radio.Group
+              buttonStyle="solid"
+              value={status}
+              id="radio"
+              disabled={readOnly}
             >
-              {['Permanent', 'Probation'].map((status) => (
-                <Option value={status} key={status}>
-                  {status}
-                </Option>
-              ))}
-            </Select>
+              <Popconfirm
+                title="Are you sure you want to switch Co-Worker Status to Permanent?"
+                okText="Yes"
+                cancelText="No"
+                onConfirm={() => setStatus('Permanent')}
+              >
+                <Radio.Button value="Permanent">Permanent</Radio.Button>
+              </Popconfirm>
+
+              <Popconfirm
+                title="Are you sure you want to switch Co-worker Status to Probation?"
+                okText="Yes"
+                cancelText="No"
+                onConfirm={() => setStatus('Probation')}
+              >
+                <Radio.Button value="Probation">Probation</Radio.Button>
+              </Popconfirm>
+            </Radio.Group>
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Allocated Leaves"
-            hasFeedback={readOnly ? false : true}
-            name="allocatedLeaves"
-            rules={[
-              {
-                required: true,
-                validator: async (_, value) => {
-                  try {
-                    if (!value) {
-                      throw new Error('Allocated Leaves is required.')
-                    }
-                    const regex = /^[0-9]+$/
-                    const isValid = regex.test(value)
-                    if (!isValid) {
-                      throw new Error('Allocated Leaves must be a number')
-                    }
-                  } catch (error) {
-                    scrollForm(form, 'allocatedLeaves')
-                    throw new Error(error.message)
-                  }
-                },
-              },
-            ]}
-          >
-            <Input placeholder="Enter Allocated Leaves" disabled={readOnly} />
-          </FormItem>
+
           <FormItem
             {...formItemLayout}
             label="Last Review Date"
             hasFeedback={readOnly ? false : true}
             name="lastReviewDate"
+            rules={[
+              {
+                required: false,
+                message: 'Last Review Date is required.',
+              },
+            ]}
           >
             <DatePicker
               disabledDate={disableReviewDate}
@@ -464,6 +434,7 @@ function UserDetailForm({
               disabled={readOnly}
             />
           </FormItem>
+
           <FormItem
             {...formItemLayout}
             label="Join Date"

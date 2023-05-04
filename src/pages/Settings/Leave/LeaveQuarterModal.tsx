@@ -1,8 +1,10 @@
-import {Button, DatePicker, Form, Input, Modal, Spin} from 'antd'
+import {Button, DatePicker, Form, Input, InputNumber, Modal, Spin} from 'antd'
+import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
 import React, {useEffect} from 'react'
 import {Row} from 'antd'
 import {Col} from 'antd'
 import moment from 'moment'
+import {notification} from 'helpers/notification'
 import {CANCEL_TEXT} from 'constants/Common'
 
 interface modalInterface {
@@ -12,11 +14,6 @@ interface modalInterface {
   onCancel: React.MouseEventHandler<HTMLElement>
   isLoading: boolean
   editData: any
-}
-
-const layout = {
-  // labelCol: { span: 8 },
-  // wrapperCol: { span: 16 }
 }
 
 function LeaveQuarterModal({
@@ -29,33 +26,53 @@ function LeaveQuarterModal({
 }: modalInterface) {
   const [form] = Form.useForm()
 
+  const dateArray = editData?.quarters?.map((quarterData: any) => [
+    moment(quarterData.fromDate),
+    moment(quarterData.toDate),
+  ])
+  const dateIndex =
+    isEditMode &&
+    dateArray.findIndex((d: any) => moment().isBetween(d[0], d[1]))
+
   const handleSubmit = () => {
-    form.validateFields().then((values) => onSubmit(form.getFieldsValue()))
+    const values = form.getFieldsValue()
+    const quarters = values?.quaterlyLeaves?.map((d: any) => {
+      if (!!d) {
+        const valueArray = Object.values(d)
+        const isValuePresent = valueArray.some((d) => !!d === true)
+        return isValuePresent
+      } else return false
+    })
+
+    form.validateFields().then((values) => {
+      if (quarters?.length === 0) {
+        return notification({type: 'info', message: 'Please Add Quarters'})
+      }
+      const quaterTempLeaves = values?.quaterlyLeaves?.map((data: any) => ({
+        quarterName: data?.quarterName,
+        fromDate: moment.utc(data?.firststartDate).startOf('day').format(),
+        toDate: moment.utc(data?.firstendDate).startOf('day').format(),
+        leaves: data?.leaves,
+        _id: data?._id,
+      }))
+      onSubmit(quaterTempLeaves)
+    })
   }
 
   useEffect(() => {
     if (toggle) {
-      if (isEditMode) {
-        const {firstQuarter, secondQuarter, thirdQuarter, fourthQuarter} =
-          editData
+      if (isEditMode)
         form.setFieldsValue({
-          firstendDate: moment(firstQuarter?.toDate),
-          firststartDate: moment(firstQuarter?.fromDate),
-          secondendDate: moment(secondQuarter?.toDate),
-          secondstartDate: moment(secondQuarter?.fromDate),
-          thirdstartDate: moment(thirdQuarter?.fromDate),
-          thirdendDate: moment(thirdQuarter?.toDate),
-          fourthstartDate: moment(fourthQuarter?.fromDate),
-          fourthendDate: moment(fourthQuarter?.toDate),
-          firstleaves: firstQuarter?.leaves,
-          secondleaves: secondQuarter?.leaves,
-          thirdleaves: thirdQuarter?.leaves,
-          fourthleaves: fourthQuarter?.leaves,
+          quaterlyLeaves: editData?.quarters?.map((quarterData: any) => ({
+            ...quarterData,
+            firststartDate: moment(quarterData.fromDate),
+            firstendDate: moment(quarterData.toDate),
+          })),
         })
-      }
     }
     if (!toggle) form.resetFields()
   }, [toggle])
+
   return (
     <Modal
       width={800}
@@ -73,316 +90,227 @@ function LeaveQuarterModal({
       ]}
     >
       <Spin spinning={isLoading}>
-        <div className="leaveQuarterForm">
-          <Form form={form} layout="horizontal">
-            <Row>
-              {' '}
-              <div className="gx-mb-1">First Quarter</div>
-            </Row>
-            <Row>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="firststartDate"
-                  label="Start"
-                  rules={[{required: true, message: 'Required!'}]}
-                >
-                  <DatePicker />
-                </Form.Item>
-              </Col>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="firstendDate"
-                  label="End"
-                  rules={[
-                    {
-                      required: true,
-                      whitespace: true,
-                      validator: async (rule, value) => {
-                        try {
-                          if (!value) {
-                            throw new Error('Required!')
-                          }
-                          if (
-                            value.isBefore(
-                              form.getFieldValue('firststartDate')?.endOf('day')
-                            ) &&
-                            form.getFieldValue('firststartDate')
-                          ) {
-                            throw new Error(
-                              'End Date should be after Start Date.'
-                            )
-                          }
-                        } catch (err) {
-                          throw new Error(err.message)
-                        }
-                      },
-                    },
-                  ]}
-                >
-                  <DatePicker />
-                </Form.Item>
-              </Col>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="firstleaves"
-                  label="Leaves"
-                  rules={[{required: true, message: 'Required!'}]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              {' '}
-              <div className="gx-mb-1">Second Quarter</div>
-            </Row>
-            <Row>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="secondstartDate"
-                  label="Start"
-                  rules={[
-                    {
-                      required: true,
-                      whitespace: true,
-                      validator: async (rule, value) => {
-                        try {
-                          if (!value) {
-                            throw new Error('Required!')
-                          }
-                          if (
-                            value <
-                              form
-                                .getFieldValue('firstendDate')
-                                ?.endOf('day') &&
-                            form.getFieldValue('firstendDate')
-                          ) {
-                            throw new Error(
-                              'Second quarter should start after first quarter ends'
-                            )
-                          }
-                        } catch (err) {
-                          throw new Error(err.message)
-                        }
-                      },
-                    },
-                  ]}
-                >
-                  <DatePicker />
-                </Form.Item>
-              </Col>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="secondendDate"
-                  label="End"
-                  rules={[
-                    {
-                      required: true,
-                      whitespace: true,
-                      validator: async (rule, value) => {
-                        try {
-                          if (!value) {
-                            throw new Error('Required!')
-                          }
-                          if (
-                            value.isBefore(
-                              form
-                                .getFieldValue('secondstartDate')
-                                ?.endOf('day')
-                            ) &&
-                            form.getFieldValue('secondstartDate')
-                          ) {
-                            throw new Error(
-                              'End Date should be after Start Date.'
-                            )
-                          }
-                        } catch (err) {
-                          throw new Error(err.message)
-                        }
-                      },
-                    },
-                  ]}
-                >
-                  <DatePicker />
-                </Form.Item>
-              </Col>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="secondleaves"
-                  label="Leaves"
-                  rules={[{required: true, message: 'Required!'}]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              {' '}
-              <div className="gx-mb-1">Third Quarter</div>
-            </Row>
+        <Row
+          style={{
+            columnGap: 5,
+            marginBottom: '0.4rem',
+          }}
+        >
+          <Col lg={6} md={6} sm={6} xs={6}>
+            <label>Quarter</label>
+          </Col>
+          <Col lg={5} md={5} sm={5} xs={5}>
+            <label>Start</label>
+          </Col>
+          <Col lg={5} md={5} sm={5} xs={5}>
+            <label>End</label>
+          </Col>
+          <Col lg={5} md={5} sm={5} xs={5}>
+            <label style={{whiteSpace: 'nowrap'}}>Leaves</label>
+          </Col>
+        </Row>
+        <Form form={form} layout="horizontal">
+          <Form.List name="quaterlyLeaves" initialValue={[null]}>
+            {(fields, {add, remove}) => (
+              <>
+                {fields.map((field, index) => (
+                  <Row
+                    key={field.key}
+                    style={{
+                      marginLeft: 1,
+                      columnGap: 5,
+                    }}
+                  >
+                    <Col span={6} sm={6} md={6} lg={6} xs={5}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, 'quarterName']}
+                        rules={[
+                          {
+                            required: true,
+                            validator: async (rule, value) => {
+                              try {
+                                if (!value) {
+                                  throw new Error('Required!')
+                                }
+                                const regex = /^[^*|\":<>[\]{}`\\';@&$!#%^]+$/
+                                const isValid = regex.test(value)
+                                if (value.trim().length === 0) {
+                                  throw new Error('Please enter a valid Name.')
+                                }
 
-            <Row>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="thirdstartDate"
-                  label="Start"
-                  rules={[
-                    {
-                      required: true,
-                      whitespace: true,
-                      validator: async (rule, value) => {
-                        try {
-                          if (!value) {
-                            throw new Error('Required!')
-                          }
-                          if (
-                            value.isBefore(
-                              form.getFieldValue('secondendDate')?.endOf('day')
-                            ) &&
-                            form.getFieldValue('secondendDate')
-                          ) {
-                            throw new Error(
-                              'Third quarter should start after second quarter ends'
-                            )
-                          }
-                        } catch (err) {
-                          throw new Error(err.message)
-                        }
-                      },
-                    },
-                  ]}
-                >
-                  <DatePicker />
+                                if (
+                                  value?.split('')[0] === '-' ||
+                                  value?.split('')[0] === '(' ||
+                                  value?.split('')[0] === ')' ||
+                                  !isValid
+                                ) {
+                                  throw new Error(
+                                    'Please do not use special characters.'
+                                  )
+                                }
+                              } catch (err) {
+                                throw new Error(err.message)
+                              }
+                            },
+                          },
+                        ]}
+                      >
+                        <Input disabled={index < dateIndex} />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={5} sm={5} md={5} lg={5}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, 'firststartDate']}
+                        rules={[
+                          {
+                            required: true,
+                            whitespace: true,
+                            validator: async (rule, value) => {
+                              try {
+                                const previousEnd = form
+                                  .getFieldValue([
+                                    'quaterlyLeaves',
+                                    field.name - 1,
+                                    'firstendDate',
+                                  ])
+                                  ?.endOf('day')
+
+                                if (!value) {
+                                  throw new Error('Required!')
+                                }
+                                if (
+                                  field.name > 0 &&
+                                  (value.isBefore(previousEnd) ||
+                                    previousEnd.isSame(value.endOf('day'))) &&
+                                  previousEnd
+                                ) {
+                                  throw new Error(
+                                    `${form.getFieldValue([
+                                      'quaterlyLeaves',
+                                      field.name,
+                                      'quarterName',
+                                    ])} should start after ${form.getFieldValue(
+                                      [
+                                        'quaterlyLeaves',
+                                        field.name - 1,
+                                        'quarterName',
+                                      ]
+                                    )} ends `
+                                  )
+                                }
+                              } catch (err) {
+                                throw new Error(err.message)
+                              }
+                            },
+                          },
+                        ]}
+                      >
+                        <DatePicker
+                          className=" gx-w-100"
+                          disabled={index < dateIndex}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={5} sm={5} md={5} lg={5}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, 'firstendDate']}
+                        rules={[
+                          {
+                            required: true,
+                            whitespace: true,
+                            validator: async (rule, value) => {
+                              try {
+                                const currentStartDate = form
+                                  .getFieldValue([
+                                    'quaterlyLeaves',
+                                    field.name,
+                                    'firststartDate',
+                                  ])
+                                  ?.endOf('day')
+                                if (!value) {
+                                  throw new Error('Required!')
+                                }
+                                if (
+                                  (value.isBefore(currentStartDate) ||
+                                    currentStartDate
+                                      ?.endOf('day')
+                                      .isSame(moment(value).endOf('day'))) &&
+                                  currentStartDate
+                                ) {
+                                  throw new Error(
+                                    'End Date should be after Start Date.'
+                                  )
+                                }
+                              } catch (err) {
+                                throw new Error(err.message)
+                              }
+                            },
+                          },
+                        ]}
+                      >
+                        <DatePicker
+                          className=" gx-w-100"
+                          disabled={index < dateIndex}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={4} sm={3} md={4} lg={4} xs={4}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, 'leaves']}
+                        rules={[
+                          {
+                            required: true,
+                            whitespace: true,
+                            validator: async (rule, value) => {
+                              try {
+                                if (!value) {
+                                  throw new Error('Required!')
+                                }
+                                if (value < 1 || value > 20) {
+                                  throw new Error(
+                                    'Leave Days should be less than 20'
+                                  )
+                                }
+                              } catch (err) {
+                                throw new Error(err.message)
+                              }
+                            },
+                          },
+                        ]}
+                      >
+                        <Input type="number" disabled={index < dateIndex} />
+                      </Form.Item>
+                    </Col>
+                    {((isEditMode && index >= dateIndex) || !isEditMode) && (
+                      <Col span={2} sm={1} md={2} lg={2} xs={1}>
+                        <MinusCircleOutlined
+                          onClick={() => remove(field.name)}
+                          style={{marginBottom: 20, marginTop: 10}}
+                          className="svg-clear"
+                        />
+                      </Col>
+                    )}
+                  </Row>
+                ))}
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add More
+                  </Button>
                 </Form.Item>
-              </Col>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="thirdendDate"
-                  label="End"
-                  rules={[
-                    {
-                      required: true,
-                      whitespace: true,
-                      validator: async (rule, value) => {
-                        try {
-                          if (!value) {
-                            throw new Error('Required!')
-                          }
-                          if (
-                            value.isBefore(
-                              form.getFieldValue('thirdstartDate')?.endOf('day')
-                            ) &&
-                            form.getFieldValue('thirdstartDate')
-                          ) {
-                            throw new Error(
-                              'End Date should be after Start Date.'
-                            )
-                          }
-                        } catch (err) {
-                          throw new Error(err.message)
-                        }
-                      },
-                    },
-                  ]}
-                >
-                  <DatePicker />
-                </Form.Item>
-              </Col>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="thirdleaves"
-                  label="Leaves"
-                  rules={[{required: true, message: 'Required!'}]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              {' '}
-              <div className="gx-mb-1">Fourth Quarter</div>
-            </Row>
-            <Row>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="fourthstartDate"
-                  label="Start"
-                  rules={[
-                    {
-                      required: true,
-                      whitespace: true,
-                      validator: async (rule, value) => {
-                        try {
-                          if (!value) {
-                            throw new Error('Required!')
-                          }
-                          if (
-                            value.isBefore(
-                              form.getFieldValue('thirdendDate')?.endOf('day')
-                            ) &&
-                            form.getFieldValue('thirdendDate')
-                          ) {
-                            throw new Error(
-                              'Fourth quarter should start after third quarter ends'
-                            )
-                          }
-                        } catch (err) {
-                          throw new Error(err.message)
-                        }
-                      },
-                    },
-                  ]}
-                >
-                  <DatePicker />
-                </Form.Item>
-              </Col>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="fourthendDate"
-                  label="End"
-                  rules={[
-                    {
-                      required: true,
-                      whitespace: true,
-                      validator: async (rule, value) => {
-                        try {
-                          if (!value) {
-                            throw new Error('Required!')
-                          }
-                          if (
-                            value.isBefore(
-                              form
-                                .getFieldValue('fourthstartDate')
-                                ?.endOf('day')
-                            ) &&
-                            form.getFieldValue('fourthstartDate')
-                          ) {
-                            throw new Error(
-                              'End Date should be after Start Date.'
-                            )
-                          }
-                        } catch (err) {
-                          throw new Error(err.message)
-                        }
-                      },
-                    },
-                  ]}
-                >
-                  <DatePicker />
-                </Form.Item>
-              </Col>
-              <Col span={8} xs={24} md={8}>
-                <Form.Item
-                  name="fourthleaves"
-                  label="Leaves"
-                  rules={[{required: true, message: 'Required!'}]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </div>
+              </>
+            )}
+          </Form.List>
+        </Form>
       </Spin>
     </Modal>
   )
