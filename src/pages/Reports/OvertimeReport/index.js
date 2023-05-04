@@ -48,7 +48,8 @@ const FormItem = Form.Item
 
 const OvertimePage = () => {
   const location = useLocation()
-  const otAuthorId = location?.state?.extraData
+  const {userId: otAuthorId, project: projectIdLocation} =
+    location?.state?.extraData || {}
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
   const [sort, setSort] = useState({})
@@ -59,8 +60,10 @@ const OvertimePage = () => {
   const [readOnlyApproveReason, setReadonlyApproveReason] = useState('')
   const [author, setAuthor] = useState(otAuthorId)
   const [otStatus, setOtStatus] = useState('')
-  const [projectData, setProjectData] = useState([])
-  const [project, setProject] = useState(undefined)
+  const [projectData, setProjectData] = useState(projectIdLocation || [])
+  const [project, setProject] = useState(
+    projectIdLocation?.[0]?._id || undefined
+  )
   const [rangeDate, setRangeDate] = useState(undefined)
 
   const allUsers = useQuery(['users'], () => getAllUsers({sort: 'name'}))
@@ -273,7 +276,10 @@ const OvertimePage = () => {
               onChange={handleProjectChange}
               value={project}
               handleSearch={optimizedFn}
-              options={projectData?.map((x) => ({
+              options={[
+                ...(projectData || []),
+                {_id: process.env.REACT_APP_OTHER_PROJECT_ID, name: 'Other'},
+              ]?.map((x) => ({
                 ...x,
                 id: x._id,
                 value: x.name,

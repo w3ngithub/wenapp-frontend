@@ -183,7 +183,10 @@ function WorkLogReport() {
                 onChange={handleProjectChange}
                 value={project}
                 handleSearch={optimizedFn}
-                options={projectData.map((x: any) => ({
+                options={[
+                  ...projectData,
+                  {_id: process.env.REACT_APP_OTHER_PROJECT_ID, name: 'Other'},
+                ].map((x: any) => ({
                   ...x,
                   id: x._id,
                   value: x.name,

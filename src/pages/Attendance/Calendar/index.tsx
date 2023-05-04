@@ -116,12 +116,13 @@ function AttendanceCalendar() {
         backgroundColor: '#EFEBFF',
         color: '#3C3467',
       }
-    if (event.type === 'holiday')
+    if (event.type === 'holiday') {
       style = {
         ...style,
         backgroundColor: '#FFE8D0',
         color: 'rgb(99 92 92)',
       }
+    }
 
     return {
       style,
