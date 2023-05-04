@@ -11,6 +11,7 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function Attendace() {
   const {state}: {state: any} = useLocation()
+  // const history = useHistory()
   let [searchParams, setSearchParams] = useSearchParams()
 
   const [tabKey, setTabKey] = useState('1')
@@ -22,9 +23,17 @@ function Attendace() {
     },
   } = useSelector(selectAuthUser)
 
+  console.log('NavigationAttendance', NavigationAttendance)
+
   useEffect(() => {
     if (state?.tab) {
       setTabKey(state?.tab)
+    }
+  }, [state, NavigationAttendance])
+
+  useEffect(() => {
+    if (!state?.tab) {
+      setTabKey(searchParams.toString().split('=')[1])
     } else if (NavigationAttendance?.viewMyAttendance) {
       setTabKey('1')
     } else if (NavigationAttendance?.viewMyAttendanceCalendar) {
@@ -36,19 +45,13 @@ function Attendace() {
     } else if (NavigationAttendance?.viewCoworkersAttendanceCalendar) {
       setTabKey('5')
     }
-  }, [state, NavigationAttendance])
-
-  useEffect(() => {
-    if (!state?.tab) {
-      setTabKey(searchParams.toString().split('=')[1])
-    }
   }, [])
 
   return (
     <Card title="Attendance">
       <Tabs
         type="card"
-        activeKey={tabKey || '1'}
+        activeKey={tabKey || searchParams.toString().split('=')[1] || '1'}
         onChange={(tab) => {
           searchParams.set('tab', tab)
           setSearchParams({tab})
