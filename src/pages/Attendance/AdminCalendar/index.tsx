@@ -23,7 +23,7 @@ import {useSelector} from 'react-redux'
 import {getAllHolidays} from 'services/resources'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
-import {F10PX} from 'constants/FontSizes'
+import {F11PX} from 'constants/FontSizes'
 
 const localizer = momentLocalizer(moment)
 const FormItem = Form.Item
@@ -108,12 +108,12 @@ function AdminAttendanceCalendar() {
 
   const handleEventStyle = (event: any) => {
     let style: any = {
-      fontSize: F10PX,
+      fontSize: F11PX,
       margin: '0px auto',
       marginTop: '3px',
       fontWeight: '500',
       height: 'auto',
-      padding: '8px 10px',
+      padding: '6px 10px',
       color: darkMode ? 'white' : '#100c0ca6',
       backgroundColor: 'transparent',
       borderRadius: '16px',

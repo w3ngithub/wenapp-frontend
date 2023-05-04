@@ -316,8 +316,8 @@ const Dashboard = () => {
         ...style,
         width: 'calc(100% - 30px)',
         fontWeight: '500',
-        background: '#EAEBEF',
-        color: '#545454',
+        background: 'rgb(191 202 255 / 60%)',
+        color: '#35427e',
         borderRadius: '10px',
         marginBottom: '6px',
       }
