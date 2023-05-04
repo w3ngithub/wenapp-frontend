@@ -1112,7 +1112,12 @@ function LeaveModal({
                             )
                           }}
                           renderExtraFooter={() => (
-                            <small style={{color: 'red', fontSize: '12px'}}>
+                            <small
+                              style={{
+                                color: 'rgb(193 98 98)',
+                                fontSize: '12px',
+                              }}
+                            >
                               *Disabled dates are holidays/ leaves taken
                             </small>
                           )}
@@ -1246,7 +1251,7 @@ function LeaveModal({
                   {!readOnly && (
                     <small
                       style={{
-                        color: 'red',
+                        color: 'rgb(193 98 98)',
                         fontSize: '14px',
                         width: '10%',
                         paddingLeft: 15,
