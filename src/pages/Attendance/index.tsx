@@ -28,14 +28,6 @@ function Attendace() {
     }
   }, [state, NavigationAttendance])
 
-  const urlTabKey = searchParams.toString().split('=')[1]
-
-  useEffect(() => {
-    if (!state?.tab) {
-      setTabKey(urlTabKey)
-    }
-  }, [urlTabKey, state])
-
   useEffect(() => {
     if (NavigationAttendance?.viewMyAttendance) {
       setTabKey('1')
@@ -49,6 +41,13 @@ function Attendace() {
       setTabKey('5')
     }
   }, [])
+
+  const urlTabKey = searchParams.toString().split('=')[1]
+  useEffect(() => {
+    if (!state?.tab) {
+      setTabKey(urlTabKey)
+    }
+  }, [urlTabKey, state])
 
   return (
     <Card title="Attendance">
