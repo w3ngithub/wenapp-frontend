@@ -11,7 +11,6 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 function Attendace() {
   const {state}: {state: any} = useLocation()
-  // const history = useHistory()
   let [searchParams, setSearchParams] = useSearchParams()
 
   const [tabKey, setTabKey] = useState('1')
@@ -31,10 +30,16 @@ function Attendace() {
     }
   }, [state, NavigationAttendance])
 
+  const urlTabKey = searchParams.toString().split('=')[1]
+
   useEffect(() => {
     if (!state?.tab) {
-      setTabKey(searchParams.toString().split('=')[1])
-    } else if (NavigationAttendance?.viewMyAttendance) {
+      setTabKey(urlTabKey)
+    }
+  }, [urlTabKey, state])
+
+  useEffect(() => {
+    if (NavigationAttendance?.viewMyAttendance) {
       setTabKey('1')
     } else if (NavigationAttendance?.viewMyAttendanceCalendar) {
       setTabKey('2')
