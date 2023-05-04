@@ -797,7 +797,7 @@ function Apply({
                   }}
                 />
               </FormItem>
-              <small style={{color: 'red', fontSize: '14px'}}>
+              <small style={{color: 'rgb(193 98 98)', fontSize: '14px'}}>
                 *Disabled dates are holidays
               </small>
             </Col>
@@ -945,7 +945,12 @@ function Apply({
                             )
                           }}
                           renderExtraFooter={() => (
-                            <small style={{color: 'red', fontSize: '12px'}}>
+                            <small
+                              style={{
+                                color: 'rgb(193 98 98)',
+                                fontSize: '12px',
+                              }}
+                            >
                               *Disabled dates are holidays/ leaves taken
                             </small>
                           )}

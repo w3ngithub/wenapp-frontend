@@ -33,7 +33,6 @@ import {
 import {getTodaysUserAttendanceCount} from 'services/attendances'
 import {useNavigate} from 'react-router-dom'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
 import {useSelector} from 'react-redux'
 import AccessWrapper from 'components/Modules/AccessWrapper'
 import {DASHBOARD_ICON_ACCESS} from 'constants/RoleAccess'
@@ -43,6 +42,7 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {notification} from 'helpers/notification'
 import {socket} from 'pages/Main'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
+import {F10PX, F11PX} from 'constants/FontSizes'
 const FormItem = Form.Item
 
 const localizer = momentLocalizer(moment)
@@ -131,13 +131,13 @@ const Dashboard = () => {
       setProjectArray([])
       return
     } else {
+      //else fetch projects from api
       const projects = await getAllProjects({
         project: projectName,
         sort: 'name',
       })
       setProjectArray(projects?.data?.data?.data)
     }
-    //else fetch projects from api
   }
 
   const optimizedFn = useCallback(debounce(handleSearch, 100), [])
@@ -191,12 +191,12 @@ const Dashboard = () => {
     let eventCopy = {...event}
 
     let style: any = {
-      fontSize: innerWidth <= 1500 ? '10px' : '11px',
+      fontSize: innerWidth <= 1500 ? F10PX : F11PX,
       width: innerWidth <= 729 ? '2.5rem' : 'fit-content',
       margin: '0px auto',
       fontWeight: '600',
       height: 'fit-content',
-      background: event.type === 'notice' ? 'rgb(223 220 220)' : 'transparent',
+      background: event.type === 'notice' ? 'rgb(234 235 239)' : 'transparent',
     }
     if (eventCopy.type === 'birthday')
       style = {
@@ -214,7 +214,7 @@ const Dashboard = () => {
         marginTop: '-4px',
         marginBottom: '3px',
         marginLeft: '11px',
-        color: 'rgb(235 68 68)',
+        color: 'rgb(193 98 98)',
       }
     if (eventCopy.type === 'leave') {
       style = {
@@ -225,7 +225,7 @@ const Dashboard = () => {
         marginLeft: '11px',
         color:
           event?.leaveStatus === 'pending'
-            ? '#CCBE00'
+            ? 'rgb(162 154 41)'
             : event?.leaveType === 'Late Arrival'
             ? '#eb9293'
             : '#3DBF4D',
@@ -236,8 +236,11 @@ const Dashboard = () => {
         ...style,
         width: 'calc(100% - 30px)',
         fontWeight: '500',
-        color: '#3D3D3D',
+        background: 'rgb(191 202 255 / 60%)',
+        color: '#35427e',
+        borderRadius: '10px',
         marginBottom: '6px',
+  
       }
     }
 
@@ -258,7 +261,7 @@ const Dashboard = () => {
       alignItems: 'center',
       gap: '4px',
       margin: '0 !important',
-      fontSize: '10px',
+      fontSize: F11PX,
     }
 
     if (props.event.type === 'birthday') {
@@ -303,10 +306,19 @@ const Dashboard = () => {
           }}
         >
           <p
-            style={{...style, margin: 0, flexWrap: 'nowrap', fontWeight: '500'}}
+            style={{
+              ...style,
+              margin: 0,
+              flexWrap: 'wrap',
+              fontWeight: '500',
+              gap: '6px',
+            }}
           >
-            <i className="icon icon-calendar gx-fs-xs gx-ml-2p" />
-            <span className="gx-ml-12p">{props?.event?.title}</span>
+            <i
+              className="icon icon-calendar gx-fs-sm"
+              style={{width: '12px', lineHeight: 2, marginLeft: '2px'}}
+            />
+            <span>{props?.event?.title}</span>
           </p>
         </div>
       )
@@ -353,14 +365,14 @@ const Dashboard = () => {
               ...style,
               margin: 0,
               fontWeight: '500',
-              fontSize: '10px',
+              fontSize: F11PX,
             }}
           >
             <LeaveIcon
               width="15px"
               fill={
                 props?.event?.leaveStatus === 'pending'
-                  ? '#CCBE00'
+                  ? 'rgb(162 154 41)'
                   : extraInfo === 'Late'
                   ? '#eb9293'
                   : '#3DBF4D'
@@ -425,7 +437,9 @@ const Dashboard = () => {
   let noticesCalendar = notices?.data?.data?.notices?.map((notice: any) => {
     return {
       title: notice?.noticeType?.name,
-      end: new Date(notice?.endDate),
+      end: notice.endDate
+        ? new Date(notice?.endDate)
+        : new Date(notice?.startDate),
       start: new Date(notice.startDate),
       type: 'notice',
       name: notice?.title,

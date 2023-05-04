@@ -15,6 +15,7 @@ import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {getAllHolidays} from 'services/resources'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
 import {THEME_TYPE_DARK} from 'constants/ThemeSetting'
+import {F11PX} from 'constants/FontSizes'
 
 const localizer = momentLocalizer(moment)
 
@@ -81,9 +82,9 @@ function AttendanceCalendar() {
 
   const handleEventStyle = (event: any) => {
     let style: any = {
-      fontSize: '11.5px',
+      fontSize: F11PX,
       margin: '0px auto',
-      marginTop: '1rem',
+      marginTop: '3px',
       fontWeight: '500',
       height: 'auto',
       padding: '6px 10px',
@@ -115,12 +116,13 @@ function AttendanceCalendar() {
         backgroundColor: '#EFEBFF',
         color: '#3C3467',
       }
-    if (event.type === 'holiday')
+    if (event.type === 'holiday') {
       style = {
         ...style,
         backgroundColor: '#FFE8D0',
         color: 'rgb(99 92 92)',
       }
+    }
 
     return {
       style,

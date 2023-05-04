@@ -18,6 +18,7 @@ import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {PlusOutlined} from '@ant-design/icons'
 import {useCleanCalendar} from 'hooks/useCleanCalendar'
+import {F11PX} from 'constants/FontSizes'
 
 const localizer = momentLocalizer(moment)
 
@@ -160,9 +161,9 @@ function Holiday() {
 
   const handleEventStyle = (event) => {
     let style = {
-      fontSize: '11.5px',
+      fontSize: F11PX,
       margin: '0px auto',
-      marginTop: '1rem',
+      marginTop: '3px',
       fontWeight: '500',
       height: 'auto',
       padding: '6px 10px',
