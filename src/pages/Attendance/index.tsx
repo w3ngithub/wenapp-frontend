@@ -22,8 +22,6 @@ function Attendace() {
     },
   } = useSelector(selectAuthUser)
 
-  console.log('NavigationAttendance', NavigationAttendance)
-
   useEffect(() => {
     if (state?.tab) {
       setTabKey(state?.tab)
