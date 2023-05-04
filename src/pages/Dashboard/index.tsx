@@ -131,13 +131,13 @@ const Dashboard = () => {
       setProjectArray([])
       return
     } else {
+      //else fetch projects from api
       const projects = await getAllProjects({
         project: projectName,
         sort: 'name',
       })
       setProjectArray(projects?.data?.data?.data)
     }
-    //else fetch projects from api
   }
 
   const optimizedFn = useCallback(debounce(handleSearch, 100), [])
