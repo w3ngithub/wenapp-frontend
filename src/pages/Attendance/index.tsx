@@ -25,7 +25,11 @@ function Attendace() {
   useEffect(() => {
     if (state?.tab) {
       setTabKey(state?.tab)
-    } else if (NavigationAttendance?.viewMyAttendance) {
+    }
+  }, [state, NavigationAttendance])
+
+  useEffect(() => {
+    if (NavigationAttendance?.viewMyAttendance) {
       setTabKey('1')
     } else if (NavigationAttendance?.viewMyAttendanceCalendar) {
       setTabKey('2')
@@ -36,13 +40,14 @@ function Attendace() {
     } else if (NavigationAttendance?.viewCoworkersAttendanceCalendar) {
       setTabKey('5')
     }
-  }, [state, NavigationAttendance])
+  }, [])
 
+  const urlTabKey = searchParams.toString().split('=')[1]
   useEffect(() => {
     if (!state?.tab) {
-      setTabKey(searchParams.toString().split('=')[1])
+      setTabKey(urlTabKey)
     }
-  }, [])
+  }, [urlTabKey, state])
 
   return (
     <Card title="Attendance">

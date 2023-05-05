@@ -18,9 +18,6 @@ const TabPane = Tabs.TabPane
 function Settings() {
   const location: any = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [activeKey, setActiveKey] = useState(
-    location?.state?.tabKey || searchParams.toString().split('=')[1] || '1'
-  )
   const {
     role: {
       permission: {Settings},
@@ -28,18 +25,16 @@ function Settings() {
   } = useSelector(selectAuthUser)
 
   const handleTabChange = (val: string) => {
-    setActiveKey(val)
     searchParams.set('settingTab', val)
     setSearchParams({settingTab: val})
   }
 
-  useEffect(() => {
-    if (location?.state?.tabKey === '3') setActiveKey(location?.state?.tabKey)
-  }, [location?.state])
+  const activeTabKey =
+    location?.state?.tabKey || searchParams.toString().split('=')[1] || '1'
 
   return (
     <Card title="Settings">
-      <Tabs type="card" activeKey={activeKey} onChange={handleTabChange}>
+      <Tabs type="card" activeKey={activeTabKey} onChange={handleTabChange}>
         {Settings?.coWorker && (
           <TabPane tab="Co-Workers" key="1">
             <Coworkers />

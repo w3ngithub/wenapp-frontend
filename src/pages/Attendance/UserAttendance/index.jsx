@@ -102,7 +102,6 @@ function UserAttendance({userRole}) {
   // set inital date to date selected from my attendance calendar
   useEffect(() => {
     if (state?.date) {
-      console.log('hello')
       setDate([moment(state.date), moment(state.date)])
     }
   }, [state?.date])
