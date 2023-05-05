@@ -110,7 +110,7 @@ function AdminAttendanceCalendar() {
     let style: any = {
       fontSize: F11PX,
       margin: '0px auto',
-      marginTop: '3px',
+      marginTop: '1.5px',
       fontWeight: '500',
       height: 'auto',
       padding: '6px 10px',
@@ -187,7 +187,7 @@ function AdminAttendanceCalendar() {
         start: new Date(date),
         end: new Date(date),
         type: 'leave',
-        allDay: true,
+        allDay: !!!leave?.halfDay,
       })
     })
   })
@@ -302,7 +302,7 @@ function AdminAttendanceCalendar() {
       !(
         datesWithAttendances?.includes(MuiFormatDate(leave?.start)) ||
         filteredHolidaysDates?.includes(MuiFormatDate(leave?.start))
-      )
+      ) || !leave?.allDay
   )
 
   return (
