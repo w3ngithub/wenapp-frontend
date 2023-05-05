@@ -39,7 +39,7 @@ function AttendanceCalendar() {
     })
   )
   const {data: userLeaves} = useQuery(
-    ['userLeaves'],
+    ['userLeaves', user],
     () => getLeavesOfAllUsers('approved', user._id),
     {
       select: (res) => {
@@ -84,7 +84,7 @@ function AttendanceCalendar() {
     let style: any = {
       fontSize: F11PX,
       margin: '0px auto',
-      marginTop: '3px',
+      marginTop: '1.5px',
       fontWeight: '500',
       height: 'auto',
       padding: '6px 10px',
@@ -147,7 +147,7 @@ function AttendanceCalendar() {
         start: new Date(date),
         end: new Date(date),
         type: 'leave',
-        allDay: true,
+        allDay: !!!leave?.halfDay,
       })
     })
   })
@@ -205,14 +205,17 @@ function AttendanceCalendar() {
   )
 
   const handleSelectEvent = (data: any) => {
-    if (data.type === 'leave' || data.type === 'longLeaves')
+    if (data.type === 'leave')
       navigate(`/leave`, {
         state: {tabKey: '2', date: new Date(data?.start).toJSON()},
       })
-    else
+    else if (data.type === 'holiday') {
+      navigate(`/resources/holiday`)
+    } else {
       navigate(`/${ATTENDANCE}`, {
         state: {tab: '1', date: data?.id?.attendanceDate},
       })
+    }
   }
 
   //process to show only one event in a day
@@ -257,7 +260,7 @@ function AttendanceCalendar() {
       !(
         datesWithAttendances?.includes(MuiFormatDate(leave?.start)) ||
         filteredHolidaysDates?.includes(MuiFormatDate(leave?.start))
-      )
+      ) || !leave?.allDay
   )
 
   return (
