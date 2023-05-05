@@ -252,7 +252,9 @@ function AdminAttendanceCalendar() {
           leaveStatus: 'approved',
         },
       })
-    else
+    else if (data.type === 'holiday') {
+      navigate(`/resources/holiday`)
+    } else
       navigate(`/${ATTENDANCE}`, {
         state: {tab: '3', date: data?.id?.attendanceDate, user},
       })
