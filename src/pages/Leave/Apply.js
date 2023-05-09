@@ -80,6 +80,7 @@ function Apply({
   const [newDateArr, setNewDateArr] = useState([])
   const [datepickerOpen, setDatepickerOpen] = useState(false)
   const [files, setFiles] = useState([])
+  const [subId, setSubId] = useState(undefined)
   const [, setRemovedFile] = useState(null)
   const [openCasualLeaveExceedModal, setOpenCasualLeaveExceedModal] =
     useState(false)
@@ -206,6 +207,10 @@ function Apply({
   )
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
+    onSuccess: (data) => {
+      const substituteId = data?.find((d) => d.name === 'Substitute Leave')?._id
+      setSubId(substituteId)
+    },
     select: (res) => {
       return [
         ...(res?.data?.data?.data?.map((type) => ({
@@ -217,6 +222,23 @@ function Apply({
       ]
     },
   })
+
+  const substituteLeavesTaken = useQuery(
+    ['substitute', yearStartDate, yearEndDate, subId],
+    () =>
+      getLeavesOfUser(
+        user,
+        '',
+        undefined,
+        '',
+        '',
+        yearStartDate,
+        yearEndDate,
+        '',
+        subId
+      ),
+    {enabled: !!yearStartDate && !!yearEndDate && !!subId}
+  )
 
   const teamLeadsQuery = useQuery(['teamLeads'], getTeamLeads, {
     select: (res) => ({
@@ -417,14 +439,22 @@ function Apply({
       if (isSubstitute?.id === form.getFieldValue('leaveType')) {
         let substituteLeaveTaken = 0
         const hasSubstitute =
-          userSubstituteLeave?.data?.data?.data?.data.filter(
-            (sub) =>
-              sub?.leaveType?.name === 'Substitute Leave' &&
-              sub?.leaveStatus === 'approved'
+          substituteLeavesTaken?.data?.data?.data?.data.filter(
+            (sub) => sub?.leaveStatus === 'approved'
           )
         hasSubstitute.forEach((e) => {
-          substituteLeaveTaken += e.leaveDates.length
+          if (e.halfDay) {
+            substituteLeaveTaken += 0.5
+          } else {
+            substituteLeaveTaken += e.leaveDates.length
+          }
         })
+
+        const substituteLeaveApply =
+          form.getFieldValue('halfDay') !== 'full-day'
+            ? substituteLeaveTaken + 0.5
+            : substituteLeaveTaken +
+              form.getFieldValue('leaveDatesCasual')?.length
 
         if (substituteLeaveTaken >= isSubstitute?.leaveDays) {
           return notification({
@@ -433,11 +463,7 @@ function Apply({
           })
         }
 
-        if (
-          substituteLeaveTaken +
-            form.getFieldValue('leaveDatesCasual')?.length >
-          isSubstitute?.leaveDays
-        ) {
+        if (substituteLeaveApply > isSubstitute?.leaveDays) {
           return notification({
             type: 'error',
             message: `Substitute leave cannot exceed more than ${
@@ -506,7 +532,7 @@ function Apply({
           .sort((a, b) => a.localeCompare(b))
       }
 
-      //document upload to firebase
+      // document upload to firebase
       if (files[0]?.originFileObj) {
         const storageRef = ref(storage, `leaves/${files[0]?.name}`)
         const uploadTask = uploadBytesResumable(
