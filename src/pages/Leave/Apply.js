@@ -423,8 +423,19 @@ function Apply({
               sub?.leaveStatus === 'approved'
           )
         hasSubstitute.forEach((e) => {
-          substituteLeaveTaken += e.leaveDates.length
+          if (e.halfDay) {
+            substituteLeaveTaken += 0.5
+          } else {
+            substituteLeaveTaken += e.leaveDates.length
+          }
         })
+
+        console.log('hasSubstitute', hasSubstitute)
+        const substituteLeaveApply =
+          form.getFieldValue('halfDay') !== 'full-day'
+            ? substituteLeaveTaken + 0.5
+            : substituteLeaveTaken +
+              form.getFieldValue('leaveDatesCasual')?.length
 
         if (substituteLeaveTaken >= isSubstitute?.leaveDays) {
           return notification({
@@ -433,11 +444,7 @@ function Apply({
           })
         }
 
-        if (
-          substituteLeaveTaken +
-            form.getFieldValue('leaveDatesCasual')?.length >
-          isSubstitute?.leaveDays
-        ) {
+        if (substituteLeaveApply > isSubstitute?.leaveDays) {
           return notification({
             type: 'error',
             message: `Substitute leave cannot exceed more than ${
@@ -506,7 +513,7 @@ function Apply({
           .sort((a, b) => a.localeCompare(b))
       }
 
-      //document upload to firebase
+      // document upload to firebase
       if (files[0]?.originFileObj) {
         const storageRef = ref(storage, `leaves/${files[0]?.name}`)
         const uploadTask = uploadBytesResumable(
