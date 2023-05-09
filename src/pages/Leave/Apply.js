@@ -80,6 +80,7 @@ function Apply({
   const [newDateArr, setNewDateArr] = useState([])
   const [datepickerOpen, setDatepickerOpen] = useState(false)
   const [files, setFiles] = useState([])
+  const [subId, setSubId] = useState(undefined)
   const [, setRemovedFile] = useState(null)
   const [openCasualLeaveExceedModal, setOpenCasualLeaveExceedModal] =
     useState(false)
@@ -206,6 +207,10 @@ function Apply({
   )
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
+    onSuccess: (data) => {
+      const substituteId = data?.find((d) => d.name === 'Substitute Leave')?._id
+      setSubId(substituteId)
+    },
     select: (res) => {
       return [
         ...(res?.data?.data?.data?.map((type) => ({
@@ -217,6 +222,23 @@ function Apply({
       ]
     },
   })
+
+  const substituteLeavesTaken = useQuery(
+    ['substitute', yearStartDate, yearEndDate, subId],
+    () =>
+      getLeavesOfUser(
+        user,
+        '',
+        undefined,
+        '',
+        '',
+        yearStartDate,
+        yearEndDate,
+        '',
+        subId
+      ),
+    {enabled: !!yearStartDate && !!yearEndDate && !!subId}
+  )
 
   const teamLeadsQuery = useQuery(['teamLeads'], getTeamLeads, {
     select: (res) => ({
@@ -417,10 +439,8 @@ function Apply({
       if (isSubstitute?.id === form.getFieldValue('leaveType')) {
         let substituteLeaveTaken = 0
         const hasSubstitute =
-          userSubstituteLeave?.data?.data?.data?.data.filter(
-            (sub) =>
-              sub?.leaveType?.name === 'Substitute Leave' &&
-              sub?.leaveStatus === 'approved'
+          substituteLeavesTaken?.data?.data?.data?.data.filter(
+            (sub) => sub?.leaveStatus === 'approved'
           )
         hasSubstitute.forEach((e) => {
           if (e.halfDay) {
@@ -430,7 +450,6 @@ function Apply({
           }
         })
 
-        console.log('hasSubstitute', hasSubstitute)
         const substituteLeaveApply =
           form.getFieldValue('halfDay') !== 'full-day'
             ? substituteLeaveTaken + 0.5
