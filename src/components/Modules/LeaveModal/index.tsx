@@ -260,12 +260,15 @@ function LeaveModal({
           () => {
             socket.emit('CUD')
           },
-          () =>
-            socket.emit('approve-leave', {
-              showTo: [response.data.data.data.user._id],
-              remarks: `Your leave has been approved.`,
-              module: 'Leave',
-            }),
+          () => {
+            if (adminOpened) {
+              socket.emit('approve-leave', {
+                showTo: [response.data.data.data.user._id],
+                remarks: `Your leave has been approved.`,
+                module: 'Leave',
+              })
+            }
+          },
           () =>
             onClose(
               setSpecificHalf,
