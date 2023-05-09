@@ -261,7 +261,10 @@ function LeaveModal({
             socket.emit('CUD')
           },
           () => {
-            if (adminOpened) {
+            if (
+              adminOpened ||
+              response?.data?.data?.data?.leaveType?.isSpecial
+            ) {
               socket.emit('approve-leave', {
                 showTo: [response.data.data.data.user._id],
                 remarks: `Your leave has been approved.`,
