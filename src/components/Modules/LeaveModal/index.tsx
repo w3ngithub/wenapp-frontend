@@ -222,6 +222,7 @@ function LeaveModal({
         [
           () => queryClient.invalidateQueries(['leaves']),
           () => queryClient.invalidateQueries(['leavesCalendar']),
+          () => queryClient.invalidateQueries(['takenAndRemainingLeaveDays']),
           () => {
             socket.emit('CUD')
           },
@@ -475,6 +476,10 @@ function LeaveModal({
   const handleLeaveTypeChange = (value: string) => {
     setDatePickerValue([])
     setLeaveType(leaveTypeQuery?.data?.find((type) => type.id === value))
+
+    form.setFieldsValue({
+      leaveDatesPeriod: null,
+    })
   }
 
   const handleUserChange = (user: string) => {
@@ -520,6 +525,10 @@ function LeaveModal({
         setUser(leaveData.user._id)
         setLeaveId(leaveData._id)
         setLeaveType(leaveData.leaveType)
+
+        if (leaveData?.leaveType?.isSpecial) {
+          setDatePickerValue(leaveData?.leaveDates)
+        }
       }
       setHolidays(
         queryClient
