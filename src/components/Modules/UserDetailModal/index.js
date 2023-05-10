@@ -126,6 +126,9 @@ function UserDetailForm({
 
   useEffect(() => {
     if (toggle) {
+      const joinDateValidation = !dateToDateFormat(intialValues?.joinDate)
+        ?.split('-')
+        ?.includes('NaN')
       form.setFieldsValue({
         name: intialValues.name ? intialValues.name : '',
         role:
@@ -151,8 +154,7 @@ function UserDetailForm({
             intialValues.lastReviewDate[intialValues.lastReviewDate.length - 1]
           ),
         joinDate:
-          intialValues.joinDate &&
-          moment(dateToDateFormat(intialValues.joinDate)),
+          joinDateValidation && moment(dateToDateFormat(intialValues.joinDate)),
         exitDate: intialValues.exitDate && moment(intialValues.exitDate),
         officeTime: intialValues?.officeTime?.utcDate
           ? moment(new Date(intialValues?.officeTime?.utcDate), 'h:mm:ss a')
