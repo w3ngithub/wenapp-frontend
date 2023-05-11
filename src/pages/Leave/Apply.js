@@ -438,10 +438,13 @@ function Apply({
       )
       if (isSubstitute?.id === form.getFieldValue('leaveType')) {
         let substituteLeaveTaken = 0
+
         const hasSubstitute =
           substituteLeavesTaken?.data?.data?.data?.data.filter(
-            (sub) => sub?.leaveStatus === 'approved'
+            (sub) =>
+              sub?.leaveStatus === 'approved' || sub?.leaveStatus === 'pending'
           )
+
         hasSubstitute.forEach((e) => {
           if (e.halfDay) {
             substituteLeaveTaken += 0.5
@@ -459,7 +462,7 @@ function Apply({
         if (substituteLeaveTaken >= isSubstitute?.leaveDays) {
           return notification({
             type: 'error',
-            message: 'Substitute Leave Already Taken',
+            message: 'Substitute Leave has already been applied.',
           })
         }
 
