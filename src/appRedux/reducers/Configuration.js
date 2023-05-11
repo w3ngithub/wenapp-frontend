@@ -1,6 +1,7 @@
 import {
   UPDATE_LATE_ARRIVAL_THRESHOLD,
   UPDATE_ALLOCATED_OFFICE_HOURS,
+  UPDATE_LEAVE_APPLY_NOTIFICATION,
 } from 'constants/ActionTypes'
 
 const INIT_STATE = {
@@ -21,6 +22,14 @@ export default (state = INIT_STATE, action) => {
         allocatedOfficeHours: action.payload,
       }
     }
+
+    case UPDATE_LEAVE_APPLY_NOTIFICATION: {
+      return {
+        ...state,
+        SendLeaveApplyNotification: action.payload,
+      }
+    }
+
     default:
       return state
   }
