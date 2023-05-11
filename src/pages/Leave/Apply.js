@@ -439,7 +439,13 @@ function Apply({
       if (isSubstitute?.id === form.getFieldValue('leaveType')) {
         let substituteLeaveApplied = 0
 
-        substituteLeavesTaken?.data?.data?.data?.data.forEach((e) => {
+        const hasSubstitute =
+          substituteLeavesTaken?.data?.data?.data?.data.filter(
+            (sub) =>
+              sub?.leaveStatus === 'approved' || sub?.leaveStatus === 'pending'
+          )
+
+        hasSubstitute.forEach((e) => {
           if (e.halfDay) {
             substituteLeaveApplied += 0.5
           } else {
