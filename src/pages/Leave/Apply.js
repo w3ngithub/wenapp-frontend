@@ -437,29 +437,26 @@ function Apply({
         (data) => data?.value === 'Substitute'
       )
       if (isSubstitute?.id === form.getFieldValue('leaveType')) {
-        let substituteLeaveTaken = 0
-        const hasSubstitute =
-          substituteLeavesTaken?.data?.data?.data?.data.filter(
-            (sub) => sub?.leaveStatus === 'approved'
-          )
-        hasSubstitute.forEach((e) => {
+        let substituteLeaveApplied = 0
+
+        substituteLeavesTaken?.data?.data?.data?.data.forEach((e) => {
           if (e.halfDay) {
-            substituteLeaveTaken += 0.5
+            substituteLeaveApplied += 0.5
           } else {
-            substituteLeaveTaken += e.leaveDates.length
+            substituteLeaveApplied += e.leaveDates.length
           }
         })
 
         const substituteLeaveApply =
           form.getFieldValue('halfDay') !== 'full-day'
-            ? substituteLeaveTaken + 0.5
-            : substituteLeaveTaken +
+            ? substituteLeaveApplied + 0.5
+            : substituteLeaveApplied +
               form.getFieldValue('leaveDatesCasual')?.length
 
-        if (substituteLeaveTaken >= isSubstitute?.leaveDays) {
+        if (substituteLeaveApplied >= isSubstitute?.leaveDays) {
           return notification({
             type: 'error',
-            message: 'Substitute Leave Already Taken',
+            message: 'Substitute Leave has already been applied.',
           })
         }
 
@@ -469,7 +466,7 @@ function Apply({
             message: `Substitute leave cannot exceed more than ${
               isSubstitute?.leaveDays
             } day as your remaining leave is ${
-              isSubstitute?.leaveDays - substituteLeaveTaken
+              isSubstitute?.leaveDays - substituteLeaveApplied
             }.`,
           })
         }
