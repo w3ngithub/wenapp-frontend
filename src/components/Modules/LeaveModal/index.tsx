@@ -93,7 +93,7 @@ moment.locale('en-gb')
 
 function LeaveModal({
   leaveData,
-  isEditMode,
+  isEditMode = false,
   open,
   readOnly = false,
   onClose,
@@ -284,16 +284,11 @@ function LeaveModal({
             socket.emit('CUD')
           },
           () => {
-            if (
-              adminOpened ||
-              response?.data?.data?.data?.leaveType?.isSpecial
-            ) {
-              socket.emit('approve-leave', {
-                showTo: [response.data.data.data.user._id],
-                remarks: `Your leave has been approved.`,
-                module: 'Leave',
-              })
-            }
+            socket.emit('approve-leave', {
+              showTo: [response.data.data.data.user._id],
+              remarks: `Your leave has been updated.`,
+              module: 'Leave',
+            })
           },
           () =>
             onClose(
@@ -462,10 +457,12 @@ function LeaveModal({
                 reason: values.reason,
                 leaveType: values.leaveType,
                 halfDay:
-                  values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
+                  appliedDate ||
+                  values?.halfDay === 'full-day' ||
+                  values?.halfDay === FULLDAY
                     ? ''
                     : values?.halfDay,
-                leaveStatus: adminOpened || appliedDate ? APPROVED : PENDING,
+                leaveStatus: appliedDate ? APPROVED : PENDING,
                 leaveDocument: downloadURL,
               }
               setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
@@ -487,10 +484,12 @@ function LeaveModal({
           leaveDates: LeaveDaysUTC,
           leaveType: values.leaveType,
           halfDay:
-            values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
+            appliedDate ||
+            values?.halfDay === 'full-day' ||
+            values?.halfDay === FULLDAY
               ? ''
               : values?.halfDay,
-          leaveStatus: adminOpened || appliedDate ? APPROVED : PENDING,
+          leaveStatus: appliedDate ? APPROVED : PENDING,
           leaveDocument: !isDocumentDeleted ? leaveData.leaveDocument : '',
         }
         setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
@@ -744,6 +743,12 @@ function LeaveModal({
     setDatepickerOpen(true)
   }
 
+  let filteredLeaveTypes = leaveTypeQuery?.data
+
+  if (isEditMode) {
+    filteredLeaveTypes = filteredLeaveTypes?.filter((type) => !type?.isSpecial)
+  }
+
   return (
     <Modal
       width={1100}
@@ -840,7 +845,7 @@ function LeaveModal({
                       onChange={handleLeaveTypeChange}
                       disabled={readOnly}
                     >
-                      {leaveTypeQuery?.data?.map((type) =>
+                      {filteredLeaveTypes?.map((type) =>
                         readOnly ||
                         type.value.toLowerCase() !==
                           LEAVES_TYPES?.LateArrival ? (
@@ -900,7 +905,7 @@ function LeaveModal({
                         filterOption={filterOptions}
                         placeholder="Select Co-worker"
                         onChange={handleUserChange}
-                        disabled={readOnly}
+                        disabled={readOnly || isEditMode}
                         allowClear
                       >
                         {filterSpecificUser(users, ADMINISTRATOR)?.map(

@@ -1,4 +1,4 @@
-import {Button, Form, Input, Modal, Spin} from 'antd'
+import {Button, Form, Input, Modal, Spin, Typography} from 'antd'
 import {CANCEL_TEXT} from 'constants/Common'
 import React, {useEffect, useState} from 'react'
 import {Checkbox} from 'antd'
@@ -6,6 +6,7 @@ import type {CheckboxValueType} from 'antd/es/checkbox/Group'
 import type {CheckboxChangeEvent} from 'antd/es/checkbox'
 import type {RadioChangeEvent} from 'antd'
 import {Radio} from 'antd'
+import {SickCasualLeaves} from 'constants/LeaveTypes'
 
 interface modalInterface {
   isEditMode: boolean
@@ -177,6 +178,19 @@ function LeaveModal({
       ]}
     >
       <Spin spinning={isLoading}>
+        {SickCasualLeaves?.includes(editData?.name) && (
+          <Typography
+            style={{
+              fontSize: '15px',
+              fontWeight: '400',
+              marginBottom: '0.5rem',
+              color: '#038fde',
+            }}
+          >
+            Note: If you edit the leave days for this leave, it will only be in
+            effect from the next fiscal year.
+          </Typography>
+        )}
         <Form
           form={form}
           name="control-hooks"
