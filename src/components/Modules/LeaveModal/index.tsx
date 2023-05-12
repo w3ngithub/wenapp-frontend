@@ -428,7 +428,9 @@ function LeaveModal({
                 reason: values.reason,
                 leaveType: values.leaveType,
                 halfDay:
-                  values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
+                  appliedDate ||
+                  values?.halfDay === 'full-day' ||
+                  values?.halfDay === FULLDAY
                     ? ''
                     : values?.halfDay,
                 leaveStatus: adminOpened || appliedDate ? APPROVED : PENDING,
@@ -453,7 +455,9 @@ function LeaveModal({
           leaveDates: LeaveDaysUTC,
           leaveType: values.leaveType,
           halfDay:
-            values?.halfDay === 'full-day' || values?.halfDay === FULLDAY
+            appliedDate ||
+            values?.halfDay === 'full-day' ||
+            values?.halfDay === FULLDAY
               ? ''
               : values?.halfDay,
           leaveStatus: adminOpened || appliedDate ? APPROVED : PENDING,
