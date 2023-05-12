@@ -494,14 +494,14 @@ function LeaveModal({
         }
         setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
         setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
-        // if (isEditMode) {
-        //   leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
-        // } else {
-        //   leaveMutation.mutate({
-        //     id: values.user,
-        //     data: newLeave,
-        //   })
-        // }
+        if (isEditMode) {
+          leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
+        } else {
+          leaveMutation.mutate({
+            id: values.user,
+            data: newLeave,
+          })
+        }
       }
     })
   }
