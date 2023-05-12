@@ -144,6 +144,7 @@ function LeaveModal({
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
   const [yearStartDate, setYearStartDate] = useState<any>(undefined)
   const [yearEndDate, setYearEndDate] = useState<any>(undefined)
+  const [subId, setSubId] = useState<any>(undefined)
 
   const [fromDate, setFromDate] = useState<any>(
     `${MuiFormatDate(firstDay)}T00:00:00Z`
@@ -169,9 +170,30 @@ function LeaveModal({
     setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
   }
 
+  const substituteLeavesTaken = useQuery(
+    ['substitute', yearStartDate, yearEndDate, subId],
+    () =>
+      getLeavesOfUser(
+        user,
+        '',
+        undefined,
+        1,
+        30,
+        yearStartDate,
+        yearEndDate,
+        '',
+        subId
+      ),
+    {enabled: !!yearStartDate && !!yearEndDate && !!subId}
+  )
+
   const darkCalendar = themeType === THEME_TYPE_DARK
 
   const leaveTypeQuery = useQuery(['leaveType'], getLeaveTypes, {
+    onSuccess: (data: any) => {
+      const substituteId = data?.find((d: any) => d.value === 'Substitute')?.id
+      setSubId(substituteId)
+    },
     select: (res) => [
       ...res?.data?.data?.data?.map((type: leaveTypeInterface) => ({
         id: type._id,
@@ -355,28 +377,40 @@ function LeaveModal({
       )
       if (isSubstitute?.id === form.getFieldValue('leaveType')) {
         let substituteLeaveTaken = 0
+
         const hasSubstitute =
-          userSubstituteLeave?.data?.data?.data?.data.filter(
+          substituteLeavesTaken?.data?.data?.data?.data.filter(
             (sub: any) =>
-              sub?.leaveType?.name === 'Substitute Leave' &&
-              sub?.leaveStatus === 'approved'
+              sub?.leaveStatus === 'approved' || sub?.leaveStatus === 'pending'
           )
+
         hasSubstitute.forEach((e: any) => {
-          substituteLeaveTaken += e.leaveDates.length
+          if (e.halfDay) {
+            substituteLeaveTaken += 0.5
+          } else {
+            substituteLeaveTaken += e.leaveDates.length
+          }
         })
+        if (isEditMode) {
+          substituteLeaveTaken = leaveData?.halfDay
+            ? substituteLeaveTaken - 0.5
+            : substituteLeaveTaken - leaveData?.leaveDates?.length
+        }
+
+        const substituteLeaveApply: any =
+          form.getFieldValue('halfDay') !== 'full-day'
+            ? substituteLeaveTaken + 0.5
+            : substituteLeaveTaken +
+              form.getFieldValue('leaveDatesCasual')?.length
 
         if (substituteLeaveTaken >= isSubstitute?.leaveDays) {
           return notification({
             type: 'error',
-            message: 'Substitute Leave Already Taken',
+            message: 'Substitute Leave has already been applied.',
           })
         }
 
-        if (
-          substituteLeaveTaken +
-            form.getFieldValue('leaveDatesCasual')?.length >
-          isSubstitute?.leaveDays
-        ) {
+        if (substituteLeaveApply > isSubstitute?.leaveDays) {
           return notification({
             type: 'error',
             message: `Substitute leave cannot exceed more than ${isSubstitute?.leaveDays} day`,
@@ -461,14 +495,14 @@ function LeaveModal({
         }
         setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
         setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
-        if (isEditMode) {
-          leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
-        } else {
-          leaveMutation.mutate({
-            id: values.user,
-            data: newLeave,
-          })
-        }
+        // if (isEditMode) {
+        //   leaveUpdateMutation.mutate({id: leaveId, data: newLeave})
+        // } else {
+        //   leaveMutation.mutate({
+        //     id: values.user,
+        //     data: newLeave,
+        //   })
+        // }
       }
     })
   }
