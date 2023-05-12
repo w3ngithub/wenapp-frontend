@@ -93,7 +93,7 @@ moment.locale('en-gb')
 
 function LeaveModal({
   leaveData,
-  isEditMode,
+  isEditMode = false,
   open,
   readOnly = false,
   onClose,
@@ -866,7 +866,7 @@ function LeaveModal({
                         filterOption={filterOptions}
                         placeholder="Select Co-worker"
                         onChange={handleUserChange}
-                        disabled={readOnly}
+                        disabled={readOnly || isEditMode}
                         allowClear
                       >
                         {filterSpecificUser(users, ADMINISTRATOR)?.map(
