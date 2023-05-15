@@ -54,10 +54,6 @@ function Leave() {
     (state: any) => state.configurations
   )
 
-  const {
-    role: {key, permission},
-  } = useSelector(selectAuthUser)
-
   const dispatch = useDispatch()
 
   const maintenanceMutation = useMutation(
@@ -351,36 +347,6 @@ function Leave() {
           </Card>
         </Col>
         <Col span={6} xs={24} md={12} style={{paddingLeft: 0}}>
-          <Card
-            title="Leave Quarter"
-            extra={
-              <Popconfirm
-                title="Adding next year's quarters will remove current year's quarters. Do you want to proceed?"
-                onConfirm={() => handleOpenModal('Leave Quarter', '')}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button
-                  className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
-                  disabled={getIsAdmin()}
-                >
-                  Add
-                </Button>
-              </Popconfirm>
-            }
-          >
-            <SettingTable
-              data={tempQuarters}
-              columns={LEAVES_QUARTER_COLUMN()}
-              isLoading={
-                leaveQuarterLoading || deleteQuarterTypeMutation.isLoading
-              }
-              pagination={false}
-              footer={
-                leaveQuarter?.data?.data?.data.length !== 0 ? Footer : undefined
-              }
-            />
-          </Card>
           <Card headStyle={{padding: '10px 24px'}}>
             <div
               style={{
@@ -421,6 +387,37 @@ function Leave() {
                 Notify to Apply Leave
               </Button>
             </div>
+          </Card>
+
+          <Card
+            title="Leave Quarter"
+            extra={
+              <Popconfirm
+                title="Adding next year's quarters will remove current year's quarters. Do you want to proceed?"
+                onConfirm={() => handleOpenModal('Leave Quarter', '')}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                  disabled={getIsAdmin()}
+                >
+                  Add
+                </Button>
+              </Popconfirm>
+            }
+          >
+            <SettingTable
+              data={tempQuarters}
+              columns={LEAVES_QUARTER_COLUMN()}
+              isLoading={
+                leaveQuarterLoading || deleteQuarterTypeMutation.isLoading
+              }
+              pagination={false}
+              footer={
+                leaveQuarter?.data?.data?.data.length !== 0 ? Footer : undefined
+              }
+            />
           </Card>
         </Col>
       </Row>
