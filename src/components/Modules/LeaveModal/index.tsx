@@ -434,6 +434,13 @@ function LeaveModal({
           .sort((a, b) => a.localeCompare(b))
       }
 
+      // conditions to approve or keep the leave pending;
+      let leaveStatus = isEditMode
+        ? PENDING
+        : adminOpened || appliedDate
+        ? APPROVED
+        : PENDING
+
       if (isDocumentDeleted) {
         const imageRef = ref(storage, values?.leaveDocument)
         await deleteObject(imageRef)
@@ -462,7 +469,7 @@ function LeaveModal({
                   values?.halfDay === FULLDAY
                     ? ''
                     : values?.halfDay,
-                leaveStatus: appliedDate ? APPROVED : PENDING,
+                leaveStatus,
                 leaveDocument: downloadURL,
               }
               setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
@@ -489,7 +496,7 @@ function LeaveModal({
             values?.halfDay === FULLDAY
               ? ''
               : values?.halfDay,
-          leaveStatus: appliedDate ? APPROVED : PENDING,
+          leaveStatus,
           leaveDocument: !isDocumentDeleted ? leaveData.leaveDocument : '',
         }
         setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
