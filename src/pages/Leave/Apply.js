@@ -715,9 +715,9 @@ function Apply({
         ]}
       >
         <p>
-          <ExclamationCircleFilled style={{color: '#faad14'}} /> “Your casual
+          <ExclamationCircleFilled style={{color: '#faad14'}} /> Your casual
           leave application exceeds the leave available to you! You can either
-          apply it as a separate application or discuss this with HR/Management”
+          apply it as a separate application or discuss this with HR/Management
         </p>
       </Modal>
       <Modal
