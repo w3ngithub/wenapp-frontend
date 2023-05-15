@@ -25,6 +25,7 @@ import {socket} from 'pages/Main'
 import {useSelector, useDispatch} from 'react-redux'
 import {UPDATE_LEAVE_APPLY_NOTIFICATION} from 'constants/ActionTypes'
 import ApplyNotificationModal from './ApplyNotificationModal'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 interface leaveType {
   name: string
@@ -52,6 +53,10 @@ function Leave() {
   const {SendLeaveApplyNotification} = useSelector(
     (state: any) => state.configurations
   )
+
+  const {
+    role: {key, permission},
+  } = useSelector(selectAuthUser)
 
   const dispatch = useDispatch()
 
