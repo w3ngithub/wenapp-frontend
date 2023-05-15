@@ -33,7 +33,7 @@ const ApplyNotificationModal = ({toggle, closeModal}) => {
     {
       onSuccess: (response) => {
         notification({
-          message: 'Notification is sent to Users',
+          message: 'Notification is sent to Co-workers',
           type: 'success',
         })
         closeModal()
@@ -41,7 +41,7 @@ const ApplyNotificationModal = ({toggle, closeModal}) => {
       },
       onError: (error) => {
         notification({
-          message: 'Unable to Sent Notification to Users',
+          message: 'Unable to Sent Notification to Co-workers',
           type: 'error',
         })
       },
@@ -50,7 +50,7 @@ const ApplyNotificationModal = ({toggle, closeModal}) => {
 
   return (
     <Modal
-      title={'Notification for Users'}
+      title={'Notification for Co-workers'}
       visible={toggle}
       onCancel={() => {
         setSelectedItems([])
@@ -90,7 +90,7 @@ const ApplyNotificationModal = ({toggle, closeModal}) => {
       <Select
         labelInValue
         mode="multiple"
-        placeholder="Select Users"
+        placeholder="Select Co-workers"
         value={selectedItems}
         onChange={(value) => {
           setSelectedItems(value)

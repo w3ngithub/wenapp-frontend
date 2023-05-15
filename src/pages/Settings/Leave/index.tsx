@@ -387,14 +387,15 @@ function Leave() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                gap: '1rem',
+                flexWrap: 'wrap',
               }}
             >
-              <div style={{display: 'flex', columnGap: '10px'}}>
+              <div style={{display: 'flex', columnGap: '5px', flex: 'none'}}>
                 <Typography
                   style={{
                     fontSize: '15px',
                     fontWeight: '400',
-                    marginRight: '5px',
                   }}
                 >
                   Leave Apply Notification
@@ -417,7 +418,7 @@ function Leave() {
                 onClick={() => setNotificationModal(true)}
                 disabled={getIsAdmin()}
               >
-                Send Leave Apply Notification to Users
+                Notify to Apply Leave
               </Button>
             </div>
           </Card>
