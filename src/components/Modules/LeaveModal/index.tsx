@@ -70,6 +70,7 @@ import {APPROVED, PENDING} from 'constants/LeaveStatus'
 import {FULLDAY} from 'constants/HalfDays'
 import {FaLaptopHouse} from 'react-icons/fa'
 import {changeDate} from 'helpers/utils'
+import {ExclamationCircleFilled} from '@ant-design/icons'
 
 const {Option} = Select
 
@@ -145,6 +146,8 @@ function LeaveModal({
   const [yearStartDate, setYearStartDate] = useState<any>(undefined)
   const [yearEndDate, setYearEndDate] = useState<any>(undefined)
   const [subId, setSubId] = useState<any>(undefined)
+  const [openModal, setOpenModal] = useState(false)
+  const [newDateArr, setNewDateArr] = useState([])
 
   const [fromDate, setFromDate] = useState<any>(
     `${MuiFormatDate(firstDay)}T00:00:00Z`
@@ -306,18 +309,16 @@ function LeaveModal({
     },
   })
 
-  const onFinish = async (values: any) => {
-    form.validateFields().then(async (values) => {
-      const leaveType = leaveTypeQuery?.data?.find(
+  //condition to check holidays and weekends in between the applied dates
+  const handleLeaveCheck = () => {
+    form.validateFields().then((values) => {
+      const leaveTypeData = leaveTypeQuery?.data?.find(
         (type) => type?.id === values?.leaveType
       )
 
-      let LeaveDaysUTC: any = []
-
       let selectedDatesArr: any = []
 
-      // calculation to check holidays and weekends in between the applied dates
-      if (!leaveType?.isSpecial) {
+      if (!leaveTypeData?.isSpecial) {
         const selectedDates = form?.getFieldValue('leaveDatesCasual')
         const formattedDate = selectedDates?.map((d: any) => ({
           index: moment(MuiFormatDate(new Date(d))).day(),
@@ -327,10 +328,8 @@ function LeaveModal({
         let holidayList = holidaysThisYear?.map((holiday: any) => {
           return MuiFormatDate(moment(holiday?.date).format())
         })
-
-        // if leave applied for more than one day
         if (selectedDates.length > 1) {
-          sortedDate?.forEach((d: any, index: number) => {
+          sortedDate?.forEach((d: any, index: any) => {
             if (sortedDate[index + 1]) {
               let dateRange = getDateRangeArray(
                 d?.date,
@@ -343,7 +342,6 @@ function LeaveModal({
                 index: moment(d).day(),
                 date: d,
               }))
-
               let includesHolidayAndWeekend =
                 filteredDateRangeWithIndex.length > 0 &&
                 filteredDateRangeWithIndex?.every(
@@ -352,8 +350,6 @@ function LeaveModal({
                     d.index === 6 ||
                     holidayList.includes(d.date)
                 )
-
-              //if holidays and weekends lie in between add them to the list
               if (includesHolidayAndWeekend) {
                 selectedDatesArr.push(
                   ...filteredDateRangeWithIndex.map((d) =>
@@ -362,6 +358,68 @@ function LeaveModal({
                 )
               }
             }
+          })
+          setNewDateArr(selectedDatesArr)
+        }
+        if (selectedDatesArr?.length > 0) {
+          setOpenModal(true)
+        } else {
+          onFinish()
+        }
+      } else {
+        onFinish()
+      }
+    })
+  }
+
+  const onFinish = async () => {
+    form.validateFields().then(async (values) => {
+      const leaveType = leaveTypeQuery?.data?.find(
+        (type) => type?.id === values?.leaveType
+      )
+
+      let LeaveDaysUTC: any = []
+
+      if (leaveType?.value === 'Casual') {
+        let currentCasualLeaveDaysApplied =
+          values?.leaveDatesCasual?.length > 1
+            ? values?.leaveDatesCasual?.length + newDateArr?.length
+            : values?.halfDay === 'full-day'
+            ? 1
+            : 0.5
+
+        let previouslyAppliedCasualLeaves =
+          userSubstituteLeave?.data?.data?.data?.data
+            ?.filter(
+              (leave: any) =>
+                leave?.leaveType?.name === 'Casual Leave' &&
+                (leave?.leaveStatus === 'pending' ||
+                  leave?.leaveStatus === 'approved')
+            )
+            .map((item: any) => {
+              if (item?.halfDay === '') {
+                return {...item, count: item?.leaveDates?.length}
+              } else return {...item, count: 0.5}
+            })
+        const casualLeavesCount = previouslyAppliedCasualLeaves?.reduce(
+          (acc: any, cur: any) => acc + cur.count,
+          0
+        )
+
+        const allocatedCasualLeaves = leaveTypeQuery?.data?.find(
+          (leave) => leave.value === 'Casual'
+        )?.leaveDays
+
+        if (
+          !adminOpened &&
+          allocatedCasualLeaves <
+            casualLeavesCount + currentCasualLeaveDaysApplied
+        ) {
+          // setOpenCasualLeaveExceedModal(true)
+          return notification({
+            type: 'error',
+            message:
+              'Your casual leave application exceeds the leave available to you!',
           })
         }
       }
@@ -426,7 +484,7 @@ function LeaveModal({
         //adding the holidays in between to the applied dates
         const casualLeaveDays = [
           ...values?.leaveDatesCasual?.join(',').split(','),
-          ...selectedDatesArr,
+          ...newDateArr,
         ]
 
         LeaveDaysUTC = casualLeaveDays
@@ -763,7 +821,7 @@ function LeaveModal({
       style={{flexDirection: 'row'}}
       visible={open}
       mask={false}
-      onOk={onFinish}
+      onOk={handleLeaveCheck}
       onCancel={() =>
         onClose(
           setSpecificHalf,
@@ -812,7 +870,7 @@ function LeaveModal({
               <Button
                 key="submit"
                 type="primary"
-                onClick={onFinish}
+                onClick={handleLeaveCheck}
                 disabled={
                   leaveMutation.isLoading || leaveUpdateMutation.isLoading
                 }
@@ -823,6 +881,37 @@ function LeaveModal({
       }
     >
       <Spin spinning={leaveMutation.isLoading || leaveUpdateMutation.isLoading}>
+        <Modal
+          title={`Are you sure?`}
+          visible={openModal}
+          mask={false}
+          onCancel={() => setOpenModal(false)}
+          footer={[
+            <Button
+              key="back"
+              onClick={() => {
+                setOpenModal(false)
+                setNewDateArr([])
+              }}
+            >
+              Cancel
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              onClick={onFinish}
+              disabled={leaveMutation.isLoading}
+            >
+              Apply
+            </Button>,
+          ]}
+        >
+          <p>
+            <ExclamationCircleFilled style={{color: '#faad14'}} /> If there is a
+            public holiday or weekend in between the leave dates that you have
+            applied, it will also be counted as a leave date.
+          </p>
+        </Modal>
         <Form
           {...layout}
           form={form}
