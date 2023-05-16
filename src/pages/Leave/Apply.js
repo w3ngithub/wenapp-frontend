@@ -62,6 +62,7 @@ function Apply({
   YearlyLeaveExceptCasualandSick,
   nextYearSpecialLeaves,
   fiscalYearEndDate,
+  yearlyAllocatedCasualLeaves,
 }) {
   const [form] = Form.useForm()
 
@@ -419,13 +420,8 @@ function Apply({
           (acc, cur) => acc + cur.count,
           0
         )
-
-        const allocatedCasualLeaves = leaveTypeQuery?.data?.find(
-          (leave) => leave.value === 'Casual'
-        )?.leaveDays
-
         if (
-          allocatedCasualLeaves <
+          yearlyAllocatedCasualLeaves <
           casualLeavesCount + currentCasualLeaveDaysApplied
         ) {
           setOpenCasualLeaveExceedModal(true)
@@ -552,7 +548,8 @@ function Apply({
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
               setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
-              form.validateFields().then((values) =>
+              form.validateFields().then((values) => {
+                delete values.leaveDatesCasual
                 leaveMutation.mutate({
                   ...values,
                   leaveDates: LeaveDaysUTC,
@@ -567,7 +564,7 @@ function Apply({
                       : 'pending',
                   leaveDocument: downloadURL,
                 })
-              )
+              })
             })
           }
         )
