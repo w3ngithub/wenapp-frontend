@@ -444,6 +444,7 @@ function Leave() {
                 YearlyLeaveExceptCasualandSick={YearlyLeaveExceptCasualandSick}
                 nextYearSpecialLeaves={nextYearSpecialLeaves}
                 fiscalYearEndDate={fiscalYearEndDate}
+                yearlyAllocatedCasualLeaves={yearlyAllocatedCasualLeaves}
               />
             </TabPane>
           )}
@@ -455,6 +456,7 @@ function Leave() {
                 handleOpenCancelLeaveModal={handleOpenCancelLeaveModal}
                 reApplyLeave={reApplyLeave}
                 isCancelLoading={leaveCancelMutation.isLoading}
+                yearlyAllocatedCasualLeaves={yearlyAllocatedCasualLeaves}
               />
             </TabPane>
           )}

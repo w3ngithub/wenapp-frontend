@@ -101,6 +101,7 @@ function LeaveModal({
   users,
   showWorker = true,
   adminOpened = false,
+  yearlyAllocatedCasualLeaves = 5,
 }: {
   leaveData: any
   isEditMode: boolean
@@ -117,6 +118,7 @@ function LeaveModal({
   users: any
   readOnly: boolean
   showWorker: boolean
+  yearlyAllocatedCasualLeaves: number
 }) {
   const queryClient = useQueryClient()
   const colorState = useRef<any>()
@@ -406,16 +408,11 @@ function LeaveModal({
           0
         )
 
-        const allocatedCasualLeaves = leaveTypeQuery?.data?.find(
-          (leave) => leave.value === 'Casual'
-        )?.leaveDays
-
         if (
           !adminOpened &&
-          allocatedCasualLeaves <
+          yearlyAllocatedCasualLeaves <
             casualLeavesCount + currentCasualLeaveDaysApplied
         ) {
-          // setOpenCasualLeaveExceedModal(true)
           return notification({
             type: 'error',
             message:
