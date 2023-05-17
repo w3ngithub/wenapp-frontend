@@ -8,7 +8,6 @@ import 'styles/wieldy.less'
 import configureStore from './appRedux/store'
 import Main from './pages/Main'
 
-//checking push
 export const store = configureStore()
 const queryClient = new QueryClient({
   defaultOptions: {
