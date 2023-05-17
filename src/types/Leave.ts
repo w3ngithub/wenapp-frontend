@@ -3,4 +3,6 @@ export default interface leaveTypeInterface {
   name?: string
   leaveDays?: number
   isSpecial?: Boolean
+  Probation?: Boolean
+  gender?: [String]
 }
