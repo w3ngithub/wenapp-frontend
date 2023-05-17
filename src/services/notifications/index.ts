@@ -29,3 +29,12 @@ export const updateNotifications = async (payload: any) => {
     return getAPIResponse(err?.response)
   }
 }
+
+export const createNotification = async (payload: any) => {
+  try {
+    let response = await API.post(`${Apis.Notification}`, payload)
+    return getAPIResponse(response)
+  } catch (error) {
+    return getAPIResponse(error?.response)
+  }
+}

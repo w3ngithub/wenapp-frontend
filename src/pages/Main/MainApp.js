@@ -22,6 +22,7 @@ import {
   getAllocatedOfficeHours,
   getLateArrivalThreshold,
 } from 'appRedux/actions/Configurations'
+import {UPDATE_LEAVE_APPLY_NOTIFICATION} from 'constants/ActionTypes'
 
 const {Content, Footer} = Layout
 
@@ -78,6 +79,11 @@ export const MainApp = (props) => {
           dispatch(
             getAllocatedOfficeHours(data?.data?.data?.data?.[0]?.officeHour)
           )
+
+          dispatch({
+            type: UPDATE_LEAVE_APPLY_NOTIFICATION,
+            payload: data?.data?.data?.data?.[0]?.SendLeaveApplyNotification,
+          })
         }
       },
     }

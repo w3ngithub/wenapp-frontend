@@ -55,6 +55,7 @@ function MyHistory({
   permissions,
   reApplyLeave,
   isCancelLoading,
+  yearlyAllocatedCasualLeaves,
 }: {
   userId: string
   handleCancelLeave: (leave: any) => void
@@ -63,6 +64,7 @@ function MyHistory({
   permissions: any
   reApplyLeave: (leave: any) => void
   isCancelLoading: boolean
+  yearlyAllocatedCasualLeaves?: any
 }) {
   const [form] = Form.useForm()
   const location: any = useLocation()
@@ -205,6 +207,7 @@ function MyHistory({
           readOnly={modalReadOnly}
           showWorker={false}
           adminOpened={false}
+          yearlyAllocatedCasualLeaves={yearlyAllocatedCasualLeaves}
         />
       )}
 

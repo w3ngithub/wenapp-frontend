@@ -1,8 +1,9 @@
 import React, {useState} from 'react'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {Button, Card, Col, Popconfirm, Row} from 'antd'
+import {Button, Card, Col, Popconfirm, Row, Switch, Typography} from 'antd'
 import SettingTable from '../CommonTable'
 import {LEAVES_COLUMN, LEAVES_QUARTER_COLUMN} from 'constants/Settings'
+import {updateMaintenance} from 'services/configurations'
 import {
   addLeaveType,
   deleteLeaveType,
@@ -20,8 +21,11 @@ import {
 } from 'services/settings/leaveQuarter'
 import CustomIcon from 'components/Elements/Icons'
 import LeaveQuarterModal from './LeaveQuarterModal'
-import moment from 'moment'
 import {socket} from 'pages/Main'
+import {useSelector, useDispatch} from 'react-redux'
+import {UPDATE_LEAVE_APPLY_NOTIFICATION} from 'constants/ActionTypes'
+import ApplyNotificationModal from './ApplyNotificationModal'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 interface leaveType {
   name: string
@@ -43,6 +47,29 @@ function Leave() {
   const {data: leaveTypes, isLoading}: any = useQuery(
     ['leaveTypes'],
     getLeaveTypes
+  )
+  const [notificationModal, setNotificationModal] = useState<boolean>(false)
+
+  const {SendLeaveApplyNotification} = useSelector(
+    (state: any) => state.configurations
+  )
+
+  const dispatch = useDispatch()
+
+  const maintenanceMutation = useMutation(
+    (payload: any) => updateMaintenance(payload),
+    {
+      onSuccess: (response) => {
+        //dispatch on the redux state
+        dispatch({
+          type: UPDATE_LEAVE_APPLY_NOTIFICATION,
+          payload: response?.data?.data?.SendLeaveApplyNotification,
+        })
+      },
+      onError: (error) => {
+        notification({message: 'Configuration Update Failed', type: 'error'})
+      },
+    }
   )
 
   const addLeaveQuarterMutation = useMutation(addLeaveQuarter, {
@@ -288,6 +315,12 @@ function Leave() {
           onCancel={closeQuarterModel}
         />
       )}
+
+      <ApplyNotificationModal
+        toggle={notificationModal}
+        closeModal={() => setNotificationModal(false)}
+      />
+
       <Row>
         <Col span={6} xs={24} md={12}>
           <Card
@@ -314,6 +347,48 @@ function Leave() {
           </Card>
         </Col>
         <Col span={6} xs={24} md={12} style={{paddingLeft: 0}}>
+          <Card headStyle={{padding: '10px 24px'}}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: '1rem',
+                flexWrap: 'wrap',
+              }}
+            >
+              <div style={{display: 'flex', columnGap: '5px', flex: 'none'}}>
+                <Typography
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: '400',
+                  }}
+                >
+                  Leave Apply Notification
+                </Typography>{' '}
+                <Switch
+                  disabled={maintenanceMutation?.isLoading}
+                  style={{width: '50px'}}
+                  checkedChildren="ON"
+                  unCheckedChildren="OFF"
+                  checked={SendLeaveApplyNotification}
+                  onChange={(checked: boolean) =>
+                    maintenanceMutation.mutate({
+                      SendLeaveApplyNotification: checked,
+                    })
+                  }
+                />
+              </div>
+              <Button
+                className="gx-btn gx-btn-primary gx-text-white gx-mt-auto"
+                onClick={() => setNotificationModal(true)}
+                disabled={getIsAdmin()}
+              >
+                Notify to Apply Leave
+              </Button>
+            </div>
+          </Card>
+
           <Card
             title="Leave Quarter"
             extra={

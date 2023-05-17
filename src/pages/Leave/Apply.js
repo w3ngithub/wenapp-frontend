@@ -62,6 +62,7 @@ function Apply({
   YearlyLeaveExceptCasualandSick,
   nextYearSpecialLeaves,
   fiscalYearEndDate,
+  yearlyAllocatedCasualLeaves,
 }) {
   const [form] = Form.useForm()
 
@@ -419,13 +420,8 @@ function Apply({
           (acc, cur) => acc + cur.count,
           0
         )
-
-        const allocatedCasualLeaves = leaveTypeQuery?.data?.find(
-          (leave) => leave.value === 'Casual'
-        )?.leaveDays
-
         if (
-          allocatedCasualLeaves <
+          yearlyAllocatedCasualLeaves <
           casualLeavesCount + currentCasualLeaveDaysApplied
         ) {
           setOpenCasualLeaveExceedModal(true)
@@ -438,10 +434,13 @@ function Apply({
       )
       if (isSubstitute?.id === form.getFieldValue('leaveType')) {
         let substituteLeaveTaken = 0
+
         const hasSubstitute =
           substituteLeavesTaken?.data?.data?.data?.data.filter(
-            (sub) => sub?.leaveStatus === 'approved'
+            (sub) =>
+              sub?.leaveStatus === 'approved' || sub?.leaveStatus === 'pending'
           )
+
         hasSubstitute.forEach((e) => {
           if (e.halfDay) {
             substituteLeaveTaken += 0.5
@@ -459,7 +458,7 @@ function Apply({
         if (substituteLeaveTaken >= isSubstitute?.leaveDays) {
           return notification({
             type: 'error',
-            message: 'Substitute Leave Already Taken',
+            message: 'Substitute Leave has already been applied.',
           })
         }
 
@@ -549,7 +548,8 @@ function Apply({
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               setFromDate(`${MuiFormatDate(firstDay)}T00:00:00Z`)
               setToDate(`${MuiFormatDate(lastDay)}T00:00:00Z`)
-              form.validateFields().then((values) =>
+              form.validateFields().then((values) => {
+                delete values.leaveDatesCasual
                 leaveMutation.mutate({
                   ...values,
                   leaveDates: LeaveDaysUTC,
@@ -564,7 +564,7 @@ function Apply({
                       : 'pending',
                   leaveDocument: downloadURL,
                 })
-              )
+              })
             })
           }
         )
@@ -712,9 +712,9 @@ function Apply({
         ]}
       >
         <p>
-          <ExclamationCircleFilled style={{color: '#faad14'}} /> “Your casual
+          <ExclamationCircleFilled style={{color: '#faad14'}} /> Your casual
           leave application exceeds the leave available to you! You can either
-          apply it as a separate application or discuss this with HR/Management”
+          apply it as a separate application or discuss this with HR/Management
         </p>
       </Modal>
       <Modal
