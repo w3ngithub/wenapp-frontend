@@ -71,6 +71,7 @@ import {FULLDAY} from 'constants/HalfDays'
 import {FaLaptopHouse} from 'react-icons/fa'
 import {changeDate} from 'helpers/utils'
 import {ExclamationCircleFilled} from '@ant-design/icons'
+import {selectAuthUser} from 'appRedux/reducers/Auth'
 
 const {Option} = Select
 
@@ -205,6 +206,8 @@ function LeaveModal({
         value: type?.name?.replace('Leave', '').trim(),
         leaveDays: type?.leaveDays,
         isSpecial: type?.isSpecial,
+        Probation: type?.Probation,
+        gender: type?.gender,
       })),
     ],
   })
@@ -807,8 +810,23 @@ function LeaveModal({
 
   let filteredLeaveTypes = leaveTypeQuery?.data
 
-  if (isEditMode) {
-    filteredLeaveTypes = filteredLeaveTypes?.filter((type) => !type?.isSpecial)
+  const {gender: userGender, status: userStatus} = useSelector(selectAuthUser)
+
+  const FilterLeaveType = () => {
+    if (isEditMode) {
+      return adminOpened
+        ? filteredLeaveTypes?.filter((type) => !type?.isSpecial)
+        : filteredLeaveTypes?.filter((d) => {
+            const showToProbation =
+              userStatus === 'Probation' ? d?.Probation : true
+            return (
+              d?.gender?.includes(userGender) &&
+              showToProbation &&
+              !d?.isSpecial
+            )
+          })
+    }
+    return filteredLeaveTypes
   }
 
   return (
@@ -938,7 +956,7 @@ function LeaveModal({
                       onChange={handleLeaveTypeChange}
                       disabled={readOnly}
                     >
-                      {filteredLeaveTypes?.map((type) =>
+                      {FilterLeaveType()?.map((type) =>
                         readOnly ||
                         type.value.toLowerCase() !==
                           LEAVES_TYPES?.LateArrival ? (

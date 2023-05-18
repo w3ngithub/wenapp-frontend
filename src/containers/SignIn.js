@@ -6,6 +6,7 @@ import {useNavigate} from 'react-router-dom'
 import {hideMessage, showAuthLoader, userSignIn} from 'appRedux/actions/Auth'
 import IntlMessages from 'util/IntlMessages'
 import {FORGOT_PASSWORD} from 'helpers/routePath'
+import signInBackground from 'assets/images/signInImage.jpg'
 
 const FormItem = Form.Item
 
@@ -44,8 +45,9 @@ function SignIn(props) {
           <div className="gx-app-logo-content">
             <div className="gx-app-logo-content-bg">
               <img
-                src="https://images.unsplash.com/photo-1658989236602-8f6a443a904d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80"
+                src={signInBackground}
                 alt="Neature"
+                style={{opacity: '0.3'}}
               />
             </div>
             <div className="gx-app-logo-wid">
