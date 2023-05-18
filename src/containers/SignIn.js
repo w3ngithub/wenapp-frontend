@@ -6,6 +6,7 @@ import {useNavigate} from 'react-router-dom'
 import {hideMessage, showAuthLoader, userSignIn} from 'appRedux/actions/Auth'
 import IntlMessages from 'util/IntlMessages'
 import {FORGOT_PASSWORD} from 'helpers/routePath'
+import signInBackground from 'assets/images/signInImage.jpg'
 
 const FormItem = Form.Item
 
