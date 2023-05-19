@@ -139,11 +139,17 @@ function MyHistory({
 
   const handleDateChange = (value: any) => {
     if (page?.page > 1) setPage(defaultPage)
-
-    setDate({
-      moment: value,
-      utc: moment.utc(value._d).startOf('day').format(),
-    })
+    if (value) {
+      setDate({
+        moment: value,
+        utc: moment.utc(value._d).startOf('day').format(),
+      })
+    } else {
+      setDate({
+        utc: '',
+        moment: undefined,
+      })
+    }
   }
 
   const handleShow = (data: any, mode: boolean) => {
