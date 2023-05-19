@@ -280,6 +280,10 @@ function Apply({
               ],
               remarks: `${name} has applied for leave. Please review.`,
               module: 'Leave',
+              extraInfo: JSON.stringify({
+                userId: user,
+                status: 'pending',
+              }),
             })
           },
         ]
