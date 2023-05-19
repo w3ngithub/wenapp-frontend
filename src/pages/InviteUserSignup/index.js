@@ -109,7 +109,6 @@ function InviteUserSignup(props) {
                   })
                   .catch((error) => {
                     setIsLoading(false)
-                    console.log(error)
                   })
               })
             }
@@ -132,7 +131,6 @@ function InviteUserSignup(props) {
       })
       .catch((err) => {
         setIsLoading(false)
-        console.log(err)
       })
   }
 

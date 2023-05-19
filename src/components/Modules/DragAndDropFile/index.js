@@ -30,6 +30,7 @@ function DragAndDropFile({
   accept = '',
   maxSize = 3,
   label = '',
+  isEditMode = false,
 }) {
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
@@ -62,13 +63,15 @@ function DragAndDropFile({
       const list = fileList[fileList.length - 1]
         ? [fileList[fileList.length - 1]]
         : []
+      if (isEditMode && fileList.length > 0 && files[0]?.url) {
+        onRemove(files[0]?.url)
+      }
       setFiles(list)
     }
   }
 
   const handleRemove = (removed) => {
     if (!removed.url) return
-
     if (allowMultiple) {
       onRemove((prev) => [...prev, removed.url])
     } else onRemove(removed.url)

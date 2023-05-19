@@ -26,6 +26,7 @@ import {useSelector} from 'react-redux'
 import {selectAuthUser} from 'appRedux/reducers/Auth'
 import {socket} from 'pages/Main'
 import {PAGE50} from 'constants/Common'
+import {deleteObject, getStorage, ref} from 'firebase/storage'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -54,8 +55,12 @@ function NoticeBoardPage() {
   const [readOnly, setReadOnly] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [form] = Form.useForm()
+  const [files, setFiles] = useState([])
+  const [deletedFile, setDeletedFile] = useState(null)
 
   const queryClient = useQueryClient()
+
+  const storage = getStorage()
 
   const {
     role: {permission = {}},
@@ -93,6 +98,7 @@ function NoticeBoardPage() {
           () => {
             socket.emit('CUD')
           },
+          () => setFiles([]),
           () => {
             socket.emit('add-notice', {
               showTo: Object.values(RoleAccess),
@@ -103,6 +109,12 @@ function NoticeBoardPage() {
         ]
       ),
     onError: (error) => {
+      if (files.length > 0) {
+        const imageRef = ref(storage, `notice/${files[0]?.name}`)
+        deleteObject(imageRef).then(() => {
+          notification({message: 'Image Deleted!', type: 'error'})
+        })
+      }
       notification({message: 'Notice addition failed!', type: 'error'})
     },
   })
@@ -132,7 +144,11 @@ function NoticeBoardPage() {
   const deleteNoticeMutation = useMutation(
     (noticeId) => deleteNotice(noticeId),
     {
-      onSuccess: (response) =>
+      onSuccess: async (response) => {
+        if (response?.data?.data?.image?.url) {
+          const imageRef = ref(storage, response?.data?.data?.image?.name)
+          await deleteObject(imageRef)
+        }
         handleResponse(
           response,
           'Notice removed Successfully',
@@ -143,7 +159,8 @@ function NoticeBoardPage() {
               socket.emit('CUD')
             },
           ]
-        ),
+        )
+      },
       onError: (error) => {
         notification({message: 'Notice deletion failed', type: 'error'})
       },
@@ -209,7 +226,7 @@ function NoticeBoardPage() {
   }
 
   const confirmDeleteProject = (notice) => {
-    deleteNoticeMutation.mutate(notice._id)
+    deleteNoticeMutation.mutate(notice?._id)
   }
 
   const handleOpenEditModal = (notice, mode) => {
@@ -234,6 +251,8 @@ function NoticeBoardPage() {
   }
 
   const handleCloseModal = () => {
+    setFiles([])
+    setDeletedFile(null)
     setOpenUserDetailModal((prev) => !prev)
     setNoticeRecord({})
     setIsEditMode(false)
@@ -261,6 +280,10 @@ function NoticeBoardPage() {
           initialValues={noticeRecord.project}
           readOnly={readOnly}
           isEditMode={isEditMode}
+          files={files}
+          setFiles={setFiles}
+          deletedFile={deletedFile}
+          setDeletedFile={setDeletedFile}
         />
       )}
 
