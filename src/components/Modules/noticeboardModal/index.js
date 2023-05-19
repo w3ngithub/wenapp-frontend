@@ -58,9 +58,14 @@ function NoticeModal({
 
   const handleSubmit = () => {
     form.validateFields().then(async (values) => {
+      let intermediate = values
       if (deletedFile) {
         const imageRef = ref(storage, deletedFile)
         await deleteObject(imageRef)
+        intermediate = {
+          ...values,
+          image: null,
+        }
       }
 
       if (files[0]?.originFileObj) {
@@ -96,7 +101,7 @@ function NoticeModal({
           }
         )
       } else {
-        onSubmit(values, noticeTypesQuery?.data?.data?.data?.data)
+        onSubmit(intermediate, noticeTypesQuery?.data?.data?.data?.data)
       }
     })
   }
