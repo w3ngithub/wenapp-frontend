@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
 import {
@@ -38,6 +38,7 @@ import {customLeaves} from 'constants/LeaveDuration'
 import {PAGE25} from 'constants/Common'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
 import {useLocation} from 'react-router-dom'
+import {APPROVED} from 'constants/LeaveStatus'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
@@ -173,6 +174,11 @@ function Leaves({
     ],
   })
 
+  useEffect(() => {
+    setLeaveStatus(location?.state?.status)
+    setUser(location?.state?.user)
+  }, [location?.state?.status, location?.state?.user])
+
   const handleLeaveTypeChange = (value, option) => {
     setPage(PAGE25)
     setLeaveId(value)
@@ -241,7 +247,7 @@ function Leaves({
                 remarks: 'Your leave has been approved.',
                 module: 'Leave',
                 extraInfo: JSON.stringify({
-                  status: 'approved',
+                  status: APPROVED,
                 }),
               })
             },
