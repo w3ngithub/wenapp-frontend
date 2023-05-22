@@ -240,6 +240,9 @@ function Leaves({
                 showTo: [response.data.data.data.user._id],
                 remarks: 'Your leave has been approved.',
                 module: 'Leave',
+                extraInfo: JSON.stringify({
+                  status: 'approved',
+                }),
               })
             },
           ]

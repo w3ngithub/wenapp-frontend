@@ -193,7 +193,9 @@ function Leave() {
                 module: 'Leave',
                 extraInfo: JSON.stringify({
                   userId: loggedInUser?._id,
-                  status: 'user cancelled',
+                  status: IsUserCancel
+                    ? 'user cancelled'
+                    : response?.data?.data?.data?.leaveStatus,
                 }),
               })
             },
