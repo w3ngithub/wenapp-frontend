@@ -1,4 +1,4 @@
-import {Button, Card, Form, Input, Table, Typography} from 'antd'
+import {Button, Card, Form, Input, Table} from 'antd'
 import React, {useState, useCallback, useEffect} from 'react'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {OVERTIME_COLUMNS, OT_STATUS} from 'constants/Overtime'

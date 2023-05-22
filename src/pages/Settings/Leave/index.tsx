@@ -359,6 +359,7 @@ function Leave() {
             >
               <div style={{display: 'flex', columnGap: '5px', flex: 'none'}}>
                 <Typography
+                  className="typography"
                   style={{
                     fontSize: '15px',
                     fontWeight: '400',
