@@ -38,6 +38,7 @@ import {customLeaves} from 'constants/LeaveDuration'
 import {PAGE25} from 'constants/Common'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
 import {useLocation} from 'react-router-dom'
+import {APPROVED} from 'constants/LeaveStatus'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
@@ -246,7 +247,7 @@ function Leaves({
                 remarks: 'Your leave has been approved.',
                 module: 'Leave',
                 extraInfo: JSON.stringify({
-                  status: 'approved',
+                  status: APPROVED,
                 }),
               })
             },

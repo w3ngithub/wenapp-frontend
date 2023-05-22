@@ -34,6 +34,7 @@ import {STATUS_TYPES} from 'constants/Leaves'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {AnnualApprovedLeaveCardClassName} from 'constants/DOM'
 import moment from 'moment'
+import {PENDING} from 'constants/LeaveStatus'
 
 const TabPane = Tabs.TabPane
 
@@ -230,7 +231,7 @@ function Leave() {
                 remarks: 'Leave reapplied succesfully',
                 module: 'Leave',
                 extraInfo: JSON.stringify({
-                  status: 'pending',
+                  status: PENDING,
                 }),
               })
             },
