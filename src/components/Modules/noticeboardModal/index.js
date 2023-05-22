@@ -18,6 +18,14 @@ import {disabledBeforeToday} from 'util/antDatePickerDisabled'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {getNoticeboardTypes} from 'services/settings/noticeBoard'
 import {CANCEL_TEXT} from 'constants/Common'
+import DragAndDropFile from '../DragAndDropFile'
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject,
+} from 'firebase/storage'
+import {storage} from 'firebase'
 
 const FormItem = Form.Item
 const {TextArea} = Input
@@ -32,10 +40,15 @@ function NoticeModal({
   readOnly = false,
   loading = false,
   isEditMode = false,
+  files,
+  setFiles,
+  setDeletedFile,
+  deletedFile,
 }) {
   const noticeTypesQuery = useQuery(['noticeTypes'], getNoticeboardTypes, {
     enabled: false,
   })
+
   const [form] = Form.useForm()
 
   const handleCancel = () => {
@@ -44,8 +57,52 @@ function NoticeModal({
   }
 
   const handleSubmit = () => {
-    form.validateFields().then((values) => {
-      onSubmit(values, noticeTypesQuery?.data?.data?.data?.data)
+    form.validateFields().then(async (values) => {
+      let intermediate = values
+      if (deletedFile) {
+        const imageRef = ref(storage, deletedFile)
+        await deleteObject(imageRef)
+        intermediate = {
+          ...values,
+          image: null,
+        }
+      }
+
+      if (files[0]?.originFileObj) {
+        const storageRef = ref(
+          storage,
+          `notice/${files[0]?.originFileObj?.name}`
+        )
+        let uploadTask = uploadBytesResumable(
+          storageRef,
+          files[0]?.originFileObj
+        )
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            // const pg = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            // setProgress(() => pg);
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            // setIsLoading(false)
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              onSubmit({
+                ...values,
+                image: {
+                  url: downloadURL,
+                  name: `notice/${files[0]?.originFileObj?.name}`,
+                },
+              })
+            })
+          }
+        )
+      } else {
+        onSubmit(intermediate, noticeTypesQuery?.data?.data?.data?.data)
+      }
     })
   }
   const dateFormat = 'YYYY/MM/DD'
@@ -71,6 +128,9 @@ function NoticeModal({
             ? moment(initialValues?.endTime)
             : null,
         })
+        if (initialValues?.image?.url) {
+          setFiles([{...initialValues?.image, uid: 1}])
+        }
       }
     }
     if (!toggle) form.resetFields()
@@ -373,6 +433,22 @@ function NoticeModal({
                   placeholder="Enter Details"
                   rows={5}
                   disabled={readOnly}
+                />
+              </FormItem>
+            </Col>
+          </Row>
+
+          <Row type="flex">
+            <Col span={24} sm={24}>
+              <FormItem label="Select Document to Upload" name="leaveDocument">
+                <DragAndDropFile
+                  files={files}
+                  onRemove={setDeletedFile}
+                  setFiles={setFiles}
+                  allowMultiple={false}
+                  displayType="picture-card"
+                  accept="image/png, image/jpeg"
+                  isEditMode={isEditMode}
                 />
               </FormItem>
             </Col>
