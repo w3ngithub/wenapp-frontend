@@ -62,7 +62,7 @@ function EventsAndAnnouncements({
       </>,
     ],
     Icon: 'notification',
-    imageList: [],
+    imageList: x?.image,
     details: x?.details,
   }))
 
@@ -115,7 +115,16 @@ function EventsAndAnnouncements({
   }))
 
   function getName(task: any, shape: any) {
-    if (task?.avatar === '') {
+    if (task?.imageList?.url) {
+      return (
+        <Avatar
+          shape={shape}
+          size="large"
+          className="gx-size-30 gx-bg-primary"
+          src={task?.imageList?.url}
+        />
+      )
+    } else if (task?.avatar === '') {
       let nameSplit = task?.name.split(' ')
       if (task?.name.split(' ').length === 1) {
         const initials = nameSplit[0].charAt(0).toUpperCase()
