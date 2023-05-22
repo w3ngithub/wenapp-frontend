@@ -229,6 +229,9 @@ function Leave() {
                 showTo: [response.data.data.data.user._id],
                 remarks: 'Leave reapplied succesfully',
                 module: 'Leave',
+                extraInfo: JSON.stringify({
+                  status: 'pending',
+                }),
               })
             },
           ]

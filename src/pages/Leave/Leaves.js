@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
 import {
@@ -172,6 +172,11 @@ function Leaves({
       })),
     ],
   })
+
+  useEffect(() => {
+    setLeaveStatus(location?.state?.status)
+    setUser(location?.state?.user)
+  }, [location?.state?.status, location?.state?.user])
 
   const handleLeaveTypeChange = (value, option) => {
     setPage(PAGE25)
