@@ -72,7 +72,9 @@ function MyHistory({
   const {innerWidth} = useWindowsSize()
   const [datatoShow, setdatatoShow] = useState({})
   const [openModal, setModal] = useState<boolean>(false)
-  const [leaveStatus, setLeaveStatus] = useState<string | undefined>('')
+  const [leaveStatus, setLeaveStatus] = useState<string | undefined>(
+    location?.state?.status || ''
+  )
   const [leaveTypeId, setLeaveType] = useState<string | undefined>(undefined)
   const [date, setDate] = useState<{moment: Moment | undefined; utc: string}>({
     utc: selectedDate ? selectedDate : undefined,

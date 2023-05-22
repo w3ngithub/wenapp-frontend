@@ -191,6 +191,12 @@ function Leave() {
                     : 'Your leave has been cancelled'
                 }`,
                 module: 'Leave',
+                extraInfo: JSON.stringify({
+                  userId: loggedInUser?._id,
+                  status: IsUserCancel
+                    ? 'user cancelled'
+                    : response?.data?.data?.data?.leaveStatus,
+                }),
               })
             },
           ]
