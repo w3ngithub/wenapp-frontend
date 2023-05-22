@@ -57,6 +57,7 @@ function NoticeBoardPage() {
   const [form] = Form.useForm()
   const [files, setFiles] = useState([])
   const [deletedFile, setDeletedFile] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const queryClient = useQueryClient()
 
@@ -117,6 +118,10 @@ function NoticeBoardPage() {
       }
       notification({message: 'Notice addition failed!', type: 'error'})
     },
+
+    onSettled: () => {
+      setLoading(false)
+    },
   })
 
   const updateNoticeMutation = useMutation(
@@ -137,6 +142,10 @@ function NoticeBoardPage() {
         ),
       onError: (error) => {
         notification({message: 'Notice update failed', type: 'error'})
+      },
+
+      onSettled: () => {
+        setLoading(false)
       },
     }
   )
@@ -274,9 +283,7 @@ function NoticeBoardPage() {
           toggle={openUserDetailModal}
           onClose={handleCloseModal}
           onSubmit={handleUserDetailSubmit}
-          loading={
-            addNoticeMutation.isLoading || updateNoticeMutation.isLoading
-          }
+          loading={loading}
           initialValues={noticeRecord.project}
           readOnly={readOnly}
           isEditMode={isEditMode}
@@ -284,6 +291,7 @@ function NoticeBoardPage() {
           setFiles={setFiles}
           deletedFile={deletedFile}
           setDeletedFile={setDeletedFile}
+          setLoading={setLoading}
         />
       )}
 
