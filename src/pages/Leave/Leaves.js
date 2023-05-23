@@ -175,7 +175,6 @@ function Leaves({
   })
 
   useEffect(() => {
-    console.log('i am running')
     if (location?.state) {
       leavesQuery.refetch()
     }
