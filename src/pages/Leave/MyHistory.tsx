@@ -8,12 +8,10 @@ import {
   changeDate,
   removeDash,
 } from 'helpers/utils'
-import useWindowsSize from 'hooks/useWindowsSize'
 import moment, {Moment} from 'moment'
 import React, {useState, useEffect} from 'react'
 import {useLocation} from 'react-router-dom'
 import {getLeavesOfUser, getQuarters} from 'services/leaves'
-import {disabledDate} from 'util/antDatePickerDisabled'
 import LeaveModal from 'components/Modules/LeaveModal'
 import {getLeaveTypes} from 'services/leaves'
 import {emptyText} from 'constants/EmptySearchAntd'
@@ -69,7 +67,6 @@ function MyHistory({
   const [form] = Form.useForm()
   const location: any = useLocation()
   let selectedDate = location.state?.date
-  const {innerWidth} = useWindowsSize()
   const [datatoShow, setdatatoShow] = useState({})
   const [openModal, setModal] = useState<boolean>(false)
   const [leaveStatus, setLeaveStatus] = useState<string | undefined>(
