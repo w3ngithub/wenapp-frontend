@@ -175,9 +175,7 @@ function Leaves({
   })
 
   useEffect(() => {
-    if (location?.state) {
-      leavesQuery.refetch()
-    }
+    leavesQuery.refetch()
     setLeaveStatus(location?.state?.status)
     setUser(location?.state?.user)
   }, [location?.state])
