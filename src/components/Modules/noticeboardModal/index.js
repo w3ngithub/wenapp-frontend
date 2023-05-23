@@ -446,15 +446,18 @@ function NoticeModal({
           <Row type="flex">
             <Col span={24} sm={24}>
               <FormItem label="Select Image to Upload" name="leaveDocument">
-                <DragAndDropFile
-                  files={files}
-                  onRemove={setDeletedFile}
-                  setFiles={setFiles}
-                  allowMultiple={false}
-                  displayType="picture-card"
-                  accept="image/png, image/jpeg"
-                  isEditMode={isEditMode}
-                />
+                <div id="dg-eye">
+                  <DragAndDropFile
+                    files={files}
+                    onRemove={setDeletedFile}
+                    setFiles={setFiles}
+                    allowMultiple={false}
+                    displayType="picture-card"
+                    accept="image/png, image/jpeg"
+                    isEditMode={isEditMode}
+                    readOnly={readOnly}
+                  />
+                </div>
               </FormItem>
             </Col>
           </Row>
