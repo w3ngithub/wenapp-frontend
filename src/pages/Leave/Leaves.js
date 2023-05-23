@@ -175,9 +175,10 @@ function Leaves({
   })
 
   useEffect(() => {
+    leavesQuery.refetch()
     setLeaveStatus(location?.state?.status)
     setUser(location?.state?.user)
-  }, [location?.state?.status, location?.state?.user])
+  }, [location?.state])
 
   const handleLeaveTypeChange = (value, option) => {
     setPage(PAGE25)
