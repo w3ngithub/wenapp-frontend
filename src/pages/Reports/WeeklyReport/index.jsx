@@ -13,7 +13,7 @@ import {notification} from 'helpers/notification'
 import {getLogTypes, getWeeklyReport} from 'services/timeLogs'
 import Select from 'components/Elements/Select'
 import {WEEKLY_REPORT_COLUMNS} from 'constants/weeklyReport'
-import {debounce, roundedToFixed} from 'helpers/utils'
+import {MuiFormatDate, debounce, roundedToFixed} from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {PAGE50} from 'constants/Common'
@@ -74,8 +74,8 @@ function WeeklyReport() {
         logType,
         projectStatus,
         client: projectClient,
-        fromDate: moment.utc(date[0]).format(),
-        toDate: moment.utc(date[1]).format(),
+        fromDate: date?.[0] ? MuiFormatDate(date[0]) + 'T00:00:00Z' : '',
+        toDate: date?.[1] ? MuiFormatDate(date[1]) + 'T00:00:00Z' : '',
         project: project,
       }),
     {keepPreviousData: true}
