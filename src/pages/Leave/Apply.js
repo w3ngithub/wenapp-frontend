@@ -53,6 +53,7 @@ import DragAndDropFile from 'components/Modules/DragAndDropFile'
 import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import en_GB from 'antd/lib/locale-provider/en_GB'
 import {storage} from 'firebase'
+import {PENDING} from 'constants/LeaveStatus'
 const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
@@ -92,6 +93,7 @@ function Apply({
     role,
     gender: userGender,
     status: userStatus,
+    statusChangeDate,
   } = useSelector(selectAuthUser)
 
   const date = new Date()
@@ -279,6 +281,10 @@ function Apply({
               ],
               remarks: `${name} has applied for leave. Please review.`,
               module: 'Leave',
+              extraInfo: JSON.stringify({
+                userId: user,
+                status: PENDING,
+              }),
             })
           },
         ]
@@ -403,19 +409,35 @@ function Apply({
             ? 1
             : 0.5
 
-        let previouslyAppliedCasualLeaves =
-          userSubstituteLeave?.data?.data?.data?.data
-            ?.filter(
-              (leave) =>
-                leave?.leaveType?.name === 'Casual Leave' &&
-                (leave?.leaveStatus === 'pending' ||
-                  leave?.leaveStatus === 'approved')
-            )
-            .map((item) => {
-              if (item?.halfDay === '') {
-                return {...item, count: item?.leaveDates?.length}
-              } else return {...item, count: 0.5}
-            })
+        //filtering leaves for probation
+
+        let filteredProbationalLeaves =
+          userSubstituteLeave?.data?.data?.data?.data?.filter(
+            (leave) => leave?.leaveType?.name === 'Casual Leave'
+          )
+
+        if (
+          statusChangeDate &&
+          new Date(statusChangeDate) > new Date(yearStartDate)
+        ) {
+          //if probation has been completed, the leaves taken during probation are not counted
+          filteredProbationalLeaves = filteredProbationalLeaves?.filter(
+            (leave) =>
+              new Date(leave?.leaveDates?.[0]) > new Date(statusChangeDate)
+          )
+        }
+
+        let previouslyAppliedCasualLeaves = filteredProbationalLeaves
+          ?.filter(
+            (leave) =>
+              leave?.leaveStatus === 'pending' ||
+              leave?.leaveStatus === 'approved'
+          )
+          .map((item) => {
+            if (item?.halfDay === '') {
+              return {...item, count: item?.leaveDates?.length}
+            } else return {...item, count: 0.5}
+          })
         const casualLeavesCount = previouslyAppliedCasualLeaves?.reduce(
           (acc, cur) => acc + cur.count,
           0

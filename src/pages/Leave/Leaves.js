@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Button, DatePicker, Form, Table} from 'antd'
 import Select from 'components/Elements/Select'
 import {
@@ -37,6 +37,8 @@ import {ADMINISTRATOR} from 'constants/UserNames'
 import {customLeaves} from 'constants/LeaveDuration'
 import {PAGE25} from 'constants/Common'
 import {leaveHistoryDays} from 'constants/LeaveTypes'
+import {useLocation} from 'react-router-dom'
+import {APPROVED} from 'constants/LeaveStatus'
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker
@@ -85,6 +87,7 @@ function Leaves({
   isCancelLoading,
 }) {
   const queryClient = useQueryClient()
+  const location = useLocation()
 
   let approveReason
   const [openModal, setOpenModal] = useState(false)
@@ -93,7 +96,9 @@ function Leaves({
   const [dataToEdit, setDataToEdit] = useState({})
   const [isEditMode, setIsEditMode] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
-  const [leaveStatus, setLeaveStatus] = useState(status ?? '')
+  const [leaveStatus, setLeaveStatus] = useState(
+    (location?.state?.status || status) ?? ''
+  )
   const [leaveId, setLeaveId] = useState(undefined)
   const [leaveTitle, setLeaveTitle] = useState('')
   const [leaveInterval, setLeaveInterval] = useState(undefined)
@@ -115,7 +120,9 @@ function Leaves({
   const [rangeDate, setRangeDate] = useState([])
   const [page, setPage] = useState(PAGE25)
   const [leaveDetails, setleaveDetails] = useState({})
-  const [user, setUser] = useState(selectedUser ?? undefined)
+  const [user, setUser] = useState(
+    (location?.state?.user || selectedUser) ?? undefined
+  )
 
   const leavesQuery = useQuery(
     [
@@ -166,6 +173,12 @@ function Leaves({
       })),
     ],
   })
+
+  useEffect(() => {
+    leavesQuery.refetch()
+    setLeaveStatus(location?.state?.status)
+    setUser(location?.state?.user)
+  }, [location?.state])
 
   const handleLeaveTypeChange = (value, option) => {
     setPage(PAGE25)
@@ -234,6 +247,9 @@ function Leaves({
                 showTo: [response.data.data.data.user._id],
                 remarks: 'Your leave has been approved.',
                 module: 'Leave',
+                extraInfo: JSON.stringify({
+                  status: APPROVED,
+                }),
               })
             },
           ]

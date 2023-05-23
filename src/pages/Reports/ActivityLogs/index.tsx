@@ -44,8 +44,8 @@ function ActivityLogs() {
             : sort.order === 'ascend'
             ? sort.field
             : `-${sort.field}`,
-        fromDate: date?.[0] ? moment.utc(date[0]).format() : '',
-        toDate: date?.[1] ? moment.utc(date[1]).format() : '',
+        fromDate: date?.[0] ? moment.utc(date[0]).startOf('day').format() : '',
+        toDate: date?.[1] ? moment.utc(date[1]).endOf('day').format() : '',
         status,
         module,
       }),

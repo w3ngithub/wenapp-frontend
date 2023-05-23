@@ -10,7 +10,7 @@ import {
 } from 'helpers/utils'
 import useWindowsSize from 'hooks/useWindowsSize'
 import moment, {Moment} from 'moment'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {useLocation} from 'react-router-dom'
 import {getLeavesOfUser, getQuarters} from 'services/leaves'
 import {disabledDate} from 'util/antDatePickerDisabled'
@@ -72,7 +72,9 @@ function MyHistory({
   const {innerWidth} = useWindowsSize()
   const [datatoShow, setdatatoShow] = useState({})
   const [openModal, setModal] = useState<boolean>(false)
-  const [leaveStatus, setLeaveStatus] = useState<string | undefined>('')
+  const [leaveStatus, setLeaveStatus] = useState<string | undefined>(
+    location?.state?.status || ''
+  )
   const [leaveTypeId, setLeaveType] = useState<string | undefined>(undefined)
   const [date, setDate] = useState<{moment: Moment | undefined; utc: string}>({
     utc: selectedDate ? selectedDate : undefined,
@@ -102,6 +104,10 @@ function MyHistory({
         leaveTypeId
       )
   )
+
+  useEffect(() => {
+    setLeaveStatus(location?.state?.status)
+  }, [location?.state?.status])
 
   const {data: quarterQuery} = useQuery(['quarters'], getQuarters, {
     select: (res: any) => {
