@@ -148,7 +148,6 @@ function WeeklyReport() {
   }
 
   const handleChangeDate = (date) => {
-    setSort({columnKey: 'client', field: 'client', order: 'ascend'})
     setDate([date[0], date[1].endOf('day')])
   }
 
