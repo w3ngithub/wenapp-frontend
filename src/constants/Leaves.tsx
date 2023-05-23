@@ -78,6 +78,13 @@ const LEAVES_COLUMN = ({
           dataIndex: 'dates',
           key: 'dates',
           width: 10,
+          render: (text: any, record: any) => {
+            return (
+              <div>
+                <span>{text}</span>
+              </div>
+            )
+          },
         },
         {
           title: 'Type',
@@ -257,7 +264,14 @@ const LEAVES_COLUMN = ({
           title: 'Dates',
           dataIndex: 'dates',
           key: 'dates',
-          width: 10,
+          width: 1,
+          render: (text: any, record: any) => {
+            return (
+              <div style={{maxWidth: '6rem'}}>
+                <span>{text}</span>
+              </div>
+            )
+          },
         },
         {
           title: 'Type',
