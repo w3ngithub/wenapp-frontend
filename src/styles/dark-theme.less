@@ -122,8 +122,15 @@ body.dark-theme {
     background-color: @dark-theme-component-background !important;
   }
 
+  & .ant-picker-cell-in-view:hover,.ant-picker-cell-end:hover,.ant-picker-cell-start:hover{
+  .ant-picker-cell-inner{
+    background:#e0e0e0 !important;
+    color:black !important;
+  }}
+    
+
   & .ant-form-item-control-input {
-    & .ant-input[disabled] {
+  .ant-input[disabled] {
       color: @dark-theme-text-color;
       border-color: #d9d9d9;
       box-shadow: none;
