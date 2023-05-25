@@ -53,6 +53,7 @@ import DragAndDropFile from 'components/Modules/DragAndDropFile'
 import {ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import en_GB from 'antd/lib/locale-provider/en_GB'
 import {storage} from 'firebase'
+import {PENDING} from 'constants/LeaveStatus'
 const FormItem = Form.Item
 const {TextArea} = Input
 const Option = Select.Option
@@ -280,6 +281,10 @@ function Apply({
               ],
               remarks: `${name} has applied for leave. Please review.`,
               module: 'Leave',
+              extraInfo: JSON.stringify({
+                userId: user,
+                status: PENDING,
+              }),
             })
           },
         ]

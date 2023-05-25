@@ -44,6 +44,7 @@ function NoticeModal({
   setFiles,
   setDeletedFile,
   deletedFile,
+  setLoading,
 }) {
   const noticeTypesQuery = useQuery(['noticeTypes'], getNoticeboardTypes, {
     enabled: false,
@@ -68,11 +69,14 @@ function NoticeModal({
         }
       }
 
+      setLoading(true)
+
       if (files[0]?.originFileObj) {
         const storageRef = ref(
           storage,
           `notice/${files[0]?.originFileObj?.name}`
         )
+
         let uploadTask = uploadBytesResumable(
           storageRef,
           files[0]?.originFileObj
@@ -87,6 +91,7 @@ function NoticeModal({
           (error) => {
             // Handle unsuccessful uploads
             // setIsLoading(false)
+            setLoading(false)
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -440,16 +445,19 @@ function NoticeModal({
 
           <Row type="flex">
             <Col span={24} sm={24}>
-              <FormItem label="Select Document to Upload" name="leaveDocument">
-                <DragAndDropFile
-                  files={files}
-                  onRemove={setDeletedFile}
-                  setFiles={setFiles}
-                  allowMultiple={false}
-                  displayType="picture-card"
-                  accept="image/png, image/jpeg"
-                  isEditMode={isEditMode}
-                />
+              <FormItem label="Select Image to Upload" name="leaveDocument">
+                <div id="dg-eye">
+                  <DragAndDropFile
+                    files={files}
+                    onRemove={setDeletedFile}
+                    setFiles={setFiles}
+                    allowMultiple={false}
+                    displayType="picture-card"
+                    accept="image/png, image/jpeg"
+                    isEditMode={isEditMode}
+                    readOnly={readOnly}
+                  />
+                </div>
               </FormItem>
             </Col>
           </Row>

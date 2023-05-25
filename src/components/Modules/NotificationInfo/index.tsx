@@ -163,10 +163,13 @@ function NotificationInfo({arrowPosition}: {arrowPosition: number}) {
         return
 
       case 'Leave':
+        const datas = JSON.parse(extraInfo || '{}')
         navigate(LEAVE, {
           state: {
             tabKey: showTo?.includes('admin') ? '3' : '2',
             leaveStatus: 'pending',
+            user: datas?.userId,
+            status: datas?.status,
           },
         })
         setVisible(false)

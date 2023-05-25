@@ -27,7 +27,7 @@ function ActivityLogs() {
   // init states
   const [sort, setSort] = useState<any>({})
   const [page, setPage] = useState({page: 1, limit: 50})
-  const [date, setDate] = useState(intialDate)
+  const [date, setDate] = useState([moment(), moment()])
   const [status, setStatus] = useState<string | undefined>(undefined)
   const [module, setModule] = useState<string | undefined>(undefined)
 
@@ -44,8 +44,8 @@ function ActivityLogs() {
             : sort.order === 'ascend'
             ? sort.field
             : `-${sort.field}`,
-        fromDate: date?.[0] ? moment.utc(date[0]).format() : '',
-        toDate: date?.[1] ? moment.utc(date[1]).format() : '',
+        fromDate: date?.[0] ? moment.utc(date[0]).startOf('day').format() : '',
+        toDate: date?.[1] ? moment.utc(date[1]).endOf('day').format() : '',
         status,
         module,
       }),

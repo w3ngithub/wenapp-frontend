@@ -15,7 +15,7 @@ import {
   weeklyState,
 } from 'constants/Attendance'
 import useWindowsSize from 'hooks/useWindowsSize'
-import {debounce, filterSpecificUser} from 'helpers/utils'
+import {MuiFormatDate, debounce, filterSpecificUser} from 'helpers/utils'
 import {emptyText} from 'constants/EmptySearchAntd'
 import {ADMINISTRATOR} from 'constants/UserNames'
 import {disabledAfterToday} from 'util/antDatePickerDisabled'
@@ -61,8 +61,8 @@ function WorkLogReport() {
         user,
         project,
         logType,
-        fromDate: date?.[0] ? moment.utc(date[0]).format() : '',
-        toDate: date?.[1] ? moment.utc(date[1]).format() : '',
+        fromDate: date?.[0] ? MuiFormatDate(date[0]) + 'T00:00:00Z' : '',
+        toDate: date?.[1] ? MuiFormatDate(date[1]) + 'T00:00:00Z' : '',
       })
   )
 

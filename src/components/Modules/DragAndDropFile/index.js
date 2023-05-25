@@ -31,6 +31,7 @@ function DragAndDropFile({
   maxSize = 3,
   label = '',
   isEditMode = false,
+  readOnly = false,
 }) {
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
@@ -92,6 +93,7 @@ function DragAndDropFile({
         onChange={handleChange}
         onRemove={handleRemove}
         accept={accept}
+        disabled={readOnly}
       >
         <p className="ant-upload-drag-icon">
           <InboxOutlined />

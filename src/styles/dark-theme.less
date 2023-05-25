@@ -122,6 +122,13 @@ body.dark-theme {
     background-color: @dark-theme-component-background !important;
   }
 
+  & .ant-picker-cell-in-view:hover,.ant-picker-cell-end:hover,.ant-picker-cell-start:hover{
+    & .ant-picker-cell-inner{
+    background:#e0e0e0 !important;
+    color:black !important;
+  }}
+    
+
   & .ant-form-item-control-input {
     & .ant-input[disabled] {
       color: @dark-theme-text-color;
@@ -488,13 +495,18 @@ body.dark-theme {
     color: @dark-theme-text-color;
   }
 
-  & input#emails:-webkit-autofill,
-   input#passwords:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 10px #5b656e inset; /* Change the color to your own background color */
-  box-shadow: 0 0 0 10px #5b656e inset;
-  &:focus {
-    box-shadow: 0 0 0 10px #5b656e inset !important;
-  }
+
+& input#emails:-webkit-autofill,
+input#passwords:-webkit-autofill {
+-webkit-box-shadow: 0 0 0 10px #434f5a inset; /* Change the color to your own background color */
+box-shadow: 0 0 0 10px #434f5a inset;
+-webkit-text-fill-color:#fff;
+
+color:@dark-theme-text-color !important;
+border-radius: 0 !important;
+&:focus {
+ box-shadow: 0 0 0 10px #434f5a inset !important;
+}
 }
 
   & .@{class-prefix}-menu-horizontal {
@@ -1494,6 +1506,10 @@ body.dark-theme {
       &:before {
         background: transparent;
       }
+    }
+
+    & .latest-events:hover .ant-table-cell-row-hover{
+      background-color: rgb(159 217 255 / 54%)  !important;
     }
 
     &-bordered .ant-table-thead > tr > th,
@@ -3415,6 +3431,10 @@ body.dark-theme {
 
   & .@{class-prefix}-bg-white .@{class-prefix}-text-grey {
     color: @dark-theme-primary-color !important;
+  }
+
+  & .typography{
+    color: @dark-theme-text-color
   }
 
   .bg-dark.rmdp-wrapper,
