@@ -7,6 +7,8 @@ import {csvFileToArray} from 'helpers/utils'
 import {notification} from 'helpers/notification'
 import {CANCEL_TEXT} from 'constants/Common'
 
+const validFiles = ['application/vnd.ms-excel', 'text/csv']
+
 function ImportUsers({toggle, onClose, files, setFiles}) {
   const fileReader = new FileReader()
 
@@ -63,7 +65,7 @@ function ImportUsers({toggle, onClose, files, setFiles}) {
   }
 
   const isFileVlaid =
-    files.length !== 0 && files[0]?.originFileObj.type !== 'text/csv'
+    files.length !== 0 && !validFiles.includes(files[0]?.originFileObj.type)
 
   return (
     <Modal
