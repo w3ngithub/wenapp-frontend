@@ -79,7 +79,10 @@ function ProjectModal({
         'designers'
       )
       const updatedQAs = changedRoleChecker(values?.qa, 'qa')
-      const updatedDevelopers = changedRoleChecker(values?.developers, 'devOps')
+      const updatedDevelopers = changedRoleChecker(
+        values?.developers,
+        'developers'
+      )
       const updatedDevOps = changedRoleChecker(values?.devOps, 'devOps')
       const updatedLiveUrl =
         typeof values?.liveUrl === 'string'
