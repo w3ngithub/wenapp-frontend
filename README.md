@@ -4,10 +4,6 @@ Installing all the dependencies of project, run following command:
 
 `$yarn`
 
-# Documentation
-
-it is well documented at [here](https://wenapp.netlify.app/ 'Documentation') .
-
 ## Branches
 
 | Branch   | Description                                                                              |
